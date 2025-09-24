@@ -5,64 +5,14 @@ import { ArrowLeft } from "lucide-react";
 import ChallengeDetail from "@/components/challenges/ChallengeDetail";
 import Navigation from "@/components/Navigation";
 
-// Mock data - will be replaced with real data from Supabase
-const mockChallenge = {
-  id: "1",
-  title: "30-Day Plastic-Free Challenge",
-  description: "Reduce single-use plastics in your daily life",
-  longDescription: "Join thousands of people in reducing plastic waste by eliminating single-use plastics from your daily routine. This challenge will help you develop sustainable habits while making a real environmental impact.",
-  category: "waste" as const,
-  difficulty: "intermediate" as const,
-  duration: "30 days",
-  pointsReward: 500,
-  participants: 1247,
-  completionRate: 78,
-  sponsor: {
-    name: "EcoTech Solutions",
-    logo: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center"
-  },
-  steps: [
-    "Assess your current plastic usage for 3 days",
-    "Replace single-use water bottles with a reusable one",
-    "Bring reusable bags for grocery shopping",
-    "Choose products with minimal packaging",
-    "Find plastic-free alternatives for personal care items",
-    "Share your progress and inspire others",
-    "Reflect on your journey and plan for the future"
-  ],
-  tips: [
-    "Start small - focus on one item at a time",
-    "Keep reusable items visible as reminders",
-    "Find a plastic-free buddy for accountability",
-    "Research local stores with bulk buying options",
-    "Document your journey with photos"
-  ],
-  impact: {
-    co2Saved: 15.5,
-    treesEquivalent: 2
-  },
-  participants_preview: [
-    {
-      id: "1",
-      name: "Sarah Chen",
-      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face"
-    },
-    {
-      id: "2", 
-      name: "Marcus Johnson",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face"
-    },
-    {
-      id: "3",
-      name: "Emma Rodriguez",
-      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face"
-    }
-  ]
-};
+import { getChallengeById } from "@/data/challenges";
 
 const ChallengeDetailPage = () => {
   const { challengeId } = useParams();
   const navigate = useNavigate();
+  
+  // Get challenge data by ID
+  const challenge = challengeId ? getChallengeById(challengeId) : null;
   
   // Mock user progress - will be fetched from Supabase
   const [userProgress] = useState({
@@ -71,6 +21,21 @@ const ChallengeDetailPage = () => {
     progress: 65,
     completedSteps: [0, 1, 2, 3]
   });
+
+  if (!challenge) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold mb-4">Challenge Not Found</h1>
+            <p className="text-muted-foreground mb-4">The challenge you're looking for doesn't exist.</p>
+            <Button onClick={() => navigate("/")}>Back to Home</Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleJoinChallenge = (challengeId: string) => {
     // TODO: Implement with Supabase
@@ -104,7 +69,7 @@ const ChallengeDetailPage = () => {
         </div>
 
         <ChallengeDetail
-          challenge={mockChallenge}
+          challenge={challenge}
           userProgress={userProgress}
           onJoin={handleJoinChallenge}
           onComplete={handleCompleteChallenge}

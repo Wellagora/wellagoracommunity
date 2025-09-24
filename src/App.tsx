@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import ChallengeDetailPage from "./pages/ChallengeDetailPage";
 import CommunityPage from "./pages/CommunityPage";
+import DashboardPage from "./pages/DashboardPage";
+import AIAssistantPage from "./pages/AIAssistantPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,6 +22,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/challenge/:challengeId" element={<ChallengeDetailPage />} />
           <Route path="/community" element={<CommunityPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/ai-assistant" element={<AIAssistantPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
