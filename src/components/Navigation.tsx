@@ -34,7 +34,7 @@ const Navigation = () => {
         <div className="flex justify-between items-center h-20">
           {/* Enhanced Logo */}
           <div className="flex items-center space-x-4">
-            <div className="w-14 h-14 flex items-center justify-center bg-gradient-primary rounded-2xl shadow-glow hover-lift">
+            <div className="w-14 h-14 flex items-center justify-center bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-card hover-lift">
               <img 
                 src="/lovable-uploads/89cff010-b0aa-4aa1-b97e-999c469cae09.png" 
                 alt="Wellagora Logo" 
@@ -80,7 +80,7 @@ const Navigation = () => {
               ))}
             </div>
             <Button 
-              className="bg-gradient-primary hover:shadow-glow transition-spring px-8 py-3 text-lg font-semibold rounded-xl hover-lift"
+              className="bg-accent hover:bg-accent/90 transition-spring px-8 py-3 text-lg font-semibold rounded-xl hover-lift"
               onClick={() => {
                 setAuthMode("register");
                 setIsAuthModalOpen(true);
@@ -143,7 +143,7 @@ const Navigation = () => {
                   ))}
                 </div>
                 <Button 
-                  className="w-full mt-3 bg-gradient-primary"
+                  className="w-full mt-3 bg-accent hover:bg-accent/90"
                   onClick={() => {
                     setAuthMode("register");
                     setIsAuthModalOpen(true);
