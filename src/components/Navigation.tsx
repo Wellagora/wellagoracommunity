@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -31,7 +31,23 @@ const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "register">("register");
-  const { user, profile, signOut, loading } = useAuth();
+  
+  // Conditional hook usage to prevent errors during provider initialization
+  let user = null;
+  let profile = null;
+  let signOut = () => {};
+  let loading = true;
+  
+  try {
+    const auth = useAuth();
+    user = auth.user;
+    profile = auth.profile;
+    signOut = auth.signOut;
+    loading = auth.loading;
+  } catch (error) {
+    // AuthProvider not yet initialized, use defaults
+    console.log('AuthProvider not yet initialized');
+  }
 
   const userRoles = [
     { name: "Citizen", icon: User, color: "bg-success", description: "Individual sustainability journey" },
