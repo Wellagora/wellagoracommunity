@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
-  DropdownMenuTrigger 
+  DropdownMenuTrigger,
+  DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu";
 import AuthModal from "./auth/AuthModal";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   Menu, 
   X, 
@@ -20,13 +23,15 @@ import {
   Trophy,
   MessageCircle,
   Settings,
-  ChevronDown
+  ChevronDown,
+  LogOut
 } from "lucide-react";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "register">("register");
+  const { user, profile, signOut, loading } = useAuth();
 
   const userRoles = [
     { name: "Citizen", icon: User, color: "bg-success", description: "Individual sustainability journey" },
@@ -112,39 +117,91 @@ const Navigation = () => {
 
           {/* Enhanced User Actions */}
           <div className="hidden md:flex items-center space-x-6">
-            <div className="flex items-center space-x-3">
-              {userRoles.map((role) => (
+            {!user ? (
+              <>
+                <div className="flex items-center space-x-3">
+                  {userRoles.map((role) => (
+                    <Button 
+                      key={role.name}
+                      variant="outline" 
+                      size="sm"
+                      className="hover:bg-primary/10 hover:border-primary/50 transition-spring font-medium bg-glass backdrop-blur-md border-white/20 hover-lift"
+                      title={role.description}
+                    >
+                      <role.icon className="w-4 h-4 mr-2" />
+                      {role.name}
+                    </Button>
+                  ))}
+                </div>
                 <Button 
-                  key={role.name}
-                  variant="outline" 
-                  size="sm"
-                  className="hover:bg-primary/10 hover:border-primary/50 transition-spring font-medium bg-glass backdrop-blur-md border-white/20 hover-lift"
-                  title={role.description}
+                  className="bg-accent hover:bg-accent/90 transition-spring px-8 py-3 text-lg font-semibold rounded-xl hover-lift"
+                  onClick={() => {
+                    setAuthMode("register");
+                    setIsAuthModalOpen(true);
+                  }}
                 >
-                  <role.icon className="w-4 h-4 mr-2" />
-                  {role.name}
+                  Get Started
                 </Button>
-              ))}
-            </div>
-            <Button 
-              className="bg-accent hover:bg-accent/90 transition-spring px-8 py-3 text-lg font-semibold rounded-xl hover-lift"
-              onClick={() => {
-                setAuthMode("register");
-                setIsAuthModalOpen(true);
-              }}
-            >
-              Get Started
-            </Button>
-            <Button 
-              variant="outline" 
-              className="border-2 border-primary/30 hover:bg-primary/10 hover:border-primary/50 transition-spring font-medium bg-glass backdrop-blur-md hover-lift px-6 py-3 rounded-xl"
-              onClick={() => {
-                setAuthMode("login");
-                setIsAuthModalOpen(true);
-              }}
-            >
-              Sign In
-            </Button>
+                <Button 
+                  variant="outline" 
+                  className="border-2 border-primary/30 hover:bg-primary/10 hover:border-primary/50 transition-spring font-medium bg-glass backdrop-blur-md hover-lift px-6 py-3 rounded-xl"
+                  onClick={() => {
+                    setAuthMode("login");
+                    setIsAuthModalOpen(true);
+                  }}
+                >
+                  Sign In
+                </Button>
+              </>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-12 w-12 rounded-full hover-lift">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={profile?.avatar_url} alt={profile?.first_name} />
+                      <AvatarFallback className="bg-primary/10">
+                        {profile?.first_name?.charAt(0)}{profile?.last_name?.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <div className="flex items-center justify-start gap-2 p-2">
+                    <div className="flex flex-col space-y-1 leading-none">
+                      {profile && (
+                        <p className="font-medium">{profile.first_name} {profile.last_name}</p>
+                      )}
+                      <p className="w-[200px] truncate text-sm text-muted-foreground">
+                        {user?.email}
+                      </p>
+                      {profile?.role && (
+                        <Badge variant="secondary" className="w-fit text-xs">
+                          {profile.role.charAt(0).toUpperCase() + profile.role.slice(1)}
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <a href="/dashboard" className="w-full">
+                      <User className="mr-2 h-4 w-4" />
+                      Dashboard
+                    </a>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <a href="/settings" className="w-full">
+                      <Settings className="mr-2 h-4 w-4" />
+                      Settings
+                    </a>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOut} className="text-red-600">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
 
           {/* Mobile menu button */}

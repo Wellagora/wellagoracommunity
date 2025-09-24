@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { User, Building2, MapPin, Heart, Mail, Lock, UserCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const registerSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required").max(50, "First name must be less than 50 characters"),
@@ -83,8 +84,23 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      // TODO: Implement actual registration with Supabase
-      console.log("Registration data:", { ...data, password: "[REDACTED]", confirmPassword: "[REDACTED]" });
+      const { error } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+          data: {
+            first_name: data.firstName,
+            last_name: data.lastName,
+            role: data.role,
+            organization: data.organization || null,
+          },
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
       
       toast({
         title: "Registration Successful!",
@@ -92,10 +108,10 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
       });
       
       onSuccess?.();
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Registration Failed",
-        description: "Something went wrong. Please try again.",
+        description: error.message || "Something went wrong. Please try again.",
         variant: "destructive",
       });
     }

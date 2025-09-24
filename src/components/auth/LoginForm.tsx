@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Mail, Lock, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const loginSchema = z.object({
   email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters"),
@@ -34,8 +35,14 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, onForgotPassword }: LoginFor
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      // TODO: Implement actual login with Supabase
-      console.log("Login data:", { ...data, password: "[REDACTED]" });
+      const { error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (error) {
+        throw error;
+      }
       
       toast({
         title: "Welcome back!",
@@ -43,10 +50,10 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, onForgotPassword }: LoginFor
       });
       
       onSuccess?.();
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Login Failed",
-        description: "Invalid email or password. Please try again.",
+        description: error.message || "Invalid email or password. Please try again.",
         variant: "destructive",
       });
     }
