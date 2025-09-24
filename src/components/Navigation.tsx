@@ -42,23 +42,23 @@ const Navigation = () => {
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-2xl font-heading font-bold text-foreground">Wellagora</span>
-              <span className="text-sm text-muted-foreground font-medium">Together We Thrive</span>
+              <span className="text-xl font-bold text-foreground">Wellagora</span>
+              <span className="text-xs text-muted-foreground font-medium">Together We Thrive</span>
             </div>
           </div>
 
           {/* Enhanced Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-10">
-            <a href="#challenges" className="text-foreground hover:text-primary transition-spring font-medium text-lg hover-lift px-3 py-2 rounded-lg">
+          <div className="hidden md:flex items-center space-x-8">
+            <a href="#challenges" className="text-foreground hover:text-primary transition-spring font-medium hover-lift px-3 py-2 rounded-lg whitespace-nowrap">
               Challenges
             </a>
-            <a href="/community" className="text-foreground hover:text-primary transition-spring font-medium text-lg hover-lift px-3 py-2 rounded-lg">
+            <a href="/community" className="text-foreground hover:text-primary transition-spring font-medium hover-lift px-3 py-2 rounded-lg whitespace-nowrap">
               Community
             </a>
-            <a href="/dashboard" className="text-foreground hover:text-primary transition-spring font-medium text-lg hover-lift px-3 py-2 rounded-lg">
+            <a href="/dashboard" className="text-foreground hover:text-primary transition-spring font-medium hover-lift px-3 py-2 rounded-lg whitespace-nowrap">
               Dashboard
             </a>
-            <a href="/ai-assistant" className="text-foreground hover:text-primary transition-spring font-medium text-lg hover-lift px-3 py-2 rounded-lg">
+            <a href="/ai-assistant" className="text-foreground hover:text-primary transition-spring font-medium hover-lift px-3 py-2 rounded-lg whitespace-nowrap">
               AI Assistant
             </a>
           </div>
