@@ -56,16 +56,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Fetch user profile
+          // Fetch user profile with error handling
           setTimeout(async () => {
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', session.user.id)
-              .single();
-            
-            setProfile(profile as Profile);
-            setLoading(false);
+            try {
+              const { data: profile, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+              
+              if (error && error.code !== 'PGRST116') {
+                console.error('Error fetching profile:', error);
+              }
+              
+              setProfile(profile as Profile);
+            } catch (err) {
+              console.error('Profile fetch error:', err);
+              setProfile(null);
+            } finally {
+              setLoading(false);
+            }
           }, 0);
         } else {
           setProfile(null);
@@ -80,16 +90,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        // Fetch user profile
-        supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single()
-          .then(({ data: profile }) => {
+        // Fetch user profile with error handling
+        const fetchProfile = async () => {
+          try {
+            const { data: profile, error } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', session.user.id)
+              .single();
+            
+            if (error && error.code !== 'PGRST116') {
+              console.error('Error fetching profile:', error);
+            }
+            
             setProfile(profile as Profile);
+          } catch (err) {
+            console.error('Profile fetch error:', err);
+            setProfile(null);
+          } finally {
             setLoading(false);
-          });
+          }
+        };
+        
+        fetchProfile();
       } else {
         setLoading(false);
       }
