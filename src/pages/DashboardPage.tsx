@@ -2,6 +2,8 @@ import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import Dashboard from "@/components/dashboard/Dashboard";
 import PointsSystem from "@/components/gamification/PointsSystem";
+import ProgressVisualization from "@/components/ProgressVisualization";
+import CelebrationModal from "@/components/CelebrationModal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -19,6 +21,16 @@ type UserRole = "citizen" | "business" | "government" | "ngo";
 
 const DashboardPage = () => {
   const [currentRole, setCurrentRole] = useState<UserRole>("citizen");
+  const [showCelebration, setShowCelebration] = useState(false);
+
+  // Mock achievement for demonstration
+  const mockAchievement = {
+    title: "Energy Efficiency Master",
+    description: "You've reduced your energy consumption by 30% this month!",
+    points: 500,
+    impact: "45.2kg",
+    level: 13
+  };
 
   const roles = [
     { 
@@ -99,19 +111,35 @@ const DashboardPage = () => {
 
         {/* Dashboard Tabs */}
         <Tabs defaultValue="analytics" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="analytics" className="flex items-center space-x-2">
               <BarChart3 className="w-4 h-4" />
               <span>Analytics</span>
             </TabsTrigger>
+            <TabsTrigger value="progress" className="flex items-center space-x-2">
+              <Trophy className="w-4 h-4" />
+              <span>Progress</span>
+            </TabsTrigger>
             <TabsTrigger value="rewards" className="flex items-center space-x-2">
               <Trophy className="w-4 h-4" />
-              <span>Rewards & Points</span>
+              <span>Rewards</span>
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="analytics">
             <Dashboard userRole={currentRole} />
+          </TabsContent>
+
+          <TabsContent value="progress">
+            <ProgressVisualization />
+            <div className="mt-6 text-center">
+              <Button 
+                onClick={() => setShowCelebration(true)}
+                className="bg-gradient-primary hover:shadow-glow transition-spring"
+              >
+                🎉 Simulate Achievement
+              </Button>
+            </div>
           </TabsContent>
 
           <TabsContent value="rewards">
@@ -131,6 +159,13 @@ const DashboardPage = () => {
             )}
           </TabsContent>
         </Tabs>
+
+        {/* Celebration Modal */}
+        <CelebrationModal
+          isOpen={showCelebration}
+          onClose={() => setShowCelebration(false)}
+          achievement={mockAchievement}
+        />
       </div>
     </div>
   );
