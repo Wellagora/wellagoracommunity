@@ -53,7 +53,7 @@ const SmartOnboarding = ({ onComplete, userType = "citizen" }: SmartOnboardingPr
   const interests = [
     { id: "energy", label: "Renewable Energy", icon: "⚡", color: "bg-yellow-100 text-yellow-800" },
     { id: "transport", label: "Green Transport", icon: "🚲", color: "bg-blue-100 text-blue-800" },
-    { id: "waste", label: "Zero Waste", icon: "♻️", color: "bg-green-100 text-green-800" },
+    { id: "waste", label: "Zero Waste", icon: "♻️", color: "bg-success/10 text-success" },
     { id: "food", label: "Sustainable Food", icon: "🌿", color: "bg-emerald-100 text-emerald-800" },
     { id: "community", label: "Community Action", icon: "👥", color: "bg-purple-100 text-purple-800" },
     { id: "water", label: "Water Conservation", icon: "💧", color: "bg-cyan-100 text-cyan-800" },
@@ -292,7 +292,7 @@ const SmartOnboarding = ({ onComplete, userType = "citizen" }: SmartOnboardingPr
   };
 
   return (
-    <div className="min-h-screen bg-gradient-nature flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-primary flex items-center justify-center p-4">
       <Card className="w-full max-w-4xl bg-glass backdrop-blur-xl border-2 border-white/20 shadow-premium">
         <CardHeader className="text-center">
           <div className="mb-4">

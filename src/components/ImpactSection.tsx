@@ -279,7 +279,7 @@ const ImpactSection = () => {
 
         {/* Call to Action */}
         <div className="text-center mt-16">
-          <Card className="bg-gradient-nature border-0 shadow-glow">
+          <Card className="bg-gradient-primary text-primary-foreground border-0 shadow-glow">
             <CardContent className="p-12">
               <h3 className="text-3xl font-bold text-foreground mb-4">
                 Ready to Amplify Your Impact?

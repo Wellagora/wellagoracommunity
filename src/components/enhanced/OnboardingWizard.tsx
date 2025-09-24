@@ -206,7 +206,7 @@ const OnboardingWizard = ({ onComplete, onSkip }: OnboardingWizardProps) => {
                       <div className="space-y-1">
                         {type.benefits.map((benefit, index) => (
                           <div key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <CheckCircle className="w-3 h-3 text-green-500" />
+                            <CheckCircle className="w-3 h-3 text-success" />
                             {benefit}
                           </div>
                         ))}
@@ -297,7 +297,7 @@ const OnboardingWizard = ({ onComplete, onSkip }: OnboardingWizardProps) => {
                     <area.icon className="w-12 h-12 text-primary mx-auto mb-3" />
                     <h3 className="font-medium mb-2">{area.title}</h3>
                     {userData.goals.focusAreas.includes(area.id) && (
-                      <CheckCircle className="w-5 h-5 text-green-500 mx-auto" />
+                      <CheckCircle className="w-5 h-5 text-success mx-auto" />
                     )}
                   </CardContent>
                 </Card>
@@ -423,7 +423,7 @@ const OnboardingWizard = ({ onComplete, onSkip }: OnboardingWizardProps) => {
         return (
           <div className="space-y-6">
             <div className="text-center mb-8">
-              <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+              <CheckCircle className="w-16 h-16 text-success mx-auto mb-4" />
               <h2 className="text-2xl font-bold mb-2">You're all set!</h2>
               <p className="text-muted-foreground">Choose how you'd like to stay updated</p>
             </div>

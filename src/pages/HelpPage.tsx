@@ -294,19 +294,19 @@ const HelpPage = () => {
                   <CardContent>
                     <div className="space-y-3 text-sm text-muted-foreground">
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                        <CheckCircle className="w-4 h-4 text-success" />
                         Setting up your profile and goals
                       </div>
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                         <CheckCircle className="w-4 h-4 text-success" />
                         Joining your first challenge
                       </div>
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                         <CheckCircle className="w-4 h-4 text-success" />
                         Understanding the points system
                       </div>
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                         <CheckCircle className="w-4 h-4 text-success" />
                         Connecting with the community
                       </div>
                     </div>
@@ -323,19 +323,19 @@ const HelpPage = () => {
                   <CardContent>
                     <div className="space-y-3 text-sm text-muted-foreground">
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                         <CheckCircle className="w-4 h-4 text-success" />
                         Choosing the right difficulty level
                       </div>
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                         <CheckCircle className="w-4 h-4 text-success" />
                         Building sustainable habits
                       </div>
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                         <CheckCircle className="w-4 h-4 text-success" />
                         Tracking and measuring impact
                       </div>
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                         <CheckCircle className="w-4 h-4 text-success" />
                         Creating custom challenges
                       </div>
                     </div>
@@ -352,19 +352,19 @@ const HelpPage = () => {
                   <CardContent>
                     <div className="space-y-3 text-sm text-muted-foreground">
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                         <CheckCircle className="w-4 h-4 text-success" />
                         Starting local sustainability groups
                       </div>
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                         <CheckCircle className="w-4 h-4 text-success" />
                         Organizing community events
                       </div>
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                         <CheckCircle className="w-4 h-4 text-success" />
                         Engaging and motivating members
                       </div>
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                         <CheckCircle className="w-4 h-4 text-success" />
                         Measuring group impact
                       </div>
                     </div>
@@ -381,19 +381,19 @@ const HelpPage = () => {
                   <CardContent>
                     <div className="space-y-3 text-sm text-muted-foreground">
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                         <CheckCircle className="w-4 h-4 text-success" />
                         Employee engagement strategies
                       </div>
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                         <CheckCircle className="w-4 h-4 text-success" />
                         Corporate challenge programs
                       </div>
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                         <CheckCircle className="w-4 h-4 text-success" />
                         ROI measurement and reporting
                       </div>
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                        <CheckCircle className="w-4 h-4 text-success" />
                         Integration with existing systems
                       </div>
                     </div>
