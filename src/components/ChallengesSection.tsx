@@ -15,7 +15,12 @@ import {
   MapPin,
   Heart,
   Zap,
-  Target
+  Target,
+  Lightbulb,
+  Droplets,
+  TreePine,
+  RotateCcw,
+  Coins
 } from "lucide-react";
 import communityImage from "@/assets/community-challenges.jpg";
 
@@ -26,6 +31,11 @@ const ChallengesSection = () => {
     { name: "Waste", icon: Recycle, color: "success", count: 52 },
     { name: "Food", icon: Leaf, color: "primary", count: 29 },
     { name: "Community", icon: Users, color: "secondary", count: 33 },
+    { name: "Innovation", icon: Lightbulb, color: "accent", count: 21 },
+    { name: "Water", icon: Droplets, color: "info", count: 27 },
+    { name: "Biodiversity", icon: TreePine, color: "success", count: 19 },
+    { name: "Circular Economy", icon: RotateCcw, color: "warning", count: 24 },
+    { name: "Green Finance", icon: Coins, color: "primary", count: 16 },
   ];
 
   const featuredChallenges = [
@@ -102,7 +112,7 @@ const ChallengesSection = () => {
         </div>
 
         {/* Challenge Categories */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-10 gap-4 mb-12">
           {challengeCategories.map((category) => (
             <Card 
               key={category.name}
