@@ -66,7 +66,7 @@ const categoryConfig = {
   energy: { icon: Zap, color: "bg-gradient-sunset", label: "Energy" },
   transport: { icon: Target, color: "bg-gradient-ocean", label: "Transport" },
   food: { icon: Leaf, color: "bg-gradient-nature", label: "Food" },
-  waste: { icon: Recycle, color: "bg-gradient-earth", label: "Waste" },
+  waste: { icon: Recycle, color: "bg-gradient-nature", label: "Waste" },
   community: { icon: Heart, color: "bg-gradient-primary", label: "Community" }
 };
 

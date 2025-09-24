@@ -241,7 +241,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
     <div className="space-y-6">
       {/* Business Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="bg-gradient-earth text-white border-0">
+        <Card className="bg-gradient-primary text-primary-foreground border-0">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>

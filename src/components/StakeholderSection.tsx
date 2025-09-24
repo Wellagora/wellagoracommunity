@@ -180,7 +180,7 @@ const StakeholderSection = () => {
 
         {/* Integration Showcase */}
         <div className="text-center">
-          <Card className="bg-gradient-earth text-white border-0 shadow-glow">
+          <Card className="bg-gradient-primary text-primary-foreground border-0 shadow-glow">
             <CardContent className="p-8">
               <h3 className="text-2xl font-bold mb-4">Seamless Integration Across Stakeholders</h3>
               <p className="text-white/90 mb-6 max-w-2xl mx-auto">

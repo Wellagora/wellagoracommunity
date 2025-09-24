@@ -230,7 +230,7 @@ const ChallengesSection = () => {
             </div>
 
             {/* Quick Stats */}
-            <Card className="bg-gradient-earth text-white border-0">
+            <Card className="bg-card/50 backdrop-blur-sm border border-border/50">
               <CardContent className="p-6">
                 <h4 className="font-bold text-lg mb-4">Regional Impact</h4>
                 <div className="space-y-3">

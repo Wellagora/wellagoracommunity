@@ -181,7 +181,7 @@ const ProgressVisualization = () => {
         <Card className="bg-glass backdrop-blur-md border-white/20 shadow-premium">
           <CardHeader>
             <CardTitle className="flex items-center space-x-3">
-              <div className="p-2 bg-gradient-earth rounded-lg">
+              <div className="p-2 bg-primary rounded-lg">
                 <Users className="w-5 h-5 text-white" />
               </div>
               <span>Community Impact</span>

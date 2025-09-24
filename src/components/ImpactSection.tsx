@@ -189,7 +189,7 @@ const ImpactSection = () => {
               ))}
             </div>
             
-            <Card className="mt-6 bg-gradient-earth text-white border-0">
+            <Card className="mt-6 bg-card/50 backdrop-blur-sm border border-border/50">
               <CardContent className="p-6 text-center">
                 <h4 className="font-bold text-lg mb-2">Global Network</h4>
                 <p className="text-white/90 text-sm mb-4">

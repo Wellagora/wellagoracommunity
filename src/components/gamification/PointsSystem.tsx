@@ -152,7 +152,7 @@ const PointsSystem = () => {
       case "common": return "bg-muted text-muted-foreground";
       case "rare": return "bg-blue-500 text-blue-50";
       case "epic": return "bg-purple-500 text-purple-50";
-      case "legendary": return "bg-gradient-earth text-white";
+      case "legendary": return "bg-gradient-primary text-primary-foreground";
       default: return "bg-muted text-muted-foreground";
     }
   };

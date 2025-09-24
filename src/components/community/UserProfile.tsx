@@ -339,7 +339,7 @@ const UserProfile = ({ userId, isOwnProfile = false }: UserProfileProps) => {
 
         <TabsContent value="impact" className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
-            <Card className="bg-gradient-earth text-white border-0">
+            <Card className="bg-gradient-primary text-primary-foreground border-0">
               <CardHeader>
                 <CardTitle>Environmental Impact</CardTitle>
                 <CardDescription className="text-white/80">
