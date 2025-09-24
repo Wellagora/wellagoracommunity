@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import sustainabilityVision from "@/assets/sustainability-vision.png";
 
@@ -23,60 +24,24 @@ const Index = () => {
               and AI-powered guidance.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button 
-                onClick={() => window.location.href = '/auth'}
+              <Link
+                to="/auth"
                 className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-premium hover:-translate-y-1"
               >
                 Start Your Journey
-              </button>
-              <button 
-                onClick={() => window.location.href = '/dashboard'}
+              </Link>
+              <Link
+                to="/dashboard"
                 className="border-2 border-slate-600 hover:border-primary text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:shadow-glow"
               >
                 Explore Challenges
-              </button>
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Hero Impact Section - Dark Theme */}
-      <section className="py-24 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8">
-              <h2 className="text-4xl lg:text-5xl font-bold leading-tight">
-                Transforming Sustainability Through{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
-                  Global Connection
-                </span>
-              </h2>
-              <div className="space-y-6 text-xl text-slate-200 leading-relaxed">
-                <p>
-                  Every action counts when millions of individuals, businesses, and organizations 
-                  unite for a common purpose. Our platform connects sustainability champions 
-                  worldwide, creating unprecedented collective impact.
-                </p>
-                <p>
-                  Join a movement where innovation meets dedication, where local actions 
-                  create global change, and where your contribution becomes part of 
-                  something extraordinary.
-                </p>
-              </div>
-            </div>
-            <div className="relative">
-              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-800 to-slate-900 p-4 shadow-2xl">
-                <img 
-                  src={sustainabilityVision} 
-                  alt="Global Sustainability Network - Connected Earth"
-                  className="w-full h-auto object-cover rounded-2xl"
-                />
-                <div className="absolute inset-4 rounded-2xl bg-gradient-to-t from-slate-900/40 to-transparent pointer-events-none"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Hero Impact Section - Remove this entire section */}
 
       {/* Features Overview */}
       <section className="py-20 bg-card border-b border-border">
@@ -171,12 +136,12 @@ const Index = () => {
             Join thousands of sustainability champions already making positive impact 
             through our platform. Start your journey today!
           </p>
-          <button 
-            onClick={() => window.location.href = '/auth'}
+          <Link
+            to="/auth"
             className="bg-background hover:bg-card text-foreground px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-premium hover:-translate-y-1 hover:shadow-glow"
           >
             Get Started Now
-          </button>
+          </Link>
         </div>
       </section>
 

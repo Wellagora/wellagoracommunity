@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { 
   Menu, 
   X, 
@@ -93,23 +94,23 @@ const Navigation = () => {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
               </span>
             </a>
-            <a href="/community" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
+            <Link to="/community" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
               <Users className="w-4 h-4" />
               <span className="relative">
                 Community Hub
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
               </span>
-            </a>
-            <a href="/dashboard" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
+            </Link>
+            <Link to="/dashboard" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
               <span className="relative">
                 Impact Dashboard
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
               </span>
-            </a>
-            <a href="/ai-assistant" className="group flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-xl hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent-foreground">
+            </Link>
+            <Link to="/ai-assistant" className="group flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-xl hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent-foreground">
               <span className="text-lg">🤖</span>
               <span>AI Sustainability Coach</span>
-            </a>
+            </Link>
           </div>
 
           {/* User Actions */}
@@ -144,38 +145,16 @@ const Navigation = () => {
               </div>
             ) : (
               <div className="flex items-center space-x-3">
-                <a href="/auth" className="px-6 py-2.5 bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground rounded-xl font-semibold transition-all duration-300 shadow-premium hover:shadow-glow hover:scale-105 transform">
+                <Link to="/auth" className="px-6 py-2.5 bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground rounded-xl font-semibold transition-all duration-300 shadow-premium hover:shadow-glow hover:scale-105 transform">
                   Join Community
-                </a>
-                <a href="/auth" className="px-6 py-2.5 border-2 border-border hover:border-primary hover:bg-card/50 text-foreground rounded-xl font-medium transition-all duration-300">
+                </Link>
+                <Link to="/auth" className="px-6 py-2.5 border-2 border-border hover:border-primary hover:bg-card/50 text-foreground rounded-xl font-medium transition-all duration-300">
                   Sign In
-                </a>
+                </Link>
               </div>
             )}
           </div>
         </div>
-
-        {/* Role Selector Row - Only show when not logged in */}
-        {!user && (
-          <div className="hidden lg:flex items-center justify-center py-3 border-t border-border">
-            <div className="flex items-center space-x-2 mr-4">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm text-foreground font-medium">Choose your role:</span>
-            </div>
-            <div className="flex items-center space-x-3">
-              {userRoles.map((role) => (
-                <button 
-                  key={role.name}
-                  className={`group flex items-center space-x-2 px-4 py-2 rounded-xl border-2 border-transparent bg-gradient-to-r ${role.gradient} bg-opacity-10 hover:bg-opacity-20 transition-all duration-300 font-medium text-sm hover:scale-105 transform text-${role.name === "Citizen" ? "primary" : role.name === "Business" ? "secondary" : role.name === "Municipal" ? "warning" : "accent"}-foreground`}
-                  title={role.description}
-                >
-                  <role.icon className="w-4 h-4" />
-                  <span>{role.name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
@@ -185,18 +164,18 @@ const Navigation = () => {
                 <span className="text-lg">🎯</span>
                 <span className="font-medium">Challenges</span>
               </a>
-              <a href="/community" className="flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
+              <Link to="/community" className="flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
                 <Users className="w-5 h-5" />
                 <span className="font-medium">Community Hub</span>
-              </a>
-              <a href="/dashboard" className="flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
+              </Link>
+              <Link to="/dashboard" className="flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
                 <span className="text-lg">📊</span>
                 <span className="font-medium">Impact Dashboard</span>
-              </a>
-              <a href="/ai-assistant" className="flex items-center space-x-3 px-4 py-3 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 text-accent-foreground rounded-xl">
+              </Link>
+              <Link to="/ai-assistant" className="flex items-center space-x-3 px-4 py-3 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 text-accent-foreground rounded-xl">
                 <span className="text-lg">🤖</span>
                 <span className="font-medium">AI Sustainability Coach</span>
-              </a>
+              </Link>
               
               <div className="pt-4 border-t border-border space-y-3">
                 {user ? (
@@ -226,12 +205,12 @@ const Navigation = () => {
                   </div>
                 ) : (
                   <>
-                    <a href="/auth" className="block w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground py-3 rounded-xl font-semibold text-center transition-all duration-300">
+                    <Link to="/auth" className="block w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground py-3 rounded-xl font-semibold text-center transition-all duration-300">
                       Join Community
-                    </a>
-                    <a href="/auth" className="block w-full border-2 border-border hover:border-primary hover:bg-card/50 text-foreground py-3 rounded-xl font-medium text-center transition-all duration-300">
+                    </Link>
+                    <Link to="/auth" className="block w-full border-2 border-border hover:border-primary hover:bg-card/50 text-foreground py-3 rounded-xl font-medium text-center transition-all duration-300">
                       Sign In
-                    </a>
+                    </Link>
                   </>
                 )}
               </div>
