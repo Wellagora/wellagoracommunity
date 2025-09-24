@@ -8,6 +8,9 @@ import ChallengeDetailPage from "./pages/ChallengeDetailPage";
 import CommunityPage from "./pages/CommunityPage";
 import DashboardPage from "./pages/DashboardPage";
 import AIAssistantPage from "./pages/AIAssistantPage";
+import SettingsPage from "./pages/SettingsPage";
+import AboutPage from "./pages/AboutPage";
+import HelpPage from "./pages/HelpPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +27,9 @@ const App = () => (
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/ai-assistant" element={<AIAssistantPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/help" element={<HelpPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
