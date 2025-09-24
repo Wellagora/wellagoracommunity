@@ -8,66 +8,66 @@ Enhanced design with premium typography and sophisticated color palette
 
 @layer base {
   :root {
-    /* MODERN SUSTAINABILITY PALETTE */
-    --background: 200 30% 98%;
-    --foreground: 200 25% 15%;
+    /* SOPHISTICATED DARK DESIGN SYSTEM */
+    --background: 222 84% 4.9%;
+    --foreground: 210 40% 98%;
 
-    --card: 200 40% 99%;
-    --card-foreground: 200 25% 15%;
+    --card: 222 84% 6%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 200 40% 99%;
-    --popover-foreground: 200 25% 15%;
+    --popover: 222 84% 6%;
+    --popover-foreground: 210 40% 98%;
 
-    /* Fresh ocean blue primary */
-    --primary: 200 100% 45%;
-    --primary-foreground: 200 30% 98%;
-    --primary-glow: 200 100% 60%;
-    --primary-dark: 200 100% 30%;
+    /* Elegant emerald primary */
+    --primary: 142 76% 36%;
+    --primary-foreground: 210 40% 98%;
+    --primary-glow: 142 69% 58%;
+    --primary-dark: 142 86% 28%;
 
-    /* Vibrant lime secondary */
-    --secondary: 100 60% 50%;
-    --secondary-foreground: 200 25% 15%;
+    /* Sophisticated cyan secondary */
+    --secondary: 199 89% 48%;
+    --secondary-foreground: 210 40% 98%;
 
-    /* Clean sky muted */
-    --muted: 200 20% 95%;
-    --muted-foreground: 200 15% 45%;
+    /* Dark muted tones */
+    --muted: 217 32% 17%;
+    --muted-foreground: 215 20% 65%;
 
-    /* Fresh teal accent */
-    --accent: 170 80% 45%;
-    --accent-foreground: 200 30% 98%;
-    --accent-light: 170 70% 60%;
+    /* Electric accent */
+    --accent: 262 83% 58%;
+    --accent-foreground: 210 40% 98%;
+    --accent-light: 262 73% 70%;
 
-    /* Vibrant green success */
-    --success: 140 80% 40%;
-    --success-foreground: 200 30% 98%;
-    --success-light: 140 70% 55%;
+    /* Success green */
+    --success: 142 76% 36%;
+    --success-foreground: 210 40% 98%;
+    --success-light: 142 69% 58%;
 
-    /* Warm amber warning */
-    --warning: 45 100% 55%;
-    --warning-foreground: 200 25% 15%;
+    /* Warning amber */
+    --warning: 38 92% 50%;
+    --warning-foreground: 222 84% 4.9%;
 
-    /* Coral destructive */
-    --destructive: 10 90% 55%;
-    --destructive-foreground: 200 30% 98%;
+    /* Destructive red */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 200 20% 88%;
-    --input: 200 20% 88%;
-    --ring: 200 100% 45%;
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 142 76% 36%;
 
     --radius: 0.75rem;
 
-    /* Clean modern gradients */
+    /* Premium dark gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary-dark)), hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-earth: linear-gradient(135deg, hsl(200 100% 45%), hsl(170 80% 45%), hsl(100 60% 50%));
-    --gradient-nature: linear-gradient(180deg, hsl(200 30% 98%), hsl(200 20% 95%));
-    --gradient-hero: linear-gradient(135deg, hsl(200 100% 30%) 0%, hsl(200 100% 45%) 30%, hsl(170 80% 45%) 70%, hsl(100 60% 50%) 100%);
-    --gradient-sunset: linear-gradient(135deg, hsl(45 100% 55%), hsl(30 90% 60%), hsl(10 90% 55%));
-    --gradient-ocean: linear-gradient(135deg, hsl(200 100% 45%), hsl(180 90% 40%), hsl(160 80% 35%));
+    --gradient-earth: linear-gradient(135deg, hsl(142 76% 36%), hsl(199 89% 48%), hsl(262 83% 58%));
+    --gradient-nature: linear-gradient(180deg, hsl(222 84% 4.9%), hsl(222 84% 6%));
+    --gradient-hero: linear-gradient(135deg, hsl(222 84% 4.9%) 0%, hsl(217 32% 17%) 25%, hsl(142 76% 36%) 75%, hsl(199 89% 48%) 100%);
+    --gradient-sunset: linear-gradient(135deg, hsl(38 92% 50%), hsl(262 83% 58%), hsl(199 89% 48%));
+    --gradient-ocean: linear-gradient(135deg, hsl(199 89% 48%), hsl(142 76% 36%), hsl(222 84% 4.9%));
 
-    /* Clean modern shadows */
-    --shadow-eco: 0 8px 32px -4px hsl(var(--primary) / 0.15);
-    --shadow-glow: 0 0 32px hsl(var(--primary-glow) / 0.4);
-    --shadow-card: 0 4px 24px -2px hsl(200 100% 45% / 0.12);
+    /* Sophisticated shadows */
+    --shadow-eco: 0 8px 32px -4px hsl(var(--primary) / 0.25);
+    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.3);
+    --shadow-card: 0 4px 24px -2px hsl(142 76% 36% / 0.15);
     --shadow-premium: 0 12px 48px -8px hsl(var(--primary) / 0.2);
 
     /* Smooth animation system */
@@ -79,14 +79,14 @@ Enhanced design with premium typography and sophisticated color palette
     --font-heading: 'Playfair Display', serif;
     --font-body: 'Inter', sans-serif;
 
-    --sidebar-background: 200 30% 98%;
-    --sidebar-foreground: 200 25% 15%;
-    --sidebar-primary: 200 100% 45%;
-    --sidebar-primary-foreground: 200 30% 98%;
-    --sidebar-accent: 200 20% 95%;
-    --sidebar-accent-foreground: 200 25% 15%;
-    --sidebar-border: 200 20% 88%;
-    --sidebar-ring: 200 100% 45%;
+    --sidebar-background: 222 84% 4.9%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 142 76% 36%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 217 32% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 32% 17%;
+    --sidebar-ring: 142 76% 36%;
   }
 
   /* OPTION 2: Elegant Earth Palette */
