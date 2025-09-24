@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 import AuthModal from "./auth/AuthModal";
 import { 
   Menu, 
@@ -13,7 +19,8 @@ import {
   Users,
   Trophy,
   MessageCircle,
-  Settings
+  Settings,
+  ChevronDown
 } from "lucide-react";
 
 const Navigation = () => {
@@ -49,9 +56,31 @@ const Navigation = () => {
 
           {/* Enhanced Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <a href="#challenges" className="text-foreground hover:text-primary transition-spring font-medium hover-lift px-3 py-2 rounded-lg whitespace-nowrap">
-              Challenges
-            </a>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="text-foreground hover:text-primary transition-spring font-medium hover-lift px-3 py-2 rounded-lg whitespace-nowrap">
+                  Challenges
+                  <ChevronDown className="w-4 h-4 ml-1" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem>
+                  <a href="/dashboard#challenges" className="w-full">Browse All Challenges</a>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <a href="/dashboard#challenges" className="w-full">Energy Efficiency</a>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <a href="/dashboard#challenges" className="w-full">Sustainable Transport</a>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <a href="/dashboard#challenges" className="w-full">Zero Waste</a>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <a href="/dashboard#challenges" className="w-full">Community Action</a>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <a href="/community" className="text-foreground hover:text-primary transition-spring font-medium hover-lift px-3 py-2 rounded-lg whitespace-nowrap">
               Community
             </a>
