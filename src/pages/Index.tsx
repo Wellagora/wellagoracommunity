@@ -23,10 +23,16 @@ const Index = () => {
               and AI-powered guidance.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-premium hover:-translate-y-1">
+              <button 
+                onClick={() => window.location.href = '/auth'}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-premium hover:-translate-y-1"
+              >
                 Start Your Journey
               </button>
-              <button className="border-2 border-border hover:border-primary text-foreground px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:shadow-glow">
+              <button 
+                onClick={() => window.location.href = '/dashboard'}
+                className="border-2 border-border hover:border-primary text-foreground px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:shadow-glow"
+              >
                 Explore Challenges
               </button>
             </div>
@@ -45,7 +51,7 @@ const Index = () => {
                   Global Connection
                 </span>
               </h2>
-              <div className="space-y-6 text-lg text-slate-300 leading-relaxed">
+              <div className="space-y-6 text-xl text-slate-200 leading-relaxed">
                 <p>
                   Every action counts when millions of individuals, businesses, and organizations 
                   unite for a common purpose. Our platform connects sustainability champions 
@@ -165,7 +171,10 @@ const Index = () => {
             Join thousands of sustainability champions already making positive impact 
             through our platform. Start your journey today!
           </p>
-          <button className="bg-background hover:bg-card text-foreground px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-premium hover:-translate-y-1 hover:shadow-glow">
+          <button 
+            onClick={() => window.location.href = '/auth'}
+            className="bg-background hover:bg-card text-foreground px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-premium hover:-translate-y-1 hover:shadow-glow"
+          >
             Get Started Now
           </button>
         </div>
