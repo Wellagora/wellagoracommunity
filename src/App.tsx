@@ -3,6 +3,7 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Community from "./pages/Community";
 import AIAssistant from "./pages/AIAssistant";
+import AuthPage from "./pages/AuthPage";
 import "./index.css";
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Index />} />
+        <Route path="/auth" element={<AuthPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/community" element={<Community />} />
         <Route path="/ai-assistant" element={<AIAssistant />} />
