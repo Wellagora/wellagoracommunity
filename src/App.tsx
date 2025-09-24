@@ -1,46 +1,34 @@
 import React from "react";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AuthWrapper from "@/components/AuthWrapper";
-import Index from "./pages/Index";
-import ChallengeDetailPage from "./pages/ChallengeDetailPage";
-import CommunityPage from "./pages/CommunityPage";
-import DashboardPage from "./pages/DashboardPage";
-import AIAssistantPage from "./pages/AIAssistantPage";
-import SettingsPage from "./pages/SettingsPage";
-import AboutPage from "./pages/AboutPage";
-import HelpPage from "./pages/HelpPage";
-import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+// Simple test component to verify React is working
+const TestComponent: React.FC = () => {
+  const [count, setCount] = React.useState(0);
+  
+  React.useEffect(() => {
+    console.log("React hooks are working!");
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold mb-4">React Test</h1>
+        <p className="mb-4">Count: {count}</p>
+        <button 
+          onClick={() => setCount(count + 1)}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Increment
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const App: React.FC = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <BrowserRouter>
-          <AuthWrapper>
-            <Toaster />
-            <Sonner />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/challenge/:challengeId" element={<ChallengeDetailPage />} />
-              <Route path="/community" element={<CommunityPage />} />
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/ai-assistant" element={<AIAssistantPage />} />
-              <Route path="/settings" element={<SettingsPage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/help" element={<HelpPage />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AuthWrapper>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <React.StrictMode>
+      <TestComponent />
+    </React.StrictMode>
   );
 };
 
