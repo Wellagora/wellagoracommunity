@@ -63,11 +63,11 @@ interface ChallengeDetailProps {
 }
 
 const categoryConfig = {
-  energy: { icon: Zap, color: "bg-yellow-500", label: "Energy" },
-  transport: { icon: Target, color: "bg-blue-500", label: "Transport" },
-  food: { icon: Leaf, color: "bg-green-500", label: "Food" },
-  waste: { icon: Recycle, color: "bg-purple-500", label: "Waste" },
-  community: { icon: Heart, color: "bg-pink-500", label: "Community" }
+  energy: { icon: Zap, color: "bg-gradient-sunset", label: "Energy" },
+  transport: { icon: Target, color: "bg-gradient-ocean", label: "Transport" },
+  food: { icon: Leaf, color: "bg-gradient-nature", label: "Food" },
+  waste: { icon: Recycle, color: "bg-gradient-earth", label: "Waste" },
+  community: { icon: Heart, color: "bg-gradient-primary", label: "Community" }
 };
 
 const difficultyConfig = {
