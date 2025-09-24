@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import sustainabilityVision from "@/assets/sustainability-vision.png";
 
 const Index = () => {
   return (
@@ -28,6 +29,43 @@ const Index = () => {
               <button className="border-2 border-gray-300 hover:border-gray-400 text-gray-700 px-8 py-4 rounded-xl font-semibold text-lg transition-colors">
                 Explore Challenges
               </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Platform Matters Section */}
+      <section className="py-24 bg-gradient-to-br from-background via-card to-background modern-tech">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="space-y-8">
+              <h2 className="text-4xl lg:text-5xl font-bold text-foreground leading-tight">
+                Why a Sustainability Community Platform Matters
+              </h2>
+              <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
+                <p>
+                  Sustainability challenges are complex and interconnected, 
+                  requiring collective action that transcends traditional boundaries. 
+                  Our platform serves as the vital bridge connecting executives, 
+                  managers, entrepreneurs, and passionate individuals to drive 
+                  meaningful real-world impact.
+                </p>
+                <p>
+                  This isn't just another networking site—it's a movement where 
+                  knowledge meets action, and every voice contributes to building a 
+                  greener, more sustainable future for generations to come.
+                </p>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="relative overflow-hidden rounded-3xl shadow-premium">
+                <img 
+                  src={sustainabilityVision} 
+                  alt="Global Sustainability Vision - Earth surrounded by orbital networks representing interconnected sustainability efforts"
+                  className="w-full h-auto object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+              </div>
             </div>
           </div>
         </div>
