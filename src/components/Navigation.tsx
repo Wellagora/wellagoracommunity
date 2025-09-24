@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import AuthModal from "./auth/AuthModal";
 import { 
   Menu, 
   X, 
@@ -17,6 +18,8 @@ import {
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<"login" | "register">("register");
 
   const userRoles = [
     { name: "Citizen", icon: User, color: "bg-success", description: "Individual sustainability journey" },
@@ -76,8 +79,25 @@ const Navigation = () => {
                 </Button>
               ))}
             </div>
-            <Button variant="default" className="bg-gradient-primary hover:shadow-glow transition-smooth">
+            <Button 
+              variant="default" 
+              className="bg-gradient-primary hover:shadow-glow transition-smooth"
+              onClick={() => {
+                setAuthMode("register");
+                setIsAuthModalOpen(true);
+              }}
+            >
               Get Started
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => {
+                setAuthMode("login");
+                setIsAuthModalOpen(true);
+              }}
+            >
+              Sign In
             </Button>
           </div>
 
@@ -123,7 +143,14 @@ const Navigation = () => {
                     </Button>
                   ))}
                 </div>
-                <Button className="w-full mt-3 bg-gradient-primary">
+                <Button 
+                  className="w-full mt-3 bg-gradient-primary"
+                  onClick={() => {
+                    setAuthMode("register");
+                    setIsAuthModalOpen(true);
+                    setIsMenuOpen(false);
+                  }}
+                >
                   Get Started
                 </Button>
               </div>
@@ -131,6 +158,12 @@ const Navigation = () => {
           </div>
         )}
       </div>
+      
+      <AuthModal 
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        initialMode={authMode}
+      />
     </nav>
   );
 };
