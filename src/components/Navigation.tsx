@@ -77,7 +77,25 @@ const Navigation = () => {
                   <a href="/dashboard#challenges" className="w-full">Zero Waste</a>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
+                  <a href="/dashboard#challenges" className="w-full">Food & Agriculture</a>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
                   <a href="/dashboard#challenges" className="w-full">Community Action</a>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <a href="/dashboard#challenges" className="w-full">Innovation Lab</a>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <a href="/dashboard#challenges" className="w-full">Water Conservation</a>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <a href="/dashboard#challenges" className="w-full">Biodiversity</a>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <a href="/dashboard#challenges" className="w-full">Circular Economy</a>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <a href="/dashboard#challenges" className="w-full">Green Finance</a>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
