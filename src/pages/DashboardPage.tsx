@@ -2,6 +2,7 @@ import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import Dashboard from "@/components/dashboard/Dashboard";
 import PointsSystem from "@/components/gamification/PointsSystem";
+import CreativeGamification from "@/components/gamification/CreativeGamification";
 import ProgressVisualization from "@/components/ProgressVisualization";
 import CelebrationModal from "@/components/CelebrationModal";
 import { Button } from "@/components/ui/button";
@@ -142,20 +143,19 @@ const DashboardPage = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="rewards">
-            {currentRole === "citizen" || currentRole === "business" ? (
-              <PointsSystem />
+          <TabsContent value="rewards" className="space-y-4">
+            {currentRole === "citizen" ? (
+              <div className="space-y-6">
+                <CreativeGamification />
+                <PointsSystem />
+              </div>
             ) : (
-              <Card>
-                <CardContent className="p-12 text-center">
-                  <Trophy className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold mb-2">Rewards System</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Points and rewards system for {roleData?.label.toLowerCase()} accounts
-                  </p>
-                  <Badge className="bg-accent text-accent-foreground">Coming Soon</Badge>
-                </CardContent>
-              </Card>
+              <div className="text-center py-12">
+                <h3 className="text-lg font-semibold mb-2">Rewards Coming Soon</h3>
+                <p className="text-muted-foreground">
+                  Gamification features for {currentRole} accounts are under development.
+                </p>
+              </div>
             )}
           </TabsContent>
         </Tabs>

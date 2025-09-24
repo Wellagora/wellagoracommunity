@@ -4,7 +4,7 @@ export interface Challenge {
   title: string;
   description: string;
   longDescription: string;
-  category: "energy" | "transport" | "food" | "waste" | "community";
+  category: "energy" | "transport" | "food" | "waste" | "community" | "innovation" | "water" | "biodiversity" | "circular-economy" | "green-finance";
   difficulty: "beginner" | "intermediate" | "advanced" | "expert";
   duration: string;
   pointsReward: number;
@@ -282,6 +282,161 @@ export const challenges: Challenge[] = [
         id: "15",
         name: "Thomas Anderson",
         avatar: "https://images.unsplash.com/photo-1463453091185-61582044d556?w=100&h=100&fit=crop&crop=face"
+      }
+    ]
+  },
+  {
+    id: "6",
+    title: "Carbon Handprint Calculator Master",
+    description: "Track and amplify your positive environmental impact",
+    longDescription: "Unlike carbon footprints that measure negative impact, the Carbon Handprint Calculator tracks your positive contributions to sustainability. Learn to measure, optimize, and share your environmental solutions and positive impact.",
+    category: "innovation",
+    difficulty: "advanced",
+    duration: "30 days",
+    pointsReward: 800,
+    participants: 456,
+    completionRate: 68,
+    sponsor: {
+      name: "Innovation Labs",
+      logo: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=100&h=100&fit=crop&crop=center"
+    },
+    steps: [
+      "Set up your personal Carbon Handprint Calculator profile",
+      "Log your first week of positive environmental actions",
+      "Compare handprint vs footprint metrics",
+      "Identify opportunities to increase your positive impact",
+      "Share solutions that others can replicate",
+      "Mentor someone else in using the calculator",
+      "Create a 30-day handprint optimization plan"
+    ],
+    tips: [
+      "Focus on scalable solutions that can inspire others",
+      "Document your innovations with photos and data",
+      "Connect with other handprint champions",
+      "Use the AI assistant to optimize your impact strategies",
+      "Set weekly handprint goals to stay motivated"
+    ],
+    impact: {
+      co2Saved: 95.7,
+      treesEquivalent: 14
+    },
+    participants_preview: [
+      {
+        id: "16",
+        name: "Dr. Maya Johnson",
+        avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&h=100&fit=crop&crop=face"
+      },
+      {
+        id: "17",
+        name: "Tech Innovator Alex",
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face"
+      },
+      {
+        id: "18",
+        name: "Green Engineer Sam",
+        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face"
+      }
+    ]
+  },
+  {
+    id: "7",
+    title: "Water Stewardship Challenge",
+    description: "Become a guardian of our planet's most precious resource",
+    longDescription: "Master water conservation, quality protection, and sustainable usage patterns. This comprehensive challenge covers everything from household efficiency to watershed protection.",
+    category: "water",
+    difficulty: "intermediate",
+    duration: "28 days",
+    pointsReward: 550,
+    participants: 1324,
+    completionRate: 81,
+    steps: [
+      "Conduct a comprehensive water audit of your home",
+      "Install water-saving devices and fix leaks",
+      "Create a rainwater harvesting system",
+      "Test and improve local water quality",
+      "Organize a community watershed cleanup",
+      "Educate others about water conservation",
+      "Plan a long-term water stewardship strategy"
+    ],
+    tips: [
+      "Monitor your water usage with smart meters",
+      "Research local watershed health",
+      "Connect with water conservation organizations",
+      "Use native plants for landscaping",
+      "Practice greywater recycling safely"
+    ],
+    impact: {
+      co2Saved: 18.3,
+      treesEquivalent: 3
+    },
+    participants_preview: [
+      {
+        id: "19",
+        name: "River Guardian Lisa",
+        avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face"
+      },
+      {
+        id: "20",
+        name: "Watershed Warrior Tom",
+        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face"
+      },
+      {
+        id: "21",
+        name: "Aqua Activist Maria",
+        avatar: "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=100&h=100&fit=crop&crop=face"
+      }
+    ]
+  },
+  {
+    id: "8",
+    title: "Biodiversity Protector Mission",
+    description: "Create and protect habitats for local wildlife",
+    longDescription: "Become a champion for local ecosystems and biodiversity. Learn to create wildlife corridors, plant native species, and monitor ecosystem health in your community.",
+    category: "biodiversity",
+    difficulty: "expert",
+    duration: "90 days",
+    pointsReward: 1200,
+    participants: 289,
+    completionRate: 43,
+    sponsor: {
+      name: "Wildlife Conservation Trust",
+      logo: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=100&h=100&fit=crop&crop=center"
+    },
+    steps: [
+      "Survey and document local biodiversity",
+      "Create a native plant garden or habitat",
+      "Install wildlife-friendly features (bee houses, bird boxes)",
+      "Remove invasive species from local areas",
+      "Monitor and document wildlife activity",
+      "Connect fragmented habitats with wildlife corridors",
+      "Educate community about local ecosystem importance"
+    ],
+    tips: [
+      "Use iNaturalist app for species identification",
+      "Partner with local conservation groups",
+      "Focus on keystone species in your area",
+      "Create photo documentation of changes over time",
+      "Involve schools in citizen science projects"
+    ],
+    impact: {
+      co2Saved: 156.8,
+      treesEquivalent: 22
+    },
+    participants_preview: [
+      {
+        id: "22",
+        name: "Eco Scientist Dr. James",
+        avatar: "https://images.unsplash.com/photo-1463453091185-61582044d556?w=100&h=100&fit=crop&crop=face"
+      },
+      {
+        id: "23",
+        name: "Nature Guide Sarah",
+        avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=face"
+      },
+      {
+        id: "24",
+        name: "Wildlife Photographer Kim",
+        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face"
       }
     ]
   }

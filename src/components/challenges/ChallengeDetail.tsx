@@ -27,7 +27,7 @@ interface Challenge {
   title: string;
   description: string;
   longDescription: string;
-  category: "energy" | "transport" | "food" | "waste" | "community";
+  category: "energy" | "transport" | "food" | "waste" | "community" | "innovation" | "water" | "biodiversity" | "circular-economy" | "green-finance";
   difficulty: "beginner" | "intermediate" | "advanced" | "expert";
   duration: string;
   pointsReward: number;
