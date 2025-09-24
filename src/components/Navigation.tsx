@@ -31,12 +31,16 @@ const Navigation = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center">
-              <Leaf className="w-6 h-6 text-primary-foreground" />
+            <div className="w-12 h-12 flex items-center justify-center">
+              <img 
+                src="/lovable-uploads/89cff010-b0aa-4aa1-b97e-999c469cae09.png" 
+                alt="Wellagora Logo" 
+                className="w-12 h-12 object-contain"
+              />
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-bold text-foreground">Wellagora</span>
-              <span className="text-xs text-muted-foreground">Regional Sustainability</span>
+              <span className="text-xs text-muted-foreground">Together We Thrive</span>
             </div>
           </div>
 
