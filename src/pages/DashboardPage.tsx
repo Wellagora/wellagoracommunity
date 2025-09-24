@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import Navigation from "@/components/Navigation";
 import Dashboard from "@/components/dashboard/Dashboard";
 import PointsSystem from "@/components/gamification/PointsSystem";
@@ -15,14 +17,24 @@ import {
   Landmark, 
   Users,
   BarChart3,
-  Trophy
+  Trophy,
+  Loader2
 } from "lucide-react";
 
 type UserRole = "citizen" | "business" | "government" | "ngo";
 
 const DashboardPage = () => {
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
   const [currentRole, setCurrentRole] = useState<UserRole>("citizen");
   const [showCelebration, setShowCelebration] = useState(false);
+
+  // Redirect to auth if not logged in
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/auth");
+    }
+  }, [user, loading, navigate]);
 
   // Mock achievement for demonstration
   const mockAchievement = {
@@ -69,6 +81,21 @@ const DashboardPage = () => {
   };
 
   const roleData = getCurrentRoleData();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <div className="flex items-center space-x-2">
+          <Loader2 className="h-4 w-4 animate-spin text-primary" />
+          <span className="text-white">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null; // Will redirect to auth
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
