@@ -52,7 +52,7 @@ const Navigation = () => {
             <a href="#challenges" className="text-foreground hover:text-primary transition-smooth">
               Challenges
             </a>
-            <a href="#community" className="text-foreground hover:text-primary transition-smooth">
+            <a href="/community" className="text-foreground hover:text-primary transition-smooth">
               Community
             </a>
             <a href="#impact" className="text-foreground hover:text-primary transition-smooth">
