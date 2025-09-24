@@ -18,24 +18,22 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <div className="modern-tech">
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/challenge/:challengeId" element={<ChallengeDetailPage />} />
-            <Route path="/community" element={<CommunityPage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/ai-assistant" element={<AIAssistantPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/help" element={<HelpPage />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </div>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/challenge/:challengeId" element={<ChallengeDetailPage />} />
+          <Route path="/community" element={<CommunityPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/ai-assistant" element={<AIAssistantPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/help" element={<HelpPage />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );

@@ -9,19 +9,18 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg hover:shadow-glow border border-primary/30 hover:border-primary/60",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-lg hover:shadow-[0_0_20px_hsl(var(--destructive)/0.5)] border border-destructive/30",
-        outline: "border-2 border-primary/40 bg-transparent text-primary hover:bg-primary/10 hover:border-primary/70 hover:shadow-[0_0_15px_hsl(var(--primary)/0.3)]",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-lg hover:shadow-[0_0_20px_hsl(var(--secondary)/0.4)] border border-secondary/30",
-        ghost: "text-foreground hover:bg-accent/20 hover:text-accent border border-transparent hover:border-accent/30",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md hover:shadow-lg border border-primary/20 hover:border-primary/40",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-md hover:shadow-lg border border-destructive/20",
+        outline: "border-2 border-primary/30 bg-transparent text-primary hover:bg-primary/5 hover:border-primary/50 hover:shadow-md",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-md hover:shadow-lg border border-secondary/20",
+        ghost: "text-foreground hover:bg-accent/10 hover:text-accent border border-transparent hover:border-accent/20",
         link: "text-primary underline-offset-4 hover:underline hover:text-primary-glow",
-        cyber: "bg-gradient-to-r from-accent to-primary text-white font-semibold shadow-xl hover:shadow-glow border border-accent/50 hover:border-accent transform hover:scale-105",
-        neon: "bg-transparent border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground shadow-lg hover:shadow-[0_0_25px_hsl(var(--accent)/0.6)] hover:border-accent-light",
+        eco: "bg-gradient-to-r from-success to-accent text-white font-medium shadow-lg hover:shadow-xl border border-success/30 hover:border-success/50 transform hover:scale-[1.02]",
       },
       size: {
         default: "h-11 px-6 py-2",
         sm: "h-9 rounded-lg px-4",
-        lg: "h-14 rounded-lg px-10 text-base",
+        lg: "h-13 rounded-lg px-8 text-base",
         icon: "h-11 w-11",
       },
     },
