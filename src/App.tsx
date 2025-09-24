@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import Community from "./pages/Community";
 import AIAssistant from "./pages/AIAssistant";
 import AuthPage from "./pages/AuthPage";
+import ChallengesPage from "./pages/ChallengesPage";
 import "./index.css";
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/community" element={<Community />} />
         <Route path="/ai-assistant" element={<AIAssistant />} />
+        <Route path="/challenges" element={<ChallengesPage />} />
       </Routes>
     </BrowserRouter>
   );

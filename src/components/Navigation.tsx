@@ -94,12 +94,12 @@ const Navigation = () => {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
               </span>
             </Link>
-            <a href="#challenges" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
+            <Link to="/challenges" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
               <span className="relative">
                 Challenges
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
               </span>
-            </a>
+            </Link>
             <Link to="/community" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
               <Users className="w-4 h-4" />
               <span className="relative">
@@ -170,10 +170,10 @@ const Navigation = () => {
                 <span className="text-lg">🏠</span>
                 <span className="font-medium">Home</span>
               </Link>
-              <a href="#challenges" className="flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
+              <Link to="/challenges" className="flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
                 <span className="text-lg">🎯</span>
                 <span className="font-medium">Challenges</span>
-              </a>
+              </Link>
               <Link to="/community" className="flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
                 <Users className="w-5 h-5" />
                 <span className="font-medium">Community Hub</span>
