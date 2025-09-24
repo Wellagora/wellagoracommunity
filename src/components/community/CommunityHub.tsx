@@ -282,7 +282,7 @@ const CommunityHub = () => {
               </Card>
 
               {/* Community Stats */}
-              <Card className="bg-gradient-primary text-primary-foreground border-0 shadow-glow">
+              <Card className="bg-card/50 backdrop-blur-sm border border-border/50">
                 <CardContent className="p-6">
                   <h4 className="font-bold text-lg mb-4">Community Stats</h4>
                   <div className="space-y-3">
