@@ -34,37 +34,38 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Why Platform Matters Section */}
-      <section className="py-24 bg-gradient-to-br from-background via-card to-background modern-tech">
+      {/* Hero Impact Section - Dark Theme */}
+      <section className="py-24 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
-              <h2 className="text-4xl lg:text-5xl font-bold text-foreground leading-tight">
-                Why a Sustainability Community Platform Matters
+              <h2 className="text-4xl lg:text-5xl font-bold leading-tight">
+                Transforming Sustainability Through{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
+                  Global Connection
+                </span>
               </h2>
-              <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
+              <div className="space-y-6 text-lg text-slate-300 leading-relaxed">
                 <p>
-                  Sustainability challenges are complex and interconnected, 
-                  requiring collective action that transcends traditional boundaries. 
-                  Our platform serves as the vital bridge connecting executives, 
-                  managers, entrepreneurs, and passionate individuals to drive 
-                  meaningful real-world impact.
+                  Every action counts when millions of individuals, businesses, and organizations 
+                  unite for a common purpose. Our platform connects sustainability champions 
+                  worldwide, creating unprecedented collective impact.
                 </p>
                 <p>
-                  This isn't just another networking site—it's a movement where 
-                  knowledge meets action, and every voice contributes to building a 
-                  greener, more sustainable future for generations to come.
+                  Join a movement where innovation meets dedication, where local actions 
+                  create global change, and where your contribution becomes part of 
+                  something extraordinary.
                 </p>
               </div>
             </div>
             <div className="relative">
-              <div className="relative overflow-hidden rounded-3xl shadow-premium">
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-800 to-slate-900 p-4 shadow-2xl">
                 <img 
                   src={sustainabilityVision} 
-                  alt="Global Sustainability Vision - Earth surrounded by orbital networks representing interconnected sustainability efforts"
-                  className="w-full h-auto object-cover"
+                  alt="Global Sustainability Network - Connected Earth"
+                  className="w-full h-auto object-cover rounded-2xl"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                <div className="absolute inset-4 rounded-2xl bg-gradient-to-t from-slate-900/40 to-transparent pointer-events-none"></div>
               </div>
             </div>
           </div>
