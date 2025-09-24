@@ -36,7 +36,7 @@ const Navigation = () => {
           <div className="flex items-center space-x-4">
             <div className="w-14 h-14 flex items-center justify-center bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-card hover-lift">
               <img 
-                src="/lovable-uploads/89cff010-b0aa-4aa1-b97e-999c469cae09.png" 
+                src="/lovable-uploads/3911d8a5-aebe-4ede-83a5-33c26952916a.png" 
                 alt="Wellagora Logo" 
                 className="w-10 h-10 object-contain"
               />
