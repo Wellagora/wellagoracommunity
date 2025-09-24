@@ -23,6 +23,7 @@ export default {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
           glow: "hsl(var(--primary-glow))",
+          dark: "hsl(var(--primary-dark))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -39,6 +40,7 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
+          light: "hsl(var(--accent-light))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -51,6 +53,7 @@ export default {
         success: {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
+          light: "hsl(var(--success-light))",
         },
         warning: {
           DEFAULT: "hsl(var(--warning))",
@@ -72,11 +75,14 @@ export default {
         'gradient-earth': 'var(--gradient-earth)',
         'gradient-nature': 'var(--gradient-nature)',
         'gradient-hero': 'var(--gradient-hero)',
+        'gradient-sunset': 'var(--gradient-sunset)',
+        'gradient-ocean': 'var(--gradient-ocean)',
       },
       boxShadow: {
         'eco': 'var(--shadow-eco)',
         'glow': 'var(--shadow-glow)',
         'card': 'var(--shadow-card)',
+        'premium': 'var(--shadow-premium)',
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -123,6 +129,13 @@ export default {
       transitionTimingFunction: {
         'smooth': 'var(--transition-smooth)',
         'bounce': 'var(--transition-bounce)',
+        'spring': 'var(--transition-spring)',
+      },
+      fontFamily: {
+        'heading': 'var(--font-heading)',
+        'body': 'var(--font-body)',
+        'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
+        'serif': ['Playfair Display', 'ui-serif', 'Georgia'],
       },
     },
   },

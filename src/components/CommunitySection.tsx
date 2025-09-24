@@ -17,6 +17,8 @@ import {
   Award
 } from "lucide-react";
 
+import communityImage from "@/assets/community-garden.jpg";
+
 const CommunitySection = () => {
   const communityStats = [
     { label: "Active Members", value: "48.2K", icon: Users },

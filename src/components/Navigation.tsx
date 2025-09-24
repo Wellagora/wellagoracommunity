@@ -29,59 +29,58 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className="bg-card border-b border-border shadow-card sticky top-0 z-50">
+    <nav className="bg-glass backdrop-blur-md border-b border-white/20 shadow-premium sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 flex items-center justify-center">
+        <div className="flex justify-between items-center h-20">
+          {/* Enhanced Logo */}
+          <div className="flex items-center space-x-4">
+            <div className="w-14 h-14 flex items-center justify-center bg-gradient-primary rounded-2xl shadow-glow hover-lift">
               <img 
                 src="/lovable-uploads/89cff010-b0aa-4aa1-b97e-999c469cae09.png" 
                 alt="Wellagora Logo" 
-                className="w-12 h-12 object-contain"
+                className="w-10 h-10 object-contain"
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-bold text-foreground">Wellagora</span>
-              <span className="text-xs text-muted-foreground">Together We Thrive</span>
+              <span className="text-2xl font-heading font-bold text-foreground">Wellagora</span>
+              <span className="text-sm text-muted-foreground font-medium">Together We Thrive</span>
             </div>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <a href="#challenges" className="text-foreground hover:text-primary transition-smooth">
+          {/* Enhanced Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-10">
+            <a href="#challenges" className="text-foreground hover:text-primary transition-spring font-medium text-lg hover-lift px-3 py-2 rounded-lg">
               Challenges
             </a>
-            <a href="/community" className="text-foreground hover:text-primary transition-smooth">
+            <a href="/community" className="text-foreground hover:text-primary transition-spring font-medium text-lg hover-lift px-3 py-2 rounded-lg">
               Community
             </a>
-            <a href="/dashboard" className="text-foreground hover:text-primary transition-smooth">
+            <a href="/dashboard" className="text-foreground hover:text-primary transition-spring font-medium text-lg hover-lift px-3 py-2 rounded-lg">
               Dashboard
             </a>
-            <a href="/ai-assistant" className="text-foreground hover:text-primary transition-smooth">
+            <a href="/ai-assistant" className="text-foreground hover:text-primary transition-spring font-medium text-lg hover-lift px-3 py-2 rounded-lg">
               AI Assistant
             </a>
           </div>
 
-          {/* User Role Selection & Actions */}
-          <div className="hidden md:flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
+          {/* Enhanced User Actions */}
+          <div className="hidden md:flex items-center space-x-6">
+            <div className="flex items-center space-x-3">
               {userRoles.map((role) => (
                 <Button 
                   key={role.name}
                   variant="outline" 
                   size="sm"
-                  className="hover:bg-primary/10 transition-smooth"
+                  className="hover:bg-primary/10 hover:border-primary/50 transition-spring font-medium bg-glass backdrop-blur-md border-white/20 hover-lift"
                   title={role.description}
                 >
-                  <role.icon className="w-4 h-4 mr-1" />
+                  <role.icon className="w-4 h-4 mr-2" />
                   {role.name}
                 </Button>
               ))}
             </div>
             <Button 
-              variant="default" 
-              className="bg-gradient-primary hover:shadow-glow transition-smooth"
+              className="bg-gradient-primary hover:shadow-glow transition-spring px-8 py-3 text-lg font-semibold rounded-xl hover-lift"
               onClick={() => {
                 setAuthMode("register");
                 setIsAuthModalOpen(true);
@@ -91,7 +90,7 @@ const Navigation = () => {
             </Button>
             <Button 
               variant="outline" 
-              size="sm"
+              className="border-2 border-primary/30 hover:bg-primary/10 hover:border-primary/50 transition-spring font-medium bg-glass backdrop-blur-md hover-lift px-6 py-3 rounded-xl"
               onClick={() => {
                 setAuthMode("login");
                 setIsAuthModalOpen(true);
