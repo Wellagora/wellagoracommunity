@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Link } from "react-router-dom";
 import {
   Bike,
   Leaf,
@@ -197,8 +198,13 @@ const ChallengesSection = () => {
                       </div>
                     </div>
 
-                    <Button className="w-full bg-gradient-primary hover:shadow-glow transition-smooth">
-                      Join Challenge
+                    <Button 
+                      className="w-full bg-gradient-primary hover:shadow-glow transition-smooth"
+                      asChild
+                    >
+                      <Link to={`/challenge/${challenge.id}`}>
+                        Join Challenge
+                      </Link>
                     </Button>
                   </CardContent>
                 </Card>
