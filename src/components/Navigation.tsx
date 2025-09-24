@@ -37,7 +37,7 @@ const Navigation = () => {
         <div className="flex justify-between items-center h-16 border-b border-border">
           {/* Logo */}
           <div className="flex items-center space-x-4">
-            <div className="relative group">
+            <Link to="/" className="relative group">
               <div className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-primary to-success rounded-2xl shadow-premium group-hover:scale-105 transition-transform duration-300">
                 <img 
                   src="/lovable-uploads/3911d8a5-aebe-4ede-83a5-33c26952916a.png" 
@@ -48,9 +48,9 @@ const Navigation = () => {
                   <Sparkles className="w-2 h-2 text-warning-foreground" />
                 </div>
               </div>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-bold bg-gradient-to-r from-primary via-success to-secondary bg-clip-text text-transparent">
+            </Link>
+            <Link to="/" className="flex flex-col group">
+              <span className="text-xl font-bold bg-gradient-to-r from-primary via-success to-secondary bg-clip-text text-transparent group-hover:from-success group-hover:to-primary transition-all duration-300">
                 Wellagora
               </span>
               <div className="flex items-center space-x-2">
@@ -58,7 +58,7 @@ const Navigation = () => {
                 <span className="text-xs text-primary font-medium">Sustainability Community</span>
                 <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
               </div>
-            </div>
+            </Link>
           </div>
 
           {/* Community Stats */}
@@ -88,6 +88,12 @@ const Navigation = () => {
         <div className="flex justify-between items-center h-16">
           {/* Navigation Links */}
           <div className="hidden lg:flex items-center space-x-8">
+            <Link to="/" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
+              <span className="relative">
+                Home
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
+              </span>
+            </Link>
             <a href="#challenges" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
               <span className="relative">
                 Challenges
@@ -160,6 +166,10 @@ const Navigation = () => {
         {isMenuOpen && (
           <div className="lg:hidden bg-background/95 backdrop-blur-sm border-t border-border py-4 rounded-b-2xl shadow-premium">
             <div className="space-y-3">
+              <Link to="/" className="flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
+                <span className="text-lg">🏠</span>
+                <span className="font-medium">Home</span>
+              </Link>
               <a href="#challenges" className="flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
                 <span className="text-lg">🎯</span>
                 <span className="font-medium">Challenges</span>
