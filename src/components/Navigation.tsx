@@ -1,16 +1,4 @@
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger,
-  DropdownMenuSeparator 
-} from "@/components/ui/dropdown-menu";
-import AuthModal from "./auth/AuthModal";
-import { useAuth } from "@/contexts/AuthContext";
+import { useState } from "react";
 import { 
   Menu, 
   X, 
@@ -18,51 +6,26 @@ import {
   Building2, 
   MapPin, 
   Heart,
-  Leaf,
-  Users,
-  Trophy,
-  MessageCircle,
-  Settings,
-  ChevronDown,
-  LogOut
+  ChevronDown
 } from "lucide-react";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<"login" | "register">("register");
-  
-  // Conditional hook usage to prevent errors during provider initialization
-  let user = null;
-  let profile = null;
-  let signOut = () => {};
-  let loading = true;
-  
-  try {
-    const auth = useAuth();
-    user = auth.user;
-    profile = auth.profile;
-    signOut = auth.signOut;
-    loading = auth.loading;
-  } catch (error) {
-    // AuthProvider not yet initialized, use defaults
-    console.log('AuthProvider not yet initialized');
-  }
 
   const userRoles = [
-    { name: "Citizen", icon: User, color: "bg-success", description: "Individual sustainability journey" },
-    { name: "Business", icon: Building2, color: "bg-accent", description: "Corporate sustainability goals" },
-    { name: "Municipal", icon: MapPin, color: "bg-warning", description: "City-wide initiatives" },
-    { name: "NGO", icon: Heart, color: "bg-primary", description: "Community organization" },
+    { name: "Citizen", icon: User, color: "bg-emerald-500", description: "Individual sustainability journey" },
+    { name: "Business", icon: Building2, color: "bg-blue-500", description: "Corporate sustainability goals" },
+    { name: "Municipal", icon: MapPin, color: "bg-orange-500", description: "City-wide initiatives" },
+    { name: "NGO", icon: Heart, color: "bg-purple-500", description: "Community organization" },
   ];
 
   return (
-    <nav className="bg-glass backdrop-blur-md border-b border-white/20 shadow-premium sticky top-0 z-50">
+    <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          {/* Enhanced Logo */}
+          {/* Logo */}
           <div className="flex items-center space-x-4">
-            <div className="w-14 h-14 flex items-center justify-center bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-card hover-lift">
+            <div className="w-14 h-14 flex items-center justify-center bg-emerald-100 rounded-2xl shadow-sm">
               <img 
                 src="/lovable-uploads/3911d8a5-aebe-4ede-83a5-33c26952916a.png" 
                 alt="Wellagora Logo" 
@@ -70,219 +33,88 @@ const Navigation = () => {
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-bold text-foreground">Wellagora</span>
-              <span className="text-xs text-muted-foreground font-medium">Together We Thrive</span>
+              <span className="text-xl font-bold text-gray-900">Wellagora</span>
+              <span className="text-xs text-gray-500 font-medium">Together We Thrive</span>
             </div>
           </div>
 
-          {/* Enhanced Desktop Navigation */}
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-foreground hover:text-primary transition-spring font-medium hover-lift px-3 py-2 rounded-lg whitespace-nowrap">
-                  Challenges
-                  <ChevronDown className="w-4 h-4 ml-1" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>
-                  <a href="/dashboard#challenges" className="w-full">Browse All Challenges</a>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <a href="/dashboard#challenges" className="w-full">Energy Efficiency</a>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <a href="/dashboard#challenges" className="w-full">Sustainable Transport</a>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <a href="/dashboard#challenges" className="w-full">Zero Waste</a>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <a href="/dashboard#challenges" className="w-full">Food & Agriculture</a>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <a href="/dashboard#challenges" className="w-full">Community Action</a>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <a href="/dashboard#challenges" className="w-full">Innovation Lab</a>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <a href="/dashboard#challenges" className="w-full">Water Conservation</a>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <a href="/dashboard#challenges" className="w-full">Biodiversity</a>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <a href="/dashboard#challenges" className="w-full">Circular Economy</a>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <a href="/dashboard#challenges" className="w-full">Green Finance</a>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <a href="/community" className="text-foreground hover:text-primary transition-spring font-medium hover-lift px-3 py-2 rounded-lg whitespace-nowrap">
+            <a href="#challenges" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium">
+              Challenges
+            </a>
+            <a href="/community" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium">
               Community
             </a>
-            <a href="/dashboard" className="text-foreground hover:text-primary transition-spring font-medium hover-lift px-3 py-2 rounded-lg whitespace-nowrap">
+            <a href="/dashboard" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium">
               Dashboard
             </a>
-            <a href="/ai-assistant" className="text-foreground hover:text-primary transition-spring font-medium hover-lift px-3 py-2 rounded-lg whitespace-nowrap">
+            <a href="/ai-assistant" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium">
               AI Assistant
             </a>
           </div>
 
-          {/* Enhanced User Actions */}
+          {/* User Roles & Actions */}
           <div className="hidden md:flex items-center space-x-6">
-            {!user ? (
-              <>
-                <div className="flex items-center space-x-3">
-                  {userRoles.map((role) => (
-                    <Button 
-                      key={role.name}
-                      variant="outline" 
-                      size="sm"
-                      className="hover:bg-primary/10 hover:border-primary/50 transition-spring font-medium bg-glass backdrop-blur-md border-white/20 hover-lift"
-                      title={role.description}
-                    >
-                      <role.icon className="w-4 h-4 mr-2" />
-                      {role.name}
-                    </Button>
-                  ))}
-                </div>
-                <Button 
-                  className="bg-accent hover:bg-accent/90 transition-spring px-8 py-3 text-lg font-semibold rounded-xl hover-lift"
-                  onClick={() => {
-                    setAuthMode("register");
-                    setIsAuthModalOpen(true);
-                  }}
+            <div className="flex items-center space-x-3">
+              {userRoles.map((role) => (
+                <button 
+                  key={role.name}
+                  className="flex items-center space-x-2 px-3 py-2 rounded-lg border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 transition-all font-medium text-sm"
+                  title={role.description}
                 >
-                  Get Started
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="border-2 border-primary/30 hover:bg-primary/10 hover:border-primary/50 transition-spring font-medium bg-glass backdrop-blur-md hover-lift px-6 py-3 rounded-xl"
-                  onClick={() => {
-                    setAuthMode("login");
-                    setIsAuthModalOpen(true);
-                  }}
-                >
-                  Sign In
-                </Button>
-              </>
-            ) : (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-12 w-12 rounded-full hover-lift">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={profile?.avatar_url} alt={profile?.first_name} />
-                      <AvatarFallback className="bg-primary/10">
-                        {profile?.first_name?.charAt(0)}{profile?.last_name?.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
-                  <div className="flex items-center justify-start gap-2 p-2">
-                    <div className="flex flex-col space-y-1 leading-none">
-                      {profile && (
-                        <p className="font-medium">{profile.first_name} {profile.last_name}</p>
-                      )}
-                      <p className="w-[200px] truncate text-sm text-muted-foreground">
-                        {user?.email}
-                      </p>
-                      {profile?.role && (
-                        <Badge variant="secondary" className="w-fit text-xs">
-                          {profile.role.charAt(0).toUpperCase() + profile.role.slice(1)}
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <a href="/dashboard" className="w-full">
-                      <User className="mr-2 h-4 w-4" />
-                      Dashboard
-                    </a>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <a href="/settings" className="w-full">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Settings
-                    </a>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={signOut} className="text-red-600">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Log out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+                  <role.icon className="w-4 h-4" />
+                  <span>{role.name}</span>
+                </button>
+              ))}
+            </div>
+            <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-semibold transition-colors">
+              Get Started
+            </button>
+            <button className="border-2 border-emerald-200 hover:border-emerald-300 hover:bg-emerald-50 text-gray-700 px-6 py-3 rounded-xl font-medium transition-colors">
+              Sign In
+            </button>
           </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden">
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="p-2 rounded-lg hover:bg-gray-100"
             >
               {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </Button>
+            </button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden bg-card border-t border-border">
-            <div className="px-2 pt-2 pb-3 space-y-1">
-              <a href="#challenges" className="block px-3 py-2 text-foreground hover:bg-muted rounded-md">
+          <div className="md:hidden bg-white border-t border-gray-200 py-4">
+            <div className="space-y-2">
+              <a href="#challenges" className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md">
                 Challenges
               </a>
-              <a href="#community" className="block px-3 py-2 text-foreground hover:bg-muted rounded-md">
+              <a href="/community" className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md">
                 Community
               </a>
-              <a href="#impact" className="block px-3 py-2 text-foreground hover:bg-muted rounded-md">
-                Impact
+              <a href="/dashboard" className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md">
+                Dashboard
               </a>
-              <a href="#ai-coach" className="block px-3 py-2 text-foreground hover:bg-muted rounded-md">
-                AI Coach
+              <a href="/ai-assistant" className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md">
+                AI Assistant
               </a>
-              <div className="pt-4 pb-2">
-                <div className="grid grid-cols-2 gap-2">
-                  {userRoles.map((role) => (
-                    <Button 
-                      key={role.name}
-                      variant="outline" 
-                      size="sm"
-                      className="justify-start"
-                    >
-                      <role.icon className="w-4 h-4 mr-2" />
-                      {role.name}
-                    </Button>
-                  ))}
-                </div>
-                <Button 
-                  className="w-full mt-3 bg-accent hover:bg-accent/90"
-                  onClick={() => {
-                    setAuthMode("register");
-                    setIsAuthModalOpen(true);
-                    setIsMenuOpen(false);
-                  }}
-                >
+              <div className="pt-4 space-y-2">
+                <button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-semibold">
                   Get Started
-                </Button>
+                </button>
+                <button className="w-full border border-emerald-200 hover:bg-emerald-50 text-gray-700 py-3 rounded-xl font-medium">
+                  Sign In
+                </button>
               </div>
             </div>
           </div>
         )}
       </div>
-      
-      <AuthModal 
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        initialMode={authMode}
-      />
     </nav>
   );
 };
