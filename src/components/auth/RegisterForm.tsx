@@ -19,7 +19,7 @@ const registerSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters").max(128, "Password must be less than 128 characters"),
   confirmPassword: z.string(),
   role: z.enum(["citizen", "business", "municipal", "ngo"], {
-    required_error: "Please select a role",
+    message: "Please select a role",
   }),
   organization: z.string().trim().max(100, "Organization name must be less than 100 characters").optional(),
 }).refine((data) => data.password === data.confirmPassword, {

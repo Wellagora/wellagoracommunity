@@ -9,12 +9,35 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, CheckCircle, Leaf, Users, Target, Globe } from "lucide-react";
+import { z } from "zod";
 
 const AuthPage = () => {
   const navigate = useNavigate();
   const { user, signIn, signUp, loading } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  // Validation schemas
+  const loginSchema = z.object({
+    email: z.string().email("Please enter a valid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+  });
+
+  const signupSchema = z.object({
+    email: z.string().email("Please enter a valid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string(),
+    firstName: z.string().min(1, "First name is required").max(50, "First name must be less than 50 characters"),
+    lastName: z.string().min(1, "Last name is required").max(50, "Last name must be less than 50 characters"),
+    role: z.enum(["citizen", "business", "municipal", "ngo"], { 
+      message: "Please select a role" 
+    }),
+    organization: z.string().max(100, "Organization name must be less than 100 characters").optional(),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -42,13 +65,33 @@ const AuthPage = () => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    setSuccess(null);
 
-    const { error } = await signIn(loginForm.email, loginForm.password);
+    // Validate input
+    try {
+      loginSchema.parse(loginForm);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        setError(err.issues[0].message);
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    const { error } = await signIn(loginForm.email.trim(), loginForm.password);
     
     if (error) {
-      setError(error.message);
+      console.error("Login error:", error);
+      if (error.message.includes("Invalid login credentials")) {
+        setError("Invalid email or password. Please check your credentials and try again.");
+      } else if (error.message.includes("Email not confirmed")) {
+        setError("Please check your email and click the confirmation link before signing in.");
+      } else {
+        setError(error.message || "An error occurred during login. Please try again.");
+      }
     } else {
-      navigate("/dashboard");
+      setSuccess("Login successful! Redirecting...");
+      setTimeout(() => navigate("/dashboard"), 1000);
     }
     
     setIsLoading(false);
@@ -58,32 +101,41 @@ const AuthPage = () => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    setSuccess(null);
 
-    if (signupForm.password !== signupForm.confirmPassword) {
-      setError("Passwords do not match");
-      setIsLoading(false);
-      return;
-    }
-
-    if (!signupForm.role) {
-      setError("Please select a role");
-      setIsLoading(false);
-      return;
+    // Validate input
+    try {
+      signupSchema.parse(signupForm);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        setError(err.issues[0].message);
+        setIsLoading(false);
+        return;
+      }
     }
 
     const { error } = await signUp({
-      email: signupForm.email,
+      email: signupForm.email.trim(),
       password: signupForm.password,
-      firstName: signupForm.firstName,
-      lastName: signupForm.lastName,
+      firstName: signupForm.firstName.trim(),
+      lastName: signupForm.lastName.trim(),
       role: signupForm.role,
-      organization: signupForm.organization || undefined,
+      organization: signupForm.organization?.trim() || undefined,
     });
 
     if (error) {
-      setError(error.message);
+      console.error("Signup error:", error);
+      if (error.message.includes("User already registered")) {
+        setError("An account with this email already exists. Please sign in instead.");
+      } else if (error.message.includes("Password should be at least")) {
+        setError("Password must be at least 6 characters long.");
+      } else if (error.message.includes("Invalid email")) {
+        setError("Please enter a valid email address.");
+      } else {
+        setError(error.message || "An error occurred during signup. Please try again.");
+      }
     } else {
-      // User will be redirected by the useEffect when user state updates
+      setSuccess("Account created successfully! Please check your email for confirmation, then sign in.");
     }
     
     setIsLoading(false);
@@ -202,6 +254,12 @@ const AuthPage = () => {
               {error && (
                 <Alert className="mb-6 bg-destructive/10 border-destructive/30">
                   <AlertDescription className="text-destructive-foreground">{error}</AlertDescription>
+                </Alert>
+              )}
+
+              {success && (
+                <Alert className="mb-6 bg-success/10 border-success/30">
+                  <AlertDescription className="text-success-foreground">{success}</AlertDescription>
                 </Alert>
               )}
 
