@@ -127,18 +127,18 @@ const Index = () => {
       </section>
 
       {/* Call to Action */}
-      <section className="py-20 bg-gradient-to-r from-primary to-secondary border-b border-border">
+      <section className="py-20 bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 border-b border-slate-600">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-primary-foreground mb-6">
+          <h2 className="text-4xl font-bold text-white mb-6">
             Ready to Make a Difference?
           </h2>
-          <p className="text-xl text-primary-foreground/80 mb-8">
+          <p className="text-xl text-slate-300 mb-8">
             Join thousands of sustainability champions already making positive impact 
             through our platform. Start your journey today!
           </p>
           <Link
             to="/auth"
-            className="bg-background hover:bg-card text-foreground px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-premium hover:-translate-y-1 hover:shadow-glow"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-premium hover:-translate-y-1 hover:shadow-glow"
           >
             Get Started Now
           </Link>
