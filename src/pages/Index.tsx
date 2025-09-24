@@ -3,21 +3,21 @@ import sustainabilityVision from "@/assets/sustainability-vision.png";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-card to-background">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <Navigation />
       
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-background via-card to-background py-20 border-b border-border">
+      <section className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-20 border-b border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-5xl lg:text-6xl font-bold text-foreground mb-6">
+            <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6">
               Build a{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
                 Sustainable Future
               </span>
               {" "}Together
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+            <p className="text-xl text-slate-300 mb-8 max-w-3xl mx-auto">
               Join our global community of citizens, businesses, municipalities, and NGOs 
               working together to create positive environmental impact through actionable challenges 
               and AI-powered guidance.
@@ -31,7 +31,7 @@ const Index = () => {
               </button>
               <button 
                 onClick={() => window.location.href = '/dashboard'}
-                className="border-2 border-border hover:border-primary text-foreground px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:shadow-glow"
+                className="border-2 border-slate-600 hover:border-primary text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:shadow-glow"
               >
                 Explore Challenges
               </button>
