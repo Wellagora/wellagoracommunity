@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Navigation from '@/components/Navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -76,6 +77,7 @@ const RevolutionaryDashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
+      <Navigation />
       {/* Header */}
       <motion.header 
         className="sticky top-0 z-40 bg-card/95 backdrop-blur-lg border-b border-border shadow-sm"
