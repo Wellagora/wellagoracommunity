@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { challenges } from "@/data/challenges";
 import {
   Bike,
   Leaf,
@@ -40,50 +41,8 @@ const ChallengesSection = () => {
     { name: "Green Finance", icon: Coins, color: "primary", count: 16 },
   ];
 
-  const featuredChallenges = [
-    {
-      id: 1,
-      title: "Bike to Work Week",
-      description: "Replace car trips with cycling for a full week",
-      category: "Transport",
-      difficulty: "Intermediate",
-      duration: "7 days",
-      participants: 1247,
-      points: 150,
-      impact: "Save 25kg CO₂",
-      progress: 68,
-      sponsor: "EcoTech Solutions",
-      featured: true
-    },
-    {
-      id: 2,
-      title: "Zero Waste Lunch Challenge",
-      description: "Pack waste-free lunches for 5 consecutive days",
-      category: "Waste",
-      difficulty: "Beginner",
-      duration: "5 days",
-      participants: 892,
-      points: 100,
-      impact: "Reduce 2kg waste",
-      progress: 45,
-      sponsor: "Green Future Corp",
-      featured: false
-    },
-    {
-      id: 3,
-      title: "Community Garden Project",
-      description: "Help establish or maintain a local community garden",
-      category: "Community",
-      difficulty: "Advanced",
-      duration: "1 month",
-      participants: 234,
-      points: 300,
-      impact: "+50 plants grown",
-      progress: 12,
-      sponsor: "Urban Seeds NGO",
-      featured: true
-    }
-  ];
+  // Use actual challenges data instead of hardcoded
+  const featuredChallenges = challenges.slice(0, 2); // Show first 2 challenges as featured
 
   const difficultyColors = {
     "Beginner": "success",
@@ -99,17 +58,16 @@ const ChallengesSection = () => {
         <div className="text-center mb-16">
           <Badge className="bg-success/10 text-success border-success/20 mb-4">
             <Target className="w-4 h-4 mr-1" />
-            Challenge Marketplace
+            {t('challenges.section.badge')}
           </Badge>
           <h2 className="text-3xl lg:text-5xl font-bold text-foreground mb-6">
-            Take Action with{" "}
+            {t('challenges.section.title')}{" "}
             <span className="bg-gradient-primary bg-clip-text text-transparent">
-              Gamified Challenges
+              {t('challenges.section.subtitle')}
             </span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            Choose from hundreds of sustainability challenges, earn points and badges, 
-            compete with your community, and make a real environmental impact.
+            {t('challenges.section.subtitle')}
           </p>
         </div>
 
@@ -136,35 +94,35 @@ const ChallengesSection = () => {
           {/* Featured Challenges */}
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-foreground">Featured Challenges</h3>
-              <Button variant="outline">View All Challenges</Button>
+              <h3 className="text-2xl font-bold text-foreground">{t('challenges.featured.title')}</h3>
+              <Button variant="outline" asChild>
+                <Link to="/challenges">{t('challenges.view_all')}</Link>
+              </Button>
             </div>
             
             <div className="space-y-6">
               {featuredChallenges.map((challenge) => (
                 <Card 
                   key={challenge.id} 
-                  className={`shadow-card hover:shadow-eco transition-smooth ${challenge.featured ? 'ring-2 ring-primary/20' : ''}`}
+                  className="shadow-card hover:shadow-eco transition-smooth ring-2 ring-primary/20"
                 >
                   <CardHeader className="pb-4">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
-                          <CardTitle className="text-lg">{challenge.title}</CardTitle>
-                          {challenge.featured && (
-                            <Badge className="bg-warning/10 text-warning border-warning/20">
-                              <Star className="w-3 h-3 mr-1" />
-                              Featured
-                            </Badge>
-                          )}
+                          <CardTitle className="text-lg">{t(challenge.titleKey)}</CardTitle>
+                          <Badge className="bg-warning/10 text-warning border-warning/20">
+                            <Star className="w-3 h-3 mr-1" />
+                            Kiemelt
+                          </Badge>
                         </div>
                         <CardDescription className="text-muted-foreground">
-                          {challenge.description}
+                          {t(challenge.descriptionKey)}
                         </CardDescription>
                       </div>
                       <div className="text-right">
-                        <div className="text-2xl font-bold text-primary">{challenge.points}</div>
-                        <div className="text-xs text-muted-foreground">points</div>
+                        <div className="text-2xl font-bold text-primary">{challenge.pointsReward}</div>
+                        <div className="text-xs text-muted-foreground">{t('challenges.points')}</div>
                       </div>
                     </div>
                   </CardHeader>
@@ -173,9 +131,7 @@ const ChallengesSection = () => {
                     {/* Challenge Meta */}
                     <div className="flex flex-wrap gap-2">
                       <Badge variant="outline">{challenge.category}</Badge>
-                      <Badge 
-                        className={`bg-${difficultyColors[challenge.difficulty]}/10 text-${difficultyColors[challenge.difficulty]} border-${difficultyColors[challenge.difficulty]}/20`}
-                      >
+                      <Badge variant="outline">
                         {challenge.difficulty}
                       </Badge>
                       <Badge variant="outline">
@@ -187,10 +143,10 @@ const ChallengesSection = () => {
                     {/* Progress Bar */}
                     <div>
                       <div className="flex justify-between text-sm mb-2">
-                        <span className="text-muted-foreground">Progress</span>
-                        <span className="text-foreground font-medium">{challenge.progress}%</span>
+                        <span className="text-muted-foreground">{t('challenges.progress')}</span>
+                        <span className="text-foreground font-medium">{challenge.completionRate}%</span>
                       </div>
-                      <Progress value={challenge.progress} className="h-2" />
+                      <Progress value={challenge.completionRate} className="h-2" />
                     </div>
 
                     {/* Stats Row */}
@@ -202,12 +158,14 @@ const ChallengesSection = () => {
                         </div>
                         <div className="flex items-center text-success">
                           <TrendingUp className="w-4 h-4 mr-1" />
-                          {challenge.impact}
+                          {challenge.impact.co2Saved}kg CO₂
                         </div>
                       </div>
-                      <div className="text-xs text-muted-foreground">
-                        Sponsored by {challenge.sponsor}
-                      </div>
+                      {challenge.sponsor && (
+                        <div className="text-xs text-muted-foreground">
+                          {t('challenges.sponsored_by')} {challenge.sponsor.name}
+                        </div>
+                      )}
                     </div>
 
                     <Button 
@@ -215,7 +173,7 @@ const ChallengesSection = () => {
                       asChild
                     >
                       <Link to={`/challenges/${challenge.id}`}>
-                        Join Challenge
+                        {t('challenges.join_challenge')}
                       </Link>
                     </Button>
                   </CardContent>
@@ -236,31 +194,31 @@ const ChallengesSection = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-2xl"></div>
               <div className="absolute bottom-4 left-4 text-white">
-                <h4 className="font-bold text-lg">Join the Movement</h4>
-                <p className="text-sm opacity-90">Thousands taking action daily</p>
+                <h4 className="font-bold text-lg">{t('challenges.join_movement')}</h4>
+                <p className="text-sm opacity-90">{t('challenges.thousands_daily')}</p>
               </div>
             </div>
 
             {/* Quick Stats */}
             <Card className="bg-card/50 backdrop-blur-sm border border-border/50">
               <CardContent className="p-6">
-                <h4 className="font-bold text-lg mb-4">Regional Impact</h4>
+                <h4 className="font-bold text-lg mb-4">{t('challenges.regional_impact')}</h4>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-white/80">Active Challenges</span>
-                    <span className="font-bold">197</span>
+                    <span className="text-muted-foreground">{t('challenges.active_challenges')}</span>
+                    <span className="font-bold text-foreground">197</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/80">CO₂ Saved This Month</span>
-                    <span className="font-bold">12.8 tons</span>
+                    <span className="text-muted-foreground">{t('challenges.co2_saved')}</span>
+                    <span className="font-bold text-foreground">12.8 tonna</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/80">Trees Planted</span>
-                    <span className="font-bold">3,247</span>
+                    <span className="text-muted-foreground">Ültetett Fák</span>
+                    <span className="font-bold text-foreground">3,247</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/80">Waste Reduced</span>
-                    <span className="font-bold">890 kg</span>
+                    <span className="text-muted-foreground">Csökkentett Hulladék</span>
+                    <span className="font-bold text-foreground">890 kg</span>
                   </div>
                 </div>
               </CardContent>

@@ -1,9 +1,12 @@
 import Navigation from "@/components/Navigation";
 import AIAssistantChat from "@/components/ai/AIAssistantChat";
 import aiAssistantImage from "@/assets/ai-assistant.jpg";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Bot, Zap } from "lucide-react";
 
 const AIAssistantPage = () => {
+  const { t } = useLanguage();
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <Navigation />
@@ -23,13 +26,13 @@ const AIAssistantPage = () => {
           </div>
           
           <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-            Meet{" "}
+            {t('wellbot.title')}{" "}
             <span className="bg-gradient-primary bg-clip-text text-transparent">
               WellBot
             </span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Your AI-powered sustainability coach. Get personalized advice, eco-friendly solutions, and smart recommendations for a greener lifestyle.
+            {t('wellbot.description')}
           </p>
         </div>
 
