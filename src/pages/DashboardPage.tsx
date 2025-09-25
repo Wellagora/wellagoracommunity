@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Navigation from "@/components/Navigation";
 import Dashboard from "@/components/dashboard/Dashboard";
 import PointsSystem from "@/components/gamification/PointsSystem";
 import CreativeGamification from "@/components/gamification/CreativeGamification";
 import ProgressVisualization from "@/components/ProgressVisualization";
 import CelebrationModal from "@/components/CelebrationModal";
+import { Card3D, FeatureCard3D } from "@/components/ui/card-3d";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,7 +20,10 @@ import {
   Users,
   BarChart3,
   Trophy,
-  Loader2
+  Loader2,
+  Target,
+  TrendingUp,
+  Award
 } from "lucide-react";
 
 type UserRole = "citizen" | "business" | "government" | "ngo";
@@ -26,6 +31,7 @@ type UserRole = "citizen" | "business" | "government" | "ngo";
 const DashboardPage = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
+  const { t } = useLanguage();
   const [currentRole, setCurrentRole] = useState<UserRole>("citizen");
   const [showCelebration, setShowCelebration] = useState(false);
 
@@ -50,28 +56,32 @@ const DashboardPage = () => {
       value: "citizen" as UserRole, 
       label: "Citizen", 
       icon: User, 
-      color: "bg-primary",
+      gradient: "from-primary/20 to-success/20",
+      borderGradient: "from-primary to-success",
       description: "Individual sustainability tracking"
     },
     { 
       value: "business" as UserRole, 
       label: "Business", 
       icon: Building2, 
-      color: "bg-accent",
+      gradient: "from-accent/20 to-secondary/20",
+      borderGradient: "from-accent to-secondary",
       description: "Corporate sustainability dashboard"
     },
     { 
       value: "government" as UserRole, 
       label: "Government", 
       icon: Landmark, 
-      color: "bg-warning",
+      gradient: "from-warning/20 to-destructive/20",
+      borderGradient: "from-warning to-destructive",
       description: "Policy and city-wide metrics"
     },
     { 
       value: "ngo" as UserRole, 
       label: "NGO", 
       icon: Users, 
-      color: "bg-success",
+      gradient: "from-success/20 to-primary/20",
+      borderGradient: "from-success to-primary",
       description: "Community impact tracking"
     }
   ];
@@ -84,10 +94,10 @@ const DashboardPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex items-center space-x-2">
           <Loader2 className="h-4 w-4 animate-spin text-primary" />
-          <span className="text-white">Loading...</span>
+          <span className="text-foreground">{t('common.loading')}</span>
         </div>
       </div>
     );
@@ -98,91 +108,118 @@ const DashboardPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
-      <div className="container mx-auto px-4 py-8">
+      {/* Hero Section */}
+      <section className="relative py-20 bg-gradient-wave overflow-hidden">
+        <div className="absolute inset-0 bg-wave-pattern opacity-30"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center animate-fade-up-3d">
+            <h1 className="text-4xl lg:text-6xl font-bold text-foreground mb-6">
+              {t('nav.dashboard')}
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+              Kövesd nyomon előrehaladásod és lásd környezeti hatásod valós időben
+            </p>
+            <div className="flex items-center justify-center space-x-8">
+              <div className="flex items-center space-x-2">
+                <TrendingUp className="w-5 h-5 text-success" />
+                <span className="text-foreground font-medium">+23% ez a hónapban</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Award className="w-5 h-5 text-warning" />
+                <span className="text-foreground font-medium">12 új jelvény</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Role Selector */}
-        <Card className="mb-8">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
+        <Card3D className="mb-8 bg-card/80 backdrop-blur-sm border-border/50">
+          <CardContent className="p-8">
+            <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-semibold">Dashboard Type</h2>
+                <h2 className="text-2xl font-bold text-foreground mb-2">Dashboard Type</h2>
                 <p className="text-muted-foreground">Switch between different role perspectives</p>
               </div>
-              <Badge className={`${roleData?.color} text-white`}>
+              <Badge className={`bg-gradient-to-r ${roleData?.borderGradient} text-white px-4 py-2 text-sm font-medium shadow-premium`}>
                 {roleData?.label}
               </Badge>
             </div>
             
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
               {roles.map((role) => {
                 const IconComponent = role.icon;
+                const isActive = currentRole === role.value;
                 return (
-                  <Button
+                  <FeatureCard3D
                     key={role.value}
-                    variant={currentRole === role.value ? "default" : "outline"}
+                    icon={<IconComponent className="w-8 h-8" />}
+                    title={role.label}
+                    description={role.description}
                     onClick={() => setCurrentRole(role.value)}
-                    className="h-auto p-4 flex flex-col items-center space-y-2"
-                  >
-                    <IconComponent className="w-6 h-6" />
-                    <div className="text-center">
-                      <div className="font-medium">{role.label}</div>
-                      <div className="text-xs opacity-70">{role.description}</div>
-                    </div>
-                  </Button>
+                    className={`cursor-pointer transition-all duration-300 ${
+                      isActive 
+                        ? `bg-gradient-to-br ${role.gradient} border-2 border-gradient-${role.borderGradient} shadow-glow` 
+                        : 'hover:bg-card/50 hover:scale-105'
+                    }`}
+                  />
                 );
               })}
             </div>
           </CardContent>
-        </Card>
+        </Card3D>
 
         {/* Dashboard Tabs */}
-        <Tabs defaultValue="analytics" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="analytics" className="flex items-center space-x-2">
+        <Tabs defaultValue="analytics" className="space-y-8">
+          <TabsList className="grid w-full grid-cols-3 bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-2">
+            <TabsTrigger value="analytics" className="flex items-center space-x-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-xl transition-all duration-300">
               <BarChart3 className="w-4 h-4" />
               <span>Analytics</span>
             </TabsTrigger>
-            <TabsTrigger value="progress" className="flex items-center space-x-2">
-              <Trophy className="w-4 h-4" />
+            <TabsTrigger value="progress" className="flex items-center space-x-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-xl transition-all duration-300">
+              <Target className="w-4 h-4" />
               <span>Progress</span>
             </TabsTrigger>
-            <TabsTrigger value="rewards" className="flex items-center space-x-2">
+            <TabsTrigger value="rewards" className="flex items-center space-x-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-xl transition-all duration-300">
               <Trophy className="w-4 h-4" />
               <span>Rewards</span>
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="analytics">
+          <TabsContent value="analytics" className="animate-fade-in">
             <Dashboard userRole={currentRole} />
           </TabsContent>
 
-          <TabsContent value="progress">
+          <TabsContent value="progress" className="animate-fade-in">
             <ProgressVisualization />
-            <div className="mt-6 text-center">
+            <div className="mt-8 text-center">
               <Button 
                 onClick={() => setShowCelebration(true)}
-                className="bg-gradient-primary hover:shadow-glow transition-spring"
+                className="bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground px-8 py-3 rounded-2xl font-semibold shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300"
               >
                 🎉 Simulate Achievement
               </Button>
             </div>
           </TabsContent>
 
-          <TabsContent value="rewards" className="space-y-4">
+          <TabsContent value="rewards" className="space-y-6 animate-fade-in">
             {currentRole === "citizen" ? (
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <CreativeGamification />
                 <PointsSystem />
               </div>
             ) : (
-              <div className="text-center py-12">
-                <h3 className="text-lg font-semibold mb-2">Rewards Coming Soon</h3>
-                <p className="text-muted-foreground">
+              <Card3D className="text-center py-16 bg-card/50 backdrop-blur-sm">
+                <div className="text-6xl mb-6">🚀</div>
+                <h3 className="text-2xl font-bold text-foreground mb-4">Rewards Coming Soon</h3>
+                <p className="text-muted-foreground text-lg max-w-md mx-auto">
                   Gamification features for {currentRole} accounts are under development.
                 </p>
-              </div>
+              </Card3D>
             )}
           </TabsContent>
         </Tabs>

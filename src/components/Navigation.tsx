@@ -14,11 +14,13 @@ import {
   Leaf
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSelector from "./LanguageSelector";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, profile, signOut } = useAuth();
+  const { t } = useLanguage();
 
   const userRoles = [
     { name: "Citizen", icon: User, gradient: "from-emerald-400 to-green-600", description: "Individual sustainability journey" },
@@ -39,11 +41,11 @@ const Navigation = () => {
           {/* Logo */}
           <div className="flex items-center space-x-4">
             <Link to="/" className="relative group">
-              <div className="w-16 h-16 flex items-center justify-center bg-gradient-to-br from-primary to-success rounded-2xl shadow-premium group-hover:scale-105 transition-transform duration-300">
+              <div className="w-20 h-20 flex items-center justify-center bg-gradient-to-br from-primary to-success rounded-2xl shadow-premium group-hover:scale-105 transition-transform duration-300">
                 <img 
                   src="/lovable-uploads/3911d8a5-aebe-4ede-83a5-33c26952916a.png" 
                   alt="Wellagora Logo" 
-                  className="w-12 h-12 object-contain logo-enhanced"
+                  className="w-16 h-16 object-contain logo-enhanced"
                 />
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-warning rounded-full flex items-center justify-center animate-pulse">
                   <Sparkles className="w-2 h-2 text-warning-foreground" />
@@ -66,11 +68,11 @@ const Navigation = () => {
           <div className="hidden lg:flex items-center space-x-4 text-sm">
             <div className="flex items-center space-x-2 px-3 py-1.5 bg-card/50 backdrop-blur-sm rounded-full border border-border">
               <Leaf className="w-4 h-4 text-success" />
-              <span className="text-foreground font-medium">2.4k Active Champions</span>
+              <span className="text-foreground font-medium">{t('nav.community_stats.champions')}</span>
             </div>
             <div className="flex items-center space-x-2 px-3 py-1.5 bg-card/50 backdrop-blur-sm rounded-full border border-border">
               <span className="w-2 h-2 bg-success rounded-full animate-pulse"></span>
-              <span className="text-foreground font-medium">Live Impact: 847 CO₂ saved today</span>
+              <span className="text-foreground font-medium">Élő Hatás: 847 CO₂ megtakarítás ma</span>
             </div>
             <LanguageSelector />
           </div>
@@ -92,32 +94,32 @@ const Navigation = () => {
           <div className="hidden lg:flex items-center space-x-8">
             <Link to="/" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
               <span className="relative">
-                Home
+                {t('nav.home')}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
               </span>
             </Link>
             <Link to="/challenges" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
               <span className="relative">
-                Challenges
+                {t('nav.challenges')}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
               </span>
             </Link>
             <Link to="/community" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
               <Users className="w-4 h-4" />
               <span className="relative">
-                Community Hub
+                {t('nav.community')}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
               </span>
             </Link>
             <Link to="/dashboard" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
               <span className="relative">
-                Impact Dashboard
+                {t('nav.dashboard')}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
               </span>
             </Link>
             <Link to="/ai-assistant" className="group flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-xl hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent-foreground">
               <span className="text-lg">🤖</span>
-              <span>AI Sustainability Coach</span>
+              <span>{t('nav.ai_assistant')}</span>
             </Link>
           </div>
 
@@ -138,7 +140,7 @@ const Navigation = () => {
                     </span>
                     {profile?.role && (
                       <span className="text-xs text-primary capitalize">
-                        {profile.role} Champion
+                        {profile.role} {t('common.champion')}
                       </span>
                     )}
                   </div>
@@ -148,16 +150,16 @@ const Navigation = () => {
                   className="flex items-center space-x-2 px-3 py-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all duration-300"
                 >
                   <LogOut className="w-4 h-4" />
-                  <span className="text-sm font-medium">Sign Out</span>
+                  <span className="text-sm font-medium">{t('nav.sign_out')}</span>
                 </button>
               </div>
             ) : (
               <div className="flex items-center space-x-3">
                 <Link to="/auth" className="px-6 py-2.5 bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground rounded-xl font-semibold transition-all duration-300 shadow-premium hover:shadow-glow hover:scale-105 transform">
-                  Join Community
+                  {t('nav.join_community')}
                 </Link>
                 <Link to="/auth" className="px-6 py-2.5 border-2 border-border hover:border-primary hover:bg-card/50 text-foreground rounded-xl font-medium transition-all duration-300">
-                  Sign In
+                  {t('nav.sign_in')}
                 </Link>
               </div>
             )}

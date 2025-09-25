@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Navigation from "@/components/Navigation";
+import { Card3D, FeatureCard3D } from "@/components/ui/card-3d";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -27,13 +29,16 @@ import {
   RotateCcw,
   DollarSign,
   Star,
-  Loader2
+  Loader2,
+  TrendingUp,
+  Award
 } from "lucide-react";
 import { challenges, Challenge } from "@/data/challenges";
 
 const ChallengesPage = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("all");
@@ -86,36 +91,36 @@ const ChallengesPage = () => {
 
   const getDifficultyColor = (difficulty: Challenge['difficulty']) => {
     switch (difficulty) {
-      case "beginner": return "bg-green-100 text-green-800 border-green-200";
-      case "intermediate": return "bg-blue-100 text-blue-800 border-blue-200";
-      case "advanced": return "bg-orange-100 text-orange-800 border-orange-200";
-      case "expert": return "bg-red-100 text-red-800 border-red-200";
-      default: return "bg-gray-100 text-gray-800 border-gray-200";
+      case "beginner": return "bg-success/20 text-success border-success/30";
+      case "intermediate": return "bg-primary/20 text-primary border-primary/30";
+      case "advanced": return "bg-warning/20 text-warning border-warning/30";
+      case "expert": return "bg-destructive/20 text-destructive border-destructive/30";
+      default: return "bg-muted/20 text-muted-foreground border-muted/30";
     }
   };
 
   const getCategoryColor = (category: Challenge['category']) => {
     switch (category) {
-      case "energy": return "bg-yellow-100 text-yellow-800";
-      case "transport": return "bg-blue-100 text-blue-800";
-      case "food": return "bg-green-100 text-green-800";
-      case "waste": return "bg-purple-100 text-purple-800";
-      case "community": return "bg-pink-100 text-pink-800";
-      case "innovation": return "bg-indigo-100 text-indigo-800";
-      case "water": return "bg-cyan-100 text-cyan-800";
-      case "biodiversity": return "bg-emerald-100 text-emerald-800";
-      case "circular-economy": return "bg-teal-100 text-teal-800";
-      case "green-finance": return "bg-lime-100 text-lime-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "energy": return "bg-warning/20 text-warning";
+      case "transport": return "bg-primary/20 text-primary";
+      case "food": return "bg-success/20 text-success";
+      case "waste": return "bg-secondary/20 text-secondary";
+      case "community": return "bg-accent/20 text-accent";
+      case "innovation": return "bg-primary/20 text-primary";
+      case "water": return "bg-info/20 text-info";
+      case "biodiversity": return "bg-success/20 text-success";
+      case "circular-economy": return "bg-secondary/20 text-secondary";
+      case "green-finance": return "bg-warning/20 text-warning";
+      default: return "bg-muted/20 text-muted-foreground";
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex items-center space-x-2">
           <Loader2 className="h-4 w-4 animate-spin text-primary" />
-          <span className="text-white">Loading...</span>
+          <span className="text-foreground">{t('common.loading')}</span>
         </div>
       </div>
     );
@@ -126,109 +131,114 @@ const ChallengesPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
-      <div className="container mx-auto px-4 py-8">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-            Sustainability{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
-              Challenges
-            </span>
-          </h1>
-          <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-8">
-            Join thousands of sustainability champions in taking action for our planet. 
-            Complete challenges, earn points, and make a real environmental impact.
-          </p>
-          
-          {/* Quick Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-              <div className="text-2xl font-bold text-white">{challenges.length}</div>
-              <div className="text-slate-300">Active Challenges</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-              <div className="text-2xl font-bold text-white">
-                {challenges.reduce((sum, c) => sum + c.participants, 0).toLocaleString()}
-              </div>
-              <div className="text-slate-300">Total Participants</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-              <div className="text-2xl font-bold text-white">
-                {Math.round(challenges.reduce((sum, c) => sum + c.completionRate, 0) / challenges.length)}%
-              </div>
-              <div className="text-slate-300">Avg Completion Rate</div>
+      {/* Hero Section */}
+      <section className="relative py-20 bg-gradient-wave overflow-hidden">
+        <div className="absolute inset-0 bg-wave-pattern opacity-30"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center animate-fade-up-3d">
+            <h1 className="text-4xl lg:text-6xl font-bold text-foreground mb-6">
+              {t('nav.challenges')}
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+              Csatlakozz fenntarthatósági bajnokok ezreihez és valós környezeti hatást érj el gamifikált kihívásokkal.
+            </p>
+            
+            {/* Quick Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
+              <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
+                <div className="text-3xl font-bold text-foreground mb-1">{challenges.length}</div>
+                <div className="text-muted-foreground">Aktív Kihívások</div>
+              </Card3D>
+              <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
+                <div className="text-3xl font-bold text-foreground mb-1">
+                  {challenges.reduce((sum, c) => sum + c.participants, 0).toLocaleString()}
+                </div>
+                <div className="text-muted-foreground">Összes Résztvevő</div>
+              </Card3D>
+              <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
+                <div className="text-3xl font-bold text-foreground mb-1">
+                  {Math.round(challenges.reduce((sum, c) => sum + c.completionRate, 0) / challenges.length)}%
+                </div>
+                <div className="text-muted-foreground">Átlagos Teljesítés</div>
+              </Card3D>
             </div>
           </div>
         </div>
+      </section>
 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Search and Filters */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 mb-8">
+        <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6 mb-8">
           <div className="flex flex-col lg:flex-row gap-4 items-center">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search challenges..."
+                placeholder="Kihívások keresése..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-white/20 border-white/30 text-white placeholder:text-slate-400"
+                className="pl-10 bg-background/50 border-border/50 backdrop-blur-sm"
               />
             </div>
             
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-full lg:w-48 bg-white/20 border-white/30 text-white">
-                <SelectValue placeholder="Category" />
+              <SelectTrigger className="w-full lg:w-48 bg-background/50 border-border/50">
+                <SelectValue placeholder="Kategória" />
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-600">
-                <SelectItem value="all">All Categories</SelectItem>
-                <SelectItem value="energy">Energy</SelectItem>
-                <SelectItem value="transport">Transport</SelectItem>
-                <SelectItem value="food">Food</SelectItem>
-                <SelectItem value="waste">Waste</SelectItem>
-                <SelectItem value="community">Community</SelectItem>
-                <SelectItem value="innovation">Innovation</SelectItem>
-                <SelectItem value="water">Water</SelectItem>
-                <SelectItem value="biodiversity">Biodiversity</SelectItem>
-                <SelectItem value="circular-economy">Circular Economy</SelectItem>
-                <SelectItem value="green-finance">Green Finance</SelectItem>
+              <SelectContent className="bg-background border-border">
+                <SelectItem value="all">Minden Kategória</SelectItem>
+                <SelectItem value="energy">Energia</SelectItem>
+                <SelectItem value="transport">Közlekedés</SelectItem>
+                <SelectItem value="food">Étel</SelectItem>
+                <SelectItem value="waste">Hulladék</SelectItem>
+                <SelectItem value="community">Közösség</SelectItem>
+                <SelectItem value="innovation">Innováció</SelectItem>
+                <SelectItem value="water">Víz</SelectItem>
+                <SelectItem value="biodiversity">Biodiverzitás</SelectItem>
+                <SelectItem value="circular-economy">Körforgásos Gazdaság</SelectItem>
+                <SelectItem value="green-finance">Zöld Finanszírozás</SelectItem>
               </SelectContent>
             </Select>
 
             <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
-              <SelectTrigger className="w-full lg:w-48 bg-white/20 border-white/30 text-white">
-                <SelectValue placeholder="Difficulty" />
+              <SelectTrigger className="w-full lg:w-48 bg-background/50 border-border/50">
+                <SelectValue placeholder="Nehézség" />
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-600">
-                <SelectItem value="all">All Levels</SelectItem>
-                <SelectItem value="beginner">Beginner</SelectItem>
-                <SelectItem value="intermediate">Intermediate</SelectItem>
-                <SelectItem value="advanced">Advanced</SelectItem>
-                <SelectItem value="expert">Expert</SelectItem>
+              <SelectContent className="bg-background border-border">
+                <SelectItem value="all">Minden Szint</SelectItem>
+                <SelectItem value="beginner">Kezdő</SelectItem>
+                <SelectItem value="intermediate">Középhaladó</SelectItem>
+                <SelectItem value="advanced">Haladó</SelectItem>
+                <SelectItem value="expert">Szakértő</SelectItem>
               </SelectContent>
             </Select>
           </div>
-        </div>
+        </Card3D>
 
         {/* Challenges Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredChallenges.map((challenge) => (
-            <Card key={challenge.id} className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300 hover:shadow-2xl">
+          {filteredChallenges.map((challenge, index) => (
+            <Card3D 
+              key={challenge.id} 
+              className="bg-card/50 backdrop-blur-sm border border-border/50 hover:bg-card/70 transition-all duration-300 hover:shadow-glow hover:scale-105 animate-slide-in-3d"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
               <CardHeader className="pb-4">
                 <div className="flex items-start justify-between mb-3">
-                  <div className={`p-2 rounded-lg ${getCategoryColor(challenge.category)}`}>
+                  <div className={`p-3 rounded-2xl ${getCategoryColor(challenge.category)} shadow-premium`}>
                     {getCategoryIcon(challenge.category)}
                   </div>
-                  <Badge className={`${getDifficultyColor(challenge.difficulty)} text-xs font-medium`}>
+                  <Badge className={`${getDifficultyColor(challenge.difficulty)} text-xs font-medium px-3 py-1 rounded-full`}>
                     {challenge.difficulty}
                   </Badge>
                 </div>
                 
-                <CardTitle className="text-white text-lg leading-tight mb-2">
+                <CardTitle className="text-foreground text-lg leading-tight mb-2">
                   {challenge.title}
                 </CardTitle>
-                <CardDescription className="text-slate-300 text-sm leading-relaxed">
+                <CardDescription className="text-muted-foreground text-sm leading-relaxed">
                   {challenge.description}
                 </CardDescription>
               </CardHeader>
@@ -236,30 +246,30 @@ const ChallengesPage = () => {
               <CardContent className="space-y-4">
                 {/* Challenge Stats */}
                 <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="flex items-center space-x-2 text-slate-300">
+                  <div className="flex items-center space-x-2 text-muted-foreground">
                     <Clock className="w-4 h-4" />
                     <span>{challenge.duration}</span>
                   </div>
-                  <div className="flex items-center space-x-2 text-slate-300">
+                  <div className="flex items-center space-x-2 text-muted-foreground">
                     <Trophy className="w-4 h-4" />
-                    <span>{challenge.pointsReward} pts</span>
+                    <span>{challenge.pointsReward} pont</span>
                   </div>
-                  <div className="flex items-center space-x-2 text-slate-300">
+                  <div className="flex items-center space-x-2 text-muted-foreground">
                     <Users className="w-4 h-4" />
                     <span>{challenge.participants.toLocaleString()}</span>
                   </div>
-                  <div className="flex items-center space-x-2 text-slate-300">
+                  <div className="flex items-center space-x-2 text-muted-foreground">
                     <Target className="w-4 h-4" />
-                    <span>{challenge.completionRate}% success</span>
+                    <span>{challenge.completionRate}% siker</span>
                   </div>
                 </div>
 
                 {/* Environmental Impact */}
-                <div className="bg-white/10 rounded-lg p-3 border border-white/20">
-                  <div className="text-xs text-slate-400 mb-1">Environmental Impact</div>
+                <div className="bg-gradient-to-r from-success/10 to-primary/10 rounded-2xl p-4 border border-success/20">
+                  <div className="text-xs text-muted-foreground mb-2">Környezeti Hatás</div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-emerald-400">🌱 {challenge.impact.co2Saved}kg CO₂ saved</span>
-                    <span className="text-green-400">🌳 {challenge.impact.treesEquivalent} trees equiv.</span>
+                    <span className="text-success font-medium">🌱 {challenge.impact.co2Saved}kg CO₂ megtakarítás</span>
+                    <span className="text-primary font-medium">🌳 {challenge.impact.treesEquivalent} fa egyenérték</span>
                   </div>
                 </div>
 
@@ -267,44 +277,44 @@ const ChallengesPage = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex -space-x-2">
                     {challenge.participants_preview.slice(0, 3).map((participant) => (
-                      <Avatar key={participant.id} className="w-6 h-6 border-2 border-white/20">
+                      <Avatar key={participant.id} className="w-8 h-8 border-2 border-background shadow-premium">
                         <AvatarImage src={participant.avatar} />
-                        <AvatarFallback className="text-xs">
+                        <AvatarFallback className="text-xs bg-gradient-to-br from-primary to-success text-primary-foreground">
                           {participant.name.split(' ').map(n => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
                     ))}
                     {challenge.participants > 3 && (
-                      <div className="w-6 h-6 rounded-full bg-white/20 border-2 border-white/20 flex items-center justify-center">
-                        <span className="text-xs text-white">+</span>
+                      <div className="w-8 h-8 rounded-full bg-card border-2 border-background shadow-premium flex items-center justify-center">
+                        <span className="text-xs text-muted-foreground font-medium">+</span>
                       </div>
                     )}
                   </div>
                   
                   {challenge.sponsor && (
-                    <div className="text-xs text-slate-400">
-                      Sponsored by {challenge.sponsor.name}
+                    <div className="text-xs text-muted-foreground">
+                      Szponzor: {challenge.sponsor.name}
                     </div>
                   )}
                 </div>
 
                 <Button 
                   onClick={() => navigate(`/challenges/${challenge.id}`)}
-                  className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white font-semibold"
+                  className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground font-semibold rounded-2xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300"
                 >
-                  Join Challenge
+                  Csatlakozás a Kihíváshoz
                 </Button>
               </CardContent>
-            </Card>
+            </Card3D>
           ))}
         </div>
 
         {filteredChallenges.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-2xl font-bold text-white mb-2">No challenges found</h3>
-            <p className="text-slate-300">Try adjusting your search or filters</p>
-          </div>
+          <Card3D className="text-center py-16 bg-card/50 backdrop-blur-sm">
+            <div className="text-6xl mb-6">🔍</div>
+            <h3 className="text-2xl font-bold text-foreground mb-4">Nem találhatók kihívások</h3>
+            <p className="text-muted-foreground text-lg">Próbáld meg módosítani a keresési feltételeket</p>
+          </Card3D>
         )}
       </div>
     </div>
