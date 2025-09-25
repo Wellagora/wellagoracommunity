@@ -1,11 +1,9 @@
 import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
-import RegionalMap3D from "@/components/revolutionary/RegionalMap3D";
-import PredictiveImpactDashboard from "@/components/revolutionary/PredictiveImpactDashboard";
-import StakeholderOrchestration from "@/components/revolutionary/StakeholderOrchestration";
-import GuildSystem from "@/components/revolutionary/GuildSystem";
-import CircularEconomy from "@/components/revolutionary/CircularEconomy";
-import RealTimeAnalytics from "@/components/revolutionary/RealTimeAnalytics";
+import RegionalOrchestrator2D from "@/components/premium/RegionalOrchestrator2D";
+import StakeholderMatcher from "@/components/premium/StakeholderMatcher";
+import PredictiveAnalytics from "@/components/premium/PredictiveAnalytics";
+import CircularEconomyFlow from "@/components/premium/CircularEconomyFlow";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
