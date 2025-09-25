@@ -57,11 +57,20 @@ const Dashboard = ({ userRole }: DashboardProps) => {
       { month: "Mar", co2: 59.5, points: 890 },
     ],
     categoryBreakdown: [
-      { name: "Energy", value: 35, color: "#FEF08A" },
-      { name: "Transport", value: 28, color: "#A7F3D0" },
-      { name: "Waste", value: 22, color: "#BFDBFE" },
-      { name: "Food", value: 15, color: "#DDD6FE" }
+      { name: "Energia", value: 28, color: "#FEF08A", icon: "⚡" },
+      { name: "Közlekedés", value: 22, color: "#A7F3D0", icon: "🚲" },
+      { name: "Hulladék", value: 18, color: "#BFDBFE", icon: "♻️" },
+      { name: "Élelmiszer", value: 15, color: "#DDD6FE", icon: "🥬" },
+      { name: "Víz", value: 10, color: "#FECACA", icon: "💧" },
+      { name: "Otthon", value: 7, color: "#C7D2FE", icon: "🏠" }
     ],
+    forestGrowth: {
+      trees: 12,
+      shrubs: 8,
+      flowers: 15,
+      totalCo2Absorbed: 156.8,
+      monthlyGrowth: 2.3
+    },
     activeChallenges: [
       {
         id: "1",
@@ -165,82 +174,118 @@ const Dashboard = ({ userRole }: DashboardProps) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Attractive Progress Chart */}
-        <Card className="bg-gradient-to-br from-card via-card to-primary/5 border-primary/10">
+        {/* Forest Growth Visualization */}
+        <Card className="bg-gradient-to-br from-success/5 via-card to-primary/5 border-success/20">
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
-              <TrendingUp className="w-5 h-5 text-primary" />
-              <span>Monthly Progress</span>
+              <TreePine className="w-5 h-5 text-success" />
+              <span>Az Erdőm Növekedése</span>
             </CardTitle>
-            <CardDescription>Your sustainability impact journey</CardDescription>
+            <CardDescription>Fenntartható tevékenységeid virtuális erdőként</CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={citizenData.monthlyProgress}>
-                <defs>
-                  <linearGradient id="progressGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.05}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.3} />
-                <XAxis 
-                  dataKey="month" 
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                />
-                <YAxis 
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                />
-                <Tooltip 
-                  contentStyle={{
-                    backgroundColor: 'hsl(var(--card))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                  }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="co2" 
-                  stroke="hsl(var(--primary))" 
-                  strokeWidth={3}
-                  dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 6 }}
-                  activeDot={{ r: 8, fill: 'hsl(var(--primary))', strokeWidth: 2, stroke: 'hsl(var(--background))' }}
-                  fill="url(#progressGradient)"
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            <div className="space-y-6">
+              {/* Forest Visualization */}
+              <div className="bg-gradient-to-b from-blue-100 to-green-200 dark:from-blue-900/20 dark:to-green-900/20 rounded-xl p-6 min-h-[200px] relative overflow-hidden">
+                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-green-300 to-transparent dark:from-green-800/40"></div>
+                
+                {/* Trees */}
+                <div className="flex items-end justify-center space-x-2 h-40 relative z-10">
+                  {Array.from({ length: citizenData.forestGrowth.trees }, (_, i) => (
+                    <div key={`tree-${i}`} className="flex flex-col items-center animate-fade-in" style={{ animationDelay: `${i * 0.1}s` }}>
+                      <div className="text-2xl mb-1">🌲</div>
+                    </div>
+                  ))}
+                  {Array.from({ length: citizenData.forestGrowth.shrubs }, (_, i) => (
+                    <div key={`shrub-${i}`} className="flex flex-col items-center animate-fade-in" style={{ animationDelay: `${(i + 12) * 0.1}s` }}>
+                      <div className="text-lg mb-1">🌿</div>
+                    </div>
+                  ))}
+                  {Array.from({ length: Math.min(citizenData.forestGrowth.flowers, 8) }, (_, i) => (
+                    <div key={`flower-${i}`} className="flex flex-col items-center animate-fade-in" style={{ animationDelay: `${(i + 20) * 0.1}s` }}>
+                      <div className="text-sm mb-1">🌸</div>
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Growth Stats */}
+                <div className="absolute top-4 right-4 bg-white/80 dark:bg-black/40 backdrop-blur-sm rounded-lg p-3 space-y-1">
+                  <div className="text-xs text-muted-foreground">Ez a hónap</div>
+                  <div className="text-sm font-semibold text-success">+{citizenData.forestGrowth.monthlyGrowth} új növény</div>
+                </div>
+              </div>
+              
+              {/* Forest Stats */}
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center p-3 bg-success/10 rounded-lg">
+                  <div className="text-2xl mb-1">🌲</div>
+                  <div className="font-semibold text-foreground">{citizenData.forestGrowth.trees}</div>
+                  <div className="text-xs text-muted-foreground">Fa</div>
+                </div>
+                <div className="text-center p-3 bg-primary/10 rounded-lg">
+                  <div className="text-2xl mb-1">🌿</div>
+                  <div className="font-semibold text-foreground">{citizenData.forestGrowth.shrubs}</div>
+                  <div className="text-xs text-muted-foreground">Cserje</div>
+                </div>
+                <div className="text-center p-3 bg-accent/10 rounded-lg">
+                  <div className="text-2xl mb-1">🌸</div>
+                  <div className="font-semibold text-foreground">{citizenData.forestGrowth.flowers}</div>
+                  <div className="text-xs text-muted-foreground">Virág</div>
+                </div>
+              </div>
+              
+              <div className="text-center p-4 bg-gradient-to-r from-success/10 to-primary/10 rounded-lg">
+                <div className="text-sm text-muted-foreground mb-1">Az erdőd összesen</div>
+                <div className="text-lg font-bold text-success">{citizenData.forestGrowth.totalCo2Absorbed} kg CO₂</div>
+                <div className="text-xs text-muted-foreground">elnyelését jelképezi</div>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        {/* Category Breakdown */}
+        {/* Enhanced Category Breakdown */}
         <Card>
           <CardHeader>
-            <CardTitle>Impact by Category</CardTitle>
-            <CardDescription>Where you're making the biggest difference</CardDescription>
+            <CardTitle>Hatás Kategóriák Szerint</CardTitle>
+            <CardDescription>Hol teszed a legnagyobb hatást</CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={citizenData.categoryBreakdown}
-                  cx="50%"
-                  cy="50%" 
-                  innerRadius={60}
-                  outerRadius={120}
-                  dataKey="value"
-                >
-                  {citizenData.categoryBreakdown.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+            <div className="space-y-4">
+              {/* Category List with Progress Bars */}
+              {citizenData.categoryBreakdown.map((category, index) => (
+                <div key={index} className="flex items-center space-x-4 p-3 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors">
+                  <div className="text-2xl">{category.icon}</div>
+                  <div className="flex-1">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="font-medium text-foreground">{category.name}</span>
+                      <span className="text-sm font-semibold text-foreground">{category.value}%</span>
+                    </div>
+                    <Progress value={category.value} className="h-2" />
+                  </div>
+                </div>
+              ))}
+              
+              {/* Mini Pie Chart */}
+              <div className="mt-6 flex justify-center">
+                <ResponsiveContainer width={200} height={200}>
+                  <PieChart>
+                    <Pie
+                      data={citizenData.categoryBreakdown}
+                      cx="50%"
+                      cy="50%" 
+                      innerRadius={40}
+                      outerRadius={80}
+                      dataKey="value"
+                    >
+                      {citizenData.categoryBreakdown.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -417,38 +462,43 @@ const Dashboard = ({ userRole }: DashboardProps) => {
     switch (userRole) {
       case "citizen":
         return {
-          title: "Personal Dashboard",
-          description: "Track your individual sustainability impact and progress",
-          badge: "Your Personal View",
-          badgeColor: "bg-primary"
+          title: "Személyes Dashboard",
+          description: "Saját fenntarthatósági hatásod és fejlődésed nyomon követése",
+          badge: "Személyes Nézet",
+          badgeColor: "bg-primary",
+          explanation: "Ez a te személyes dashboard-od, ahol láthatod saját környezetvédelmi tevékenységeidet és eredményeidet."
         };
       case "business":
         return {
-          title: "Business Dashboard", 
-          description: "See how businesses in your area are contributing to sustainability",
-          badge: "Business Perspective",
-          badgeColor: "bg-accent"
+          title: "Vállalati Dashboard", 
+          description: "Hogyan járulnak hozzá a vállalkozások a fenntarthatósághoz a területeden",
+          badge: "Vállalati Perspektíva",
+          badgeColor: "bg-accent",
+          explanation: "Itt láthatod, milyen fenntarthatósági kezdeményezések zajlanak a vállalati szektorban, és hogyan kapcsolódhatsz be mint magánszemély."
         };
       case "government":
         return {
-          title: "Government Dashboard",
-          description: "Municipal and policy-level sustainability initiatives",
-          badge: "Government View",
-          badgeColor: "bg-warning"
+          title: "Önkormányzati Dashboard",
+          description: "Városi és politikai szintű fenntarthatósági kezdeményezések",
+          badge: "Önkormányzati Nézet",
+          badgeColor: "bg-warning",
+          explanation: "Betekintés az önkormányzati környezetvédelmi programokba és azt, hogyan tudsz te mint állampolgár részt venni ezekben."
         };
       case "ngo":
         return {
           title: "NGO Dashboard", 
-          description: "Community organizations working for environmental change",
-          badge: "NGO Perspective",
-          badgeColor: "bg-success"
+          description: "Környezetvédelmi civil szervezetek munkája",
+          badge: "Civil Szervezetek",
+          badgeColor: "bg-success",
+          explanation: "Fedezd fel a civil szervezetek környezetvédelmi projektjeit és csatlakozz önkéntesként vagy támogatóként."
         };
       default:
         return {
           title: "Dashboard",
-          description: "Sustainability tracking and progress",
-          badge: "Default View",
-          badgeColor: "bg-muted"
+          description: "Fenntarthatóság követés és fejlődés",
+          badge: "Alapértelmezett Nézet",
+          badgeColor: "bg-muted",
+          explanation: ""
         };
     }
   };
@@ -467,9 +517,21 @@ const Dashboard = ({ userRole }: DashboardProps) => {
             {roleInfo.badge}
           </Badge>
         </div>
-        <p className="text-muted-foreground text-lg">
+        <p className="text-muted-foreground text-lg mb-4">
           {roleInfo.description}
         </p>
+        
+        {/* Role Explanation Card */}
+        <Card className="bg-gradient-to-r from-card to-muted/20 border-border/50">
+          <CardContent className="p-4">
+            <div className="flex items-start space-x-3">
+              <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                <strong>Miért ezt a nézetet látod?</strong> {roleInfo.explanation}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Time Period Selector */}
