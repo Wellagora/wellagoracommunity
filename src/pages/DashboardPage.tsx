@@ -31,7 +31,7 @@ type UserRole = "citizen" | "business" | "government" | "ngo";
 
 const DashboardPage = () => {
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
   const { t } = useLanguage();
   const [currentRole, setCurrentRole] = useState<UserRole>("citizen");
   const [showCelebration, setShowCelebration] = useState(false);
@@ -51,6 +51,13 @@ const DashboardPage = () => {
     impact: "45.2kg",
     level: 13
   };
+
+  // Sync currentRole with user profile
+  useEffect(() => {
+    if (profile?.user_role && profile.user_role !== currentRole) {
+      setCurrentRole(profile.user_role);
+    }
+  }, [profile?.user_role, currentRole]);
 
   const roles = [
     { 
@@ -211,7 +218,7 @@ const DashboardPage = () => {
           </TabsList>
 
           <TabsContent value="analytics" className="animate-fade-in">
-            <Dashboard userRole={currentRole} />
+            <Dashboard userRole={profile?.user_role || currentRole} />
           </TabsContent>
 
           <TabsContent value="progress" className="animate-fade-in">

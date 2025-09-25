@@ -7,11 +7,14 @@ interface Profile {
   first_name: string;
   last_name: string;
   email: string;
-  role: 'citizen' | 'business' | 'municipal' | 'ngo';
+  user_role: 'citizen' | 'business' | 'government' | 'ngo';
   organization?: string;
   avatar_url?: string;
   created_at: string;
   updated_at: string;
+  organization_id?: string;
+  public_display_name?: string;
+  is_public_profile?: boolean;
 }
 
 interface AuthContextType {
@@ -132,15 +135,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { error } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/`,
-        data: {
-          first_name: data.firstName,
-          last_name: data.lastName,
-          role: data.role,
-          organization: data.organization || null,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+          data: {
+            first_name: data.firstName,
+            last_name: data.lastName,
+            user_role: data.role,
+            organization: data.organization || null,
+          },
         },
-      },
     });
 
     return { error };

@@ -14,54 +14,197 @@ export type Database = {
   }
   public: {
     Tables: {
+      organizations: {
+        Row: {
+          co2_reduction_total: number | null
+          created_at: string | null
+          description: string | null
+          employee_count: number | null
+          id: string
+          industry: string | null
+          is_public: boolean | null
+          location: string | null
+          logo_url: string | null
+          name: string
+          sustainability_score: number | null
+          type: Database["public"]["Enums"]["user_role"]
+          updated_at: string | null
+          website_url: string | null
+        }
+        Insert: {
+          co2_reduction_total?: number | null
+          created_at?: string | null
+          description?: string | null
+          employee_count?: number | null
+          id?: string
+          industry?: string | null
+          is_public?: boolean | null
+          location?: string | null
+          logo_url?: string | null
+          name: string
+          sustainability_score?: number | null
+          type: Database["public"]["Enums"]["user_role"]
+          updated_at?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          co2_reduction_total?: number | null
+          created_at?: string | null
+          description?: string | null
+          employee_count?: number | null
+          id?: string
+          industry?: string | null
+          is_public?: boolean | null
+          location?: string | null
+          logo_url?: string | null
+          name?: string
+          sustainability_score?: number | null
+          type?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
+          company_size: string | null
           created_at: string
           email: string
+          employee_count: number | null
           first_name: string
           id: string
+          industry: string | null
+          is_public_profile: boolean | null
           last_name: string
+          location: string | null
           organization: string | null
+          organization_id: string | null
           preferred_language: string | null
+          public_display_name: string | null
           role: string
+          sustainability_goals: string[] | null
           updated_at: string
+          user_role: Database["public"]["Enums"]["user_role"]
+          website_url: string | null
         }
         Insert: {
           avatar_url?: string | null
+          company_size?: string | null
           created_at?: string
           email: string
+          employee_count?: number | null
           first_name: string
           id: string
+          industry?: string | null
+          is_public_profile?: boolean | null
           last_name: string
+          location?: string | null
           organization?: string | null
+          organization_id?: string | null
           preferred_language?: string | null
+          public_display_name?: string | null
           role: string
+          sustainability_goals?: string[] | null
           updated_at?: string
+          user_role?: Database["public"]["Enums"]["user_role"]
+          website_url?: string | null
         }
         Update: {
           avatar_url?: string | null
+          company_size?: string | null
           created_at?: string
           email?: string
+          employee_count?: number | null
           first_name?: string
           id?: string
+          industry?: string | null
+          is_public_profile?: boolean | null
           last_name?: string
+          location?: string | null
           organization?: string | null
+          organization_id?: string | null
           preferred_language?: string | null
+          public_display_name?: string | null
           role?: string
+          sustainability_goals?: string[] | null
           updated_at?: string
+          user_role?: Database["public"]["Enums"]["user_role"]
+          website_url?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sustainability_activities: {
+        Row: {
+          activity_type: string
+          created_at: string | null
+          date: string | null
+          description: string | null
+          id: string
+          impact_amount: number
+          organization_id: string | null
+          points_earned: number | null
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string | null
+          date?: string | null
+          description?: string | null
+          id?: string
+          impact_amount: number
+          organization_id?: string | null
+          points_earned?: number | null
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string | null
+          date?: string | null
+          description?: string | null
+          id?: string
+          impact_amount?: number
+          organization_id?: string | null
+          points_earned?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sustainability_activities_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sustainability_activities_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
     }
     Enums: {
-      [_ in never]: never
+      user_role: "citizen" | "business" | "government" | "ngo"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -188,6 +331,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      user_role: ["citizen", "business", "government", "ngo"],
+    },
   },
 } as const

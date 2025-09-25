@@ -59,6 +59,11 @@ const Index = () => {
                 🎯 Kezdj egy Kihívást
               </Button>
             </Link>
+            <Link to="/auth">
+              <Button size="lg" variant="outline" className="border-2 border-primary hover:bg-primary hover:text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300">
+                👤 Csatlakozz most
+              </Button>
+            </Link>
             <Link to="/dynamic-regional">
               <Button size="lg" variant="outline" className="border-2 border-primary hover:bg-primary hover:text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300">
                 🌍 Fedezd fel Régiódat

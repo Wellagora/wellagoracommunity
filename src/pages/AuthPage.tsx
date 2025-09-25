@@ -30,7 +30,7 @@ const AuthPage = () => {
     confirmPassword: z.string(),
     firstName: z.string().min(1, "First name is required").max(50, "First name must be less than 50 characters"),
     lastName: z.string().min(1, "Last name is required").max(50, "Last name must be less than 50 characters"),
-    role: z.enum(["citizen", "business", "municipal", "ngo"], { 
+    role: z.enum(["citizen", "business", "government", "ngo"], { 
       message: "Please select a role" 
     }),
     organization: z.string().max(100, "Organization name must be less than 100 characters").optional(),
@@ -374,21 +374,25 @@ const AuthPage = () => {
                               <SelectValue placeholder="Select your role" />
                             </SelectTrigger>
                             <SelectContent className="bg-card border-border/50">
-                              <SelectItem value="citizen">Citizen</SelectItem>
-                              <SelectItem value="business">Business</SelectItem>
-                              <SelectItem value="municipal">Municipal</SelectItem>
-                              <SelectItem value="ngo">NGO</SelectItem>
+                              <SelectItem value="citizen">🧑‍🤝‍🧑 Magánszemély</SelectItem>
+                              <SelectItem value="business">🏢 Vállalkozás</SelectItem>
+                              <SelectItem value="government">🏛️ Önkormányzat</SelectItem>
+                              <SelectItem value="ngo">🌱 Civil Szervezet (NGO)</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
-                        {(signupForm.role === "business" || signupForm.role === "municipal" || signupForm.role === "ngo") && (
+                        {(signupForm.role === "business" || signupForm.role === "government" || signupForm.role === "ngo") && (
                           <div className="space-y-2">
-                            <Label htmlFor="organization" className="text-foreground">Organization</Label>
+                            <Label htmlFor="organization" className="text-foreground">Szervezet neve</Label>
                             <Input
                               id="organization"
                               value={signupForm.organization}
                               onChange={(e) => setSignupForm({ ...signupForm, organization: e.target.value })}
-                              placeholder="Your organization name"
+                              placeholder={
+                                signupForm.role === "business" ? "Pl. Green Tech Kft." :
+                                signupForm.role === "government" ? "Pl. Budapest IV. kerület" :
+                                "Pl. Greenpeace Magyarország"
+                              }
                               className="bg-background/50 backdrop-blur-sm border-border/50 text-foreground placeholder:text-muted-foreground"
                             />
                           </div>

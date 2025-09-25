@@ -155,9 +155,9 @@ const Navigation = () => {
                     <span className="text-sm font-semibold text-foreground">
                       {profile?.first_name} {profile?.last_name}
                     </span>
-                    {profile?.role && (
+                    {profile?.user_role && (
                       <span className="text-xs text-primary capitalize">
-                        {profile.role} {t('common.champion')}
+                        {profile.user_role} {t('common.champion')}
                       </span>
                     )}
                   </div>
@@ -219,9 +219,9 @@ const Navigation = () => {
                         <div className="text-sm font-semibold text-foreground">
                           {profile?.first_name} {profile?.last_name}
                         </div>
-                        {profile?.role && (
+                        {profile?.user_role && (
                           <div className="text-xs text-primary capitalize">
-                            {profile.role} Champion
+                            {profile.user_role} Champion
                           </div>
                         )}
                       </div>
