@@ -8,70 +8,70 @@ Enhanced design with premium typography and sophisticated color palette
 
 @layer base {
   :root {
-    /* BEAUTIFUL BLUE & GREEN DESIGN SYSTEM - Inspired by EBA Awards */
-    --background: 235 60% 15%;
-    --foreground: 0 0% 98%;
+    /* VILÁGOS, EMBERKÖZPONTÚ DESIGN - Sustainability & Innovation */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
 
-    --card: 235 55% 18%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
 
-    --popover: 235 55% 18%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
 
-    /* Vibrant green primary - like EBA Awards badges */
-    --primary: 88 65% 55%;
-    --primary-foreground: 0 0% 98%;
-    --primary-glow: 88 70% 65%;
-    --primary-dark: 88 75% 45%;
+    /* Természetes zöld primary - friss és élő */
+    --primary: 142 76% 36%;
+    --primary-foreground: 355.7 100% 97.3%;
+    --primary-glow: 142 69% 58%;
+    --primary-dark: 142 83% 24%;
 
-    /* Rich blue secondary - like EBA Awards background */
-    --secondary: 235 65% 55%;
-    --secondary-foreground: 0 0% 98%;
+    /* Meleg kék secondary - megbízható és professzionális */
+    --secondary: 210 40% 98%;
+    --secondary-foreground: 222.2 84% 4.9%;
 
-    /* Elegant muted tones */
-    --muted: 235 25% 25%;
-    --muted-foreground: 235 10% 70%;
+    /* Lágy szürke tónusok */
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    /* Bright accent green */
-    --accent: 88 65% 55%;
-    --accent-foreground: 0 0% 98%;
-    --accent-light: 88 60% 70%;
+    /* Természetes accent */
+    --accent: 142 69% 58%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --accent-light: 142 60% 70%;
 
-    /* Success green - matching primary */
-    --success: 88 65% 55%;
-    --success-foreground: 0 0% 98%;
-    --success-light: 88 70% 65%;
+    /* Élénk success zöld */
+    --success: 142 76% 36%;
+    --success-foreground: 355.7 100% 97.3%;
+    --success-light: 142 69% 58%;
 
-    /* Warning amber */
-    --warning: 45 95% 60%;
-    --warning-foreground: 235 60% 15%;
+    /* Napfény sárga warning */
+    --warning: 47.9 95.8% 53.1%;
+    --warning-foreground: 26 83.3% 14.1%;
 
-    /* Destructive red */
-    --destructive: 0 85% 65%;
-    --destructive-foreground: 0 0% 98%;
+    /* Lágy piros destructive */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 235 25% 25%;
-    --input: 235 25% 25%;
-    --ring: 88 65% 55%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 142 76% 36%;
 
     --radius: 0.75rem;
 
-    /* Beautiful blue & green gradients with dark-to-light transitions */
-    --gradient-primary: linear-gradient(135deg, hsl(88 75% 45%), hsl(88 65% 55%), hsl(88 70% 65%));
-    --gradient-earth: linear-gradient(135deg, hsl(88 65% 55%), hsl(235 65% 55%), hsl(88 70% 65%));
-    --gradient-nature: linear-gradient(180deg, hsl(235 60% 15%), hsl(235 55% 18%));
-    --gradient-hero: linear-gradient(135deg, hsl(235 65% 15%) 0%, hsl(235 60% 25%) 30%, hsl(235 65% 45%) 70%, hsl(0 0% 98%) 100%);
-    --gradient-wave: linear-gradient(135deg, hsl(235 70% 20%) 0%, hsl(235 65% 35%) 50%, hsl(235 60% 50%) 100%);
-    --gradient-light-transition: linear-gradient(180deg, hsl(235 60% 15%) 0%, hsl(235 55% 25%) 40%, hsl(235 50% 40%) 70%, hsl(0 0% 95%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(235 60% 15%), hsl(235 55% 20%), hsl(235 50% 25%));
-    --gradient-sunset: linear-gradient(135deg, hsl(45 95% 60%), hsl(88 65% 55%), hsl(235 65% 55%));
-    --gradient-ocean: linear-gradient(135deg, hsl(235 65% 55%), hsl(88 65% 55%), hsl(235 60% 15%));
+    /* Világos, természetes gradientek */
+    --gradient-primary: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 69% 58%), hsl(142 60% 70%));
+    --gradient-earth: linear-gradient(135deg, hsl(142 69% 58%), hsl(210 100% 92%), hsl(47 95% 85%));
+    --gradient-nature: linear-gradient(180deg, hsl(0 0% 100%), hsl(210 40% 98%));
+    --gradient-hero: linear-gradient(135deg, hsl(210 100% 95%) 0%, hsl(142 60% 95%) 30%, hsl(47 95% 95%) 60%, hsl(0 0% 100%) 100%);
+    --gradient-wave: linear-gradient(135deg, hsl(210 100% 92%) 0%, hsl(142 60% 92%) 50%, hsl(47 95% 92%) 100%);
+    --gradient-light-transition: linear-gradient(180deg, hsl(210 100% 95%) 0%, hsl(142 60% 97%) 40%, hsl(0 0% 100%) 70%, hsl(210 40% 98%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(210 40% 98%), hsl(210 40% 96%));
+    --gradient-sunset: linear-gradient(135deg, hsl(47 95% 85%), hsl(142 69% 58%), hsl(210 100% 80%));
+    --gradient-ocean: linear-gradient(135deg, hsl(210 100% 85%), hsl(142 69% 58%), hsl(210 100% 95%));
 
-    /* Elegant shadows with blue & green */
-    --shadow-eco: 0 8px 32px -4px hsl(88 65% 55% / 0.25);
-    --shadow-glow: 0 0 40px hsl(88 70% 65% / 0.3);
-    --shadow-card: 0 4px 24px -2px hsl(235 65% 55% / 0.15);
-    --shadow-premium: 0 12px 48px -8px hsl(88 65% 55% / 0.2);
+    /* Lágy árnyékok természetes színekkel */
+    --shadow-eco: 0 8px 32px -4px hsl(142 76% 36% / 0.15);
+    --shadow-glow: 0 0 40px hsl(142 69% 58% / 0.2);
+    --shadow-card: 0 4px 24px -2px hsl(210 100% 80% / 0.1);
+    --shadow-premium: 0 12px 48px -8px hsl(142 76% 36% / 0.15);
 
     /* Smooth animation system */
     --transition-smooth: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -82,123 +82,17 @@ Enhanced design with premium typography and sophisticated color palette
     --font-heading: 'Playfair Display', serif;
     --font-body: 'Inter', sans-serif;
 
-    --sidebar-background: 235 60% 15%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 88 65% 55%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 235 25% 25%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 235 25% 25%;
-    --sidebar-ring: 88 65% 55%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222.2 84% 4.9%;
+    --sidebar-primary: 142 76% 36%;
+    --sidebar-primary-foreground: 355.7 100% 97.3%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222.2 84% 4.9%;
+    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-ring: 142 76% 36%;
   }
 
-  /* Custom wave animations and patterns */
-  .wave-bg {
-    background: var(--gradient-wave);
-    position: relative;
-  }
-
-  .wave-bg::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at 20% 50%, hsl(235 65% 45% / 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, hsl(235 60% 40% / 0.4) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, hsl(235 70% 35% / 0.2) 0%, transparent 50%);
-    animation: wave-float 8s ease-in-out infinite;
-  }
-
-  @keyframes wave-float {
-    0%, 100% { 
-      transform: translate(0, 0) scale(1); 
-      opacity: 0.3;
-    }
-    33% { 
-      transform: translate(10px, -10px) scale(1.05); 
-      opacity: 0.5;
-    }
-    66% { 
-      transform: translate(-5px, 5px) scale(0.95); 
-      opacity: 0.4;
-    }
-  }
-
-  /* OPTION 2: Elegant Earth Palette */
-  .modern-tech {
-    --background: 220 20% 11%;
-    --foreground: 210 20% 95%;
-
-    --card: 220 15% 15%;
-    --card-foreground: 210 20% 95%;
-
-    --popover: 220 15% 15%;
-    --popover-foreground: 210 20% 95%;
-
-    /* Warm sage primary */
-    --primary: 140 30% 60%;
-    --primary-foreground: 220 20% 11%;
-    --primary-glow: 140 35% 70%;
-    --primary-dark: 140 25% 45%;
-
-    /* Warm terracotta secondary */
-    --secondary: 25 50% 65%;
-    --secondary-foreground: 220 20% 11%;
-
-    /* Warm gray muted */
-    --muted: 220 12% 22%;
-    --muted-foreground: 210 12% 70%;
-
-    /* Soft lavender accent */
-    --accent: 260 40% 70%;
-    --accent-foreground: 220 20% 11%;
-    --accent-light: 260 35% 80%;
-
-    /* Forest green success */
-    --success: 120 40% 55%;
-    --success-foreground: 220 20% 11%;
-    --success-light: 120 35% 65%;
-
-    /* Warm amber warning */
-    --warning: 35 80% 65%;
-    --warning-foreground: 220 20% 11%;
-
-    /* Muted coral destructive */
-    --destructive: 5 60% 65%;
-    --destructive-foreground: 220 20% 11%;
-
-    --border: 220 12% 28%;
-    --input: 220 12% 28%;
-    --ring: 140 30% 60%;
-
-    --radius: 0.75rem;
-
-    /* Earth gradient system */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary-dark)), hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-earth: linear-gradient(135deg, hsl(140 30% 60%), hsl(25 50% 65%), hsl(260 40% 70%));
-    --gradient-nature: linear-gradient(180deg, hsl(220 20% 11%), hsl(220 15% 15%));
-    --gradient-hero: linear-gradient(135deg, hsl(140 25% 45%) 0%, hsl(140 30% 60%) 25%, hsl(25 50% 65%) 75%, hsl(260 40% 70%) 100%);
-    --gradient-sunset: linear-gradient(135deg, hsl(35 80% 65%), hsl(25 50% 65%), hsl(140 30% 60%));
-    --gradient-ocean: linear-gradient(135deg, hsl(140 30% 60%), hsl(180 25% 50%), hsl(220 20% 40%));
-
-    /* Soft shadows */
-    --shadow-eco: 0 8px 32px -4px hsl(var(--primary) / 0.25);
-    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.4);
-    --shadow-card: 0 4px 24px -2px hsl(140 30% 60% / 0.15);
-    --shadow-premium: 0 12px 48px -8px hsl(var(--primary) / 0.3);
-
-    --sidebar-background: 220 25% 8%;
-    --sidebar-foreground: 210 25% 95%;
-    --sidebar-primary: 195 100% 55%;
-    --sidebar-primary-foreground: 220 25% 8%;
-    --sidebar-accent: 220 20% 12%;
-    --sidebar-accent-foreground: 210 25% 95%;
-    --sidebar-border: 220 15% 25%;
-    --sidebar-ring: 195 100% 55%;
-  }
-
+  /* Dark mode - megtartjuk opcióként */
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
@@ -209,8 +103,8 @@ Enhanced design with premium typography and sophisticated color palette
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 142 69% 58%;
+    --primary-foreground: 222.2 84% 4.9%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -218,23 +112,23 @@ Enhanced design with premium typography and sophisticated color palette
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 142 69% 58%;
+    --accent-foreground: 222.2 84% 4.9%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --ring: 142 69% 58%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-primary: 142 69% 58%;
+    --sidebar-primary-foreground: 240 5.9% 10%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 142 69% 58%;
   }
 }
 

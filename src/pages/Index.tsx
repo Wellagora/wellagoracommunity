@@ -15,59 +15,74 @@ const Index = () => {
       <HeroSection />
 
       {/* Features Overview */}
-      <section className="py-24 bg-gradient-subtle border-b border-border/50">
+      <section className="py-24 bg-gradient-nature border-b border-border/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20 animate-fade-up-3d">
-            <div className="inline-flex items-center space-x-2 bg-primary/10 px-6 py-3 rounded-full mb-6">
-              <Sparkles className="w-5 h-5 text-primary" />
-              <span className="text-primary font-semibold">{t('features.badge')}</span>
+            <div className="inline-flex items-center space-x-3 bg-primary/10 backdrop-blur-sm px-8 py-4 rounded-full mb-8 border border-primary/20">
+              <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
+              <span className="text-primary font-semibold text-lg">{t('features.badge')}</span>
             </div>
-            <h2 className="text-6xl font-bold text-foreground mb-8 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+            <h2 className="text-5xl lg:text-6xl font-bold text-foreground mb-8 leading-tight">
               {t('features.title')}
             </h2>
-            <p className="text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+            <p className="text-xl lg:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
               {t('features.subtitle')}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Link to="/challenges" className="animate-slide-in-3d group">
-              <FeatureCard3D 
-                icon={
-                  <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-glow rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <Leaf className="w-8 h-8 text-white" />
-                  </div>
-                }
-                title={t('features.challenges.title')}
-                description={t('features.challenges.description')}
-                className="hover:border-primary/60 cursor-pointer h-full bg-card/60 backdrop-blur-sm"
-              />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Link to="/challenges" className="group animate-slide-in-3d">
+              <div className="bg-white rounded-3xl p-8 shadow-card hover:shadow-premium transition-all duration-500 hover:-translate-y-2 border border-gray-100 h-full">
+                <div className="flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary to-primary-glow rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300 shadow-eco">
+                  <Leaf className="w-10 h-10 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-foreground mb-4">
+                  {t('features.challenges.title')}
+                </h3>
+                <p className="text-muted-foreground leading-relaxed text-lg">
+                  {t('features.challenges.description')}
+                </p>
+                <div className="mt-6 flex items-center text-primary font-semibold group-hover:translate-x-2 transition-transform duration-300">
+                  <span className="mr-2">Kezdés</span>
+                  <ArrowRight className="w-5 h-5" />
+                </div>
+              </div>
             </Link>
 
-            <Link to="/ai-assistant" className="animate-slide-in-3d group" style={{ animationDelay: '0.1s' }}>
-              <FeatureCard3D 
-                icon={
-                  <div className="w-16 h-16 bg-gradient-to-br from-secondary to-accent rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <Target className="w-8 h-8 text-white" />
-                  </div>
-                }
-                title={t('features.ai.title')}
-                description={t('features.ai.description')}
-                className="hover:border-secondary/60 cursor-pointer h-full bg-card/60 backdrop-blur-sm"
-              />
+            <Link to="/ai-assistant" className="group animate-slide-in-3d" style={{ animationDelay: '0.15s' }}>
+              <div className="bg-white rounded-3xl p-8 shadow-card hover:shadow-premium transition-all duration-500 hover:-translate-y-2 border border-gray-100 h-full">
+                <div className="flex items-center justify-center w-20 h-20 bg-gradient-to-br from-accent to-success rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300 shadow-eco">
+                  <Target className="w-10 h-10 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-foreground mb-4">
+                  {t('features.ai.title')}
+                </h3>
+                <p className="text-muted-foreground leading-relaxed text-lg">
+                  {t('features.ai.description')}
+                </p>
+                <div className="mt-6 flex items-center text-primary font-semibold group-hover:translate-x-2 transition-transform duration-300">
+                  <span className="mr-2">Kipróbálás</span>
+                  <ArrowRight className="w-5 h-5" />
+                </div>
+              </div>
             </Link>
 
-            <Link to="/community" className="animate-slide-in-3d group" style={{ animationDelay: '0.2s' }}>
-              <FeatureCard3D 
-                icon={
-                  <div className="w-16 h-16 bg-gradient-to-br from-accent to-success rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <Users className="w-8 h-8 text-white" />
-                  </div>
-                }
-                title={t('features.community.title')}
-                description={t('features.community.description')}
-                className="hover:border-accent/60 cursor-pointer h-full bg-card/60 backdrop-blur-sm"
-              />
+            <Link to="/community" className="group animate-slide-in-3d" style={{ animationDelay: '0.3s' }}>
+              <div className="bg-white rounded-3xl p-8 shadow-card hover:shadow-premium transition-all duration-500 hover:-translate-y-2 border border-gray-100 h-full">
+                <div className="flex items-center justify-center w-20 h-20 bg-gradient-to-br from-warning to-accent rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300 shadow-eco">
+                  <Users className="w-10 h-10 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-foreground mb-4">
+                  {t('features.community.title')}
+                </h3>
+                <p className="text-muted-foreground leading-relaxed text-lg">
+                  {t('features.community.description')}
+                </p>
+                <div className="mt-6 flex items-center text-primary font-semibold group-hover:translate-x-2 transition-transform duration-300">
+                  <span className="mr-2">Csatlakozás</span>
+                  <ArrowRight className="w-5 h-5" />
+                </div>
+              </div>
             </Link>
           </div>
         </div>
