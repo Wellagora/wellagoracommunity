@@ -57,67 +57,67 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Link to="/challenges" className="bg-gradient-to-br from-primary/20 to-success/20 p-8 rounded-2xl shadow-card border border-border hover:shadow-premium transition-all hover:-translate-y-1 cursor-pointer group">
+            <Link to="/challenges" className="bg-glass backdrop-blur-md p-8 rounded-2xl shadow-glow border border-white/20 hover:shadow-premium transition-all hover:-translate-y-1 cursor-pointer group hover:border-primary/40">
               <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                 <span className="text-2xl">🌱</span>
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">10 Challenge Categories</h3>
-              <p className="text-muted-foreground">
+              <h3 className="text-xl font-bold text-white mb-4 group-hover:text-primary transition-colors">10 Challenge Categories</h3>
+              <p className="text-white/80">
                 From Energy Efficiency to Biodiversity - comprehensive sustainability challenges 
                 tailored for citizens, businesses, municipalities, and NGOs.
               </p>
             </Link>
 
-            <Link to="/ai-assistant" className="bg-gradient-to-br from-secondary/20 to-accent/20 p-8 rounded-2xl shadow-card border border-border hover:shadow-premium transition-all hover:-translate-y-1 cursor-pointer group">
+            <Link to="/ai-assistant" className="bg-glass backdrop-blur-md p-8 rounded-2xl shadow-glow border border-white/20 hover:shadow-premium transition-all hover:-translate-y-1 cursor-pointer group hover:border-secondary/40">
               <div className="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                 <span className="text-2xl">🤖</span>
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-4 group-hover:text-secondary transition-colors">AI Assistant</h3>
-              <p className="text-muted-foreground">
+              <h3 className="text-xl font-bold text-white mb-4 group-hover:text-secondary transition-colors">AI Assistant</h3>
+              <p className="text-white/80">
                 Personalized sustainability guidance powered by AI. Get custom recommendations 
                 based on your role, location, and progress.
               </p>
             </Link>
 
-            <Link to="/community" className="bg-gradient-to-br from-accent/20 to-secondary/20 p-8 rounded-2xl shadow-card border border-border hover:shadow-premium transition-all hover:-translate-y-1 cursor-pointer group">
+            <Link to="/community" className="bg-glass backdrop-blur-md p-8 rounded-2xl shadow-glow border border-white/20 hover:shadow-premium transition-all hover:-translate-y-1 cursor-pointer group hover:border-accent/40">
               <div className="w-12 h-12 bg-accent rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                 <span className="text-2xl">👥</span>
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-4 group-hover:text-accent transition-colors">Community Hub</h3>
-              <p className="text-muted-foreground">
+              <h3 className="text-xl font-bold text-white mb-4 group-hover:text-accent transition-colors">Community Hub</h3>
+              <p className="text-white/80">
                 Connect with like-minded individuals, share progress, participate in forums, 
                 and celebrate achievements together.
               </p>
             </Link>
 
-            <Link to="/dashboard" className="bg-gradient-to-br from-warning/20 to-primary/20 p-8 rounded-2xl shadow-card border border-border hover:shadow-premium transition-all hover:-translate-y-1 cursor-pointer group">
+            <Link to="/dashboard" className="bg-glass backdrop-blur-md p-8 rounded-2xl shadow-glow border border-white/20 hover:shadow-premium transition-all hover:-translate-y-1 cursor-pointer group hover:border-warning/40">
               <div className="w-12 h-12 bg-warning rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                 <span className="text-2xl">📊</span>
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-4 group-hover:text-warning transition-colors">Impact Dashboard</h3>
-              <p className="text-muted-foreground">
+              <h3 className="text-xl font-bold text-white mb-4 group-hover:text-warning transition-colors">Impact Dashboard</h3>
+              <p className="text-white/80">
                 Track your Carbon Handprint, visualize progress, and see your positive 
                 environmental impact grow over time.
               </p>
             </Link>
 
-            <Link to="/dashboard" className="bg-gradient-to-br from-destructive/20 to-warning/20 p-8 rounded-2xl shadow-card border border-border hover:shadow-premium transition-all hover:-translate-y-1 cursor-pointer group">
+            <Link to="/dashboard" className="bg-glass backdrop-blur-md p-8 rounded-2xl shadow-glow border border-white/20 hover:shadow-premium transition-all hover:-translate-y-1 cursor-pointer group hover:border-destructive/40">
               <div className="w-12 h-12 bg-destructive rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                 <span className="text-2xl">🎯</span>
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-4 group-hover:text-destructive transition-colors">Gamification</h3>
-              <p className="text-muted-foreground">
+              <h3 className="text-xl font-bold text-white mb-4 group-hover:text-destructive transition-colors">Gamification</h3>
+              <p className="text-white/80">
                 Earn points, unlock badges, climb leaderboards, and participate in 
                 seasonal events to stay motivated on your sustainability journey.
               </p>
             </Link>
 
-            <Link to="/auth" className="bg-gradient-to-br from-success/20 to-accent/20 p-8 rounded-2xl shadow-card border border-border hover:shadow-premium transition-all hover:-translate-y-1 cursor-pointer group">
+            <Link to="/auth" className="bg-glass backdrop-blur-md p-8 rounded-2xl shadow-glow border border-white/20 hover:shadow-premium transition-all hover:-translate-y-1 cursor-pointer group hover:border-success/40">
               <div className="w-12 h-12 bg-success rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                 <span className="text-2xl">🔐</span>
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-4 group-hover:text-success transition-colors">Secure Authentication</h3>
-              <p className="text-muted-foreground">
+              <h3 className="text-xl font-bold text-white mb-4 group-hover:text-success transition-colors">Secure Authentication</h3>
+              <p className="text-white/80">
                 Role-based access with secure user profiles powered by Supabase. 
                 Your data is safe and your journey is personalized.
               </p>
