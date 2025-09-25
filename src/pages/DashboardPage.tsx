@@ -54,43 +54,34 @@ const DashboardPage = () => {
   const roles = [
     { 
       value: "citizen" as UserRole, 
-      label: "Citizen", 
       icon: User, 
       gradient: "from-primary/20 to-success/20",
-      borderGradient: "from-primary to-success",
-      description: "Individual sustainability tracking"
+      borderGradient: "from-primary to-success"
     },
     { 
       value: "business" as UserRole, 
-      label: "Business", 
       icon: Building2, 
       gradient: "from-accent/20 to-secondary/20",
-      borderGradient: "from-accent to-secondary",
-      description: "Corporate sustainability dashboard"
+      borderGradient: "from-accent to-secondary"
     },
     { 
       value: "government" as UserRole, 
-      label: "Government", 
       icon: Landmark, 
       gradient: "from-warning/20 to-destructive/20",
-      borderGradient: "from-warning to-destructive",
-      description: "Policy and city-wide metrics"
+      borderGradient: "from-warning to-destructive"
     },
     { 
       value: "ngo" as UserRole, 
-      label: "NGO", 
       icon: Users, 
       gradient: "from-success/20 to-primary/20",
-      borderGradient: "from-success to-primary",
-      description: "Community impact tracking"
+      borderGradient: "from-success to-primary"
     }
   ];
 
-  const getCurrentRoleData = () => {
-    return roles.find(role => role.value === currentRole);
+  const getCurrentRoleGradient = () => {
+    const role = roles.find(role => role.value === currentRole);
+    return role?.borderGradient || "from-primary to-success";
   };
-
-  const roleData = getCurrentRoleData();
 
   if (loading) {
     return (
@@ -117,19 +108,19 @@ const DashboardPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center animate-fade-up-3d">
             <h1 className="text-4xl lg:text-6xl font-bold text-foreground mb-6">
-              {t('nav.dashboard')}
+              {t('dashboard.title')}
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-              Kövesd nyomon előrehaladásod és lásd környezeti hatásod valós időben
+              {t('dashboard.subtitle')}
             </p>
             <div className="flex items-center justify-center space-x-8">
               <div className="flex items-center space-x-2">
                 <TrendingUp className="w-5 h-5 text-success" />
-                <span className="text-foreground font-medium">+23% ez a hónapban</span>
+                <span className="text-foreground font-medium">{t('dashboard.monthly_growth')}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Award className="w-5 h-5 text-warning" />
-                <span className="text-foreground font-medium">12 új jelvény</span>
+                <span className="text-foreground font-medium">{t('dashboard.new_badges')}</span>
               </div>
             </div>
           </div>
@@ -142,11 +133,11 @@ const DashboardPage = () => {
           <CardContent className="p-8">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-foreground mb-2">Dashboard Type</h2>
-                <p className="text-muted-foreground">Switch between different role perspectives</p>
+                <h2 className="text-2xl font-bold text-foreground mb-2">{t('dashboard.type.title')}</h2>
+                <p className="text-muted-foreground">{t('dashboard.type.subtitle')}</p>
               </div>
-              <Badge className={`bg-gradient-to-r ${roleData?.borderGradient} text-white px-4 py-2 text-sm font-medium shadow-premium`}>
-                {roleData?.label}
+              <Badge className={`bg-gradient-to-r ${getCurrentRoleGradient()} text-white px-4 py-2 text-sm font-medium shadow-premium`}>
+                {t(`dashboard.roles.${currentRole}`)}
               </Badge>
             </div>
             
@@ -158,8 +149,8 @@ const DashboardPage = () => {
                   <FeatureCard3D
                     key={role.value}
                     icon={<IconComponent className="w-8 h-8" />}
-                    title={role.label}
-                    description={role.description}
+                    title={t(`dashboard.roles.${role.value}`)}
+                    description={t(`dashboard.roles.${role.value}_desc`)}
                     onClick={() => setCurrentRole(role.value)}
                     className={`cursor-pointer transition-all duration-300 ${
                       isActive 
@@ -178,15 +169,15 @@ const DashboardPage = () => {
           <TabsList className="grid w-full grid-cols-3 bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-2">
             <TabsTrigger value="analytics" className="flex items-center space-x-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-xl transition-all duration-300">
               <BarChart3 className="w-4 h-4" />
-              <span>Analytics</span>
+              <span>{t('dashboard.tabs.analytics')}</span>
             </TabsTrigger>
             <TabsTrigger value="progress" className="flex items-center space-x-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-xl transition-all duration-300">
               <Target className="w-4 h-4" />
-              <span>Progress</span>
+              <span>{t('dashboard.tabs.progress')}</span>
             </TabsTrigger>
             <TabsTrigger value="rewards" className="flex items-center space-x-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-xl transition-all duration-300">
               <Trophy className="w-4 h-4" />
-              <span>Rewards</span>
+              <span>{t('dashboard.tabs.rewards')}</span>
             </TabsTrigger>
           </TabsList>
 
@@ -201,7 +192,7 @@ const DashboardPage = () => {
                 onClick={() => setShowCelebration(true)}
                 className="bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground px-8 py-3 rounded-2xl font-semibold shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300"
               >
-                🎉 Simulate Achievement
+                {t('dashboard.simulate_achievement')}
               </Button>
             </div>
           </TabsContent>
@@ -215,9 +206,9 @@ const DashboardPage = () => {
             ) : (
               <Card3D className="text-center py-16 bg-card/50 backdrop-blur-sm">
                 <div className="text-6xl mb-6">🚀</div>
-                <h3 className="text-2xl font-bold text-foreground mb-4">Rewards Coming Soon</h3>
+                <h3 className="text-2xl font-bold text-foreground mb-4">{t('dashboard.rewards_coming_soon')}</h3>
                 <p className="text-muted-foreground text-lg max-w-md mx-auto">
-                  Gamification features for {currentRole} accounts are under development.
+                  {t(`dashboard.rewards_${currentRole}_development`)}
                 </p>
               </Card3D>
             )}
