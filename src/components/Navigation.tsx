@@ -11,11 +11,14 @@ import {
   LogOut,
   Sparkles,
   Users,
-  Leaf
+  Leaf,
+  Globe,
+  Zap
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSelector from "./LanguageSelector";
+import { Badge } from "@/components/ui/badge";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -120,6 +123,20 @@ const Navigation = () => {
             <Link to="/ai-assistant" className="group flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-xl hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent-foreground">
               <span className="text-lg">🤖</span>
               <span>{t('nav.ai_assistant')}</span>
+            </Link>
+            <Link to="/revolutionary" className="group flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/30 rounded-lg hover:from-primary/20 hover:to-accent/20 transition-all duration-300 font-medium">
+              <Zap className="w-4 h-4 text-primary" />
+              <span>Revolutionary</span>
+              <Badge variant="secondary" className="ml-1 bg-gradient-to-r from-primary to-accent text-white text-xs px-1.5 py-0.5">
+                NEW
+              </Badge>
+            </Link>
+            <Link to="/dynamic-regional" className="group flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-success/10 to-warning/10 border border-success/30 rounded-lg hover:from-success/20 hover:to-warning/20 transition-all duration-300 font-medium">
+              <Globe className="w-4 h-4 text-success" />
+              <span>Dynamic 3D</span>
+              <Badge variant="secondary" className="ml-1 bg-gradient-to-r from-success to-warning text-white text-xs px-1.5 py-0.5">
+                3D
+              </Badge>
             </Link>
           </div>
 

@@ -215,10 +215,16 @@ const Index = () => {
                       <BarChart3 className="w-4 h-4" />
                     </Button>
                   </Link>
-                  <Link to="/revolutionary-dashboard">
+                  <Link to="/revolutionary">
                     <Button className="w-full justify-between bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90" size="sm">
                       Revolutionary Mode
                       <ArrowRight className="w-4 h-4" />
+                    </Button>
+                  </Link>
+                  <Link to="/dynamic-regional">
+                    <Button className="w-full justify-between bg-gradient-to-r from-success to-warning hover:from-success/90 hover:to-warning/90" size="sm">
+                      Dynamic Regional
+                      <Globe className="w-4 h-4" />
                     </Button>
                   </Link>
                 </CardContent>
