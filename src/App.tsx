@@ -4,13 +4,14 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
-import Index from "./pages/Index";
-import DashboardPage from "./pages/DashboardPage";
-import RevolutionaryDashboard from "./pages/RevolutionaryDashboard";
-import Community from "./pages/Community";
-import AIAssistant from "./pages/AIAssistant";
-import AuthPage from "./pages/AuthPage";
-import ChallengesPage from "./pages/ChallengesPage";
+import Index from "@/pages/Index";
+import AuthPage from "@/pages/AuthPage";
+import DashboardPage from "@/pages/DashboardPage";
+import RevolutionaryDashboard from "@/pages/RevolutionaryDashboard";
+import Community from "@/pages/Community";
+import AIAssistantPage from "@/pages/AIAssistantPage";
+import ChallengesPage from "@/pages/ChallengesPage";
+import ChallengeDetailPage from "@/pages/ChallengeDetailPage";
 import "./index.css";
 
 function App() {
@@ -27,8 +28,9 @@ function App() {
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/revolutionary" element={<RevolutionaryDashboard />} />
               <Route path="/community" element={<Community />} />
-              <Route path="/ai-assistant" element={<AIAssistant />} />
+              <Route path="/ai-assistant" element={<AIAssistantPage />} />
               <Route path="/challenges" element={<ChallengesPage />} />
+              <Route path="/challenges/:challengeId" element={<ChallengeDetailPage />} />
             </Routes>
             <Toaster />
             <SonnerToaster />

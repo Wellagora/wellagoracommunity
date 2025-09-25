@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import ChallengeDetail from "@/components/challenges/ChallengeDetail";
 import Navigation from "@/components/Navigation";
-
 import { getChallengeById } from "@/data/challenges";
 
 const ChallengeDetailPage = () => {
@@ -28,9 +27,9 @@ const ChallengeDetailPage = () => {
         <Navigation />
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Challenge Not Found</h1>
-            <p className="text-muted-foreground mb-4">The challenge you're looking for doesn't exist.</p>
-            <Button onClick={() => navigate("/")}>Back to Home</Button>
+            <h1 className="text-2xl font-bold mb-4">Kihívás nem található</h1>
+            <p className="text-muted-foreground mb-4">A keresett kihívás nem létezik.</p>
+            <Button onClick={() => navigate("/")}>Vissza a főoldalra</Button>
           </div>
         </div>
       </div>
@@ -64,7 +63,7 @@ const ChallengeDetailPage = () => {
             className="hover:bg-muted"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Challenges
+            Vissza a kihívásokhoz
           </Button>
         </div>
 

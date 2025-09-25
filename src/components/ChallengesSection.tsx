@@ -212,7 +212,7 @@ const ChallengesSection = () => {
                       className="w-full bg-gradient-primary hover:shadow-glow transition-smooth"
                       asChild
                     >
-                      <Link to={`/challenge/${challenge.id}`}>
+                      <Link to={`/challenges/${challenge.id}`}>
                         Join Challenge
                       </Link>
                     </Button>
