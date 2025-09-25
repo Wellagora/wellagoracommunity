@@ -40,19 +40,52 @@ const CityBlock: React.FC<CityBlockProps> = ({
   onPointerOut 
 }) => {
   return (
-    <mesh
-      position={position}
-      onClick={onClick}
-      onPointerOver={onPointerOver}
-      onPointerOut={onPointerOut}
-    >
-      <boxGeometry args={[1, height, 1]} />
-      <meshStandardMaterial 
-        color={hovered ? '#FB923C' : color}
-        transparent
-        opacity={hovered ? 0.9 : 0.7}
-      />
-    </mesh>
+    <group position={position}>
+      {/* Main building block */}
+      <mesh
+        onClick={onClick}
+        onPointerOver={onPointerOver}
+        onPointerOut={onPointerOut}
+      >
+        <boxGeometry args={[1.5, height, 1.5]} />
+        <meshStandardMaterial 
+          color={hovered ? '#FB923C' : color}
+          transparent
+          opacity={hovered ? 0.9 : 0.8}
+          roughness={0.3}
+          metalness={0.1}
+        />
+      </mesh>
+      
+      {/* Top accent */}
+      <mesh position={[0, height/2 + 0.1, 0]}>
+        <boxGeometry args={[1.6, 0.2, 1.6]} />
+        <meshStandardMaterial 
+          color={hovered ? '#F97316' : '#ffffff'}
+          transparent
+          opacity={0.9}
+        />
+      </mesh>
+      
+      {/* Side buildings for variety */}
+      <mesh position={[0.6, height * 0.3, 0.6]}>
+        <boxGeometry args={[0.4, height * 0.6, 0.4]} />
+        <meshStandardMaterial 
+          color={hovered ? '#FB923C' : color}
+          transparent
+          opacity={hovered ? 0.7 : 0.6}
+        />
+      </mesh>
+      
+      <mesh position={[-0.6, height * 0.4, -0.6]}>
+        <boxGeometry args={[0.3, height * 0.8, 0.3]} />
+        <meshStandardMaterial 
+          color={hovered ? '#FB923C' : color}
+          transparent
+          opacity={hovered ? 0.7 : 0.6}
+        />
+      </mesh>
+    </group>
   );
 };
 
@@ -80,14 +113,27 @@ const RegionalHeatmap: React.FC<{ data: RegionalData[] }> = ({ data }) => {
   return (
     <>
       {data.map((region, index) => (
-        <mesh key={region.id} position={[region.x, -0.1, region.y]}>
-          <planeGeometry args={[2, 2]} />
-          <meshBasicMaterial 
-            color={region.impactScore > 70 ? '#10B981' : region.impactScore > 40 ? '#FB923C' : '#EF4444'}
-            transparent
-            opacity={0.3}
-          />
-        </mesh>
+        <group key={region.id}>
+          {/* Base heat zone */}
+          <mesh position={[region.x, -0.1, region.y]}>
+            <circleGeometry args={[2.5, 32]} />
+            <meshBasicMaterial 
+              color={region.impactScore > 80 ? '#10B981' : region.impactScore > 60 ? '#3B82F6' : region.impactScore > 40 ? '#F97316' : '#EF4444'}
+              transparent
+              opacity={0.2}
+            />
+          </mesh>
+          
+          {/* Inner glow ring */}
+          <mesh position={[region.x, -0.05, region.y]}>
+            <ringGeometry args={[1.5, 2, 16]} />
+            <meshBasicMaterial 
+              color={region.impactScore > 80 ? '#10B981' : region.impactScore > 60 ? '#3B82F6' : region.impactScore > 40 ? '#F97316' : '#EF4444'}
+              transparent
+              opacity={0.4}
+            />
+          </mesh>
+        </group>
       ))}
     </>
   );
@@ -114,9 +160,9 @@ const RegionalMap3D: React.FC = () => {
     {
       id: 'district-2',
       name: 'Leopoldstadt',
-      x: 3,
+      x: 4,
       y: 0,
-      z: 2,
+      z: 3,
       impactScore: 64,
       challengesActive: 8,
       stakeholders: 156,
@@ -126,9 +172,9 @@ const RegionalMap3D: React.FC = () => {
     {
       id: 'district-3', 
       name: 'Landstraße',
-      x: -2,
+      x: -3,
       y: 0,
-      z: -1,
+      z: -2,
       impactScore: 72,
       challengesActive: 12,
       stakeholders: 189,
@@ -138,25 +184,73 @@ const RegionalMap3D: React.FC = () => {
     {
       id: 'district-4',
       name: 'Wieden',
-      x: 1,
+      x: 2,
       y: 0,
-      z: -3,
+      z: -4,
       impactScore: 56,
       challengesActive: 6,
       stakeholders: 98,
       co2Reduction: 980,
       type: 'citizen'
+    },
+    {
+      id: 'district-5',
+      name: 'Margareten',
+      x: -4,
+      y: 0,
+      z: 2,
+      impactScore: 78,
+      challengesActive: 11,
+      stakeholders: 167,
+      co2Reduction: 1950,
+      type: 'municipality'
+    },
+    {
+      id: 'district-6',
+      name: 'Mariahilf',
+      x: 3,
+      y: 0,
+      z: -2,
+      impactScore: 69,
+      challengesActive: 9,
+      stakeholders: 134,
+      co2Reduction: 1650,
+      type: 'business'
+    },
+    {
+      id: 'district-7',
+      name: 'Neubau',
+      x: -2,
+      y: 0,
+      z: 4,
+      impactScore: 83,
+      challengesActive: 14,
+      stakeholders: 203,
+      co2Reduction: 2180,
+      type: 'ngo'
+    },
+    {
+      id: 'district-8',
+      name: 'Josefstadt',
+      x: 1,
+      y: 0,
+      z: 2,
+      impactScore: 61,
+      challengesActive: 7,
+      stakeholders: 112,
+      co2Reduction: 1420,
+      type: 'citizen'
     }
   ];
 
-  const getRegionColor = (type: RegionalData['type']) => {
-    switch (type) {
-      case 'municipality': return '#2563EB';
-      case 'business': return '#FB923C';
-      case 'ngo': return '#10B981';
-      case 'citizen': return '#8B5CF6';
-      default: return '#6B7280';
-    }
+  const getRegionColor = (type: RegionalData['type'], impactScore: number) => {
+    const baseColors = {
+      'municipality': impactScore > 70 ? '#3B82F6' : '#1E40AF',
+      'business': impactScore > 70 ? '#F97316' : '#EA580C', 
+      'ngo': impactScore > 70 ? '#10B981' : '#059669',
+      'citizen': impactScore > 70 ? '#A855F7' : '#7C3AED'
+    };
+    return baseColors[type] || '#6B7280';
   };
 
   const connectionPairs = useMemo(() => {
@@ -166,8 +260,8 @@ const RegionalMap3D: React.FC = () => {
         const region1 = mockRegionalData[i];
         const region2 = mockRegionalData[j];
         pairs.push({
-          start: new THREE.Vector3(region1.x, region1.impactScore / 20, region1.y),
-          end: new THREE.Vector3(region2.x, region2.impactScore / 20, region2.y),
+          start: new THREE.Vector3(region1.x, region1.impactScore / 15 + 0.5, region1.y),
+          end: new THREE.Vector3(region2.x, region2.impactScore / 15 + 0.5, region2.y),
           active: (region1.impactScore + region2.impactScore) / 2 > 65
         });
       }
@@ -196,9 +290,9 @@ const RegionalMap3D: React.FC = () => {
         {mockRegionalData.map((region) => (
           <CityBlock
             key={region.id}
-            position={[region.x, region.impactScore / 20, region.y]}
-            color={getRegionColor(region.type)}
-            height={region.impactScore / 20}
+            position={[region.x, region.impactScore / 15, region.y]}
+            color={getRegionColor(region.type, region.impactScore)}
+            height={region.impactScore / 15}
             hovered={hoveredRegion === region.id}
             onPointerOver={() => setHoveredRegion(region.id)}
             onPointerOut={() => setHoveredRegion(null)}
@@ -220,11 +314,13 @@ const RegionalMap3D: React.FC = () => {
         {mockRegionalData.map((region) => (
           <Text
             key={`label-${region.id}`}
-            position={[region.x, region.impactScore / 20 + 1, region.y]}
-            fontSize={0.3}
-            color="#1f2937"
+            position={[region.x, region.impactScore / 15 + 1.5, region.y]}
+            fontSize={0.25}
+            color="#ffffff"
             anchorX="center"
             anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="#000000"
           >
             {region.name}
           </Text>
