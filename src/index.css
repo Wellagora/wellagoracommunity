@@ -8,67 +8,67 @@ Enhanced design with premium typography and sophisticated color palette
 
 @layer base {
   :root {
-    /* SOPHISTICATED DARK DESIGN SYSTEM */
-    --background: 222 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* BEAUTIFUL BLUE & GREEN DESIGN SYSTEM - Inspired by EBA Awards */
+    --background: 235 60% 15%;
+    --foreground: 0 0% 98%;
 
-    --card: 222 84% 6%;
-    --card-foreground: 210 40% 98%;
+    --card: 235 55% 18%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 222 84% 6%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 235 55% 18%;
+    --popover-foreground: 0 0% 98%;
 
-    /* Elegant emerald primary */
-    --primary: 142 76% 36%;
-    --primary-foreground: 210 40% 98%;
-    --primary-glow: 142 69% 58%;
-    --primary-dark: 142 86% 28%;
+    /* Vibrant green primary - like EBA Awards badges */
+    --primary: 88 65% 55%;
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 88 70% 65%;
+    --primary-dark: 88 75% 45%;
 
-    /* Sophisticated cyan secondary */
-    --secondary: 199 89% 48%;
-    --secondary-foreground: 210 40% 98%;
+    /* Rich blue secondary - like EBA Awards background */
+    --secondary: 235 65% 55%;
+    --secondary-foreground: 0 0% 98%;
 
-    /* Dark muted tones */
-    --muted: 217 32% 17%;
-    --muted-foreground: 215 20% 65%;
+    /* Elegant muted tones */
+    --muted: 235 25% 25%;
+    --muted-foreground: 235 10% 70%;
 
-    /* Electric accent */
-    --accent: 262 83% 58%;
-    --accent-foreground: 210 40% 98%;
-    --accent-light: 262 73% 70%;
+    /* Bright accent green */
+    --accent: 88 65% 55%;
+    --accent-foreground: 0 0% 98%;
+    --accent-light: 88 60% 70%;
 
-    /* Success green */
-    --success: 142 76% 36%;
-    --success-foreground: 210 40% 98%;
-    --success-light: 142 69% 58%;
+    /* Success green - matching primary */
+    --success: 88 65% 55%;
+    --success-foreground: 0 0% 98%;
+    --success-light: 88 70% 65%;
 
     /* Warning amber */
-    --warning: 38 92% 50%;
-    --warning-foreground: 222 84% 4.9%;
+    --warning: 45 95% 60%;
+    --warning-foreground: 235 60% 15%;
 
     /* Destructive red */
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 85% 65%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 217 32% 17%;
-    --input: 217 32% 17%;
-    --ring: 142 76% 36%;
+    --border: 235 25% 25%;
+    --input: 235 25% 25%;
+    --ring: 88 65% 55%;
 
     --radius: 0.75rem;
 
-    /* Premium dark gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary-dark)), hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-earth: linear-gradient(135deg, hsl(142 76% 36%), hsl(199 89% 48%), hsl(262 83% 58%));
-    --gradient-nature: linear-gradient(180deg, hsl(222 84% 4.9%), hsl(222 84% 6%));
-    --gradient-hero: linear-gradient(135deg, hsl(222 84% 4.9%) 0%, hsl(217 32% 17%) 25%, hsl(142 76% 36%) 75%, hsl(199 89% 48%) 100%);
-    --gradient-sunset: linear-gradient(135deg, hsl(38 92% 50%), hsl(262 83% 58%), hsl(199 89% 48%));
-    --gradient-ocean: linear-gradient(135deg, hsl(199 89% 48%), hsl(142 76% 36%), hsl(222 84% 4.9%));
+    /* Beautiful blue & green gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(88 75% 45%), hsl(88 65% 55%), hsl(88 70% 65%));
+    --gradient-earth: linear-gradient(135deg, hsl(88 65% 55%), hsl(235 65% 55%), hsl(88 70% 65%));
+    --gradient-nature: linear-gradient(180deg, hsl(235 60% 15%), hsl(235 55% 18%));
+    --gradient-hero: linear-gradient(135deg, hsl(235 65% 25%) 0%, hsl(235 60% 35%) 25%, hsl(88 65% 55%) 75%, hsl(235 65% 55%) 100%);
+    --gradient-sunset: linear-gradient(135deg, hsl(45 95% 60%), hsl(88 65% 55%), hsl(235 65% 55%));
+    --gradient-ocean: linear-gradient(135deg, hsl(235 65% 55%), hsl(88 65% 55%), hsl(235 60% 15%));
 
-    /* Sophisticated shadows */
-    --shadow-eco: 0 8px 32px -4px hsl(var(--primary) / 0.25);
-    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.3);
-    --shadow-card: 0 4px 24px -2px hsl(142 76% 36% / 0.15);
-    --shadow-premium: 0 12px 48px -8px hsl(var(--primary) / 0.2);
+    /* Elegant shadows with blue & green */
+    --shadow-eco: 0 8px 32px -4px hsl(88 65% 55% / 0.25);
+    --shadow-glow: 0 0 40px hsl(88 70% 65% / 0.3);
+    --shadow-card: 0 4px 24px -2px hsl(235 65% 55% / 0.15);
+    --shadow-premium: 0 12px 48px -8px hsl(88 65% 55% / 0.2);
 
     /* Smooth animation system */
     --transition-smooth: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -79,14 +79,14 @@ Enhanced design with premium typography and sophisticated color palette
     --font-heading: 'Playfair Display', serif;
     --font-body: 'Inter', sans-serif;
 
-    --sidebar-background: 222 84% 4.9%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 142 76% 36%;
-    --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: 217 32% 17%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 32% 17%;
-    --sidebar-ring: 142 76% 36%;
+    --sidebar-background: 235 60% 15%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 88 65% 55%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 235 25% 25%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 235 25% 25%;
+    --sidebar-ring: 88 65% 55%;
   }
 
   /* OPTION 2: Elegant Earth Palette */
