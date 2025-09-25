@@ -39,11 +39,11 @@ const Navigation = () => {
           {/* Logo */}
           <div className="flex items-center space-x-4">
             <Link to="/" className="relative group">
-              <div className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-primary to-success rounded-2xl shadow-premium group-hover:scale-105 transition-transform duration-300">
+              <div className="w-16 h-16 flex items-center justify-center bg-gradient-to-br from-primary to-success rounded-2xl shadow-premium group-hover:scale-105 transition-transform duration-300">
                 <img 
                   src="/lovable-uploads/3911d8a5-aebe-4ede-83a5-33c26952916a.png" 
                   alt="Wellagora Logo" 
-                  className="w-8 h-8 object-contain"
+                  className="w-12 h-12 object-contain logo-enhanced"
                 />
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-warning rounded-full flex items-center justify-center animate-pulse">
                   <Sparkles className="w-2 h-2 text-warning-foreground" />
@@ -51,7 +51,7 @@ const Navigation = () => {
               </div>
             </Link>
             <Link to="/" className="flex flex-col group">
-              <span className="text-2xl font-bold bg-gradient-to-r from-primary via-success to-secondary bg-clip-text text-transparent group-hover:from-success group-hover:to-primary transition-all duration-300">
+              <span className="text-3xl font-bold text-foreground group-hover:text-primary transition-all duration-300">
                 Wellagora
               </span>
               <div className="flex items-center space-x-2">

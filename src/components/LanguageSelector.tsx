@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Globe, ChevronDown } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
@@ -14,12 +15,19 @@ const languages = [
 
 const LanguageSelector = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { language, setLanguage } = useLanguage();
   const [selectedLanguage, setSelectedLanguage] = useState(languages[0]);
+
+  // Update selected language when context language changes
+  useEffect(() => {
+    const lang = languages.find(l => l.code === language) || languages[0];
+    setSelectedLanguage(lang);
+  }, [language]);
 
   const handleLanguageSelect = (language: typeof languages[0]) => {
     setSelectedLanguage(language);
     setIsOpen(false);
-    // Here you would implement actual language switching logic
+    setLanguage(language.code as any);
   };
 
   return (

@@ -129,6 +129,18 @@ export default {
           "0%": { transform: "translateY(30px)", opacity: "0" },
           "100%": { transform: "translateY(0)", opacity: "1" }
         },
+        "fade-up-3d": {
+          "0%": { transform: "translateY(40px) rotateX(15deg)", opacity: "0" },
+          "100%": { transform: "translateY(0) rotateX(0deg)", opacity: "1" }
+        },
+        "slide-in-3d": {
+          "0%": { transform: "translateX(-50px) rotateY(-15deg)", opacity: "0" },
+          "100%": { transform: "translateX(0) rotateY(0deg)", opacity: "1" }
+        },
+        "glow-pulse": {
+          "0%, 100%": { boxShadow: "0 0 20px hsl(var(--primary) / 0.3)", transform: "scale(1)" },
+          "50%": { boxShadow: "0 0 40px hsl(var(--primary) / 0.6)", transform: "scale(1.02)" }
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -136,8 +148,11 @@ export default {
         "float": "float 3s ease-in-out infinite",
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
         "slide-up": "slide-up 0.6s ease-out",
-        "slide-in-right": "slide-in-right 0.4s ease-out",
+        "slide-in-right": "slide-in-right 0.4s ease-out", 
         "fade-up": "fade-up 0.6s ease-out",
+        "fade-up-3d": "fade-up-3d 1s ease-out",
+        "slide-in-3d": "slide-in-3d 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
+        "glow-pulse": "glow-pulse 3s ease-in-out infinite",
       },
       transitionTimingFunction: {
         'smooth': 'var(--transition-smooth)',

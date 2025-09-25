@@ -256,30 +256,59 @@ Enhanced design with premium typography and sophisticated color palette
     scroll-behavior: smooth;
   }
 
-  /* Custom utilities */
+  /* Custom utilities and 3D effects */
   .text-balance {
     text-wrap: balance;
   }
 
-  /* White text styling for dark backgrounds */
+  /* Enhanced white text styling for dark backgrounds */
   .text-white-elegant {
-    @apply text-white font-medium tracking-wide drop-shadow-sm;
+    @apply text-foreground font-medium tracking-wide drop-shadow-sm;
   }
 
+  /* Advanced glass morphism with consistent colors */
   .bg-glass {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: hsl(var(--background) / 0.8);
+    backdrop-filter: blur(16px);
+    border: 1px solid hsl(var(--border) / 0.6);
   }
 
+  /* 3D hover effects */
   .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-premium;
+    @apply transition-all duration-500 hover:-translate-y-2 hover:shadow-premium;
   }
 
+  .hover-lift-3d {
+    @apply transition-all duration-500 hover:-translate-y-3 hover:rotate-1 hover:scale-[1.02] hover:shadow-glow;
+  }
+
+  /* Enhanced animations */
   .animate-fade-up {
-    animation: fadeUp 0.6s ease-out;
+    animation: fadeUp 0.8s ease-out;
   }
 
+  .animate-fade-up-3d {
+    animation: fadeUp3D 1s ease-out;
+  }
+
+  .animate-slide-in-3d {
+    animation: slideIn3D 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* 3D perspective utility */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .transform-gpu {
+    transform: translateZ(0);
+  }
+
+  .translate-z-2 {
+    transform: translateZ(2px);
+  }
+
+  /* Enhanced keyframes */
   @keyframes fadeUp {
     from {
       opacity: 0;
@@ -289,5 +318,36 @@ Enhanced design with premium typography and sophisticated color palette
       opacity: 1;
       transform: translateY(0);
     }
+  }
+
+  @keyframes fadeUp3D {
+    from {
+      opacity: 0;
+      transform: translateY(40px) rotateX(15deg);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) rotateX(0deg);
+    }
+  }
+
+  @keyframes slideIn3D {
+    from {
+      opacity: 0;
+      transform: translateX(-50px) rotateY(-15deg);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0) rotateY(0deg);
+    }
+  }
+
+  /* Logo enhancement */
+  .logo-glow {
+    filter: drop-shadow(0 0 8px hsl(var(--primary) / 0.5));
+  }
+
+  .logo-enhanced {
+    filter: brightness(1.1) contrast(1.1) drop-shadow(0 2px 8px hsl(var(--primary) / 0.3));
   }
 }
