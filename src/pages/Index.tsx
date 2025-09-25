@@ -46,7 +46,7 @@ const Index = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-4xl lg:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl lg:text-6xl font-bold text-foreground hover:text-primary transition-all duration-300 mb-4">
             Wellagora Platform
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">

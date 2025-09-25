@@ -168,7 +168,7 @@ const RealTimeAnalytics = () => {
   return (
     <div className="space-y-4">
       {/* Live Metrics Grid */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         {metrics.map((metric, index) => {
           const Icon = metric.icon;
           const TrendIcon = getTrendIcon(metric.trend);
@@ -179,24 +179,24 @@ const RealTimeAnalytics = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.1 }}
-              className="p-3 bg-card/50 rounded-lg border border-border/30"
+              className="p-2.5 bg-card/50 rounded-lg border border-border/30"
             >
-              <div className="flex items-center justify-between mb-2">
-                <Icon className={`w-4 h-4 text-${metric.color}`} />
-                <div className={`flex items-center gap-1 ${getTrendColor(metric.trend)}`}>
-                  <TrendIcon className="w-3 h-3" />
+              <div className="flex items-center justify-between mb-1.5">
+                <Icon className={`w-3.5 h-3.5 text-${metric.color}`} />
+                <div className={`flex items-center gap-0.5 ${getTrendColor(metric.trend)}`}>
+                  <TrendIcon className="w-2.5 h-2.5" />
                   <span className="text-xs font-medium">
                     {Math.abs(metric.change).toFixed(1)}%
                   </span>
                 </div>
               </div>
               
-              <div className="space-y-1">
-                <div className="text-lg font-bold text-foreground">
+              <div className="space-y-0.5">
+                <div className="text-sm font-bold text-foreground leading-tight">
                   {metric.value.toLocaleString()}
                   <span className="text-xs text-muted-foreground ml-1">{metric.unit}</span>
                 </div>
-                <div className="text-xs text-muted-foreground">{metric.label}</div>
+                <div className="text-xs text-muted-foreground leading-tight truncate">{metric.label}</div>
               </div>
             </motion.div>
           );
@@ -213,7 +213,7 @@ const RealTimeAnalytics = () => {
           </Badge>
         </div>
         
-        <div className="space-y-2 max-h-32 overflow-y-auto">
+        <div className="space-y-2 max-h-40 overflow-y-auto scrollbar-thin">
           {activities.map((activity, index) => {
             const ActivityIcon = getActivityIcon(activity.type);
             
@@ -225,23 +225,23 @@ const RealTimeAnalytics = () => {
                 transition={{ delay: index * 0.1 }}
                 className="flex items-start gap-2 p-2 rounded-lg hover:bg-card/30 transition-colors"
               >
-                <div className={`w-6 h-6 rounded-full bg-muted/20 flex items-center justify-center flex-shrink-0 mt-0.5`}>
-                  <ActivityIcon className={`w-3 h-3 ${getActivityColor(activity.type)}`} />
+                <div className={`w-5 h-5 rounded-full bg-muted/20 flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                  <ActivityIcon className={`w-2.5 h-2.5 ${getActivityColor(activity.type)}`} />
                 </div>
                 
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs text-foreground font-medium">
+                <div className="flex-1 min-w-0 space-y-1">
+                  <div className="text-xs text-foreground font-medium leading-tight truncate">
                     {activity.description}
                   </div>
                   {activity.user && (
-                    <div className="text-xs text-muted-foreground">
+                    <div className="text-xs text-muted-foreground truncate">
                       by {activity.user}
                     </div>
                   )}
-                  <div className="flex items-center justify-between mt-1">
+                  <div className="flex items-center justify-between">
                     <span className="text-xs text-muted-foreground">{activity.time}</span>
                     {activity.impact > 0 && (
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="text-xs h-4 px-1">
                         +{activity.impact}
                       </Badge>
                     )}
