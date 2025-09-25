@@ -3,8 +3,7 @@ import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
 import { Card3D, FeatureCard3D } from "@/components/ui/card-3d";
 import { useLanguage } from "@/contexts/LanguageContext";
-import sustainabilityVision from "@/assets/sustainability-vision.png";
-import { ArrowRight, Leaf, Users, Target, Globe, TrendingUp, Sparkles, Heart, Star, Award } from "lucide-react";
+import { ArrowRight, Leaf, Users, Target, Globe, TrendingUp, Sparkles, Heart, Star } from "lucide-react";
 
 const Index = () => {
   const { t } = useLanguage();
@@ -74,47 +73,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Vision Section */}
-      <section className="py-24 bg-gradient-nature relative overflow-hidden">
-        <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="animate-fade-up delay-200">
-              <div className="inline-flex items-center space-x-2 bg-success/10 px-6 py-3 rounded-full mb-6">
-                <Globe className="w-5 h-5 text-success" />
-                <span className="text-success font-semibold">{t('vision.badge')}</span>
-              </div>
-              <h2 className="text-5xl font-bold text-foreground mb-8 leading-tight">
-                {t('vision.title')}
-              </h2>
-              <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                {t('vision.description')}
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  to="/about"
-                  className="inline-flex items-center space-x-2 bg-gradient-to-r from-success to-primary hover:from-success/90 hover:to-primary/90 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 shadow-card hover:shadow-premium hover:-translate-y-1"
-                >
-                  <span>{t('vision.cta')}</span>
-                  <ArrowRight className="w-5 h-5" />
-                </Link>
-              </div>
-            </div>
-            <div className="animate-fade-up delay-400">
-              <div className="relative">
-                <img 
-                  src={sustainabilityVision} 
-                  alt="Sustainability Vision" 
-                  className="w-full h-auto rounded-3xl shadow-premium"
-                />
-                <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-gradient-to-br from-warning to-success rounded-full flex items-center justify-center shadow-glow">
-                  <Award className="w-12 h-12 text-white" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Impact Stories */}
       <section className="py-24 bg-gradient-subtle">
