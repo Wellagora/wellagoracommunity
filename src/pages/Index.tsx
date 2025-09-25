@@ -1,47 +1,14 @@
 import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import HeroSection from "@/components/HeroSection";
 import sustainabilityVision from "@/assets/sustainability-vision.png";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-20 border-b border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6">
-              Build a{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-                Sustainable Future
-              </span>
-              {" "}Together
-            </h1>
-            <p className="text-xl text-slate-300 mb-8 max-w-3xl mx-auto">
-              Join our global community of citizens, businesses, municipalities, and NGOs 
-              working together to create positive environmental impact through actionable challenges 
-              and AI-powered guidance.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                to="/auth"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-premium hover:-translate-y-1"
-              >
-                Start Your Journey
-              </Link>
-              <Link
-                to="/dashboard"
-                className="border-2 border-slate-600 hover:border-primary text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:shadow-glow"
-              >
-                Explore Challenges
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Hero Impact Section - Remove this entire section */}
+      <HeroSection />
 
       {/* Features Overview */}
       <section className="py-20 bg-card border-b border-border">
@@ -146,21 +113,54 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-background py-12 border-t border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <footer className="bg-gradient-wave py-16 border-t border-white/10 relative overflow-hidden">
+        <div className="absolute inset-0 bg-wave-pattern opacity-30"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
-            <div className="flex items-center justify-center space-x-4 mb-6">
-              <div className="w-10 h-10 flex items-center justify-center bg-primary rounded-lg">
-                <img 
-                  src="/lovable-uploads/3911d8a5-aebe-4ede-83a5-33c26952916a.png" 
-                  alt="Wellagora Logo" 
-                  className="w-6 h-6 object-contain"
-                />
+            <div className="flex items-center justify-center space-x-6 mb-8">
+              <div className="relative group">
+                <div className="w-16 h-16 flex items-center justify-center bg-gradient-to-br from-primary to-success rounded-3xl shadow-glow group-hover:scale-110 transition-transform duration-300">
+                  <img 
+                    src="/lovable-uploads/3911d8a5-aebe-4ede-83a5-33c26952916a.png" 
+                    alt="Wellagora Logo" 
+                    className="w-10 h-10 object-contain filter brightness-110"
+                  />
+                </div>
+                <div className="absolute -top-2 -right-2 w-6 h-6 bg-warning rounded-full flex items-center justify-center animate-pulse">
+                  <span className="text-xs">✨</span>
+                </div>
               </div>
-              <span className="text-xl font-bold text-foreground">Wellagora</span>
+              <div className="text-left">
+                <span className="text-3xl font-bold bg-gradient-to-r from-primary via-success to-secondary bg-clip-text text-transparent">
+                  Wellagora
+                </span>
+                <p className="text-white/80 text-lg font-medium mt-1">Sustainability Community Platform</p>
+              </div>
             </div>
-            <p className="text-muted-foreground mb-4">Together We Thrive - Building a sustainable future, one action at a time.</p>
-            <p className="text-muted-foreground/60 text-sm">© 2024 Wellagora. All rights reserved.</p>
+            
+            <div className="bg-glass backdrop-blur-md rounded-2xl p-8 border border-white/20 mb-8 max-w-2xl mx-auto">
+              <p className="text-white/90 text-lg mb-4 font-medium">
+                "Together We Thrive - Building a sustainable future, one action at a time."
+              </p>
+              <div className="flex items-center justify-center space-x-4 text-sm text-white/70">
+                <span className="flex items-center space-x-1">
+                  <span className="w-2 h-2 bg-success rounded-full animate-pulse"></span>
+                  <span>10,000+ Champions</span>
+                </span>
+                <span>•</span>
+                <span className="flex items-center space-x-1">
+                  <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                  <span>50+ Countries</span>
+                </span>
+                <span>•</span>
+                <span className="flex items-center space-x-1">
+                  <span className="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
+                  <span>2.5M kg CO₂ Saved</span>
+                </span>
+              </div>
+            </div>
+            
+            <p className="text-white/60 text-sm">© 2024 Wellagora. All rights reserved. | Making sustainability accessible for everyone.</p>
           </div>
         </div>
       </footer>

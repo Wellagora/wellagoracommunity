@@ -14,6 +14,7 @@ import {
   Leaf
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import LanguageSelector from "./LanguageSelector";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -50,7 +51,7 @@ const Navigation = () => {
               </div>
             </Link>
             <Link to="/" className="flex flex-col group">
-              <span className="text-xl font-bold bg-gradient-to-r from-primary via-success to-secondary bg-clip-text text-transparent group-hover:from-success group-hover:to-primary transition-all duration-300">
+              <span className="text-2xl font-bold bg-gradient-to-r from-primary via-success to-secondary bg-clip-text text-transparent group-hover:from-success group-hover:to-primary transition-all duration-300">
                 Wellagora
               </span>
               <div className="flex items-center space-x-2">
@@ -61,8 +62,8 @@ const Navigation = () => {
             </Link>
           </div>
 
-          {/* Community Stats */}
-          <div className="hidden lg:flex items-center space-x-6 text-sm">
+          {/* Community Stats and Language Selector */}
+          <div className="hidden lg:flex items-center space-x-4 text-sm">
             <div className="flex items-center space-x-2 px-3 py-1.5 bg-card/50 backdrop-blur-sm rounded-full border border-border">
               <Leaf className="w-4 h-4 text-success" />
               <span className="text-foreground font-medium">2.4k Active Champions</span>
@@ -71,6 +72,7 @@ const Navigation = () => {
               <span className="w-2 h-2 bg-success rounded-full animate-pulse"></span>
               <span className="text-foreground font-medium">Live Impact: 847 CO₂ saved today</span>
             </div>
+            <LanguageSelector />
           </div>
 
           {/* Mobile menu button */}
