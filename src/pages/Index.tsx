@@ -1,9 +1,32 @@
 import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
-import HeroSection from "@/components/HeroSection";
-import { Card3D, FeatureCard3D } from "@/components/ui/card-3d";
+import RegionalMap3D from "@/components/revolutionary/RegionalMap3D";
+import PredictiveImpactDashboard from "@/components/revolutionary/PredictiveImpactDashboard";
+import StakeholderOrchestration from "@/components/revolutionary/StakeholderOrchestration";
+import GuildSystem from "@/components/revolutionary/GuildSystem";
+import CircularEconomy from "@/components/revolutionary/CircularEconomy";
+import RealTimeAnalytics from "@/components/revolutionary/RealTimeAnalytics";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { ArrowRight, Leaf, Users, Target, Globe, TrendingUp, Sparkles, Heart, Star } from "lucide-react";
+import { motion } from "framer-motion";
+import { 
+  Users, 
+  Target, 
+  TrendingUp, 
+  Award,
+  Globe,
+  Zap,
+  Leaf,
+  Shield,
+  Trophy,
+  Building2,
+  ArrowRight,
+  Activity,
+  BarChart3
+} from "lucide-react";
 
 const Index = () => {
   const { t } = useLanguage();
@@ -12,214 +35,229 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <HeroSection />
+      {/* Main Dashboard Layout */}
+      <div className="container mx-auto px-4 pt-20 pb-8">
+        {/* Header Section */}
+        <motion.div 
+          className="text-center mb-8"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <h1 className="text-4xl lg:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-4">
+            Wellagora Platform
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Revolutionary sustainability orchestration for the future of regional collaboration
+          </p>
+          <Badge variant="secondary" className="mt-4 bg-primary/20 text-primary">
+            AI-Powered • Real-time Analytics • 3D Visualization
+          </Badge>
+        </motion.div>
 
-      {/* Features Overview */}
-      <section className="py-24 bg-gradient-nature border-b border-border/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20 animate-fade-up-3d">
-            <div className="inline-flex items-center space-x-3 bg-primary/10 backdrop-blur-sm px-8 py-4 rounded-full mb-8 border border-primary/20">
-              <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
-              <span className="text-primary font-semibold text-lg">{t('features.badge')}</span>
-            </div>
-            <h2 className="text-5xl lg:text-6xl font-bold text-foreground mb-8 leading-tight">
-              {t('features.title')}
-            </h2>
-            <p className="text-xl lg:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-              {t('features.subtitle')}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Link to="/challenges" className="group animate-slide-in-3d">
-              <div className="bg-white rounded-3xl p-8 shadow-card hover:shadow-premium transition-all duration-500 hover:-translate-y-2 border border-gray-100 h-full">
-                <div className="flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary to-primary-glow rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300 shadow-eco">
-                  <Leaf className="w-10 h-10 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-foreground mb-4">
-                  {t('features.challenges.title')}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed text-lg">
-                  {t('features.challenges.description')}
-                </p>
-                <div className="mt-6 flex items-center text-primary font-semibold group-hover:translate-x-2 transition-transform duration-300">
-                  <span className="mr-2">Kezdés</span>
-                  <ArrowRight className="w-5 h-5" />
-                </div>
-              </div>
-            </Link>
-
-            <Link to="/ai-assistant" className="group animate-slide-in-3d" style={{ animationDelay: '0.15s' }}>
-              <div className="bg-white rounded-3xl p-8 shadow-card hover:shadow-premium transition-all duration-500 hover:-translate-y-2 border border-gray-100 h-full">
-                <div className="flex items-center justify-center w-20 h-20 bg-gradient-to-br from-accent to-success rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300 shadow-eco">
-                  <Target className="w-10 h-10 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-foreground mb-4">
-                  {t('features.ai.title')}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed text-lg">
-                  {t('features.ai.description')}
-                </p>
-                <div className="mt-6 flex items-center text-primary font-semibold group-hover:translate-x-2 transition-transform duration-300">
-                  <span className="mr-2">Kipróbálás</span>
-                  <ArrowRight className="w-5 h-5" />
-                </div>
-              </div>
-            </Link>
-
-            <Link to="/community" className="group animate-slide-in-3d" style={{ animationDelay: '0.3s' }}>
-              <div className="bg-white rounded-3xl p-8 shadow-card hover:shadow-premium transition-all duration-500 hover:-translate-y-2 border border-gray-100 h-full">
-                <div className="flex items-center justify-center w-20 h-20 bg-gradient-to-br from-warning to-accent rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300 shadow-eco">
-                  <Users className="w-10 h-10 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-foreground mb-4">
-                  {t('features.community.title')}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed text-lg">
-                  {t('features.community.description')}
-                </p>
-                <div className="mt-6 flex items-center text-primary font-semibold group-hover:translate-x-2 transition-transform duration-300">
-                  <span className="mr-2">Csatlakozás</span>
-                  <ArrowRight className="w-5 h-5" />
-                </div>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-
-      {/* Impact Stories */}
-      <section className="py-24 bg-gradient-subtle">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20 animate-fade-up">
-            <div className="inline-flex items-center space-x-2 bg-accent/10 px-6 py-3 rounded-full mb-6">
-              <Heart className="w-5 h-5 text-accent" />
-              <span className="text-accent font-semibold">{t('impact.badge')}</span>
-            </div>
-            <h2 className="text-5xl font-bold text-foreground mb-8">
-              {t('impact.title')}
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              {t('impact.subtitle')}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-card/60 backdrop-blur-sm p-8 rounded-3xl border border-border/50 hover:border-primary/60 transition-all duration-300 hover:-translate-y-2 hover:shadow-premium animate-fade-up">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary to-success rounded-2xl flex items-center justify-center mb-6">
-                <TrendingUp className="w-8 h-8 text-white" />
-              </div>
-              <div className="text-4xl font-bold text-foreground mb-2">2.5M kg</div>
-              <div className="text-muted-foreground mb-4">{t('impact.co2_saved')}</div>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                {t('impact.co2_description')}
-              </p>
-            </div>
-
-            <div className="bg-card/60 backdrop-blur-sm p-8 rounded-3xl border border-border/50 hover:border-secondary/60 transition-all duration-300 hover:-translate-y-2 hover:shadow-premium animate-fade-up delay-100">
-              <div className="w-16 h-16 bg-gradient-to-br from-secondary to-accent rounded-2xl flex items-center justify-center mb-6">
-                <Users className="w-8 h-8 text-white" />
-              </div>
-              <div className="text-4xl font-bold text-foreground mb-2">10,000+</div>
-              <div className="text-muted-foreground mb-4">{t('impact.champions')}</div>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                {t('impact.champions_description')}
-              </p>
-            </div>
-
-            <div className="bg-card/60 backdrop-blur-sm p-8 rounded-3xl border border-border/50 hover:border-accent/60 transition-all duration-300 hover:-translate-y-2 hover:shadow-premium animate-fade-up delay-200">
-              <div className="w-16 h-16 bg-gradient-to-br from-accent to-success rounded-2xl flex items-center justify-center mb-6">
-                <Globe className="w-8 h-8 text-white" />
-              </div>
-              <div className="text-4xl font-bold text-foreground mb-2">50+</div>
-              <div className="text-muted-foreground mb-4">{t('impact.countries')}</div>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                {t('impact.countries_description')}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="py-24 bg-gradient-hero relative overflow-hidden">
-        <div className="absolute inset-0 bg-wave-pattern opacity-20"></div>
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="animate-fade-up">
-            <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full mb-8">
-              <Star className="w-5 h-5 text-warning" />
-              <span className="text-white font-semibold">{t('cta.badge')}</span>
-            </div>
-            <h2 className="text-6xl font-bold text-white mb-8 leading-tight">
-              {t('cta.title')}
-            </h2>
-            <p className="text-2xl text-white/90 mb-12 leading-relaxed">
-              {t('cta.description')}
-            </p>
-            <Link
-              to="/auth"
-              className="inline-flex items-center space-x-3 bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-white px-12 py-6 rounded-2xl font-bold text-xl transition-all duration-300 shadow-glow hover:shadow-premium hover:-translate-y-2"
+        {/* Main Grid Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-250px)] min-h-[800px]">
+          {/* Left Column - Analytics & Controls */}
+          <div className="lg:col-span-3 space-y-6">
+            {/* Real-Time Analytics */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <span>{t('cta.button')}</span>
-              <ArrowRight className="w-6 h-6" />
-            </Link>
-          </div>
-        </div>
-      </section>
+              <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Activity className="w-5 h-5 text-primary" />
+                    Live Analytics
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <RealTimeAnalytics />
+                </CardContent>
+              </Card>
+            </motion.div>
 
-      {/* Enhanced Footer */}
-      <footer className="bg-gradient-wave py-20 border-t border-white/10 relative overflow-hidden">
-        <div className="absolute inset-0 bg-wave-pattern opacity-30"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center">
-            <div className="flex flex-col lg:flex-row items-center justify-center lg:space-x-12 mb-12">
-              <div className="relative group mb-8 lg:mb-0">
-                <div className="w-48 h-48 flex items-center justify-center bg-gradient-to-br from-primary to-success rounded-3xl shadow-glow group-hover:scale-105 transition-transform duration-300">
-                  <img 
-                    src="/lovable-uploads/3911d8a5-aebe-4ede-83a5-33c26952916a.png" 
-                    alt="Wellagora Logo" 
-                    className="w-36 h-36 object-contain logo-enhanced"
-                  />
-                </div>
-                <div className="absolute -top-3 -right-3 w-12 h-12 bg-warning rounded-full flex items-center justify-center animate-pulse">
-                  <Sparkles className="w-6 h-6 text-white" />
-                </div>
-              </div>
-              <div className="text-center lg:text-left">
-                <h3 className="text-8xl font-bold text-foreground mb-4 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-                  Wellagora
-                </h3>
-                <p className="text-foreground/80 text-2xl font-medium mb-4">Sustainability Community Platform</p>
-                <p className="text-foreground/90 text-xl font-medium">
-                  {t('footer.tagline')}
-                </p>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-              <div className="bg-card/30 backdrop-blur-sm p-6 rounded-2xl border border-border/30">
-                <div className="text-3xl font-bold text-primary mb-2">10,000+</div>
-                <div className="text-foreground/80">{t('footer.stats.champions')}</div>
-              </div>
-              <div className="bg-card/30 backdrop-blur-sm p-6 rounded-2xl border border-border/30">
-                <div className="text-3xl font-bold text-secondary mb-2">50+</div>
-                <div className="text-foreground/80">{t('footer.stats.countries')}</div>
-              </div>
-              <div className="bg-card/30 backdrop-blur-sm p-6 rounded-2xl border border-border/30">
-                <div className="text-3xl font-bold text-success mb-2">2.5M</div>
-                <div className="text-foreground/80">{t('footer.stats.co2_saved')}</div>
-              </div>
-              <div className="bg-card/30 backdrop-blur-sm p-6 rounded-2xl border border-border/30">
-                <div className="text-3xl font-bold text-accent mb-2">50,000+</div>
-                <div className="text-foreground/80">{t('footer.stats.challenges')}</div>
-              </div>
-            </div>
-            
-            <p className="text-foreground/60 text-lg">{t('footer.copyright')}</p>
+            {/* Stakeholder Orchestration */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <Card className="bg-card/80 backdrop-blur-sm border-accent/20">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Users className="w-5 h-5 text-accent" />
+                    AI Matching
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <StakeholderOrchestration />
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Guild System */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <Card className="bg-card/80 backdrop-blur-sm border-success/20">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Shield className="w-5 h-5 text-success" />
+                    Guild System
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <GuildSystem />
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+
+          {/* Center Column - 3D Regional Map */}
+          <div className="lg:col-span-6">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              <Card className="h-full bg-card/90 backdrop-blur-sm border-2 border-primary/30 shadow-glow">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center justify-center gap-2 text-xl">
+                    <Globe className="w-6 h-6 text-primary" />
+                    3D Regional Sustainability Map
+                    <Badge variant="secondary" className="bg-primary/20 text-primary text-xs">
+                      LIVE
+                    </Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <RegionalMap3D />
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+
+          {/* Right Column - Predictions & Economy */}
+          <div className="lg:col-span-3 space-y-6">
+            {/* Predictive Impact Dashboard */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              <Card className="bg-card/80 backdrop-blur-sm border-warning/20">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <TrendingUp className="w-5 h-5 text-warning" />
+                    Predictions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <PredictiveImpactDashboard />
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Circular Economy */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <Card className="bg-card/80 backdrop-blur-sm border-secondary/20">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Leaf className="w-5 h-5 text-secondary" />
+                    Circular Flow
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CircularEconomy />
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Quick Actions */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <Card className="bg-card/80 backdrop-blur-sm border-border/20">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Zap className="w-5 h-5 text-primary" />
+                    Quick Actions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Link to="/challenges">
+                    <Button variant="outline" className="w-full justify-between" size="sm">
+                      View Challenges
+                      <Target className="w-4 h-4" />
+                    </Button>
+                  </Link>
+                  <Link to="/community">
+                    <Button variant="outline" className="w-full justify-between" size="sm">
+                      Join Community
+                      <Users className="w-4 h-4" />
+                    </Button>
+                  </Link>
+                  <Link to="/dashboard">
+                    <Button variant="outline" className="w-full justify-between" size="sm">
+                      My Dashboard
+                      <BarChart3 className="w-4 h-4" />
+                    </Button>
+                  </Link>
+                  <Link to="/revolutionary-dashboard">
+                    <Button className="w-full justify-between bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90" size="sm">
+                      Revolutionary Mode
+                      <ArrowRight className="w-4 h-4" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
         </div>
-      </footer>
+
+        {/* Bottom Stats Bar */}
+        <motion.div 
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+          <Card className="bg-card/60 backdrop-blur-sm border-border/30">
+            <CardContent className="p-4 text-center">
+              <div className="text-2xl font-bold text-primary">2.5M kg</div>
+              <div className="text-sm text-muted-foreground">CO₂ Saved</div>
+            </CardContent>
+          </Card>
+          <Card className="bg-card/60 backdrop-blur-sm border-border/30">
+            <CardContent className="p-4 text-center">
+              <div className="text-2xl font-bold text-accent">10,000+</div>
+              <div className="text-sm text-muted-foreground">Active Users</div>
+            </CardContent>
+          </Card>
+          <Card className="bg-card/60 backdrop-blur-sm border-border/30">
+            <CardContent className="p-4 text-center">
+              <div className="text-2xl font-bold text-success">245</div>
+              <div className="text-sm text-muted-foreground">Partnerships</div>
+            </CardContent>
+          </Card>
+          <Card className="bg-card/60 backdrop-blur-sm border-border/30">
+            <CardContent className="p-4 text-center">
+              <div className="text-2xl font-bold text-secondary">67%</div>
+              <div className="text-sm text-muted-foreground">Goal Progress</div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
     </div>
   );
 };

@@ -8,15 +8,15 @@ Enhanced design with premium typography and sophisticated color palette
 
 @layer base {
   :root {
-    /* VILÁGOS, EMBERKÖZPONTÚ DESIGN - Sustainability & Innovation */
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* DARK MODERN DESIGN - Revolutionary Sustainability Platform */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 217.2 32.6% 17.5%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 217.2 32.6% 17.5%;
+    --popover-foreground: 210 40% 98%;
 
     /* Revolutionary warm blue primary - #2563EB */
     --primary: 219 100% 60%;
@@ -24,13 +24,13 @@ Enhanced design with premium typography and sophisticated color palette
     --primary-glow: 219 85% 70%;
     --primary-dark: 219 100% 45%;
 
-    /* Light neutral secondary */
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
+    /* Dark secondary */
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
 
-    /* Muted tones */
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Dark muted tones */
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
 
     /* Revolutionary orange accent - #FB923C */
     --accent: 22 93% 58%;
@@ -50,8 +50,8 @@ Enhanced design with premium typography and sophisticated color palette
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
     --ring: 219 100% 60%;
 
     --radius: 0.75rem;
