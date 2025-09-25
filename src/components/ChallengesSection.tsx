@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   Bike,
   Leaf,
@@ -25,6 +26,7 @@ import {
 import communityImage from "@/assets/community-challenges.jpg";
 
 const ChallengesSection = () => {
+  const { t } = useLanguage();
   const challengeCategories = [
     { name: "Transport", icon: Bike, color: "accent", count: 45 },
     { name: "Energy", icon: Zap, color: "warning", count: 38 },

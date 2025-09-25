@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { 
   Calendar, 
   Clock, 
@@ -24,9 +25,9 @@ import {
 
 interface Challenge {
   id: string;
-  title: string;
-  description: string;
-  longDescription: string;
+  titleKey: string;
+  descriptionKey: string;
+  longDescriptionKey: string;
   category: "energy" | "transport" | "food" | "waste" | "community" | "innovation" | "water" | "biodiversity" | "circular-economy" | "green-finance";
   difficulty: "beginner" | "intermediate" | "advanced" | "expert";
   duration: string;
@@ -37,8 +38,8 @@ interface Challenge {
     name: string;
     logo: string;
   };
-  steps: string[];
-  tips: string[];
+  stepsKeys: string[];
+  tipsKeys: string[];
   impact: {
     co2Saved: number;
     treesEquivalent: number;
@@ -63,288 +64,304 @@ interface ChallengeDetailProps {
 }
 
 const categoryConfig = {
-  energy: { icon: Zap, color: "bg-gradient-sunset", label: "Energy" },
-  transport: { icon: Target, color: "bg-gradient-ocean", label: "Transport" },
-  food: { icon: Leaf, color: "bg-gradient-nature", label: "Food" },
-  waste: { icon: Recycle, color: "bg-gradient-nature", label: "Waste" },
-  community: { icon: Heart, color: "bg-gradient-primary", label: "Community" }
+  energy: { icon: Zap, color: "bg-gradient-sunset", label: "Energia" },
+  transport: { icon: Target, color: "bg-gradient-ocean", label: "Közlekedés" },
+  food: { icon: Leaf, color: "bg-gradient-nature", label: "Étel" },
+  waste: { icon: Recycle, color: "bg-gradient-nature", label: "Hulladék" },
+  community: { icon: Heart, color: "bg-gradient-primary", label: "Közösség" }
 };
 
 const difficultyConfig = {
-  beginner: { color: "bg-success", label: "Beginner" },
-  intermediate: { color: "bg-warning", label: "Intermediate" },
-  advanced: { color: "bg-accent", label: "Advanced" },
-  expert: { color: "bg-destructive", label: "Expert" }
+  beginner: { color: "bg-success", label: "Kezdő" },
+  intermediate: { color: "bg-warning", label: "Közepes" },
+  advanced: { color: "bg-accent", label: "Haladó" },
+  expert: { color: "bg-destructive", label: "Szakértő" }
 };
 
 const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: ChallengeDetailProps) => {
   const [activeStep, setActiveStep] = useState(0);
   const { toast } = useToast();
+  const { t } = useLanguage();
   
   const CategoryIcon = categoryConfig[challenge.category].icon;
   
   const handleJoinChallenge = () => {
     onJoin?.(challenge.id);
     toast({
-      title: "Challenge Joined!",
-      description: `You've successfully joined "${challenge.title}". Good luck!`,
+      title: "Csatlakozás sikeres!",
+      description: `Sikeresen csatlakoztál a "${t(challenge.titleKey)}" kihíváshoz. Sok szerencsét!`,
     });
   };
 
   const handleCompleteStep = (stepIndex: number) => {
     // TODO: Implement step completion logic
     toast({
-      title: "Step Completed!",
-      description: `Great progress on "${challenge.title}"!`,
+      title: "Lépés teljesítve!",
+      description: `Nagyszerű haladás a "${t(challenge.titleKey)}" kihívásban!`,
     });
   };
 
   const handleCompleteChallenge = () => {
     onComplete?.(challenge.id);
     toast({
-      title: "Challenge Completed! 🎉",
-      description: `You earned ${challenge.pointsReward} points for completing "${challenge.title}"!`,
+      title: "Kihívás teljesítve!",
+      description: `Gratulálunk! Teljesítetted a "${t(challenge.titleKey)}" kihívást!`,
     });
   };
 
   const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: challenge.title,
-        text: challenge.description,
-        url: window.location.href,
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      toast({
-        title: "Link Copied!",
-        description: "Challenge link copied to clipboard",
-      });
-    }
+    toast({
+      title: "Megosztás",
+      description: `Kihívás megosztva: "${t(challenge.titleKey)}"`,
+    });
   };
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Header Card */}
-      <Card>
+      {/* Main Challenge Card */}
+      <Card className="shadow-card">
         <CardHeader>
           <div className="flex items-start justify-between">
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
+            <div className="flex-1">
+              <div className="flex items-center space-x-3 mb-3">
                 <div className={`p-2 rounded-lg ${categoryConfig[challenge.category].color}`}>
-                  <CategoryIcon className="w-5 h-5 text-white" />
+                  <CategoryIcon className="w-6 h-6 text-white" />
                 </div>
-                <Badge variant="secondary" className={difficultyConfig[challenge.difficulty].color}>
+                <Badge 
+                  className={`${difficultyConfig[challenge.difficulty].color} text-white`}
+                >
                   {difficultyConfig[challenge.difficulty].label}
                 </Badge>
-                {challenge.sponsor && (
-                  <Badge variant="outline">Sponsored</Badge>
-                )}
+                <Badge variant="outline" className="flex items-center space-x-1">
+                  <Clock className="w-3 h-3" />
+                  <span>{challenge.duration}</span>
+                </Badge>
               </div>
-              <CardTitle className="text-2xl">{challenge.title}</CardTitle>
-              <CardDescription className="text-base">
-                {challenge.description}
+              
+              <CardTitle className="text-2xl text-foreground mb-2">
+                {t(challenge.titleKey)}
+              </CardTitle>
+              <CardDescription className="text-muted-foreground mb-4">
+                {t(challenge.descriptionKey)}
               </CardDescription>
+              
+              <div className="flex items-center space-x-6 text-sm">
+                <div className="flex items-center space-x-2">
+                  <Users className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-foreground font-medium">
+                    {challenge.participants.toLocaleString()} résztvevő
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Target className="w-4 h-4 text-success" />
+                  <span className="text-foreground font-medium">
+                    {challenge.completionRate}% teljesítési arány
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Trophy className="w-4 h-4 text-warning" />
+                  <span className="text-foreground font-medium">
+                    {challenge.pointsReward} pont
+                  </span>
+                </div>
+              </div>
             </div>
-            <Button variant="ghost" size="sm" onClick={handleShare}>
-              <Share2 className="w-4 h-4" />
-            </Button>
-          </div>
-          
-          {/* Challenge Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-            <div className="flex items-center space-x-2">
-              <Clock className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">{challenge.duration}</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Trophy className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">{challenge.pointsReward} points</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Users className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">{challenge.participants} participants</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Target className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">{challenge.completionRate}% completion</span>
+            
+            <div className="text-right">
+              <div className="text-3xl font-bold text-primary mb-1">
+                {challenge.pointsReward}
+              </div>
+              <div className="text-xs text-muted-foreground">pontot kapsz</div>
+              
+              {userProgress?.isParticipating && !userProgress.isCompleted && (
+                <div className="mt-4">
+                  <div className="text-sm text-muted-foreground mb-1">Haladás</div>
+                  <Progress value={userProgress.progress} className="w-24 h-2" />
+                  <div className="text-xs text-foreground mt-1">{userProgress.progress}%</div>
+                </div>
+              )}
             </div>
           </div>
         </CardHeader>
         
         <CardContent>
-          <p className="text-muted-foreground mb-4">{challenge.longDescription}</p>
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-foreground mb-3">Kihívás Részletei</h3>
+            <p className="text-muted-foreground leading-relaxed">
+              {t(challenge.longDescriptionKey)}
+            </p>
+          </div>
           
           {/* Environmental Impact */}
-          <div className="bg-muted/50 rounded-lg p-4 mb-4">
-            <h4 className="font-semibold mb-2 text-success">Environmental Impact</h4>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="text-muted-foreground">CO₂ Saved:</span>
-                <span className="font-medium ml-2">{challenge.impact.co2Saved}kg</span>
+          <div className="grid md:grid-cols-2 gap-4 mb-6">
+            <div className="p-4 rounded-lg bg-success/10 border border-success/20">
+              <div className="flex items-center space-x-2 mb-2">
+                <Leaf className="w-5 h-5 text-success" />
+                <span className="font-semibold text-success">CO₂ Megtakarítás</span>
               </div>
-              <div>
-                <span className="text-muted-foreground">Trees Equivalent:</span>
-                <span className="font-medium ml-2">{challenge.impact.treesEquivalent}</span>
+              <div className="text-2xl font-bold text-foreground">
+                {challenge.impact.co2Saved} kg
+              </div>
+              <div className="text-xs text-muted-foreground">
+                Átlagosan egy résztvevőnként
+              </div>
+            </div>
+            
+            <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
+              <div className="flex items-center space-x-2 mb-2">
+                <BookOpen className="w-5 h-5 text-primary" />
+                <span className="font-semibold text-primary">Fa Egyenérték</span>
+              </div>
+              <div className="text-2xl font-bold text-foreground">
+                {challenge.impact.treesEquivalent}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                Ennyi fa ültetésével egyenértékű
               </div>
             </div>
           </div>
-
-          {/* Sponsor */}
-          {challenge.sponsor && (
-            <div className="flex items-center space-x-3 bg-card border rounded-lg p-3 mb-4">
-              <img 
-                src={challenge.sponsor.logo} 
-                alt={challenge.sponsor.name}
-                className="w-8 h-8 rounded"
-              />
-              <div>
-                <p className="text-sm font-medium">Sponsored by</p>
-                <p className="text-sm text-muted-foreground">{challenge.sponsor.name}</p>
-              </div>
-            </div>
-          )}
-        </CardContent>
-        
-        <CardFooter>
-          {!userProgress?.isParticipating ? (
-            <Button 
-              onClick={handleJoinChallenge}
-              className="w-full bg-gradient-primary hover:shadow-glow"
-            >
-              Join Challenge
-            </Button>
-          ) : userProgress.isCompleted ? (
-            <div className="w-full">
-              <Badge variant="default" className="w-full justify-center py-2 bg-success">
-                <CheckCircle className="w-4 h-4 mr-2" />
-                Challenge Completed!
-              </Badge>
-            </div>
-          ) : (
-            <div className="w-full space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Progress</span>
-                <span className="text-sm text-muted-foreground">{userProgress.progress}%</span>
-              </div>
-              <Progress value={userProgress.progress} className="w-full" />
-              {userProgress.progress === 100 && (
-                <Button 
-                  onClick={handleCompleteChallenge}
-                  className="w-full bg-gradient-primary hover:shadow-glow"
+          
+          {/* Steps Section */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-foreground mb-4">Lépések a Teljesítéshez</h3>
+            <div className="space-y-3">
+              {challenge.stepsKeys.map((stepKey, index) => (
+                <div
+                  key={stepKey}
+                  className={`flex items-start space-x-3 p-3 rounded-lg border transition-colors cursor-pointer ${
+                    userProgress?.completedSteps?.includes(index) 
+                      ? 'bg-success/10 border-success/20' 
+                      : activeStep === index 
+                      ? 'bg-primary/10 border-primary/20' 
+                      : 'bg-muted/30 border-border hover:bg-muted/50'
+                  }`}
+                  onClick={() => setActiveStep(index)}
                 >
-                  Complete Challenge
-                </Button>
-              )}
-            </div>
-          )}
-        </CardFooter>
-      </Card>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Challenge Steps */}
-        <div className="lg:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <BookOpen className="w-5 h-5" />
-                <span>Challenge Steps</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {challenge.steps.map((step, index) => (
-                <div key={index} className="flex items-start space-x-3">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                    userProgress?.completedSteps.includes(index) 
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-medium ${
+                    userProgress?.completedSteps?.includes(index) 
                       ? 'bg-success text-success-foreground' 
-                      : userProgress?.isParticipating 
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted text-muted-foreground'
+                      : activeStep === index
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted text-muted-foreground'
                   }`}>
-                    {userProgress?.completedSteps.includes(index) ? (
+                    {userProgress?.completedSteps?.includes(index) ? (
                       <CheckCircle className="w-4 h-4" />
                     ) : (
                       index + 1
                     )}
                   </div>
                   <div className="flex-1">
-                    <p className={`${
-                      userProgress?.completedSteps.includes(index) 
-                        ? 'line-through text-muted-foreground' 
-                        : ''
-                    }`}>
-                      {step}
-                    </p>
-                    {userProgress?.isParticipating && !userProgress?.completedSteps.includes(index) && (
+                    <p className="text-foreground font-medium">{t(stepKey)}</p>
+                    {userProgress?.isParticipating && !userProgress?.completedSteps?.includes(index) && (
                       <Button 
-                        variant="ghost" 
                         size="sm" 
-                        className="mt-2"
-                        onClick={() => handleCompleteStep(index)}
+                        variant="ghost"
+                        className="mt-2 text-xs"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCompleteStep(index);
+                        }}
                       >
-                        Mark Complete
+                        Teljesítve
                       </Button>
                     )}
                   </div>
                 </div>
               ))}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Tips */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Star className="w-5 h-5" />
-                <span>Tips</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2">
-                {challenge.tips.map((tip, index) => (
-                  <li key={index} className="text-sm text-muted-foreground flex items-start space-x-2">
-                    <span className="text-primary">•</span>
-                    <span>{tip}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-
-          {/* Participants Preview */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Users className="w-5 h-5" />
-                <span>Participants</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {challenge.participants_preview.map((participant) => (
-                  <div key={participant.id} className="flex items-center space-x-3">
-                    <Avatar className="w-8 h-8">
-                      <AvatarImage src={participant.avatar} />
-                      <AvatarFallback>
-                        {participant.name.split(' ').map(n => n[0]).join('')}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="text-sm">{participant.name}</span>
+            </div>
+          </div>
+          
+          {/* Tips Section */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-foreground mb-4">Hasznos Tippek</h3>
+            <div className="space-y-2">
+              {challenge.tipsKeys.map((tipKey, index) => (
+                <div key={tipKey} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30">
+                  <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs font-medium text-accent">{index + 1}</span>
                   </div>
-                ))}
-                {challenge.participants > challenge.participants_preview.length && (
-                  <p className="text-sm text-muted-foreground">
-                    +{challenge.participants - challenge.participants_preview.length} more participants
-                  </p>
-                )}
+                  <p className="text-foreground text-sm">{t(tipKey)}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Sponsor Info */}
+          {challenge.sponsor && (
+            <div className="p-4 rounded-lg bg-card border border-border">
+              <div className="flex items-center space-x-3">
+                <img 
+                  src={challenge.sponsor.logo} 
+                  alt={challenge.sponsor.name}
+                  className="w-12 h-12 rounded-lg object-cover"
+                />
+                <div>
+                  <div className="font-semibold text-foreground">
+                    Szponzor: {challenge.sponsor.name}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    Támogatja ezt a kihívást
+                  </div>
+                </div>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+            </div>
+          )}
+        </CardContent>
+        
+        <CardFooter className="flex flex-col space-y-4">
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-3 w-full">
+            {!userProgress?.isParticipating ? (
+              <Button 
+                onClick={handleJoinChallenge}
+                className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth"
+              >
+                <Trophy className="w-4 h-4 mr-2" />
+                Csatlakozás a Kihíváshoz
+              </Button>
+            ) : userProgress.isCompleted ? (
+              <Button 
+                disabled
+                className="flex-1 bg-success hover:bg-success"
+              >
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Kihívás Teljesítve!
+              </Button>
+            ) : (
+              <Button 
+                onClick={handleCompleteChallenge}
+                className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth"
+              >
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Kihívás Befejezése
+              </Button>
+            )}
+            
+            <Button variant="outline" onClick={handleShare}>
+              <Share2 className="w-4 h-4 mr-2" />
+              Megosztás
+            </Button>
+          </div>
+          
+          {/* Participants Preview */}
+          <div className="w-full">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-sm font-medium text-foreground">Résztvevők</span>
+              <span className="text-xs text-muted-foreground">
+                +{(challenge.participants - challenge.participants_preview.length).toLocaleString()} további
+              </span>
+            </div>
+            <div className="flex -space-x-2">
+              {challenge.participants_preview.map((participant) => (
+                <Avatar key={participant.id} className="w-8 h-8 border-2 border-background">
+                  <AvatarImage src={participant.avatar} alt={participant.name} />
+                  <AvatarFallback>{participant.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+              ))}
+            </div>
+          </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 };

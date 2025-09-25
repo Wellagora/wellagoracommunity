@@ -57,8 +57,8 @@ const ChallengesPage = () => {
 
     if (searchTerm) {
       filtered = filtered.filter(challenge =>
-        challenge.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        challenge.description.toLowerCase().includes(searchTerm.toLowerCase())
+        t(challenge.titleKey).toLowerCase().includes(searchTerm.toLowerCase()) ||
+        t(challenge.descriptionKey).toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -236,10 +236,10 @@ const ChallengesPage = () => {
                 </div>
                 
                 <CardTitle className="text-foreground text-lg leading-tight mb-2">
-                  {challenge.title}
+                  {t(challenge.titleKey)}
                 </CardTitle>
                 <CardDescription className="text-muted-foreground text-sm leading-relaxed">
-                  {challenge.description}
+                  {t(challenge.descriptionKey)}
                 </CardDescription>
               </CardHeader>
 
