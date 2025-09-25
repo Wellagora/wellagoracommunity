@@ -37,200 +37,120 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* Main Dashboard Layout */}
-      <div className="container mx-auto px-4 pt-20 pb-8">
-        {/* Header Section */}
+      {/* Hero Section with Clear Call-to-Action */}
+      <div className="container mx-auto px-4 pt-8 pb-16">
         <motion.div 
-          className="text-center mb-8"
+          className="text-center mb-16"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-4xl lg:text-6xl font-bold text-foreground hover:text-primary transition-all duration-300 mb-4">
+          <h1 className="text-4xl lg:text-6xl font-bold text-foreground mb-6">
             Wellagora Platform
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Revolutionary sustainability orchestration for the future of regional collaboration
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+            Fenntarthatósági célok elérése közösségi erővel és AI támogatással
           </p>
-          <Badge variant="secondary" className="mt-4 bg-primary/20 text-primary">
-            AI-Powered • Real-time Analytics • 3D Visualization
+          
+          {/* Main Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+            <Link to="/challenges">
+              <Button size="lg" className="bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-white px-8 py-4 rounded-2xl font-semibold shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300">
+                🎯 Kezdj egy Kihívást
+              </Button>
+            </Link>
+            <Link to="/dynamic-regional">
+              <Button size="lg" variant="outline" className="border-2 border-primary hover:bg-primary hover:text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300">
+                🌍 Fedezd fel Régiódat
+              </Button>
+            </Link>
+          </div>
+          
+          <Badge variant="secondary" className="bg-primary/20 text-primary px-4 py-2">
+            AI-Powered • Valós idejű • Közösségi
           </Badge>
         </motion.div>
 
-        {/* Main Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-250px)] min-h-[800px]">
-          {/* Left Column - Analytics & Controls */}
-          <div className="lg:col-span-3 space-y-6">
-            {/* Real-Time Analytics */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-            >
-              <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Activity className="w-5 h-5 text-primary" />
-                    Live Analytics
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <RealTimeAnalytics />
-                </CardContent>
-              </Card>
-            </motion.div>
+        {/* Feature Cards - Simplified */}
+        <div className="grid md:grid-cols-3 gap-8 mb-16">
+          {/* Personal Dashboard */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <Card className="h-full bg-gradient-to-br from-primary/10 to-success/10 border-primary/20 hover:shadow-glow transition-all duration-300 hover:scale-105">
+              <CardHeader>
+                <div className="w-12 h-12 bg-gradient-to-r from-primary to-success rounded-2xl flex items-center justify-center mb-4">
+                  <BarChart3 className="w-6 h-6 text-white" />
+                </div>
+                <CardTitle className="text-xl mb-2">Személyes Dashboard</CardTitle>
+                <p className="text-muted-foreground">Kövesd nyomon a fejlődésedet, gyűjts pontokat és érd el célјайdat gamifikált módon.</p>
+              </CardHeader>
+              <CardContent>
+                <Link to="/dashboard">
+                  <Button className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90">
+                    Dashboard Megnyitása
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-            {/* Stakeholder Orchestration */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <Card className="bg-card/80 backdrop-blur-sm border-accent/20">
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Users className="w-5 h-5 text-accent" />
-                    AI Matching
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <StakeholderOrchestration />
-                </CardContent>
-              </Card>
-            </motion.div>
+          {/* Community Challenges */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <Card className="h-full bg-gradient-to-br from-accent/10 to-secondary/10 border-accent/20 hover:shadow-glow transition-all duration-300 hover:scale-105">
+              <CardHeader>
+                <div className="w-12 h-12 bg-gradient-to-r from-accent to-secondary rounded-2xl flex items-center justify-center mb-4">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <CardTitle className="text-xl mb-2">Közösségi Kihívások</CardTitle>
+                <p className="text-muted-foreground">Csatlakozz fenntarthatósági kihívásokhoz és változtasd meg a világot mások mellett.</p>
+              </CardHeader>
+              <CardContent>
+                <Link to="/challenges">
+                  <Button className="w-full bg-gradient-to-r from-accent to-secondary hover:from-accent/90 hover:to-secondary/90">
+                    Kihívások Böngészése
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-            {/* Guild System */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <Card className="bg-card/80 backdrop-blur-sm border-success/20">
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Shield className="w-5 h-5 text-success" />
-                    Guild System
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <GuildSystem />
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
-
-          {/* Center Column - 3D Regional Map */}
-          <div className="lg:col-span-6">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              <Card className="h-full bg-card/90 backdrop-blur-sm border-2 border-primary/30 shadow-glow">
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center justify-center gap-2 text-xl">
-                    <Globe className="w-6 h-6 text-primary" />
-                    3D Regional Sustainability Map
-                    <Badge variant="secondary" className="bg-primary/20 text-primary text-xs">
-                      LIVE
-                    </Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <RegionalOrchestrator2D />
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
-
-          {/* Right Column - Predictions & Economy */}
-          <div className="lg:col-span-3 space-y-6">
-            {/* Predictive Impact Dashboard */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-            >
-              <Card className="bg-card/80 backdrop-blur-sm border-warning/20">
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <TrendingUp className="w-5 h-5 text-warning" />
-                    Predictions
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <PredictiveImpactDashboard />
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Circular Economy */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <Card className="bg-card/80 backdrop-blur-sm border-secondary/20">
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Leaf className="w-5 h-5 text-secondary" />
-                    Circular Flow
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CircularEconomyFlow />
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Quick Actions */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <Card className="bg-card/80 backdrop-blur-sm border-border/20">
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Zap className="w-5 h-5 text-primary" />
-                    Quick Actions
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <Link to="/challenges">
-                    <Button variant="outline" className="w-full justify-between" size="sm">
-                      View Challenges
-                      <Target className="w-4 h-4" />
-                    </Button>
-                  </Link>
-                  <Link to="/community">
-                    <Button variant="outline" className="w-full justify-between" size="sm">
-                      Join Community
-                      <Users className="w-4 h-4" />
-                    </Button>
-                  </Link>
-                  <Link to="/dashboard">
-                    <Button variant="outline" className="w-full justify-between" size="sm">
-                      My Dashboard
-                      <BarChart3 className="w-4 h-4" />
-                    </Button>
-                  </Link>
+          {/* Advanced Features */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+          >
+            <Card className="h-full bg-gradient-to-br from-warning/10 to-destructive/10 border-warning/20 hover:shadow-glow transition-all duration-300 hover:scale-105">
+              <CardHeader>
+                <div className="w-12 h-12 bg-gradient-to-r from-warning to-destructive rounded-2xl flex items-center justify-center mb-4">
+                  <Zap className="w-6 h-6 text-white" />
+                </div>
+                <CardTitle className="text-xl mb-2">Haladó Funkciók</CardTitle>
+                <p className="text-muted-foreground">3D térképek, AI elemzések és fejlett regionális orchestration.</p>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
                   <Link to="/revolutionary">
-                    <Button className="w-full justify-between bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90" size="sm">
+                    <Button variant="outline" className="w-full border-warning hover:bg-warning hover:text-warning-foreground">
                       Revolutionary Mode
-                      <ArrowRight className="w-4 h-4" />
                     </Button>
                   </Link>
                   <Link to="/dynamic-regional">
-                    <Button className="w-full justify-between bg-gradient-to-r from-success to-warning hover:from-success/90 hover:to-warning/90" size="sm">
+                    <Button variant="outline" className="w-full border-success hover:bg-success hover:text-success-foreground">
                       Dynamic Regional
-                      <Globe className="w-4 h-4" />
                     </Button>
                   </Link>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
 
         {/* Bottom Stats Bar */}

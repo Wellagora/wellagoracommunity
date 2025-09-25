@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
 import { 
   User, 
   Building2, 
@@ -146,18 +147,46 @@ const DashboardPage = () => {
                 const IconComponent = role.icon;
                 const isActive = currentRole === role.value;
                 return (
-                  <FeatureCard3D
+                  <div
                     key={role.value}
-                    icon={<IconComponent className="w-8 h-8" />}
-                    title={t(`dashboard.roles.${role.value}`)}
-                    description={t(`dashboard.roles.${role.value}_desc`)}
                     onClick={() => setCurrentRole(role.value)}
-                    className={`cursor-pointer transition-all duration-300 ${
-                      isActive 
-                        ? `bg-gradient-to-br ${role.gradient} border-2 border-gradient-${role.borderGradient} shadow-glow` 
-                        : 'hover:bg-card/50 hover:scale-105'
-                    }`}
-                  />
+                    className={`
+                      cursor-pointer p-6 rounded-2xl border-2 transition-all duration-300 group
+                      ${isActive 
+                        ? `bg-gradient-to-br ${role.gradient} border-primary shadow-glow scale-105` 
+                        : 'bg-card/30 border-border hover:bg-card/70 hover:border-primary/50 hover:scale-102 hover:shadow-md'
+                      }
+                    `}
+                  >
+                    <div className="text-center space-y-4">
+                      <div className={`
+                        w-16 h-16 mx-auto rounded-2xl flex items-center justify-center transition-all duration-300
+                        ${isActive 
+                          ? `bg-gradient-to-r ${role.borderGradient} shadow-lg` 
+                          : 'bg-gradient-to-r from-muted to-muted-foreground/20 group-hover:from-primary group-hover:to-success'
+                        }
+                      `}>
+                        <IconComponent className={`w-8 h-8 ${isActive ? 'text-white' : 'text-foreground group-hover:text-white'}`} />
+                      </div>
+                      
+                      <div>
+                        <h3 className={`text-lg font-semibold mb-2 ${isActive ? 'text-foreground' : 'text-foreground group-hover:text-primary'}`}>
+                          {t(`dashboard.roles.${role.value}`)}
+                        </h3>
+                        <p className={`text-sm ${isActive ? 'text-muted-foreground' : 'text-muted-foreground'}`}>
+                          {t(`dashboard.roles.${role.value}_desc`)}
+                        </p>
+                      </div>
+                      
+                      {isActive && (
+                        <div className="flex items-center justify-center">
+                          <Badge className="bg-white/20 text-foreground border-white/30">
+                            ✓ Kiválasztva
+                          </Badge>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 );
               })}
             </div>
@@ -200,17 +229,70 @@ const DashboardPage = () => {
           <TabsContent value="rewards" className="space-y-6 animate-fade-in">
             {currentRole === "citizen" ? (
               <div className="space-y-8">
+                {/* Achievement Showcase */}
+                <Card className="bg-gradient-to-r from-warning/20 to-success/20 border-warning/30">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-xl font-bold text-foreground">🏆 Legutóbbi Eredmény</h3>
+                      <Badge className="bg-gradient-to-r from-warning to-success text-white">+500 pont</Badge>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 bg-gradient-to-r from-warning to-success rounded-full flex items-center justify-center">
+                        <Trophy className="w-8 h-8 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-lg text-foreground">Energia Mester</h4>
+                        <p className="text-muted-foreground">30%-kal csökkented az energiafogyasztásod!</p>
+                        <div className="text-sm text-success font-medium mt-1">🌱 45.2kg CO₂ megtakarítás</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Progress & Rewards */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  <Card className="bg-card/50 border-primary/20">
+                    <CardContent className="p-6">
+                      <h4 className="text-lg font-semibold mb-4 text-foreground">🎯 Havi Cél Előrehaladás</h4>
+                      <div className="space-y-3">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">CO₂ csökkentés</span>
+                          <span className="font-medium text-foreground">67/100 kg</span>
+                        </div>
+                        <Progress value={67} className="h-3" />
+                        <div className="text-xs text-muted-foreground">33 kg-ig eléred a következő szintet!</div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-card/50 border-success/20">
+                    <CardContent className="p-6">
+                      <h4 className="text-lg font-semibold mb-4 text-foreground">🌟 Következő Jutalom</h4>
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-12 h-12 bg-gradient-to-r from-success to-primary rounded-xl flex items-center justify-center">
+                          <Award className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                          <div className="font-medium text-foreground">Zöld Városvédő Cím</div>
+                          <div className="text-sm text-muted-foreground">150 ponttal elérhető</div>
+                        </div>
+                      </div>
+                      <Progress value={75} className="h-2" />
+                    </CardContent>
+                  </Card>
+                </div>
+
                 <CreativeGamification />
                 <PointsSystem />
               </div>
             ) : (
-              <Card3D className="text-center py-16 bg-card/50 backdrop-blur-sm">
+              <Card className="text-center py-16 bg-card/50 backdrop-blur-sm">
                 <div className="text-6xl mb-6">🚀</div>
                 <h3 className="text-2xl font-bold text-foreground mb-4">{t('dashboard.rewards_coming_soon')}</h3>
                 <p className="text-muted-foreground text-lg max-w-md mx-auto">
                   {t(`dashboard.rewards_${currentRole}_development`)}
                 </p>
-              </Card3D>
+              </Card>
             )}
           </TabsContent>
         </Tabs>

@@ -57,15 +57,43 @@ const DynamicRegionalDashboard = () => {
           <div className="flex items-center justify-center gap-3 mb-4">
             <Globe className="w-8 h-8 text-primary" />
             <h1 className="text-4xl lg:text-5xl font-bold text-foreground">
-              Dynamic Regional Orchestrator
+              {selectedRegion ? `${selectedRegion.displayName} - Fenntarthatóság` : "Dynamic Regional Orchestrator"}
             </h1>
           </div>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
-            Explore any region in the world with AI-powered sustainability visualization, 
-            real-time data integration, and dynamic stakeholder mapping.
+            {selectedRegion 
+              ? `Fedezd fel ${selectedRegion.displayName} fenntarthatósági ökoszisztémáját 3D-ben`
+              : "Válassz egy régiót és fedezd fel a fenntarthatóság lehetőségeit AI-powered elemzésekkel"
+            }
           </p>
           
+          {/* Region Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
+            <Button 
+              onClick={() => setShowRegionSelector(true)}
+              size="lg"
+              className="bg-gradient-to-r from-success to-warning hover:from-success/90 hover:to-warning/90 text-white px-8 py-4 rounded-2xl font-semibold shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300"
+            >
+              🌍 {selectedRegion ? "Régió Váltása" : "Régió Kiválasztása"}
+            </Button>
+            {selectedRegion && (
+              <Button 
+                onClick={() => handleChangeRegion()}
+                variant="outline"
+                size="lg"
+                className="border-2 border-success hover:bg-success hover:text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300"
+              >
+                🔄 Másik Régió Böngészése
+              </Button>
+            )}
+          </div>
+          
           <div className="flex flex-wrap items-center justify-center gap-2">
+            {selectedRegion && (
+              <Badge className="bg-gradient-to-r from-success to-warning text-white px-4 py-2">
+                🌍 {selectedRegion.displayName} • {selectedRegion.population?.toLocaleString() || "N/A"} lakos • {selectedRegion.area?.toFixed(0) || "N/A"} km²
+              </Badge>
+            )}
             <Badge variant="secondary" className="bg-primary/20 text-primary">
               3D Visualization
             </Badge>
