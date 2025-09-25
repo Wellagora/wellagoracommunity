@@ -165,20 +165,53 @@ const Dashboard = ({ userRole }: DashboardProps) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Progress Chart */}
-        <Card>
+        {/* Attractive Progress Chart */}
+        <Card className="bg-gradient-to-br from-card via-card to-primary/5 border-primary/10">
           <CardHeader>
-            <CardTitle>Monthly Progress</CardTitle>
-            <CardDescription>Your sustainability impact over time</CardDescription>
+            <CardTitle className="flex items-center space-x-2">
+              <TrendingUp className="w-5 h-5 text-primary" />
+              <span>Monthly Progress</span>
+            </CardTitle>
+            <CardDescription>Your sustainability impact journey</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={citizenData.monthlyProgress}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="co2" stroke="hsl(var(--primary))" strokeWidth={2} />
+                <defs>
+                  <linearGradient id="progressGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.05}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.3} />
+                <XAxis 
+                  dataKey="month" 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                />
+                <YAxis 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                />
+                <Tooltip 
+                  contentStyle={{
+                    backgroundColor: 'hsl(var(--card))',
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                  }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="co2" 
+                  stroke="hsl(var(--primary))" 
+                  strokeWidth={3}
+                  dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 6 }}
+                  activeDot={{ r: 8, fill: 'hsl(var(--primary))', strokeWidth: 2, stroke: 'hsl(var(--background))' }}
+                  fill="url(#progressGradient)"
+                />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
@@ -380,18 +413,62 @@ const Dashboard = ({ userRole }: DashboardProps) => {
     }
   };
 
+  const getRoleExplanation = () => {
+    switch (userRole) {
+      case "citizen":
+        return {
+          title: "Personal Dashboard",
+          description: "Track your individual sustainability impact and progress",
+          badge: "Your Personal View",
+          badgeColor: "bg-primary"
+        };
+      case "business":
+        return {
+          title: "Business Dashboard", 
+          description: "See how businesses in your area are contributing to sustainability",
+          badge: "Business Perspective",
+          badgeColor: "bg-accent"
+        };
+      case "government":
+        return {
+          title: "Government Dashboard",
+          description: "Municipal and policy-level sustainability initiatives",
+          badge: "Government View",
+          badgeColor: "bg-warning"
+        };
+      case "ngo":
+        return {
+          title: "NGO Dashboard", 
+          description: "Community organizations working for environmental change",
+          badge: "NGO Perspective",
+          badgeColor: "bg-success"
+        };
+      default:
+        return {
+          title: "Dashboard",
+          description: "Sustainability tracking and progress",
+          badge: "Default View",
+          badgeColor: "bg-muted"
+        };
+    }
+  };
+
+  const roleInfo = getRoleExplanation();
+
   return (
     <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">
-          {userRole === "citizen" && "Personal Dashboard"}
-          {userRole === "business" && "Business Dashboard"}
-          {userRole === "government" && "Government Dashboard"}
-          {userRole === "ngo" && "NGO Dashboard"}
-        </h1>
-        <p className="text-muted-foreground">
-          Track your sustainability impact and progress
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-3xl font-bold text-foreground">
+            {roleInfo.title}
+          </h1>
+          <Badge className={`${roleInfo.badgeColor} text-white px-4 py-2`}>
+            {roleInfo.badge}
+          </Badge>
+        </div>
+        <p className="text-muted-foreground text-lg">
+          {roleInfo.description}
         </p>
       </div>
 
