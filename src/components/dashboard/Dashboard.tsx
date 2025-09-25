@@ -523,12 +523,52 @@ const Dashboard = ({ userRole }: DashboardProps) => {
         
         {/* Role Explanation Card */}
         <Card className="bg-gradient-to-r from-card to-muted/20 border-border/50">
-          <CardContent className="p-4">
-            <div className="flex items-start space-x-3">
-              <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                <strong>Miért ezt a nézetet látod?</strong> {roleInfo.explanation}
-              </p>
+          <CardContent className="p-6">
+            <div className="flex items-start space-x-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-primary to-success rounded-full flex items-center justify-center flex-shrink-0">
+                <Users className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-foreground mb-2">🌍 Ökoszisztéma Nézet Koncepció</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                  <strong>Miért ezt a nézetet látod?</strong> {roleInfo.explanation}
+                </p>
+                
+                {/* Interactive Role Connections */}
+                <div className="grid grid-cols-2 gap-3 mt-4">
+                  <div className="flex items-center space-x-2 p-2 bg-muted/30 rounded-lg">
+                    <div className="w-2 h-2 bg-primary rounded-full"></div>
+                    <span className="text-xs text-muted-foreground">
+                      {userRole === "citizen" ? "Te vagy itt" : "Magánszemélyek"}
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2 p-2 bg-muted/30 rounded-lg">
+                    <div className="w-2 h-2 bg-accent rounded-full"></div>
+                    <span className="text-xs text-muted-foreground">
+                      {userRole === "business" ? "Te vagy itt" : "Vállalkozások"}
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2 p-2 bg-muted/30 rounded-lg">
+                    <div className="w-2 h-2 bg-warning rounded-full"></div>
+                    <span className="text-xs text-muted-foreground">
+                      {userRole === "government" ? "Te vagy itt" : "Önkormányzat"}
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2 p-2 bg-muted/30 rounded-lg">
+                    <div className="w-2 h-2 bg-success rounded-full"></div>
+                    <span className="text-xs text-muted-foreground">
+                      {userRole === "ngo" ? "Te vagy itt" : "Civil szervezetek"}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="mt-4 p-3 bg-gradient-to-r from-primary/10 to-success/10 rounded-lg">
+                  <div className="text-xs font-medium text-foreground mb-1">💡 Hasznos tudni:</div>
+                  <div className="text-xs text-muted-foreground">
+                    A különböző szerepeket kiválasztva láthatod, hogyan kapcsolódik össze a fenntarthatósági ökoszisztéma minden eleme.
+                  </div>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
