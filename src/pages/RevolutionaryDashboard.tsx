@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import RegionalMap3D from '@/components/revolutionary/RegionalMap3D';
+import RegionalOrchestrator2D from '@/components/premium/RegionalOrchestrator2D';
 import StakeholderOrchestration from '@/components/revolutionary/StakeholderOrchestration';
 import PredictiveImpactDashboard from '@/components/revolutionary/PredictiveImpactDashboard';
 import RegionalChallenges from '@/components/revolutionary/RegionalChallenges';
@@ -52,7 +52,7 @@ const RevolutionaryDashboard: React.FC = () => {
       id: 'map',
       label: '3D Regional Map',
       icon: <Map className="w-4 h-4" />,
-      component: RegionalMap3D
+      component: RegionalOrchestrator2D
     },
     {
       id: 'orchestration',
