@@ -16,18 +16,18 @@ const Card3D = React.forwardRef<HTMLDivElement, Card3DProps>(
           "relative group",
           // Base 3D transform setup
           "transform-gpu perspective-1000",
-          // Glass morphism effect
-          glassEffect && "bg-background/80 backdrop-blur-xl border border-border/50",
+          // Light card background with good contrast
+          glassEffect && "bg-card/95 backdrop-blur-lg border-2 border-primary/20",
           // Premium shadow
-          premium && "shadow-premium",
-          // Hover effects
+          premium && "shadow-card",
+          // Smooth hover effects without blur
           hoverEffect && [
-            "transition-all duration-500 ease-out",
-            "hover:-translate-y-2 hover:rotate-1 hover:scale-[1.02]",
-            "hover:shadow-glow hover:border-primary/30",
+            "transition-all duration-300 ease-out",
+            "hover:-translate-y-3 hover:scale-[1.01]",
+            "hover:shadow-glow hover:border-primary/40 hover:bg-card",
             // Inner glow on hover
-            "hover:before:opacity-100 before:opacity-0 before:transition-opacity before:duration-500",
-            "before:absolute before:inset-0 before:rounded-[inherit] before:bg-gradient-to-r before:from-primary/5 before:to-success/5 before:pointer-events-none"
+            "hover:before:opacity-100 before:opacity-0 before:transition-opacity before:duration-300",
+            "before:absolute before:inset-0 before:rounded-[inherit] before:bg-gradient-to-r before:from-primary/8 before:to-success/8 before:pointer-events-none"
           ],
           "rounded-2xl overflow-hidden",
           className
@@ -71,19 +71,19 @@ export const FeatureCard3D: React.FC<Card3DProps & { icon?: React.ReactNode; tit
   ...props 
 }) => (
   <Card3D 
-    className={cn("p-8 group cursor-pointer", className)} 
+    className={cn("p-8 group cursor-pointer bg-card/95 border-2 border-primary/20 hover:border-primary/50", className)} 
     premium 
     {...props}
   >
     {icon && (
-      <div className="w-14 h-14 mb-6 bg-gradient-to-br from-primary/20 to-success/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+      <div className="w-16 h-16 mb-6 bg-gradient-to-br from-primary/30 to-success/30 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md">
         {icon}
       </div>
     )}
-    <h3 className="text-xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors duration-300">
+    <h3 className="text-2xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors duration-300">
       {title}
     </h3>
-    <p className="text-muted-foreground leading-relaxed">
+    <p className="text-muted-foreground leading-relaxed text-base">
       {description}
     </p>
   </Card3D>
