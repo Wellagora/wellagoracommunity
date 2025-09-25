@@ -75,8 +75,11 @@ export default {
         'gradient-earth': 'var(--gradient-earth)',
         'gradient-nature': 'var(--gradient-nature)',
         'gradient-hero': 'var(--gradient-hero)',
+        'gradient-wave': 'var(--gradient-wave)',
+        'gradient-light-transition': 'var(--gradient-light-transition)',
         'gradient-sunset': 'var(--gradient-sunset)',
         'gradient-ocean': 'var(--gradient-ocean)',
+        'wave-pattern': 'radial-gradient(circle at 20% 50%, hsl(235 65% 45% / 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, hsl(235 60% 40% / 0.4) 0%, transparent 50%), radial-gradient(circle at 40% 80%, hsl(235 70% 35% / 0.2) 0%, transparent 50%)',
       },
       boxShadow: {
         'eco': 'var(--shadow-eco)',
