@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import Index from "./pages/Index";
 import DashboardPage from "./pages/DashboardPage";
+import RevolutionaryDashboard from "./pages/RevolutionaryDashboard";
 import Community from "./pages/Community";
 import AIAssistant from "./pages/AIAssistant";
 import AuthPage from "./pages/AuthPage";
@@ -24,6 +25,7 @@ function App() {
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/revolutionary" element={<RevolutionaryDashboard />} />
               <Route path="/community" element={<Community />} />
               <Route path="/ai-assistant" element={<AIAssistant />} />
               <Route path="/challenges" element={<ChallengesPage />} />
