@@ -13,6 +13,8 @@ import Community from "@/pages/Community";
 import AIAssistantPage from "@/pages/AIAssistantPage";
 import ChallengesPage from "@/pages/ChallengesPage";
 import ChallengeDetailPage from "@/pages/ChallengeDetailPage";
+import ProfilePage from "@/pages/ProfilePage";
+import OrganizationDashboard from "@/pages/OrganizationDashboard";
 import "./index.css";
 
 function App() {
@@ -33,6 +35,8 @@ function App() {
               <Route path="/ai-assistant" element={<AIAssistantPage />} />
               <Route path="/challenges" element={<ChallengesPage />} />
               <Route path="/challenges/:challengeId" element={<ChallengeDetailPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/organization" element={<OrganizationDashboard />} />
             </Routes>
             <Toaster />
             <SonnerToaster />
