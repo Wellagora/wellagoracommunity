@@ -115,6 +115,13 @@ const Navigation = () => {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
               </span>
             </Link>
+            <Link to="/matching" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
+              <Heart className="w-4 h-4" />
+              <span className="relative">
+                Partnerek
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
+              </span>
+            </Link>
             <Link to="/dashboard" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
               <span className="relative">
                 {t('nav.dashboard')}
@@ -233,6 +240,10 @@ const Navigation = () => {
               <Link to="/community" className="flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
                 <Users className="w-5 h-5" />
                 <span className="font-medium">Community Hub</span>
+              </Link>
+              <Link to="/matching" className="flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
+                <Heart className="w-5 h-5" />
+                <span className="font-medium">Partnerek</span>
               </Link>
               <Link to="/dashboard" className="flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
                 <span className="text-lg">📊</span>
