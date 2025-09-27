@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Navigation from '@/components/Navigation';
 import RegionSelector, { Region } from '@/components/dynamic/RegionSelector';
-import DynamicRegional3DOrchestrator from '@/components/dynamic/DynamicRegional3DOrchestrator';
+import Enhanced3DDashboard from '@/components/enhanced/Enhanced3DDashboard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -203,10 +203,7 @@ const DynamicRegionalDashboard = () => {
               </Button>
             </div>
           ) : (
-            <DynamicRegional3DOrchestrator
-              selectedRegion={selectedRegion}
-              onRegionChange={setSelectedRegion}
-            />
+            <Enhanced3DDashboard />
           )}
         </motion.div>
 
