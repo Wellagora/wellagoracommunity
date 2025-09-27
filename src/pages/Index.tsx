@@ -30,6 +30,8 @@ import {
   BarChart3
 } from "lucide-react";
 
+import CustomerJourney from "@/components/CustomerJourney";
+
 const Index = () => {
   const { t } = useLanguage();
 
@@ -191,6 +193,9 @@ const Index = () => {
           </Card>
         </motion.div>
       </div>
+      
+      {/* Customer Journey Section */}
+      <CustomerJourney />
     </div>
   );
 };

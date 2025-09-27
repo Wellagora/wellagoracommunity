@@ -151,10 +151,13 @@ const Navigation = () => {
           </div>
 
           {/* User Actions */}
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="flex items-center space-x-4">
             {user ? (
               <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-3 px-4 py-2 bg-gradient-to-r from-card/80 to-background/80 backdrop-blur-sm rounded-xl border border-border">
+                <Link 
+                  to="/profile" 
+                  className="flex items-center space-x-3 px-4 py-2 bg-gradient-to-r from-card/80 to-background/80 backdrop-blur-sm rounded-xl border border-border hover:from-card hover:to-background/90 transition-all duration-300"
+                >
                   <div className="relative">
                     <div className="w-8 h-8 bg-gradient-to-br from-primary to-success rounded-full flex items-center justify-center">
                       <User className="w-4 h-4 text-primary-foreground" />
@@ -171,7 +174,7 @@ const Navigation = () => {
                       </span>
                     )}
                   </div>
-                </div>
+                </Link>
                 
                 {/* Quick Action Buttons */}
                 <div className="flex items-center space-x-2">
@@ -243,7 +246,10 @@ const Navigation = () => {
               <div className="pt-4 border-t border-border space-y-3">
                 {user ? (
                   <div className="space-y-3">
-                    <div className="flex items-center space-x-3 px-4 py-3 bg-card/50 backdrop-blur-sm rounded-xl">
+                    <Link 
+                      to="/profile" 
+                      className="flex items-center space-x-3 px-4 py-3 bg-card/50 backdrop-blur-sm rounded-xl hover:bg-card/70 transition-colors"
+                    >
                       <div className="w-8 h-8 bg-gradient-to-br from-primary to-success rounded-full flex items-center justify-center">
                         <User className="w-4 h-4 text-primary-foreground" />
                       </div>
@@ -257,7 +263,16 @@ const Navigation = () => {
                           </div>
                         )}
                       </div>
-                    </div>
+                    </Link>
+                    {user && profile?.user_role !== "citizen" && (
+                      <Link 
+                        to="/organization" 
+                        className="flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
+                      >
+                        <Building2 className="w-5 h-5" />
+                        <span className="font-medium">Szervezeti Dashboard</span>
+                      </Link>
+                    )}
                     
                     {/* Mobile Quick Actions */}
                     <Link to="/profile" className="w-full flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
