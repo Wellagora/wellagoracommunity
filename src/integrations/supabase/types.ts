@@ -202,6 +202,14 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      get_user_organization_id: {
+        Args: { _user_id: string }
+        Returns: string
+      }
+      is_profile_public: {
+        Args: { _profile_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       user_role: "citizen" | "business" | "government" | "ngo"

@@ -13,7 +13,8 @@ import {
   Users,
   Leaf,
   Globe,
-  Zap
+  Zap,
+  Edit3
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -171,6 +172,28 @@ const Navigation = () => {
                     )}
                   </div>
                 </div>
+                
+                {/* Quick Action Buttons */}
+                <div className="flex items-center space-x-2">
+                  <Link
+                    to="/profile"
+                    className="flex items-center space-x-2 px-3 py-2 text-muted-foreground hover:text-primary hover:bg-card/50 rounded-xl transition-all duration-300"
+                  >
+                    <Edit3 className="w-4 h-4" />
+                    <span className="text-sm font-medium">Profil</span>
+                  </Link>
+                  
+                  {profile?.user_role !== "citizen" && (
+                    <Link
+                      to="/organization"
+                      className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-xl hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent-foreground"
+                    >
+                      <Building2 className="w-4 h-4" />
+                      <span className="text-sm">Szervezet</span>
+                    </Link>
+                  )}
+                </div>
+                
                 <button 
                   onClick={handleSignOut}
                   className="flex items-center space-x-2 px-3 py-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all duration-300"
@@ -235,12 +258,26 @@ const Navigation = () => {
                         )}
                       </div>
                     </div>
+                    
+                    {/* Mobile Quick Actions */}
+                    <Link to="/profile" className="w-full flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
+                      <Edit3 className="w-5 h-5" />
+                      <span className="font-medium">Profil szerkesztése</span>
+                    </Link>
+                    
+                    {profile?.user_role !== "citizen" && (
+                      <Link to="/organization" className="w-full flex items-center space-x-3 px-4 py-3 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 text-accent-foreground rounded-xl">
+                        <Building2 className="w-5 h-5" />
+                        <span className="font-medium">Szervezeti dashboard</span>
+                      </Link>
+                    )}
+                    
                     <button 
                       onClick={handleSignOut}
                       className="w-full flex items-center space-x-3 px-4 py-3 text-destructive hover:bg-destructive/10 rounded-xl transition-colors"
                     >
                       <LogOut className="w-5 h-5" />
-                      <span className="font-medium">Sign Out</span>
+                      <span className="font-medium">Kijelentkezés</span>
                     </button>
                   </div>
                 ) : (
