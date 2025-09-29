@@ -6,6 +6,7 @@ import Navigation from "@/components/Navigation";
 import Dashboard from "@/components/dashboard/Dashboard";
 import PointsSystem from "@/components/gamification/PointsSystem";
 import CreativeGamification from "@/components/gamification/CreativeGamification";
+import HandprintWidget from "@/components/dashboard/HandprintWidget";
 import ProgressVisualization from "@/components/ProgressVisualization";
 import CelebrationModal from "@/components/CelebrationModal";
 import { Card3D, FeatureCard3D } from "@/components/ui/card-3d";
@@ -222,7 +223,11 @@ const DashboardPage = () => {
           </TabsContent>
 
           <TabsContent value="progress" className="animate-fade-in">
-            <ProgressVisualization />
+            {/* Erdőm Növekedése és Kéznyom */}
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              <ProgressVisualization />
+              <HandprintWidget />
+            </div>
             <div className="mt-8 text-center">
               <Button 
                 onClick={() => setShowCelebration(true)}

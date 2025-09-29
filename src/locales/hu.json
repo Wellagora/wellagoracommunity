@@ -194,5 +194,14 @@
   "challenges.sustainable_fashion.title": "Fenntartható Divat",
   "challenges.sustainable_fashion.description": "Vásárolj csak etikus és fenntartható ruházatot",
   "challenges.community_cleaning.title": "Közösségi Takarítás",
-  "challenges.community_cleaning.description": "Szervezz vagy csatlakozz helyi környezeti akciókhoz"
+  "challenges.community_cleaning.description": "Szervezz vagy csatlakozz helyi környezeti akciókhoz",
+  "challenges.solarPanel.title": "Napelem Telepítés Kihívás",
+  "challenges.solarPanel.description": "Telepíts napelemet és válj energiafüggetlenné",
+  "handprint.title": "Kéznyom Követés",
+  "handprint.description": "Pozitív környezeti hatásod nyomon követése",
+  "handprint.co2_saved": "CO₂ Megtakarítás",
+  "handprint.trees_equivalent": "Fa Egyenérték",
+  "handprint.total_points": "Összes Pont",
+  "handprint.rank": "Rang",
+  "handprint.this_month": "Ezen a hónapon"
 }
