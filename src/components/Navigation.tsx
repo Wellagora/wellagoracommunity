@@ -183,11 +183,11 @@ const Navigation = () => {
                     <span className="text-sm font-semibold text-foreground">
                       {profile?.first_name} {profile?.last_name}
                     </span>
-                    {profile?.user_role && (
-                      <span className="text-xs text-primary capitalize">
-                        {profile.user_role} {t('common.champion')}
-                      </span>
-                    )}
+                     {profile?.user_role && (
+                       <span className="text-xs text-primary capitalize">
+                         {profile?.user_role} {t('common.champion')}
+                       </span>
+                     )}
                   </div>
                 </Link>
                 
@@ -210,7 +210,7 @@ const Navigation = () => {
                   <Building2 className="w-4 h-4" />
                   <span className="text-sm">Szervezet</span>
                 </Link>
-                {profile.user_role === 'business' && (
+                {profile?.user_role === 'business' && (
                   <Link
                     to="/business-sponsorship"
                     className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-primary/20 to-success/20 border border-primary/30 rounded-xl hover:from-primary/30 hover:to-success/30 transition-all duration-300 font-medium text-primary"
@@ -287,11 +287,11 @@ const Navigation = () => {
                         <div className="text-sm font-semibold text-foreground">
                           {profile?.first_name} {profile?.last_name}
                         </div>
-                        {profile?.user_role && (
-                          <div className="text-xs text-primary capitalize">
-                            {profile.user_role} Champion
-                          </div>
-                        )}
+                         {profile?.user_role && (
+                           <div className="text-xs text-primary capitalize">
+                             {profile?.user_role} Champion
+                           </div>
+                         )}
                       </div>
                     </Link>
                     {user && profile?.user_role !== "citizen" && (
