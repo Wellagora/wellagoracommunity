@@ -64,7 +64,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             try {
               const { data: profile, error } = await supabase
                 .from('profiles')
-                .select('*')
+                .select(`
+                  id,
+                  first_name,
+                  last_name,
+                  email,
+                  user_role,
+                  organization,
+                  organization_id,
+                  avatar_url,
+                  created_at,
+                  updated_at,
+                  public_display_name,
+                  is_public_profile,
+                  bio,
+                  location,
+                  industry,
+                  website_url,
+                  sustainability_goals,
+                  preferred_language,
+                  company_size,
+                  employee_count,
+                  role
+                `)
                 .eq('id', session.user.id)
                 .single();
               
@@ -98,7 +120,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           try {
             const { data: profile, error } = await supabase
               .from('profiles')
-              .select('*')
+              .select(`
+                id,
+                first_name,
+                last_name,
+                email,
+                user_role,
+                organization,
+                organization_id,
+                avatar_url,
+                created_at,
+                updated_at,
+                public_display_name,
+                is_public_profile,
+                bio,
+                location,
+                industry,
+                website_url,
+                sustainability_goals,
+                preferred_language,
+                company_size,
+                employee_count,
+                role
+              `)
               .eq('id', session.user.id)
               .single();
             
