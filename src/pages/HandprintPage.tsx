@@ -66,6 +66,7 @@ const HandprintPage = () => {
 
   const loadChallenges = async () => {
     try {
+      // Load from database definitions AND static challenges
       const { data: challengeData, error } = await supabase
         .from('challenge_definitions')
         .select('*')
@@ -73,7 +74,57 @@ const HandprintPage = () => {
         .order('points_base', { ascending: false });
 
       if (error) throw error;
-      setChallenges(challengeData || []);
+      
+      // Add static challenges from data file
+      const staticChallenges = [
+        {
+          id: 'bike-to-work',
+          title: 'Kerékpározz a munkába (7 nap)',
+          description: 'Csökkentsd környezeti lábnyomod biciklivel közlekedve',
+          category: 'transport',
+          difficulty: 'beginner',
+          points_base: 200,
+          base_impact: { co2_saved: 14.7, calculation_method: 'user_distance * 0.21' }
+        },
+        {
+          id: 'plastic-free-week',
+          title: '30-Napos Műanyagmentes Kihívás', 
+          description: 'Csökkentsd az egyszer használatos műanyagokat',
+          category: 'waste',
+          difficulty: 'intermediate',
+          points_base: 500,
+          base_impact: { co2_saved: 12.5, calculation_method: 'fixed_impact' }
+        },
+        {
+          id: 'energy-efficiency',
+          title: 'LED Izzó Csere Kihívás',
+          description: 'Cseréld ki otthonod hagyományos izzóit LED-ekre',
+          category: 'energy', 
+          difficulty: 'beginner',
+          points_base: 300,
+          base_impact: { co2_saved: 8.4, calculation_method: 'bulb_count * 2.8' }
+        },
+        {
+          id: 'water-conservation',
+          title: 'Víztakarékosság Kihívás',
+          description: 'Csökkentsd vízfogyasztásod tudatos szokásokkal',
+          category: 'water',
+          difficulty: 'beginner', 
+          points_base: 250,
+          base_impact: { co2_saved: 5.2, calculation_method: 'water_saved_liters * 0.0004' }
+        },
+        {
+          id: 'community-cleanup',
+          title: 'Közösségi Takarítás',
+          description: 'Szervezz vagy csatlakozz helyi környezeti akciókhoz',
+          category: 'community',
+          difficulty: 'intermediate',
+          points_base: 400,
+          base_impact: { co2_saved: 15.0, calculation_method: 'fixed_impact' }
+        }
+      ];
+      
+      setChallenges([...(challengeData || []), ...staticChallenges]);
     } catch (error) {
       console.error('Challenges load error:', error);
     }
