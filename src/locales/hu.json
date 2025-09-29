@@ -203,5 +203,15 @@
   "handprint.trees_equivalent": "Fa Egyenérték",
   "handprint.total_points": "Összes Pont",
   "handprint.rank": "Rang",
-  "handprint.this_month": "Ezen a hónapon"
+  "handprint.this_month": "Ezen a hónapon",
+  "challenges.plasticFree.title": "Műanyagmentes Életmód",
+  "challenges.plasticFree.description": "Szüntess meg minden műanyagot az életedből",
+  "challenges.communityGarden.title": "Közösségi Kert", 
+  "challenges.communityGarden.description": "Hozz létre közösségi kertet a környékeden",
+  "challenges.waterConservation.title": "Víztakarékosság",
+  "challenges.waterConservation.description": "Csökkentsd vízfogyasztásod 30%-kal",
+  "challenges.greenHackathon.title": "Zöld Hackathon",
+  "challenges.greenHackathon.description": "Fejlessz környezetbarát technológiai megoldásokat",
+  "challenges.greenFinance.title": "Zöld Befektetés",
+  "challenges.greenFinance.description": "Tanulj fenntartható befektetési stratégiákat"
 }

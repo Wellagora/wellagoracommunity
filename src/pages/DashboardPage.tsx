@@ -202,7 +202,7 @@ const DashboardPage = () => {
         </Card3D>
 
         {/* Dashboard Tabs */}
-        <Tabs defaultValue="analytics" className="space-y-8">
+        <Tabs defaultValue="progress" className="space-y-8">
           <TabsList className="grid w-full grid-cols-3 bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-2">
             <TabsTrigger value="analytics" className="flex items-center space-x-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-xl transition-all duration-300">
               <BarChart3 className="w-4 h-4" />
