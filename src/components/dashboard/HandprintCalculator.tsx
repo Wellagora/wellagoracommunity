@@ -97,7 +97,7 @@ const HandprintCalculator = () => {
 
   const getRankColor = (rank: string) => {
     switch(rank) {
-      case 'Fenntarthatósági Hős': return 'bg-purple-500/20 text-purple-500 border-purple-500/30';
+      case 'Fenntarthatósági Hős': return 'bg-accent/20 text-accent border-accent/30';
       case 'Környezeti Bajnok': return 'bg-success/20 text-success border-success/30';
       case 'Zöld Aktivista': return 'bg-primary/20 text-primary border-primary/30';
       case 'Öko Harcos': return 'bg-warning/20 text-warning border-warning/30';
@@ -286,15 +286,15 @@ const HandprintCalculator = () => {
           <CardContent>
             <div className="space-y-4">
               <div className="grid md:grid-cols-3 gap-4">
-                <div className="bg-primary/10 p-4 rounded-lg">
+                <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
                   <div className="text-2xl font-bold text-primary">+23%</div>
                   <div className="text-sm text-muted-foreground">CO₂ megtakarítás növekedés</div>
                 </div>
-                <div className="bg-success/10 p-4 rounded-lg">
+                <div className="bg-success/10 p-4 rounded-lg border border-success/20">
                   <div className="text-2xl font-bold text-success">12 nap</div>
                   <div className="text-sm text-muted-foreground">Sorozatos fenntartható nap</div>
                 </div>
-                <div className="bg-warning/10 p-4 rounded-lg">
+                <div className="bg-warning/10 p-4 rounded-lg border border-warning/20">
                   <div className="text-2xl font-bold text-warning">Ranglétra #47</div>
                   <div className="text-sm text-muted-foreground">Helyi rangsorban</div>
                 </div>
