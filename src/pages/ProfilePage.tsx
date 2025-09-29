@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   Loader2, 
   User, 
@@ -21,10 +22,12 @@ import {
   Users,
   Save,
   Camera,
-  Edit3
+  Edit3,
+  Upload
 } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -33,6 +36,8 @@ const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const { toast } = useToast();
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -52,7 +57,8 @@ const ProfilePage = () => {
     industry: "",
     company_size: "",
     website_url: "",
-    is_public_profile: profile?.is_public_profile || false
+    is_public_profile: profile?.is_public_profile || false,
+    bio: ""
   });
 
   // Sync form with profile data
@@ -71,10 +77,59 @@ const ProfilePage = () => {
         industry: extendedProfile.industry || "",
         company_size: extendedProfile.company_size || "",
         website_url: extendedProfile.website_url || "",
-        is_public_profile: profile.is_public_profile || false
+        is_public_profile: profile.is_public_profile || false,
+        bio: extendedProfile.bio || ""
       });
     }
   }, [profile]);
+
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !user) return;
+
+    setAvatarUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/avatar.${fileExt}`;
+
+      // Delete existing avatar if exists
+      if (profile?.avatar_url) {
+        const existingPath = profile.avatar_url.split('/avatars/')[1];
+        if (existingPath) {
+          await supabase.storage.from('avatars').remove([existingPath]);
+        }
+      }
+
+      // Upload new avatar
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+
+      // Update profile with new avatar URL
+      await updateProfile({ avatar_url: publicUrl } as any);
+      
+      toast({
+        title: "Siker",
+        description: "Profilkép sikeresen feltöltve!",
+      });
+    } catch (error) {
+      console.error('Avatar upload error:', error);
+      toast({
+        title: "Hiba",
+        description: "Hiba történt a profilkép feltöltése során.",
+        variant: "destructive",
+      });
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,7 +150,8 @@ const ProfilePage = () => {
         ...(profileForm.sustainability_goals.length > 0 && { sustainability_goals: profileForm.sustainability_goals }),
         ...(profileForm.industry && { industry: profileForm.industry.trim() }),
         ...(profileForm.company_size && { company_size: profileForm.company_size.trim() }),
-        ...(profileForm.website_url && { website_url: profileForm.website_url.trim() })
+        ...(profileForm.website_url && { website_url: profileForm.website_url.trim() }),
+        ...(profileForm.bio && { bio: profileForm.bio.trim() })
       } as any);
 
       if (error) {
@@ -167,14 +223,27 @@ const ProfilePage = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="relative inline-block mb-6">
-            <div className={`w-24 h-24 bg-gradient-to-r ${getRoleGradient()} rounded-full flex items-center justify-center shadow-premium`}>
-              <div className="text-white text-2xl">
-                {getRoleIcon()}
-              </div>
-            </div>
-            <button className="absolute -bottom-1 -right-1 w-8 h-8 bg-accent hover:bg-accent/90 rounded-full flex items-center justify-center shadow-lg transition-colors">
+            <Avatar className="w-24 h-24 shadow-premium">
+              <AvatarImage src={profile?.avatar_url} alt="Profilkép" />
+              <AvatarFallback className={`text-white text-2xl bg-gradient-to-r ${getRoleGradient()}`}>
+                {profile?.first_name?.[0]}{profile?.last_name?.[0]}
+              </AvatarFallback>
+            </Avatar>
+            <label className="absolute -bottom-1 -right-1 w-8 h-8 bg-accent hover:bg-accent/90 rounded-full flex items-center justify-center shadow-lg transition-colors cursor-pointer">
               <Camera className="w-4 h-4 text-accent-foreground" />
-            </button>
+              <input
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={handleAvatarUpload}
+                disabled={avatarUploading}
+              />
+            </label>
+            {avatarUploading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full">
+                <Loader2 className="w-6 h-6 text-white animate-spin" />
+              </div>
+            )}
           </div>
           
           <h1 className="text-3xl font-bold text-foreground mb-2">
@@ -346,6 +415,20 @@ const ProfilePage = () => {
                   ))}
                 </div>
                 <p className="text-xs text-muted-foreground">Válassz legalább 3 területet a jobb matching-hez</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="bio">Bemutatkozás</Label>
+                <Textarea
+                  id="bio"
+                  value={profileForm.bio}
+                  onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
+                  placeholder="Írj magadról, célokról, érdeklődési területekről..."
+                  className="min-h-[100px] bg-background/50"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Ez fog megjelenni a nyilvános profilodban
+                </p>
               </div>
             </CardContent>
           </Card>
