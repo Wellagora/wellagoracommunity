@@ -34,6 +34,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<AuthPage />} />
+              <Route path="/dashboard/handprint" element={<HandprintPage />} />
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/revolutionary" element={<RevolutionaryDashboard />} />
               <Route path="/dynamic-regional" element={<DynamicRegionalDashboard />} />
@@ -46,7 +47,6 @@ function App() {
               <Route path="/matching" element={<MatchingPage />} />
               <Route path="/business-sponsorship" element={<BusinessSponsorshipPage />} />
               <Route path="/interactive-map" element={<InteractiveMapPage />} />
-              <Route path="/dashboard/handprint" element={<HandprintPage />} />
             </Routes>
             <Toaster />
             <SonnerToaster />
