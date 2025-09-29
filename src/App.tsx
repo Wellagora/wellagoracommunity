@@ -19,6 +19,7 @@ import OrganizationDashboard from "@/pages/OrganizationDashboard";
 import MatchingPage from "@/pages/MatchingPage";
 import BusinessSponsorshipPage from "@/pages/BusinessSponsorshipPage";
 import InteractiveMapPage from "@/pages/InteractiveMapPage";
+import HandprintPage from "@/pages/HandprintPage";
 import "./index.css";
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
               <Route path="/matching" element={<MatchingPage />} />
               <Route path="/business-sponsorship" element={<BusinessSponsorshipPage />} />
               <Route path="/interactive-map" element={<InteractiveMapPage />} />
+              <Route path="/dashboard/handprint" element={<HandprintPage />} />
             </Routes>
             <Toaster />
             <SonnerToaster />
