@@ -64,11 +64,11 @@ const ProfilePage = () => {
         email: profile.email || "",
         public_display_name: profile.public_display_name || "",
         organization: profile.organization || "",
-        location: profile.location || "",
-        sustainability_goals: profile.sustainability_goals || [],
-        industry: profile.industry || "",
-        company_size: profile.company_size || "",
-        website_url: profile.website_url || "",
+        location: "", // Will be added to database later
+        sustainability_goals: [], // Will be added to database later
+        industry: "", // Will be added to database later
+        company_size: "", // Will be added to database later
+        website_url: "", // Will be added to database later
         is_public_profile: profile.is_public_profile || false
       });
     }

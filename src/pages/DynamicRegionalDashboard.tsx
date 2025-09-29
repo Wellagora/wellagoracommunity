@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Navigation from '@/components/Navigation';
 import RegionSelector, { Region } from '@/components/dynamic/RegionSelector';
-import Enhanced3DDashboard from '@/components/enhanced/Enhanced3DDashboard';
+import ModernDashboard3D from '@/components/enhanced/ModernDashboard3D';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
