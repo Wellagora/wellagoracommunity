@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useSubscription } from '@/contexts/SubscriptionContext';
 import { 
   CreditCard, 
   TrendingUp, 
@@ -21,6 +22,7 @@ interface SponsorshipDashboardProps {
 }
 
 const SponsorshipDashboard: React.FC<SponsorshipDashboardProps> = ({ companyId }) => {
+  const { subscription, loading, openCustomerPortal, packageTiers } = useSubscription();
   const { t } = useLanguage();
   const dashboardData = getSponsorshipDashboard(companyId);
 

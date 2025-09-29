@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSubscription } from '@/contexts/SubscriptionContext';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '@/components/Navigation';
 import SponsorshipDashboard from '@/components/business/SponsorshipDashboard';
+import SponsorshipPackageSelector from '@/components/business/SponsorshipPackageSelector';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -22,6 +24,7 @@ import {
 
 const BusinessSponsorshipPage = () => {
   const { user, profile } = useAuth();
+  const { createCheckout, packageTiers } = useSubscription();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'overview' | 'dashboard' | 'marketplace'>('overview');
 
@@ -271,6 +274,22 @@ const BusinessSponsorshipPage = () => {
 
         {activeTab === 'marketplace' && (
           <div className="space-y-6">
+            {/* Sponsorship Packages */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <CreditCard className="w-5 h-5 mr-2" />
+                  Szponzorációs Csomagok
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-6">
+                  Válassz szponzorációs csomagot a kihívások támogatásához.
+                </p>
+                <SponsorshipPackageSelector />
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
@@ -335,7 +354,19 @@ const BusinessSponsorshipPage = () => {
                             </div>
                           </div>
                           
-                          <Button variant="outline" className="w-full">
+                          <Button 
+                            variant="outline" 
+                            className="w-full"
+                            onClick={() => {
+                              // Mock sponsorship initiation - show available packages
+                              const packageKeys = Object.keys(packageTiers);
+                              const randomPackage = packageKeys[Math.floor(Math.random() * packageKeys.length)];
+                              const tier = packageTiers[randomPackage as keyof typeof packageTiers];
+                              if (confirm(`Szponzorálás a ${tier.name} csomaggal (${tier.price} ${tier.currency})?`)) {
+                                createCheckout(tier.price_id);
+                              }
+                            }}
+                          >
                             <CreditCard className="w-4 h-4 mr-2" />
                             Szponzorálás Indítása
                           </Button>
