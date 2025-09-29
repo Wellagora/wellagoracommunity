@@ -186,7 +186,7 @@ const ProfilePage = () => {
               <span className="ml-2">{getRoleLabel()}</span>
             </Badge>
             {/* Super Admin Role Switcher */}
-            {profile?.email === "admin@wellagora.com" && (
+            {profile?.email === "attila.kelemen@proself.org" && (
               <Select
                 value={profile.user_role}
                 onValueChange={async (newRole) => {
