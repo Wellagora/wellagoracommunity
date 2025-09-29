@@ -43,6 +43,28 @@ export const getPublicProfiles = async (profileIds: string[]) => {
 };
 
 /**
+ * Safely get organization member profiles without exposing sensitive data like emails
+ * This function uses the secure get_organization_member_profiles database function
+ */
+export const getOrganizationMemberProfiles = async (organizationId: string) => {
+  try {
+    const { data, error } = await supabase.rpc('get_organization_member_profiles', {
+      _organization_id: organizationId
+    });
+
+    if (error) {
+      console.error('Error fetching organization member profiles:', error);
+      return { data: [], error };
+    }
+
+    return { data: data || [], error: null };
+  } catch (err) {
+    console.error('Organization member profiles fetch error:', err);
+    return { data: [], error: err };
+  }
+};
+
+/**
  * Type definition for public profile data (excludes sensitive fields)
  */
 export interface PublicProfile {
@@ -50,6 +72,27 @@ export interface PublicProfile {
   public_display_name?: string;
   first_name: string;
   last_name: string;
+  user_role: 'citizen' | 'business' | 'government' | 'ngo';
+  organization?: string;
+  organization_id?: string;
+  bio?: string;
+  avatar_url?: string;
+  location?: string;
+  industry?: string;
+  website_url?: string;
+  sustainability_goals?: string[];
+  created_at: string;
+  is_public_profile: boolean;
+}
+
+/**
+ * Type definition for organization member profile data (excludes sensitive fields like email)
+ */
+export interface OrganizationMemberProfile {
+  id: string;
+  first_name: string;
+  last_name: string;
+  public_display_name?: string;
   user_role: 'citizen' | 'business' | 'government' | 'ngo';
   organization?: string;
   organization_id?: string;
