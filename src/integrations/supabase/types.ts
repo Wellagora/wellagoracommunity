@@ -191,6 +191,13 @@ export type Database = {
             foreignKeyName: "sustainability_activities_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "organization_member_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sustainability_activities_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -205,6 +212,77 @@ export type Database = {
       }
     }
     Views: {
+      organization_member_profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          company_size: string | null
+          created_at: string | null
+          employee_count: number | null
+          first_name: string | null
+          id: string | null
+          industry: string | null
+          is_public_profile: boolean | null
+          last_name: string | null
+          location: string | null
+          organization: string | null
+          organization_id: string | null
+          public_display_name: string | null
+          role: string | null
+          sustainability_goals: string[] | null
+          user_role: Database["public"]["Enums"]["user_role"] | null
+          website_url: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          company_size?: string | null
+          created_at?: string | null
+          employee_count?: number | null
+          first_name?: string | null
+          id?: string | null
+          industry?: string | null
+          is_public_profile?: boolean | null
+          last_name?: string | null
+          location?: string | null
+          organization?: string | null
+          organization_id?: string | null
+          public_display_name?: string | null
+          role?: string | null
+          sustainability_goals?: string[] | null
+          user_role?: Database["public"]["Enums"]["user_role"] | null
+          website_url?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          company_size?: string | null
+          created_at?: string | null
+          employee_count?: number | null
+          first_name?: string | null
+          id?: string | null
+          industry?: string | null
+          is_public_profile?: boolean | null
+          last_name?: string | null
+          location?: string | null
+          organization?: string | null
+          organization_id?: string | null
+          public_display_name?: string | null
+          role?: string | null
+          sustainability_goals?: string[] | null
+          user_role?: Database["public"]["Enums"]["user_role"] | null
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       safe_public_profiles: {
         Row: {
           avatar_url: string | null
