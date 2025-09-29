@@ -317,6 +317,26 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      get_organization_member_profiles: {
+        Args: { _organization_id: string }
+        Returns: {
+          avatar_url: string
+          bio: string
+          created_at: string
+          first_name: string
+          id: string
+          industry: string
+          is_public_profile: boolean
+          last_name: string
+          location: string
+          organization: string
+          organization_id: string
+          public_display_name: string
+          sustainability_goals: string[]
+          user_role: Database["public"]["Enums"]["user_role"]
+          website_url: string
+        }[]
+      }
       get_public_profile: {
         Args: { _profile_id: string }
         Returns: {
