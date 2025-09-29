@@ -194,16 +194,104 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "sustainability_activities_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
     }
     Views: {
-      [_ in never]: never
+      public_profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          first_name: string | null
+          id: string | null
+          industry: string | null
+          is_public_profile: boolean | null
+          last_name: string | null
+          location: string | null
+          organization: string | null
+          organization_id: string | null
+          public_display_name: string | null
+          sustainability_goals: string[] | null
+          user_role: Database["public"]["Enums"]["user_role"] | null
+          website_url: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          first_name?: string | null
+          id?: string | null
+          industry?: string | null
+          is_public_profile?: boolean | null
+          last_name?: string | null
+          location?: string | null
+          organization?: string | null
+          organization_id?: string | null
+          public_display_name?: string | null
+          sustainability_goals?: string[] | null
+          user_role?: Database["public"]["Enums"]["user_role"] | null
+          website_url?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          first_name?: string | null
+          id?: string | null
+          industry?: string | null
+          is_public_profile?: boolean | null
+          last_name?: string | null
+          location?: string | null
+          organization?: string | null
+          organization_id?: string | null
+          public_display_name?: string | null
+          sustainability_goals?: string[] | null
+          user_role?: Database["public"]["Enums"]["user_role"] | null
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       get_current_user_role: {
         Args: Record<PropertyKey, never>
         Returns: Database["public"]["Enums"]["user_role"]
+      }
+      get_public_profile: {
+        Args: { _profile_id: string }
+        Returns: {
+          avatar_url: string
+          bio: string
+          created_at: string
+          first_name: string
+          id: string
+          industry: string
+          is_public_profile: boolean
+          last_name: string
+          location: string
+          organization: string
+          organization_id: string
+          public_display_name: string
+          sustainability_goals: string[]
+          user_role: Database["public"]["Enums"]["user_role"]
+          website_url: string
+        }[]
       }
       get_user_organization_id: {
         Args: { _user_id: string }
