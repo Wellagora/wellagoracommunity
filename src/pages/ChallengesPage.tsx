@@ -31,7 +31,8 @@ import {
   Star,
   Loader2,
   TrendingUp,
-  Award
+  Award,
+  Calculator
 } from "lucide-react";
 import { challenges, Challenge } from "@/data/challenges";
 
@@ -229,14 +230,14 @@ const ChallengesPage = () => {
           </div>
         </Card3D>
 
-        {/* Challenges Grid - Debug */}
-        <div className="mb-4 p-4 bg-gray-100 rounded">
-          <h3>Debug információ:</h3>
-          <p>Összes kihívás: {challenges.length}</p>
-          <p>Szűrt kihívások: {filteredChallenges.length}</p>
-          <p>Keresési szöveg: "{searchTerm}"</p>
-          <p>Kategória: {selectedCategory}</p>
-          <p>Nehézség: {selectedDifficulty}</p>
+        <div className="mb-6">
+          <Button 
+            onClick={() => navigate("/dashboard/handprint")}
+            className="bg-gradient-to-r from-primary to-success hover:shadow-lg"
+          >
+            <Calculator className="w-4 h-4 mr-2" />
+            Kéznyom Számító & Perszonalizáció
+          </Button>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

@@ -182,6 +182,199 @@ export const challenges: Challenge[] = [
         avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face"
       }
     ]
+  },
+  // Additional challenges for expanded catalog
+  {
+    id: "solar-panel-install",
+    titleKey: "challenges.solarPanel.title", 
+    descriptionKey: "challenges.solarPanel.description",
+    longDescriptionKey: "challenges.solarPanel.description",
+    category: "energy",
+    difficulty: "advanced",
+    duration: "8 hét",
+    pointsReward: 800,
+    participants: 892,
+    completionRate: 65,
+    stepsKeys: [],
+    tipsKeys: [],
+    impact: {
+      co2Saved: 1200,
+      treesEquivalent: 54
+    },
+    participants_preview: [
+      { id: "1", name: "Gábor Kiss", avatar: "/api/placeholder/32/32" },
+      { id: "2", name: "Éva Molnár", avatar: "/api/placeholder/32/32" }
+    ],
+    sponsor: {
+      name: "SolarTech Kft.",
+      logo: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=100&h=100&fit=crop&crop=center"
+    }
+  },
+  {
+    id: "bike-to-work-month",
+    titleKey: "challenges.bikeToWork.title",
+    descriptionKey: "challenges.bikeToWork.description",
+    longDescriptionKey: "challenges.bikeToWork.description",
+    category: "transport",
+    difficulty: "beginner",
+    duration: "30 nap",
+    pointsReward: 250,
+    participants: 3421,
+    completionRate: 83,
+    stepsKeys: [],
+    tipsKeys: [],
+    impact: {
+      co2Saved: 85,
+      treesEquivalent: 4
+    },
+    participants_preview: [
+      { id: "1", name: "László Balogh", avatar: "/api/placeholder/32/32" },
+      { id: "2", name: "Rita Szabó", avatar: "/api/placeholder/32/32" },
+      { id: "3", name: "Tamás Horváth", avatar: "/api/placeholder/32/32" }
+    ]
+  },
+  {
+    id: "plastic-free-lifestyle",
+    titleKey: "challenges.plasticFree.title",
+    descriptionKey: "challenges.plasticFree.description",
+    longDescriptionKey: "challenges.plasticFree.description",
+    category: "waste",
+    difficulty: "expert", 
+    duration: "12 hét",
+    pointsReward: 600,
+    participants: 743,
+    completionRate: 58,
+    stepsKeys: [],
+    tipsKeys: [],
+    impact: {
+      co2Saved: 95,
+      treesEquivalent: 4
+    },
+    participants_preview: [
+      { id: "1", name: "Dóra Varga", avatar: "/api/placeholder/32/32" },
+      { id: "2", name: "Máté Fekete", avatar: "/api/placeholder/32/32" }
+    ]
+  },
+  {
+    id: "community-garden",
+    titleKey: "challenges.communityGarden.title",
+    descriptionKey: "challenges.communityGarden.description",
+    longDescriptionKey: "challenges.communityGarden.description",
+    category: "biodiversity",
+    difficulty: "intermediate",
+    duration: "6 hét", 
+    pointsReward: 400,
+    participants: 1289,
+    completionRate: 76,
+    stepsKeys: [],
+    tipsKeys: [],
+    impact: {
+      co2Saved: 120,
+      treesEquivalent: 5
+    },
+    participants_preview: [
+      { id: "1", name: "Ildikó Papp", avatar: "/api/placeholder/32/32" },
+      { id: "2", name: "József Takács", avatar: "/api/placeholder/32/32" },
+      { id: "3", name: "Viktória Németh", avatar: "/api/placeholder/32/32" }
+    ],
+    sponsor: {
+      name: "GreenSpaces Ltd.",
+      logo: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center"
+    }
+  },
+  {
+    id: "water-conservation",
+    titleKey: "challenges.waterConservation.title",
+    descriptionKey: "challenges.waterConservation.description",
+    longDescriptionKey: "challenges.waterConservation.description",
+    category: "water",
+    difficulty: "beginner",
+    duration: "3 hét",
+    pointsReward: 180,
+    participants: 2156,
+    completionRate: 89,
+    stepsKeys: [],
+    tipsKeys: [],
+    impact: {
+      co2Saved: 25,
+      treesEquivalent: 1
+    },
+    participants_preview: [
+      { id: "1", name: "Beáta Kovács", avatar: "/api/placeholder/32/32" },
+      { id: "2", name: "András Lakatos", avatar: "/api/placeholder/32/32" }
+    ]
+  },
+  {
+    id: "green-innovation-hackathon",
+    titleKey: "challenges.greenHackathon.title", 
+    descriptionKey: "challenges.greenHackathon.description",
+    longDescriptionKey: "challenges.greenHackathon.description",
+    category: "innovation",
+    difficulty: "expert",
+    duration: "1 hét",
+    pointsReward: 1000,
+    participants: 456,
+    completionRate: 42,
+    stepsKeys: [],
+    tipsKeys: [],
+    impact: {
+      co2Saved: 500,
+      treesEquivalent: 23
+    },
+    participants_preview: [
+      { id: "1", name: "Márton Gál", avatar: "/api/placeholder/32/32" },
+      { id: "2", name: "Krisztina Farkas", avatar: "/api/placeholder/32/32" },
+      { id: "3", name: "Norbert Simon", avatar: "/api/placeholder/32/32" }
+    ]
+  },
+  {
+    id: "circular-economy-workshop",
+    titleKey: "challenges.circularWorkshop.title",
+    descriptionKey: "challenges.circularWorkshop.description",
+    longDescriptionKey: "challenges.circularWorkshop.description", 
+    category: "circular-economy",
+    difficulty: "intermediate",
+    duration: "2 hét",
+    pointsReward: 350,
+    participants: 892,
+    completionRate: 71,
+    stepsKeys: [],
+    tipsKeys: [],
+    impact: {
+      co2Saved: 80,
+      treesEquivalent: 4
+    },
+    participants_preview: [
+      { id: "1", name: "Eszter Rácz", avatar: "/api/placeholder/32/32" },
+      { id: "2", name: "Zsolt Pintér", avatar: "/api/placeholder/32/32" }
+    ],
+    sponsor: {
+      name: "CircularHub",
+      logo: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center"
+    }
+  },
+  {
+    id: "green-finance-literacy",
+    titleKey: "challenges.greenFinance.title",
+    descriptionKey: "challenges.greenFinance.description",
+    longDescriptionKey: "challenges.greenFinance.description",
+    category: "green-finance", 
+    difficulty: "advanced",
+    duration: "5 hét",
+    pointsReward: 450,
+    participants: 634,
+    completionRate: 67,
+    stepsKeys: [],
+    tipsKeys: [],
+    impact: {
+      co2Saved: 200,
+      treesEquivalent: 9
+    },
+    participants_preview: [
+      { id: "1", name: "Péter Horváth", avatar: "/api/placeholder/32/32" },
+      { id: "2", name: "Katalin Novák", avatar: "/api/placeholder/32/32" },
+      { id: "3", name: "Gergő Barna", avatar: "/api/placeholder/32/32" }
+    ]
   }
 ];
 

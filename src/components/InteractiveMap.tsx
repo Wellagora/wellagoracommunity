@@ -163,13 +163,39 @@ const InteractiveMap = () => {
                   </p>
                 </div>
                 
-                {/* Simplified Map Visualization */}
-                <div className="relative bg-card/30 rounded-lg p-8 border-2 border-dashed border-border min-h-[400px]">
-                  <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-                    <div className="text-center space-y-4">
-                      <MapPin className="w-16 h-16 mx-auto text-primary opacity-50" />
-                      <p className="text-lg font-medium">Magyarország Interaktív Térkép</p>
-                      <p className="text-sm">Kattints a stakeholder-ekre a részletekért</p>
+                {/* Interactive Hungary Map */}
+                <div className="relative bg-gradient-to-br from-primary/5 via-background to-success/5 rounded-lg p-8 border border-border min-h-[500px] overflow-hidden">
+                  {/* Hungary map outline SVG */}
+                  <svg
+                    viewBox="0 0 600 300"
+                    className="absolute inset-4 w-auto h-full opacity-20"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1"
+                  >
+                    {/* Simplified Hungary outline */}
+                    <path
+                      d="M50,150 Q100,100 200,120 Q300,110 400,130 Q500,140 550,160 Q520,200 480,220 Q400,240 300,235 Q200,230 100,210 Q50,180 50,150 Z"
+                      fill="hsl(var(--muted))"
+                      stroke="hsl(var(--border))"
+                      strokeWidth="2"
+                      className="opacity-30"
+                    />
+                    {/* Major cities */}
+                    <circle cx="300" cy="150" r="3" fill="hsl(var(--primary))" opacity="0.5" />
+                    <text x="305" y="145" className="text-xs fill-muted-foreground">Budapest</text>
+                    <circle cx="180" cy="200" r="2" fill="hsl(var(--primary))" opacity="0.5" />
+                    <text x="185" y="195" className="text-xs fill-muted-foreground">Pécs</text>
+                    <circle cx="420" cy="140" r="2" fill="hsl(var(--primary))" opacity="0.5" />
+                    <text x="425" y="135" className="text-xs fill-muted-foreground">Debrecen</text>
+                    <circle cx="350" cy="190" r="2" fill="hsl(var(--primary))" opacity="0.5" />
+                    <text x="355" y="185" className="text-xs fill-muted-foreground">Szeged</text>
+                  </svg>
+                  
+                  <div className="relative z-10">
+                    <div className="absolute top-4 left-4 bg-background/90 backdrop-blur-sm p-3 rounded-lg border border-border">
+                      <h4 className="font-semibold mb-1">Magyarország</h4>
+                      <p className="text-sm text-muted-foreground">Fenntartható Stakeholder Térkép</p>
                     </div>
                   </div>
                   
