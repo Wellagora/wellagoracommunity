@@ -132,6 +132,56 @@ export const challenges: Challenge[] = [
         avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&crop=face"
       }
     ]
+  },
+  {
+    id: "3",
+    titleKey: "challenges.bike_to_work.title",
+    descriptionKey: "challenges.bike_to_work.description",
+    longDescriptionKey: "challenges.bike_to_work.description", 
+    category: "transport",
+    difficulty: "beginner",
+    duration: "7 nap",
+    pointsReward: 200,
+    participants: 3456,
+    completionRate: 89,
+    stepsKeys: [],
+    tipsKeys: [],
+    impact: {
+      co2Saved: 8.2,
+      treesEquivalent: 1
+    },
+    participants_preview: [
+      {
+        id: "7",
+        name: "Kovács János",
+        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face"
+      }
+    ]
+  },
+  {
+    id: "4",
+    titleKey: "challenges.plastic_free_week.title",
+    descriptionKey: "challenges.plastic_free_week.description",
+    longDescriptionKey: "challenges.plastic_free_week.description", 
+    category: "waste",
+    difficulty: "beginner",
+    duration: "7 nap",
+    pointsReward: 150,
+    participants: 2890,
+    completionRate: 76,
+    stepsKeys: [],
+    tipsKeys: [],
+    impact: {
+      co2Saved: 5.1,
+      treesEquivalent: 1
+    },
+    participants_preview: [
+      {
+        id: "8",
+        name: "Nagy Anna",
+        avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face"
+      }
+    ]
   }
 ];
 

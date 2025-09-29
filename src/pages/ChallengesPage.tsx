@@ -44,22 +44,31 @@ const ChallengesPage = () => {
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("all");
   const [filteredChallenges, setFilteredChallenges] = useState<Challenge[]>(challenges);
 
-  // Redirect to auth if not logged in
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate("/auth");
-    }
-  }, [user, loading, navigate]);
+  // Temporarily disable auth check to debug challenges display
+  // useEffect(() => {
+  //   if (!loading && !user) {
+  //     navigate("/auth");
+  //   }
+  // }, [user, loading, navigate]);
 
   // Filter challenges based on search and filters
   useEffect(() => {
-    let filtered = challenges;
+    let filtered = [...challenges]; // Create a copy to avoid mutations
+
+    console.log('Debug - All challenges count:', challenges.length);
+    console.log('Debug - Challenges:', challenges);
+    console.log('Debug - Search term:', searchTerm);
+    console.log('Debug - Selected category:', selectedCategory);
+    console.log('Debug - Selected difficulty:', selectedDifficulty);
 
     if (searchTerm) {
-      filtered = filtered.filter(challenge =>
-        t(challenge.titleKey).toLowerCase().includes(searchTerm.toLowerCase()) ||
-        t(challenge.descriptionKey).toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      filtered = filtered.filter(challenge => {
+        const title = t(challenge.titleKey);
+        const description = t(challenge.descriptionKey);
+        console.log('Debug - Checking challenge:', challenge.id, 'Title:', title, 'Desc:', description);
+        return title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+               description.toLowerCase().includes(searchTerm.toLowerCase());
+      });
     }
 
     if (selectedCategory !== "all") {
@@ -70,8 +79,10 @@ const ChallengesPage = () => {
       filtered = filtered.filter(challenge => challenge.difficulty === selectedDifficulty);
     }
 
+    console.log('Debug - Filtered challenges count:', filtered.length);
+    console.log('Debug - Filtered challenges:', filtered);
     setFilteredChallenges(filtered);
-  }, [searchTerm, selectedCategory, selectedDifficulty]);
+  }, [searchTerm, selectedCategory, selectedDifficulty, t]);
 
   const getCategoryIcon = (category: Challenge['category']) => {
     switch (category) {
@@ -115,20 +126,21 @@ const ChallengesPage = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="flex items-center space-x-2">
-          <Loader2 className="h-4 w-4 animate-spin text-primary" />
-          <span className="text-foreground">{t('common.loading')}</span>
-        </div>
-      </div>
-    );
-  }
+  // Temporarily allow access without authentication
+  // if (loading) {
+  //   return (
+  //     <div className="min-h-screen bg-background flex items-center justify-center">
+  //       <div className="flex items-center space-x-2">
+  //         <Loader2 className="h-4 w-4 animate-spin text-primary" />
+  //         <span className="text-foreground">{t('common.loading')}</span>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
-  if (!user) {
-    return null; // Will redirect to auth
-  }
+  // if (!user) {
+  //   return null; // Will redirect to auth
+  // }
 
   return (
     <div className="min-h-screen bg-background">
@@ -217,7 +229,16 @@ const ChallengesPage = () => {
           </div>
         </Card3D>
 
-        {/* Challenges Grid */}
+        {/* Challenges Grid - Debug */}
+        <div className="mb-4 p-4 bg-gray-100 rounded">
+          <h3>Debug információ:</h3>
+          <p>Összes kihívás: {challenges.length}</p>
+          <p>Szűrt kihívások: {filteredChallenges.length}</p>
+          <p>Keresési szöveg: "{searchTerm}"</p>
+          <p>Kategória: {selectedCategory}</p>
+          <p>Nehézség: {selectedDifficulty}</p>
+        </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredChallenges.map((challenge, index) => (
             <Card3D 
