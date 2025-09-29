@@ -2,6 +2,8 @@ import Navigation from "@/components/Navigation";
 import HandprintCalculator from "@/components/dashboard/HandprintCalculator";
 
 const HandprintPage = () => {
+  console.log("HandprintPage component loaded successfully!");
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
       <Navigation />
@@ -13,6 +15,9 @@ const HandprintPage = () => {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Számítsd ki pozitív környezeti hatásod és kövesd nyomon előrehaladásod a fenntarthatóság felé.
           </p>
+          <div className="mt-4 p-4 bg-success/10 rounded-lg border border-success/20">
+            <p className="text-success font-medium">✅ A handprint oldal sikeresen betöltődött!</p>
+          </div>
         </div>
         <HandprintCalculator />
       </div>
