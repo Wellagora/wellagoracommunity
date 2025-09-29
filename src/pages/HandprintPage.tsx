@@ -135,7 +135,7 @@ const HandprintPage = () => {
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#94a3b8' }}>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#e2e8f0' }}>
                   🚲 Biciklizés (km/hó)
                 </label>
                 <input
@@ -156,7 +156,7 @@ const HandprintPage = () => {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#94a3b8' }}>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#e2e8f0' }}>
                   🚌 Tömegközlekedés (km/hó)
                 </label>
                 <input
@@ -177,7 +177,7 @@ const HandprintPage = () => {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#94a3b8' }}>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#e2e8f0' }}>
                   💡 Energia megtakarítás (kWh/hó)
                 </label>
                 <input
@@ -198,7 +198,7 @@ const HandprintPage = () => {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#94a3b8' }}>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#e2e8f0' }}>
                   ♻️ Újrahasznosítás (kg/hó)
                 </label>
                 <input
@@ -219,7 +219,7 @@ const HandprintPage = () => {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#94a3b8' }}>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#e2e8f0' }}>
                   💧 Víz megtakarítás (liter/hó)
                 </label>
                 <input
@@ -240,7 +240,7 @@ const HandprintPage = () => {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#94a3b8' }}>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#e2e8f0' }}>
                   🏆 Közösségi aktivizmus (óra/hó)
                 </label>
                 <input
@@ -307,8 +307,28 @@ const HandprintPage = () => {
               </div>
             </div>
 
-            {/* Breakdown */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ 
+                backgroundColor: 'rgba(59, 130, 246, 0.1)', 
+                padding: '16px', 
+                borderRadius: '8px',
+                border: '1px solid rgba(59, 130, 246, 0.3)',
+                marginBottom: '16px'
+              }}>
+                <h4 style={{ color: '#3b82f6', fontWeight: '600', marginBottom: '8px' }}>
+                  📊 Adatok forrása
+                </h4>
+                <p style={{ color: '#e2e8f0', fontSize: '14px', marginBottom: '8px' }}>
+                  Jelenleg manuálisan kell megadni az adatokat. A jövőben automatikusan összegyűjtjük:
+                </p>
+                <ul style={{ color: '#94a3b8', fontSize: '14px', paddingLeft: '20px' }}>
+                  <li>• Teljesített challenge-ek alapján</li>
+                  <li>• Fitnesz alkalmazásokból (biciklizés)</li>
+                  <li>• Okos otthon rendszerekből (energia)</li>
+                  <li>• Közösségi aktivitásokból</li>
+                </ul>
+              </div>
+              
               {[
                 { label: 'Közlekedés', value: results.transport, emoji: '🚗', color: '#3b82f6' },
                 { label: 'Energia', value: results.energy, emoji: '💡', color: '#f59e0b' },
@@ -325,7 +345,7 @@ const HandprintPage = () => {
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span>{item.emoji}</span>
-                    <span style={{ fontSize: '14px', color: '#94a3b8' }}>{item.label}</span>
+                    <span style={{ fontSize: '14px', color: '#e2e8f0' }}>{item.label}</span>
                   </div>
                   <span style={{ fontWeight: '600', color: item.color }}>{item.value} kg CO₂</span>
                 </div>
