@@ -185,6 +185,31 @@ const ProfilePage = () => {
               {getRoleIcon()}
               <span className="ml-2">{getRoleLabel()}</span>
             </Badge>
+            {/* Super Admin Role Switcher */}
+            {profile?.email === "admin@wellagora.com" && (
+              <Select
+                value={profile.user_role}
+                onValueChange={async (newRole) => {
+                  const { error } = await updateProfile({ user_role: newRole as any });
+                  if (error) {
+                    setError("Hiba a szerepváltás során");
+                  } else {
+                    setSuccess("Szerepváltás sikeres! Újratöltjük az oldalt...");
+                    setTimeout(() => window.location.reload(), 1000);
+                  }
+                }}
+              >
+                <SelectTrigger className="w-48 bg-gradient-to-r from-warning/20 to-destructive/20 border-warning text-sm">
+                  <SelectValue placeholder="Super Admin: Szerepváltás" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="citizen">🏡 Állampolgár</SelectItem>
+                  <SelectItem value="business">🏢 Vállalkozás</SelectItem>
+                  <SelectItem value="government">🏛️ Önkormányzat</SelectItem>
+                  <SelectItem value="ngo">❤️ Civil Szervezet</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
           </div>
         </div>
 
@@ -399,9 +424,14 @@ const ProfilePage = () => {
                     <li>• <strong>Ezüst csomag:</strong> 150.000 Ft - 3 havi + brandelt challenges</li>
                     <li>• <strong>Arany csomag:</strong> 300.000 Ft - 6 havi + dedikált matching</li>
                   </ul>
-                  <Button size="sm" className="mt-3" variant="outline">
-                    Szponzorációs ajánlat kérése
-                  </Button>
+                  <div className="flex gap-2 mt-3">
+                    <Button size="sm" variant="outline">
+                      Szponzorációs ajánlat kérése
+                    </Button>
+                    <Button size="sm" className="bg-gradient-to-r from-primary to-accent">
+                      Szponzorációs Dashboard
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>

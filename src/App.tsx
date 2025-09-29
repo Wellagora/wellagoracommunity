@@ -16,6 +16,8 @@ import ChallengeDetailPage from "@/pages/ChallengeDetailPage";
 import ProfilePage from "@/pages/ProfilePage";
 import OrganizationDashboard from "@/pages/OrganizationDashboard";
 import MatchingPage from "@/pages/MatchingPage";
+import BusinessSponsorshipPage from "@/pages/BusinessSponsorshipPage";
+import InteractiveMapPage from "@/pages/InteractiveMapPage";
 import "./index.css";
 
 function App() {
@@ -39,6 +41,8 @@ function App() {
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/organization" element={<OrganizationDashboard />} />
               <Route path="/matching" element={<MatchingPage />} />
+              <Route path="/business-sponsorship" element={<BusinessSponsorshipPage />} />
+              <Route path="/interactive-map" element={<InteractiveMapPage />} />
             </Routes>
             <Toaster />
             <SonnerToaster />

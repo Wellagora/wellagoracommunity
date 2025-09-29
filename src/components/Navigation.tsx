@@ -14,7 +14,8 @@ import {
   Leaf,
   Globe,
   Zap,
-  Edit3
+  Edit3,
+  CreditCard
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -155,6 +156,13 @@ const Navigation = () => {
                 3D
               </Badge>
             </Link>
+            <Link to="/interactive-map" className="group flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-warning/10 to-destructive/10 border border-warning/30 rounded-lg hover:from-warning/20 hover:to-destructive/20 transition-all duration-300 font-medium">
+              <MapPin className="w-4 h-4 text-warning" />
+              <span>Stakeholder Térkép</span>
+              <Badge variant="secondary" className="ml-1 bg-gradient-to-r from-warning to-destructive text-white text-xs px-1.5 py-0.5">
+                MAP
+              </Badge>
+            </Link>
           </div>
 
           {/* User Actions */}
@@ -193,15 +201,26 @@ const Navigation = () => {
                     <span className="text-sm font-medium">Profil</span>
                   </Link>
                   
-                  {profile?.user_role !== "citizen" && (
-                    <Link
-                      to="/organization"
-                      className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-xl hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent-foreground"
-                    >
-                      <Building2 className="w-4 h-4" />
-                      <span className="text-sm">Szervezet</span>
-                    </Link>
-                  )}
+            {profile?.user_role !== "citizen" && (
+              <>
+                <Link
+                  to="/organization"
+                  className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-xl hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent-foreground"
+                >
+                  <Building2 className="w-4 h-4" />
+                  <span className="text-sm">Szervezet</span>
+                </Link>
+                {profile.user_role === 'business' && (
+                  <Link
+                    to="/business-sponsorship"
+                    className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-primary/20 to-success/20 border border-primary/30 rounded-xl hover:from-primary/30 hover:to-success/30 transition-all duration-300 font-medium text-primary"
+                  >
+                    <CreditCard className="w-4 h-4" />
+                    <span className="text-sm">Szponzoráció</span>
+                  </Link>
+                )}
+              </>
+            )}
                 </div>
                 
                 <button 
