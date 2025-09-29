@@ -58,17 +58,19 @@ const ProfilePage = () => {
   // Sync form with profile data
   useEffect(() => {
     if (profile) {
+      // Use type assertion for new fields until types are regenerated
+      const extendedProfile = profile as any;
       setProfileForm({
         first_name: profile.first_name || "",
         last_name: profile.last_name || "",
         email: profile.email || "",
         public_display_name: profile.public_display_name || "",
         organization: profile.organization || "",
-        location: "", // Will be added to database later
-        sustainability_goals: [], // Will be added to database later
-        industry: "", // Will be added to database later
-        company_size: "", // Will be added to database later
-        website_url: "", // Will be added to database later
+        location: extendedProfile.location || "",
+        sustainability_goals: extendedProfile.sustainability_goals || [],
+        industry: extendedProfile.industry || "",
+        company_size: extendedProfile.company_size || "",
+        website_url: extendedProfile.website_url || "",
         is_public_profile: profile.is_public_profile || false
       });
     }
@@ -81,13 +83,20 @@ const ProfilePage = () => {
     setSuccess(null);
 
     try {
+      // Use type assertion for new fields until types are regenerated
       const { error } = await updateProfile({
         first_name: profileForm.first_name.trim(),
         last_name: profileForm.last_name.trim(),
         public_display_name: profileForm.public_display_name.trim() || null,
         organization: profileForm.organization.trim() || null,
-        is_public_profile: profileForm.is_public_profile
-      });
+        is_public_profile: profileForm.is_public_profile,
+        // New fields (will be accepted by database even if not in types yet)
+        ...(profileForm.location && { location: profileForm.location.trim() }),
+        ...(profileForm.sustainability_goals.length > 0 && { sustainability_goals: profileForm.sustainability_goals }),
+        ...(profileForm.industry && { industry: profileForm.industry.trim() }),
+        ...(profileForm.company_size && { company_size: profileForm.company_size.trim() }),
+        ...(profileForm.website_url && { website_url: profileForm.website_url.trim() })
+      } as any);
 
       if (error) {
         setError("Hiba történt a profil frissítése során. Kérjük, próbálja újra.");
