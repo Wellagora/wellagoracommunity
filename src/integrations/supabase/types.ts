@@ -14,6 +14,96 @@ export type Database = {
   }
   public: {
     Tables: {
+      challenge_completions: {
+        Row: {
+          challenge_id: string
+          completion_date: string
+          completion_type: string
+          created_at: string
+          evidence_data: Json | null
+          id: string
+          impact_data: Json
+          notes: string | null
+          points_earned: number
+          updated_at: string
+          user_id: string
+          validation_score: number | null
+          validation_status: string
+        }
+        Insert: {
+          challenge_id: string
+          completion_date?: string
+          completion_type?: string
+          created_at?: string
+          evidence_data?: Json | null
+          id?: string
+          impact_data: Json
+          notes?: string | null
+          points_earned?: number
+          updated_at?: string
+          user_id: string
+          validation_score?: number | null
+          validation_status?: string
+        }
+        Update: {
+          challenge_id?: string
+          completion_date?: string
+          completion_type?: string
+          created_at?: string
+          evidence_data?: Json | null
+          id?: string
+          impact_data?: Json
+          notes?: string | null
+          points_earned?: number
+          updated_at?: string
+          user_id?: string
+          validation_score?: number | null
+          validation_status?: string
+        }
+        Relationships: []
+      }
+      challenge_definitions: {
+        Row: {
+          base_impact: Json
+          category: string
+          created_at: string
+          description: string
+          difficulty: string
+          duration_days: number | null
+          id: string
+          is_active: boolean | null
+          points_base: number
+          title: string
+          validation_requirements: Json | null
+        }
+        Insert: {
+          base_impact: Json
+          category: string
+          created_at?: string
+          description: string
+          difficulty?: string
+          duration_days?: number | null
+          id: string
+          is_active?: boolean | null
+          points_base?: number
+          title: string
+          validation_requirements?: Json | null
+        }
+        Update: {
+          base_impact?: Json
+          category?: string
+          created_at?: string
+          description?: string
+          difficulty?: string
+          duration_days?: number | null
+          id?: string
+          is_active?: boolean | null
+          points_base?: number
+          title?: string
+          validation_requirements?: Json | null
+        }
+        Relationships: []
+      }
       organizations: {
         Row: {
           co2_reduction_total: number | null
@@ -148,38 +238,60 @@ export type Database = {
       sustainability_activities: {
         Row: {
           activity_type: string
+          auto_generated: boolean | null
+          challenge_completion_id: string | null
+          confidence_score: number | null
           created_at: string | null
           date: string | null
           description: string | null
+          evidence_url: string | null
           id: string
           impact_amount: number
           organization_id: string | null
           points_earned: number | null
           user_id: string
+          validation_method: string | null
         }
         Insert: {
           activity_type: string
+          auto_generated?: boolean | null
+          challenge_completion_id?: string | null
+          confidence_score?: number | null
           created_at?: string | null
           date?: string | null
           description?: string | null
+          evidence_url?: string | null
           id?: string
           impact_amount: number
           organization_id?: string | null
           points_earned?: number | null
           user_id: string
+          validation_method?: string | null
         }
         Update: {
           activity_type?: string
+          auto_generated?: boolean | null
+          challenge_completion_id?: string | null
+          confidence_score?: number | null
           created_at?: string | null
           date?: string | null
           description?: string | null
+          evidence_url?: string | null
           id?: string
           impact_amount?: number
           organization_id?: string | null
           points_earned?: number | null
           user_id?: string
+          validation_method?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "sustainability_activities_challenge_completion_id_fkey"
+            columns: ["challenge_completion_id"]
+            isOneToOne: false
+            referencedRelation: "challenge_completions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "sustainability_activities_organization_id_fkey"
             columns: ["organization_id"]
