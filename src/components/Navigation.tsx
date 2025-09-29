@@ -210,7 +210,7 @@ const Navigation = () => {
                   <Building2 className="w-4 h-4" />
                   <span className="text-sm">Szervezet</span>
                 </Link>
-                {profile?.user_role === 'business' && (
+                {(profile?.user_role === 'business' || profile?.email === 'admin@wellagora.com') && (
                   <Link
                     to="/business-sponsorship"
                     className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-primary/20 to-success/20 border border-primary/30 rounded-xl hover:from-primary/30 hover:to-success/30 transition-all duration-300 font-medium text-primary"

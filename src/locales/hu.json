@@ -176,5 +176,21 @@
   "sponsorship.packages.gold": "Arany Csomag",
   "sponsorship.credits_remaining": "Fennmaradó kreditek",
   "sponsorship.impact_generated": "Elért hatás",
-  "sponsorship.participants_reached": "Elért résztvevők"
+  "sponsorship.participants_reached": "Elért résztvevők",
+  "challenges.circularWorkshop.title": "Körforgásos Gazdaság Workshop",
+  "challenges.circularWorkshop.description": "Tanulj meg körforgásos üzleti modelleket fejleszteni",
+  "challenges.water_conservation.title": "Víztakarékosság Kihívás",
+  "challenges.water_conservation.description": "Csökkentsd vízfogyasztásod 30%-kal egy hónap alatt",
+  "challenges.biodiversity_garden.title": "Biodiverzitás Kert",
+  "challenges.biodiversity_garden.description": "Hozz létre vadon élő állatok barát kertet",
+  "challenges.local_food.title": "Helyi Étel Kihívás",
+  "challenges.local_food.description": "Vásárolj csak helyi termelőktől egy hónapig",
+  "challenges.digital_detox.title": "Digitális Detox",
+  "challenges.digital_detox.description": "Csökkentsd energiafogyasztásod digitális eszközök használatának korlátozásával",
+  "challenges.green_commuting.title": "Zöld Ingázás",
+  "challenges.green_commuting.description": "Válts környezetbarát közlekedési módokra",
+  "challenges.sustainable_fashion.title": "Fenntartható Divat",
+  "challenges.sustainable_fashion.description": "Vásárolj csak etikus és fenntartható ruházatot",
+  "challenges.community_cleaning.title": "Közösségi Takarítás",
+  "challenges.community_cleaning.description": "Szervezz vagy csatlakozz helyi környezeti akciókhoz"
 }
