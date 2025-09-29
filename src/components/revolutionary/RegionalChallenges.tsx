@@ -58,6 +58,9 @@ const RegionalChallenges: React.FC = () => {
   const [selectedChallenge, setSelectedChallenge] = useState<RegionalChallenge | null>(null);
   const [showAchievements, setShowAchievements] = useState(false);
   const [activeTab, setActiveTab] = useState<'active' | 'completed' | 'upcoming'>('active');
+  const [showConnections, setShowConnections] = useState(true);
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [difficultyFilter, setDifficultyFilter] = useState<string>('all');
 
   const mockGuilds: Guild[] = [
     {
@@ -198,6 +201,13 @@ const RegionalChallenges: React.FC = () => {
     }
   };
 
+  // Filter challenges based on active filters
+  const filteredChallenges = mockChallenges.filter(challenge => {
+    if (categoryFilter !== 'all' && !challenge.name.toLowerCase().includes(categoryFilter)) return false;
+    if (difficultyFilter !== 'all' && challenge.difficulty.toLowerCase() !== difficultyFilter) return false;
+    return true;
+  });
+
   return (
     <div className="w-full space-y-6">
       {/* Header with Guild System */}
@@ -216,14 +226,50 @@ const RegionalChallenges: React.FC = () => {
               City-wide challenges uniting all stakeholders for maximum impact
             </p>
           </div>
-          <Button 
-            variant="outline"
-            onClick={() => setShowAchievements(true)}
-            className="flex items-center gap-2"
+          <div className="flex gap-2">
+            <Button 
+              variant="outline"
+              onClick={() => setShowConnections(!showConnections)}
+              className="flex items-center gap-2"
+            >
+              <Zap className="w-4 h-4" />
+              {showConnections ? 'Hide Connections' : 'Show Connections'}
+            </Button>
+            <Button 
+              variant="outline"
+              onClick={() => setShowAchievements(true)}
+              className="flex items-center gap-2"
+            >
+              <Trophy className="w-4 h-4" />
+              Achievements
+            </Button>
+          </div>
+        </div>
+
+        {/* Filters */}
+        <div className="flex flex-wrap gap-3 mb-4">
+          <select 
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="px-3 py-2 rounded-lg bg-card border border-border"
           >
-            <Trophy className="w-4 h-4" />
-            Achievements
-          </Button>
+            <option value="all">All Categories</option>
+            <option value="energy">Energy</option>
+            <option value="waste">Waste</option>
+            <option value="co2">CO₂ Reduction</option>
+          </select>
+          
+          <select 
+            value={difficultyFilter}
+            onChange={(e) => setDifficultyFilter(e.target.value)}
+            className="px-3 py-2 rounded-lg bg-card border border-border"
+          >
+            <option value="all">All Difficulties</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+            <option value="boss">Boss</option>
+          </select>
         </div>
 
         {/* Guild Leaderboard */}
@@ -270,7 +316,7 @@ const RegionalChallenges: React.FC = () => {
 
       {/* Challenge Cards */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {mockChallenges.map((challenge, index) => (
+        {filteredChallenges.map((challenge, index) => (
           <motion.div
             key={challenge.id}
             initial={{ opacity: 0, y: 20 }}

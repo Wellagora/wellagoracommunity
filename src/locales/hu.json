@@ -163,6 +163,18 @@
   "3d_dashboard.challenges": "Kihívások",
   "3d_dashboard.government": "Kormányzat",
   "3d_dashboard.municipality": "Önkormányzat",
-  "3d_dashboard.local_business": "Helyi Vállalkozás",
-  "3d_dashboard.complete": "kész"
+  "3d_dashboard.local_business": "Helyi Vállalkozás", 
+  "3d_dashboard.complete": "kész",
+  "challenges.energy_winter.title": "Téli Energia Hatékonyság",
+  "challenges.energy_winter.description": "Csökkentsd otthonod energiafogyasztását a hideg hónapokban",
+  "challenges.urban_mobility.title": "Városi Mobilitás Kihívás",
+  "challenges.urban_mobility.description": "Próbálj ki fenntartható közlekedési megoldásokat",
+  "challenges.zero_waste_office.title": "Zéró Hulladék Iroda",
+  "challenges.zero_waste_office.description": "Alakítsd át irodádat hulladékmentes környezetté",
+  "sponsorship.packages.bronze": "Bronz Csomag",
+  "sponsorship.packages.silver": "Ezüst Csomag", 
+  "sponsorship.packages.gold": "Arany Csomag",
+  "sponsorship.credits_remaining": "Fennmaradó kreditek",
+  "sponsorship.impact_generated": "Elért hatás",
+  "sponsorship.participants_reached": "Elért résztvevők"
 }

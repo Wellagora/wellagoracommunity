@@ -47,6 +47,11 @@ const ProfilePage = () => {
     email: profile?.email || "",
     public_display_name: profile?.public_display_name || "",
     organization: profile?.organization || "",
+    location: "",
+    sustainability_goals: [] as string[],
+    industry: "",
+    company_size: "",
+    website_url: "",
     is_public_profile: profile?.is_public_profile || false
   });
 
@@ -59,6 +64,11 @@ const ProfilePage = () => {
         email: profile.email || "",
         public_display_name: profile.public_display_name || "",
         organization: profile.organization || "",
+        location: profile.location || "",
+        sustainability_goals: profile.sustainability_goals || [],
+        industry: profile.industry || "",
+        company_size: profile.company_size || "",
+        website_url: profile.website_url || "",
         is_public_profile: profile.is_public_profile || false
       });
     }
@@ -256,6 +266,52 @@ const ProfilePage = () => {
                     className="bg-background/50"
                   />
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="location">Helyszín *</Label>
+                  <Input
+                    id="location"
+                    value={profileForm.location}
+                    onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value })}
+                    placeholder="Pl. Budapest, Magyarország"
+                    className="bg-background/50"
+                    required
+                  />
+                  <p className="text-xs text-muted-foreground">Szükséges a regionális matching-hez</p>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="sustainability_goals">Fenntarthatósági érdeklődési területek *</Label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {[
+                    'Energia hatékonyság', 'Hulladék csökkentés', 'Közlekedés', 
+                    'Biodiverzitás', 'Körforgásos gazdaság', 'Vízvédelem',
+                    'Zöld finanszírozás', 'Innováció', 'Közösségépítés'
+                  ].map((goal) => (
+                    <label key={goal} className="flex items-center space-x-2 p-2 bg-background/30 rounded cursor-pointer hover:bg-background/50">
+                      <input
+                        type="checkbox"
+                        checked={profileForm.sustainability_goals.includes(goal)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setProfileForm({
+                              ...profileForm,
+                              sustainability_goals: [...profileForm.sustainability_goals, goal]
+                            });
+                          } else {
+                            setProfileForm({
+                              ...profileForm,
+                              sustainability_goals: profileForm.sustainability_goals.filter(g => g !== goal)
+                            });
+                          }
+                        }}
+                        className="text-primary"
+                      />
+                      <span className="text-sm">{goal}</span>
+                    </label>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground">Válassz legalább 3 területet a jobb matching-hez</p>
               </div>
             </CardContent>
           </Card>
@@ -270,9 +326,74 @@ const ProfilePage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                <p className="text-muted-foreground">
-                  A részletes szervezeti profil funkció hamarosan elérhető lesz.
-                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="industry">Iparág</Label>
+                    <Select
+                      value={profileForm.industry}
+                      onValueChange={(value) => setProfileForm({ ...profileForm, industry: value })}
+                    >
+                      <SelectTrigger className="bg-background/50">
+                        <SelectValue placeholder="Válassz iparágat" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="tech">Technológia</SelectItem>
+                        <SelectItem value="energy">Energia</SelectItem>
+                        <SelectItem value="manufacturing">Gyártás</SelectItem>
+                        <SelectItem value="retail">Kiskereskedelem</SelectItem>
+                        <SelectItem value="finance">Pénzügy</SelectItem>
+                        <SelectItem value="healthcare">Egészségügy</SelectItem>
+                        <SelectItem value="education">Oktatás</SelectItem>
+                        <SelectItem value="other">Egyéb</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="company_size">Céges méret</Label>
+                    <Select
+                      value={profileForm.company_size}
+                      onValueChange={(value) => setProfileForm({ ...profileForm, company_size: value })}
+                    >
+                      <SelectTrigger className="bg-background/50">
+                        <SelectValue placeholder="Válassz méretet" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1-10">1-10 alkalmazott</SelectItem>
+                        <SelectItem value="11-50">11-50 alkalmazott</SelectItem>
+                        <SelectItem value="51-200">51-200 alkalmazott</SelectItem>
+                        <SelectItem value="201-1000">201-1000 alkalmazott</SelectItem>
+                        <SelectItem value="1000+">1000+ alkalmazott</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="website_url">Weboldal URL</Label>
+                  <Input
+                    id="website_url"
+                    type="url"
+                    value={profileForm.website_url}
+                    onChange={(e) => setProfileForm({ ...profileForm, website_url: e.target.value })}
+                    placeholder="https://example.com"
+                    className="bg-background/50"
+                  />
+                </div>
+
+                <div className="p-4 bg-info/10 rounded-lg border border-info/20">
+                  <h4 className="font-semibold text-info mb-2">Szponzoráció és Üzleti Lehetőségek</h4>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Vállalatok szponzorálhatnak kihívásokat és vásárolhatnak szponzorációs csomagokat:
+                  </p>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• <strong>Bronz csomag:</strong> 50.000 Ft - 1 havi kihívás szponzoráció</li>
+                    <li>• <strong>Ezüst csomag:</strong> 150.000 Ft - 3 havi + brandelt challenges</li>
+                    <li>• <strong>Arany csomag:</strong> 300.000 Ft - 6 havi + dedikált matching</li>
+                  </ul>
+                  <Button size="sm" className="mt-3" variant="outline">
+                    Szponzorációs ajánlat kérése
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           )}

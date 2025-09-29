@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +29,8 @@ import communityImage from "@/assets/community-challenges.jpg";
 
 const ChallengesSection = () => {
   const { t } = useLanguage();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
   const challengeCategories = [
     { name: "Transport", icon: Bike, color: "accent", count: 45 },
     { name: "Energy", icon: Zap, color: "warning", count: 38 },
@@ -41,8 +44,23 @@ const ChallengesSection = () => {
     { name: "Green Finance", icon: Coins, color: "primary", count: 16 },
   ];
 
-  // Use actual challenges data instead of hardcoded
-  const featuredChallenges = challenges.slice(0, 2); // Show first 2 challenges as featured
+  // Filter challenges based on category and difficulty
+  let filteredChallenges = challenges;
+  
+  if (selectedCategory) {
+    filteredChallenges = filteredChallenges.filter(challenge => 
+      challenge.category === selectedCategory
+    );
+  }
+  
+  if (selectedDifficulty) {
+    filteredChallenges = filteredChallenges.filter(challenge => 
+      challenge.difficulty === selectedDifficulty
+    );
+  }
+  
+  // Use filtered challenges or all if no filter is applied
+  const featuredChallenges = filteredChallenges.length > 0 ? filteredChallenges.slice(0, 2) : challenges.slice(0, 2);
 
   const difficultyColors = {
     "Beginner": "success",
@@ -76,10 +94,21 @@ const ChallengesSection = () => {
           {challengeCategories.map((category) => (
             <Card 
               key={category.name}
-              className="hover:shadow-eco transition-smooth cursor-pointer group"
+              className={`hover:shadow-eco transition-smooth cursor-pointer group ${
+                selectedCategory === category.name.toLowerCase() ? 'ring-2 ring-primary bg-primary/5' : ''
+              }`}
+              onClick={() => {
+                if (selectedCategory === category.name.toLowerCase()) {
+                  setSelectedCategory(null); // Deselect if already selected
+                } else {
+                  setSelectedCategory(category.name.toLowerCase());
+                }
+              }}
             >
               <CardContent className="p-6 text-center">
-                <div className={`w-12 h-12 bg-${category.color}/10 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-${category.color}/20 transition-smooth`}>
+                <div className={`w-12 h-12 bg-${category.color}/10 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-${category.color}/20 transition-smooth ${
+                  selectedCategory === category.name.toLowerCase() ? `bg-${category.color}/30` : ''
+                }`}>
                   <category.icon className={`w-6 h-6 text-${category.color}`} />
                 </div>
                 <h3 className="font-semibold text-foreground mb-1">{category.name}</h3>
@@ -94,10 +123,26 @@ const ChallengesSection = () => {
           {/* Featured Challenges */}
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-foreground">{t('challenges.featured.title')}</h3>
-              <Button variant="outline" asChild>
-                <Link to="/challenges">{t('challenges.view_all')}</Link>
-              </Button>
+              <h3 className="text-2xl font-bold text-foreground">
+                {selectedCategory || selectedDifficulty ? 'Filtered Challenges' : t('challenges.featured.title')}
+              </h3>
+              <div className="flex gap-2">
+                {(selectedCategory || selectedDifficulty) && (
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => {
+                      setSelectedCategory(null);
+                      setSelectedDifficulty(null);
+                    }}
+                  >
+                    Clear Filters
+                  </Button>
+                )}
+                <Button variant="outline" asChild>
+                  <Link to="/challenges">{t('challenges.view_all')}</Link>
+                </Button>
+              </div>
             </div>
             
             <div className="space-y-6">

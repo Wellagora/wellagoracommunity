@@ -203,7 +203,7 @@ const DynamicRegionalDashboard = () => {
               </Button>
             </div>
           ) : (
-            <Enhanced3DDashboard />
+            <ModernDashboard3D />
           )}
         </motion.div>
 
