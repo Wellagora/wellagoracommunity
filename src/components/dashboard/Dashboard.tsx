@@ -269,23 +269,21 @@ const Dashboard = ({ userRole }: DashboardProps) => {
               
               {/* Mini Pie Chart */}
               <div className="mt-6 flex justify-center">
-                <ResponsiveContainer width={200} height={200}>
-                  <PieChart>
-                    <Pie
-                      data={citizenData.categoryBreakdown}
-                      cx="50%"
-                      cy="50%" 
-                      innerRadius={40}
-                      outerRadius={80}
-                      dataKey="value"
-                    >
-                      {citizenData.categoryBreakdown.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
+                <PieChart width={200} height={200}>
+                  <Pie
+                    data={citizenData.categoryBreakdown}
+                    cx="50%"
+                    cy="50%" 
+                    innerRadius={40}
+                    outerRadius={80}
+                    dataKey="value"
+                  >
+                    {citizenData.categoryBreakdown.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
               </div>
             </div>
           </CardContent>
