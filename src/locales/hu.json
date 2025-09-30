@@ -300,5 +300,20 @@
   "challenges.greenHackathon.title": "Zöld Hackathon",
   "challenges.greenHackathon.description": "Fejlessz környezetbarát technológiai megoldásokat",
   "challenges.greenFinance.title": "Zöld Befektetés",
-  "challenges.greenFinance.description": "Tanulj fenntartható befektetési stratégiákat"
+  "challenges.greenFinance.description": "Tanulj fenntartható befektetési stratégiákat",
+  "dashboard.your_positive_impact": "Pozitív Hatásod",
+  "dashboard.impact_story": "Minden tetteddel pozitív változást hozol létre",
+  "dashboard.trees_planted": "Fa Értékű",
+  "dashboard.co2_prevented": "CO₂ Megakadályozva",
+  "dashboard.water_conserved": "Víz Megőrizve",
+  "dashboard.day_streak": "Napos Sorozat",
+  "dashboard.sustainability_hero": "Fenntarthatósági Hős",
+  "dashboard.almost_next_level": "Még egy kicsit! Majdnem eléred a következő szintet",
+  "dashboard.recent_wins": "Legutóbbi Győzelmek",
+  "dashboard.first_steps": "Első Lépések",
+  "dashboard.energy_saver": "Energia Takarékos",
+  "dashboard.water_guardian": "Víz Őrző",
+  "dashboard.completed": "Teljesítve",
+  "dashboard.community_co2_saved": "Közösségünk együtt megtakarított CO₂",
+  "dashboard.together_stronger": "Együtt fenntartható jövőt építünk"
 }

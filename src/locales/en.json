@@ -130,5 +130,20 @@
   "dashboard.complete": "Complete",
   "dashboard.active_challenges": "Active Challenges",
   "dashboard.current_challenges": "Your current sustainability challenges",
-  "dashboard.continue": "Continue"
+  "dashboard.continue": "Continue",
+  "dashboard.your_positive_impact": "Your Positive Impact",
+  "dashboard.impact_story": "Every action you take creates ripples of positive change",
+  "dashboard.trees_planted": "Trees Worth",
+  "dashboard.co2_prevented": "CO₂ Saved",
+  "dashboard.water_conserved": "Water Saved",
+  "dashboard.day_streak": "Day Streak",
+  "dashboard.sustainability_hero": "Sustainability Hero",
+  "dashboard.almost_next_level": "Keep going! You're almost at the next level",
+  "dashboard.recent_wins": "Recent Wins",
+  "dashboard.first_steps": "First Steps",
+  "dashboard.energy_saver": "Energy Saver",
+  "dashboard.water_guardian": "Water Guardian",
+  "dashboard.completed": "Completed",
+  "dashboard.community_co2_saved": "CO₂ saved together by our community",
+  "dashboard.together_stronger": "Together, we're creating a sustainable future"
 }
