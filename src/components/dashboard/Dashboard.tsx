@@ -33,6 +33,7 @@ import {
   Car,
   Home
 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type UserRole = "citizen" | "business" | "government" | "ngo";
 
@@ -41,6 +42,7 @@ interface DashboardProps {
 }
 
 const Dashboard = ({ userRole }: DashboardProps) => {
+  const { t } = useLanguage();
   const [selectedPeriod, setSelectedPeriod] = useState("month");
 
   // Mock data - will be replaced with real data from Supabase
@@ -128,10 +130,10 @@ const Dashboard = ({ userRole }: DashboardProps) => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-white/80 text-sm">CO₂ Reduced</p>
-                <p className="text-2xl font-bold">{citizenData.personalStats.co2Reduced}kg</p>
+                <p className="text-white/80 text-xs sm:text-sm">{t('dashboard.co2_saved')}</p>
+                <p className="text-lg sm:text-2xl font-bold break-words">{citizenData.personalStats.co2Reduced}kg</p>
               </div>
-              <Leaf className="w-8 h-8 text-white/80" />
+              <Leaf className="w-6 h-6 sm:w-8 sm:h-8 text-white/80" />
             </div>
           </CardContent>
         </Card>
@@ -293,21 +295,21 @@ const Dashboard = ({ userRole }: DashboardProps) => {
       {/* Active Challenges */}
       <Card>
         <CardHeader>
-          <CardTitle>Active Challenges</CardTitle>
-          <CardDescription>Your current sustainability challenges</CardDescription>
+          <CardTitle className="text-base sm:text-lg">{t('dashboard.active_challenges')}</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">{t('dashboard.current_challenges')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {citizenData.activeChallenges.map((challenge) => (
-            <div key={challenge.id} className="flex items-center space-x-4 p-4 border rounded-lg">
-              <div className="flex-1">
-                <h4 className="font-medium">{challenge.title}</h4>
+            <div key={challenge.id} className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 p-4 border rounded-lg">
+              <div className="flex-1 w-full">
+                <h4 className="text-sm sm:text-base font-medium">{challenge.title}</h4>
                 <div className="flex items-center space-x-4 mt-2">
                   <Progress value={challenge.progress} className="flex-1" />
-                  <span className="text-sm text-muted-foreground">{challenge.progress}%</span>
+                  <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">{challenge.progress}%</span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">Due: {challenge.dueDate}</p>
               </div>
-              <Button variant="outline" size="sm">Continue</Button>
+              <Button variant="outline" size="sm" className="text-xs sm:text-sm w-full sm:w-auto">{t('dashboard.continue')}</Button>
             </div>
           ))}
         </CardContent>
