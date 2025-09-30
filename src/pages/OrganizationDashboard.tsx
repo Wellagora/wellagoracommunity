@@ -4,56 +4,90 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Progress } from "@/components/ui/progress";
 import { 
   Loader2, 
   Building2, 
-  Calendar,
   Users,
   MapPin,
-  Globe,
   Target,
   Award,
   TrendingUp,
   Plus,
-  Edit,
-  Trash2,
-  Eye,
-  FileText,
-  Settings
+  Heart,
+  Sparkles,
+  Trophy,
+  Leaf,
+  Handshake,
+  Zap,
+  BarChart3,
+  Globe2,
+  CheckCircle2
 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 
-interface Event {
+interface Challenge {
   id: string;
   title: string;
-  description: string;
-  date: string;
-  location: string;
-  max_participants: number;
-  current_participants: number;
-  status: 'draft' | 'published' | 'completed';
+  type: 'sponsored' | 'created' | 'team_joined';
+  participants: number;
+  co2_saved: number;
+  status: 'active' | 'completed';
+  progress: number;
+}
+
+interface Partnership {
+  id: string;
+  name: string;
+  type: 'ngo' | 'government' | 'business';
+  projects: number;
+  impact_score: number;
 }
 
 const OrganizationDashboard = () => {
   const navigate = useNavigate();
   const { user, profile, loading: authLoading } = useAuth();
   const { t } = useLanguage();
-  const [isLoading, setIsLoading] = useState(false);
-  const [events, setEvents] = useState<Event[]>([]);
-  const [newEvent, setNewEvent] = useState({
-    title: "",
-    description: "",
-    date: "",
-    location: "",
-    max_participants: 20
-  });
+  const [selectedTab, setSelectedTab] = useState("overview");
+
+  // Mock data
+  const [challenges] = useState<Challenge[]>([
+    {
+      id: "1",
+      title: "Városi Kerékpározás Kihívás",
+      type: 'sponsored',
+      participants: 234,
+      co2_saved: 1.2,
+      status: 'active',
+      progress: 68
+    },
+    {
+      id: "2",
+      title: "Zero Waste Workplace",
+      type: 'created',
+      participants: 89,
+      co2_saved: 0.8,
+      status: 'active',
+      progress: 45
+    },
+    {
+      id: "3",
+      title: "Helyi Étel Hét",
+      type: 'team_joined',
+      participants: 156,
+      co2_saved: 2.3,
+      status: 'completed',
+      progress: 100
+    }
+  ]);
+
+  const [partnerships] = useState<Partnership[]>([
+    { id: "1", name: "Green Future NGO", type: 'ngo', projects: 3, impact_score: 92 },
+    { id: "2", name: "Városi Önkormányzat", type: 'government', projects: 2, impact_score: 85 },
+    { id: "3", name: "EcoTech Solutions", type: 'business', projects: 1, impact_score: 78 }
+  ]);
 
   // Redirect if not authenticated or not an organization
   useEffect(() => {
@@ -62,109 +96,66 @@ const OrganizationDashboard = () => {
     }
   }, [user, profile, authLoading, navigate]);
 
-  // Load organization events
-  useEffect(() => {
-    if (profile?.organization_id) {
-      loadEvents();
-    }
-  }, [profile?.organization_id]);
-
-  const loadEvents = async () => {
-    try {
-      // Mock events for now - replace with actual Supabase query
-      const mockEvents: Event[] = [
-        {
-          id: "1",
-          title: "Városi Kerékpártúra",
-          description: "Csatlakozz hozzánk egy fenntartható közlekedési túrára a város legszebb útvonalain!",
-          date: "2024-04-15",
-          location: "Központi Park",
-          max_participants: 50,
-          current_participants: 23,
-          status: "published"
-        },
-        {
-          id: "2", 
-          title: "Zöld Technológia Workshop",
-          description: "Ismerd meg a legújabb környezetbarát technológiákat és azok alkalmazási lehetőségeit.",
-          date: "2024-04-22",
-          location: "Tech Hub Budapest",
-          max_participants: 30,
-          current_participants: 8,
-          status: "published"
-        }
-      ];
-      setEvents(mockEvents);
-    } catch (error) {
-      console.error("Error loading events:", error);
-    }
-  };
-
-  const handleCreateEvent = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      // Mock event creation - replace with actual Supabase insert
-      const event: Event = {
-        id: Date.now().toString(),
-        ...newEvent,
-        current_participants: 0,
-        status: 'draft'
-      };
-
-      setEvents([...events, event]);
-      setNewEvent({
-        title: "",
-        description: "",
-        date: "",
-        location: "",
-        max_participants: 20
-      });
-
-      // Show success message
-    } catch (error) {
-      console.error("Error creating event:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const getRoleInfo = () => {
     switch (profile?.user_role) {
       case "business":
         return {
-          title: "Vállalati Dashboard",
-          subtitle: "Vállalati fenntarthatósági kezdeményezések kezelése",
+          title: "Regionális Hatás Hub",
+          subtitle: "Vállalati környezeti hatás a közösségben",
           gradient: "from-accent to-secondary",
           icon: Building2
         };
       case "government":
         return {
-          title: "Önkormányzati Dashboard", 
-          subtitle: "Városi fenntarthatósági programok koordinálása",
+          title: "Önkormányzati Hatás Hub", 
+          subtitle: "Városi fenntarthatósági koordináció",
           gradient: "from-warning to-destructive",
           icon: MapPin
         };
       case "ngo":
         return {
-          title: "NGO Dashboard",
-          subtitle: "Közösségi környezetvédelmi projektek irányítása", 
+          title: "NGO Hatás Hub",
+          subtitle: "Közösségi környezetvédelmi kezdeményezések", 
           gradient: "from-success to-primary",
-          icon: Users
+          icon: Heart
         };
       default:
         return {
-          title: "Szervezeti Dashboard",
-          subtitle: "Fenntarthatósági projektek kezelése",
+          title: "Regionális Hatás Hub",
+          subtitle: "Közösségi fenntarthatósági részvétel",
           gradient: "from-primary to-success", 
           icon: Building2
         };
     }
   };
 
+  const getChallengeTypeInfo = (type: Challenge['type']) => {
+    switch (type) {
+      case 'sponsored':
+        return { label: 'Szponzorált', color: 'bg-warning', icon: Award };
+      case 'created':
+        return { label: 'Létrehozott', color: 'bg-success', icon: Sparkles };
+      case 'team_joined':
+        return { label: 'Csapat részvétel', color: 'bg-primary', icon: Users };
+    }
+  };
+
+  const getPartnershipTypeIcon = (type: Partnership['type']) => {
+    switch (type) {
+      case 'ngo': return Heart;
+      case 'government': return Building2;
+      case 'business': return Handshake;
+    }
+  };
+
   const roleInfo = getRoleInfo();
   const RoleIcon = roleInfo.icon;
+
+  // Regional stats
+  const totalParticipants = challenges.reduce((sum, c) => sum + c.participants, 0);
+  const totalCO2 = challenges.reduce((sum, c) => sum + c.co2_saved, 0);
+  const activeChallenges = challenges.filter(c => c.status === 'active').length;
+  const regionalRank = 3; // Mock rank
 
   if (authLoading) {
     return (
@@ -185,283 +176,314 @@ const OrganizationDashboard = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className={`inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r ${roleInfo.gradient} rounded-2xl shadow-premium mb-6`}>
-            <RoleIcon className="w-10 h-10 text-white" />
+        <div className="text-center mb-8 sm:mb-12">
+          <div className={`inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r ${roleInfo.gradient} rounded-2xl shadow-elegant mb-4 sm:mb-6`}>
+            <RoleIcon className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-foreground mb-4">
+          <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2 sm:mb-4">
             {roleInfo.title}
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
             {roleInfo.subtitle}
           </p>
-          <div className="flex items-center justify-center space-x-4 mt-6">
-            <Badge className={`bg-gradient-to-r ${roleInfo.gradient} text-white px-4 py-2`}>
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mt-4 sm:mt-6">
+            <Badge className={`bg-gradient-to-r ${roleInfo.gradient} text-white px-3 sm:px-4 py-1.5 sm:py-2`}>
               {profile?.organization || "Szervezet"}
             </Badge>
             <div className="flex items-center space-x-2 text-sm text-muted-foreground">
               <MapPin className="w-4 h-4" />
-              <span>{profile?.organization || "Nem megadott"}</span>
+              <span>Budapest Régió</span>
+            </div>
+            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+              <Trophy className="w-4 h-4 text-warning" />
+              <span>#{regionalRank} Rangsor</span>
             </div>
           </div>
         </div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        {/* Regional Impact Overview */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
           <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
-            <CardContent className="p-6">
+            <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Aktív események</p>
-                  <p className="text-2xl font-bold text-primary">{events.filter(e => e.status === 'published').length}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Aktív Kihívások</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-primary">{activeChallenges}</p>
                 </div>
-                <Calendar className="w-8 h-8 text-primary/60" />
+                <Target className="w-8 h-8 sm:w-10 sm:h-10 text-primary/60" />
               </div>
             </CardContent>
           </Card>
 
           <Card className="bg-gradient-to-br from-success/10 to-success/5 border-success/20">
-            <CardContent className="p-6">
+            <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Résztvevők</p>
-                  <p className="text-2xl font-bold text-success">
-                    {events.reduce((sum, e) => sum + e.current_participants, 0)}
-                  </p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Elért Emberek</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-success">{totalParticipants}</p>
                 </div>
-                <Users className="w-8 h-8 text-success/60" />
+                <Users className="w-8 h-8 sm:w-10 sm:h-10 text-success/60" />
               </div>
             </CardContent>
           </Card>
 
           <Card className="bg-gradient-to-br from-warning/10 to-warning/5 border-warning/20">
-            <CardContent className="p-6">
+            <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">CO₂ megtakarítás</p>
-                  <p className="text-2xl font-bold text-warning">1.2t</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">CO₂ Megtakarítás</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-warning">{totalCO2.toFixed(1)}t</p>
                 </div>
-                <Target className="w-8 h-8 text-warning/60" />
+                <Leaf className="w-8 h-8 sm:w-10 sm:h-10 text-warning/60" />
               </div>
             </CardContent>
           </Card>
 
           <Card className="bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20">
-            <CardContent className="p-6">
+            <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Elért pontszám</p>
-                  <p className="text-2xl font-bold text-accent">2,450</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Partnerségek</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-accent">{partnerships.length}</p>
                 </div>
-                <Award className="w-8 h-8 text-accent/60" />
+                <Handshake className="w-8 h-8 sm:w-10 sm:h-10 text-accent/60" />
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Main Content Tabs */}
-        <Tabs defaultValue="events" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-4 bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-2">
-            <TabsTrigger value="events" className="flex items-center space-x-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-xl transition-all duration-300">
-              <Calendar className="w-4 h-4" />
-              <span>Események</span>
+        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6 sm:space-y-8">
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-2 gap-2">
+            <TabsTrigger value="overview" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
+              <Globe2 className="w-4 h-4" />
+              <span className="hidden sm:inline">Áttekintés</span>
+              <span className="sm:hidden">Áttekintés</span>
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex items-center space-x-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-xl transition-all duration-300">
-              <TrendingUp className="w-4 h-4" />
-              <span>Elemzések</span>
+            <TabsTrigger value="challenges" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
+              <Target className="w-4 h-4" />
+              <span className="hidden sm:inline">Kihívások</span>
+              <span className="sm:hidden">Kihívások</span>
             </TabsTrigger>
-            <TabsTrigger value="community" className="flex items-center space-x-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-xl transition-all duration-300">
-              <Users className="w-4 h-4" />
-              <span>Közösség</span>
+            <TabsTrigger value="partnerships" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
+              <Handshake className="w-4 h-4" />
+              <span className="hidden sm:inline">Partnerségek</span>
+              <span className="sm:hidden">Partnerek</span>
             </TabsTrigger>
-            <TabsTrigger value="settings" className="flex items-center space-x-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-xl transition-all duration-300">
-              <Settings className="w-4 h-4" />
-              <span>Beállítások</span>
+            <TabsTrigger value="stories" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
+              <Sparkles className="w-4 h-4" />
+              <span className="hidden sm:inline">Impact Stories</span>
+              <span className="sm:hidden">Stories</span>
             </TabsTrigger>
           </TabsList>
 
-          {/* Events Tab */}
-          <TabsContent value="events" className="space-y-6">
-            {/* Create New Event */}
-            <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Plus className="w-5 h-5 text-primary" />
-                  <span>Új esemény létrehozása</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleCreateEvent} className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="event-title">Esemény címe</Label>
-                      <Input
-                        id="event-title"
-                        value={newEvent.title}
-                        onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-                        placeholder="Pl. Fenntarthatósági workshop"
-                        className="bg-background/50"
-                        required
-                      />
+          {/* Overview Tab */}
+          <TabsContent value="overview" className="space-y-6">
+            {/* Regional Map Placeholder */}
+            <Card className="bg-gradient-to-br from-primary/5 via-success/5 to-warning/5 border-border/50">
+              <CardContent className="p-6 sm:p-8">
+                <div className="text-center py-12 sm:py-16">
+                  <Globe2 className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 text-primary/40" />
+                  <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">Regionális Hatás Térkép</h3>
+                  <p className="text-muted-foreground mb-6 px-4">
+                    Interaktív térkép a szponzorált, létrehozott és csapatban vállalt kihívásokról
+                  </p>
+                  <div className="flex flex-wrap justify-center gap-4 text-sm">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 rounded-full bg-warning"></div>
+                      <span>Szponzorált</span>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="event-date">Dátum</Label>
-                      <Input
-                        id="event-date"
-                        type="date"
-                        value={newEvent.date}
-                        onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
-                        className="bg-background/50"
-                        required
-                      />
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 rounded-full bg-success"></div>
+                      <span>Létrehozott</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 rounded-full bg-primary"></div>
+                      <span>Csapat részvétel</span>
                     </div>
                   </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="event-location">Helyszín</Label>
-                      <Input
-                        id="event-location"
-                        value={newEvent.location}
-                        onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
-                        placeholder="Pl. Központi irodaház"
-                        className="bg-background/50"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="max-participants">Max. résztvevők</Label>
-                      <Input
-                        id="max-participants"
-                        type="number"
-                        value={newEvent.max_participants}
-                        onChange={(e) => setNewEvent({ ...newEvent, max_participants: parseInt(e.target.value) })}
-                        min="1"
-                        className="bg-background/50"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="event-description">Leírás</Label>
-                    <Textarea
-                      id="event-description"
-                      value={newEvent.description}
-                      onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
-                      placeholder="Írj részletes leírást az eseményről..."
-                      className="bg-background/50 min-h-[100px]"
-                      required
-                    />
-                  </div>
-
-                  <Button 
-                    type="submit" 
-                    disabled={isLoading}
-                    className="bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground"
-                  >
-                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    <Plus className="mr-2 h-4 w-4" />
-                    Esemény létrehozása
-                  </Button>
-                </form>
+                </div>
               </CardContent>
             </Card>
 
-            {/* Events List */}
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-foreground">Eseményeid</h3>
-              {events.length === 0 ? (
-                <Card className="text-center py-12 bg-card/30">
-                  <div className="text-4xl mb-4">📅</div>
-                  <h4 className="text-lg font-medium text-foreground mb-2">Még nincsenek eseményeid</h4>
-                  <p className="text-muted-foreground">Hozd létre az első eseményedet a fenti űrlap segítségével!</p>
-                </Card>
-              ) : (
-                <div className="grid gap-4">
-                  {events.map((event) => (
-                    <Card key={event.id} className="bg-card/50 backdrop-blur-sm border-border/50 hover:shadow-md transition-shadow">
-                      <CardContent className="p-6">
-                        <div className="flex items-start justify-between">
-                          <div className="space-y-2">
-                            <div className="flex items-center space-x-2">
-                              <h4 className="text-lg font-semibold text-foreground">{event.title}</h4>
-                              <Badge 
-                                variant={event.status === 'published' ? 'default' : 'secondary'}
-                                className={event.status === 'published' ? 'bg-success text-success-foreground' : ''}
-                              >
-                                {event.status === 'published' ? 'Aktív' : 'Vázlat'}
-                              </Badge>
-                            </div>
-                            <p className="text-muted-foreground">{event.description}</p>
-                            <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                              <span className="flex items-center space-x-1">
-                                <Calendar className="w-4 h-4" />
-                                <span>{new Date(event.date).toLocaleDateString('hu-HU')}</span>
-                              </span>
-                              <span className="flex items-center space-x-1">
-                                <MapPin className="w-4 h-4" />
-                                <span>{event.location}</span>
-                              </span>
-                              <span className="flex items-center space-x-1">
-                                <Users className="w-4 h-4" />
-                                <span>{event.current_participants}/{event.max_participants}</span>
-                              </span>
-                            </div>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <Button variant="outline" size="sm">
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                            <Button variant="outline" size="sm">
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                            <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
+            {/* Quick Actions */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <Button 
+                className="bg-gradient-primary hover:shadow-glow transition-smooth py-6 text-base"
+                onClick={() => setSelectedTab("challenges")}
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Új Kihívás Létrehozása
+              </Button>
+              <Button 
+                variant="outline"
+                className="border-warning/50 hover:bg-warning/10 transition-smooth py-6 text-base"
+                onClick={() => setSelectedTab("challenges")}
+              >
+                <Award className="w-5 h-5 mr-2 text-warning" />
+                Kihívás Szponzorálása
+              </Button>
+              <Button 
+                variant="outline"
+                className="border-accent/50 hover:bg-accent/10 transition-smooth py-6 text-base"
+                onClick={() => setSelectedTab("challenges")}
+              >
+                <Users className="w-5 h-5 mr-2 text-accent" />
+                Csapat Mozgósítása
+              </Button>
             </div>
           </TabsContent>
 
-          {/* Other tabs placeholder */}
-          <TabsContent value="analytics" className="text-center py-16">
-            <div className="text-4xl mb-4">📊</div>
-            <h3 className="text-xl font-bold text-foreground mb-2">Elemzések fejlesztés alatt</h3>
-            <p className="text-muted-foreground">Részletes statisztikák és jelentések hamarosan!</p>
+          {/* Challenges Tab */}
+          <TabsContent value="challenges" className="space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+              <h3 className="text-xl sm:text-2xl font-bold text-foreground">Kihívás Ökoszisztéma</h3>
+              <Button className="bg-gradient-primary hover:shadow-glow transition-smooth w-full sm:w-auto">
+                <Plus className="w-4 h-4 mr-2" />
+                Új Kihívás
+              </Button>
+            </div>
+
+            <div className="grid gap-4">
+              {challenges.map((challenge) => {
+                const typeInfo = getChallengeTypeInfo(challenge.type);
+                const TypeIcon = typeInfo.icon;
+                return (
+                  <Card key={challenge.id} className="bg-card/50 backdrop-blur-sm border-border/50 hover:shadow-md transition-shadow">
+                    <CardContent className="p-4 sm:p-6">
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                        <div className="space-y-3 flex-1">
+                          <div className="flex items-start gap-3">
+                            <div className={`p-2 rounded-lg ${typeInfo.color}/20`}>
+                              <TypeIcon className={`w-5 h-5 text-${typeInfo.color.replace('bg-', '')}`} />
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex flex-wrap items-center gap-2 mb-2">
+                                <h4 className="text-base sm:text-lg font-semibold text-foreground">{challenge.title}</h4>
+                                <Badge className={`${typeInfo.color} text-white text-xs`}>
+                                  {typeInfo.label}
+                                </Badge>
+                                {challenge.status === 'completed' && (
+                                  <Badge variant="outline" className="text-success border-success">
+                                    <CheckCircle2 className="w-3 h-3 mr-1" />
+                                    Teljesítve
+                                  </Badge>
+                                )}
+                              </div>
+                              <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-muted-foreground">
+                                <span className="flex items-center space-x-1">
+                                  <Users className="w-4 h-4" />
+                                  <span>{challenge.participants} résztvevő</span>
+                                </span>
+                                <span className="flex items-center space-x-1">
+                                  <Leaf className="w-4 h-4 text-success" />
+                                  <span>{challenge.co2_saved}t CO₂</span>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex justify-between text-xs sm:text-sm">
+                              <span className="text-muted-foreground">Haladás</span>
+                              <span className="font-medium">{challenge.progress}%</span>
+                            </div>
+                            <Progress value={challenge.progress} className="h-2" />
+                          </div>
+                        </div>
+                        <Button variant="outline" size="sm" className="w-full sm:w-auto">
+                          <BarChart3 className="w-4 h-4 mr-2" />
+                          Részletek
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </TabsContent>
 
-          <TabsContent value="community" className="text-center py-16">
-            <div className="text-4xl mb-4">👥</div>
-            <h3 className="text-xl font-bold text-foreground mb-2">Közösségi funkciók fejlesztés alatt</h3>
-            <p className="text-muted-foreground">Kapcsolódj más szervezetekkel és ossz meg tapasztalatokat!</p>
+          {/* Partnerships Tab */}
+          <TabsContent value="partnerships" className="space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+              <h3 className="text-xl sm:text-2xl font-bold text-foreground">Közösségi Kapcsolatok</h3>
+              <Button className="bg-gradient-primary hover:shadow-glow transition-smooth w-full sm:w-auto">
+                <Plus className="w-4 h-4 mr-2" />
+                Új Partner Keresése
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {partnerships.map((partner) => {
+                const PartnerIcon = getPartnershipTypeIcon(partner.type);
+                return (
+                  <Card key={partner.id} className="bg-card/50 backdrop-blur-sm border-border/50 hover:shadow-md transition-shadow">
+                    <CardContent className="p-4 sm:p-6">
+                      <div className="flex items-start space-x-3 mb-4">
+                        <div className="p-3 rounded-lg bg-primary/10">
+                          <PartnerIcon className="w-6 h-6 text-primary" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-base font-semibold text-foreground mb-1 truncate">{partner.name}</h4>
+                          <Badge variant="outline" className="text-xs">
+                            {partner.type === 'ngo' ? 'NGO' : 
+                             partner.type === 'government' ? 'Önkormányzat' : 'Vállalat'}
+                          </Badge>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-muted-foreground">Közös projektek</span>
+                          <span className="font-semibold">{partner.projects}</span>
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-xs sm:text-sm">
+                            <span className="text-muted-foreground">Hatás érték</span>
+                            <span className="font-medium">{partner.impact_score}</span>
+                          </div>
+                          <Progress value={partner.impact_score} className="h-2" />
+                        </div>
+                      </div>
+                      
+                      <Button variant="outline" className="w-full mt-4" size="sm">
+                        <Zap className="w-4 h-4 mr-2" />
+                        Kapcsolatfelvétel
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </TabsContent>
 
-          <TabsContent value="settings">
-            <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-              <CardHeader>
-                <CardTitle>Szervezeti beállítások</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-foreground">Profil szerkesztése</span>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => navigate("/profile")}
-                  >
-                    <Edit className="w-4 h-4 mr-2" />
-                    Szerkesztés
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+          {/* Impact Stories Tab */}
+          <TabsContent value="stories" className="space-y-6">
+            <div className="text-center py-12 sm:py-16">
+              <Sparkles className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 text-warning/60" />
+              <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">Impact Stories</h3>
+              <p className="text-muted-foreground max-w-2xl mx-auto mb-6 px-4">
+                Success stories a régióból - vállalati hozzájárulás és brandépítés a fenntarthatóság terén
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto px-4">
+                <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-success/10 to-success/5">
+                  <TrendingUp className="w-8 h-8 mx-auto mb-2 text-success" />
+                  <p className="text-2xl sm:text-3xl font-bold text-success">+145%</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Brand Engagement</p>
+                </Card>
+                <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-primary/10 to-primary/5">
+                  <Users className="w-8 h-8 mx-auto mb-2 text-primary" />
+                  <p className="text-2xl sm:text-3xl font-bold text-primary">12.5K</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Média Elérés</p>
+                </Card>
+                <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-warning/10 to-warning/5">
+                  <Award className="w-8 h-8 mx-auto mb-2 text-warning" />
+                  <p className="text-2xl sm:text-3xl font-bold text-warning">3</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Fenntarthatósági Díj</p>
+                </Card>
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
