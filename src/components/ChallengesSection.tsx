@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { challenges } from "@/data/challenges";
 import {
   Bike,
@@ -29,6 +30,7 @@ import communityImage from "@/assets/community-challenges.jpg";
 
 const ChallengesSection = () => {
   const { t } = useLanguage();
+  const { profile } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
   const challengeCategories = [
@@ -66,6 +68,21 @@ const ChallengesSection = () => {
     "Beginner": "success",
     "Intermediate": "warning", 
     "Advanced": "destructive"
+  };
+
+  const getJoinButtonText = () => {
+    if (!profile) return t('challenges.join_challenge');
+    
+    switch (profile.user_role) {
+      case "business":
+        return "Csatlakozás és Szponzorálás";
+      case "ngo":
+        return "Csatlakozás és Támogatás";
+      case "government":
+        return "Csatlakozás és Támogatás";
+      default:
+        return t('challenges.join_challenge');
+    }
   };
 
   return (
@@ -218,7 +235,7 @@ const ChallengesSection = () => {
                       asChild
                     >
                       <Link to={`/challenges/${challenge.id}`}>
-                        {t('challenges.join_challenge')}
+                        {getJoinButtonText()}
                       </Link>
                     </Button>
                   </CardContent>

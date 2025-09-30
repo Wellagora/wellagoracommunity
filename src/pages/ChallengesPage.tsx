@@ -38,7 +38,7 @@ import { challenges, Challenge } from "@/data/challenges";
 
 const ChallengesPage = () => {
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
+  const { user, loading, profile } = useAuth();
   const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -124,6 +124,21 @@ const ChallengesPage = () => {
       case "circular-economy": return "bg-secondary/20 text-secondary";
       case "green-finance": return "bg-warning/20 text-warning";
       default: return "bg-muted/20 text-muted-foreground";
+    }
+  };
+
+  const getJoinButtonText = () => {
+    if (!profile) return "Csatlakozás a Kihíváshoz";
+    
+    switch (profile.user_role) {
+      case "business":
+        return "Csatlakozás és Szponzorálás";
+      case "ngo":
+        return "Csatlakozás és Támogatás";
+      case "government":
+        return "Csatlakozás és Támogatás";
+      default:
+        return "Csatlakozás a Kihíváshoz";
     }
   };
 
@@ -324,7 +339,7 @@ const ChallengesPage = () => {
                   onClick={() => navigate(`/challenges/${challenge.id}`)}
                   className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground font-semibold rounded-2xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300"
                 >
-                  Csatlakozás a Kihíváshoz
+                  {getJoinButtonText()}
                 </Button>
               </CardContent>
             </Card3D>
