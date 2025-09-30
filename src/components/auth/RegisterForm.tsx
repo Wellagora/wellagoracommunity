@@ -212,21 +212,32 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
             )}
           </div>
 
-          {/* Organization (for business, municipal, ngo) */}
-          {watchedRole && watchedRole !== "citizen" && (
+          {/* Organization Field */}
+          {watchedRole && (
             <div className="space-y-2">
-              <Label htmlFor="organization">Organization Name</Label>
-              <Input
-                id="organization"
-                type="text"
-                placeholder={
-                  watchedRole === "business" ? "Your Company Name" :
-                  watchedRole === "municipal" ? "City/Municipality Name" :
-                  "Organization Name"
-                }
-                {...register("organization")}
-                className={errors.organization ? "border-destructive" : ""}
-              />
+              <Label htmlFor="organization">
+                {watchedRole === "citizen" ? "Company (Optional)" : "Organization Name"}
+              </Label>
+              <div className="relative">
+                <Building2 className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="organization"
+                  type="text"
+                  placeholder={
+                    watchedRole === "citizen" ? "Which company do you work for?" :
+                    watchedRole === "business" ? "Your Company Name" :
+                    watchedRole === "municipal" ? "City/Municipality Name" :
+                    "Organization Name"
+                  }
+                  className={`pl-10 ${errors.organization ? "border-destructive" : ""}`}
+                  {...register("organization")}
+                />
+              </div>
+              {watchedRole === "citizen" && (
+                <p className="text-xs text-muted-foreground">
+                  Help us track your company's regional impact
+                </p>
+              )}
               {errors.organization && (
                 <p className="text-sm text-destructive">{errors.organization.message}</p>
               )}
