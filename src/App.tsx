@@ -20,6 +20,7 @@ import MatchingPage from "@/pages/MatchingPage";
 import BusinessSponsorshipPage from "@/pages/BusinessSponsorshipPage";
 import InteractiveMapPage from "@/pages/InteractiveMapPage";
 import HandprintPage from "@/pages/HandprintPage";
+import PublicOrganizationPage from "@/pages/PublicOrganizationPage";
 import "./index.css";
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
               <Route path="/challenges/:challengeId" element={<ChallengeDetailPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/organization" element={<OrganizationDashboard />} />
+              <Route path="/organization/:organizationId" element={<PublicOrganizationPage />} />
               <Route path="/matching" element={<MatchingPage />} />
               <Route path="/business-sponsorship" element={<BusinessSponsorshipPage />} />
               <Route path="/interactive-map" element={<InteractiveMapPage />} />

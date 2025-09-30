@@ -315,133 +315,722 @@ const Dashboard = ({ userRole }: DashboardProps) => {
     </div>
   );
 
-  const renderBusinessDashboard = () => (
-    <div className="space-y-6">
-      {/* Business Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="bg-gradient-primary text-primary-foreground border-0">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-white/80 text-sm">Employees Engaged</p>
-                <p className="text-2xl font-bold">{businessData.companyStats.employeesEngaged}</p>
-              </div>
-              <Users className="w-8 h-8 text-white/80" />
-            </div>
-          </CardContent>
-        </Card>
+  const renderBusinessDashboard = () => {
+    // Mock regional data - will be replaced with real Supabase data
+    const regionalData = {
+      overview: {
+        activeChallenges: 12,
+        peopleReached: 2847,
+        co2Saved: 45.6,
+        partnerships: 8
+      },
+      regionalRank: 3,
+      totalOrganizations: 47,
+      challenges: [
+        {
+          id: "1",
+          title: "Green Office Initiative",
+          type: "sponsored",
+          participants: 342,
+          co2Saved: 18.5,
+          status: "active",
+          progress: 67
+        },
+        {
+          id: "2",
+          title: "Bike to Work Campaign",
+          type: "created",
+          participants: 156,
+          co2Saved: 8.2,
+          status: "active",
+          progress: 45
+        },
+        {
+          id: "3",
+          title: "Community Garden Project",
+          type: "team_joins",
+          participants: 89,
+          co2Saved: 4.3,
+          status: "completed",
+          progress: 100
+        }
+      ],
+      partnerships: [
+        { id: "1", name: "Green Earth NGO", type: "ngo", projects: 5, impact: 92 },
+        { id: "2", name: "City Sustainability Office", type: "government", projects: 3, impact: 88 },
+        { id: "3", name: "Local Tech Hub", type: "business", projects: 4, impact: 85 }
+      ]
+    };
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-muted-foreground text-sm">CO₂ Reduced</p>
-                <p className="text-2xl font-bold">{businessData.companyStats.co2Reduced}kg</p>
-              </div>
-              <TreePine className="w-8 h-8 text-success" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-muted-foreground text-sm">Costs Reduced</p>
-                <p className="text-2xl font-bold">${businessData.companyStats.costsReduced.toLocaleString()}</p>
-              </div>
-              <TrendingUp className="w-8 h-8 text-accent" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-muted-foreground text-sm">Sustainability Score</p>
-                <p className="text-2xl font-bold">{businessData.companyStats.sustainabilityScore}/100</p>
-              </div>
-              <Award className="w-8 h-8 text-warning" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Department Progress */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Department Performance</CardTitle>
-            <CardDescription>Sustainability scores by department</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={businessData.departmentProgress}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="department" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="score" fill="hsl(var(--primary))" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Company Initiatives */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Active Initiatives</CardTitle>
-            <CardDescription>Company-wide sustainability programs</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {businessData.initiatives.map((initiative) => (
-              <div key={initiative.id} className="flex items-center justify-between p-4 border rounded-lg">
-                <div>
-                  <h4 className="font-medium">{initiative.title}</h4>
-                  <p className="text-sm text-muted-foreground">{initiative.participants} participants</p>
-                  <p className="text-sm text-success">${initiative.savings.toLocaleString()} saved</p>
+    return (
+      <div className="space-y-6">
+        {/* Regional Impact Overview */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Map Placeholder */}
+          <div className="lg:col-span-2">
+            <Card className="bg-gradient-to-br from-primary/5 via-card to-accent/5">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold">Regional Impact Map</h3>
+                  <Badge variant="outline">Interactive View</Badge>
                 </div>
-                <Badge variant={initiative.status === "active" ? "default" : "secondary"}>
-                  {initiative.status}
-                </Badge>
+                <div className="bg-muted/30 rounded-lg h-64 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="text-6xl mb-2">🗺️</div>
+                    <p className="text-muted-foreground">Regional impact visualization</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Regional Rank */}
+          <Card className="bg-gradient-to-br from-warning/10 to-accent/10">
+            <CardContent className="p-6">
+              <div className="text-center">
+                <Award className="w-12 h-12 text-warning mx-auto mb-3" />
+                <h3 className="text-sm text-muted-foreground mb-2">Regional Rank</h3>
+                <p className="text-4xl font-bold text-foreground mb-1">#{regionalData.regionalRank}</p>
+                <p className="text-xs text-muted-foreground">out of {regionalData.totalOrganizations} organizations</p>
+                <div className="mt-4 pt-4 border-t border-border/50">
+                  <p className="text-xs text-muted-foreground mb-2">Impact Score</p>
+                  <Progress value={85} className="h-2" />
+                  <p className="text-xs text-muted-foreground mt-1">85/100</p>
+                </div>
               </div>
-            ))}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Impact Stats */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <Target className="w-8 h-8 text-primary mb-2" />
+              <p className="text-2xl font-bold">{regionalData.overview.activeChallenges}</p>
+              <p className="text-xs text-muted-foreground">Active Challenges</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <Users className="w-8 h-8 text-accent mb-2" />
+              <p className="text-2xl font-bold">{regionalData.overview.peopleReached.toLocaleString()}</p>
+              <p className="text-xs text-muted-foreground">People Reached</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <TreePine className="w-8 h-8 text-success mb-2" />
+              <p className="text-2xl font-bold">{regionalData.overview.co2Saved}t</p>
+              <p className="text-xs text-muted-foreground">CO₂ Saved</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <Building className="w-8 h-8 text-warning mb-2" />
+              <p className="text-2xl font-bold">{regionalData.overview.partnerships}</p>
+              <p className="text-xs text-muted-foreground">Partnerships</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Tabbed Content */}
+        <Tabs defaultValue="challenges" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="challenges">Challenge Ecosystem</TabsTrigger>
+            <TabsTrigger value="partnerships">Community Connections</TabsTrigger>
+            <TabsTrigger value="stories">Impact Stories</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="challenges" className="space-y-4">
+            {/* Quick Actions */}
+            <Card className="bg-gradient-to-r from-primary/10 to-accent/10">
+              <CardContent className="p-4">
+                <div className="flex flex-wrap gap-2">
+                  <Button size="sm" className="flex-1 min-w-[140px]">
+                    <Target className="w-4 h-4 mr-2" />
+                    Create Challenge
+                  </Button>
+                  <Button size="sm" variant="outline" className="flex-1 min-w-[140px]">
+                    <Award className="w-4 h-4 mr-2" />
+                    Sponsor Challenge
+                  </Button>
+                  <Button size="sm" variant="outline" className="flex-1 min-w-[140px]">
+                    <Users className="w-4 h-4 mr-2" />
+                    Mobilize Team
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Challenges List */}
+            <div className="grid gap-4">
+              {regionalData.challenges.map((challenge) => (
+                <Card key={challenge.id}>
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-semibold">{challenge.title}</h4>
+                          <Badge variant={challenge.type === "sponsored" ? "default" : challenge.type === "created" ? "secondary" : "outline"}>
+                            {challenge.type === "sponsored" ? "Sponsored" : challenge.type === "created" ? "Created" : "Team Joins"}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Users className="w-4 h-4" />
+                            {challenge.participants} participants
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <TreePine className="w-4 h-4" />
+                            {challenge.co2Saved}t CO₂
+                          </span>
+                        </div>
+                      </div>
+                      <Badge variant={challenge.status === "active" ? "default" : "secondary"}>
+                        {challenge.status}
+                      </Badge>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Progress</span>
+                        <span className="font-medium">{challenge.progress}%</span>
+                      </div>
+                      <Progress value={challenge.progress} />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="partnerships" className="space-y-4">
+            <div className="grid gap-4">
+              {regionalData.partnerships.map((partner) => (
+                <Card key={partner.id}>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center">
+                          {partner.type === "ngo" ? "🌱" : partner.type === "government" ? "🏛️" : "🏢"}
+                        </div>
+                        <div>
+                          <h4 className="font-semibold">{partner.name}</h4>
+                          <p className="text-sm text-muted-foreground">{partner.projects} joint projects</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-muted-foreground">Impact Score</p>
+                        <p className="text-xl font-bold text-success">{partner.impact}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="stories" className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
+                <CardContent className="p-6 text-center">
+                  <div className="text-3xl mb-2">📢</div>
+                  <p className="text-2xl font-bold">1.2M</p>
+                  <p className="text-sm text-muted-foreground">Brand Engagement</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-gradient-to-br from-accent/10 to-accent/5">
+                <CardContent className="p-6 text-center">
+                  <div className="text-3xl mb-2">📰</div>
+                  <p className="text-2xl font-bold">34</p>
+                  <p className="text-sm text-muted-foreground">Media Mentions</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-gradient-to-br from-success/10 to-success/5">
+                <CardContent className="p-6 text-center">
+                  <div className="text-3xl mb-2">🏆</div>
+                  <p className="text-2xl font-bold">8</p>
+                  <p className="text-sm text-muted-foreground">Sustainability Awards</p>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
-    </div>
-  );
+    );
+  };
 
-  const renderGovernmentDashboard = () => (
-    <div className="space-y-6">
-      <Card>
-        <CardContent className="p-8 text-center">
-          <Building className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-2xl font-bold mb-2">Government Dashboard</h3>
-          <p className="text-muted-foreground mb-4">
-            Policy impact tracking, city-wide metrics, and community engagement analytics
-          </p>
-          <Badge className="bg-accent text-accent-foreground">Coming Soon</Badge>
-        </CardContent>
-      </Card>
-    </div>
-  );
+  const renderGovernmentDashboard = () => {
+    const regionalData = {
+      overview: {
+        activeChallenges: 28,
+        peopleReached: 12450,
+        co2Saved: 124.3,
+        partnerships: 15
+      },
+      regionalRank: 1,
+      totalOrganizations: 8,
+      challenges: [
+        {
+          id: "1",
+          title: "City-Wide Solar Initiative",
+          type: "created",
+          participants: 3240,
+          co2Saved: 52.1,
+          status: "active",
+          progress: 78
+        },
+        {
+          id: "2",
+          title: "Public Transport Week",
+          type: "sponsored",
+          participants: 4580,
+          co2Saved: 38.6,
+          status: "active",
+          progress: 92
+        },
+        {
+          id: "3",
+          title: "Green Schools Program",
+          type: "created",
+          participants: 2150,
+          co2Saved: 22.4,
+          status: "active",
+          progress: 65
+        }
+      ],
+      partnerships: [
+        { id: "1", name: "Local Businesses Consortium", type: "business", projects: 12, impact: 95 },
+        { id: "2", name: "Environmental Coalition", type: "ngo", projects: 8, impact: 91 },
+        { id: "3", name: "University Research Center", type: "ngo", projects: 6, impact: 87 }
+      ]
+    };
 
-  const renderNGODashboard = () => (
-    <div className="space-y-6">
-      <Card>
-        <CardContent className="p-8 text-center">
-          <Users className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-2xl font-bold mb-2">NGO Dashboard</h3>
-          <p className="text-muted-foreground mb-4">
-            Community outreach metrics, volunteer coordination, and impact measurement
-          </p>
-          <Badge className="bg-success text-success-foreground">Coming Soon</Badge>
-        </CardContent>
-      </Card>
-    </div>
-  );
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <Card className="bg-gradient-to-br from-warning/5 via-card to-primary/5">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold">Municipal Impact Map</h3>
+                  <Badge variant="outline">City-Wide View</Badge>
+                </div>
+                <div className="bg-muted/30 rounded-lg h-64 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="text-6xl mb-2">🏛️</div>
+                    <p className="text-muted-foreground">Municipal initiatives across districts</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card className="bg-gradient-to-br from-warning/10 to-primary/10">
+            <CardContent className="p-6">
+              <div className="text-center">
+                <Award className="w-12 h-12 text-warning mx-auto mb-3" />
+                <h3 className="text-sm text-muted-foreground mb-2">Regional Rank</h3>
+                <p className="text-4xl font-bold text-foreground mb-1">#{regionalData.regionalRank}</p>
+                <p className="text-xs text-muted-foreground">leading municipality</p>
+                <div className="mt-4 pt-4 border-t border-border/50">
+                  <p className="text-xs text-muted-foreground mb-2">Policy Impact</p>
+                  <Progress value={95} className="h-2" />
+                  <p className="text-xs text-muted-foreground mt-1">95/100</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <Target className="w-8 h-8 text-warning mb-2" />
+              <p className="text-2xl font-bold">{regionalData.overview.activeChallenges}</p>
+              <p className="text-xs text-muted-foreground">Active Programs</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <Users className="w-8 h-8 text-primary mb-2" />
+              <p className="text-2xl font-bold">{regionalData.overview.peopleReached.toLocaleString()}</p>
+              <p className="text-xs text-muted-foreground">Citizens Engaged</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <TreePine className="w-8 h-8 text-success mb-2" />
+              <p className="text-2xl font-bold">{regionalData.overview.co2Saved}t</p>
+              <p className="text-xs text-muted-foreground">CO₂ Reduced</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <Building className="w-8 h-8 text-accent mb-2" />
+              <p className="text-2xl font-bold">{regionalData.overview.partnerships}</p>
+              <p className="text-xs text-muted-foreground">Partnerships</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Tabs defaultValue="programs" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="programs">Municipal Programs</TabsTrigger>
+            <TabsTrigger value="partnerships">Stakeholder Network</TabsTrigger>
+            <TabsTrigger value="impact">Policy Impact</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="programs" className="space-y-4">
+            <Card className="bg-gradient-to-r from-warning/10 to-primary/10">
+              <CardContent className="p-4">
+                <div className="flex flex-wrap gap-2">
+                  <Button size="sm" className="flex-1 min-w-[140px]">
+                    <Target className="w-4 h-4 mr-2" />
+                    Launch Program
+                  </Button>
+                  <Button size="sm" variant="outline" className="flex-1 min-w-[140px]">
+                    <Award className="w-4 h-4 mr-2" />
+                    Fund Initiative
+                  </Button>
+                  <Button size="sm" variant="outline" className="flex-1 min-w-[140px]">
+                    <Users className="w-4 h-4 mr-2" />
+                    Engage Citizens
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid gap-4">
+              {regionalData.challenges.map((challenge) => (
+                <Card key={challenge.id}>
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-semibold">{challenge.title}</h4>
+                          <Badge variant={challenge.type === "created" ? "default" : "secondary"}>
+                            {challenge.type === "created" ? "Municipal Program" : "Co-Funded"}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Users className="w-4 h-4" />
+                            {challenge.participants.toLocaleString()} citizens
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <TreePine className="w-4 h-4" />
+                            {challenge.co2Saved}t CO₂
+                          </span>
+                        </div>
+                      </div>
+                      <Badge variant="default">{challenge.status}</Badge>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Completion</span>
+                        <span className="font-medium">{challenge.progress}%</span>
+                      </div>
+                      <Progress value={challenge.progress} />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="partnerships" className="space-y-4">
+            <div className="grid gap-4">
+              {regionalData.partnerships.map((partner) => (
+                <Card key={partner.id}>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-gradient-to-br from-warning/20 to-primary/20 rounded-full flex items-center justify-center">
+                          {partner.type === "business" ? "🏢" : "🌱"}
+                        </div>
+                        <div>
+                          <h4 className="font-semibold">{partner.name}</h4>
+                          <p className="text-sm text-muted-foreground">{partner.projects} joint initiatives</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-muted-foreground">Impact</p>
+                        <p className="text-xl font-bold text-success">{partner.impact}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="impact" className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card className="bg-gradient-to-br from-warning/10 to-warning/5">
+                <CardContent className="p-6 text-center">
+                  <div className="text-3xl mb-2">📊</div>
+                  <p className="text-2xl font-bold">94%</p>
+                  <p className="text-sm text-muted-foreground">Citizen Satisfaction</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
+                <CardContent className="p-6 text-center">
+                  <div className="text-3xl mb-2">🎯</div>
+                  <p className="text-2xl font-bold">23</p>
+                  <p className="text-sm text-muted-foreground">Policies Implemented</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-gradient-to-br from-success/10 to-success/5">
+                <CardContent className="p-6 text-center">
+                  <div className="text-3xl mb-2">🌍</div>
+                  <p className="text-2xl font-bold">€2.4M</p>
+                  <p className="text-sm text-muted-foreground">Green Investment</p>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
+    );
+  };
+
+  const renderNGODashboard = () => {
+    const regionalData = {
+      overview: {
+        activeChallenges: 18,
+        peopleReached: 5680,
+        co2Saved: 67.8,
+        partnerships: 11
+      },
+      regionalRank: 2,
+      totalOrganizations: 34,
+      challenges: [
+        {
+          id: "1",
+          title: "Community Clean-up Days",
+          type: "created",
+          participants: 890,
+          co2Saved: 12.4,
+          status: "active",
+          progress: 82
+        },
+        {
+          id: "2",
+          title: "Urban Gardening Network",
+          type: "sponsored",
+          participants: 1240,
+          co2Saved: 28.3,
+          status: "active",
+          progress: 55
+        },
+        {
+          id: "3",
+          title: "Eco-Education Workshops",
+          type: "created",
+          participants: 2150,
+          co2Saved: 15.6,
+          status: "completed",
+          progress: 100
+        }
+      ],
+      partnerships: [
+        { id: "1", name: "Tech for Good Corp", type: "business", projects: 7, impact: 89 },
+        { id: "2", name: "City Environmental Department", type: "government", projects: 5, impact: 93 },
+        { id: "3", name: "Green Schools Network", type: "ngo", projects: 9, impact: 86 }
+      ]
+    };
+
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <Card className="bg-gradient-to-br from-success/5 via-card to-primary/5">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold">Community Impact Map</h3>
+                  <Badge variant="outline">Grassroots View</Badge>
+                </div>
+                <div className="bg-muted/30 rounded-lg h-64 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="text-6xl mb-2">🌱</div>
+                    <p className="text-muted-foreground">Community projects and volunteer locations</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card className="bg-gradient-to-br from-success/10 to-primary/10">
+            <CardContent className="p-6">
+              <div className="text-center">
+                <Award className="w-12 h-12 text-success mx-auto mb-3" />
+                <h3 className="text-sm text-muted-foreground mb-2">Regional Rank</h3>
+                <p className="text-4xl font-bold text-foreground mb-1">#{regionalData.regionalRank}</p>
+                <p className="text-xs text-muted-foreground">out of {regionalData.totalOrganizations} NGOs</p>
+                <div className="mt-4 pt-4 border-t border-border/50">
+                  <p className="text-xs text-muted-foreground mb-2">Community Impact</p>
+                  <Progress value={90} className="h-2" />
+                  <p className="text-xs text-muted-foreground mt-1">90/100</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <Target className="w-8 h-8 text-success mb-2" />
+              <p className="text-2xl font-bold">{regionalData.overview.activeChallenges}</p>
+              <p className="text-xs text-muted-foreground">Active Projects</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <Users className="w-8 h-8 text-primary mb-2" />
+              <p className="text-2xl font-bold">{regionalData.overview.peopleReached.toLocaleString()}</p>
+              <p className="text-xs text-muted-foreground">Volunteers & Supporters</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <TreePine className="w-8 h-8 text-success mb-2" />
+              <p className="text-2xl font-bold">{regionalData.overview.co2Saved}t</p>
+              <p className="text-xs text-muted-foreground">Environmental Impact</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <Building className="w-8 h-8 text-accent mb-2" />
+              <p className="text-2xl font-bold">{regionalData.overview.partnerships}</p>
+              <p className="text-xs text-muted-foreground">Collaborations</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Tabs defaultValue="projects" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="projects">Projects & Campaigns</TabsTrigger>
+            <TabsTrigger value="partnerships">Collaboration Network</TabsTrigger>
+            <TabsTrigger value="stories">Success Stories</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="projects" className="space-y-4">
+            <Card className="bg-gradient-to-r from-success/10 to-primary/10">
+              <CardContent className="p-4">
+                <div className="flex flex-wrap gap-2">
+                  <Button size="sm" className="flex-1 min-w-[140px]">
+                    <Target className="w-4 h-4 mr-2" />
+                    Start Campaign
+                  </Button>
+                  <Button size="sm" variant="outline" className="flex-1 min-w-[140px]">
+                    <Award className="w-4 h-4 mr-2" />
+                    Seek Sponsorship
+                  </Button>
+                  <Button size="sm" variant="outline" className="flex-1 min-w-[140px]">
+                    <Users className="w-4 h-4 mr-2" />
+                    Rally Volunteers
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid gap-4">
+              {regionalData.challenges.map((challenge) => (
+                <Card key={challenge.id}>
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-semibold">{challenge.title}</h4>
+                          <Badge variant={challenge.type === "created" ? "default" : "secondary"}>
+                            {challenge.type === "created" ? "NGO Initiative" : "Sponsored"}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Users className="w-4 h-4" />
+                            {challenge.participants.toLocaleString()} volunteers
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <TreePine className="w-4 h-4" />
+                            {challenge.co2Saved}t impact
+                          </span>
+                        </div>
+                      </div>
+                      <Badge variant={challenge.status === "active" ? "default" : "secondary"}>
+                        {challenge.status}
+                      </Badge>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Progress</span>
+                        <span className="font-medium">{challenge.progress}%</span>
+                      </div>
+                      <Progress value={challenge.progress} />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="partnerships" className="space-y-4">
+            <div className="grid gap-4">
+              {regionalData.partnerships.map((partner) => (
+                <Card key={partner.id}>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-gradient-to-br from-success/20 to-primary/20 rounded-full flex items-center justify-center">
+                          {partner.type === "business" ? "🏢" : partner.type === "government" ? "🏛️" : "🌱"}
+                        </div>
+                        <div>
+                          <h4 className="font-semibold">{partner.name}</h4>
+                          <p className="text-sm text-muted-foreground">{partner.projects} collaborations</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-muted-foreground">Impact</p>
+                        <p className="text-xl font-bold text-success">{partner.impact}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="stories" className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card className="bg-gradient-to-br from-success/10 to-success/5">
+                <CardContent className="p-6 text-center">
+                  <div className="text-3xl mb-2">🌟</div>
+                  <p className="text-2xl font-bold">2,340</p>
+                  <p className="text-sm text-muted-foreground">Volunteer Hours</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
+                <CardContent className="p-6 text-center">
+                  <div className="text-3xl mb-2">📣</div>
+                  <p className="text-2xl font-bold">18</p>
+                  <p className="text-sm text-muted-foreground">Community Events</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-gradient-to-br from-accent/10 to-accent/5">
+                <CardContent className="p-6 text-center">
+                  <div className="text-3xl mb-2">💚</div>
+                  <p className="text-2xl font-bold">€45K</p>
+                  <p className="text-sm text-muted-foreground">Funds Raised</p>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
+    );
+  };
 
   const getDashboardContent = () => {
     switch (userRole) {
@@ -470,27 +1059,27 @@ const Dashboard = ({ userRole }: DashboardProps) => {
         };
       case "business":
         return {
-          title: "Vállalati Dashboard", 
-          description: "Hogyan járulnak hozzá a vállalkozások a fenntarthatósághoz a területeden",
-          badge: "Vállalati Perspektíva",
+          title: "Regional Impact Hub", 
+          description: "Vállalati regionális hatás és közösségi szerepvállalás",
+          badge: "Vállalati Nézet",
           badgeColor: "bg-accent",
-          explanation: "Itt láthatod, milyen fenntarthatósági kezdeményezések zajlanak a vállalati szektorban, és hogyan kapcsolódhatsz be mint magánszemély."
+          explanation: "Adminként láthatod vállalkozásod regionális hatását: szponzorált és létrehozott kihívások, közösségi elérés és partneri kapcsolatok."
         };
       case "government":
         return {
-          title: "Önkormányzati Dashboard",
-          description: "Városi és politikai szintű fenntarthatósági kezdeményezések",
+          title: "Regional Impact Hub",
+          description: "Önkormányzati regionális hatás és közösségi programok",
           badge: "Önkormányzati Nézet",
           badgeColor: "bg-warning",
-          explanation: "Betekintés az önkormányzati környezetvédelmi programokba és azt, hogyan tudsz te mint állampolgár részt venni ezekben."
+          explanation: "Adminként láthatod az önkormányzat regionális hatását: városi programok, állampolgári részvétel és stakeholder kapcsolatok."
         };
       case "ngo":
         return {
-          title: "NGO Dashboard", 
-          description: "Környezetvédelmi civil szervezetek munkája",
-          badge: "Civil Szervezetek",
+          title: "Regional Impact Hub", 
+          description: "Civil szervezeti regionális hatás és közösségi projektek",
+          badge: "Civil Szervezeti Nézet",
           badgeColor: "bg-success",
-          explanation: "Fedezd fel a civil szervezetek környezetvédelmi projektjeit és csatlakozz önkéntesként vagy támogatóként."
+          explanation: "Adminként láthatod szervezeted regionális hatását: kampányok, önkéntes mozgósítás és együttműködési hálózat."
         };
       default:
         return {
@@ -574,8 +1163,8 @@ const Dashboard = ({ userRole }: DashboardProps) => {
         </Card>
       </div>
 
-      {/* Time Period Selector */}
-      {(userRole === "citizen" || userRole === "business") && (
+      {/* Time Period Selector - Only for citizens */}
+      {userRole === "citizen" && (
         <div className="flex space-x-2 mb-6">
           <Button
             variant={selectedPeriod === "week" ? "default" : "outline"}
