@@ -74,7 +74,7 @@ const DynamicRegionalDashboard = () => {
               size="lg"
               className="bg-gradient-to-r from-success to-warning hover:from-success/90 hover:to-warning/90 text-white px-8 py-4 rounded-2xl font-semibold shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300"
             >
-              🌍 {selectedRegion ? "Régió Váltása" : "Régió Kiválasztása"}
+              🌍 {selectedRegion ? t('3d_dashboard.region_change') : t('3d_dashboard.region_select')}
             </Button>
             {selectedRegion && (
               <Button 

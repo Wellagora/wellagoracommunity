@@ -119,7 +119,7 @@ const Navigation = () => {
             <Link to="/matching" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
               <Heart className="w-4 h-4" />
               <span className="relative">
-                Partnerek
+                {t('nav.partners')}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
               </span>
             </Link>

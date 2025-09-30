@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -45,6 +46,7 @@ interface MatchProfile {
 const MatchingPage = () => {
   const navigate = useNavigate();
   const { user, profile } = useAuth();
+  const { t } = useLanguage();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [matches, setMatches] = useState<string[]>([]);
   const [showCelebration, setShowCelebration] = useState(false);
@@ -170,11 +172,11 @@ const MatchingPage = () => {
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'citizen': return 'Magánszemély';
-      case 'business': return 'Vállalkozás';
-      case 'government': return 'Önkormányzat';
-      case 'ngo': return 'Civil Szervezet';
-      default: return 'Felhasználó';
+      case 'citizen': return t('matching.type.citizen');
+      case 'business': return t('matching.type.business');
+      case 'government': return t('matching.type.government');
+      case 'ngo': return t('matching.type.ngo');
+      default: return t('matching.type.user');
     }
   };
 
@@ -186,23 +188,23 @@ const MatchingPage = () => {
     return (
       <div className="min-h-screen bg-background">
         <Navigation />
-        <div className="max-w-4xl mx-auto px-4 py-16 text-center">
+        <div className="max-w-4xl mx-auto px-4 py-12 sm:py-16">
           <div className="text-6xl mb-6">🎉</div>
-          <h1 className="text-3xl font-bold text-foreground mb-4">
-            Kiválóan dolgoztál!
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-4">
+            {t('matching.excellent_work')}
           </h1>
-          <p className="text-xl text-muted-foreground mb-8">
-            Áttekintettél minden elérhető profilt. {matches.length} potenciális partnert jelöltél meg!
+          <p className="text-lg sm:text-xl text-muted-foreground mb-8">
+            {t('matching.reviewed_profiles').replace('{count}', matches.length.toString())}
           </p>
           <div className="space-y-4">
             <Button 
               onClick={() => navigate("/community")}
-              className="bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground px-8 py-3"
+              className="w-full sm:w-auto bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground px-8 py-3"
             >
-              Nézd meg a közösséget
+              {t('matching.view_community')}
             </Button>
             <p className="text-sm text-muted-foreground">
-              Hamarosan értesítést kapsz, ha valaki viszonozza az érdeklődésed!
+              {t('matching.notification_info')}
             </p>
           </div>
         </div>
@@ -262,19 +264,18 @@ const MatchingPage = () => {
                             </Badge>
                             {currentProfile.verified && (
                               <Badge variant="secondary" className="bg-success/20 text-success">
-                                ✓ Verificált
+                                ✓ {t('matching.verified')}
                               </Badge>
                             )}
                           </div>
                         </div>
                       </div>
                       
-                      {/* Compatibility Score */}
                       <div className="text-center">
                         <div className="text-2xl font-bold text-primary mb-1">
                           {currentProfile.compatibility}%
                         </div>
-                        <div className="text-xs text-muted-foreground">Kompatibilitás</div>
+                        <div className="text-xs text-muted-foreground">{t('matching.compatibility')}</div>
                       </div>
                     </div>
                   </CardHeader>
@@ -300,32 +301,32 @@ const MatchingPage = () => {
                     </p>
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-3 gap-4 py-4 bg-background/30 rounded-xl">
+                    <div className="grid grid-cols-3 gap-2 sm:gap-4 py-4 bg-background/30 rounded-xl">
                       <div className="text-center">
-                        <div className="text-lg font-bold text-primary">{currentProfile.impactScore}</div>
-                        <div className="text-xs text-muted-foreground">Hatás Pontok</div>
+                        <div className="text-base sm:text-lg font-bold text-primary">{currentProfile.impactScore}</div>
+                        <div className="text-xs text-muted-foreground">{t('matching.impact_points')}</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-lg font-bold text-success">{currentProfile.sharedInterests.length}</div>
-                        <div className="text-xs text-muted-foreground">Közös Érdeklődés</div>
+                        <div className="text-base sm:text-lg font-bold text-success">{currentProfile.sharedInterests.length}</div>
+                        <div className="text-xs text-muted-foreground">{t('matching.shared_interests')}</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-lg font-bold text-accent">
+                        <div className="text-base sm:text-lg font-bold text-accent">
                           {Math.floor((Date.now() - new Date(currentProfile.joinedDate).getTime()) / (1000 * 60 * 60 * 24))}
                         </div>
-                        <div className="text-xs text-muted-foreground">Napja tag</div>
+                        <div className="text-xs text-muted-foreground">{t('matching.days_member')}</div>
                       </div>
                     </div>
 
                     {/* Sustainability Goals */}
                     <div className="space-y-3">
-                      <h4 className="font-semibold text-foreground flex items-center">
+                      <h4 className="font-semibold text-foreground flex items-center text-sm sm:text-base">
                         <Target className="w-4 h-4 mr-2 text-primary" />
-                        Fenntarthatósági célok
+                        {t('matching.sustainability_goals')}
                       </h4>
                       <div className="flex flex-wrap gap-2">
                         {currentProfile.sustainabilityGoals.map((goal, index) => (
-                          <Badge key={index} variant="outline" className="border-primary/30 text-primary">
+                          <Badge key={index} variant="outline" className="border-primary/30 text-primary text-xs sm:text-sm">
                             {goal}
                           </Badge>
                         ))}
@@ -334,13 +335,13 @@ const MatchingPage = () => {
 
                     {/* Shared Interests */}
                     <div className="space-y-3">
-                      <h4 className="font-semibold text-foreground flex items-center">
+                      <h4 className="font-semibold text-foreground flex items-center text-sm sm:text-base">
                         <Sparkles className="w-4 h-4 mr-2 text-success" />
-                        Közös érdeklődési területek
+                        {t('matching.shared_interests')}
                       </h4>
                       <div className="flex flex-wrap gap-2">
                         {currentProfile.sharedInterests.map((interest, index) => (
-                          <Badge key={index} variant="secondary" className="bg-success/20 text-success">
+                          <Badge key={index} variant="secondary" className="bg-success/20 text-success text-xs sm:text-sm">
                             {interest}
                           </Badge>
                         ))}
@@ -348,12 +349,12 @@ const MatchingPage = () => {
                     </div>
 
                     {/* Recent Activity */}
-                    <div className="p-4 bg-accent/5 border border-accent/20 rounded-xl">
+                    <div className="p-3 sm:p-4 bg-accent/5 border border-accent/20 rounded-xl">
                       <div className="flex items-center space-x-2 mb-2">
                         <TrendingUp className="w-4 h-4 text-accent" />
-                        <span className="font-medium text-foreground">Legutóbbi aktivitás</span>
+                        <span className="font-medium text-foreground text-sm sm:text-base">{t('matching.recent_activity_label')}</span>
                       </div>
-                      <p className="text-muted-foreground">{currentProfile.recentActivity}</p>
+                      <p className="text-muted-foreground text-xs sm:text-sm">{currentProfile.recentActivity}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -370,11 +371,11 @@ const MatchingPage = () => {
                 exit={{ opacity: 0, scale: 0.5 }}
                 className="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
               >
-                <div className="bg-gradient-to-r from-primary to-success text-white px-8 py-4 rounded-2xl shadow-2xl">
+                <div className="bg-gradient-to-r from-primary to-success text-white px-6 sm:px-8 py-4 rounded-2xl shadow-2xl">
                   <div className="text-center">
-                    <div className="text-3xl mb-2">🎉</div>
-                    <div className="font-bold text-lg">Tökéletes Match!</div>
-                    <div className="text-sm">90%+ kompatibilitás</div>
+                    <div className="text-2xl sm:text-3xl mb-2">🎉</div>
+                    <div className="font-bold text-base sm:text-lg">{t('matching.perfect_match')}</div>
+                    <div className="text-xs sm:text-sm">90%+ {t('matching.compatibility')}</div>
                   </div>
                 </div>
               </motion.div>
@@ -403,9 +404,9 @@ const MatchingPage = () => {
         </div>
 
         {/* Instructions */}
-        <div className="text-center mt-8">
-          <p className="text-muted-foreground text-sm">
-            ❤️ Érdekel • ✗ Átlépés • {matches.length} partner kiválasztva
+        <div className="text-center mt-6 sm:mt-8">
+          <p className="text-muted-foreground text-xs sm:text-sm px-4">
+            ❤️ {t('matching.interested')} • ✗ {t('matching.pass')} • {matches.length} {t('matching.partners_selected')}
           </p>
         </div>
 

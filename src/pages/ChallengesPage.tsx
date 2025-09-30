@@ -155,8 +155,8 @@ const ChallengesPage = () => {
             <h1 className="text-4xl lg:text-6xl font-bold text-foreground mb-6">
               {t('nav.challenges')}
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-              Csatlakozz fenntarthatósági bajnokok ezreihez és valós környezeti hatást érj el gamifikált kihívásokkal.
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto mb-8 px-4">
+              {t('challenges.hero_subtitle')}
             </p>
             
             {/* Quick Stats */}
