@@ -34,6 +34,9 @@ import {
   Home
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { RegionalImpactMap } from "./RegionalImpactMap";
+import { SponsorChallengeModal } from "./SponsorChallengeModal";
+import { MobilizeTeamModal } from "./MobilizeTeamModal";
 
 type UserRole = "citizen" | "business" | "government" | "ngo";
 
@@ -44,6 +47,8 @@ interface DashboardProps {
 const Dashboard = ({ userRole }: DashboardProps) => {
   const { t } = useLanguage();
   const [selectedPeriod, setSelectedPeriod] = useState("month");
+  const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
+  const [mobilizeModalOpen, setMobilizeModalOpen] = useState(false);
 
   // Mock data - will be replaced with real data from Supabase
   const citizenData = {
@@ -366,22 +371,9 @@ const Dashboard = ({ userRole }: DashboardProps) => {
       <div className="space-y-6">
         {/* Regional Impact Overview */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Map Placeholder */}
+          {/* Interactive Map */}
           <div className="lg:col-span-2">
-            <Card className="bg-gradient-to-br from-primary/5 via-card to-accent/5">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold">Regional Impact Map</h3>
-                  <Badge variant="outline">Interactive View</Badge>
-                </div>
-                <div className="bg-muted/30 rounded-lg h-64 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-6xl mb-2">🗺️</div>
-                    <p className="text-muted-foreground">Regional impact visualization</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <RegionalImpactMap />
           </div>
 
           {/* Regional Rank */}
@@ -610,20 +602,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
       <div className="space-y-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <Card className="bg-gradient-to-br from-warning/5 via-card to-primary/5">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold">Municipal Impact Map</h3>
-                  <Badge variant="outline">City-Wide View</Badge>
-                </div>
-                <div className="bg-muted/30 rounded-lg h-64 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-6xl mb-2">🏛️</div>
-                    <p className="text-muted-foreground">Municipal initiatives across districts</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <RegionalImpactMap />
           </div>
 
           <Card className="bg-gradient-to-br from-warning/10 to-primary/10">
@@ -685,15 +664,15 @@ const Dashboard = ({ userRole }: DashboardProps) => {
             <Card className="bg-gradient-to-r from-warning/10 to-primary/10">
               <CardContent className="p-4">
                 <div className="flex flex-wrap gap-2">
-                  <Button size="sm" className="flex-1 min-w-[140px]">
+                  <Button size="sm" className="flex-1 min-w-[140px]" onClick={() => setSponsorModalOpen(true)}>
                     <Target className="w-4 h-4 mr-2" />
                     Launch Program
                   </Button>
-                  <Button size="sm" variant="outline" className="flex-1 min-w-[140px]">
+                  <Button size="sm" variant="outline" className="flex-1 min-w-[140px]" onClick={() => setSponsorModalOpen(true)}>
                     <Award className="w-4 h-4 mr-2" />
                     Fund Initiative
                   </Button>
-                  <Button size="sm" variant="outline" className="flex-1 min-w-[140px]">
+                  <Button size="sm" variant="outline" className="flex-1 min-w-[140px]" onClick={() => setMobilizeModalOpen(true)}>
                     <Users className="w-4 h-4 mr-2" />
                     Engage Citizens
                   </Button>
@@ -845,20 +824,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
       <div className="space-y-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <Card className="bg-gradient-to-br from-success/5 via-card to-primary/5">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold">Community Impact Map</h3>
-                  <Badge variant="outline">Grassroots View</Badge>
-                </div>
-                <div className="bg-muted/30 rounded-lg h-64 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-6xl mb-2">🌱</div>
-                    <p className="text-muted-foreground">Community projects and volunteer locations</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <RegionalImpactMap />
           </div>
 
           <Card className="bg-gradient-to-br from-success/10 to-primary/10">
@@ -920,15 +886,15 @@ const Dashboard = ({ userRole }: DashboardProps) => {
             <Card className="bg-gradient-to-r from-success/10 to-primary/10">
               <CardContent className="p-4">
                 <div className="flex flex-wrap gap-2">
-                  <Button size="sm" className="flex-1 min-w-[140px]">
+                  <Button size="sm" className="flex-1 min-w-[140px]" onClick={() => setSponsorModalOpen(true)}>
                     <Target className="w-4 h-4 mr-2" />
                     Start Campaign
                   </Button>
-                  <Button size="sm" variant="outline" className="flex-1 min-w-[140px]">
+                  <Button size="sm" variant="outline" className="flex-1 min-w-[140px]" onClick={() => setSponsorModalOpen(true)}>
                     <Award className="w-4 h-4 mr-2" />
                     Seek Sponsorship
                   </Button>
-                  <Button size="sm" variant="outline" className="flex-1 min-w-[140px]">
+                  <Button size="sm" variant="outline" className="flex-1 min-w-[140px]" onClick={() => setMobilizeModalOpen(true)}>
                     <Users className="w-4 h-4 mr-2" />
                     Rally Volunteers
                   </Button>
@@ -1191,6 +1157,10 @@ const Dashboard = ({ userRole }: DashboardProps) => {
       )}
 
       {getDashboardContent()}
+
+      {/* Modals */}
+      <SponsorChallengeModal open={sponsorModalOpen} onOpenChange={setSponsorModalOpen} />
+      <MobilizeTeamModal open={mobilizeModalOpen} onOpenChange={setMobilizeModalOpen} />
     </div>
   );
 };

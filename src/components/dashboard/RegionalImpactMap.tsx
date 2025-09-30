@@ -1,0 +1,190 @@
+import { useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { MapPin, Users, Leaf, TrendingUp } from "lucide-react";
+
+interface RegionData {
+  id: string;
+  name: string;
+  x: number;
+  y: number;
+  participants: number;
+  co2Saved: number;
+  activeChallenges: number;
+  color: string;
+}
+
+const mockRegions: RegionData[] = [
+  { id: "1", name: "Downtown", x: 35, y: 40, participants: 847, co2Saved: 18.5, activeChallenges: 5, color: "bg-primary" },
+  { id: "2", name: "North District", x: 55, y: 25, participants: 623, co2Saved: 14.2, activeChallenges: 3, color: "bg-success" },
+  { id: "3", name: "East Side", x: 75, y: 45, participants: 521, co2Saved: 11.8, activeChallenges: 4, color: "bg-accent" },
+  { id: "4", name: "West End", x: 15, y: 60, participants: 412, co2Saved: 8.9, activeChallenges: 2, color: "bg-warning" },
+  { id: "5", name: "South Quarter", x: 45, y: 75, participants: 356, co2Saved: 6.7, activeChallenges: 3, color: "bg-secondary" }
+];
+
+export const RegionalImpactMap = () => {
+  const [selectedRegion, setSelectedRegion] = useState<RegionData | null>(null);
+  const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
+
+  return (
+    <Card className="bg-gradient-to-br from-primary/5 via-card to-accent/5 overflow-hidden">
+      <div className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">Regional Impact Map</h3>
+          <Badge variant="outline" className="gap-2">
+            <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+            Live Data
+          </Badge>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Interactive Map */}
+          <div className="lg:col-span-2">
+            <div className="relative bg-gradient-to-br from-background/50 to-muted/30 rounded-lg p-8 h-96 border border-border/50">
+              {/* Map Background Grid */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="grid grid-cols-10 grid-rows-10 h-full w-full">
+                  {Array.from({ length: 100 }).map((_, i) => (
+                    <div key={i} className="border border-foreground/20"></div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Region Markers */}
+              {mockRegions.map((region) => (
+                <div
+                  key={region.id}
+                  className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+                  style={{ left: `${region.x}%`, top: `${region.y}%` }}
+                  onMouseEnter={() => setHoveredRegion(region.id)}
+                  onMouseLeave={() => setHoveredRegion(null)}
+                  onClick={() => setSelectedRegion(region)}
+                >
+                  {/* Pulse Effect */}
+                  <div className={`absolute inset-0 ${region.color} opacity-30 rounded-full animate-ping`}></div>
+                  
+                  {/* Main Marker */}
+                  <div className={`relative ${region.color} w-6 h-6 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+                    hoveredRegion === region.id ? 'scale-150' : 'scale-100'
+                  } ${selectedRegion?.id === region.id ? 'ring-4 ring-primary' : ''}`}>
+                    <MapPin className="w-4 h-4 text-white" />
+                  </div>
+
+                  {/* Hover Tooltip */}
+                  {hoveredRegion === region.id && (
+                    <div className="absolute top-8 left-1/2 transform -translate-x-1/2 bg-popover text-popover-foreground p-3 rounded-lg shadow-xl z-10 whitespace-nowrap animate-fade-in border border-border">
+                      <p className="font-semibold mb-1">{region.name}</p>
+                      <div className="text-xs space-y-1">
+                        <div className="flex items-center gap-2">
+                          <Users className="w-3 h-3" />
+                          <span>{region.participants} participants</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Leaf className="w-3 h-3" />
+                          <span>{region.co2Saved}t CO₂</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {/* Connection Lines */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20">
+                {mockRegions.map((region, i) => {
+                  if (i === mockRegions.length - 1) return null;
+                  const next = mockRegions[i + 1];
+                  return (
+                    <line
+                      key={`line-${i}`}
+                      x1={`${region.x}%`}
+                      y1={`${region.y}%`}
+                      x2={`${next.x}%`}
+                      y2={`${next.y}%`}
+                      stroke="currentColor"
+                      strokeWidth="1"
+                      strokeDasharray="4"
+                    />
+                  );
+                })}
+              </svg>
+            </div>
+          </div>
+
+          {/* Region Details Panel */}
+          <div className="space-y-4">
+            {selectedRegion ? (
+              <div className="bg-background/80 backdrop-blur-sm border border-border rounded-lg p-4 space-y-4 animate-fade-in">
+                <div>
+                  <h4 className="font-semibold text-lg mb-1">{selectedRegion.name}</h4>
+                  <Badge variant="secondary">{selectedRegion.activeChallenges} Active Challenges</Badge>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <Users className="w-4 h-4 text-primary" />
+                      <span className="text-sm">Participants</span>
+                    </div>
+                    <span className="font-semibold">{selectedRegion.participants}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <Leaf className="w-4 h-4 text-success" />
+                      <span className="text-sm">CO₂ Saved</span>
+                    </div>
+                    <span className="font-semibold">{selectedRegion.co2Saved}t</span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4 text-warning" />
+                      <span className="text-sm">Growth</span>
+                    </div>
+                    <span className="font-semibold text-success">+12%</span>
+                  </div>
+                </div>
+
+                <Button 
+                  className="w-full" 
+                  variant="default"
+                  onClick={() => setSelectedRegion(null)}
+                >
+                  View Details
+                </Button>
+              </div>
+            ) : (
+              <div className="bg-background/50 border border-border/50 border-dashed rounded-lg p-8 text-center">
+                <MapPin className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                <p className="text-sm text-muted-foreground">
+                  Click on a region marker to view details
+                </p>
+              </div>
+            )}
+
+            {/* Legend */}
+            <div className="bg-background/80 backdrop-blur-sm border border-border rounded-lg p-4">
+              <p className="text-xs font-semibold mb-3 text-muted-foreground">LEGEND</p>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-primary rounded-full"></div>
+                  <span className="text-xs">High Impact</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-success rounded-full"></div>
+                  <span className="text-xs">Growing</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-warning rounded-full"></div>
+                  <span className="text-xs">Moderate</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+};
