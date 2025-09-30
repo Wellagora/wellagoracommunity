@@ -223,19 +223,136 @@ const DashboardPage = () => {
           </TabsContent>
 
           <TabsContent value="progress" className="animate-fade-in">
-            {/* Erdőm Növekedése és Kéznyom */}
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
-              <ProgressVisualization />
-              <HandprintWidget />
-            </div>
-            <div className="mt-8 text-center">
-              <Button 
-                onClick={() => setShowCelebration(true)}
-                className="bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground px-8 py-3 rounded-2xl font-semibold shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300"
-              >
-                {t('dashboard.simulate_achievement')}
-              </Button>
-            </div>
+            {currentRole === "citizen" ? (
+              <>
+                {/* Erdőm Növekedése és Kéznyom - Only for citizens */}
+                <div className="grid md:grid-cols-2 gap-6 mb-8">
+                  <ProgressVisualization />
+                  <HandprintWidget />
+                </div>
+                <div className="mt-8 text-center">
+                  <Button 
+                    onClick={() => setShowCelebration(true)}
+                    className="bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground px-8 py-3 rounded-2xl font-semibold shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300"
+                  >
+                    {t('dashboard.simulate_achievement')}
+                  </Button>
+                </div>
+              </>
+            ) : (
+              /* Regional Impact Progress for organizations */
+              <div className="space-y-6">
+                {/* Monthly Progress */}
+                <Card className="bg-gradient-to-r from-primary/5 via-card to-accent/5">
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold mb-4">Havi Regionális Előrehaladás</h3>
+                    <div className="grid md:grid-cols-3 gap-4 mb-6">
+                      <div className="text-center p-4 bg-card rounded-xl">
+                        <div className="text-3xl mb-2">🎯</div>
+                        <div className="text-2xl font-bold text-foreground">+4</div>
+                        <div className="text-sm text-muted-foreground">Új kezdeményezés</div>
+                      </div>
+                      <div className="text-center p-4 bg-card rounded-xl">
+                        <div className="text-3xl mb-2">👥</div>
+                        <div className="text-2xl font-bold text-foreground">+842</div>
+                        <div className="text-sm text-muted-foreground">Új résztvevő</div>
+                      </div>
+                      <div className="text-center p-4 bg-card rounded-xl">
+                        <div className="text-3xl mb-2">🌱</div>
+                        <div className="text-2xl font-bold text-foreground">+12.3t</div>
+                        <div className="text-sm text-muted-foreground">CO₂ megtakarítás</div>
+                      </div>
+                    </div>
+                    
+                    {/* Quarterly Goals */}
+                    <div className="space-y-4">
+                      <div>
+                        <div className="flex justify-between mb-2">
+                          <span className="text-sm text-muted-foreground">Negyedéves CO₂ cél</span>
+                          <span className="text-sm font-medium">45.6 / 60t</span>
+                        </div>
+                        <Progress value={76} className="h-3" />
+                      </div>
+                      <div>
+                        <div className="flex justify-between mb-2">
+                          <span className="text-sm text-muted-foreground">Közösségi elérés cél</span>
+                          <span className="text-sm font-medium">2,847 / 5,000</span>
+                        </div>
+                        <Progress value={57} className="h-3" />
+                      </div>
+                      <div>
+                        <div className="flex justify-between mb-2">
+                          <span className="text-sm text-muted-foreground">Új partnerségek</span>
+                          <span className="text-sm font-medium">8 / 10</span>
+                        </div>
+                        <Progress value={80} className="h-3" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Active Initiatives Performance */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  <Card>
+                    <CardContent className="p-6">
+                      <h4 className="text-lg font-semibold mb-4">Legjobb Teljesítmény</h4>
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between p-3 bg-success/10 rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-success/20 rounded-full flex items-center justify-center">
+                              <Trophy className="w-5 h-5 text-success" />
+                            </div>
+                            <div>
+                              <div className="font-medium text-sm">Green Office Initiative</div>
+                              <div className="text-xs text-muted-foreground">342 résztvevő</div>
+                            </div>
+                          </div>
+                          <Badge className="bg-success text-white">+18.5t</Badge>
+                        </div>
+                        <div className="flex items-center justify-between p-3 bg-primary/10 rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center">
+                              <Target className="w-5 h-5 text-primary" />
+                            </div>
+                            <div>
+                              <div className="font-medium text-sm">Bike to Work Campaign</div>
+                              <div className="text-xs text-muted-foreground">156 résztvevő</div>
+                            </div>
+                          </div>
+                          <Badge className="bg-primary text-white">+8.2t</Badge>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-6">
+                      <h4 className="text-lg font-semibold mb-4">Regionális Trend</h4>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-muted-foreground">Előző hónaphoz képest</span>
+                          <div className="flex items-center gap-1 text-success">
+                            <TrendingUp className="w-4 h-4" />
+                            <span className="font-semibold">+23%</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-muted-foreground">Regionális átlag</span>
+                          <div className="flex items-center gap-1 text-primary">
+                            <Award className="w-4 h-4" />
+                            <span className="font-semibold">Felül teljesít</span>
+                          </div>
+                        </div>
+                        <div className="mt-4 p-3 bg-warning/10 rounded-lg">
+                          <div className="text-xs font-medium text-warning mb-1">🎯 Következő mérföldkő</div>
+                          <div className="text-sm text-foreground">50 tonna CO₂ megtakarítás eléréséig 4.4t</div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="rewards" className="space-y-6 animate-fade-in">
@@ -298,13 +415,174 @@ const DashboardPage = () => {
                 <PointsSystem />
               </div>
             ) : (
-              <Card className="text-center py-16 bg-card/50 backdrop-blur-sm">
-                <div className="text-6xl mb-6">🚀</div>
-                <h3 className="text-2xl font-bold text-foreground mb-4">{t('dashboard.rewards_coming_soon')}</h3>
-                <p className="text-muted-foreground text-lg max-w-md mx-auto">
-                  {t(`dashboard.rewards_${currentRole}_development`)}
-                </p>
-              </Card>
+              /* Regional Recognition & Impact Stories for organizations */
+              <div className="space-y-6">
+                {/* Regional Recognition */}
+                <Card className="bg-gradient-to-r from-warning/20 to-accent/20 border-warning/30">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-xl font-bold text-foreground">🏆 Regionális Elismerés</h3>
+                      <Badge className="bg-gradient-to-r from-warning to-accent text-white">
+                        {currentRole === "business" ? "Top 3 Vállalat" : currentRole === "government" ? "#1 Önkormányzat" : "Top 5 NGO"}
+                      </Badge>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="text-center p-4 bg-card rounded-xl">
+                        <div className="text-3xl mb-2">🌟</div>
+                        <div className="text-xl font-bold text-foreground">85/100</div>
+                        <div className="text-sm text-muted-foreground">Impact Score</div>
+                      </div>
+                      <div className="text-center p-4 bg-card rounded-xl">
+                        <div className="text-3xl mb-2">📈</div>
+                        <div className="text-xl font-bold text-success">+23%</div>
+                        <div className="text-sm text-muted-foreground">Ez hónap növekedés</div>
+                      </div>
+                      <div className="text-center p-4 bg-card rounded-xl">
+                        <div className="text-3xl mb-2">🎖️</div>
+                        <div className="text-xl font-bold text-warning">Kiváló</div>
+                        <div className="text-sm text-muted-foreground">Minősítés</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Impact Highlights & Media */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  <Card>
+                    <CardContent className="p-6">
+                      <h4 className="text-lg font-semibold mb-4">📣 Média Megjelenés</h4>
+                      <div className="space-y-4">
+                        <div className="p-4 bg-primary/10 rounded-lg">
+                          <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
+                              <span className="text-xl">📰</span>
+                            </div>
+                            <div>
+                              <div className="font-medium text-sm mb-1">Helyi Média Lefedettség</div>
+                              <div className="text-xs text-muted-foreground mb-2">
+                                3 újságcikk és 2 TV interjú a fenntarthatósági kezdeményezésekről
+                              </div>
+                              <Badge variant="outline" className="text-xs">1.2M elérés</Badge>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="p-4 bg-success/10 rounded-lg">
+                          <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 bg-success/20 rounded-full flex items-center justify-center flex-shrink-0">
+                              <span className="text-xl">💚</span>
+                            </div>
+                            <div>
+                              <div className="font-medium text-sm mb-1">Közösségi Media</div>
+                              <div className="text-xs text-muted-foreground mb-2">
+                                Virális kampány: #ZöldMagyarország
+                              </div>
+                              <Badge variant="outline" className="text-xs">34K engagement</Badge>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-6">
+                      <h4 className="text-lg font-semibold mb-4">🏅 Díjak & Címek</h4>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3 p-3 bg-warning/10 rounded-lg">
+                          <div className="w-10 h-10 bg-gradient-to-r from-warning to-accent rounded-full flex items-center justify-center">
+                            <Trophy className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <div className="font-medium text-sm">Regionális Fenntarthatósági Díj</div>
+                            <div className="text-xs text-muted-foreground">2025 Tavasz</div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 p-3 bg-success/10 rounded-lg">
+                          <div className="w-10 h-10 bg-gradient-to-r from-success to-primary rounded-full flex items-center justify-center">
+                            <Award className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <div className="font-medium text-sm">Közösségi Hatás Címzett</div>
+                            <div className="text-xs text-muted-foreground">2024 Év végi</div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 p-3 bg-primary/10 rounded-lg">
+                          <div className="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center">
+                            <Target className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <div className="font-medium text-sm">Klímavédelmi Partnerség</div>
+                            <div className="text-xs text-muted-foreground">Minősített Tag</div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Success Stories */}
+                <Card>
+                  <CardContent className="p-6">
+                    <h4 className="text-lg font-semibold mb-4">💡 Sikertörténetek</h4>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="p-4 border border-border rounded-xl hover:border-primary/50 transition-colors">
+                        <div className="flex items-start gap-3 mb-3">
+                          <div className="text-2xl">🌞</div>
+                          <div>
+                            <h5 className="font-medium mb-1">Napelemes Átállás</h5>
+                            <p className="text-xs text-muted-foreground">
+                              342 résztvevő, 18.5t CO₂ megtakarítás
+                            </p>
+                          </div>
+                        </div>
+                        <Badge className="bg-success/20 text-success border-0">Lezárva</Badge>
+                      </div>
+                      <div className="p-4 border border-border rounded-xl hover:border-primary/50 transition-colors">
+                        <div className="flex items-start gap-3 mb-3">
+                          <div className="text-2xl">🚲</div>
+                          <div>
+                            <h5 className="font-medium mb-1">Kerékpáros Közlekedés Hét</h5>
+                            <p className="text-xs text-muted-foreground">
+                              156 résztvevő, 8.2t CO₂ megtakarítás
+                            </p>
+                          </div>
+                        </div>
+                        <Badge className="bg-primary/20 text-primary border-0">Aktív</Badge>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Next Milestones */}
+                <Card className="bg-gradient-to-r from-accent/10 to-primary/10">
+                  <CardContent className="p-6">
+                    <h4 className="text-lg font-semibold mb-4">🎯 Következő Mérföldkövek</h4>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-3 bg-card rounded-lg">
+                        <div className="flex-1">
+                          <div className="font-medium text-sm mb-1">50 tonna CO₂ megtakarítás</div>
+                          <Progress value={91} className="h-2" />
+                        </div>
+                        <span className="ml-4 text-sm font-semibold text-primary">91%</span>
+                      </div>
+                      <div className="flex items-center justify-between p-3 bg-card rounded-lg">
+                        <div className="flex-1">
+                          <div className="font-medium text-sm mb-1">5,000 közösségi elérés</div>
+                          <Progress value={57} className="h-2" />
+                        </div>
+                        <span className="ml-4 text-sm font-semibold text-primary">57%</span>
+                      </div>
+                      <div className="flex items-center justify-between p-3 bg-card rounded-lg">
+                        <div className="flex-1">
+                          <div className="font-medium text-sm mb-1">10 stratégiai partnerség</div>
+                          <Progress value={80} className="h-2" />
+                        </div>
+                        <span className="ml-4 text-sm font-semibold text-primary">80%</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             )}
           </TabsContent>
         </Tabs>
