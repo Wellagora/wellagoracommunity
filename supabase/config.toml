@@ -9,3 +9,9 @@ max_rows = 1000
 
 [functions.challenge-validation]
 verify_jwt = true
+
+[functions.generate-challenge]
+verify_jwt = true
+
+[functions.match-challenge]
+verify_jwt = true

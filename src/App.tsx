@@ -21,6 +21,8 @@ import BusinessSponsorshipPage from "@/pages/BusinessSponsorshipPage";
 import InteractiveMapPage from "@/pages/InteractiveMapPage";
 import HandprintPage from "@/pages/HandprintPage";
 import PublicOrganizationPage from "@/pages/PublicOrganizationPage";
+import AdminDashboardPage from "@/pages/AdminDashboardPage";
+import HandprintCalculatorPage from "@/pages/HandprintCalculatorPage";
 import "./index.css";
 
 function App() {
@@ -36,7 +38,9 @@ function App() {
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/dashboard/handprint" element={<HandprintPage />} />
+              <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/admin" element={<AdminDashboardPage />} />
               <Route path="/revolutionary" element={<RevolutionaryDashboard />} />
               <Route path="/dynamic-regional" element={<DynamicRegionalDashboard />} />
               <Route path="/community" element={<Community />} />
