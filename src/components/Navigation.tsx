@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { 
   Menu, 
@@ -15,17 +15,40 @@ import {
   Globe,
   Zap,
   Edit3,
-  CreditCard
+  CreditCard,
+  Shield
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSelector from "./LanguageSelector";
 import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/integrations/supabase/client";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, profile, signOut } = useAuth();
   const { t } = useLanguage();
+  const [hasAdminAccess, setHasAdminAccess] = useState(false);
+
+  // Check if user has admin access
+  useEffect(() => {
+    const checkAdminAccess = async () => {
+      if (!user) {
+        setHasAdminAccess(false);
+        return;
+      }
+
+      const { data: roles } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .in('role', ['super_admin', 'admin', 'government']);
+
+      setHasAdminAccess(roles && roles.length > 0);
+    };
+
+    checkAdminAccess();
+  }, [user]);
 
   const userRoles = [
     { name: "Citizen", icon: User, gradient: "from-emerald-400 to-green-600", description: "Individual sustainability journey" },
@@ -208,7 +231,7 @@ const Navigation = () => {
                   className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-xl hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent-foreground"
                 >
                   <Building2 className="w-4 h-4" />
-                  <span className="text-sm">Szervezet</span>
+                   <span className="text-sm">Szervezet</span>
                 </Link>
                 {(profile?.user_role === 'business' || profile?.email === 'attila.kelemen@proself.org') && (
                   <Link
@@ -220,6 +243,16 @@ const Navigation = () => {
                   </Link>
                 )}
               </>
+            )}
+            
+            {hasAdminAccess && (
+              <Link
+                to="/admin"
+                className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl hover:from-purple-500/30 hover:to-pink-500/30 transition-all duration-300 font-medium text-purple-600"
+              >
+                <Shield className="w-4 h-4" />
+                <span className="text-sm">{t('nav.admin_dashboard')}</span>
+              </Link>
             )}
                 </div>
                 

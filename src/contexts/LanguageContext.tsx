@@ -38,8 +38,18 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
 
     try {
-      const module = await import(`@/locales/${lang}.json`);
-      const loadedTranslations = module.default;
+      // Load main translations
+      const mainModule = await import(`@/locales/${lang}.json`);
+      let loadedTranslations = { ...mainModule.default };
+      
+      // Try to load admin translations if available
+      try {
+        const adminModule = await import(`@/locales/admin.${lang}.json`);
+        loadedTranslations = { ...loadedTranslations, ...adminModule.default };
+      } catch {
+        // Admin translations not available for this language, skip
+      }
+      
       translationCache[lang] = loadedTranslations;
       setTranslations(loadedTranslations);
     } catch (error) {
