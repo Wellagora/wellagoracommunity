@@ -1,10 +1,11 @@
-// Enhanced challenges with sponsorship and continuous generation
+// Enhanced challenges with sponsorship and continuous generation (Wellagora Credit System)
 import { Challenge } from './challenges';
 
 export interface SponsoredChallenge extends Challenge {
   sponsorshipPackage?: {
-    level: 'bronze' | 'silver' | 'gold';
-    price: number;
+    level: 'small' | 'medium' | 'large' | 'enterprise';
+    priceHuf: number;
+    priceEur: number;
     benefits: string[];
     creditsRemaining: number;
     totalCredits: number;
@@ -16,62 +17,105 @@ export interface SponsoredChallenge extends Challenge {
 export interface SponsorshipPackage {
   id: string;
   name: string;
-  level: 'bronze' | 'silver' | 'gold';
-  price: number;
-  duration: number; // months
-  creditsIncluded: number;
+  level: 'small' | 'medium' | 'large' | 'enterprise';
+  priceHuf: number;
+  priceEur: number;
+  duration: string;
+  credits: number;
   benefits: string[];
   description: string;
+  expectedReach: string;
+  idealFor: string;
 }
 
 export const sponsorshipPackages: SponsorshipPackage[] = [
   {
-    id: 'bronze',
-    name: 'Bronz Szponzoráció',
-    level: 'bronze',
-    price: 50000,
-    duration: 1,
-    creditsIncluded: 1000,
+    id: 'small',
+    name: 'Kis Vállalat',
+    level: 'small',
+    priceHuf: 100000,
+    priceEur: 250,
+    duration: '1 hónap',
+    credits: 2,
+    expectedReach: '100-200 fő',
+    idealFor: '10-50 fő alkalmazott',
     benefits: [
-      '1 havi kihívás szponzoráció',
-      'Cég logó megjelenítése',
-      'Alapszintű hatás riportok'
+      '2 challenge kampány támogatás',
+      'Logo megjelenés challenge cardon',
+      '50-100 fő elérés kampányonként',
+      'Havi impact riport',
+      'Email támogatás',
+      'Social media említés'
     ],
-    description: 'Ideális kis vállalatok számára a fenntarthatósági láthatóság növeléséhez'
+    description: 'Ideális kisvállalkozások számára, akik szeretnék megkezdeni fenntarthatósági útjukat és látható pozitív hatást építeni'
   },
   {
-    id: 'silver',
-    name: 'Ezüst Szponzoráció',
-    level: 'silver',
-    price: 150000,
-    duration: 3,
-    creditsIncluded: 3500,
+    id: 'medium',
+    name: 'Közepes Vállalat',
+    level: 'medium',
+    priceHuf: 250000,
+    priceEur: 625,
+    duration: '1 hónap',
+    credits: 5,
+    expectedReach: '250-500 fő',
+    idealFor: '50-250 fő alkalmazott',
     benefits: [
-      '3 havi szponzoráció',
-      'Brandelt kihívások',
-      'Részletes analytics',
-      'Közösségi hálózat hozzáférés',
-      'Matching prioritás'
+      '5 challenge kampány támogatás',
+      'Kiterjesztett branding',
+      '50-100 fő elérés kampányonként',
+      'Heti impact riportok',
+      'Prioritás email támogatás',
+      'Social media kampány',
+      'Co-sponsorship lehetőség',
+      'Résztvevői kedvezmény kódok'
     ],
-    description: 'Növekvő vállalatok számára brand awareness és közösségi kapcsolatok építéséhez'
+    description: 'Növekvő vállalatok számára brand awareness építéshez és mérhető környezeti impact létrehozásához'
   },
   {
-    id: 'gold',
-    name: 'Arany Szponzoráció', 
-    level: 'gold',
-    price: 300000,
-    duration: 6,
-    creditsIncluded: 8000,
+    id: 'large',
+    name: 'Nagyvállalat', 
+    level: 'large',
+    priceHuf: 500000,
+    priceEur: 1250,
+    duration: '1 hónap',
+    credits: 10,
+    expectedReach: '500-1000 fő',
+    idealFor: '250-1000+ fő alkalmazott',
     benefits: [
-      '6 havi prémium szponzoráció',
-      'Dedikált kihívás kategóriák',
-      'VIP matching szolgáltatás',
-      'Egyedi riportok és insights',
-      'Rendezvény szponzoráció lehetőség',
-      'Közvetlen CEO kapcsolat',
-      'Sajtó és PR támogatás'
+      '10 challenge kampány támogatás',
+      'Prémium logo elhelyezés',
+      'Dedikált account manager',
+      'Co-branded challenge-ek',
+      'Egyedi challenge létrehozás',
+      'Haladó analytics dashboard',
+      'Employee engagement program',
+      'Teljes social media integráció',
+      'Havi stratégiai konzultáció'
     ],
-    description: 'Nagyvállalatok számára teljes fenntarthatósági ökoszisztéma partnerség'
+    description: 'Nagyvállalatok számára komplett fenntarthatósági ökoszisztéma és employee engagement program'
+  },
+  {
+    id: 'enterprise',
+    name: 'Enterprise',
+    level: 'enterprise',
+    priceHuf: 1000000,
+    priceEur: 2500,
+    duration: '1 hónap',
+    credits: 20,
+    expectedReach: '1000+ fő',
+    idealFor: '1000+ fő alkalmazott',
+    benefits: [
+      '20+ challenge kampány támogatás',
+      'Korlátlan elérés',
+      'Teljes márka integráció',
+      'Dedikált success team',
+      'API hozzáférés',
+      'White-label opciók',
+      'Multi-country deployment',
+      'Custom fejlesztések',
+      'C-level reporting'
+    ],
+    description: 'Multinacionális vállalatok számára egyedi, skálázható fenntarthatósági platform és teljes körű partnerség'
   }
 ];
 
@@ -96,11 +140,12 @@ export const generateDynamicChallenges = (category?: string, difficulty?: string
         logo: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center'
       },
       sponsorshipPackage: {
-        level: 'silver' as const,
-        price: 150000,
-        benefits: ['3 havi szponzoráció', 'Brandelt kihívások'],
-        creditsRemaining: 2800,
-        totalCredits: 3500
+        level: 'medium' as const,
+        priceHuf: 250000,
+        priceEur: 625,
+        benefits: ['5 kampány/hó', 'Kiterjesztett branding'],
+        creditsRemaining: 3,
+        totalCredits: 5
       },
       stepsKeys: [
         'challenges.energy_winter.steps.audit',
@@ -140,11 +185,12 @@ export const generateDynamicChallenges = (category?: string, difficulty?: string
         logo: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=100&h=100&fit=crop&crop=center'
       },
       sponsorshipPackage: {
-        level: 'bronze' as const,
-        price: 50000,
-        benefits: ['1 havi szponzoráció'],
-        creditsRemaining: 650,
-        totalCredits: 1000
+        level: 'small' as const,
+        priceHuf: 100000,
+        priceEur: 250,
+        benefits: ['2 kampány/hó', 'Logo megjelenés'],
+        creditsRemaining: 1,
+        totalCredits: 2
       },
       stepsKeys: [
         'challenges.urban_mobility.steps.assess',
@@ -183,11 +229,12 @@ export const generateDynamicChallenges = (category?: string, difficulty?: string
         logo: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=100&h=100&fit=crop&crop=center'
       },
       sponsorshipPackage: {
-        level: 'gold' as const,
-        price: 300000,
-        benefits: ['6 havi prémium szponzoráció', 'VIP matching'],
-        creditsRemaining: 7200,
-        totalCredits: 8000
+        level: 'large' as const,
+        priceHuf: 500000,
+        priceEur: 1250,
+        benefits: ['10 kampány/hó', 'Prémium branding', 'Account manager'],
+        creditsRemaining: 7,
+        totalCredits: 10
       },
       stepsKeys: [
         'challenges.zero_waste_office.steps.audit',

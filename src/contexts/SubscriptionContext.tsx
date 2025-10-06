@@ -13,46 +13,81 @@ interface SubscriptionContextType {
 }
 
 const packageTiers = {
-  bronze: {
-    name: 'Bronze Sponsor',
-    price: 149,
-    currency: 'EUR',
-    credits: 500,
-    price_id: MockPaymentService.PRICE_IDS.bronze,
-    product_id: MockPaymentService.PRODUCT_IDS.bronze,
+  small: {
+    name: 'Kis Vállalat',
+    priceHuf: 100000,
+    priceEur: 250,
+    currency: 'HUF/EUR',
+    credits: 2,
+    price_id: MockPaymentService.PRICE_IDS.small,
+    product_id: MockPaymentService.PRODUCT_IDS.small,
+    idealFor: '10-50 fő alkalmazott',
     features: [
-      'Alacsony kreditkeret',
-      'Alapvető jelentések',
+      '2 challenge kampány/hónap',
+      '50-100 fő elérés kampányonként',
+      'Logo megjelenítés challenge cardon',
+      'Havi impact riport',
       'Email támogatás'
     ]
   },
-  silver: {
-    name: 'Silver Sponsor',
-    price: 299,
-    currency: 'EUR',
-    credits: 1500,
-    price_id: MockPaymentService.PRICE_IDS.silver,
-    product_id: MockPaymentService.PRODUCT_IDS.silver,
+  medium: {
+    name: 'Közepes Vállalat',
+    priceHuf: 250000,
+    priceEur: 625,
+    currency: 'HUF/EUR',
+    credits: 5,
+    price_id: MockPaymentService.PRICE_IDS.medium,
+    product_id: MockPaymentService.PRODUCT_IDS.medium,
+    idealFor: '50-250 fő alkalmazott',
     features: [
-      'Közepes kreditkeret',
-      'Részletes jelentések',
-      'Prioritás támogatás',
-      'Branding lehetőségek'
+      '5 challenge kampány/hónap',
+      '50-100 fő elérés kampányonként',
+      'Kiterjesztett branding',
+      'Heti impact riportok',
+      'Prioritás email támogatás',
+      'Social media említések',
+      'Co-sponsorship lehetőség'
     ]
   },
-  gold: {
-    name: 'Gold Sponsor',
-    price: 499,
-    currency: 'EUR',
-    credits: 3000,
-    price_id: MockPaymentService.PRICE_IDS.gold,
-    product_id: MockPaymentService.PRODUCT_IDS.gold,
+  large: {
+    name: 'Nagyvállalat',
+    priceHuf: 500000,
+    priceEur: 1250,
+    currency: 'HUF/EUR',
+    credits: 10,
+    price_id: MockPaymentService.PRICE_IDS.large,
+    product_id: MockPaymentService.PRODUCT_IDS.large,
+    idealFor: '250-1000+ fő alkalmazott',
     features: [
-      'Nagy kreditkeret',
-      'Teljes körű riportok',
-      'Dedikált ügyfélszolgálat',
-      'Teljes branding kontroll',
-      'Korai hozzáférés új funkciókhoz'
+      '10 challenge kampány/hónap',
+      '50-100 fő elérés kampányonként',
+      'Prémium logo elhelyezés',
+      'Dedikált account manager',
+      'Co-branded challenge-ek',
+      'Egyedi challenge létrehozás',
+      'Haladó analytics dashboard',
+      'Employee engagement program',
+      'Havi stratégiai konzultáció'
+    ]
+  },
+  enterprise: {
+    name: 'Enterprise',
+    priceHuf: 1000000,
+    priceEur: 2500,
+    currency: 'HUF/EUR',
+    credits: 20,
+    price_id: MockPaymentService.PRICE_IDS.enterprise,
+    product_id: MockPaymentService.PRODUCT_IDS.enterprise,
+    idealFor: '1000+ fő alkalmazott',
+    features: [
+      '20+ challenge kampány/hónap',
+      'Korlátlan elérés',
+      'Teljes márka integráció',
+      'Dedikált success team',
+      'API hozzáférés',
+      'White-label opciók',
+      'Multi-country deployment',
+      'Custom fejlesztések'
     ]
   }
 };

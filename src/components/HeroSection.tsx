@@ -13,47 +13,48 @@ const HeroSection = () => {
 
       <div className="relative z-10 flex flex-col justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto text-center">
-          {/* Floating Badge */}
-          <div className="inline-flex items-center space-x-2 bg-glass backdrop-blur-md px-6 py-3 rounded-full border border-white/20 mb-8 animate-fade-up">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-white-elegant text-sm font-medium">Join 10,000+ Sustainability Champions</span>
+          {/* Brand Tagline */}
+          <div className="inline-flex items-center space-x-3 bg-glass backdrop-blur-md px-8 py-4 rounded-full border border-white/20 mb-6 animate-fade-up">
+            <Sparkles className="w-5 h-5 text-primary" />
+            <span className="text-white-elegant text-lg font-bold tracking-wide">Together we thrive</span>
             <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+          </div>
+
+          {/* Floating Badge */}
+          <div className="inline-flex items-center space-x-2 bg-glass/50 backdrop-blur-md px-6 py-3 rounded-full border border-white/10 mb-8 animate-fade-up delay-100">
+            <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+            <span className="text-white/80 text-sm font-medium">Join 10,000+ Sustainability Champions</span>
           </div>
 
           {/* Main Headline */}
           <h1 className="text-6xl lg:text-8xl font-bold text-white mb-8 animate-fade-up delay-200">
-            Build a{" "}
+            Build Your{" "}
             <span className="relative inline-block">
-              <span className="bg-gradient-to-r from-primary via-success to-secondary bg-clip-text text-transparent animate-pulse">
-                Sustainable
+              <span className="bg-gradient-to-r from-success via-primary to-accent bg-clip-text text-transparent animate-pulse">
+                Handprint
               </span>
-              <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-primary via-success to-secondary rounded-full opacity-60"></div>
+              <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-success via-primary to-accent rounded-full opacity-60"></div>
             </span>
             <br />
-            <span className="bg-gradient-to-r from-secondary via-accent to-primary bg-clip-text text-transparent">
-              Future
+            <span className="text-white/90">
+              Shape the
             </span>
             {" "}
-            <span className="relative">
-              Together
-              <div className="absolute -top-4 -right-4">
-                <div className="w-8 h-8 bg-warning rounded-full flex items-center justify-center animate-bounce">
-                  <Sparkles className="w-4 h-4 text-white" />
-                </div>
-              </div>
+            <span className="bg-gradient-to-r from-secondary via-accent to-primary bg-clip-text text-transparent">
+              World
             </span>
           </h1>
 
           {/* Subtitle */}
           <p className="text-xl lg:text-2xl text-white/90 mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-up delay-300">
-            Join our global community of{" "}
+            Wellagora unites{" "}
             <span className="text-primary font-semibold">citizens</span>,{" "}
             <span className="text-secondary font-semibold">businesses</span>,{" "}
             <span className="text-accent font-semibold">municipalities</span>, and{" "}
             <span className="text-success font-semibold">NGOs</span>
             <br />
-            working together to create positive environmental impact through 
-            actionable challenges and AI-powered guidance.
+            to create measurable positive environmental impact through 
+            AI-powered personalized challenges and community action.
           </p>
 
           {/* Action Buttons */}

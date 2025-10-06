@@ -16,17 +16,20 @@ export interface MockSubscriptionStatus {
 export class MockPaymentService {
   private static subscriptions = new Map<string, MockSubscriptionStatus>();
   
-  // Mock price IDs from our Stripe products
+  // Mock price IDs from our Stripe products (Wellagora Credit System)
+  // 1 credit = 50,000 HUF = 125 EUR = 1 full challenge campaign sponsorship
   static readonly PRICE_IDS = {
-    bronze: "price_mock_bronze_149",
-    silver: "price_mock_silver_299", 
-    gold: "price_mock_gold_499"
+    small: "price_mock_small_100k",      // 100,000 HUF / 250 EUR = 2 credits
+    medium: "price_mock_medium_250k",    // 250,000 HUF / 625 EUR = 5 credits
+    large: "price_mock_large_500k",      // 500,000 HUF / 1,250 EUR = 10 credits
+    enterprise: "price_mock_enterprise"  // Custom pricing = 20+ credits
   };
 
   static readonly PRODUCT_IDS = {
-    bronze: "prod_mock_bronze",
-    silver: "prod_mock_silver",
-    gold: "prod_mock_gold"
+    small: "prod_mock_small",
+    medium: "prod_mock_medium",
+    large: "prod_mock_large",
+    enterprise: "prod_mock_enterprise"
   };
 
   // Mock checkout creation
@@ -62,26 +65,31 @@ export class MockPaymentService {
     let credits: number;
     
     switch (priceId) {
-      case this.PRICE_IDS.bronze:
-        productId = this.PRODUCT_IDS.bronze;
-        packageLevel = 'bronze';
-        credits = 500;
+      case this.PRICE_IDS.small:
+        productId = this.PRODUCT_IDS.small;
+        packageLevel = 'small';
+        credits = 2; // 2 challenge campaigns
         break;
-      case this.PRICE_IDS.silver:
-        productId = this.PRODUCT_IDS.silver;
-        packageLevel = 'silver';
-        credits = 1500;
+      case this.PRICE_IDS.medium:
+        productId = this.PRODUCT_IDS.medium;
+        packageLevel = 'medium';
+        credits = 5; // 5 challenge campaigns
         break;
-      case this.PRICE_IDS.gold:
-        productId = this.PRODUCT_IDS.gold;
-        packageLevel = 'gold';
-        credits = 3000;
+      case this.PRICE_IDS.large:
+        productId = this.PRODUCT_IDS.large;
+        packageLevel = 'large';
+        credits = 10; // 10 challenge campaigns
+        break;
+      case this.PRICE_IDS.enterprise:
+        productId = this.PRODUCT_IDS.enterprise;
+        packageLevel = 'enterprise';
+        credits = 20; // 20+ challenge campaigns
         break;
       default:
         throw new Error('Invalid price ID');
     }
     
-    // Set subscription
+    // Set subscription (1 credit = 50,000 HUF = 1 challenge campaign)
     this.subscriptions.set(userEmail, {
       subscribed: true,
       product_id: productId,

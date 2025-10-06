@@ -51,10 +51,13 @@ const SponsorshipPackageSelector: React.FC = () => {
             </div>
             <CardTitle className="text-xl">{tier.name}</CardTitle>
             <div className="text-3xl font-bold text-primary">
-              {tier.price} <span className="text-lg font-normal text-muted-foreground">{tier.currency}/hó</span>
+              {tier.priceHuf.toLocaleString()} <span className="text-lg font-normal text-muted-foreground">HUF/hó</span>
+            </div>
+            <div className="text-xl font-semibold text-secondary">
+              {tier.priceEur} <span className="text-sm font-normal text-muted-foreground">EUR/hó</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              {tier.credits.toLocaleString()} kredit/hó
+              {tier.credits} kredit/hó · {tier.idealFor}
             </p>
           </CardHeader>
           

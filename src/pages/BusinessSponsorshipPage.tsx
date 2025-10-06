@@ -362,7 +362,7 @@ const BusinessSponsorshipPage = () => {
                               const packageKeys = Object.keys(packageTiers);
                               const randomPackage = packageKeys[Math.floor(Math.random() * packageKeys.length)];
                               const tier = packageTiers[randomPackage as keyof typeof packageTiers];
-                              if (confirm(`Szponzorálás a ${tier.name} csomaggal (${tier.price} ${tier.currency})?`)) {
+                              if (confirm(`Szponzorálás a ${tier.name} csomaggal (${tier.priceHuf.toLocaleString()} HUF / ${tier.priceEur} EUR)?`)) {
                                 createCheckout(tier.price_id);
                               }
                             }}

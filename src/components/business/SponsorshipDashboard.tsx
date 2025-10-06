@@ -162,11 +162,13 @@ const SponsorshipDashboard: React.FC<SponsorshipDashboardProps> = ({ companyId }
                     {pkg.name}
                   </Badge>
                   <div className="mt-2">
-                    <span className="text-2xl font-bold">{pkg.price.toLocaleString()}</span>
-                    <span className="text-muted-foreground"> Ft</span>
+                    <span className="text-2xl font-bold">{pkg.priceHuf.toLocaleString()}</span>
+                    <span className="text-muted-foreground"> HUF / </span>
+                    <span className="text-xl font-bold">{pkg.priceEur}</span>
+                    <span className="text-muted-foreground"> EUR</span>
                   </div>
                   <p className="text-sm text-muted-foreground mt-1">
-                    {pkg.duration} hónap / {pkg.creditsIncluded.toLocaleString()} kredit
+                    {pkg.duration} / {pkg.credits} kredit
                   </p>
                 </div>
                 
