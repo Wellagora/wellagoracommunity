@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { CheckCircle, XCircle, Clock, Sparkles, TrendingUp, Users } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Sparkles, TrendingUp, Users, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import UserRoleManager from './UserRoleManager';
@@ -218,15 +218,26 @@ const AdminDashboard = () => {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
+      <div className="flex items-center justify-between mb-6">
+        <Button
+          variant="ghost"
+          onClick={() => navigate('/')}
+          className="gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Vissza a Platformra
+        </Button>
+        <Badge variant="outline" className="text-lg">
+          <Sparkles className="w-4 h-4 mr-2" />
+          AI-powered
+        </Badge>
+      </div>
+      
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
           <p className="text-muted-foreground">Kihívások moderálása és platform statisztikák</p>
         </div>
-        <Badge variant="outline" className="text-lg">
-          <Sparkles className="w-4 h-4 mr-2" />
-          AI-powered
-        </Badge>
       </div>
 
       {/* Stats Cards */}
