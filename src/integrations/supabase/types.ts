@@ -373,7 +373,18 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      my_roles: {
+        Row: {
+          role: Database["public"]["Enums"]["app_role"] | null
+        }
+        Insert: {
+          role?: Database["public"]["Enums"]["app_role"] | null
+        }
+        Update: {
+          role?: Database["public"]["Enums"]["app_role"] | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       get_current_user_role: {

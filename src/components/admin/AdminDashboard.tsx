@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { CheckCircle, XCircle, Clock, Sparkles, TrendingUp, Users } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import UserRoleManager from './UserRoleManager';
 
 interface PendingChallenge {
   id: string;
@@ -36,6 +37,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const [pendingChallenges, setPendingChallenges] = useState<PendingChallenge[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasAdminAccess, setHasAdminAccess] = useState(false);
   const [stats, setStats] = useState({
     totalChallenges: 0,
     activeChallenges: 0,
@@ -43,23 +45,35 @@ const AdminDashboard = () => {
     totalImpact: 0
   });
 
-  // Check admin access
+  // Check admin access - SECURITY: Uses user_roles table, not profile
   useEffect(() => {
-    if (!user) {
-      navigate('/auth');
-      return;
-    }
+    const checkAccess = async () => {
+      if (!user) {
+        navigate('/auth');
+        return;
+      }
 
-    // Only super_admin, admin, or government can access
-    if (profile?.user_role !== 'government') {
-      toast({
-        title: 'Hozzáférés megtagadva',
-        description: 'Csak adminisztrátorok érhetik el ezt az oldalt.',
-        variant: 'destructive'
-      });
-      navigate('/dashboard');
-    }
-  }, [user, profile, navigate, toast]);
+      // Check if user has admin role in user_roles table
+      const { data: roles } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .in('role', ['super_admin', 'admin', 'government']);
+
+      if (!roles || roles.length === 0) {
+        toast({
+          title: 'Hozzáférés megtagadva',
+          description: 'Csak adminisztrátorok érhetik el ezt az oldalt.',
+          variant: 'destructive'
+        });
+        navigate('/dashboard');
+      } else {
+        setHasAdminAccess(true);
+      }
+    };
+
+    checkAccess();
+  }, [user, navigate, toast]);
 
   useEffect(() => {
     loadData();
@@ -194,7 +208,7 @@ const AdminDashboard = () => {
     return colors[difficulty] || 'bg-gray-100 text-gray-800';
   };
 
-  if (loading) {
+  if (!hasAdminAccess || loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -265,6 +279,7 @@ const AdminDashboard = () => {
             Jóváhagyásra vár ({pendingChallenges.length})
           </TabsTrigger>
           <TabsTrigger value="active">Aktív kihívások</TabsTrigger>
+          <TabsTrigger value="users">Felhasználók</TabsTrigger>
           <TabsTrigger value="analytics">Analitika</TabsTrigger>
         </TabsList>
 
@@ -361,6 +376,10 @@ const AdminDashboard = () => {
               <p className="text-muted-foreground">Hamarosan...</p>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="users">
+          <UserRoleManager />
         </TabsContent>
 
         <TabsContent value="analytics">
