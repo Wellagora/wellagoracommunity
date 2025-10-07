@@ -185,30 +185,34 @@ export const challenges: Challenge[] = [
   },
   // Additional challenges for expanded catalog
   {
-    id: "solar-panel-install",
-    titleKey: "challenges.solarPanel.title", 
-    descriptionKey: "challenges.solarPanel.description",
-    longDescriptionKey: "challenges.solarPanel.description",
+    id: "energy-saving-home",
+    titleKey: "challenges.energySaving.title", 
+    descriptionKey: "challenges.energySaving.description",
+    longDescriptionKey: "challenges.energySaving.description",
     category: "energy",
-    difficulty: "advanced",
-    duration: "8 hét",
-    pointsReward: 800,
-    participants: 892,
-    completionRate: 65,
-    stepsKeys: [],
-    tipsKeys: [],
+    difficulty: "beginner",
+    duration: "2 hét",
+    pointsReward: 200,
+    participants: 1892,
+    completionRate: 85,
+    stepsKeys: [
+      "challenges.energySaving.steps.led",
+      "challenges.energySaving.steps.unplug",
+      "challenges.energySaving.steps.heating",
+      "challenges.energySaving.steps.windows"
+    ],
+    tipsKeys: [
+      "challenges.energySaving.tips.meter",
+      "challenges.energySaving.tips.timer"
+    ],
     impact: {
-      co2Saved: 1200,
-      treesEquivalent: 54
+      co2Saved: 25,
+      treesEquivalent: 2
     },
     participants_preview: [
-      { id: "1", name: "Gábor Kiss", avatar: "/api/placeholder/32/32" },
-      { id: "2", name: "Éva Molnár", avatar: "/api/placeholder/32/32" }
-    ],
-    sponsor: {
-      name: "SolarTech Kft.",
-      logo: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=100&h=100&fit=crop&crop=center"
-    }
+      { id: "1", name: "Gábor Kiss", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face" },
+      { id: "2", name: "Éva Molnár", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face" }
+    ]
   },
   {
     id: "bike-to-work-month",
@@ -256,26 +260,35 @@ export const challenges: Challenge[] = [
     ]
   },
   {
-    id: "community-garden",
-    titleKey: "challenges.communityGarden.title",
-    descriptionKey: "challenges.communityGarden.description",
-    longDescriptionKey: "challenges.communityGarden.description",
-    category: "biodiversity",
-    difficulty: "intermediate",
-    duration: "6 hét", 
-    pointsReward: 400,
-    participants: 1289,
-    completionRate: 76,
-    stepsKeys: [],
-    tipsKeys: [],
+    id: "community-cleanup",
+    titleKey: "challenges.communityCleanup.title",
+    descriptionKey: "challenges.communityCleanup.description",
+    longDescriptionKey: "challenges.communityCleanup.description",
+    category: "community",
+    difficulty: "beginner",
+    duration: "1 nap", 
+    pointsReward: 150,
+    participants: 2289,
+    completionRate: 92,
+    stepsKeys: [
+      "challenges.communityCleanup.steps.find_group",
+      "challenges.communityCleanup.steps.supplies",
+      "challenges.communityCleanup.steps.location",
+      "challenges.communityCleanup.steps.cleanup",
+      "challenges.communityCleanup.steps.share"
+    ],
+    tipsKeys: [
+      "challenges.communityCleanup.tips.safety",
+      "challenges.communityCleanup.tips.friends"
+    ],
     impact: {
-      co2Saved: 120,
-      treesEquivalent: 5
+      co2Saved: 10,
+      treesEquivalent: 1
     },
     participants_preview: [
-      { id: "1", name: "Ildikó Papp", avatar: "/api/placeholder/32/32" },
-      { id: "2", name: "József Takács", avatar: "/api/placeholder/32/32" },
-      { id: "3", name: "Viktória Németh", avatar: "/api/placeholder/32/32" }
+      { id: "1", name: "Ildikó Papp", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face" },
+      { id: "2", name: "József Takács", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face" },
+      { id: "3", name: "Viktória Németh", avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" }
     ],
     sponsor: {
       name: "GreenSpaces Ltd.",
@@ -305,75 +318,125 @@ export const challenges: Challenge[] = [
     ]
   },
   {
-    id: "green-innovation-hackathon",
-    titleKey: "challenges.greenHackathon.title", 
-    descriptionKey: "challenges.greenHackathon.description",
-    longDescriptionKey: "challenges.greenHackathon.description",
-    category: "innovation",
-    difficulty: "expert",
+    id: "reusable-containers",
+    titleKey: "challenges.reusableContainers.title", 
+    descriptionKey: "challenges.reusableContainers.description",
+    longDescriptionKey: "challenges.reusableContainers.description",
+    category: "waste",
+    difficulty: "beginner",
     duration: "1 hét",
-    pointsReward: 1000,
-    participants: 456,
-    completionRate: 42,
-    stepsKeys: [],
-    tipsKeys: [],
+    pointsReward: 100,
+    participants: 3156,
+    completionRate: 88,
+    stepsKeys: [
+      "challenges.reusableContainers.steps.bottle",
+      "challenges.reusableContainers.steps.coffee_cup",
+      "challenges.reusableContainers.steps.shopping_bag",
+      "challenges.reusableContainers.steps.food_container"
+    ],
+    tipsKeys: [
+      "challenges.reusableContainers.tips.car",
+      "challenges.reusableContainers.tips.remind"
+    ],
     impact: {
-      co2Saved: 500,
-      treesEquivalent: 23
+      co2Saved: 8,
+      treesEquivalent: 1
     },
     participants_preview: [
-      { id: "1", name: "Márton Gál", avatar: "/api/placeholder/32/32" },
-      { id: "2", name: "Krisztina Farkas", avatar: "/api/placeholder/32/32" },
-      { id: "3", name: "Norbert Simon", avatar: "/api/placeholder/32/32" }
+      { id: "1", name: "Márton Gál", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" },
+      { id: "2", name: "Krisztina Farkas", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face" },
+      { id: "3", name: "Norbert Simon", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face" }
     ]
   },
   {
-    id: "circular-economy-workshop",
-    titleKey: "challenges.circularWorkshop.title",
-    descriptionKey: "challenges.circularWorkshop.description",
-    longDescriptionKey: "challenges.circularWorkshop.description", 
-    category: "circular-economy",
-    difficulty: "intermediate",
-    duration: "2 hét",
-    pointsReward: 350,
-    participants: 892,
-    completionRate: 71,
-    stepsKeys: [],
-    tipsKeys: [],
+    id: "local-food-week",
+    titleKey: "challenges.localFood.title",
+    descriptionKey: "challenges.localFood.description",
+    longDescriptionKey: "challenges.localFood.description", 
+    category: "food",
+    difficulty: "beginner",
+    duration: "1 hét",
+    pointsReward: 180,
+    participants: 1892,
+    completionRate: 82,
+    stepsKeys: [
+      "challenges.localFood.steps.farmers_market",
+      "challenges.localFood.steps.local_shops",
+      "challenges.localFood.steps.seasonal",
+      "challenges.localFood.steps.cook"
+    ],
+    tipsKeys: [
+      "challenges.localFood.tips.list",
+      "challenges.localFood.tips.producers"
+    ],
     impact: {
-      co2Saved: 80,
-      treesEquivalent: 4
+      co2Saved: 18,
+      treesEquivalent: 1
     },
     participants_preview: [
-      { id: "1", name: "Eszter Rácz", avatar: "/api/placeholder/32/32" },
-      { id: "2", name: "Zsolt Pintér", avatar: "/api/placeholder/32/32" }
-    ],
-    sponsor: {
-      name: "CircularHub",
-      logo: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center"
-    }
+      { id: "1", name: "Eszter Rácz", avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" },
+      { id: "2", name: "Zsolt Pintér", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face" }
+    ]
   },
   {
-    id: "green-finance-literacy",
-    titleKey: "challenges.greenFinance.title",
-    descriptionKey: "challenges.greenFinance.description",
-    longDescriptionKey: "challenges.greenFinance.description",
-    category: "green-finance", 
-    difficulty: "advanced",
-    duration: "5 hét",
-    pointsReward: 450,
-    participants: 634,
-    completionRate: 67,
-    stepsKeys: [],
-    tipsKeys: [],
+    id: "public-transport-week",
+    titleKey: "challenges.publicTransport.title",
+    descriptionKey: "challenges.publicTransport.description",
+    longDescriptionKey: "challenges.publicTransport.description",
+    category: "transport", 
+    difficulty: "beginner",
+    duration: "1 hét",
+    pointsReward: 180,
+    participants: 2634,
+    completionRate: 79,
+    stepsKeys: [
+      "challenges.publicTransport.steps.routes",
+      "challenges.publicTransport.steps.pass",
+      "challenges.publicTransport.steps.daily",
+      "challenges.publicTransport.steps.track"
+    ],
+    tipsKeys: [
+      "challenges.publicTransport.tips.app",
+      "challenges.publicTransport.tips.combine"
+    ],
     impact: {
-      co2Saved: 200,
-      treesEquivalent: 9
+      co2Saved: 35,
+      treesEquivalent: 2
     },
     participants_preview: [
-      { id: "1", name: "Péter Horváth", avatar: "/api/placeholder/32/32" },
-      { id: "2", name: "Katalin Novák", avatar: "/api/placeholder/32/32" },
-      { id: "3", name: "Gergő Barna", avatar: "/api/placeholder/32/32" }
+      { id: "1", name: "Péter Horváth", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" },
+      { id: "2", name: "Katalin Novák", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face" },
+      { id: "3", name: "Gergő Barna", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face" }
+    ]
+  },
+  {
+    id: "neighborhood-sharing",
+    titleKey: "challenges.neighborhoodSharing.title",
+    descriptionKey: "challenges.neighborhoodSharing.description",
+    longDescriptionKey: "challenges.neighborhoodSharing.description",
+    category: "community", 
+    difficulty: "beginner",
+    duration: "2 hét",
+    pointsReward: 200,
+    participants: 1456,
+    completionRate: 84,
+    stepsKeys: [
+      "challenges.neighborhoodSharing.steps.tools",
+      "challenges.neighborhoodSharing.steps.group",
+      "challenges.neighborhoodSharing.steps.share",
+      "challenges.neighborhoodSharing.steps.borrow"
+    ],
+    tipsKeys: [
+      "challenges.neighborhoodSharing.tips.platform",
+      "challenges.neighborhoodSharing.tips.trust"
+    ],
+    impact: {
+      co2Saved: 22,
+      treesEquivalent: 1
+    },
+    participants_preview: [
+      { id: "1", name: "Mónika Tóth", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face" },
+      { id: "2", name: "András Szabó", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face" }
     ]
   }
 ];
