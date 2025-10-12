@@ -112,45 +112,45 @@ const DashboardPage = () => {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="relative py-20 bg-card/20 overflow-hidden">
+      <section className="relative py-8 sm:py-16 lg:py-20 bg-card/20 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center animate-fade-up-3d">
-            <h1 className="text-4xl lg:text-6xl font-bold text-foreground mb-6">
+            <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-foreground mb-3 sm:mb-6">
               {t('dashboard.title')}
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-6 sm:mb-8 px-4">
               {t('dashboard.subtitle')}
             </p>
-            <div className="flex items-center justify-center space-x-8">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
               <div className="flex items-center space-x-2">
-                <TrendingUp className="w-5 h-5 text-success" />
-                <span className="text-foreground font-medium">{t('dashboard.monthly_growth')}</span>
+                <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-success" />
+                <span className="text-foreground font-medium text-sm sm:text-base">{t('dashboard.monthly_growth')}</span>
               </div>
               <div className="flex items-center space-x-2">
-                <Award className="w-5 h-5 text-warning" />
-                <span className="text-foreground font-medium">{t('dashboard.new_badges')}</span>
+                <Award className="w-4 h-4 sm:w-5 sm:h-5 text-warning" />
+                <span className="text-foreground font-medium text-sm sm:text-base">{t('dashboard.new_badges')}</span>
               </div>
             </div>
           </div>
         </div>
       </section>
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
         {/* Role Selector */}
-        <Card3D className="mb-8 bg-card/80 backdrop-blur-sm border-border/50">
-          <CardContent className="p-8">
-            <div className="flex items-center justify-between mb-6">
+        <Card3D className="mb-6 sm:mb-8 bg-card/80 backdrop-blur-sm border-border/50">
+          <CardContent className="p-4 sm:p-6 lg:p-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-3">
               <div>
-                <h2 className="text-2xl font-bold text-foreground mb-2">{t('dashboard.type.title')}</h2>
-                <p className="text-muted-foreground">{t('dashboard.type.subtitle')}</p>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground mb-1 sm:mb-2">{t('dashboard.type.title')}</h2>
+                <p className="text-sm sm:text-base text-muted-foreground">{t('dashboard.type.subtitle')}</p>
               </div>
-              <Badge className={`bg-gradient-to-r ${getCurrentRoleGradient()} text-white px-4 py-2 text-sm font-medium shadow-premium`}>
+              <Badge className={`bg-gradient-to-r ${getCurrentRoleGradient()} text-white px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium shadow-premium`}>
                 {t(`dashboard.roles.${currentRole}`)}
               </Badge>
             </div>
             
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
               {roles.map((role) => {
                 const IconComponent = role.icon;
                 const isActive = currentRole === role.value;
@@ -202,19 +202,22 @@ const DashboardPage = () => {
         </Card3D>
 
         {/* Dashboard Tabs */}
-        <Tabs defaultValue="progress" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-3 bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-2">
-            <TabsTrigger value="analytics" className="flex items-center space-x-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-xl transition-all duration-300">
-              <BarChart3 className="w-4 h-4" />
-              <span>{t('dashboard.tabs.analytics')}</span>
+        <Tabs defaultValue="progress" className="space-y-6 sm:space-y-8">
+          <TabsList className="grid w-full grid-cols-3 bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl p-1 sm:p-2">
+            <TabsTrigger value="analytics" className="flex items-center justify-center space-x-1 sm:space-x-2 text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-lg sm:rounded-xl transition-all duration-300">
+              <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">{t('dashboard.tabs.analytics')}</span>
+              <span className="sm:hidden">Analytics</span>
             </TabsTrigger>
-            <TabsTrigger value="progress" className="flex items-center space-x-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-xl transition-all duration-300">
-              <Target className="w-4 h-4" />
-              <span>{t('dashboard.tabs.progress')}</span>
+            <TabsTrigger value="progress" className="flex items-center justify-center space-x-1 sm:space-x-2 text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-lg sm:rounded-xl transition-all duration-300">
+              <Target className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">{t('dashboard.tabs.progress')}</span>
+              <span className="sm:hidden">Progress</span>
             </TabsTrigger>
-            <TabsTrigger value="rewards" className="flex items-center space-x-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-xl transition-all duration-300">
-              <Trophy className="w-4 h-4" />
-              <span>{t('dashboard.tabs.rewards')}</span>
+            <TabsTrigger value="rewards" className="flex items-center justify-center space-x-1 sm:space-x-2 text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-lg sm:rounded-xl transition-all duration-300">
+              <Trophy className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">{t('dashboard.tabs.rewards')}</span>
+              <span className="sm:hidden">Rewards</span>
             </TabsTrigger>
           </TabsList>
 

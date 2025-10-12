@@ -110,15 +110,15 @@ const AboutPage = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <main className="pt-16">
+      <main className="pt-14 sm:pt-16">
         {/* Hero Section */}
-        <section className="bg-gradient-primary text-primary-foreground py-20">
+        <section className="bg-gradient-primary text-primary-foreground py-12 sm:py-16 lg:py-20">
           <div className="container mx-auto px-4 text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
               Building a Sustainable Future
               <span className="block text-primary-glow">Together</span>
             </h1>
-            <p className="text-xl md:text-2xl max-w-3xl mx-auto opacity-90">
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto opacity-90 px-4">
               We're on a mission to make sustainability action accessible, engaging, 
               and effective for individuals, businesses, and communities worldwide.
             </p>
@@ -126,9 +126,9 @@ const AboutPage = () => {
         </section>
 
         {/* Mission & Vision */}
-        <section className="py-16">
+        <section className="py-8 sm:py-12 lg:py-16">
           <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+            <div className="grid sm:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 max-w-6xl mx-auto">
               <Card className="bg-gradient-to-br from-primary/5 to-primary-glow/5 border-primary/20">
                 <CardHeader>
                   <Target className="w-12 h-12 text-primary mb-4" />
@@ -161,16 +161,16 @@ const AboutPage = () => {
         </section>
 
         {/* Impact Statistics */}
-        <section className="py-16 bg-muted/30">
+        <section className="py-8 sm:py-12 lg:py-16 bg-muted/30">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Global Impact</h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <div className="text-center mb-8 sm:mb-12">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Our Global Impact</h2>
+              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
                 Together, we're creating measurable change for our planet
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 max-w-4xl mx-auto">
               {impactStats.map((stat, index) => (
                 <Card key={index} className="text-center">
                   <CardContent className="pt-6">
@@ -243,16 +243,16 @@ const AboutPage = () => {
         </section>
 
         {/* Team */}
-        <section className="py-16">
+        <section className="py-8 sm:py-12 lg:py-16">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Meet Our Team</h2>
-              <p className="text-xl text-muted-foreground">
+            <div className="text-center mb-8 sm:mb-12">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Meet Our Team</h2>
+              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground px-4">
                 Passionate individuals dedicated to climate action
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
               {teamMembers.map((member, index) => (
                 <Card key={index} className="text-center">
                   <CardHeader>

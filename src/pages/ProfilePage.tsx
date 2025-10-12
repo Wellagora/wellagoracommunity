@@ -219,9 +219,9 @@ const ProfilePage = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6 sm:mb-8">
           <div className="relative inline-block mb-6">
             <Avatar className="w-24 h-24 shadow-premium">
               <AvatarImage src={profile?.avatar_url} alt="Profilkép" />
@@ -246,10 +246,10 @@ const ProfilePage = () => {
             )}
           </div>
           
-          <h1 className="text-3xl font-bold text-foreground mb-2">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground mb-2">
             Profil Szerkesztése
           </h1>
-          <div className="flex items-center justify-center space-x-2">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:space-x-2">
             <Badge className={`bg-gradient-to-r ${getRoleGradient()} text-white`}>
               {getRoleIcon()}
               <span className="ml-2">{getRoleLabel()}</span>

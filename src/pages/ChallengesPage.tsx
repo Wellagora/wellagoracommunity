@@ -163,19 +163,19 @@ const ChallengesPage = () => {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="relative py-20 bg-card/20 overflow-hidden">
+      <section className="relative py-8 sm:py-16 lg:py-20 bg-card/20 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center animate-fade-up-3d">
-            <h1 className="text-4xl lg:text-6xl font-bold text-foreground mb-6">
+            <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-foreground mb-3 sm:mb-6">
               {t('nav.challenges')}
             </h1>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto mb-8 px-4">
+            <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-6 sm:mb-8 px-4">
               {t('challenges.hero_subtitle')}
             </p>
             
             {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 max-w-2xl mx-auto">
               <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
                 <div className="text-3xl font-bold text-foreground mb-1">{challenges.length}</div>
                 <div className="text-muted-foreground">Aktív Kihívások</div>
@@ -197,9 +197,9 @@ const ChallengesPage = () => {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
         {/* Search and Filters */}
-        <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6 mb-8">
+        <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-3 sm:p-6 mb-6 sm:mb-8">
           <div className="flex flex-col lg:flex-row gap-4 items-center">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -245,17 +245,17 @@ const ChallengesPage = () => {
           </div>
         </Card3D>
 
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <Button 
             onClick={() => navigate("/dashboard/handprint")}
-            className="bg-gradient-to-r from-primary to-success hover:shadow-lg"
+            className="w-full sm:w-auto bg-gradient-to-r from-primary to-success hover:shadow-lg text-sm sm:text-base"
           >
-            <Calculator className="w-4 h-4 mr-2" />
+            <Calculator className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
             Kéznyom Számító & Perszonalizáció
           </Button>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {filteredChallenges.map((challenge, index) => (
             <Card3D 
               key={challenge.id} 

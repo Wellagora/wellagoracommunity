@@ -186,50 +186,51 @@ const CommunityHub = () => {
   return (
     <div className="max-w-7xl mx-auto space-y-8">
       {/* Header */}
-      <div className="text-center">
-        <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+      <div className="text-center px-4">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3 sm:mb-4">
           Community Hub
         </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+        <p className="text-sm sm:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto">
           Connect with fellow sustainability champions, share knowledge, and collaborate on challenges
         </p>
       </div>
 
       {/* Search and Actions */}
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-        <div className="relative flex-1 max-w-md">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between px-4">
+        <div className="relative flex-1 max-w-md w-full">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search forums, posts, and discussions..."
+            placeholder="Search forums, posts..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"
           />
         </div>
         <div className="flex space-x-2">
-          <Button variant="outline">
-            <Calendar className="w-4 h-4 mr-2" />
-            Events
+          <Button variant="outline" className="flex-1 sm:flex-none text-sm">
+            <Calendar className="w-4 h-4 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">Events</span>
           </Button>
-          <Button className="bg-gradient-primary">
-            <Plus className="w-4 h-4 mr-2" />
-            New Post
+          <Button className="flex-1 sm:flex-none bg-gradient-primary text-sm">
+            <Plus className="w-4 h-4 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">New Post</span>
+            <span className="sm:hidden">Post</span>
           </Button>
         </div>
       </div>
 
-      <Tabs defaultValue="forums" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="forums">Forums</TabsTrigger>
-          <TabsTrigger value="events">Events</TabsTrigger>
-          <TabsTrigger value="members">Members</TabsTrigger>
-          <TabsTrigger value="groups">Groups</TabsTrigger>
+      <Tabs defaultValue="forums" className="space-y-4 sm:space-y-6 px-4">
+        <TabsList className="grid w-full grid-cols-4 h-auto">
+          <TabsTrigger value="forums" className="text-xs sm:text-sm px-2 sm:px-4">Forums</TabsTrigger>
+          <TabsTrigger value="events" className="text-xs sm:text-sm px-2 sm:px-4">Events</TabsTrigger>
+          <TabsTrigger value="members" className="text-xs sm:text-sm px-2 sm:px-4">Members</TabsTrigger>
+          <TabsTrigger value="groups" className="text-xs sm:text-sm px-2 sm:px-4">Groups</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="forums" className="space-y-6">
-          <div className="grid lg:grid-cols-3 gap-8">
+        <TabsContent value="forums" className="space-y-4 sm:space-y-6">
+          <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
             {/* Forums List */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-2 space-y-4 sm:space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold">Discussion Forums</h2>
                 <Badge className="bg-success/10 text-success">
@@ -309,8 +310,8 @@ const CommunityHub = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="events" className="space-y-6">
-          <div className="grid lg:grid-cols-3 gap-6">
+        <TabsContent value="events" className="space-y-4 sm:space-y-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {upcomingEvents.map((event) => (
               <Card key={event.id} className="hover:shadow-eco transition-smooth">
                 <CardHeader>
