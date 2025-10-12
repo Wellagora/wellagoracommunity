@@ -32,29 +32,29 @@ function App() {
       <AuthProvider>
         <SubscriptionProvider>
           <LanguageProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<AuthPage />} />
-              <Route path="/dashboard/handprint" element={<HandprintPage />} />
-              <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/admin" element={<AdminDashboardPage />} />
-              <Route path="/dynamic-regional" element={<DynamicRegionalDashboard />} />
-              <Route path="/community" element={<Community />} />
-              <Route path="/ai-assistant" element={<AIAssistantPage />} />
-              <Route path="/challenges" element={<ChallengesPage />} />
-              <Route path="/challenges/:challengeId" element={<ChallengeDetailPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/organization" element={<OrganizationDashboard />} />
-              <Route path="/organization/:organizationId" element={<PublicOrganizationPage />} />
-              <Route path="/matching" element={<MatchingPage />} />
-              <Route path="/business-sponsorship" element={<BusinessSponsorshipPage />} />
-              <Route path="/interactive-map" element={<InteractiveMapPage />} />
-            </Routes>
-            <Toaster />
-            <SonnerToaster />
-          </BrowserRouter>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/auth" element={<AuthPage />} />
+                <Route path="/dashboard/handprint" element={<HandprintPage />} />
+                <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/admin" element={<AdminDashboardPage />} />
+                <Route path="/dynamic-regional" element={<DynamicRegionalDashboard />} />
+                <Route path="/community" element={<Community />} />
+                <Route path="/ai-assistant" element={<AIAssistantPage />} />
+                <Route path="/challenges" element={<ChallengesPage />} />
+                <Route path="/challenges/:challengeId" element={<ChallengeDetailPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/organization" element={<OrganizationDashboard />} />
+                <Route path="/organization/:organizationId" element={<PublicOrganizationPage />} />
+                <Route path="/matching" element={<MatchingPage />} />
+                <Route path="/business-sponsorship" element={<BusinessSponsorshipPage />} />
+                <Route path="/interactive-map" element={<InteractiveMapPage />} />
+              </Routes>
+              <Toaster />
+              <SonnerToaster />
+            </BrowserRouter>
           </LanguageProvider>
         </SubscriptionProvider>
       </AuthProvider>
