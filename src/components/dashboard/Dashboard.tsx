@@ -81,14 +81,14 @@ const Dashboard = ({ userRole }: DashboardProps) => {
     activeChallenges: [
       {
         id: "1",
-        title: "Green Energy Switch",
+        titleKey: "dashboard.challenges.green_energy_switch",
         progress: 65,
         dueDate: "Mar 30",
         category: "energy"
       },
       {
         id: "2", 
-        title: "Sustainable Transport Week",
+        titleKey: "dashboard.challenges.sustainable_transport_week",
         progress: 40,
         dueDate: "Mar 25",
         category: "transport"
@@ -305,12 +305,12 @@ const Dashboard = ({ userRole }: DashboardProps) => {
           {citizenData.activeChallenges.map((challenge) => (
             <div key={challenge.id} className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 p-4 border rounded-lg">
               <div className="flex-1 w-full">
-                <h4 className="text-sm sm:text-base font-medium">{challenge.title}</h4>
+                <h4 className="text-sm sm:text-base font-medium">{t(challenge.titleKey)}</h4>
                 <div className="flex items-center space-x-4 mt-2">
                   <Progress value={challenge.progress} className="flex-1" />
                   <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">{challenge.progress}%</span>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">Due: {challenge.dueDate}</p>
+                <p className="text-xs text-muted-foreground mt-1">{t('dashboard.labels.due')}: {challenge.dueDate}</p>
               </div>
               <Button variant="outline" size="sm" className="text-xs sm:text-sm w-full sm:w-auto">{t('dashboard.continue')}</Button>
             </div>
@@ -334,7 +334,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
       challenges: [
         {
           id: "1",
-          title: "Green Office Initiative",
+          titleKey: "dashboard.challenges.green_office_initiative",
           type: "sponsored",
           participants: 342,
           co2Saved: 18.5,
@@ -343,7 +343,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
         },
         {
           id: "2",
-          title: "Bike to Work Campaign",
+          titleKey: "dashboard.challenges.bike_to_work_campaign",
           type: "created",
           participants: 156,
           co2Saved: 8.2,
@@ -352,7 +352,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
         },
         {
           id: "3",
-          title: "Community Garden Project",
+          titleKey: "dashboard.challenges.community_garden_project",
           type: "team_joins",
           participants: 89,
           co2Saved: 4.3,
@@ -361,9 +361,9 @@ const Dashboard = ({ userRole }: DashboardProps) => {
         }
       ],
       partnerships: [
-        { id: "1", name: "Green Earth NGO", type: "ngo", projects: 5, impact: 92 },
-        { id: "2", name: "City Sustainability Office", type: "government", projects: 3, impact: 88 },
-        { id: "3", name: "Local Tech Hub", type: "business", projects: 4, impact: 85 }
+        { id: "1", nameKey: "dashboard.partnerships.green_earth_ngo", type: "ngo", projects: 5, impact: 92 },
+        { id: "2", nameKey: "dashboard.partnerships.city_sustainability_office", type: "government", projects: 3, impact: 88 },
+        { id: "3", nameKey: "dashboard.partnerships.local_tech_hub", type: "business", projects: 4, impact: 85 }
       ]
     };
 
@@ -438,18 +438,18 @@ const Dashboard = ({ userRole }: DashboardProps) => {
             {/* Quick Actions */}
             <Card className="bg-gradient-to-r from-primary/10 to-accent/10">
               <CardContent className="p-4">
-                <div className="flex flex-wrap gap-2">
+                 <div className="flex flex-wrap gap-2">
                   <Button size="sm" className="flex-1 min-w-[140px]">
                     <Target className="w-4 h-4 mr-2" />
-                    Create Challenge
+                    {t('dashboard.actions.create_challenge')}
                   </Button>
                   <Button size="sm" variant="outline" className="flex-1 min-w-[140px]">
                     <Award className="w-4 h-4 mr-2" />
-                    Sponsor Challenge
+                    {t('dashboard.actions.sponsor_challenge')}
                   </Button>
                   <Button size="sm" variant="outline" className="flex-1 min-w-[140px]">
                     <Users className="w-4 h-4 mr-2" />
-                    Mobilize Team
+                    {t('dashboard.actions.mobilize_team')}
                   </Button>
                 </div>
               </CardContent>
@@ -463,15 +463,15 @@ const Dashboard = ({ userRole }: DashboardProps) => {
                     <div className="flex items-start justify-between mb-4">
                       <div>
                         <div className="flex items-center gap-2 mb-2">
-                          <h4 className="font-semibold">{challenge.title}</h4>
+                          <h4 className="font-semibold">{t(challenge.titleKey)}</h4>
                           <Badge variant={challenge.type === "sponsored" ? "default" : challenge.type === "created" ? "secondary" : "outline"}>
-                            {challenge.type === "sponsored" ? "Sponsored" : challenge.type === "created" ? "Created" : "Team Joins"}
+                            {t(`dashboard.badge.${challenge.type}`)}
                           </Badge>
                         </div>
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <Users className="w-4 h-4" />
-                            {challenge.participants} participants
+                            {challenge.participants} {t('dashboard.labels.participants')}
                           </span>
                           <span className="flex items-center gap-1">
                             <TreePine className="w-4 h-4" />
@@ -480,12 +480,12 @@ const Dashboard = ({ userRole }: DashboardProps) => {
                         </div>
                       </div>
                       <Badge variant={challenge.status === "active" ? "default" : "secondary"}>
-                        {challenge.status}
+                        {t(`dashboard.status.${challenge.status}`)}
                       </Badge>
                     </div>
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Progress</span>
+                        <span className="text-muted-foreground">{t('dashboard.labels.progress')}</span>
                         <span className="font-medium">{challenge.progress}%</span>
                       </div>
                       <Progress value={challenge.progress} />
@@ -507,12 +507,12 @@ const Dashboard = ({ userRole }: DashboardProps) => {
                           {partner.type === "ngo" ? "🌱" : partner.type === "government" ? "🏛️" : "🏢"}
                         </div>
                         <div>
-                          <h4 className="font-semibold">{partner.name}</h4>
-                          <p className="text-sm text-muted-foreground">{partner.projects} joint projects</p>
+                          <h4 className="font-semibold">{t(partner.nameKey)}</h4>
+                          <p className="text-sm text-muted-foreground">{partner.projects} {t('dashboard.labels.joint_projects')}</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm text-muted-foreground">Impact Score</p>
+                        <p className="text-sm text-muted-foreground">{t('dashboard.impact_score')}</p>
                         <p className="text-xl font-bold text-success">{partner.impact}</p>
                       </div>
                     </div>
@@ -528,21 +528,21 @@ const Dashboard = ({ userRole }: DashboardProps) => {
                 <CardContent className="p-6 text-center">
                   <div className="text-3xl mb-2">📢</div>
                   <p className="text-2xl font-bold">1.2M</p>
-                  <p className="text-sm text-muted-foreground">Brand Engagement</p>
+                  <p className="text-sm text-muted-foreground">{t('dashboard.labels.brand_engagement')}</p>
                 </CardContent>
               </Card>
               <Card className="bg-gradient-to-br from-accent/10 to-accent/5">
                 <CardContent className="p-6 text-center">
                   <div className="text-3xl mb-2">📰</div>
                   <p className="text-2xl font-bold">34</p>
-                  <p className="text-sm text-muted-foreground">Media Mentions</p>
+                  <p className="text-sm text-muted-foreground">{t('dashboard.labels.media_mentions')}</p>
                 </CardContent>
               </Card>
               <Card className="bg-gradient-to-br from-success/10 to-success/5">
                 <CardContent className="p-6 text-center">
                   <div className="text-3xl mb-2">🏆</div>
                   <p className="text-2xl font-bold">8</p>
-                  <p className="text-sm text-muted-foreground">Sustainability Awards</p>
+                  <p className="text-sm text-muted-foreground">{t('dashboard.labels.sustainability_awards')}</p>
                 </CardContent>
               </Card>
             </div>
@@ -565,7 +565,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
       challenges: [
         {
           id: "1",
-          title: "City-Wide Solar Initiative",
+          titleKey: "dashboard.challenges.city_wide_solar",
           type: "created",
           participants: 3240,
           co2Saved: 52.1,
@@ -574,7 +574,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
         },
         {
           id: "2",
-          title: "Public Transport Week",
+          titleKey: "dashboard.challenges.public_transport_week",
           type: "sponsored",
           participants: 4580,
           co2Saved: 38.6,
@@ -583,7 +583,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
         },
         {
           id: "3",
-          title: "Green Schools Program",
+          titleKey: "dashboard.challenges.green_schools_program",
           type: "created",
           participants: 2150,
           co2Saved: 22.4,
@@ -592,9 +592,9 @@ const Dashboard = ({ userRole }: DashboardProps) => {
         }
       ],
       partnerships: [
-        { id: "1", name: "Local Businesses Consortium", type: "business", projects: 12, impact: 95 },
-        { id: "2", name: "Environmental Coalition", type: "ngo", projects: 8, impact: 91 },
-        { id: "3", name: "University Research Center", type: "ngo", projects: 6, impact: 87 }
+        { id: "1", nameKey: "dashboard.partnerships.local_business_consortium", type: "business", projects: 12, impact: 95 },
+        { id: "2", nameKey: "dashboard.partnerships.environmental_coalition", type: "ngo", projects: 8, impact: 91 },
+        { id: "3", nameKey: "dashboard.partnerships.university_research_center", type: "ngo", projects: 6, impact: 87 }
       ]
     };
 
@@ -687,15 +687,15 @@ const Dashboard = ({ userRole }: DashboardProps) => {
                     <div className="flex items-start justify-between mb-4">
                       <div>
                         <div className="flex items-center gap-2 mb-2">
-                          <h4 className="font-semibold">{challenge.title}</h4>
+                          <h4 className="font-semibold">{t(challenge.titleKey)}</h4>
                           <Badge variant={challenge.type === "created" ? "default" : "secondary"}>
-                            {challenge.type === "created" ? "Municipal Program" : "Co-Funded"}
+                            {t(`dashboard.badge.${challenge.type}`)}
                           </Badge>
                         </div>
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <Users className="w-4 h-4" />
-                            {challenge.participants.toLocaleString()} citizens
+                            {challenge.participants.toLocaleString()} {t('dashboard.labels.participants')}
                           </span>
                           <span className="flex items-center gap-1">
                             <TreePine className="w-4 h-4" />
@@ -703,11 +703,11 @@ const Dashboard = ({ userRole }: DashboardProps) => {
                           </span>
                         </div>
                       </div>
-                      <Badge variant="default">{challenge.status}</Badge>
+                      <Badge variant="default">{t(`dashboard.status.${challenge.status}`)}</Badge>
                     </div>
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Completion</span>
+                        <span className="text-muted-foreground">{t('dashboard.labels.progress')}</span>
                         <span className="font-medium">{challenge.progress}%</span>
                       </div>
                       <Progress value={challenge.progress} />
@@ -729,12 +729,12 @@ const Dashboard = ({ userRole }: DashboardProps) => {
                           {partner.type === "business" ? "🏢" : "🌱"}
                         </div>
                         <div>
-                          <h4 className="font-semibold">{partner.name}</h4>
-                          <p className="text-sm text-muted-foreground">{partner.projects} joint initiatives</p>
+                          <h4 className="font-semibold">{t(partner.nameKey)}</h4>
+                          <p className="text-sm text-muted-foreground">{partner.projects} {t('dashboard.labels.joint_projects')}</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm text-muted-foreground">Impact</p>
+                        <p className="text-sm text-muted-foreground">{t('dashboard.impact_score')}</p>
                         <p className="text-xl font-bold text-success">{partner.impact}</p>
                       </div>
                     </div>
@@ -787,7 +787,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
       challenges: [
         {
           id: "1",
-          title: "Community Clean-up Days",
+          titleKey: "dashboard.challenges.community_cleanup",
           type: "created",
           participants: 890,
           co2Saved: 12.4,
@@ -796,7 +796,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
         },
         {
           id: "2",
-          title: "Urban Gardening Network",
+          titleKey: "dashboard.challenges.urban_gardening",
           type: "sponsored",
           participants: 1240,
           co2Saved: 28.3,
@@ -805,7 +805,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
         },
         {
           id: "3",
-          title: "Eco-Education Workshops",
+          titleKey: "dashboard.challenges.eco_education",
           type: "created",
           participants: 2150,
           co2Saved: 15.6,
@@ -814,9 +814,9 @@ const Dashboard = ({ userRole }: DashboardProps) => {
         }
       ],
       partnerships: [
-        { id: "1", name: "Tech for Good Corp", type: "business", projects: 7, impact: 89 },
-        { id: "2", name: "City Environmental Department", type: "government", projects: 5, impact: 93 },
-        { id: "3", name: "Green Schools Network", type: "ngo", projects: 9, impact: 86 }
+        { id: "1", nameKey: "dashboard.partnerships.tech_for_good", type: "business", projects: 7, impact: 89 },
+        { id: "2", nameKey: "dashboard.partnerships.city_environmental", type: "government", projects: 5, impact: 93 },
+        { id: "3", nameKey: "dashboard.partnerships.green_schools", type: "ngo", projects: 9, impact: 86 }
       ]
     };
 
@@ -909,29 +909,29 @@ const Dashboard = ({ userRole }: DashboardProps) => {
                     <div className="flex items-start justify-between mb-4">
                       <div>
                         <div className="flex items-center gap-2 mb-2">
-                          <h4 className="font-semibold">{challenge.title}</h4>
+                          <h4 className="font-semibold">{t(challenge.titleKey)}</h4>
                           <Badge variant={challenge.type === "created" ? "default" : "secondary"}>
-                            {challenge.type === "created" ? "NGO Initiative" : "Sponsored"}
+                            {t(`dashboard.badge.${challenge.type}`)}
                           </Badge>
                         </div>
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <Users className="w-4 h-4" />
-                            {challenge.participants.toLocaleString()} volunteers
+                            {challenge.participants.toLocaleString()} {t('dashboard.labels.participants')}
                           </span>
                           <span className="flex items-center gap-1">
                             <TreePine className="w-4 h-4" />
-                            {challenge.co2Saved}t impact
+                            {challenge.co2Saved}t CO₂
                           </span>
                         </div>
                       </div>
                       <Badge variant={challenge.status === "active" ? "default" : "secondary"}>
-                        {challenge.status}
+                        {t(`dashboard.status.${challenge.status}`)}
                       </Badge>
                     </div>
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Progress</span>
+                        <span className="text-muted-foreground">{t('dashboard.labels.progress')}</span>
                         <span className="font-medium">{challenge.progress}%</span>
                       </div>
                       <Progress value={challenge.progress} />
@@ -953,12 +953,12 @@ const Dashboard = ({ userRole }: DashboardProps) => {
                           {partner.type === "business" ? "🏢" : partner.type === "government" ? "🏛️" : "🌱"}
                         </div>
                         <div>
-                          <h4 className="font-semibold">{partner.name}</h4>
-                          <p className="text-sm text-muted-foreground">{partner.projects} collaborations</p>
+                          <h4 className="font-semibold">{t(partner.nameKey)}</h4>
+                          <p className="text-sm text-muted-foreground">{partner.projects} {t('dashboard.labels.joint_projects')}</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm text-muted-foreground">Impact</p>
+                        <p className="text-sm text-muted-foreground">{t('dashboard.impact_score')}</p>
                         <p className="text-xl font-bold text-success">{partner.impact}</p>
                       </div>
                     </div>
