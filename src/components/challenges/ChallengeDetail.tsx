@@ -89,31 +89,31 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
   const handleJoinChallenge = () => {
     onJoin?.(challenge.id);
     toast({
-      title: "Csatlakozás sikeres!",
-      description: `Sikeresen csatlakoztál a "${t(challenge.titleKey)}" kihíváshoz. Sok szerencsét!`,
+      title: t('challenges.join_success'),
+      description: t('challenges.join_success_desc'),
     });
   };
 
   const handleCompleteStep = (stepIndex: number) => {
     // TODO: Implement step completion logic
     toast({
-      title: "Lépés teljesítve!",
-      description: `Nagyszerű haladás a "${t(challenge.titleKey)}" kihívásban!`,
+      title: t('challenges.step_completed'),
+      description: t('challenges.step_completed_desc'),
     });
   };
 
   const handleCompleteChallenge = () => {
     onComplete?.(challenge.id);
     toast({
-      title: "Kihívás teljesítve!",
-      description: `Gratulálunk! Teljesítetted a "${t(challenge.titleKey)}" kihívást!`,
+      title: t('challenges.challenge_completed'),
+      description: t('challenges.challenge_completed_desc'),
     });
   };
 
   const handleShare = () => {
     toast({
-      title: "Megosztás",
-      description: `Kihívás megosztva: "${t(challenge.titleKey)}"`,
+      title: t('challenges.share'),
+      description: t('challenges.share_desc'),
     });
   };
 
@@ -150,19 +150,19 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
                 <div className="flex items-center space-x-2">
                   <Users className="w-4 h-4 text-muted-foreground" />
                   <span className="text-foreground font-medium">
-                    {challenge.participants.toLocaleString()} résztvevő
+                    {challenge.participants.toLocaleString()} {t('challenges.participants')}
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Target className="w-4 h-4 text-success" />
                   <span className="text-foreground font-medium">
-                    {challenge.completionRate}% teljesítési arány
+                    {challenge.completionRate}% {t('challenges.completion_rate')}
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Trophy className="w-4 h-4 text-warning" />
                   <span className="text-foreground font-medium">
-                    {challenge.pointsReward} pont
+                    {challenge.pointsReward} {t('challenges.points')}
                   </span>
                 </div>
               </div>
@@ -181,11 +181,11 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
               <div className="text-3xl font-bold text-primary mb-1">
                 {challenge.pointsReward}
               </div>
-              <div className="text-xs text-muted-foreground">pontot kapsz</div>
+              <div className="text-xs text-muted-foreground">{t('challenges.points_reward')}</div>
               
               {userProgress?.isParticipating && !userProgress.isCompleted && (
                 <div className="mt-4">
-                  <div className="text-sm text-muted-foreground mb-1">Haladás</div>
+                  <div className="text-sm text-muted-foreground mb-1">{t('challenges.progress')}</div>
                   <Progress value={userProgress.progress} className="w-24 h-2" />
                   <div className="text-xs text-foreground mt-1">{userProgress.progress}%</div>
                 </div>
@@ -196,7 +196,7 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
         
         <CardContent>
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-foreground mb-3">Kihívás Részletei</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-3">{t('challenges.details')}</h3>
             <p className="text-muted-foreground leading-relaxed">
               {t(challenge.longDescriptionKey)}
             </p>
@@ -207,33 +207,33 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
             <div className="p-4 rounded-lg bg-success/10 border border-success/20">
               <div className="flex items-center space-x-2 mb-2">
                 <Leaf className="w-5 h-5 text-success" />
-                <span className="font-semibold text-success">CO₂ Megtakarítás</span>
+                <span className="font-semibold text-success">{t('challenges.co2_savings')}</span>
               </div>
               <div className="text-2xl font-bold text-foreground">
                 {challenge.impact.co2Saved} kg
               </div>
               <div className="text-xs text-muted-foreground">
-                Átlagosan egy résztvevőnként
+                {t('challenges.per_participant')}
               </div>
             </div>
             
             <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
               <div className="flex items-center space-x-2 mb-2">
                 <BookOpen className="w-5 h-5 text-primary" />
-                <span className="font-semibold text-primary">Fa Egyenérték</span>
+                <span className="font-semibold text-primary">{t('challenges.tree_equivalent')}</span>
               </div>
               <div className="text-2xl font-bold text-foreground">
                 {challenge.impact.treesEquivalent}
               </div>
               <div className="text-xs text-muted-foreground">
-                Ennyi fa ültetésével egyenértékű
+                {t('challenges.tree_equivalent_desc')}
               </div>
             </div>
           </div>
           
           {/* Steps Section */}
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Lépések a Teljesítéshez</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-4">{t('challenges.steps_to_complete')}</h3>
             <div className="space-y-3">
               {challenge.stepsKeys.map((stepKey, index) => (
                 <div
@@ -269,10 +269,10 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
                         className="mt-2 text-xs"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleCompleteStep(index);
+                        handleCompleteStep(index);
                         }}
                       >
-                        Teljesítve
+                        {t('challenges.completed')}
                       </Button>
                     )}
                   </div>
@@ -289,7 +289,7 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
                 variant="outline"
                 className="w-full justify-between mb-3 hover:bg-primary/10"
               >
-                <span className="text-lg font-semibold text-foreground">Hasznos Tippek</span>
+                <span className="text-lg font-semibold text-foreground">{t('challenges.useful_tips')}</span>
                 <BookOpen className={`w-5 h-5 transition-transform ${showTips ? 'rotate-180' : ''}`} />
               </Button>
               {showTips && (
@@ -338,7 +338,7 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
                 className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth"
               >
                 <Trophy className="w-4 h-4 mr-2" />
-                Csatlakozás a Kihíváshoz
+                {t('challenges.join_challenge')}
               </Button>
             ) : userProgress.isCompleted ? (
               <Button 
@@ -346,7 +346,7 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
                 className="flex-1 bg-success hover:bg-success"
               >
                 <CheckCircle className="w-4 h-4 mr-2" />
-                Kihívás Teljesítve!
+                {t('challenges.challenge_completed_label')}
               </Button>
             ) : (
               <Button 
@@ -354,7 +354,7 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
                 className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth"
               >
                 <CheckCircle className="w-4 h-4 mr-2" />
-                Kihívás Befejezése
+                {t('challenges.complete_challenge')}
               </Button>
             )}
             
@@ -367,9 +367,9 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
           {/* Participants Preview */}
           <div className="w-full">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-medium text-foreground">Résztvevők</span>
+              <span className="text-sm font-medium text-foreground">{t('challenges.participants_label')}</span>
               <span className="text-xs text-muted-foreground">
-                +{(challenge.participants - challenge.participants_preview.length).toLocaleString()} további
+                +{(challenge.participants - challenge.participants_preview.length).toLocaleString()} {t('challenges.more')}
               </span>
             </div>
             <div className="flex -space-x-2">
