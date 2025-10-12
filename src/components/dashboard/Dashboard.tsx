@@ -64,12 +64,12 @@ const Dashboard = ({ userRole }: DashboardProps) => {
       { month: "Mar", co2: 59.5, points: 890 },
     ],
     categoryBreakdown: [
-      { name: "Energia", value: 28, color: "#FEF08A", icon: "⚡" },
-      { name: "Közlekedés", value: 22, color: "#A7F3D0", icon: "🚲" },
-      { name: "Hulladék", value: 18, color: "#BFDBFE", icon: "♻️" },
-      { name: "Élelmiszer", value: 15, color: "#DDD6FE", icon: "🥬" },
-      { name: "Víz", value: 10, color: "#FECACA", icon: "💧" },
-      { name: "Otthon", value: 7, color: "#C7D2FE", icon: "🏠" }
+      { nameKey: "dashboard.category.energy", value: 28, color: "#FEF08A", icon: "⚡" },
+      { nameKey: "dashboard.category.transport", value: 22, color: "#A7F3D0", icon: "🚲" },
+      { nameKey: "dashboard.category.waste", value: 18, color: "#BFDBFE", icon: "♻️" },
+      { nameKey: "dashboard.category.food", value: 15, color: "#DDD6FE", icon: "🥬" },
+      { nameKey: "dashboard.category.water", value: 10, color: "#FECACA", icon: "💧" },
+      { nameKey: "dashboard.category.home", value: 7, color: "#C7D2FE", icon: "🏠" }
     ],
     forestGrowth: {
       trees: 12,
@@ -147,7 +147,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-muted-foreground text-sm">Points Earned</p>
+                <p className="text-muted-foreground text-sm">{t('dashboard.points_earned')}</p>
                 <p className="text-2xl font-bold">{citizenData.personalStats.pointsEarned.toLocaleString()}</p>
               </div>
               <Award className="w-8 h-8 text-warning" />
@@ -159,7 +159,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-muted-foreground text-sm">Challenges Completed</p>
+                <p className="text-muted-foreground text-sm">{t('dashboard.challenges_completed')}</p>
                 <p className="text-2xl font-bold">{citizenData.personalStats.challengesCompleted}</p>
               </div>
               <Target className="w-8 h-8 text-success" />
@@ -171,8 +171,8 @@ const Dashboard = ({ userRole }: DashboardProps) => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-muted-foreground text-sm">Current Streak</p>
-                <p className="text-2xl font-bold">{citizenData.personalStats.streakDays} days</p>
+                <p className="text-muted-foreground text-sm">{t('dashboard.current_streak')}</p>
+                <p className="text-2xl font-bold">{citizenData.personalStats.streakDays} {t('dashboard.days')}</p>
               </div>
               <Zap className="w-8 h-8 text-accent" />
             </div>
@@ -186,9 +186,9 @@ const Dashboard = ({ userRole }: DashboardProps) => {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <TreePine className="w-5 h-5 text-success" />
-              <span>Az Erdőm Növekedése</span>
+              <span>{t('dashboard.forest_growth')}</span>
             </CardTitle>
-            <CardDescription>Fenntartható tevékenységeid virtuális erdőként</CardDescription>
+            <CardDescription>{t('dashboard.forest_growth_desc')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
@@ -217,8 +217,8 @@ const Dashboard = ({ userRole }: DashboardProps) => {
                 
                 {/* Growth Stats */}
                 <div className="absolute top-4 right-4 bg-white/80 dark:bg-black/40 backdrop-blur-sm rounded-lg p-3 space-y-1">
-                  <div className="text-xs text-muted-foreground">Ez a hónap</div>
-                  <div className="text-sm font-semibold text-success">+{citizenData.forestGrowth.monthlyGrowth} új növény</div>
+                  <div className="text-xs text-muted-foreground">{t('dashboard.this_month')}</div>
+                  <div className="text-sm font-semibold text-success">+{citizenData.forestGrowth.monthlyGrowth} {t('dashboard.new_plants')}</div>
                 </div>
               </div>
               
@@ -227,24 +227,24 @@ const Dashboard = ({ userRole }: DashboardProps) => {
                 <div className="text-center p-3 bg-success/10 rounded-lg">
                   <div className="text-2xl mb-1">🌲</div>
                   <div className="font-semibold text-foreground">{citizenData.forestGrowth.trees}</div>
-                  <div className="text-xs text-muted-foreground">Fa</div>
+                  <div className="text-xs text-muted-foreground">{t('dashboard.trees')}</div>
                 </div>
                 <div className="text-center p-3 bg-primary/10 rounded-lg">
                   <div className="text-2xl mb-1">🌿</div>
                   <div className="font-semibold text-foreground">{citizenData.forestGrowth.shrubs}</div>
-                  <div className="text-xs text-muted-foreground">Cserje</div>
+                  <div className="text-xs text-muted-foreground">{t('dashboard.shrubs')}</div>
                 </div>
                 <div className="text-center p-3 bg-accent/10 rounded-lg">
                   <div className="text-2xl mb-1">🌸</div>
                   <div className="font-semibold text-foreground">{citizenData.forestGrowth.flowers}</div>
-                  <div className="text-xs text-muted-foreground">Virág</div>
+                  <div className="text-xs text-muted-foreground">{t('dashboard.flowers')}</div>
                 </div>
               </div>
               
               <div className="text-center p-4 bg-gradient-to-r from-success/10 to-primary/10 rounded-lg">
-                <div className="text-sm text-muted-foreground mb-1">Az erdőd összesen</div>
+                <div className="text-sm text-muted-foreground mb-1">{t('dashboard.forest_total')}</div>
                 <div className="text-lg font-bold text-success">{citizenData.forestGrowth.totalCo2Absorbed} kg CO₂</div>
-                <div className="text-xs text-muted-foreground">elnyelését jelképezi</div>
+                <div className="text-xs text-muted-foreground">{t('dashboard.co2_absorption')}</div>
               </div>
             </div>
           </CardContent>
@@ -253,8 +253,8 @@ const Dashboard = ({ userRole }: DashboardProps) => {
         {/* Enhanced Category Breakdown */}
         <Card>
           <CardHeader>
-            <CardTitle>Hatás Kategóriák Szerint</CardTitle>
-            <CardDescription>Hol teszed a legnagyobb hatást</CardDescription>
+            <CardTitle>{t('dashboard.impact_by_category')}</CardTitle>
+            <CardDescription>{t('dashboard.biggest_impact')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -264,7 +264,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
                   <div className="text-2xl">{category.icon}</div>
                   <div className="flex-1">
                     <div className="flex justify-between items-center mb-1">
-                      <span className="font-medium text-foreground">{category.name}</span>
+                      <span className="font-medium text-foreground">{t(category.nameKey)}</span>
                       <span className="text-sm font-semibold text-foreground">{category.value}%</span>
                     </div>
                     <Progress value={category.value} className="h-2" />

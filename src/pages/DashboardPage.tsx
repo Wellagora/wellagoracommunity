@@ -189,7 +189,7 @@ const DashboardPage = () => {
                       {isActive && (
                         <div className="flex items-center justify-center">
                           <Badge className="bg-white/20 text-foreground border-white/30">
-                            ✓ Kiválasztva
+                            {t('dashboard.selected')}
                           </Badge>
                         </div>
                       )}
@@ -248,22 +248,22 @@ const DashboardPage = () => {
                 {/* Monthly Progress */}
                 <Card className="bg-gradient-to-r from-primary/5 via-card to-accent/5">
                   <CardContent className="p-6">
-                    <h3 className="text-xl font-bold mb-4">Havi Regionális Előrehaladás</h3>
+                    <h3 className="text-xl font-bold mb-4">{t('dashboard.monthly_regional_progress')}</h3>
                     <div className="grid md:grid-cols-3 gap-4 mb-6">
                       <div className="text-center p-4 bg-card rounded-xl">
                         <div className="text-3xl mb-2">🎯</div>
                         <div className="text-2xl font-bold text-foreground">+4</div>
-                        <div className="text-sm text-muted-foreground">Új kezdeményezés</div>
+                        <div className="text-sm text-muted-foreground">{t('dashboard.new_initiatives')}</div>
                       </div>
                       <div className="text-center p-4 bg-card rounded-xl">
                         <div className="text-3xl mb-2">👥</div>
                         <div className="text-2xl font-bold text-foreground">+842</div>
-                        <div className="text-sm text-muted-foreground">Új résztvevő</div>
+                        <div className="text-sm text-muted-foreground">{t('dashboard.new_participants')}</div>
                       </div>
                       <div className="text-center p-4 bg-card rounded-xl">
                         <div className="text-3xl mb-2">🌱</div>
                         <div className="text-2xl font-bold text-foreground">+12.3t</div>
-                        <div className="text-sm text-muted-foreground">CO₂ megtakarítás</div>
+                        <div className="text-sm text-muted-foreground">{t('dashboard.co2_saved')}</div>
                       </div>
                     </div>
                     
@@ -271,21 +271,21 @@ const DashboardPage = () => {
                     <div className="space-y-4">
                       <div>
                         <div className="flex justify-between mb-2">
-                          <span className="text-sm text-muted-foreground">Negyedéves CO₂ cél</span>
+                          <span className="text-sm text-muted-foreground">{t('dashboard.quarterly_co2_goal')}</span>
                           <span className="text-sm font-medium">45.6 / 60t</span>
                         </div>
                         <Progress value={76} className="h-3" />
                       </div>
                       <div>
                         <div className="flex justify-between mb-2">
-                          <span className="text-sm text-muted-foreground">Közösségi elérés cél</span>
+                          <span className="text-sm text-muted-foreground">{t('dashboard.community_reach_goal')}</span>
                           <span className="text-sm font-medium">2,847 / 5,000</span>
                         </div>
                         <Progress value={57} className="h-3" />
                       </div>
                       <div>
                         <div className="flex justify-between mb-2">
-                          <span className="text-sm text-muted-foreground">Új partnerségek</span>
+                          <span className="text-sm text-muted-foreground">{t('dashboard.new_partnerships')}</span>
                           <span className="text-sm font-medium">8 / 10</span>
                         </div>
                         <Progress value={80} className="h-3" />
@@ -298,7 +298,7 @@ const DashboardPage = () => {
                 <div className="grid md:grid-cols-2 gap-6">
                   <Card>
                     <CardContent className="p-6">
-                      <h4 className="text-lg font-semibold mb-4">Legjobb Teljesítmény</h4>
+                      <h4 className="text-lg font-semibold mb-4">{t('dashboard.best_performance')}</h4>
                       <div className="space-y-3">
                         <div className="flex items-center justify-between p-3 bg-success/10 rounded-lg">
                           <div className="flex items-center gap-3">
@@ -307,7 +307,7 @@ const DashboardPage = () => {
                             </div>
                             <div>
                               <div className="font-medium text-sm">Green Office Initiative</div>
-                              <div className="text-xs text-muted-foreground">342 résztvevő</div>
+                              <div className="text-xs text-muted-foreground">342 {t('dashboard.participants')}</div>
                             </div>
                           </div>
                           <Badge className="bg-success text-white">+18.5t</Badge>
@@ -319,7 +319,7 @@ const DashboardPage = () => {
                             </div>
                             <div>
                               <div className="font-medium text-sm">Bike to Work Campaign</div>
-                              <div className="text-xs text-muted-foreground">156 résztvevő</div>
+                              <div className="text-xs text-muted-foreground">156 {t('dashboard.participants')}</div>
                             </div>
                           </div>
                           <Badge className="bg-primary text-white">+8.2t</Badge>
@@ -330,25 +330,25 @@ const DashboardPage = () => {
 
                   <Card>
                     <CardContent className="p-6">
-                      <h4 className="text-lg font-semibold mb-4">Regionális Trend</h4>
+                      <h4 className="text-lg font-semibold mb-4">{t('dashboard.regional_trend')}</h4>
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">Előző hónaphoz képest</span>
+                          <span className="text-sm text-muted-foreground">{t('dashboard.vs_previous_month')}</span>
                           <div className="flex items-center gap-1 text-success">
                             <TrendingUp className="w-4 h-4" />
                             <span className="font-semibold">+23%</span>
                           </div>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">Regionális átlag</span>
+                          <span className="text-sm text-muted-foreground">{t('dashboard.regional_average')}</span>
                           <div className="flex items-center gap-1 text-primary">
                             <Award className="w-4 h-4" />
-                            <span className="font-semibold">Felül teljesít</span>
+                            <span className="font-semibold">{t('dashboard.over_performing')}</span>
                           </div>
                         </div>
                         <div className="mt-4 p-3 bg-warning/10 rounded-lg">
-                          <div className="text-xs font-medium text-warning mb-1">🎯 Következő mérföldkő</div>
-                          <div className="text-sm text-foreground">50 tonna CO₂ megtakarítás eléréséig 4.4t</div>
+                          <div className="text-xs font-medium text-warning mb-1">{t('dashboard.next_milestone')}</div>
+                          <div className="text-sm text-foreground">50 tonna CO₂ {t('dashboard.co2_saved')} {t('dashboard.until_milestone')} 4.4t</div>
                         </div>
                       </div>
                     </CardContent>
