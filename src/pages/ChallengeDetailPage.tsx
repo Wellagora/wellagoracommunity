@@ -5,10 +5,12 @@ import { ArrowLeft } from "lucide-react";
 import ChallengeDetail from "@/components/challenges/ChallengeDetail";
 import Navigation from "@/components/Navigation";
 import { getChallengeById } from "@/data/challenges";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const ChallengeDetailPage = () => {
   const { challengeId } = useParams();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   
   // Get challenge data by ID
   const challenge = challengeId ? getChallengeById(challengeId) : null;
@@ -27,9 +29,9 @@ const ChallengeDetailPage = () => {
         <Navigation />
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Kihívás nem található</h1>
-            <p className="text-muted-foreground mb-4">A keresett kihívás nem létezik.</p>
-            <Button onClick={() => navigate("/")}>Vissza a főoldalra</Button>
+            <h1 className="text-2xl font-bold mb-4">{t('challenges.challenge_not_found')}</h1>
+            <p className="text-muted-foreground mb-4">{t('challenges.challenge_not_exist')}</p>
+            <Button onClick={() => navigate("/")}>{t('challenges.back_to_home')}</Button>
           </div>
         </div>
       </div>
@@ -63,7 +65,7 @@ const ChallengeDetailPage = () => {
             className="hover:bg-muted text-sm sm:text-base"
           >
             <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
-            Vissza a kihívásokhoz
+            {t('challenges.back_to_challenges')}
           </Button>
         </div>
 

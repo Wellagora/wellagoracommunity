@@ -303,7 +303,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
         </CardHeader>
         <CardContent className="space-y-4">
           {citizenData.activeChallenges.map((challenge) => (
-            <div key={challenge.id} className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 p-4 border rounded-lg">
+            <div key={challenge.id} className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 p-4 border rounded-lg cursor-pointer hover:bg-muted/20 transition-colors" onClick={() => window.location.href = `/challenge/${challenge.id}`}>
               <div className="flex-1 w-full">
                 <h4 className="text-sm sm:text-base font-medium">{t(challenge.titleKey)}</h4>
                 <div className="flex items-center space-x-4 mt-2">
@@ -312,7 +312,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">{t('dashboard.labels.due')}: {challenge.dueDate}</p>
               </div>
-              <Button variant="outline" size="sm" className="text-xs sm:text-sm w-full sm:w-auto">{t('dashboard.continue')}</Button>
+              <Button variant="outline" size="sm" className="text-xs sm:text-sm w-full sm:w-auto" onClick={(e) => { e.stopPropagation(); window.location.href = `/challenge/${challenge.id}`; }}>{t('dashboard.continue')}</Button>
             </div>
           ))}
         </CardContent>
