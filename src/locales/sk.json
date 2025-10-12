@@ -98,5 +98,21 @@
   "dashboard.regional_average": "Regionálny priemer",
   "dashboard.over_performing": "Prevyšuje",
   "dashboard.next_milestone": "🎯 Ďalší míľnik",
-  "dashboard.until_milestone": "do dosiahnutia"
+  "dashboard.until_milestone": "do dosiahnutia",
+  "dashboard.co2_tons": "ton CO₂",
+  "dashboard.community_reach": "dosah komunity",
+  "dashboard.regional_rank": "Regionálne Umiestnenie",
+  "dashboard.out_of": "z",
+  "dashboard.organizations": "organizácií",
+  "dashboard.impact_score": "Impact Skóre",
+  "dashboard.people_reached": "Dosiahnutí Ľudia",
+  "dashboard.challenge_ecosystem": "Ekosystém Výziev",
+  "dashboard.community_connections": "Komunitné Spojenia",
+  "dashboard.impact_stories": "Príbehy Dopadu",
+  "dashboard.collaborations": "Spolupráce",
+  "dashboard.social_media": "Sociálne Médiá",
+  "dashboard.community_impact_award": "Ocenenie za Dopad Komunity",
+  "dashboard.climate_partnership": "Klimatické Partnerstvo",
+  "dashboard.certified_member": "Certifikovaný Člen",
+  "dashboard.year_end": "Koniec roka"
 }

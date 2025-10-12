@@ -348,7 +348,7 @@ const DashboardPage = () => {
                         </div>
                         <div className="mt-4 p-3 bg-warning/10 rounded-lg">
                           <div className="text-xs font-medium text-warning mb-1">{t('dashboard.next_milestone')}</div>
-                          <div className="text-sm text-foreground">50 tonna CO₂ {t('dashboard.co2_saved')} {t('dashboard.until_milestone')} 4.4t</div>
+                          <div className="text-sm text-foreground">50 {t('dashboard.co2_tons')} {t('dashboard.co2_saved')} {t('dashboard.until_milestone')} 4.4t</div>
                         </div>
                       </div>
                     </CardContent>
@@ -475,7 +475,7 @@ const DashboardPage = () => {
                               <span className="text-xl">💚</span>
                             </div>
                             <div>
-                              <div className="font-medium text-sm mb-1">Közösségi Media</div>
+                              <div className="font-medium text-sm mb-1">{t('dashboard.social_media')}</div>
                               <div className="text-xs text-muted-foreground mb-2">
                                 Virális kampány: #ZöldMagyarország
                               </div>
@@ -505,8 +505,8 @@ const DashboardPage = () => {
                             <Award className="w-5 h-5 text-white" />
                           </div>
                           <div>
-                            <div className="font-medium text-sm">Közösségi Hatás Címzett</div>
-                            <div className="text-xs text-muted-foreground">2024 Év végi</div>
+                            <div className="font-medium text-sm">{t('dashboard.community_impact_award')}</div>
+                            <div className="text-xs text-muted-foreground">{t('dashboard.year_end')} 2024</div>
                           </div>
                         </div>
                         <div className="flex items-center gap-3 p-3 bg-primary/10 rounded-lg">
@@ -514,8 +514,8 @@ const DashboardPage = () => {
                             <Target className="w-5 h-5 text-white" />
                           </div>
                           <div>
-                            <div className="font-medium text-sm">Klímavédelmi Partnerség</div>
-                            <div className="text-xs text-muted-foreground">Minősített Tag</div>
+                            <div className="font-medium text-sm">{t('dashboard.climate_partnership')}</div>
+                            <div className="text-xs text-muted-foreground">{t('dashboard.certified_member')}</div>
                           </div>
                         </div>
                       </div>
@@ -563,14 +563,14 @@ const DashboardPage = () => {
                     <div className="space-y-3">
                       <div className="flex items-center justify-between p-3 bg-card rounded-lg">
                         <div className="flex-1">
-                          <div className="font-medium text-sm mb-1">50 tonna CO₂ megtakarítás</div>
+                          <div className="font-medium text-sm mb-1">50 {t('dashboard.co2_tons')} {t('dashboard.co2_saved')}</div>
                           <Progress value={91} className="h-2" />
                         </div>
                         <span className="ml-4 text-sm font-semibold text-primary">91%</span>
                       </div>
                       <div className="flex items-center justify-between p-3 bg-card rounded-lg">
                         <div className="flex-1">
-                          <div className="font-medium text-sm mb-1">5,000 közösségi elérés</div>
+                          <div className="font-medium text-sm mb-1">5,000 {t('dashboard.community_reach')}</div>
                           <Progress value={57} className="h-2" />
                         </div>
                         <span className="ml-4 text-sm font-semibold text-primary">57%</span>

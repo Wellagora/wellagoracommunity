@@ -381,11 +381,11 @@ const Dashboard = ({ userRole }: DashboardProps) => {
             <CardContent className="p-6">
               <div className="text-center">
                 <Award className="w-12 h-12 text-warning mx-auto mb-3" />
-                <h3 className="text-sm text-muted-foreground mb-2">Regional Rank</h3>
+                <h3 className="text-sm text-muted-foreground mb-2">{t('dashboard.regional_rank')}</h3>
                 <p className="text-4xl font-bold text-foreground mb-1">#{regionalData.regionalRank}</p>
-                <p className="text-xs text-muted-foreground">out of {regionalData.totalOrganizations} organizations</p>
+                <p className="text-xs text-muted-foreground">{t('dashboard.out_of')} {regionalData.totalOrganizations} {t('dashboard.organizations')}</p>
                 <div className="mt-4 pt-4 border-t border-border/50">
-                  <p className="text-xs text-muted-foreground mb-2">Impact Score</p>
+                  <p className="text-xs text-muted-foreground mb-2">{t('dashboard.impact_score')}</p>
                   <Progress value={85} className="h-2" />
                   <p className="text-xs text-muted-foreground mt-1">85/100</p>
                 </div>
@@ -400,28 +400,28 @@ const Dashboard = ({ userRole }: DashboardProps) => {
             <CardContent className="p-4">
               <Target className="w-8 h-8 text-primary mb-2" />
               <p className="text-2xl font-bold">{regionalData.overview.activeChallenges}</p>
-              <p className="text-xs text-muted-foreground">Active Challenges</p>
+              <p className="text-xs text-muted-foreground">{t('dashboard.active_challenges')}</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4">
               <Users className="w-8 h-8 text-accent mb-2" />
               <p className="text-2xl font-bold">{regionalData.overview.peopleReached.toLocaleString()}</p>
-              <p className="text-xs text-muted-foreground">People Reached</p>
+              <p className="text-xs text-muted-foreground">{t('dashboard.people_reached')}</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4">
               <TreePine className="w-8 h-8 text-success mb-2" />
               <p className="text-2xl font-bold">{regionalData.overview.co2Saved}t</p>
-              <p className="text-xs text-muted-foreground">CO₂ Saved</p>
+              <p className="text-xs text-muted-foreground">{t('dashboard.co2_saved')}</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4">
               <Building className="w-8 h-8 text-warning mb-2" />
               <p className="text-2xl font-bold">{regionalData.overview.partnerships}</p>
-              <p className="text-xs text-muted-foreground">Partnerships</p>
+              <p className="text-xs text-muted-foreground">{t('dashboard.new_partnerships')}</p>
             </CardContent>
           </Card>
         </div>
@@ -429,9 +429,9 @@ const Dashboard = ({ userRole }: DashboardProps) => {
         {/* Tabbed Content */}
         <Tabs defaultValue="challenges" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="challenges">Challenge Ecosystem</TabsTrigger>
-            <TabsTrigger value="partnerships">Community Connections</TabsTrigger>
-            <TabsTrigger value="stories">Impact Stories</TabsTrigger>
+            <TabsTrigger value="challenges">{t('dashboard.challenge_ecosystem')}</TabsTrigger>
+            <TabsTrigger value="partnerships">{t('dashboard.community_connections')}</TabsTrigger>
+            <TabsTrigger value="stories">{t('dashboard.impact_stories')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="challenges" className="space-y-4">

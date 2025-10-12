@@ -98,5 +98,21 @@
   "dashboard.regional_average": "Regionalni prosjek",
   "dashboard.over_performing": "Iznad očekivanja",
   "dashboard.next_milestone": "🎯 Sljedeći prekretnica",
-  "dashboard.until_milestone": "do postizanja"
+  "dashboard.until_milestone": "do postizanja",
+  "dashboard.co2_tons": "tona CO₂",
+  "dashboard.community_reach": "doseg zajednice",
+  "dashboard.regional_rank": "Regionalni Rang",
+  "dashboard.out_of": "od",
+  "dashboard.organizations": "organizacija",
+  "dashboard.impact_score": "Impact Rezultat",
+  "dashboard.people_reached": "Dosegnuti Ljudi",
+  "dashboard.challenge_ecosystem": "Ekosustav Izazova",
+  "dashboard.community_connections": "Veze Zajednice",
+  "dashboard.impact_stories": "Priče o Utjecaju",
+  "dashboard.collaborations": "Suradnje",
+  "dashboard.social_media": "Društveni Mediji",
+  "dashboard.community_impact_award": "Nagrada za Utjecaj Zajednice",
+  "dashboard.climate_partnership": "Klimatsko Partnerstvo",
+  "dashboard.certified_member": "Certificirani Član",
+  "dashboard.year_end": "Kraj godine"
 }
