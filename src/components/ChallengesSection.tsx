@@ -198,7 +198,7 @@ const ChallengesSection = () => {
                       </Badge>
                       <Badge variant="outline">
                         <Clock className="w-3 h-3 mr-1" />
-                        {challenge.duration}
+                        {t(challenge.durationKey)}
                       </Badge>
                     </div>
 

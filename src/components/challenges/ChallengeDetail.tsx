@@ -30,7 +30,7 @@ interface Challenge {
   longDescriptionKey: string;
   category: "energy" | "transport" | "food" | "waste" | "community" | "innovation" | "water" | "biodiversity" | "circular-economy" | "green-finance";
   difficulty: "beginner" | "intermediate" | "advanced" | "expert";
-  duration: string;
+  durationKey: string;
   pointsReward: number;
   participants: number;
   completionRate: number;
@@ -135,7 +135,7 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
                 </Badge>
                 <Badge variant="outline" className="flex items-center space-x-1">
                   <Clock className="w-3 h-3" />
-                  <span>{challenge.duration}</span>
+                  <span>{t(challenge.durationKey)}</span>
                 </Badge>
               </div>
               

@@ -213,5 +213,16 @@
   "dashboard.achievements.energy_master": "Energie-Meister",
   "dashboard.achievements.water_guardian": "Wasser-Wächter",
   "dashboard.partnerships.green_earth_ngo": "Green Earth NGO",
-  "dashboard.partnerships.city_sustainability_office": "Städtisches Nachhaltigkeitsbüro"
+  "dashboard.partnerships.city_sustainability_office": "Städtisches Nachhaltigkeitsbüro",
+  "challenges.plastic_free_week.title": "Plastikfreie Woche",
+  "challenges.plastic_free_week.description": "Reduziere eine Woche lang Plastik und entdecke Alternativen",
+  "challenges.duration.1_day": "1 Tag",
+  "challenges.duration.7_days": "7 Tage",
+  "challenges.duration.1_week": "1 Woche",
+  "challenges.duration.2_weeks": "2 Wochen",
+  "challenges.duration.3_weeks": "3 Wochen",
+  "challenges.duration.14_days": "14 Tage",
+  "challenges.duration.21_days": "21 Tage",
+  "challenges.duration.30_days": "30 Tage",
+  "challenges.duration.12_weeks": "12 Wochen"
 }

@@ -128,17 +128,17 @@ const ChallengesPage = () => {
   };
 
   const getJoinButtonText = () => {
-    if (!profile) return "Csatlakozás a Kihíváshoz";
+    if (!profile) return t('challenges.join_challenge');
     
     switch (profile.user_role) {
       case "business":
-        return "Csatlakozás és Szponzorálás";
+        return t('challenges.join_and_sponsor');
       case "ngo":
-        return "Csatlakozás és Támogatás";
+        return t('challenges.join_and_support');
       case "government":
-        return "Csatlakozás és Támogatás";
+        return t('challenges.join_and_support');
       default:
-        return "Csatlakozás a Kihíváshoz";
+        return t('challenges.join_challenge');
     }
   };
 
@@ -285,7 +285,7 @@ const ChallengesPage = () => {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="flex items-center space-x-2 text-muted-foreground">
                     <Clock className="w-4 h-4" />
-                    <span>{challenge.duration}</span>
+                    <span>{t(challenge.durationKey)}</span>
                   </div>
                   <div className="flex items-center space-x-2 text-muted-foreground">
                     <Trophy className="w-4 h-4" />

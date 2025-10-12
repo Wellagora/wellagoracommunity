@@ -199,5 +199,16 @@
   "common.champion": "Bajnok",
   "common.error": "Hiba",
   "common.trees": "Fák",
-  "common.tons": "Tonna"
+  "common.tons": "Tonna",
+  "challenges.plastic_free_week.title": "Műanyagmentes Hét",
+  "challenges.plastic_free_week.description": "Csökkentsd a műanyag használatot egy héten keresztül és fedezd fel az alternatívákat",
+  "challenges.duration.1_day": "1 nap",
+  "challenges.duration.7_days": "7 nap",
+  "challenges.duration.1_week": "1 hét",
+  "challenges.duration.2_weeks": "2 hét",
+  "challenges.duration.3_weeks": "3 hét",
+  "challenges.duration.14_days": "14 nap",
+  "challenges.duration.21_days": "21 nap",
+  "challenges.duration.30_days": "30 nap",
+  "challenges.duration.12_weeks": "12 hét"
 }

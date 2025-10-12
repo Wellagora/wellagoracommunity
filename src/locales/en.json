@@ -225,5 +225,16 @@
   "challenges.bike_to_work.steps.track": "Track kilometers traveled and CO₂ saved",
   "challenges.bike_to_work.tips.weather": "Check the weather forecast and prepare for rain",
   "challenges.bike_to_work.tips.colleagues": "Invite your colleagues to bike together",
-  "challenges.bike_to_work.tips.maintenance": "Keep your bike maintained with regular checks"
+  "challenges.bike_to_work.tips.maintenance": "Keep your bike maintained with regular checks",
+  "challenges.plastic_free_week.title": "Plastic-Free Week",
+  "challenges.plastic_free_week.description": "Reduce plastic usage for one week and discover alternatives",
+  "challenges.duration.1_day": "1 day",
+  "challenges.duration.7_days": "7 days",
+  "challenges.duration.1_week": "1 week",
+  "challenges.duration.2_weeks": "2 weeks",
+  "challenges.duration.3_weeks": "3 weeks",
+  "challenges.duration.14_days": "14 days",
+  "challenges.duration.21_days": "21 days",
+  "challenges.duration.30_days": "30 days",
+  "challenges.duration.12_weeks": "12 weeks"
 }
