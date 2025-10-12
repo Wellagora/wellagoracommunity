@@ -32,6 +32,7 @@ interface MatchProfile {
   type: 'citizen' | 'business' | 'government' | 'ngo';
   organization?: string;
   location: string;
+  region: string;
   description: string;
   compatibility: number;
   sustainabilityGoals: string[];
@@ -50,6 +51,18 @@ const MatchingPage = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [matches, setMatches] = useState<string[]>([]);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [selectedRegion, setSelectedRegion] = useState<string>("all");
+  
+  const regions = [
+    { id: "all", name: "Összes régió" },
+    { id: "budapest", name: "Budapest" },
+    { id: "pest", name: "Pest megye" },
+    { id: "debrecen", name: "Debrecen" },
+    { id: "szeged", name: "Szeged" },
+    { id: "miskolc", name: "Miskolc" },
+    { id: "pecs", name: "Pécs" },
+    { id: "gyor", name: "Győr" }
+  ];
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -59,13 +72,14 @@ const MatchingPage = () => {
   }, [user, navigate]);
 
   // Mock profiles for demonstration
-  const mockProfiles: MatchProfile[] = [
+  const allProfiles: MatchProfile[] = [
     {
       id: "1",
       name: "GreenTech Solutions",
       type: "business",
       organization: "GreenTech Solutions Kft.",
-      location: "Budapest, Magyarország",
+      location: "Budapest, V. kerület",
+      region: "budapest",
       description: "Megújuló energia technológiák fejlesztése és telepítése. Szeretnénk együttműködni helyi közösségekkel a fenntartható energia projektek megvalósításában.",
       compatibility: 92,
       sustainabilityGoals: ["Megújuló energia", "Szén-dioxid csökkentés", "Közösségi projektek"],
@@ -82,6 +96,7 @@ const MatchingPage = () => {
       type: "government",
       organization: "Budapest V. kerületi Önkormányzat",
       location: "Budapest, V. kerület",
+      region: "budapest",
       description: "Városi fenntarthatósági programok koordinálása. Keresünk partnereket a zöld infrastruktúra fejlesztéséhez és közösségi környezetvédelmi oktatáshoz.",
       compatibility: 88,
       sustainabilityGoals: ["Városi zöld területek", "Közlekedés optimalizálás", "Hulladékcsökkentés"],
@@ -98,6 +113,7 @@ const MatchingPage = () => {
       type: "ngo",
       organization: "Zöld Jövő Közhasznú Alapítvány",
       location: "Debrecen, Magyarország", 
+      region: "debrecen",
       description: "Környezettudatossági oktatás és közösségi kertészkedés programok. Szervezünk workshopokat és eseményeket a fenntartható életmód népszerűsítésére.",
       compatibility: 85,
       sustainabilityGoals: ["Oktatás", "Közösségi kertek", "Biodiverzitás"],
@@ -113,6 +129,7 @@ const MatchingPage = () => {
       name: "Kovács Anna",
       type: "citizen",
       location: "Szeged, Magyarország",
+      region: "szeged",
       description: "Környezetmérnök, aki helyi fenntarthatósági projekteket koordinál. Szeretek közösségi kertekben dolgozni és környezettudatos rendezvényeket szervezni.",
       compatibility: 78,
       sustainabilityGoals: ["Hulladék csökkentés", "Helyi termelés", "Közösségi aktivizmus"],
@@ -122,10 +139,46 @@ const MatchingPage = () => {
       joinedDate: "2023-11-03",
       impactScore: 920,
       sharedInterests: ["Kertészkedés", "Hulladékcsökkentés", "DIY projektek"]
+    },
+    {
+      id: "5",
+      name: "EcoWaste Kft.",
+      type: "business",
+      organization: "EcoWaste Hulladékkezelő Kft.",
+      location: "Pécs, Magyarország",
+      region: "pecs",
+      description: "Szelektív hulladékgyűjtés és újrahasznosítás. Segítünk vállalkozásoknak és magánszemélyeknek a körforgásos gazdaság bevezetésében.",
+      compatibility: 87,
+      sustainabilityGoals: ["Hulladék csökkentés", "Újrahasznosítás", "Körforgásos gazdaság"],
+      recentActivity: "Új komposztálási program",
+      avatar: "♻️",
+      verified: true,
+      joinedDate: "2023-06-20",
+      impactScore: 2100,
+      sharedInterests: ["Hulladékkezelés", "Újrahasznosítás", "Fenntarthatóság"]
+    },
+    {
+      id: "6",
+      name: "Győr Green City",
+      type: "government",
+      organization: "Győr Önkormányzat",
+      location: "Győr, Magyarország",
+      region: "gyor",
+      description: "Zöld város program koordinálása. Törekszünk arra, hogy Győr az ország legzöldebb városa legyen, ehhez keresünk partnereket.",
+      compatibility: 91,
+      sustainabilityGoals: ["Városi zöldítés", "Energia hatékonyság", "Zöld infrastruktúra"],
+      recentActivity: "Új városi park létrehozása",
+      avatar: "🌳",
+      verified: true,
+      joinedDate: "2023-05-12",
+      impactScore: 3500,
+      sharedInterests: ["Városi tervezés", "Zöld infrastruktúra", "Közösségi részvétel"]
     }
   ];
 
-  const [profiles] = useState(mockProfiles);
+  const profiles = selectedRegion === "all" 
+    ? allProfiles 
+    : allProfiles.filter(p => p.region === selectedRegion);
 
   const currentProfile = profiles[currentIndex];
 
@@ -228,6 +281,30 @@ const MatchingPage = () => {
           <p className="text-sm sm:text-base lg:text-lg text-muted-foreground mb-4 sm:mb-6 px-4">
             Találd meg a tökéletes együttműködő partnereket a fenntarthatósági céljaid eléréséhez
           </p>
+          
+          {/* Region Filter */}
+          <div className="max-w-md mx-auto mb-6">
+            <div className="flex items-center justify-center space-x-2 mb-3">
+              <Globe className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm font-medium text-foreground">Régió szerinti szűrés</span>
+            </div>
+            <div className="flex flex-wrap gap-2 justify-center">
+              {regions.map((region) => (
+                <Button
+                  key={region.id}
+                  variant={selectedRegion === region.id ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => {
+                    setSelectedRegion(region.id);
+                    setCurrentIndex(0);
+                  }}
+                  className="text-xs"
+                >
+                  {region.name}
+                </Button>
+              ))}
+            </div>
+          </div>
           
           {/* Progress */}
           <div className="max-w-md mx-auto">

@@ -80,6 +80,7 @@ const difficultyConfig = {
 
 const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: ChallengeDetailProps) => {
   const [activeStep, setActiveStep] = useState(0);
+  const [showTips, setShowTips] = useState(false);
   const { toast } = useToast();
   const { t } = useLanguage();
   
@@ -167,7 +168,16 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
               </div>
             </div>
             
-            <div className="text-right">
+            <div className="text-right flex flex-col items-end space-y-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleShare}
+                className="hover:bg-primary/10"
+              >
+                <Share2 className="w-4 h-4" />
+              </Button>
+              
               <div className="text-3xl font-bold text-primary mb-1">
                 {challenge.pointsReward}
               </div>
@@ -272,19 +282,30 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
           </div>
           
           {/* Tips Section */}
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Hasznos Tippek</h3>
-            <div className="space-y-2">
-              {challenge.tipsKeys.map((tipKey, index) => (
-                <div key={tipKey} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30">
-                  <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-xs font-medium text-accent">{index + 1}</span>
-                  </div>
-                  <p className="text-foreground text-sm">{t(tipKey)}</p>
+          {challenge.tipsKeys && challenge.tipsKeys.length > 0 && (
+            <div className="mb-6">
+              <Button
+                onClick={() => setShowTips(!showTips)}
+                variant="outline"
+                className="w-full justify-between mb-3 hover:bg-primary/10"
+              >
+                <span className="text-lg font-semibold text-foreground">Hasznos Tippek</span>
+                <BookOpen className={`w-5 h-5 transition-transform ${showTips ? 'rotate-180' : ''}`} />
+              </Button>
+              {showTips && (
+                <div className="space-y-2 animate-in slide-in-from-top-2">
+                  {challenge.tipsKeys.map((tipKey, index) => (
+                    <div key={tipKey} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30 border border-border">
+                      <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-xs font-medium text-accent">{index + 1}</span>
+                      </div>
+                      <p className="text-foreground text-sm">{t(tipKey)}</p>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
-          </div>
+          )}
           
           {/* Sponsor Info */}
           {challenge.sponsor && (

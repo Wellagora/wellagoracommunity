@@ -39,8 +39,18 @@ export const challenges: Challenge[] = [
     pointsReward: 200,
     participants: 3456,
     completionRate: 89,
-    stepsKeys: [],
-    tipsKeys: [],
+    stepsKeys: [
+      "challenges.bike_to_work.steps.route",
+      "challenges.bike_to_work.steps.safety",
+      "challenges.bike_to_work.steps.bike_check",
+      "challenges.bike_to_work.steps.daily_ride",
+      "challenges.bike_to_work.steps.track"
+    ],
+    tipsKeys: [
+      "challenges.bike_to_work.tips.weather",
+      "challenges.bike_to_work.tips.colleagues",
+      "challenges.bike_to_work.tips.maintenance"
+    ],
     impact: {
       co2Saved: 8.2,
       treesEquivalent: 1

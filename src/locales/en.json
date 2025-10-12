@@ -147,5 +147,15 @@
   "dashboard.water_guardian": "Water Guardian",
   "dashboard.completed": "Completed",
   "dashboard.community_co2_saved": "CO₂ saved together by our community",
-  "dashboard.together_stronger": "Together, we're creating a sustainable future"
+  "dashboard.together_stronger": "Together, we're creating a sustainable future",
+  "challenges.bike_to_work.title": "Bike to Work",
+  "challenges.bike_to_work.description": "Reduce your environmental footprint by biking for a week.",
+  "challenges.bike_to_work.steps.route": "Plan the best bike route to work",
+  "challenges.bike_to_work.steps.safety": "Get proper safety equipment (helmet, reflective vest)",
+  "challenges.bike_to_work.steps.bike_check": "Check your bike's technical condition",
+  "challenges.bike_to_work.steps.daily_ride": "Bike to work every day for a week",
+  "challenges.bike_to_work.steps.track": "Track kilometers traveled and CO₂ saved",
+  "challenges.bike_to_work.tips.weather": "Check the weather forecast and prepare for rain",
+  "challenges.bike_to_work.tips.colleagues": "Invite your colleagues to bike together",
+  "challenges.bike_to_work.tips.maintenance": "Keep your bike maintained with regular checks"
 }
