@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,7 @@ import { User, Bell, Shield, Target, Palette, Globe, Trash2, Download, Upload } 
 import { toast } from "sonner";
 
 const SettingsPage = () => {
+  const { t } = useLanguage();
   const [profile, setProfile] = useState({
     name: "Alex Johnson",
     email: "alex.johnson@email.com",
@@ -62,10 +64,10 @@ const SettingsPage = () => {
         <div className="max-w-4xl mx-auto">
           <div className="mb-6 sm:mb-8">
             <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Account Settings
+              {t('settings.title')}
             </h1>
             <p className="text-sm sm:text-base text-muted-foreground mt-2">
-              Manage your account preferences and sustainability goals
+              {t('settings.subtitle')}
             </p>
           </div>
 
@@ -73,23 +75,23 @@ const SettingsPage = () => {
             <TabsList className="grid w-full grid-cols-5 h-auto p-1">
               <TabsTrigger value="profile" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-4 py-2">
                 <User className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="hidden sm:inline">Profile</span>
+                <span className="hidden sm:inline">{t('settings.profile')}</span>
               </TabsTrigger>
               <TabsTrigger value="notifications" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-4 py-2">
                 <Bell className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="hidden sm:inline">Notif.</span>
+                <span className="hidden sm:inline">{t('settings.notifications')}</span>
               </TabsTrigger>
               <TabsTrigger value="goals" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-4 py-2">
                 <Target className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="hidden sm:inline">Goals</span>
+                <span className="hidden sm:inline">{t('settings.goals')}</span>
               </TabsTrigger>
               <TabsTrigger value="preferences" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-4 py-2">
                 <Palette className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="hidden sm:inline">Pref.</span>
+                <span className="hidden sm:inline">{t('settings.preferences')}</span>
               </TabsTrigger>
               <TabsTrigger value="privacy" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-4 py-2">
                 <Shield className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="hidden sm:inline">Privacy</span>
+                <span className="hidden sm:inline">{t('settings.privacy')}</span>
               </TabsTrigger>
             </TabsList>
 

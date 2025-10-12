@@ -232,10 +232,10 @@ const MatchingPage = () => {
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-            Regionális Stakeholder Hálózat
+            {t('matching.regional_network')}
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground">
-            Találj együttműködő partnereket a régióban: magánszemélyek, cégek, civil szervezetek és önkormányzatok
+            {t('matching.regional_desc')}
           </p>
         </div>
           
@@ -244,11 +244,11 @@ const MatchingPage = () => {
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
             <TabsTrigger value="map" className="flex items-center gap-2">
               <Map className="w-4 h-4" />
-              Térkép nézet
+              {t('matching.map_view')}
             </TabsTrigger>
             <TabsTrigger value="cards" className="flex items-center gap-2">
               <Layers className="w-4 h-4" />
-              Lista nézet
+              {t('matching.list_view')}
             </TabsTrigger>
           </TabsList>
 
@@ -318,7 +318,7 @@ const MatchingPage = () => {
                         <Badge key={i} variant="outline" className="text-xs">{goal}</Badge>
                       ))}
                     </div>
-                    <Button className="w-full" size="sm">Kapcsolatfelvétel</Button>
+                    <Button className="w-full" size="sm">{t('matching.contact')}</Button>
                   </CardContent>
                 </Card>
               ))}

@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -18,6 +19,7 @@ import {
 } from "lucide-react";
 
 const AboutPage = () => {
+  const { t } = useLanguage();
   const teamMembers = [
     {
       name: "Dr. Sarah Chen",
@@ -54,10 +56,10 @@ const AboutPage = () => {
   ];
 
   const impactStats = [
-    { label: "Active Users", value: "150K+", icon: Users },
-    { label: "CO2 Reduced", value: "2.3M tons", icon: Leaf },
-    { label: "Challenges Completed", value: "500K+", icon: Target },
-    { label: "Communities Formed", value: "1,200+", icon: Globe }
+    { label: t('about.active_users'), value: "150K+", icon: Users },
+    { label: t('about.co2_reduced'), value: "2.3M tons", icon: Leaf },
+    { label: t('about.challenges_completed'), value: "500K+", icon: Target },
+    { label: t('about.communities_formed'), value: "1,200+", icon: Globe }
   ];
 
   const milestones = [
@@ -115,12 +117,11 @@ const AboutPage = () => {
         <section className="bg-gradient-primary text-primary-foreground py-12 sm:py-16 lg:py-20">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
-              Building a Sustainable Future
-              <span className="block text-primary-glow">Together</span>
+              {t('about.title')}
+              <span className="block text-primary-glow">{t('about.title_together')}</span>
             </h1>
             <p className="text-base sm:text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto opacity-90 px-4">
-              We're on a mission to make sustainability action accessible, engaging, 
-              and effective for individuals, businesses, and communities worldwide.
+              {t('about.subtitle')}
             </p>
           </div>
         </section>
