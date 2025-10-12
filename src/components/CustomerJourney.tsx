@@ -15,69 +15,72 @@ import {
   Award
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const CustomerJourney = () => {
+  const { t } = useLanguage();
+  
   const journeySteps = [
     {
       id: "register",
-      title: "Regisztráció",
-      description: "Válaszd ki a szereped és hozd létre a fiókod",
+      title: t('journey.step_1_title'),
+      description: t('journey.step_1_desc'),
       icon: User,
       gradient: "from-primary to-success",
       completed: false,
       roles: [
-        { type: "citizen", name: "Magánszemély", icon: "🧑‍🤝‍🧑", color: "bg-primary/10" },
-        { type: "business", name: "Vállalkozás", icon: "🏢", color: "bg-accent/10" },
-        { type: "government", name: "Önkormányzat", icon: "🏛️", color: "bg-warning/10" },
-        { type: "ngo", name: "Civil Szervezet", icon: "🌱", color: "bg-success/10" }
+        { type: "citizen", name: t('journey.role_citizen'), icon: "🧑‍🤝‍🧑", color: "bg-primary/10" },
+        { type: "business", name: t('journey.role_business'), icon: "🏢", color: "bg-accent/10" },
+        { type: "government", name: t('journey.role_government'), icon: "🏛️", color: "bg-warning/10" },
+        { type: "ngo", name: t('journey.role_ngo'), icon: "🌱", color: "bg-success/10" }
       ]
     },
     {
       id: "profile",
-      title: "Profil kiegészítése",
-      description: "Add meg a részletes adataidat és célokat",
+      title: t('journey.step_2_title'),
+      description: t('journey.step_2_desc'),
       icon: Target,
       gradient: "from-accent to-secondary",
       completed: false,
       features: [
-        "Személyes/szervezeti adatok",
-        "Fenntarthatósági célok",
-        "Nyilvános profil beállítása",
-        "Kapcsolattartási információk"
+        t('journey.feature_personal_data'),
+        t('journey.feature_sustainability_goals'),
+        t('journey.feature_public_profile'),
+        t('journey.feature_contact_info')
       ]
     },
     {
       id: "dashboard",
-      title: "Dashboard felfedezése",
-      description: "Ismerd meg a lehetőségeket és kezdj el nyomon követni",
+      title: t('journey.step_3_title'),
+      description: t('journey.step_3_desc'),
       icon: Sparkles,
       gradient: "from-success to-primary",
       completed: false,
       features: [
-        "Hatás mérése és követése",
-        "Kihívások teljesítése",
-        "Közösséghez csatlakozás",
-        "Pontok és jutalmak gyűjtése"
+        t('journey.feature_measure_impact'),
+        t('journey.feature_complete_challenges'),
+        t('journey.feature_join_community'),
+        t('journey.feature_earn_points')
       ]
     },
     {
       id: "action",
-      title: "Cselekvés és kapcsolódás",
-      description: "Szervezz eseményeket vagy csatlakozz másokhoz",
+      title: t('journey.step_4_title'),
+      description: t('journey.step_4_desc'),
       icon: Heart,
       gradient: "from-warning to-destructive",
       completed: false,
       organizationFeatures: [
-        "Események szervezése",
-        "Tartalom kezelése",
-        "Közösség építése",
-        "Hatás elemzése"
+        t('journey.feature_organize_events'),
+        t('journey.feature_manage_content'),
+        t('journey.feature_build_community'),
+        t('journey.feature_analyze_impact')
       ],
       citizenFeatures: [
-        "Eseményeken részvétel",
-        "Kihívások teljesítése",
-        "Szervezetek követése",
-        "Környezetbarát tippek"
+        t('journey.feature_participate_events'),
+        t('journey.feature_complete_challenges_citizen'),
+        t('journey.feature_follow_organizations'),
+        t('journey.feature_eco_tips')
       ]
     }
   ];
@@ -98,11 +101,10 @@ const CustomerJourney = () => {
             <Award className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-4xl font-bold text-foreground mb-6">
-            Fenntarthatósági útvonalad
+            {t('journey.title')}
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Kezdd el a fenntartható jövő felé vezető utazásod négy egyszerű lépésben. 
-            Legyen szó személyes célokról vagy szervezeti kezdeményezésekről.
+            {t('journey.subtitle')}
           </p>
         </div>
 
@@ -130,7 +132,7 @@ const CustomerJourney = () => {
                         <div className="flex items-center space-x-3 mb-4">
                           <h3 className="text-2xl font-bold text-foreground">{step.title}</h3>
                           <Badge className="bg-primary/10 text-primary border-primary/20">
-                            {index + 1}. lépés
+                            {index + 1}. {t('journey.step_label')}
                           </Badge>
                           {step.completed && (
                             <CheckCircle className="w-6 h-6 text-success" />
@@ -144,7 +146,7 @@ const CustomerJourney = () => {
                         {/* Role Selection (Step 1) */}
                         {step.id === "register" && (
                           <div className="space-y-4">
-                            <h4 className="font-semibold text-foreground">Válassz szerepet:</h4>
+                            <h4 className="font-semibold text-foreground">{t('journey.choose_role')}</h4>
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                               {step.roles?.map((role) => (
                                 <div key={role.type} className={`p-4 rounded-xl ${role.color} border border-border/30 text-center`}>
@@ -155,7 +157,7 @@ const CustomerJourney = () => {
                             </div>
                             <Link to="/auth">
                               <Button className="bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground font-semibold px-6 py-3 rounded-xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300">
-                                Regisztráció indítása
+                                {t('journey.start_registration')}
                                 <ArrowRight className="ml-2 w-4 h-4" />
                               </Button>
                             </Link>
@@ -165,7 +167,7 @@ const CustomerJourney = () => {
                         {/* Profile Features (Step 2) */}
                         {step.id === "profile" && step.features && (
                           <div className="space-y-4">
-                            <h4 className="font-semibold text-foreground">Mit tehetsz meg:</h4>
+                            <h4 className="font-semibold text-foreground">{t('journey.what_you_can_do')}</h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                               {step.features.map((feature, idx) => (
                                 <div key={idx} className="flex items-center space-x-2">
@@ -176,7 +178,7 @@ const CustomerJourney = () => {
                             </div>
                             <Link to="/profile">
                               <Button variant="outline" className="border-primary/30 hover:bg-primary/10">
-                                Profil szerkesztése
+                                {t('journey.edit_profile')}
                                 <ArrowRight className="ml-2 w-4 h-4" />
                               </Button>
                             </Link>
@@ -186,7 +188,7 @@ const CustomerJourney = () => {
                         {/* Dashboard Features (Step 3) */}
                         {step.id === "dashboard" && step.features && (
                           <div className="space-y-4">
-                            <h4 className="font-semibold text-foreground">Platform funkciók:</h4>
+                            <h4 className="font-semibold text-foreground">{t('journey.platform_features')}</h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                               {step.features.map((feature, idx) => (
                                 <div key={idx} className="flex items-center space-x-2">
@@ -197,7 +199,7 @@ const CustomerJourney = () => {
                             </div>
                             <Link to="/dashboard">
                               <Button variant="outline" className="border-accent/30 hover:bg-accent/10">
-                                Dashboard megtekintése
+                                {t('journey.view_dashboard')}
                                 <ArrowRight className="ml-2 w-4 h-4" />
                               </Button>
                             </Link>
@@ -210,44 +212,44 @@ const CustomerJourney = () => {
                             <div className="grid md:grid-cols-2 gap-6">
                               {/* For Organizations */}
                               <div className="p-4 bg-warning/5 border border-warning/20 rounded-xl">
-                                <h4 className="font-semibold text-foreground mb-3 flex items-center">
-                                  <Building2 className="w-4 h-4 mr-2 text-warning" />
-                                  Szervezetek számára:
-                                </h4>
-                                <div className="space-y-2">
-                                  {step.organizationFeatures?.map((feature, idx) => (
-                                    <div key={idx} className="flex items-center space-x-2">
-                                      <Calendar className="w-4 h-4 text-warning flex-shrink-0" />
-                                      <span className="text-sm text-muted-foreground">{feature}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                                <Link to="/organization" className="block mt-3">
-                                  <Button variant="outline" size="sm" className="border-warning/30 hover:bg-warning/10">
-                                    Szervezeti Dashboard
-                                  </Button>
-                                </Link>
+                                 <h4 className="font-semibold text-foreground mb-3 flex items-center">
+                                   <Building2 className="w-4 h-4 mr-2 text-warning" />
+                                   {t('journey.for_organizations')}
+                                 </h4>
+                                 <div className="space-y-2">
+                                   {step.organizationFeatures?.map((feature, idx) => (
+                                     <div key={idx} className="flex items-center space-x-2">
+                                       <Calendar className="w-4 h-4 text-warning flex-shrink-0" />
+                                       <span className="text-sm text-muted-foreground">{feature}</span>
+                                     </div>
+                                   ))}
+                                 </div>
+                                 <Link to="/organization" className="block mt-3">
+                                   <Button variant="outline" size="sm" className="border-warning/30 hover:bg-warning/10">
+                                     {t('journey.organization_dashboard')}
+                                   </Button>
+                                 </Link>
                               </div>
 
                               {/* For Citizens */}
                               <div className="p-4 bg-success/5 border border-success/20 rounded-xl">
-                                <h4 className="font-semibold text-foreground mb-3 flex items-center">
-                                  <User className="w-4 h-4 mr-2 text-success" />
-                                  Magánszemélyek számára:
-                                </h4>
-                                <div className="space-y-2">
-                                  {step.citizenFeatures?.map((feature, idx) => (
-                                    <div key={idx} className="flex items-center space-x-2">
-                                      <Heart className="w-4 h-4 text-success flex-shrink-0" />
-                                      <span className="text-sm text-muted-foreground">{feature}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                                <Link to="/community" className="block mt-3">
-                                  <Button variant="outline" size="sm" className="border-success/30 hover:bg-success/10">
-                                    Közösség felfedezése
-                                  </Button>
-                                </Link>
+                                 <h4 className="font-semibold text-foreground mb-3 flex items-center">
+                                   <User className="w-4 h-4 mr-2 text-success" />
+                                   {t('journey.for_individuals')}
+                                 </h4>
+                                 <div className="space-y-2">
+                                   {step.citizenFeatures?.map((feature, idx) => (
+                                     <div key={idx} className="flex items-center space-x-2">
+                                       <Heart className="w-4 h-4 text-success flex-shrink-0" />
+                                       <span className="text-sm text-muted-foreground">{feature}</span>
+                                     </div>
+                                   ))}
+                                 </div>
+                                 <Link to="/community" className="block mt-3">
+                                   <Button variant="outline" size="sm" className="border-success/30 hover:bg-success/10">
+                                     {t('journey.explore_community')}
+                                   </Button>
+                                 </Link>
                               </div>
                             </div>
                           </div>
@@ -269,14 +271,14 @@ const CustomerJourney = () => {
                 <Sparkles className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-foreground mb-4">
-                Készen állsz a kezdésre?
+                {t('journey.ready_to_start')}
               </h3>
               <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                Csatlakozz több mint 1,500 fenntarthatósági bajnokhoz, akik már most építik a jövőt!
+                {t('journey.join_champions')}
               </p>
               <Link to="/auth">
                 <Button className="bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground font-semibold px-8 py-3 rounded-xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300">
-                  Indítsd el most
+                  {t('journey.start_now')}
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>

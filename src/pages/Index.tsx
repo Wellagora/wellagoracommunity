@@ -48,33 +48,33 @@ const Index = () => {
           transition={{ duration: 0.6 }}
         >
           <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6 px-4">
-            Wellagora Platform
+            {t('index.platform_title')}
           </h1>
           <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto mb-6 sm:mb-8 px-4">
-            Fenntarthatósági célok elérése közösségi erővel és AI támogatással
+            {t('index.platform_subtitle')}
           </p>
           
           {/* Main Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center mb-6 sm:mb-8 px-4">
             <Link to="/challenges" className="w-full sm:w-auto">
               <Button size="lg" className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300">
-                🎯 Kezdj egy Kihívást
+                {t('index.cta_start_challenge')}
               </Button>
             </Link>
             <Link to="/auth" className="w-full sm:w-auto">
               <Button size="lg" variant="outline" className="w-full border-2 border-primary hover:bg-primary hover:text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold transition-all duration-300">
-                👤 Csatlakozz most
+                {t('index.cta_join_now')}
               </Button>
             </Link>
             <Link to="/dynamic-regional" className="w-full sm:w-auto">
               <Button size="lg" variant="outline" className="w-full border-2 border-primary hover:bg-primary hover:text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold transition-all duration-300">
-                🌍 Fedezd fel Régiódat
+                {t('index.cta_explore_region')}
               </Button>
             </Link>
           </div>
           
           <Badge variant="secondary" className="bg-primary/20 text-primary px-4 py-2 text-sm">
-            AI-Powered • Valós idejű • Közösségi
+            {t('index.badge_features')}
           </Badge>
         </motion.div>
 
@@ -91,13 +91,13 @@ const Index = () => {
                 <div className="w-12 h-12 bg-gradient-to-r from-primary to-success rounded-2xl flex items-center justify-center mb-4">
                   <BarChart3 className="w-6 h-6 text-white" />
                 </div>
-                <CardTitle className="text-xl mb-2">Személyes Dashboard</CardTitle>
-                <p className="text-muted-foreground">Kövesd nyomon a fejlődésedet, gyűjts pontokat és érd el célјайdat gamifikált módon.</p>
+                <CardTitle className="text-xl mb-2">{t('index.personal_dashboard')}</CardTitle>
+                <p className="text-muted-foreground">{t('index.personal_dashboard_desc')}</p>
               </CardHeader>
               <CardContent>
                 <Link to="/dashboard">
                   <Button className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90">
-                    Dashboard Megnyitása
+                    {t('index.dashboard_open')}
                   </Button>
                 </Link>
               </CardContent>
@@ -115,13 +115,13 @@ const Index = () => {
                 <div className="w-12 h-12 bg-gradient-to-r from-accent to-secondary rounded-2xl flex items-center justify-center mb-4">
                   <Users className="w-6 h-6 text-white" />
                 </div>
-                <CardTitle className="text-xl mb-2">Közösségi Kihívások</CardTitle>
-                <p className="text-muted-foreground">Csatlakozz fenntarthatósági kihívásokhoz és változtasd meg a világot mások mellett.</p>
+                <CardTitle className="text-xl mb-2">{t('index.community_challenges')}</CardTitle>
+                <p className="text-muted-foreground">{t('index.community_challenges_desc')}</p>
               </CardHeader>
               <CardContent>
                 <Link to="/challenges">
                   <Button className="w-full bg-gradient-to-r from-accent to-secondary hover:from-accent/90 hover:to-secondary/90">
-                    Kihívások Böngészése
+                    {t('index.challenges_browse')}
                   </Button>
                 </Link>
               </CardContent>
@@ -139,19 +139,19 @@ const Index = () => {
                 <div className="w-12 h-12 bg-gradient-to-r from-warning to-destructive rounded-2xl flex items-center justify-center mb-4">
                   <Zap className="w-6 h-6 text-white" />
                 </div>
-                <CardTitle className="text-xl mb-2">Haladó Funkciók</CardTitle>
-                <p className="text-muted-foreground">3D térképek, AI elemzések és fejlett regionális orchestration.</p>
+                <CardTitle className="text-xl mb-2">{t('index.advanced_features')}</CardTitle>
+                <p className="text-muted-foreground">{t('index.advanced_features_desc')}</p>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
                   <Link to="/revolutionary">
                     <Button variant="outline" className="w-full border-warning hover:bg-warning hover:text-warning-foreground">
-                      Revolutionary Mode
+                      {t('index.revolutionary_mode')}
                     </Button>
                   </Link>
                   <Link to="/dynamic-regional">
                     <Button variant="outline" className="w-full border-success hover:bg-success hover:text-success-foreground">
-                      Dynamic Regional
+                      {t('index.dynamic_regional')}
                     </Button>
                   </Link>
                 </div>
@@ -170,25 +170,25 @@ const Index = () => {
           <Card className="bg-card/60 backdrop-blur-sm border-border/30">
             <CardContent className="p-3 sm:p-4 text-center">
               <div className="text-xl sm:text-2xl font-bold text-primary">2.5M kg</div>
-              <div className="text-xs sm:text-sm text-muted-foreground">CO₂ Saved</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">{t('index.stats_co2_saved')}</div>
             </CardContent>
           </Card>
           <Card className="bg-card/60 backdrop-blur-sm border-border/30">
             <CardContent className="p-3 sm:p-4 text-center">
               <div className="text-xl sm:text-2xl font-bold text-accent">10,000+</div>
-              <div className="text-xs sm:text-sm text-muted-foreground">Active Users</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">{t('index.stats_active_users')}</div>
             </CardContent>
           </Card>
           <Card className="bg-card/60 backdrop-blur-sm border-border/30">
             <CardContent className="p-3 sm:p-4 text-center">
               <div className="text-xl sm:text-2xl font-bold text-success">245</div>
-              <div className="text-xs sm:text-sm text-muted-foreground">Partnerships</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">{t('index.stats_partnerships')}</div>
             </CardContent>
           </Card>
           <Card className="bg-card/60 backdrop-blur-sm border-border/30">
             <CardContent className="p-3 sm:p-4 text-center">
               <div className="text-xl sm:text-2xl font-bold text-secondary">67%</div>
-              <div className="text-xs sm:text-sm text-muted-foreground">Goal Progress</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">{t('index.stats_goal_progress')}</div>
             </CardContent>
           </Card>
         </motion.div>
