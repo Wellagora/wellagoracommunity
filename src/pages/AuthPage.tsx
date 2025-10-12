@@ -188,9 +188,9 @@ const AuthPage = () => {
         <div className="absolute bottom-0 right-0 w-full h-40 bg-gradient-to-t from-primary/20 via-primary/10 to-transparent transform -skew-y-2" />
       </div>
 
-      <div className="relative z-10 flex min-h-screen">
+      <div className="relative z-10 flex flex-col lg:flex-row min-h-screen">
         {/* Left side - Features */}
-        <div className="flex-1 flex flex-col justify-center px-12 lg:px-20">
+        <div className="hidden lg:flex flex-1 flex-col justify-center px-6 sm:px-8 lg:px-12 xl:px-20">
           <div className="max-w-lg">
             {/* Logo and brand */}
             <div className="flex items-center mb-8">
@@ -239,7 +239,7 @@ const AuthPage = () => {
         </div>
 
         {/* Right side - Auth form */}
-        <div className="flex-shrink-0 w-full max-w-md p-8 lg:p-12">
+        <div className="flex-shrink-0 w-full max-w-md p-4 sm:p-6 lg:p-12">
           <div className="flex flex-col justify-center min-h-full">
             <div className="w-full">
               {/* Auth form header */}

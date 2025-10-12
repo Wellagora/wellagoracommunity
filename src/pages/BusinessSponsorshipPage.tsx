@@ -95,32 +95,32 @@ const BusinessSponsorshipPage = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground mb-1 sm:mb-2">
                 Üzleti Szponzoráció Platform
               </h1>
-              <p className="text-muted-foreground">
+              <p className="text-sm sm:text-base text-muted-foreground">
                 Szponzorálj fenntarthatósági kihívásokat és építsd a márka tudatosságodat
               </p>
             </div>
-            <Badge className="bg-gradient-to-r from-primary to-success text-white px-4 py-2">
-              <Sparkles className="w-4 h-4 mr-2" />
+            <Badge className="bg-gradient-to-r from-primary to-success text-white px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm whitespace-nowrap">
+              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
               Business Premium
             </Badge>
           </div>
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex items-center space-x-1 mb-8 bg-card/50 p-1 rounded-lg">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-1 mb-6 sm:mb-8 bg-card/50 p-2 sm:p-1 rounded-lg">
           <Button
             variant={activeTab === 'overview' ? 'default' : 'ghost'}
             size="sm"
             onClick={() => setActiveTab('overview')}
-            className="flex-1"
+            className="flex-1 text-xs sm:text-sm"
           >
             Áttekintés
           </Button>
@@ -128,17 +128,19 @@ const BusinessSponsorshipPage = () => {
             variant={activeTab === 'dashboard' ? 'default' : 'ghost'}
             size="sm"
             onClick={() => setActiveTab('dashboard')}
-            className="flex-1"
+            className="flex-1 text-xs sm:text-sm"
           >
-            Szponzorációs Dashboard
+            <span className="hidden sm:inline">Szponzorációs Dashboard</span>
+            <span className="sm:hidden">Dashboard</span>
           </Button>
           <Button
             variant={activeTab === 'marketplace' ? 'default' : 'ghost'}
             size="sm"
             onClick={() => setActiveTab('marketplace')}
-            className="flex-1"
+            className="flex-1 text-xs sm:text-sm"
           >
-            Kihívás Marketplace
+            <span className="hidden sm:inline">Kihívás Marketplace</span>
+            <span className="sm:hidden">Marketplace</span>
           </Button>
         </div>
 

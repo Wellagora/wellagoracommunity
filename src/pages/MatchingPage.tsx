@@ -216,17 +216,17 @@ const MatchingPage = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <div className="max-w-4xl mx-auto px-4 py-12">
+      <div className="max-w-4xl mx-auto px-4 py-6 sm:py-12">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-primary to-success rounded-2xl shadow-premium mb-6">
-            <Heart className="w-8 h-8 text-white" />
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-primary to-success rounded-2xl shadow-premium mb-4 sm:mb-6">
+            <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-foreground mb-4">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground mb-3 sm:mb-4">
             Fenntarthatósági Partnerek
           </h1>
-          <p className="text-lg text-muted-foreground mb-6">
-            Találd meg a tökéletes együttműködő partnereket a fenntarthatósági célјайd eléréséhez
+          <p className="text-sm sm:text-base lg:text-lg text-muted-foreground mb-4 sm:mb-6 px-4">
+            Találd meg a tökéletes együttműködő partnereket a fenntarthatósági céljaid eléréséhez
           </p>
           
           {/* Progress */}
@@ -384,22 +384,22 @@ const MatchingPage = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-center space-x-8">
+        <div className="flex items-center justify-center gap-6 sm:gap-8">
           <Button
             onClick={handlePass}
             size="lg"
             variant="outline"
-            className="w-16 h-16 rounded-full border-2 border-destructive/30 hover:bg-destructive/10 hover:border-destructive"
+            className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-destructive/30 hover:bg-destructive/10 hover:border-destructive"
           >
-            <X className="w-6 h-6 text-destructive" />
+            <X className="w-5 h-5 sm:w-6 sm:h-6 text-destructive" />
           </Button>
           
           <Button
             onClick={handleLike}
             size="lg"
-            className="w-20 h-20 rounded-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 shadow-premium hover:shadow-glow hover:scale-110 transition-all duration-300"
+            className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 shadow-premium hover:shadow-glow hover:scale-110 transition-all duration-300"
           >
-            <Heart className="w-8 h-8 text-white" />
+            <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
           </Button>
         </div>
 

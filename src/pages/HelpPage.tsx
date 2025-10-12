@@ -194,37 +194,37 @@ const HelpPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <Navigation />
       
-      <main className="pt-16">
+      <main className="pt-14 sm:pt-16">
         {/* Hero Section */}
-        <section className="bg-gradient-secondary text-secondary-foreground py-16">
+        <section className="bg-gradient-secondary text-secondary-foreground py-8 sm:py-12 lg:py-16">
           <div className="container mx-auto px-4 text-center">
-            <HelpCircle className="w-16 h-16 mx-auto mb-6 opacity-80" />
-            <h1 className="text-3xl md:text-5xl font-bold mb-4">
+            <HelpCircle className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 opacity-80" />
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-3 sm:mb-4">
               How Can We Help You?
             </h1>
-            <p className="text-lg md:text-xl max-w-2xl mx-auto opacity-90 mb-8">
+            <p className="text-sm sm:text-base md:text-xl max-w-2xl mx-auto opacity-90 mb-6 sm:mb-8 px-4">
               Find answers, get support, and learn how to make the most of your sustainability journey
             </p>
             
             {/* Search Bar */}
             <div className="max-w-2xl mx-auto relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+              <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 sm:w-5 sm:h-5" />
               <Input
                 type="text"
-                placeholder="Search for help articles, guides, and FAQs..."
+                placeholder="Search for help..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 py-6 text-lg bg-background text-foreground"
+                className="pl-10 sm:pl-12 py-4 sm:py-6 text-sm sm:text-base lg:text-lg bg-background text-foreground"
               />
             </div>
           </div>
         </section>
 
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-4 py-6 sm:py-12">
           {/* Quick Links */}
-          <section className="mb-12">
-            <h2 className="text-2xl font-bold mb-6 text-center">Quick Links</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <section className="mb-8 sm:mb-12">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center">Quick Links</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
               {quickLinks.map((link, index) => (
                 <Card key={index} className="hover:bg-muted/50 transition-colors cursor-pointer group">
                   <CardContent className="p-4 text-center">
@@ -236,11 +236,11 @@ const HelpPage = () => {
             </div>
           </section>
 
-          <Tabs defaultValue="faq" className="space-y-8">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="faq">FAQ</TabsTrigger>
-              <TabsTrigger value="guides">Guides</TabsTrigger>
-              <TabsTrigger value="contact">Contact</TabsTrigger>
+          <Tabs defaultValue="faq" className="space-y-6 sm:space-y-8">
+            <TabsList className="grid w-full grid-cols-3 h-auto">
+              <TabsTrigger value="faq" className="text-xs sm:text-sm">FAQ</TabsTrigger>
+              <TabsTrigger value="guides" className="text-xs sm:text-sm">Guides</TabsTrigger>
+              <TabsTrigger value="contact" className="text-xs sm:text-sm">Contact</TabsTrigger>
             </TabsList>
 
             {/* FAQ Section */}
