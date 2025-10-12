@@ -116,14 +116,14 @@ const ProfilePage = () => {
       await updateProfile({ avatar_url: publicUrl } as any);
       
       toast({
-        title: "Siker",
-        description: "Profilkép sikeresen feltöltve!",
+        title: t('profile.success'),
+        description: t('profile.avatar_success'),
       });
     } catch (error) {
       console.error('Avatar upload error:', error);
       toast({
-        title: "Hiba",
-        description: "Hiba történt a profilkép feltöltése során.",
+        title: t('common.error'),
+        description: t('profile.avatar_error'),
         variant: "destructive",
       });
     } finally {
@@ -155,13 +155,13 @@ const ProfilePage = () => {
       } as any);
 
       if (error) {
-        setError("Hiba történt a profil frissítése során. Kérjük, próbálja újra.");
+        setError(t('profile.error'));
         console.error("Profile update error:", error);
       } else {
-        setSuccess("Profil sikeresen frissítve!");
+        setSuccess(t('profile.success'));
       }
     } catch (err) {
-      setError("Váratlan hiba történt. Kérjük, próbálja újra.");
+      setError(t('profile.error'));
       console.error("Profile update error:", err);
     } finally {
       setIsLoading(false);
@@ -180,11 +180,11 @@ const ProfilePage = () => {
 
   const getRoleLabel = () => {
     switch (profile?.user_role) {
-      case "citizen": return "Magánszemély";
-      case "business": return "Vállalkozás";
-      case "government": return "Önkormányzat";
-      case "ngo": return "Civil Szervezet";
-      default: return "Felhasználó";
+      case "citizen": return t('profile.role_citizen');
+      case "business": return t('profile.role_business');
+      case "government": return t('profile.role_government');
+      case "ngo": return t('profile.role_ngo');
+      default: return t('profile.role_user');
     }
   };
 
@@ -205,7 +205,7 @@ const ProfilePage = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex items-center space-x-2">
           <Loader2 className="h-4 w-4 animate-spin text-primary" />
-          <span className="text-foreground">Betöltés...</span>
+          <span className="text-foreground">{t('profile.loading')}</span>
         </div>
       </div>
     );
@@ -247,7 +247,7 @@ const ProfilePage = () => {
           </div>
           
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground mb-2">
-            Profil Szerkesztése
+            {t('profile.edit_profile')}
           </h1>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:space-x-2">
             <Badge className={`bg-gradient-to-r ${getRoleGradient()} text-white`}>
@@ -302,13 +302,13 @@ const ProfilePage = () => {
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Edit3 className="w-5 h-5 text-primary" />
-                <span>Alapinformációk</span>
+                <span>{t('profile.basic_info')}</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="first_name">Keresztnév *</Label>
+                  <Label htmlFor="first_name">{t('profile.first_name')} *</Label>
                   <Input
                     id="first_name"
                     value={profileForm.first_name}
@@ -318,7 +318,7 @@ const ProfilePage = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="last_name">Családnév *</Label>
+                  <Label htmlFor="last_name">{t('profile.last_name')} *</Label>
                   <Input
                     id="last_name"
                     value={profileForm.last_name}
@@ -330,7 +330,7 @@ const ProfilePage = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email cím</Label>
+                <Label htmlFor="email">{t('profile.email')}</Label>
                   <div className="relative">
                     <Input
                       id="email"
@@ -341,50 +341,50 @@ const ProfilePage = () => {
                     />
                     <Mail className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                   </div>
-                <p className="text-xs text-muted-foreground">Az email cím nem módosítható</p>
+                <p className="text-xs text-muted-foreground">{t('profile.email_note')}</p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="public_display_name">Nyilvános megjelenítési név</Label>
+                <Label htmlFor="public_display_name">{t('profile.display_name')}</Label>
                 <Input
                   id="public_display_name"
                   value={profileForm.public_display_name}
                   onChange={(e) => setProfileForm({ ...profileForm, public_display_name: e.target.value })}
-                  placeholder="Pl. János K. vagy GreenTech Solutions"
+                  placeholder={t('profile.display_name_placeholder')}
                   className="bg-background/50"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Ez fog megjelenni a közösségben és a ranglistákon
+                  {t('profile.display_name_note')}
                 </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="organization">Szervezet neve</Label>
+                  <Label htmlFor="organization">{t('profile.organization')}</Label>
                   <Input
                     id="organization"
                     value={profileForm.organization}
                     onChange={(e) => setProfileForm({ ...profileForm, organization: e.target.value })}
-                    placeholder="Pl. Green Solutions Kft."
+                    placeholder={t('profile.organization_placeholder')}
                     className="bg-background/50"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="location">Helyszín *</Label>
+                  <Label htmlFor="location">{t('profile.location')} *</Label>
                   <Input
                     id="location"
                     value={profileForm.location}
                     onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value })}
-                    placeholder="Pl. Budapest, Magyarország"
+                    placeholder={t('profile.location_placeholder')}
                     className="bg-background/50"
                     required
                   />
-                  <p className="text-xs text-muted-foreground">Szükséges a regionális matching-hez</p>
+                  <p className="text-xs text-muted-foreground">{t('profile.location_note')}</p>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="sustainability_goals">Fenntarthatósági érdeklődési területek *</Label>
+                <Label htmlFor="sustainability_goals">{t('profile.sustainability_goals')} *</Label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                   {[
                     'Energia hatékonyság', 'Hulladék csökkentés', 'Közlekedés', 
@@ -414,20 +414,20 @@ const ProfilePage = () => {
                     </label>
                   ))}
                 </div>
-                <p className="text-xs text-muted-foreground">Válassz legalább 3 területet a jobb matching-hez</p>
+                <p className="text-xs text-muted-foreground">{t('profile.sustainability_note')}</p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="bio">Bemutatkozás</Label>
+                <Label htmlFor="bio">{t('profile.bio')}</Label>
                 <Textarea
                   id="bio"
                   value={profileForm.bio}
                   onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
-                  placeholder="Írj magadról, célokról, érdeklődési területekről..."
+                  placeholder={t('profile.bio_placeholder')}
                   className="min-h-[100px] bg-background/50"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Ez fog megjelenni a nyilvános profilodban
+                  {t('profile.bio_note')}
                 </p>
               </div>
             </CardContent>
@@ -556,9 +556,17 @@ const ProfilePage = () => {
               disabled={isLoading}
               className="px-8 py-3 bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground font-semibold rounded-xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300"
             >
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              <Save className="mr-2 h-4 w-4" />
-              Profil mentése
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {t('profile.saving')}
+                </>
+              ) : (
+                <>
+                  <Save className="mr-2 h-4 w-4" />
+                  {t('profile.save')}
+                </>
+              )}
             </Button>
           </div>
         </form>
