@@ -64,8 +64,31 @@ const Navigation = () => {
   return (
     <nav className="bg-background/95 backdrop-blur-xl border-b border-border shadow-premium sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Top Row - Logo and Community Info */}
-        <div className="flex justify-between items-center h-16 border-b border-border">
+        {/* Mobile Compact Header */}
+        <div className="lg:hidden flex justify-between items-center h-14">
+          {/* Logo - Compact */}
+          <Link to="/" className="flex items-center space-x-2">
+            <div className="w-10 h-10 flex items-center justify-center bg-gradient-to-br from-primary to-success rounded-xl shadow-md">
+              <img 
+                src="/lovable-uploads/3911d8a5-aebe-4ede-83a5-33c26952916a.png" 
+                alt="Wellagora Logo" 
+                className="w-8 h-8 object-contain"
+              />
+            </div>
+            <span className="text-lg font-bold text-foreground">Wellagora</span>
+          </Link>
+
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="p-2 rounded-xl hover:bg-card/50 transition-colors"
+          >
+            {isMenuOpen ? <X className="w-6 h-6 text-foreground" /> : <Menu className="w-6 h-6 text-foreground" />}
+          </button>
+        </div>
+
+        {/* Desktop Header - Top Row - Logo and Community Info */}
+        <div className="hidden lg:flex justify-between items-center h-16 border-b border-border">
           {/* Logo */}
           <div className="flex items-center space-x-4">
             <Link to="/" className="relative group">
@@ -93,7 +116,7 @@ const Navigation = () => {
           </div>
 
           {/* Community Stats and Language Selector */}
-          <div className="hidden lg:flex items-center space-x-4 text-sm">
+          <div className="flex items-center space-x-4 text-sm">
             <div className="flex items-center space-x-2 px-3 py-1.5 bg-card/50 backdrop-blur-sm rounded-full border border-border">
               <Leaf className="w-4 h-4 text-success" />
               <span className="text-foreground font-medium">{t('nav.community_stats.champions')}</span>
@@ -104,22 +127,12 @@ const Navigation = () => {
             </div>
             <LanguageSelector />
           </div>
-
-          {/* Mobile menu button */}
-          <div className="lg:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-xl hover:bg-card/50 transition-colors"
-            >
-              {isMenuOpen ? <X className="w-5 h-5 text-foreground" /> : <Menu className="w-5 h-5 text-foreground" />}
-            </button>
-          </div>
         </div>
 
-        {/* Bottom Row - Navigation and Actions */}
-        <div className="flex justify-between items-center h-16">
+        {/* Desktop Bottom Row - Navigation and Actions */}
+        <div className="hidden lg:flex justify-between items-center h-16">
           {/* Navigation Links */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="flex items-center space-x-8">
             <Link to="/" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
               <span className="relative">
                 {t('nav.home')}
@@ -279,96 +292,154 @@ const Navigation = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="lg:hidden bg-background/95 backdrop-blur-sm border-t border-border py-4 rounded-b-2xl shadow-premium">
-            <div className="space-y-3">
-              <Link to="/" className="flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
+          <div className="lg:hidden bg-background/95 backdrop-blur-sm border-t border-border py-3 rounded-b-2xl shadow-premium">
+            <div className="space-y-2 px-2">
+              {/* User Profile Section - Mobile */}
+              {user && (
+                <div className="pb-3 mb-3 border-b border-border">
+                  <Link 
+                    to="/profile" 
+                    className="flex items-center space-x-3 px-3 py-2.5 bg-card/50 backdrop-blur-sm rounded-xl hover:bg-card/70 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary to-success rounded-full flex items-center justify-center">
+                      <User className="w-5 h-5 text-primary-foreground" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm font-semibold text-foreground">
+                        {profile?.first_name} {profile?.last_name}
+                      </div>
+                      {profile?.user_role && (
+                        <div className="text-xs text-primary capitalize">
+                          {profile?.user_role} Champion
+                        </div>
+                      )}
+                    </div>
+                  </Link>
+                </div>
+              )}
+
+              {/* Navigation Links */}
+              <Link 
+                to="/" 
+                className="flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 <span className="text-lg">🏠</span>
                 <span className="font-medium">Home</span>
               </Link>
-              <Link to="/challenges" className="flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
+              
+              <Link 
+                to="/challenges" 
+                className="flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 <span className="text-lg">🎯</span>
                 <span className="font-medium">Challenges</span>
               </Link>
-              <Link to="/community" className="flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
+              
+              <Link 
+                to="/community" 
+                className="flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 <Users className="w-5 h-5" />
                 <span className="font-medium">Community Hub</span>
               </Link>
-              <Link to="/matching" className="flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
+              
+              <Link 
+                to="/matching" 
+                className="flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 <Heart className="w-5 h-5" />
                 <span className="font-medium">Partnerek</span>
               </Link>
-              <Link to="/dashboard" className="flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
+              
+              <Link 
+                to="/dashboard" 
+                className="flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 <span className="text-lg">📊</span>
-                <span className="font-medium">Impact Dashboard</span>
-              </Link>
-              <Link to="/ai-assistant" className="flex items-center space-x-3 px-4 py-3 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 text-accent-foreground rounded-xl">
-                <span className="text-lg">🤖</span>
-                <span className="font-medium">AI Sustainability Coach</span>
+                <span className="font-medium">Dashboard</span>
               </Link>
               
-              <div className="pt-4 border-t border-border space-y-3">
-                {user ? (
-                  <div className="space-y-3">
-                    <Link 
-                      to="/profile" 
-                      className="flex items-center space-x-3 px-4 py-3 bg-card/50 backdrop-blur-sm rounded-xl hover:bg-card/70 transition-colors"
-                    >
-                      <div className="w-8 h-8 bg-gradient-to-br from-primary to-success rounded-full flex items-center justify-center">
-                        <User className="w-4 h-4 text-primary-foreground" />
-                      </div>
-                      <div>
-                        <div className="text-sm font-semibold text-foreground">
-                          {profile?.first_name} {profile?.last_name}
-                        </div>
-                         {profile?.user_role && (
-                           <div className="text-xs text-primary capitalize">
-                             {profile?.user_role} Champion
-                           </div>
-                         )}
-                      </div>
-                    </Link>
-                    {user && profile?.user_role !== "citizen" && (
-                      <Link 
-                        to="/organization" 
-                        className="flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
-                      >
-                        <Building2 className="w-5 h-5" />
-                        <span className="font-medium">Szervezeti Dashboard</span>
-                      </Link>
-                    )}
-                    
-                    {/* Mobile Quick Actions */}
-                    <Link to="/profile" className="w-full flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors">
-                      <Edit3 className="w-5 h-5" />
-                      <span className="font-medium">Profil szerkesztése</span>
-                    </Link>
-                    
-                    {profile?.user_role !== "citizen" && (
-                      <Link to="/organization" className="w-full flex items-center space-x-3 px-4 py-3 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 text-accent-foreground rounded-xl">
-                        <Building2 className="w-5 h-5" />
-                        <span className="font-medium">Szervezeti dashboard</span>
-                      </Link>
-                    )}
-                    
-                    <button 
-                      onClick={handleSignOut}
-                      className="w-full flex items-center space-x-3 px-4 py-3 text-destructive hover:bg-destructive/10 rounded-xl transition-colors"
-                    >
-                      <LogOut className="w-5 h-5" />
-                      <span className="font-medium">Kijelentkezés</span>
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <Link to="/auth" className="block w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground py-3 rounded-xl font-semibold text-center transition-all duration-300">
-                      Join Community
-                    </Link>
-                    <Link to="/auth" className="block w-full border-2 border-border hover:border-primary hover:bg-card/50 text-foreground py-3 rounded-xl font-medium text-center transition-all duration-300">
-                      Sign In
-                    </Link>
-                  </>
-                )}
+              <Link 
+                to="/ai-assistant" 
+                className="flex items-center space-x-3 px-3 py-2.5 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 text-accent-foreground rounded-xl"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <span className="text-lg">🤖</span>
+                <span className="font-medium">AI Coach</span>
+              </Link>
+              
+              {/* Language Selector - Mobile */}
+              <div className="pt-3 mt-3 border-t border-border">
+                <div className="px-3 py-2">
+                  <div className="text-xs text-muted-foreground mb-2 font-medium">Nyelv / Language</div>
+                  <LanguageSelector />
+                </div>
               </div>
+
+              {/* Additional Actions for Logged in Users */}
+              {user && (
+                <div className="pt-3 mt-3 border-t border-border space-y-2">
+                  {profile?.user_role !== "citizen" && (
+                    <Link 
+                      to="/organization"
+                      className="flex items-center space-x-3 px-3 py-2.5 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-xl"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Building2 className="w-5 h-5" />
+                      <span className="font-medium">Szervezet</span>
+                    </Link>
+                  )}
+                  
+                  {hasAdminAccess && (
+                    <Link 
+                      to="/admin"
+                      className="flex items-center space-x-3 px-3 py-2.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Shield className="w-5 h-5" />
+                      <span className="font-medium">{t('nav.admin_dashboard')}</span>
+                    </Link>
+                  )}
+                  
+                  <button 
+                    onClick={() => {
+                      handleSignOut();
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-colors"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    <span className="font-medium">{t('nav.sign_out')}</span>
+                  </button>
+                </div>
+              )}
+
+              {/* Auth Buttons for Non-Logged in Users */}
+              {!user && (
+                <div className="pt-3 mt-3 border-t border-border space-y-2">
+                  <Link 
+                    to="/auth" 
+                    className="w-full flex items-center justify-center space-x-2 px-3 py-2.5 bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground rounded-xl font-semibold transition-all duration-300 shadow-md"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <User className="w-5 h-5" />
+                    <span>{t('nav.join_community')}</span>
+                  </Link>
+                  <Link 
+                    to="/auth" 
+                    className="w-full flex items-center justify-center space-x-2 px-3 py-2.5 border-2 border-border hover:border-primary hover:bg-card/50 text-foreground rounded-xl font-medium transition-all duration-300"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <span>{t('nav.sign_in')}</span>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         )}

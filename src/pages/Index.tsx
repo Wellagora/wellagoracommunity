@@ -40,46 +40,46 @@ const Index = () => {
       <Navigation />
       
       {/* Hero Section with Clear Call-to-Action */}
-      <div className="container mx-auto px-4 pt-8 pb-16">
+      <div className="container mx-auto px-4 pt-6 sm:pt-8 pb-12 sm:pb-16">
         <motion.div 
-          className="text-center mb-16"
+          className="text-center mb-12 sm:mb-16"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-4xl lg:text-6xl font-bold text-foreground mb-6">
+          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6 px-4">
             Wellagora Platform
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+          <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto mb-6 sm:mb-8 px-4">
             Fenntarthatósági célok elérése közösségi erővel és AI támogatással
           </p>
           
           {/* Main Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-            <Link to="/challenges">
-              <Button size="lg" className="bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-white px-8 py-4 rounded-2xl font-semibold shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center mb-6 sm:mb-8 px-4">
+            <Link to="/challenges" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300">
                 🎯 Kezdj egy Kihívást
               </Button>
             </Link>
-            <Link to="/auth">
-              <Button size="lg" variant="outline" className="border-2 border-primary hover:bg-primary hover:text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300">
+            <Link to="/auth" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="w-full border-2 border-primary hover:bg-primary hover:text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold transition-all duration-300">
                 👤 Csatlakozz most
               </Button>
             </Link>
-            <Link to="/dynamic-regional">
-              <Button size="lg" variant="outline" className="border-2 border-primary hover:bg-primary hover:text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300">
+            <Link to="/dynamic-regional" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="w-full border-2 border-primary hover:bg-primary hover:text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold transition-all duration-300">
                 🌍 Fedezd fel Régiódat
               </Button>
             </Link>
           </div>
           
-          <Badge variant="secondary" className="bg-primary/20 text-primary px-4 py-2">
+          <Badge variant="secondary" className="bg-primary/20 text-primary px-4 py-2 text-sm">
             AI-Powered • Valós idejű • Közösségi
           </Badge>
         </motion.div>
 
         {/* Feature Cards - Simplified */}
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8 mb-12 sm:mb-16 px-4">
           {/* Personal Dashboard */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -162,33 +162,33 @@ const Index = () => {
 
         {/* Bottom Stats Bar */}
         <motion.div 
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8"
+          className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-8 px-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
         >
           <Card className="bg-card/60 backdrop-blur-sm border-border/30">
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-primary">2.5M kg</div>
-              <div className="text-sm text-muted-foreground">CO₂ Saved</div>
+            <CardContent className="p-3 sm:p-4 text-center">
+              <div className="text-xl sm:text-2xl font-bold text-primary">2.5M kg</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">CO₂ Saved</div>
             </CardContent>
           </Card>
           <Card className="bg-card/60 backdrop-blur-sm border-border/30">
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-accent">10,000+</div>
-              <div className="text-sm text-muted-foreground">Active Users</div>
+            <CardContent className="p-3 sm:p-4 text-center">
+              <div className="text-xl sm:text-2xl font-bold text-accent">10,000+</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">Active Users</div>
             </CardContent>
           </Card>
           <Card className="bg-card/60 backdrop-blur-sm border-border/30">
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-success">245</div>
-              <div className="text-sm text-muted-foreground">Partnerships</div>
+            <CardContent className="p-3 sm:p-4 text-center">
+              <div className="text-xl sm:text-2xl font-bold text-success">245</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">Partnerships</div>
             </CardContent>
           </Card>
           <Card className="bg-card/60 backdrop-blur-sm border-border/30">
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-secondary">67%</div>
-              <div className="text-sm text-muted-foreground">Goal Progress</div>
+            <CardContent className="p-3 sm:p-4 text-center">
+              <div className="text-xl sm:text-2xl font-bold text-secondary">67%</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">Goal Progress</div>
             </CardContent>
           </Card>
         </motion.div>
