@@ -39,19 +39,19 @@ const SponsorshipDashboard: React.FC<SponsorshipDashboardProps> = ({ companyId }
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-foreground mb-2">Szponzoráció Dashboard</h2>
-        <p className="text-muted-foreground">
-          Kövesd nyomon szponzoráció hatásod és kezelj kihívásokat
+        <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">{t('sponsorship.dashboard_title')}</h2>
+        <p className="text-sm md:text-base text-muted-foreground">
+          {t('sponsorship.dashboard_subtitle')}
         </p>
       </div>
 
       {/* Current Package Status */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span className="flex items-center">
-              <CreditCard className="w-5 h-5 mr-2" />
-              Jelenlegi Csomag
+          <CardTitle className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <span className="flex items-center text-base md:text-lg">
+              <CreditCard className="w-5 h-5 mr-2 flex-shrink-0" />
+              {t('sponsorship.current_package')}
             </span>
             <Badge className={getPackageColor(dashboardData.activePackage.level)}>
               {dashboardData.activePackage.name}
@@ -61,17 +61,17 @@ const SponsorshipDashboard: React.FC<SponsorshipDashboardProps> = ({ companyId }
         <CardContent>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-semibold mb-3">Kredit Használat</h4>
+              <h4 className="font-semibold mb-3 text-sm md:text-base">{t('sponsorship.credit_usage')}</h4>
               <div className="space-y-3">
-                <div className="flex justify-between text-sm">
-                  <span>Felhasznált kreditek</span>
+                <div className="flex justify-between text-xs md:text-sm">
+                  <span>{t('sponsorship.credits_used')}</span>
                   <span className="font-medium">{dashboardData.creditsUsed.toLocaleString()}</span>
                 </div>
                 <Progress 
                   value={(dashboardData.creditsUsed / (dashboardData.creditsUsed + dashboardData.creditsRemaining)) * 100} 
                   className="h-2" 
                 />
-                <div className="flex justify-between text-sm text-muted-foreground">
+                <div className="flex justify-between text-xs md:text-sm text-muted-foreground">
                   <span>{t('sponsorship.credits_remaining')}</span>
                   <span>{dashboardData.creditsRemaining.toLocaleString()}</span>
                 </div>
@@ -79,18 +79,18 @@ const SponsorshipDashboard: React.FC<SponsorshipDashboardProps> = ({ companyId }
             </div>
             
             <div>
-              <h4 className="font-semibold mb-3">Csomag Részletek</h4>
+              <h4 className="font-semibold mb-3 text-sm md:text-base">{t('sponsorship.package_details')}</h4>
               <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>Időtartam</span>
-                  <span>{dashboardData.activePackage.duration} hónap</span>
+                <div className="flex justify-between text-xs md:text-sm">
+                  <span>{t('sponsorship.duration')}</span>
+                  <span>{dashboardData.activePackage.duration} {t('sponsorship.months')}</span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span>Aktív kihívások</span>
+                <div className="flex justify-between text-xs md:text-sm">
+                  <span>{t('sponsorship.active_challenges')}</span>
                   <span>{dashboardData.sponsoredChallenges}</span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span>Megújítás</span>
+                <div className="flex justify-between text-xs md:text-sm">
+                  <span>{t('sponsorship.renewal')}</span>
                   <span>{dashboardData.upcomingRenewal.toLocaleDateString('hu-HU')}</span>
                 </div>
               </div>
@@ -100,39 +100,39 @@ const SponsorshipDashboard: React.FC<SponsorshipDashboardProps> = ({ companyId }
       </Card>
 
       {/* Impact Metrics */}
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">{t('sponsorship.participants_reached')}</p>
-                <p className="text-2xl font-bold text-primary">{dashboardData.totalParticipants.toLocaleString()}</p>
+                <p className="text-xs md:text-sm text-muted-foreground">{t('sponsorship.participants_reached')}</p>
+                <p className="text-xl md:text-2xl font-bold text-primary">{dashboardData.totalParticipants.toLocaleString()}</p>
               </div>
-              <Users className="w-8 h-8 text-primary" />
+              <Users className="w-6 md:w-8 h-6 md:h-8 text-primary flex-shrink-0" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">CO₂ Megtakarítás</p>
-                <p className="text-2xl font-bold text-success">{dashboardData.impactGenerated.co2Saved} kg</p>
+                <p className="text-xs md:text-sm text-muted-foreground">{t('sponsorship.co2_saved')}</p>
+                <p className="text-xl md:text-2xl font-bold text-success">{dashboardData.impactGenerated.co2Saved} kg</p>
               </div>
-              <Leaf className="w-8 h-8 text-success" />
+              <Leaf className="w-6 md:w-8 h-6 md:h-8 text-success flex-shrink-0" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Brand Tudatosság</p>
-                <p className="text-2xl font-bold text-accent">{dashboardData.impactGenerated.brandsAwareness}</p>
+                <p className="text-xs md:text-sm text-muted-foreground">{t('sponsorship.brand_awareness')}</p>
+                <p className="text-xl md:text-2xl font-bold text-accent">{dashboardData.impactGenerated.brandsAwareness}</p>
               </div>
-              <TrendingUp className="w-8 h-8 text-accent" />
+              <TrendingUp className="w-6 md:w-8 h-6 md:h-8 text-accent flex-shrink-0" />
             </div>
           </CardContent>
         </Card>
@@ -141,13 +141,13 @@ const SponsorshipDashboard: React.FC<SponsorshipDashboardProps> = ({ companyId }
       {/* Available Packages */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center">
-            <Award className="w-5 h-5 mr-2" />
-            Elérhető Szponzorációs Csomagok
+          <CardTitle className="flex items-center text-base md:text-lg">
+            <Award className="w-5 h-5 mr-2 flex-shrink-0" />
+            {t('sponsorship.available_packages')}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {sponsorshipPackages.map((pkg) => (
               <div 
                 key={pkg.id}
@@ -162,31 +162,31 @@ const SponsorshipDashboard: React.FC<SponsorshipDashboardProps> = ({ companyId }
                     {pkg.name}
                   </Badge>
                   <div className="mt-2">
-                    <span className="text-2xl font-bold">{pkg.priceHuf.toLocaleString()}</span>
-                    <span className="text-muted-foreground"> HUF / </span>
-                    <span className="text-xl font-bold">{pkg.priceEur}</span>
-                    <span className="text-muted-foreground"> EUR</span>
+                    <span className="text-xl md:text-2xl font-bold">{pkg.priceHuf.toLocaleString()}</span>
+                    <span className="text-xs md:text-sm text-muted-foreground"> HUF / </span>
+                    <span className="text-lg md:text-xl font-bold">{pkg.priceEur}</span>
+                    <span className="text-xs md:text-sm text-muted-foreground"> EUR</span>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {pkg.duration} / {pkg.credits} kredit
+                  <p className="text-xs md:text-sm text-muted-foreground mt-1">
+                    {pkg.duration} / {pkg.credits} {t('sponsorship.credits')}
                   </p>
                 </div>
                 
                 <ul className="space-y-2 mb-4">
                   {pkg.benefits.slice(0, 3).map((benefit, index) => (
-                    <li key={index} className="text-sm flex items-start">
-                      <span className="text-success mr-2">✓</span>
-                      {benefit}
+                    <li key={index} className="text-xs md:text-sm flex items-start">
+                      <span className="text-success mr-2 flex-shrink-0">✓</span>
+                      <span>{benefit}</span>
                     </li>
                   ))}
                 </ul>
                 
                 <Button 
                   variant={pkg.level === dashboardData.activePackage.level ? "outline" : "default"}
-                  className="w-full"
+                  className="w-full text-sm"
                   disabled={pkg.level === dashboardData.activePackage.level}
                 >
-                  {pkg.level === dashboardData.activePackage.level ? 'Aktív Csomag' : 'Váltás'}
+                  {pkg.level === dashboardData.activePackage.level ? t('sponsorship.active_package') : t('sponsorship.switch')}
                 </Button>
               </div>
             ))}
@@ -195,14 +195,14 @@ const SponsorshipDashboard: React.FC<SponsorshipDashboardProps> = ({ companyId }
       </Card>
 
       {/* Quick Actions */}
-      <div className="grid md:grid-cols-2 gap-4">
-        <Button size="lg" className="h-16">
-          <Target className="w-5 h-5 mr-2" />
-          Új Kihívás Szponzorálása
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Button size="lg" className="h-14 md:h-16 text-sm md:text-base">
+          <Target className="w-4 md:w-5 h-4 md:h-5 mr-2" />
+          {t('sponsorship.sponsor_new_challenge')}
         </Button>
-        <Button size="lg" variant="outline" className="h-16">
-          <BarChart3 className="w-5 h-5 mr-2" />
-          Részletes Riportok
+        <Button size="lg" variant="outline" className="h-14 md:h-16 text-sm md:text-base">
+          <BarChart3 className="w-4 md:w-5 h-4 md:h-5 mr-2" />
+          {t('sponsorship.detailed_reports')}
         </Button>
       </div>
     </div>

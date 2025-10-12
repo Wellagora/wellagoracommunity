@@ -123,7 +123,8 @@ const Navigation = () => {
             </div>
             <div className="flex items-center space-x-2 px-3 py-1.5 bg-card/50 backdrop-blur-sm rounded-full border border-border">
               <span className="w-2 h-2 bg-success rounded-full animate-pulse"></span>
-              <span className="text-foreground font-medium">Élő Hatás: 847 CO₂ megtakarítás ma</span>
+              <span className="text-foreground font-medium hidden xl:inline">{t('nav.live_impact')}</span>
+              <span className="text-foreground font-medium xl:hidden">Live: 847 CO₂</span>
             </div>
             <LanguageSelector />
           </div>
@@ -169,7 +170,7 @@ const Navigation = () => {
               <Link to="/organization" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
                 <Building2 className="w-4 h-4" />
                 <span className="relative">
-                  Szervezet
+                  {t('nav.organization_label')}
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
                 </span>
               </Link>
@@ -178,23 +179,18 @@ const Navigation = () => {
               <span className="text-lg">🤖</span>
               <span>{t('nav.ai_assistant')}</span>
             </Link>
-            <Link to="/revolutionary" className="group flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/30 rounded-lg hover:from-primary/20 hover:to-accent/20 transition-all duration-300 font-medium">
-              <Zap className="w-4 h-4 text-primary" />
-              <span>Revolutionary</span>
-              <Badge variant="secondary" className="ml-1 bg-gradient-to-r from-primary to-accent text-white text-xs px-1.5 py-0.5">
-                NEW
-              </Badge>
-            </Link>
             <Link to="/dynamic-regional" className="group flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-success/10 to-warning/10 border border-success/30 rounded-lg hover:from-success/20 hover:to-warning/20 transition-all duration-300 font-medium">
               <Globe className="w-4 h-4 text-success" />
-              <span>Dynamic 3D</span>
+              <span className="hidden xl:inline">{t('nav.dynamic_3d')}</span>
+              <span className="xl:hidden">3D</span>
               <Badge variant="secondary" className="ml-1 bg-gradient-to-r from-success to-warning text-white text-xs px-1.5 py-0.5">
                 3D
               </Badge>
             </Link>
             <Link to="/interactive-map" className="group flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-warning/10 to-destructive/10 border border-warning/30 rounded-lg hover:from-warning/20 hover:to-destructive/20 transition-all duration-300 font-medium">
               <MapPin className="w-4 h-4 text-warning" />
-              <span>Stakeholder Térkép</span>
+              <span className="hidden xl:inline">{t('nav.stakeholder_map_label')}</span>
+              <span className="xl:hidden">Map</span>
               <Badge variant="secondary" className="ml-1 bg-gradient-to-r from-warning to-destructive text-white text-xs px-1.5 py-0.5">
                 MAP
               </Badge>
@@ -234,7 +230,7 @@ const Navigation = () => {
                     className="flex items-center space-x-2 px-3 py-2 text-muted-foreground hover:text-primary hover:bg-card/50 rounded-xl transition-all duration-300"
                   >
                     <Edit3 className="w-4 h-4" />
-                    <span className="text-sm font-medium">Profil</span>
+                    <span className="text-sm font-medium">{t('nav.edit_profile')}</span>
                   </Link>
                   
             {profile?.user_role !== "citizen" && (
@@ -244,7 +240,7 @@ const Navigation = () => {
                   className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-xl hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent-foreground"
                 >
                   <Building2 className="w-4 h-4" />
-                   <span className="text-sm">Szervezet</span>
+                   <span className="text-sm">{t('nav.organization_label')}</span>
                 </Link>
                 {(profile?.user_role === 'business' || profile?.email === 'attila.kelemen@proself.org') && (
                   <Link
@@ -252,7 +248,7 @@ const Navigation = () => {
                     className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-primary/20 to-success/20 border border-primary/30 rounded-xl hover:from-primary/30 hover:to-success/30 transition-all duration-300 font-medium text-primary"
                   >
                     <CreditCard className="w-4 h-4" />
-                    <span className="text-sm">Szponzoráció</span>
+                    <span className="text-sm">{t('nav.sponsorship_label')}</span>
                   </Link>
                 )}
               </>
@@ -326,7 +322,7 @@ const Navigation = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 <span className="text-lg">🏠</span>
-                <span className="font-medium">Home</span>
+                <span className="font-medium">{t('nav.home')}</span>
               </Link>
               
               <Link 
@@ -335,7 +331,7 @@ const Navigation = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 <span className="text-lg">🎯</span>
-                <span className="font-medium">Challenges</span>
+                <span className="font-medium">{t('nav.challenges')}</span>
               </Link>
               
               <Link 
@@ -344,7 +340,7 @@ const Navigation = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 <Users className="w-5 h-5" />
-                <span className="font-medium">Community Hub</span>
+                <span className="font-medium">{t('nav.community')}</span>
               </Link>
               
               <Link 
@@ -353,7 +349,7 @@ const Navigation = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 <Heart className="w-5 h-5" />
-                <span className="font-medium">Partnerek</span>
+                <span className="font-medium">{t('nav.partners')}</span>
               </Link>
               
               <Link 
@@ -362,7 +358,7 @@ const Navigation = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 <span className="text-lg">📊</span>
-                <span className="font-medium">Dashboard</span>
+                <span className="font-medium">{t('nav.dashboard')}</span>
               </Link>
               
               <Link 
@@ -371,7 +367,7 @@ const Navigation = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 <span className="text-lg">🤖</span>
-                <span className="font-medium">AI Coach</span>
+                <span className="font-medium">{t('nav.ai_assistant')}</span>
               </Link>
               
               {/* Language Selector - Mobile */}
@@ -392,7 +388,7 @@ const Navigation = () => {
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <Building2 className="w-5 h-5" />
-                      <span className="font-medium">Szervezet</span>
+                      <span className="font-medium">{t('nav.organization_label')}</span>
                     </Link>
                   )}
                   

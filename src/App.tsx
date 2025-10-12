@@ -8,7 +8,6 @@ import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import Index from "@/pages/Index";
 import AuthPage from "@/pages/AuthPage";
 import DashboardPage from "@/pages/DashboardPage";
-import RevolutionaryDashboard from "@/pages/RevolutionaryDashboard";
 import DynamicRegionalDashboard from "@/pages/DynamicRegionalDashboard";
 import Community from "@/pages/Community";
 import AIAssistantPage from "@/pages/AIAssistantPage";
@@ -41,7 +40,6 @@ function App() {
               <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/admin" element={<AdminDashboardPage />} />
-              <Route path="/revolutionary" element={<RevolutionaryDashboard />} />
               <Route path="/dynamic-regional" element={<DynamicRegionalDashboard />} />
               <Route path="/community" element={<Community />} />
               <Route path="/ai-assistant" element={<AIAssistantPage />} />

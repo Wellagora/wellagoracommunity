@@ -56,14 +56,14 @@ const DynamicRegionalDashboard = () => {
         >
           <div className="flex items-center justify-center gap-3 mb-4">
             <Globe className="w-8 h-8 text-primary" />
-            <h1 className="text-4xl lg:text-5xl font-bold text-foreground">
-              {selectedRegion ? `${selectedRegion.displayName} - Fenntarthatóság` : "Dynamic Regional Orchestrator"}
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground text-center">
+              {selectedRegion ? `${selectedRegion.displayName} - ${t('3d_dashboard.sustainability')}` : t('3d_dashboard.title')}
             </h1>
           </div>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-6 text-center px-4">
             {selectedRegion 
-              ? `Fedezd fel ${selectedRegion.displayName} fenntarthatósági ökoszisztémáját 3D-ben`
-              : "Válassz egy régiót és fedezd fel a fenntarthatóság lehetőségeit AI-powered elemzésekkel"
+              ? `${t('3d_dashboard.explore_ecosystem').replace('{region}', selectedRegion.displayName)}`
+              : t('3d_dashboard.select_region_desc')
             }
           </p>
           
@@ -81,9 +81,9 @@ const DynamicRegionalDashboard = () => {
                 onClick={() => handleChangeRegion()}
                 variant="outline"
                 size="lg"
-                className="border-2 border-success hover:bg-success hover:text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300"
+                className="border-2 border-success hover:bg-success hover:text-white px-6 md:px-8 py-4 rounded-2xl font-semibold transition-all duration-300"
               >
-                🔄 Másik Régió Böngészése
+                🔄 {t('3d_dashboard.browse_another')}
               </Button>
             )}
           </div>
@@ -112,13 +112,13 @@ const DynamicRegionalDashboard = () => {
         {/* Quick Actions Bar */}
         {selectedRegion && (
           <motion.div
-            className="flex items-center justify-between mb-6 p-4 bg-card/60 backdrop-blur-sm rounded-2xl border"
+            className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 p-4 bg-card/60 backdrop-blur-sm rounded-2xl border"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <div className="flex items-center gap-3">
-              <MapPin className="w-5 h-5 text-primary" />
+            <div className="flex items-center gap-3 flex-wrap">
+              <MapPin className="w-5 h-5 text-primary flex-shrink-0" />
               <div>
                 <div className="font-semibold text-foreground">{selectedRegion.displayName}</div>
                 <div className="text-sm text-muted-foreground capitalize">{selectedRegion.type}</div>
@@ -126,18 +126,19 @@ const DynamicRegionalDashboard = () => {
               <Badge variant="outline">{selectedRegion.language.toUpperCase()}</Badge>
             </div>
             
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={handleChangeRegion}>
+            <div className="flex items-center gap-2 flex-wrap w-full md:w-auto">
+              <Button variant="outline" size="sm" onClick={handleChangeRegion} className="flex-1 md:flex-none">
                 <Search className="w-4 h-4 mr-2" />
-                Change Region
+                <span className="hidden sm:inline">{t('nav.change_region')}</span>
+                <span className="sm:hidden">{t('3d_dashboard.region_change')}</span>
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="hidden md:flex">
                 <Settings className="w-4 h-4 mr-2" />
-                Settings
+                {t('nav.settings')}
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="hidden md:flex">
                 <RefreshCw className="w-4 h-4 mr-2" />
-                Refresh
+                {t('nav.refresh')}
               </Button>
             </div>
           </motion.div>
@@ -153,9 +154,9 @@ const DynamicRegionalDashboard = () => {
           >
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2">
+                <CardTitle className="text-base md:text-lg flex items-center gap-2">
                   <BarChart3 className="w-5 h-5" />
-                  Recent Regions
+                  {t('nav.recent_regions')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -184,14 +185,13 @@ const DynamicRegionalDashboard = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
         >
           {!selectedRegion ? (
-            <div className="text-center py-20">
-              <Globe className="w-24 h-24 mx-auto mb-6 text-primary opacity-50" />
-              <h2 className="text-3xl font-bold text-foreground mb-4">
-                Choose Your Region
+            <div className="text-center py-12 md:py-20 px-4">
+              <Globe className="w-16 md:w-24 h-16 md:h-24 mx-auto mb-6 text-primary opacity-50" />
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+                {t('3d_dashboard.choose_your_region')}
               </h2>
-              <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-                Select any region worldwide to visualize sustainability data, stakeholder networks, 
-                and real-time environmental metrics in an interactive 3D environment.
+              <p className="text-base md:text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+                {t('3d_dashboard.select_region_info')}
               </p>
               <Button 
                 size="lg"
@@ -199,7 +199,7 @@ const DynamicRegionalDashboard = () => {
                 className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
               >
                 <Search className="w-5 h-5 mr-2" />
-                Select Region
+                {t('3d_dashboard.region_select')}
               </Button>
             </div>
           ) : (
@@ -216,34 +216,31 @@ const DynamicRegionalDashboard = () => {
             transition={{ duration: 0.8, delay: 0.6 }}
           >
             <Card className="text-center">
-              <CardContent className="p-6">
-                <Globe className="w-12 h-12 mx-auto mb-4 text-primary" />
-                <h3 className="text-xl font-semibold mb-3">Global Coverage</h3>
-                <p className="text-muted-foreground">
-                  Explore any region from countries to districts with dynamic data loading 
-                  and adaptive visualization levels.
+              <CardContent className="p-4 md:p-6">
+                <Globe className="w-10 md:w-12 h-10 md:h-12 mx-auto mb-4 text-primary" />
+                <h3 className="text-lg md:text-xl font-semibold mb-3">{t('3d_dashboard.global_coverage')}</h3>
+                <p className="text-sm md:text-base text-muted-foreground">
+                  {t('3d_dashboard.global_coverage_desc')}
                 </p>
               </CardContent>
             </Card>
 
             <Card className="text-center">
-              <CardContent className="p-6">
-                <Zap className="w-12 h-12 mx-auto mb-4 text-accent" />
-                <h3 className="text-xl font-semibold mb-3">Real-time Analytics</h3>
-                <p className="text-muted-foreground">
-                  Live data integration with weather, air quality, energy consumption, 
-                  and sustainability metrics updating in real-time.
+              <CardContent className="p-4 md:p-6">
+                <Zap className="w-10 md:w-12 h-10 md:h-12 mx-auto mb-4 text-accent" />
+                <h3 className="text-lg md:text-xl font-semibold mb-3">{t('3d_dashboard.real_time_analytics')}</h3>
+                <p className="text-sm md:text-base text-muted-foreground">
+                  {t('3d_dashboard.real_time_analytics_desc')}
                 </p>
               </CardContent>
             </Card>
 
             <Card className="text-center">
-              <CardContent className="p-6">
-                <Users className="w-12 h-12 mx-auto mb-4 text-success" />
-                <h3 className="text-xl font-semibold mb-3">Smart Stakeholders</h3>
-                <p className="text-muted-foreground">
-                  AI-powered stakeholder detection and matching based on regional 
-                  characteristics, culture, and administrative structures.
+              <CardContent className="p-4 md:p-6">
+                <Users className="w-10 md:w-12 h-10 md:h-12 mx-auto mb-4 text-success" />
+                <h3 className="text-lg md:text-xl font-semibold mb-3">{t('3d_dashboard.smart_stakeholders')}</h3>
+                <p className="text-sm md:text-base text-muted-foreground">
+                  {t('3d_dashboard.smart_stakeholders_desc')}
                 </p>
               </CardContent>
             </Card>
