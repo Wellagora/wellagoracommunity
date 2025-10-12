@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Navigation from '@/components/Navigation';
-import HandprintCalculator from '@/components/dashboard/HandprintCalculator';
+import HandprintCalculator from '@/components/handprint/HandprintCalculator';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 
