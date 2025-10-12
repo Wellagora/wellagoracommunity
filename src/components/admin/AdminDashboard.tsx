@@ -45,7 +45,7 @@ const AdminDashboard = () => {
     totalImpact: 0
   });
 
-  // Check admin access - SECURITY: Uses user_roles table, not profile
+  // Check admin access - SECURITY: Server-side verification via edge function
   useEffect(() => {
     const checkAccess = async () => {
       if (!user) {
@@ -53,22 +53,28 @@ const AdminDashboard = () => {
         return;
       }
 
-      // Check if user has admin role in user_roles table
-      const { data: roles } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .in('role', ['super_admin', 'admin', 'government']);
+      try {
+        // Server-side admin verification - cannot be bypassed by client
+        const { data, error } = await supabase.functions.invoke('verify-admin-access');
 
-      if (!roles || roles.length === 0) {
+        if (error || !data?.hasAccess) {
+          toast({
+            title: 'Hozzáférés megtagadva',
+            description: 'Csak adminisztrátorok érhetik el ezt az oldalt.',
+            variant: 'destructive'
+          });
+          navigate('/dashboard');
+        } else {
+          setHasAdminAccess(true);
+        }
+      } catch (error) {
+        console.error('Error verifying admin access:', error);
         toast({
-          title: 'Hozzáférés megtagadva',
-          description: 'Csak adminisztrátorok érhetik el ezt az oldalt.',
+          title: 'Hiba',
+          description: 'Hiba történt az adminisztrátori jogosultságok ellenőrzése során.',
           variant: 'destructive'
         });
         navigate('/dashboard');
-      } else {
-        setHasAdminAccess(true);
       }
     };
 

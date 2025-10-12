@@ -30,7 +30,7 @@ const Navigation = () => {
   const { t } = useLanguage();
   const [hasAdminAccess, setHasAdminAccess] = useState(false);
 
-  // Check if user has admin access
+  // Check if user has admin access - SECURITY: Server-side verification
   useEffect(() => {
     const checkAdminAccess = async () => {
       if (!user) {
@@ -38,13 +38,14 @@ const Navigation = () => {
         return;
       }
 
-      const { data: roles } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .in('role', ['super_admin', 'admin', 'government']);
-
-      setHasAdminAccess(roles && roles.length > 0);
+      try {
+        // Server-side admin verification via edge function
+        const { data, error } = await supabase.functions.invoke('verify-admin-access');
+        setHasAdminAccess(!error && data?.hasAccess === true);
+      } catch (error) {
+        console.error('Error verifying admin access:', error);
+        setHasAdminAccess(false);
+      }
     };
 
     checkAdminAccess();

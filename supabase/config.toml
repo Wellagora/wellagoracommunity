@@ -15,3 +15,6 @@ verify_jwt = true
 
 [functions.match-challenge]
 verify_jwt = true
+
+[functions.verify-admin-access]
+verify_jwt = true
