@@ -6,25 +6,10 @@ import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { 
-  Heart, 
-  X, 
-  User, 
-  Building2, 
-  MapPin, 
-  Users,
-  Target,
-  Sparkles,
-  MessageCircle,
-  Calendar,
-  Award,
-  TrendingUp,
-  Globe,
-  Leaf,
-  Zap
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Map, Layers } from "lucide-react";
+import RegionalStakeholderMap from "@/components/matching/RegionalStakeholderMap";
+import StakeholderFilters from "@/components/matching/StakeholderFilters";
 
 interface MatchProfile {
   id: string;
@@ -33,6 +18,10 @@ interface MatchProfile {
   organization?: string;
   location: string;
   region: string;
+  city?: string;
+  district?: string;
+  latitude: number;
+  longitude: number;
   description: string;
   compatibility: number;
   sustainabilityGoals: string[];
@@ -48,10 +37,11 @@ const MatchingPage = () => {
   const navigate = useNavigate();
   const { user, profile } = useAuth();
   const { t } = useLanguage();
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [matches, setMatches] = useState<string[]>([]);
-  const [showCelebration, setShowCelebration] = useState(false);
-  const [selectedRegion, setSelectedRegion] = useState<string>("all");
+  const [viewMode, setViewMode] = useState<'map' | 'cards'>('map');
+  const [selectedRegion, setSelectedRegion] = useState<string>("budapest");
+  const [selectedTypes, setSelectedTypes] = useState<string[]>(['citizen', 'business', 'government', 'ngo']);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [selectedStakeholder, setSelectedStakeholder] = useState<MatchProfile | null>(null);
   
   const regions = [
     { id: "all", name: "Összes régió" },
@@ -80,6 +70,10 @@ const MatchingPage = () => {
       organization: "GreenTech Solutions Kft.",
       location: "Budapest, V. kerület",
       region: "budapest",
+      city: "Budapest",
+      district: "V. kerület",
+      latitude: 47.4979,
+      longitude: 19.0402,
       description: "Megújuló energia technológiák fejlesztése és telepítése. Szeretnénk együttműködni helyi közösségekkel a fenntartható energia projektek megvalósításában.",
       compatibility: 92,
       sustainabilityGoals: ["Megújuló energia", "Szén-dioxid csökkentés", "Közösségi projektek"],
@@ -97,6 +91,10 @@ const MatchingPage = () => {
       organization: "Budapest V. kerületi Önkormányzat",
       location: "Budapest, V. kerület",
       region: "budapest",
+      city: "Budapest",
+      district: "V. kerület",
+      latitude: 47.4950,
+      longitude: 19.0510,
       description: "Városi fenntarthatósági programok koordinálása. Keresünk partnereket a zöld infrastruktúra fejlesztéséhez és közösségi környezetvédelmi oktatáshoz.",
       compatibility: 88,
       sustainabilityGoals: ["Városi zöld területek", "Közlekedés optimalizálás", "Hulladékcsökkentés"],
@@ -114,6 +112,10 @@ const MatchingPage = () => {
       organization: "Zöld Jövő Közhasznú Alapítvány",
       location: "Debrecen, Magyarország", 
       region: "debrecen",
+      city: "Debrecen",
+      district: "",
+      latitude: 47.5316,
+      longitude: 21.6273,
       description: "Környezettudatossági oktatás és közösségi kertészkedés programok. Szervezünk workshopokat és eseményeket a fenntartható életmód népszerűsítésére.",
       compatibility: 85,
       sustainabilityGoals: ["Oktatás", "Közösségi kertek", "Biodiverzitás"],
@@ -130,6 +132,10 @@ const MatchingPage = () => {
       type: "citizen",
       location: "Szeged, Magyarország",
       region: "szeged",
+      city: "Szeged",
+      district: "",
+      latitude: 46.2530,
+      longitude: 20.1414,
       description: "Környezetmérnök, aki helyi fenntarthatósági projekteket koordinál. Szeretek közösségi kertekben dolgozni és környezettudatos rendezvényeket szervezni.",
       compatibility: 78,
       sustainabilityGoals: ["Hulladék csökkentés", "Helyi termelés", "Közösségi aktivizmus"],
@@ -147,6 +153,10 @@ const MatchingPage = () => {
       organization: "EcoWaste Hulladékkezelő Kft.",
       location: "Pécs, Magyarország",
       region: "pecs",
+      city: "Pécs",
+      district: "",
+      latitude: 46.0727,
+      longitude: 18.2320,
       description: "Szelektív hulladékgyűjtés és újrahasznosítás. Segítünk vállalkozásoknak és magánszemélyeknek a körforgásos gazdaság bevezetésében.",
       compatibility: 87,
       sustainabilityGoals: ["Hulladék csökkentés", "Újrahasznosítás", "Körforgásos gazdaság"],
@@ -164,6 +174,10 @@ const MatchingPage = () => {
       organization: "Győr Önkormányzat",
       location: "Győr, Magyarország",
       region: "gyor",
+      city: "Győr",
+      district: "",
+      latitude: 47.6875,
+      longitude: 17.6504,
       description: "Zöld város program koordinálása. Törekszünk arra, hogy Győr az ország legzöldebb városa legyen, ehhez keresünk partnereket.",
       compatibility: 91,
       sustainabilityGoals: ["Városi zöldítés", "Energia hatékonyság", "Zöld infrastruktúra"],
@@ -176,336 +190,141 @@ const MatchingPage = () => {
     }
   ];
 
-  const profiles = selectedRegion === "all" 
-    ? allProfiles 
-    : allProfiles.filter(p => p.region === selectedRegion);
+  // Filter profiles
+  let filteredProfiles = allProfiles;
+  
+  // Filter by region
+  if (selectedRegion !== "all") {
+    filteredProfiles = filteredProfiles.filter(p => p.region === selectedRegion);
+  }
+  
+  // Filter by types
+  filteredProfiles = filteredProfiles.filter(p => selectedTypes.includes(p.type));
+  
+  // Filter by search query
+  if (searchQuery) {
+    filteredProfiles = filteredProfiles.filter(p => 
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.organization?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.description.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }
 
-  const currentProfile = profiles[currentIndex];
-
-  const handleLike = () => {
-    if (currentProfile) {
-      setMatches([...matches, currentProfile.id]);
-      if (currentProfile.compatibility > 90) {
-        setShowCelebration(true);
-        setTimeout(() => setShowCelebration(false), 3000);
-      }
-    }
-    nextProfile();
+  const handleTypeToggle = (type: string) => {
+    setSelectedTypes(prev => 
+      prev.includes(type) 
+        ? prev.filter(t => t !== type)
+        : [...prev, type]
+    );
   };
 
-  const handlePass = () => {
-    nextProfile();
-  };
-
-  const nextProfile = () => {
-    if (currentIndex < profiles.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    }
-  };
-
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'citizen': return 'from-primary to-success';
-      case 'business': return 'from-accent to-secondary'; 
-      case 'government': return 'from-warning to-destructive';
-      case 'ngo': return 'from-success to-primary';
-      default: return 'from-primary to-success';
-    }
-  };
-
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'citizen': return <User className="w-4 h-4" />;
-      case 'business': return <Building2 className="w-4 h-4" />;
-      case 'government': return <MapPin className="w-4 h-4" />;
-      case 'ngo': return <Users className="w-4 h-4" />;
-      default: return <User className="w-4 h-4" />;
-    }
-  };
-
-  const getTypeLabel = (type: string) => {
-    switch (type) {
-      case 'citizen': return t('matching.type.citizen');
-      case 'business': return t('matching.type.business');
-      case 'government': return t('matching.type.government');
-      case 'ngo': return t('matching.type.ngo');
-      default: return t('matching.type.user');
-    }
-  };
 
   if (!user) {
     return null;
   }
 
-  if (currentIndex >= profiles.length) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Navigation />
-        <div className="max-w-4xl mx-auto px-4 py-12 sm:py-16">
-          <div className="text-6xl mb-6">🎉</div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-4">
-            {t('matching.excellent_work')}
-          </h1>
-          <p className="text-lg sm:text-xl text-muted-foreground mb-8">
-            {t('matching.reviewed_profiles').replace('{count}', matches.length.toString())}
-          </p>
-          <div className="space-y-4">
-            <Button 
-              onClick={() => navigate("/community")}
-              className="w-full sm:w-auto bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground px-8 py-3"
-            >
-              {t('matching.view_community')}
-            </Button>
-            <p className="text-sm text-muted-foreground">
-              {t('matching.notification_info')}
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <div className="max-w-4xl mx-auto px-4 py-6 sm:py-12">
+      <div className="container mx-auto px-4 py-6 sm:py-8">
         {/* Header */}
-        <div className="text-center mb-6 sm:mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-primary to-success rounded-2xl shadow-premium mb-4 sm:mb-6">
-            <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-          </div>
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground mb-3 sm:mb-4">
-            Fenntarthatósági Partnerek
+        <div className="mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
+            Regionális Stakeholder Hálózat
           </h1>
-          <p className="text-sm sm:text-base lg:text-lg text-muted-foreground mb-4 sm:mb-6 px-4">
-            Találd meg a tökéletes együttműködő partnereket a fenntarthatósági céljaid eléréséhez
+          <p className="text-sm sm:text-base text-muted-foreground">
+            Találj együttműködő partnereket a régióban: magánszemélyek, cégek, civil szervezetek és önkormányzatok
           </p>
-          
-          {/* Region Filter */}
-          <div className="max-w-md mx-auto mb-6">
-            <div className="flex items-center justify-center space-x-2 mb-3">
-              <Globe className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm font-medium text-foreground">Régió szerinti szűrés</span>
-            </div>
-            <div className="flex flex-wrap gap-2 justify-center">
-              {regions.map((region) => (
-                <Button
-                  key={region.id}
-                  variant={selectedRegion === region.id ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => {
-                    setSelectedRegion(region.id);
-                    setCurrentIndex(0);
-                  }}
-                  className="text-xs"
-                >
-                  {region.name}
-                </Button>
-              ))}
-            </div>
-          </div>
-          
-          {/* Progress */}
-          <div className="max-w-md mx-auto">
-            <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
-              <span>Előrehaladás</span>
-              <span>{currentIndex + 1} / {profiles.length}</span>
-            </div>
-            <Progress value={((currentIndex + 1) / profiles.length) * 100} className="h-2" />
-          </div>
         </div>
+          
+        {/* View Mode Tabs */}
+        <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'map' | 'cards')} className="mb-6">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
+            <TabsTrigger value="map" className="flex items-center gap-2">
+              <Map className="w-4 h-4" />
+              Térkép nézet
+            </TabsTrigger>
+            <TabsTrigger value="cards" className="flex items-center gap-2">
+              <Layers className="w-4 h-4" />
+              Lista nézet
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Matching Card */}
-        <div className="relative max-w-2xl mx-auto mb-8">
-          <AnimatePresence mode="wait">
-            {currentProfile && (
-              <motion.div
-                key={currentProfile.id}
-                initial={{ opacity: 0, scale: 0.8, rotateY: -10 }}
-                animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-                exit={{ opacity: 0, scale: 0.8, rotateY: 10 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-              >
-                <Card className="bg-card/80 backdrop-blur-sm border-border/50 shadow-2xl">
+          {/* Filters */}
+          <div className="mt-6">
+            <StakeholderFilters
+              selectedTypes={selectedTypes}
+              onTypeToggle={handleTypeToggle}
+              selectedRegion={selectedRegion}
+              onRegionChange={setSelectedRegion}
+              regions={regions}
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              totalCount={filteredProfiles.length}
+            />
+          </div>
+
+          {/* Map View */}
+          <TabsContent value="map" className="mt-6">
+            <div className="h-[600px] rounded-lg overflow-hidden">
+              <RegionalStakeholderMap
+                stakeholders={filteredProfiles.map(p => ({
+                  id: p.id,
+                  name: p.name,
+                  type: p.type,
+                  organization: p.organization,
+                  location: p.location,
+                  region: p.region,
+                  city: p.city,
+                  district: p.district,
+                  latitude: p.latitude,
+                  longitude: p.longitude,
+                  bio: p.description,
+                  sustainability_goals: p.sustainabilityGoals,
+                  avatar: p.avatar
+                }))}
+                onStakeholderClick={(s) => {
+                  const fullProfile = filteredProfiles.find(p => p.id === s.id);
+                  if (fullProfile) setSelectedStakeholder(fullProfile);
+                }}
+              />
+            </div>
+          </TabsContent>
+
+          {/* Cards View */}
+          <TabsContent value="cards" className="mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredProfiles.map((profile) => (
+                <Card key={profile.id} className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setSelectedStakeholder(profile)}>
                   <CardHeader>
                     <div className="flex items-start justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className="text-4xl">{currentProfile.avatar}</div>
+                      <div className="flex items-center gap-3">
+                        <div className="text-3xl">{profile.avatar}</div>
                         <div>
-                          <CardTitle className="text-xl mb-1">{currentProfile.name}</CardTitle>
-                          <div className="flex items-center space-x-2">
-                            <Badge className={`bg-gradient-to-r ${getTypeColor(currentProfile.type)} text-white`}>
-                              {getTypeIcon(currentProfile.type)}
-                              <span className="ml-1">{getTypeLabel(currentProfile.type)}</span>
-                            </Badge>
-                            {currentProfile.verified && (
-                              <Badge variant="secondary" className="bg-success/20 text-success">
-                                ✓ {t('matching.verified')}
-                              </Badge>
-                            )}
-                          </div>
+                          <CardTitle className="text-base">{profile.name}</CardTitle>
+                          {profile.organization && (
+                            <p className="text-xs text-muted-foreground">{profile.organization}</p>
+                          )}
                         </div>
-                      </div>
-                      
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-primary mb-1">
-                          {currentProfile.compatibility}%
-                        </div>
-                        <div className="text-xs text-muted-foreground">{t('matching.compatibility')}</div>
                       </div>
                     </div>
                   </CardHeader>
-                  
-                  <CardContent className="space-y-6">
-                    {/* Organization & Location */}
-                    <div className="space-y-2">
-                      {currentProfile.organization && (
-                        <div className="flex items-center space-x-2 text-muted-foreground">
-                          <Building2 className="w-4 h-4" />
-                          <span>{currentProfile.organization}</span>
-                        </div>
-                      )}
-                      <div className="flex items-center space-x-2 text-muted-foreground">
-                        <MapPin className="w-4 h-4" />
-                        <span>{currentProfile.location}</span>
-                      </div>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{profile.description}</p>
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {profile.sustainabilityGoals.slice(0, 2).map((goal, i) => (
+                        <Badge key={i} variant="outline" className="text-xs">{goal}</Badge>
+                      ))}
                     </div>
-
-                    {/* Description */}
-                    <p className="text-foreground leading-relaxed">
-                      {currentProfile.description}
-                    </p>
-
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-3 gap-2 sm:gap-4 py-4 bg-background/30 rounded-xl">
-                      <div className="text-center">
-                        <div className="text-base sm:text-lg font-bold text-primary">{currentProfile.impactScore}</div>
-                        <div className="text-xs text-muted-foreground">{t('matching.impact_points')}</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-base sm:text-lg font-bold text-success">{currentProfile.sharedInterests.length}</div>
-                        <div className="text-xs text-muted-foreground">{t('matching.shared_interests')}</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-base sm:text-lg font-bold text-accent">
-                          {Math.floor((Date.now() - new Date(currentProfile.joinedDate).getTime()) / (1000 * 60 * 60 * 24))}
-                        </div>
-                        <div className="text-xs text-muted-foreground">{t('matching.days_member')}</div>
-                      </div>
-                    </div>
-
-                    {/* Sustainability Goals */}
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-foreground flex items-center text-sm sm:text-base">
-                        <Target className="w-4 h-4 mr-2 text-primary" />
-                        {t('matching.sustainability_goals')}
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {currentProfile.sustainabilityGoals.map((goal, index) => (
-                          <Badge key={index} variant="outline" className="border-primary/30 text-primary text-xs sm:text-sm">
-                            {goal}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Shared Interests */}
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-foreground flex items-center text-sm sm:text-base">
-                        <Sparkles className="w-4 h-4 mr-2 text-success" />
-                        {t('matching.shared_interests')}
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {currentProfile.sharedInterests.map((interest, index) => (
-                          <Badge key={index} variant="secondary" className="bg-success/20 text-success text-xs sm:text-sm">
-                            {interest}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Recent Activity */}
-                    <div className="p-3 sm:p-4 bg-accent/5 border border-accent/20 rounded-xl">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <TrendingUp className="w-4 h-4 text-accent" />
-                        <span className="font-medium text-foreground text-sm sm:text-base">{t('matching.recent_activity_label')}</span>
-                      </div>
-                      <p className="text-muted-foreground text-xs sm:text-sm">{currentProfile.recentActivity}</p>
-                    </div>
+                    <Button className="w-full" size="sm">Kapcsolatfelvétel</Button>
                   </CardContent>
                 </Card>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Celebration Animation */}
-          <AnimatePresence>
-            {showCelebration && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-                className="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
-              >
-                <div className="bg-gradient-to-r from-primary to-success text-white px-6 sm:px-8 py-4 rounded-2xl shadow-2xl">
-                  <div className="text-center">
-                    <div className="text-2xl sm:text-3xl mb-2">🎉</div>
-                    <div className="font-bold text-base sm:text-lg">{t('matching.perfect_match')}</div>
-                    <div className="text-xs sm:text-sm">90%+ {t('matching.compatibility')}</div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex items-center justify-center gap-6 sm:gap-8">
-          <Button
-            onClick={handlePass}
-            size="lg"
-            variant="outline"
-            className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-destructive/30 hover:bg-destructive/10 hover:border-destructive"
-          >
-            <X className="w-5 h-5 sm:w-6 sm:h-6 text-destructive" />
-          </Button>
-          
-          <Button
-            onClick={handleLike}
-            size="lg"
-            className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 shadow-premium hover:shadow-glow hover:scale-110 transition-all duration-300"
-          >
-            <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-          </Button>
-        </div>
-
-        {/* Instructions */}
-        <div className="text-center mt-6 sm:mt-8">
-          <p className="text-muted-foreground text-xs sm:text-sm px-4">
-            ❤️ {t('matching.interested')} • ✗ {t('matching.pass')} • {matches.length} {t('matching.partners_selected')}
-          </p>
-        </div>
-
-        {/* Matches Summary */}
-        {matches.length > 0 && (
-          <Card className="mt-8 bg-success/5 border-success/20">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Award className="w-5 h-5 text-success" />
-                  <span className="font-medium text-foreground">
-                    {matches.length} partnert kiválasztottál!
-                  </span>
-                </div>
-                <Button variant="outline" size="sm" className="border-success/30 hover:bg-success/10">
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  Üzenetek
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
