@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   Leaf, 
   TrendingUp, 
@@ -38,6 +39,7 @@ interface HandprintData {
 }
 
 const HandprintCalculator = () => {
+  const { t } = useLanguage();
   const { toast } = useToast();
   const { user } = useAuth();
   const [handprint, setHandprint] = useState<HandprintData | null>(null);
@@ -112,11 +114,11 @@ const HandprintCalculator = () => {
       });
 
       // Calculate rank based on CO2 saved
-      let rank = 'Kezdő';
-      if (totalCo2 > 1000) rank = 'Mester';
-      else if (totalCo2 > 500) rank = 'Haladó';
-      else if (totalCo2 > 200) rank = 'Tapasztalt';
-      else if (totalCo2 > 50) rank = 'Fejlődő';
+      let rank = t('handprint.rank.beginner');
+      if (totalCo2 > 1000) rank = t('handprint.rank.master');
+      else if (totalCo2 > 500) rank = t('handprint.rank.advanced');
+      else if (totalCo2 > 200) rank = t('handprint.rank.experienced');
+      else if (totalCo2 > 50) rank = t('handprint.rank.developing');
 
       // Trees equivalent (1 tree absorbs ~21.77 kg CO2/year)
       const treesEquivalent = Math.round(totalCo2 / 21.77);
@@ -153,8 +155,8 @@ const HandprintCalculator = () => {
     } catch (error) {
       console.error('Error loading handprint:', error);
       toast({
-        title: 'Hiba',
-        description: 'Nem sikerült betölteni a kéznyom adatokat',
+        title: t('common.error'),
+        description: t('handprint.error_loading'),
         variant: 'destructive'
       });
     } finally {
@@ -167,8 +169,8 @@ const HandprintCalculator = () => {
     await loadHandprintData();
     setCalculating(false);
     toast({
-      title: 'Újraszámítva!',
-      description: 'A kéznyom adatok frissítve lettek',
+      title: t('handprint.recalculated'),
+      description: t('handprint.data_updated'),
     });
   };
 
@@ -209,7 +211,7 @@ const HandprintCalculator = () => {
     return (
       <Card>
         <CardContent className="text-center py-12">
-          <p className="text-muted-foreground">Nincs elérhető adat</p>
+          <p className="text-muted-foreground">{t('handprint.no_data')}</p>
         </CardContent>
       </Card>
     );
@@ -224,10 +226,10 @@ const HandprintCalculator = () => {
             <div>
               <CardTitle className="text-2xl flex items-center gap-2">
                 <Leaf className="w-8 h-8 text-primary" />
-                Kéznyomod (Handprint)
+                {t('handprint.title')}
               </CardTitle>
               <CardDescription className="mt-2">
-                Pozitív környezeti hatásod ezen a hónapon
+                {t('handprint.subtitle')}
               </CardDescription>
             </div>
             <Badge className={`${getRankColor(handprint.rank)} text-white text-lg px-4 py-2`}>
@@ -242,7 +244,7 @@ const HandprintCalculator = () => {
             <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg">
               <div className="flex items-center gap-2 text-green-600 dark:text-green-400 mb-2">
                 <Leaf className="w-5 h-5" />
-                <span className="text-sm font-medium">CO₂ Megtakarítás</span>
+                <span className="text-sm font-medium">{t('handprint.co2_saved')}</span>
               </div>
               <div className="text-3xl font-bold text-green-700 dark:text-green-300">
                 {handprint.totalCo2Saved} kg
@@ -252,17 +254,17 @@ const HandprintCalculator = () => {
             <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
               <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 mb-2">
                 <TreePine className="w-5 h-5" />
-                <span className="text-sm font-medium">Fa Egyenérték</span>
+                <span className="text-sm font-medium">{t('handprint.trees_equivalent')}</span>
               </div>
               <div className="text-3xl font-bold text-blue-700 dark:text-blue-300">
-                {handprint.treesEquivalent} fa
+                {handprint.treesEquivalent} {t('common.trees')}
               </div>
             </div>
 
             <div className="bg-purple-50 dark:bg-purple-950 p-4 rounded-lg">
               <div className="flex items-center gap-2 text-purple-600 dark:text-purple-400 mb-2">
                 <TrendingUp className="w-5 h-5" />
-                <span className="text-sm font-medium">Pontok</span>
+                <span className="text-sm font-medium">{t('handprint.points')}</span>
               </div>
               <div className="text-3xl font-bold text-purple-700 dark:text-purple-300">
                 {handprint.pointsEarned}
@@ -274,25 +276,25 @@ const HandprintCalculator = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="border rounded-lg p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Közösségi Szorzó</span>
+                <span className="text-sm font-medium">{t('handprint.community_multiplier')}</span>
                 <Badge variant="outline">{handprint.multiplier}x</Badge>
               </div>
               <Progress value={Math.min((handprint.multiplier - 1) * 50, 100)} className="h-2" />
               <p className="text-xs text-muted-foreground mt-2">
-                Folyamatos teljesítés és közösségi részvétel jutalom
+                {t('handprint.multiplier_description')}
               </p>
             </div>
 
             <div className="border rounded-lg p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Jelenlegi Sorozat</span>
+                <span className="text-sm font-medium">{t('handprint.current_streak')}</span>
                 <Badge variant="outline" className="bg-orange-100 text-orange-700">
-                  🔥 {handprint.currentStreak} nap
+                  🔥 {handprint.currentStreak} {t('handprint.days')}
                 </Badge>
               </div>
               <Progress value={Math.min(handprint.currentStreak * 10, 100)} className="h-2" />
               <p className="text-xs text-muted-foreground mt-2">
-                Folyamatosan {handprint.currentStreak} napja aktív vagy!
+                {t('handprint.streak_active')}
               </p>
             </div>
           </div>
@@ -301,7 +303,7 @@ const HandprintCalculator = () => {
           <div>
             <h4 className="font-semibold mb-3 flex items-center gap-2">
               <Users className="w-4 h-4" />
-              Kategória Bontás
+              {t('handprint.category_breakdown')}
             </h4>
             <div className="space-y-3">
               {Object.entries(handprint.categoryBreakdown).map(([category, value]) => {
@@ -332,10 +334,10 @@ const HandprintCalculator = () => {
               disabled={calculating}
               className="flex-1"
             >
-              {calculating ? 'Számítás...' : 'Újraszámítás'}
+              {calculating ? t('handprint.calculating') : t('handprint.recalculate')}
             </Button>
             <Button variant="outline" className="flex-1">
-              Részletek
+              {t('handprint.details')}
             </Button>
           </div>
         </CardContent>
@@ -344,14 +346,11 @@ const HandprintCalculator = () => {
       {/* Info Card */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Mi az a Kéznyom (Handprint)?</CardTitle>
+          <CardTitle className="text-lg">{t('handprint.what_is')}</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            A kéznyom a <strong>pozitív környezeti hatásod mértéke</strong>. Míg a lábnyom a környezetre gyakorolt 
-            negatív hatást méri, addig a kéznyom azt mutatja meg, hogy <strong>mennyit teszel a bolygóért</strong>.
-            Minden teljesített kihívás, minden fenntartható döntés növeli a kéznyomodat. 
-            <strong> Together we thrive</strong> - közösen építjük a jövőt! 🌍
+            {t('handprint.description')}
           </p>
         </CardContent>
       </Card>

@@ -75,11 +75,11 @@ const ChallengesSection = () => {
     
     switch (profile.user_role) {
       case "business":
-        return "Csatlakozás és Szponzorálás";
+        return t('challenges.join_and_sponsor');
       case "ngo":
-        return "Csatlakozás és Támogatás";
+        return t('challenges.join_and_support');
       case "government":
-        return "Csatlakozás és Támogatás";
+        return t('challenges.join_and_support');
       default:
         return t('challenges.join_challenge');
     }
@@ -141,7 +141,7 @@ const ChallengesSection = () => {
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-bold text-foreground">
-                {selectedCategory || selectedDifficulty ? 'Filtered Challenges' : t('challenges.featured.title')}
+                {selectedCategory || selectedDifficulty ? t('challenges.filtered') : t('challenges.featured.title')}
               </h3>
               <div className="flex gap-2">
                 {(selectedCategory || selectedDifficulty) && (
@@ -153,7 +153,7 @@ const ChallengesSection = () => {
                       setSelectedDifficulty(null);
                     }}
                   >
-                    Clear Filters
+                    {t('challenges.clear_filters')}
                   </Button>
                 )}
                 <Button variant="outline" asChild>
@@ -175,7 +175,7 @@ const ChallengesSection = () => {
                           <CardTitle className="text-lg">{t(challenge.titleKey)}</CardTitle>
                           <Badge className="bg-warning/10 text-warning border-warning/20">
                             <Star className="w-3 h-3 mr-1" />
-                            Kiemelt
+                            {t('challenges.featured')}
                           </Badge>
                         </div>
                         <CardDescription className="text-muted-foreground">
@@ -272,14 +272,14 @@ const ChallengesSection = () => {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('challenges.co2_saved')}</span>
-                    <span className="font-bold text-foreground">12.8 tonna</span>
+                    <span className="font-bold text-foreground">12.8 {t('common.tons')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Ültetett Fák</span>
+                    <span className="text-muted-foreground">{t('challenges.trees_planted')}</span>
                     <span className="font-bold text-foreground">3,247</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Csökkentett Hulladék</span>
+                    <span className="text-muted-foreground">{t('challenges.waste_reduced')}</span>
                     <span className="font-bold text-foreground">890 kg</span>
                   </div>
                 </div>
@@ -291,7 +291,7 @@ const ChallengesSection = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Trophy className="w-5 h-5 mr-2 text-warning" />
-                  Top Performers
+                  {t('challenges.top_performers')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -304,13 +304,13 @@ const ChallengesSection = () => {
                     <div className="text-lg">{user.badge}</div>
                     <div className="flex-1">
                       <div className="font-medium text-foreground">{user.name}</div>
-                      <div className="text-sm text-muted-foreground">{user.points} points</div>
+                      <div className="text-sm text-muted-foreground">{user.points} {t('challenges.points')}</div>
                     </div>
                     <Badge variant="outline">#{user.rank}</Badge>
                   </div>
                 ))}
                 <Button variant="outline" className="w-full mt-4">
-                  View Full Leaderboard
+                  {t('challenges.view_leaderboard')}
                 </Button>
               </CardContent>
             </Card>
