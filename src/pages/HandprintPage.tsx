@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '@/contexts/LanguageContext';
 import Navigation from '@/components/Navigation';
 import HandprintCalculator from '@/components/dashboard/HandprintCalculator';
 import { Button } from '@/components/ui/button';
@@ -9,6 +10,7 @@ import { ArrowLeft } from 'lucide-react';
 const HandprintPage = () => {
   const { user, loading, profile } = useAuth();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   
   const isOrganization = profile?.user_role && ['business', 'government', 'ngo'].includes(profile.user_role);
 
@@ -17,13 +19,13 @@ const HandprintPage = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center max-w-md p-8">
           <h1 className="text-3xl font-bold mb-4 text-foreground">
-            🔐 Bejelentkezés szükséges
+            🔐 {t('auth.login_required')}
           </h1>
           <p className="text-muted-foreground mb-6">
-            A kéznyom számító használatához jelentkezz be.
+            {t('handprint.login_message')}
           </p>
           <Button onClick={() => navigate('/auth')} size="lg">
-            Bejelentkezés
+            {t('auth.login')}
           </Button>
         </div>
       </div>
@@ -34,7 +36,7 @@ const HandprintPage = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-pulse text-center">
-          <div className="text-2xl text-foreground">⏳ Betöltés...</div>
+          <div className="text-2xl text-foreground">⏳ {t('common.loading')}</div>
         </div>
       </div>
     );
@@ -53,17 +55,17 @@ const HandprintPage = () => {
             className="mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Vissza a Dashboard-ra
+            {t('common.back_to_dashboard')}
           </Button>
           
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
-              {isOrganization ? '🌍 Regionális Hatás Számító' : '🌱 Kéznyom Számító'}
+              {isOrganization ? `🌍 ${t('handprint.regional_impact')}` : `🌱 ${t('handprint.title')}`}
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               {isOrganization 
-                ? 'Kövesd és növeld szervezeted regionális fenntarthatósági hatását'
-                : 'Mérd és növeld pozitív környezeti hatásod AI-alapú validálással'
+                ? t('handprint.regional_description')
+                : t('handprint.description')
               }
             </p>
           </div>

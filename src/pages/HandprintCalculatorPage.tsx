@@ -1,10 +1,12 @@
 import HandprintCalculator from '@/components/handprint/HandprintCalculator';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 
 const HandprintCalculatorPage = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-gradient-light-transition p-3 sm:p-6">
@@ -15,7 +17,7 @@ const HandprintCalculatorPage = () => {
           className="mb-4 sm:mb-6 text-sm sm:text-base"
         >
           <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
-          Vissza a Dashboard-hoz
+          {t('common.back_to_dashboard')}
         </Button>
         
         <HandprintCalculator />
