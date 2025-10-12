@@ -176,21 +176,21 @@ const ChallengesPage = () => {
             
             {/* Quick Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 max-w-2xl mx-auto">
-              <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
+            <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
                 <div className="text-3xl font-bold text-foreground mb-1">{challenges.length}</div>
-                <div className="text-muted-foreground">Aktív Kihívások</div>
+                <div className="text-muted-foreground">{t('challenges.active_challenges')}</div>
               </Card3D>
               <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
                 <div className="text-3xl font-bold text-foreground mb-1">
                   {challenges.reduce((sum, c) => sum + c.participants, 0).toLocaleString()}
                 </div>
-                <div className="text-muted-foreground">Összes Résztvevő</div>
+                <div className="text-muted-foreground">{t('challenges.total_participants')}</div>
               </Card3D>
               <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
                 <div className="text-3xl font-bold text-foreground mb-1">
                   {Math.round(challenges.reduce((sum, c) => sum + c.completionRate, 0) / challenges.length)}%
                 </div>
-                <div className="text-muted-foreground">Átlagos Teljesítés</div>
+                <div className="text-muted-foreground">{t('challenges.average_completion')}</div>
               </Card3D>
             </div>
           </div>
@@ -204,7 +204,7 @@ const ChallengesPage = () => {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Kihívások keresése..."
+                placeholder={t('challenges.search_placeholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 bg-background/50 border-border/50 backdrop-blur-sm"
@@ -213,33 +213,33 @@ const ChallengesPage = () => {
             
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
               <SelectTrigger className="w-full lg:w-48 bg-background/50 border-border/50">
-                <SelectValue placeholder="Kategória" />
+                <SelectValue placeholder={t('challenges.category_label')} />
               </SelectTrigger>
               <SelectContent className="bg-background border-border">
-                <SelectItem value="all">Minden Kategória</SelectItem>
-                <SelectItem value="energy">Energia</SelectItem>
-                <SelectItem value="transport">Közlekedés</SelectItem>
-                <SelectItem value="food">Étel</SelectItem>
-                <SelectItem value="waste">Hulladék</SelectItem>
-                <SelectItem value="community">Közösség</SelectItem>
-                <SelectItem value="innovation">Innováció</SelectItem>
-                <SelectItem value="water">Víz</SelectItem>
-                <SelectItem value="biodiversity">Biodiverzitás</SelectItem>
-                <SelectItem value="circular-economy">Körforgásos Gazdaság</SelectItem>
-                <SelectItem value="green-finance">Zöld Finanszírozás</SelectItem>
+                <SelectItem value="all">{t('challenges.all_categories')}</SelectItem>
+                <SelectItem value="energy">{t('challenges.category.energy')}</SelectItem>
+                <SelectItem value="transport">{t('challenges.category.transport')}</SelectItem>
+                <SelectItem value="food">{t('challenges.category.food')}</SelectItem>
+                <SelectItem value="waste">{t('challenges.category.waste')}</SelectItem>
+                <SelectItem value="community">{t('challenges.category.community')}</SelectItem>
+                <SelectItem value="innovation">{t('challenges.category.innovation')}</SelectItem>
+                <SelectItem value="water">{t('challenges.category.water')}</SelectItem>
+                <SelectItem value="biodiversity">{t('challenges.category.biodiversity')}</SelectItem>
+                <SelectItem value="circular-economy">{t('challenges.category.circular_economy')}</SelectItem>
+                <SelectItem value="green-finance">{t('challenges.category.green_finance')}</SelectItem>
               </SelectContent>
             </Select>
 
             <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
               <SelectTrigger className="w-full lg:w-48 bg-background/50 border-border/50">
-                <SelectValue placeholder="Nehézség" />
+                <SelectValue placeholder={t('challenges.difficulty_label')} />
               </SelectTrigger>
               <SelectContent className="bg-background border-border">
-                <SelectItem value="all">Minden Szint</SelectItem>
-                <SelectItem value="beginner">Kezdő</SelectItem>
-                <SelectItem value="intermediate">Középhaladó</SelectItem>
-                <SelectItem value="advanced">Haladó</SelectItem>
-                <SelectItem value="expert">Szakértő</SelectItem>
+                <SelectItem value="all">{t('challenges.all_levels')}</SelectItem>
+                <SelectItem value="beginner">{t('challenges.difficulty.beginner')}</SelectItem>
+                <SelectItem value="intermediate">{t('challenges.difficulty.intermediate')}</SelectItem>
+                <SelectItem value="advanced">{t('challenges.difficulty.advanced')}</SelectItem>
+                <SelectItem value="expert">{t('challenges.difficulty.expert')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -251,7 +251,7 @@ const ChallengesPage = () => {
             className="w-full sm:w-auto bg-gradient-to-r from-primary to-success hover:shadow-lg text-sm sm:text-base"
           >
             <Calculator className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
-            Kéznyom Számító & Perszonalizáció
+            {t('challenges.handprint_button')}
           </Button>
         </div>
         
@@ -289,7 +289,7 @@ const ChallengesPage = () => {
                   </div>
                   <div className="flex items-center space-x-2 text-muted-foreground">
                     <Trophy className="w-4 h-4" />
-                    <span>{challenge.pointsReward} pont</span>
+                    <span>{challenge.pointsReward} {t('challenges.points')}</span>
                   </div>
                   <div className="flex items-center space-x-2 text-muted-foreground">
                     <Users className="w-4 h-4" />
@@ -297,16 +297,16 @@ const ChallengesPage = () => {
                   </div>
                   <div className="flex items-center space-x-2 text-muted-foreground">
                     <Target className="w-4 h-4" />
-                    <span>{challenge.completionRate}% siker</span>
+                    <span>{challenge.completionRate}% {t('challenges.success')}</span>
                   </div>
                 </div>
 
                 {/* Environmental Impact */}
                 <div className="bg-gradient-to-r from-success/10 to-primary/10 rounded-2xl p-4 border border-success/20">
-                  <div className="text-xs text-muted-foreground mb-2">Környezeti Hatás</div>
+                  <div className="text-xs text-muted-foreground mb-2">{t('challenges.environmental_impact')}</div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-success font-medium">🌱 {challenge.impact.co2Saved}kg CO₂ megtakarítás</span>
-                    <span className="text-primary font-medium">🌳 {challenge.impact.treesEquivalent} fa egyenérték</span>
+                    <span className="text-success font-medium">🌱 {challenge.impact.co2Saved}{t('challenges.co2_savings')}</span>
+                    <span className="text-primary font-medium">🌳 {challenge.impact.treesEquivalent} {t('challenges.trees_equivalent')}</span>
                   </div>
                 </div>
 
@@ -330,7 +330,7 @@ const ChallengesPage = () => {
                   
                   {challenge.sponsor && (
                     <div className="text-xs text-muted-foreground">
-                      Szponzor: {challenge.sponsor.name}
+                      {t('challenges.sponsor')}: {challenge.sponsor.name}
                     </div>
                   )}
                 </div>
@@ -349,8 +349,8 @@ const ChallengesPage = () => {
         {filteredChallenges.length === 0 && (
           <Card3D className="text-center py-16 bg-card/50 backdrop-blur-sm">
             <div className="text-6xl mb-6">🔍</div>
-            <h3 className="text-2xl font-bold text-foreground mb-4">Nem találhatók kihívások</h3>
-            <p className="text-muted-foreground text-lg">Próbáld meg módosítani a keresési feltételeket</p>
+            <h3 className="text-2xl font-bold text-foreground mb-4">{t('challenges.no_challenges_found')}</h3>
+            <p className="text-muted-foreground text-lg">{t('challenges.modify_search')}</p>
           </Card3D>
         )}
       </div>
