@@ -242,8 +242,7 @@
   "dashboard.regional_average": "Regionális átlag",
   "dashboard.over_performing": "Felül teljesít",
   "dashboard.next_milestone": "🎯 Következő mérföldkő",
-  "dashboard.until_milestone": "eléréséig"
-}
+  "dashboard.until_milestone": "eléréséig",
   "challenges.bike_to_work.title": "Kerékpározz a munkába",
   "challenges.bike_to_work.description": "Csökkentsd környezeti lábnyomod biciklivel közlekedve egy héten át.",
   "challenges.bike_to_work.steps.route": "Tervezd meg a legjobb kerékpáros útvonalat a munkába",
