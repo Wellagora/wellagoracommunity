@@ -6,6 +6,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ForumCard from "./ForumCard";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { 
   MessageCircle, 
   Users, 
@@ -20,6 +21,7 @@ import {
 
 const CommunityHub = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const { t } = useLanguage();
 
   // Mock data - will be replaced with Supabase data
   const forums = [
@@ -188,10 +190,10 @@ const CommunityHub = () => {
       {/* Header */}
       <div className="text-center px-4">
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3 sm:mb-4">
-          Community Hub
+          {t('community.title')}
         </h1>
         <p className="text-sm sm:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto">
-          Connect with fellow sustainability champions, share knowledge, and collaborate on challenges
+          {t('community.subtitle')}
         </p>
       </div>
 
@@ -200,7 +202,7 @@ const CommunityHub = () => {
         <div className="relative flex-1 max-w-md w-full">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search forums, posts..."
+            placeholder={t('community.search_placeholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"
@@ -209,22 +211,22 @@ const CommunityHub = () => {
         <div className="flex space-x-2">
           <Button variant="outline" className="flex-1 sm:flex-none text-sm">
             <Calendar className="w-4 h-4 mr-1 sm:mr-2" />
-            <span className="hidden sm:inline">Events</span>
+            <span className="hidden sm:inline">{t('community.events')}</span>
           </Button>
           <Button className="flex-1 sm:flex-none bg-gradient-primary text-sm">
             <Plus className="w-4 h-4 mr-1 sm:mr-2" />
-            <span className="hidden sm:inline">New Post</span>
-            <span className="sm:hidden">Post</span>
+            <span className="hidden sm:inline">{t('community.new_post')}</span>
+            <span className="sm:hidden">{t('community.post')}</span>
           </Button>
         </div>
       </div>
 
       <Tabs defaultValue="forums" className="space-y-4 sm:space-y-6 px-4">
         <TabsList className="grid w-full grid-cols-4 h-auto">
-          <TabsTrigger value="forums" className="text-xs sm:text-sm px-2 sm:px-4">Forums</TabsTrigger>
-          <TabsTrigger value="events" className="text-xs sm:text-sm px-2 sm:px-4">Events</TabsTrigger>
-          <TabsTrigger value="members" className="text-xs sm:text-sm px-2 sm:px-4">Members</TabsTrigger>
-          <TabsTrigger value="groups" className="text-xs sm:text-sm px-2 sm:px-4">Groups</TabsTrigger>
+          <TabsTrigger value="forums" className="text-xs sm:text-sm px-2 sm:px-4">{t('community.tabs.forums')}</TabsTrigger>
+          <TabsTrigger value="events" className="text-xs sm:text-sm px-2 sm:px-4">{t('community.tabs.events')}</TabsTrigger>
+          <TabsTrigger value="members" className="text-xs sm:text-sm px-2 sm:px-4">{t('community.tabs.members')}</TabsTrigger>
+          <TabsTrigger value="groups" className="text-xs sm:text-sm px-2 sm:px-4">{t('community.tabs.groups')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="forums" className="space-y-4 sm:space-y-6">
@@ -232,10 +234,10 @@ const CommunityHub = () => {
             {/* Forums List */}
             <div className="lg:col-span-2 space-y-4 sm:space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold">Discussion Forums</h2>
+                <h2 className="text-2xl font-bold">{t('community.discussion_forums')}</h2>
                 <Badge className="bg-success/10 text-success">
                   <Flame className="w-3 h-3 mr-1" />
-                  Active
+                  {t('community.active')}
                 </Badge>
               </div>
               
@@ -257,7 +259,7 @@ const CommunityHub = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <Star className="w-5 h-5 mr-2 text-warning" />
-                    Top Contributors
+                    {t('community.top_contributors')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -270,7 +272,7 @@ const CommunityHub = () => {
                       </Avatar>
                       <div className="flex-1">
                         <div className="font-medium">{contributor.name}</div>
-                        <div className="text-sm text-muted-foreground">{contributor.posts} posts • {contributor.reputation} rep</div>
+                        <div className="text-sm text-muted-foreground">{contributor.posts} {t('community.posts')} • {contributor.reputation} {t('community.rep')}</div>
                         <div className="flex space-x-1 mt-1">
                           {contributor.badges.map((badge, i) => (
                             <span key={i} className="text-sm">{badge}</span>
@@ -285,22 +287,22 @@ const CommunityHub = () => {
               {/* Community Stats */}
               <Card className="bg-card/50 backdrop-blur-sm border border-border/50">
                 <CardContent className="p-6">
-                  <h4 className="font-bold text-lg mb-4">Community Stats</h4>
+                  <h4 className="font-bold text-lg mb-4">{t('community.community_stats')}</h4>
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="text-white/80">Total Members</span>
+                      <span className="text-muted-foreground">{t('community.total_members')}</span>
                       <span className="font-bold">8,247</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-white/80">Posts Today</span>
+                      <span className="text-muted-foreground">{t('community.posts_today')}</span>
                       <span className="font-bold">156</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-white/80">Active Forums</span>
+                      <span className="text-muted-foreground">{t('community.active_forums')}</span>
                       <span className="font-bold">12</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-white/80">Online Now</span>
+                      <span className="text-muted-foreground">{t('community.online_now')}</span>
                       <span className="font-bold">234</span>
                     </div>
                   </div>
@@ -316,13 +318,13 @@ const CommunityHub = () => {
               <Card key={event.id} className="hover:shadow-eco transition-smooth">
                 <CardHeader>
                   <CardTitle className="text-lg">{event.title}</CardTitle>
-                  <CardDescription>Organized by {event.organizer}</CardDescription>
+                  <CardDescription>{t('community.organized_by')} {event.organizer}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center space-x-2">
                       <Calendar className="w-4 h-4 text-muted-foreground" />
-                      <span>{event.date} at {event.time}</span>
+                      <span>{event.date} {t('community.at')} {event.time}</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <MapPin className="w-4 h-4 text-muted-foreground" />
@@ -330,11 +332,11 @@ const CommunityHub = () => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Users className="w-4 h-4 text-muted-foreground" />
-                      <span>{event.attendees} attending</span>
+                      <span>{event.attendees} {t('community.attending')}</span>
                     </div>
                   </div>
                   <Button className="w-full bg-gradient-primary">
-                    Join Event
+                    {t('community.join_event')}
                   </Button>
                 </CardContent>
               </Card>
@@ -345,18 +347,18 @@ const CommunityHub = () => {
         <TabsContent value="members" className="space-y-6">
           <div className="text-center py-12">
             <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Member Directory</h3>
-            <p className="text-muted-foreground">Connect with sustainability champions in your region</p>
-            <Button className="mt-4">Browse Members</Button>
+            <h3 className="text-xl font-semibold mb-2">{t('community.member_directory')}</h3>
+            <p className="text-muted-foreground">{t('community.member_directory_desc')}</p>
+            <Button className="mt-4">{t('community.browse_members')}</Button>
           </div>
         </TabsContent>
 
         <TabsContent value="groups" className="space-y-6">
           <div className="text-center py-12">
             <MessageCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Interest Groups</h3>
-            <p className="text-muted-foreground">Join specialized groups based on your sustainability interests</p>
-            <Button className="mt-4">Explore Groups</Button>
+            <h3 className="text-xl font-semibold mb-2">{t('community.interest_groups')}</h3>
+            <p className="text-muted-foreground">{t('community.interest_groups_desc')}</p>
+            <Button className="mt-4">{t('community.explore_groups')}</Button>
           </div>
         </TabsContent>
       </Tabs>

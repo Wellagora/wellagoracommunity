@@ -2,6 +2,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { 
   MessageCircle, 
   Users, 
@@ -42,6 +43,8 @@ interface ForumCardProps {
 }
 
 const ForumCard = ({ forum, onViewForum }: ForumCardProps) => {
+  const { t } = useLanguage();
+  
   return (
     <Card className="hover:shadow-eco transition-smooth">
       <CardHeader>
@@ -61,11 +64,11 @@ const ForumCard = ({ forum, onViewForum }: ForumCardProps) => {
         <div className="flex items-center space-x-4 text-sm text-muted-foreground">
           <div className="flex items-center space-x-1">
             <MessageCircle className="w-4 h-4" />
-            <span>{forum.posts} posts</span>
+            <span>{forum.posts} {t('community.posts_count')}</span>
           </div>
           <div className="flex items-center space-x-1">
             <Users className="w-4 h-4" />
-            <span>{forum.members} members</span>
+            <span>{forum.members} {t('community.members_count')}</span>
           </div>
         </div>
       </CardHeader>
@@ -73,7 +76,7 @@ const ForumCard = ({ forum, onViewForum }: ForumCardProps) => {
       <CardContent className="space-y-4">
         {/* Recent Posts */}
         <div className="space-y-3">
-          <h4 className="font-medium text-sm text-muted-foreground">Recent Posts</h4>
+          <h4 className="font-medium text-sm text-muted-foreground">{t('community.recent_posts')}</h4>
           {forum.recentPosts.slice(0, 2).map((post) => (
             <div key={post.id} className="flex items-start space-x-3 p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition-smooth cursor-pointer">
               <Avatar className="w-8 h-8">
@@ -88,7 +91,7 @@ const ForumCard = ({ forum, onViewForum }: ForumCardProps) => {
                 </div>
                 <p className="text-xs text-muted-foreground truncate">{post.excerpt}</p>
                 <div className="flex items-center space-x-3 mt-2 text-xs text-muted-foreground">
-                  <span>by {post.author.name}</span>
+                  <span>{t('community.by')} {post.author.name}</span>
                   <div className="flex items-center space-x-1">
                     <MessageCircle className="w-3 h-3" />
                     <span>{post.replies}</span>
@@ -108,7 +111,7 @@ const ForumCard = ({ forum, onViewForum }: ForumCardProps) => {
           className="w-full"
           onClick={() => onViewForum?.(forum.id)}
         >
-          View Forum
+          {t('community.view_forum')}
           <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
       </CardContent>
