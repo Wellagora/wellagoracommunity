@@ -3,8 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import ChallengeDetail from "@/components/challenges/ChallengeDetail";
+import ChallengeCelebrationModal from "@/components/challenges/ChallengeCelebrationModal";
 import Navigation from "@/components/Navigation";
-import { getChallengeById } from "@/data/challenges";
+import { getChallengeById, challenges } from "@/data/challenges";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const ChallengeDetailPage = () => {
@@ -22,6 +23,14 @@ const ChallengeDetailPage = () => {
     progress: 65,
     completedSteps: [0, 1, 2, 3]
   });
+
+  const [showCelebration, setShowCelebration] = useState(false);
+
+  // Get next challenge for suggestion
+  const currentIndex = challenges.findIndex(c => c.id === challengeId);
+  const nextChallenge = currentIndex !== -1 && currentIndex < challenges.length - 1 
+    ? challenges[currentIndex + 1] 
+    : challenges[0];
 
   if (!challenge) {
     return (
@@ -46,6 +55,7 @@ const ChallengeDetailPage = () => {
   const handleCompleteChallenge = (challengeId: string) => {
     // TODO: Implement with Supabase
     console.log("Completing challenge:", challengeId);
+    setShowCelebration(true);
   };
 
   const handleGoBack = () => {
@@ -76,6 +86,15 @@ const ChallengeDetailPage = () => {
           onComplete={handleCompleteChallenge}
         />
       </div>
+
+      <ChallengeCelebrationModal
+        isOpen={showCelebration}
+        onClose={() => setShowCelebration(false)}
+        challengeTitle={t(challenge.titleKey)}
+        pointsEarned={challenge.pointsReward}
+        co2Saved={challenge.impact.co2Saved}
+        nextChallengeId={nextChallenge?.id}
+      />
     </div>
   );
 };

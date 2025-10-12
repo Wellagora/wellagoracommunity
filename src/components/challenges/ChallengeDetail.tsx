@@ -118,57 +118,68 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
       {/* Main Challenge Card */}
       <Card className="shadow-card">
-        <CardHeader>
-          <div className="flex items-start justify-between">
+        <CardHeader className="pb-4">
+          {/* Mobile-optimized header */}
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between space-y-4 sm:space-y-0">
             <div className="flex-1">
-              <div className="flex items-center space-x-3 mb-3">
+              {/* Category and badges - mobile friendly */}
+              <div className="flex flex-wrap items-center gap-2 mb-3">
                 <div className={`p-2 rounded-lg ${categoryConfig[challenge.category].color}`}>
-                  <CategoryIcon className="w-6 h-6 text-white" />
+                  <CategoryIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
                 <Badge 
-                  className={`${difficultyConfig[challenge.difficulty].color} text-white`}
+                  className={`${difficultyConfig[challenge.difficulty].color} text-white text-xs`}
                 >
                   {difficultyConfig[challenge.difficulty].label}
                 </Badge>
-                <Badge variant="outline" className="flex items-center space-x-1">
+                <Badge variant="outline" className="flex items-center space-x-1 text-xs">
                   <Clock className="w-3 h-3" />
                   <span>{t(challenge.durationKey)}</span>
                 </Badge>
               </div>
               
-              <CardTitle className="text-2xl text-foreground mb-2">
+              <CardTitle className="text-xl sm:text-2xl text-foreground mb-2">
                 {t(challenge.titleKey)}
               </CardTitle>
-              <CardDescription className="text-muted-foreground mb-4">
+              <CardDescription className="text-muted-foreground mb-4 text-sm sm:text-base">
                 {t(challenge.descriptionKey)}
               </CardDescription>
               
-              <div className="flex items-center space-x-6 text-sm">
-                <div className="flex items-center space-x-2">
-                  <Users className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-foreground font-medium">
-                    {challenge.participants.toLocaleString()} {t('challenges.participants')}
+              {/* Stats - mobile optimized grid */}
+              <div className="grid grid-cols-3 sm:flex sm:items-center sm:space-x-6 gap-3 sm:gap-0 text-xs sm:text-sm">
+                <div className="flex flex-col sm:flex-row items-center sm:space-x-2">
+                  <Users className="w-4 h-4 text-muted-foreground mb-1 sm:mb-0" />
+                  <span className="text-foreground font-medium text-center sm:text-left">
+                    {challenge.participants.toLocaleString()}
                   </span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Target className="w-4 h-4 text-success" />
-                  <span className="text-foreground font-medium">
-                    {challenge.completionRate}% {t('challenges.completion_rate')}
+                <div className="flex flex-col sm:flex-row items-center sm:space-x-2">
+                  <Target className="w-4 h-4 text-success mb-1 sm:mb-0" />
+                  <span className="text-foreground font-medium text-center sm:text-left">
+                    {challenge.completionRate}%
                   </span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Trophy className="w-4 h-4 text-warning" />
-                  <span className="text-foreground font-medium">
-                    {challenge.pointsReward} {t('challenges.points')}
+                <div className="flex flex-col sm:flex-row items-center sm:space-x-2">
+                  <Trophy className="w-4 h-4 text-warning mb-1 sm:mb-0" />
+                  <span className="text-foreground font-medium text-center sm:text-left">
+                    {challenge.pointsReward}
                   </span>
                 </div>
               </div>
             </div>
             
-            <div className="text-right flex flex-col items-end space-y-2">
+            {/* Points card - responsive */}
+            <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start space-x-4 sm:space-x-0 sm:space-y-2 p-4 sm:p-0 bg-primary/5 sm:bg-transparent rounded-lg sm:rounded-none">
+              <div className="flex items-center sm:flex-col sm:text-right space-x-2 sm:space-x-0">
+                <div className="text-2xl sm:text-3xl font-bold text-primary">
+                  {challenge.pointsReward}
+                </div>
+                <div className="text-xs text-muted-foreground">{t('challenges.points_reward')}</div>
+              </div>
+              
               <Button
                 variant="ghost"
                 size="sm"
@@ -177,21 +188,19 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
               >
                 <Share2 className="w-4 h-4" />
               </Button>
-              
-              <div className="text-3xl font-bold text-primary mb-1">
-                {challenge.pointsReward}
-              </div>
-              <div className="text-xs text-muted-foreground">{t('challenges.points_reward')}</div>
-              
-              {userProgress?.isParticipating && !userProgress.isCompleted && (
-                <div className="mt-4">
-                  <div className="text-sm text-muted-foreground mb-1">{t('challenges.progress')}</div>
-                  <Progress value={userProgress.progress} className="w-24 h-2" />
-                  <div className="text-xs text-foreground mt-1">{userProgress.progress}%</div>
-                </div>
-              )}
             </div>
           </div>
+          
+          {/* Progress bar - full width on mobile */}
+          {userProgress?.isParticipating && !userProgress.isCompleted && (
+            <div className="mt-4 p-3 rounded-lg bg-primary/10 border border-primary/20">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-foreground">{t('challenges.your_progress')}</span>
+                <span className="text-sm font-bold text-primary">{userProgress.progress}%</span>
+              </div>
+              <Progress value={userProgress.progress} className="h-2" />
+            </div>
+          )}
         </CardHeader>
         
         <CardContent>
@@ -202,14 +211,14 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
             </p>
           </div>
           
-          {/* Environmental Impact */}
-          <div className="grid md:grid-cols-2 gap-4 mb-6">
+          {/* Environmental Impact - mobile optimized */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
             <div className="p-4 rounded-lg bg-success/10 border border-success/20">
               <div className="flex items-center space-x-2 mb-2">
                 <Leaf className="w-5 h-5 text-success" />
-                <span className="font-semibold text-success">{t('challenges.co2_savings')}</span>
+                <span className="text-sm sm:text-base font-semibold text-success">{t('challenges.co2_savings')}</span>
               </div>
-              <div className="text-2xl font-bold text-foreground">
+              <div className="text-xl sm:text-2xl font-bold text-foreground">
                 {challenge.impact.co2Saved} kg
               </div>
               <div className="text-xs text-muted-foreground">
@@ -220,9 +229,9 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
             <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
               <div className="flex items-center space-x-2 mb-2">
                 <BookOpen className="w-5 h-5 text-primary" />
-                <span className="font-semibold text-primary">{t('challenges.tree_equivalent')}</span>
+                <span className="text-sm sm:text-base font-semibold text-primary">{t('challenges.tree_equivalent')}</span>
               </div>
-              <div className="text-2xl font-bold text-foreground">
+              <div className="text-xl sm:text-2xl font-bold text-foreground">
                 {challenge.impact.treesEquivalent}
               </div>
               <div className="text-xs text-muted-foreground">
@@ -231,23 +240,23 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
             </div>
           </div>
           
-          {/* Steps Section */}
+          {/* Steps Section - mobile optimized */}
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-foreground mb-4">{t('challenges.steps_to_complete')}</h3>
-            <div className="space-y-3">
+            <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4">{t('challenges.steps_to_complete')}</h3>
+            <div className="space-y-2 sm:space-y-3">
               {challenge.stepsKeys.map((stepKey, index) => (
                 <div
                   key={stepKey}
-                  className={`flex items-start space-x-3 p-3 rounded-lg border transition-colors cursor-pointer ${
+                  className={`flex items-start space-x-3 p-3 rounded-lg border transition-all ${
                     userProgress?.completedSteps?.includes(index) 
-                      ? 'bg-success/10 border-success/20' 
+                      ? 'bg-success/10 border-success/20 shadow-sm' 
                       : activeStep === index 
-                      ? 'bg-primary/10 border-primary/20' 
-                      : 'bg-muted/30 border-border hover:bg-muted/50'
+                      ? 'bg-primary/10 border-primary/20 shadow-sm' 
+                      : 'bg-muted/30 border-border active:bg-muted/50'
                   }`}
                   onClick={() => setActiveStep(index)}
                 >
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-medium ${
+                  <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 ${
                     userProgress?.completedSteps?.includes(index) 
                       ? 'bg-success text-success-foreground' 
                       : activeStep === index
@@ -260,19 +269,19 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
                       index + 1
                     )}
                   </div>
-                  <div className="flex-1">
-                    <p className="text-foreground font-medium">{t(stepKey)}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-foreground font-medium text-sm sm:text-base">{t(stepKey)}</p>
                     {userProgress?.isParticipating && !userProgress?.completedSteps?.includes(index) && (
                       <Button 
                         size="sm" 
                         variant="ghost"
-                        className="mt-2 text-xs"
+                        className="mt-2 text-xs h-7"
                         onClick={(e) => {
                           e.stopPropagation();
-                        handleCompleteStep(index);
+                          handleCompleteStep(index);
                         }}
                       >
-                        {t('challenges.completed')}
+                        {t('challenges.mark_complete')}
                       </Button>
                     )}
                   </div>
@@ -329,13 +338,13 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
           )}
         </CardContent>
         
-        <CardFooter className="flex flex-col space-y-4">
-          {/* Action Buttons */}
-          <div className="flex flex-wrap gap-3 w-full">
+        <CardFooter className="flex flex-col space-y-4 pt-6">
+          {/* Action Buttons - mobile optimized */}
+          <div className="flex flex-col sm:flex-row gap-3 w-full">
             {!userProgress?.isParticipating ? (
               <Button 
                 onClick={handleJoinChallenge}
-                className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth"
+                className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth h-11 sm:h-10"
               >
                 <Trophy className="w-4 h-4 mr-2" />
                 {t('challenges.join_challenge')}
@@ -343,7 +352,7 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
             ) : userProgress.isCompleted ? (
               <Button 
                 disabled
-                className="flex-1 bg-success hover:bg-success"
+                className="flex-1 bg-success hover:bg-success h-11 sm:h-10"
               >
                 <CheckCircle className="w-4 h-4 mr-2" />
                 {t('challenges.challenge_completed_label')}
@@ -351,16 +360,20 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
             ) : (
               <Button 
                 onClick={handleCompleteChallenge}
-                className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth"
+                className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth h-11 sm:h-10"
               >
                 <CheckCircle className="w-4 h-4 mr-2" />
                 {t('challenges.complete_challenge')}
               </Button>
             )}
             
-            <Button variant="outline" onClick={handleShare}>
+            <Button 
+              variant="outline" 
+              onClick={handleShare}
+              className="sm:w-auto h-11 sm:h-10"
+            >
               <Share2 className="w-4 h-4 mr-2" />
-              Megosztás
+              {t('challenges.share')}
             </Button>
           </div>
           

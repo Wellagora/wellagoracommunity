@@ -393,5 +393,15 @@
   "challenges.steps_to_complete": "Schritte zum Abschluss",
   "challenges.useful_tips": "Nützliche Tipps",
   "challenges.challenge_completed_label": "Challenge Abgeschlossen!",
-  "challenges.complete_challenge": "Challenge Abschließen"
+  "challenges.complete_challenge": "Challenge Abschließen",
+  "challenges.your_progress": "Dein Fortschritt",
+  "challenges.mark_complete": "Abschließen",
+  "challenges.celebration_title": "🎉 Herzlichen Glückwunsch!",
+  "challenges.celebration_message": "Du hast erfolgreich abgeschlossen",
+  "challenges.saved": "gespart",
+  "challenges.achievement_unlocked": "Erfolg freigeschaltet!",
+  "challenges.next_challenge": "Nächste Herausforderung",
+  "challenges.view_dashboard": "Dashboard",
+  "challenges.share_achievement": "Erfolg teilen",
+  "challenges.completed_challenge_share": "Ich habe gerade eine Nachhaltigkeits-Challenge abgeschlossen"
 }

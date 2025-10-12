@@ -406,5 +406,15 @@
   "challenges.steps_to_complete": "Steps to Complete",
   "challenges.useful_tips": "Useful Tips",
   "challenges.challenge_completed_label": "Challenge Completed!",
-  "challenges.complete_challenge": "Complete Challenge"
+  "challenges.complete_challenge": "Complete Challenge",
+  "challenges.your_progress": "Your Progress",
+  "challenges.mark_complete": "Mark Complete",
+  "challenges.celebration_title": "🎉 Congratulations!",
+  "challenges.celebration_message": "You have successfully completed",
+  "challenges.saved": "saved",
+  "challenges.achievement_unlocked": "Achievement Unlocked!",
+  "challenges.next_challenge": "Next Challenge",
+  "challenges.view_dashboard": "View Dashboard",
+  "challenges.share_achievement": "Share Achievement",
+  "challenges.completed_challenge_share": "I just completed a sustainability challenge"
 }

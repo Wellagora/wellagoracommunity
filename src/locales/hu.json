@@ -380,5 +380,15 @@
   "challenges.steps_to_complete": "Lépések a Teljesítéshez",
   "challenges.useful_tips": "Hasznos Tippek",
   "challenges.challenge_completed_label": "Kihívás Teljesítve!",
-  "challenges.complete_challenge": "Kihívás Teljesítése"
+  "challenges.complete_challenge": "Kihívás Teljesítése",
+  "challenges.your_progress": "Előrehaladásod",
+  "challenges.mark_complete": "Teljesítve",
+  "challenges.celebration_title": "🎉 Gratulálunk!",
+  "challenges.celebration_message": "Sikeresen teljesítetted",
+  "challenges.saved": "megtakarítva",
+  "challenges.achievement_unlocked": "Eredmény feloldva!",
+  "challenges.next_challenge": "Következő kihívás",
+  "challenges.view_dashboard": "Irányítópult",
+  "challenges.share_achievement": "Eredmény megosztása",
+  "challenges.completed_challenge_share": "Épp teljesítettem egy fenntarthatósági kihívást"
 }
