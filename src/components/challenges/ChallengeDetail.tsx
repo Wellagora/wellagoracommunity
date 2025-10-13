@@ -20,7 +20,12 @@ import {
   Leaf,
   Zap,
   Recycle,
-  Heart
+  Heart,
+  Lightbulb,
+  Droplets,
+  Bird,
+  ArrowDownUp,
+  TrendingUp
 } from "lucide-react";
 
 interface Challenge {
@@ -68,7 +73,12 @@ const categoryConfig = {
   transport: { icon: Target, color: "bg-gradient-ocean", label: "Közlekedés" },
   food: { icon: Leaf, color: "bg-gradient-nature", label: "Étel" },
   waste: { icon: Recycle, color: "bg-gradient-nature", label: "Hulladék" },
-  community: { icon: Heart, color: "bg-gradient-primary", label: "Közösség" }
+  community: { icon: Heart, color: "bg-gradient-primary", label: "Közösség" },
+  innovation: { icon: Lightbulb, color: "bg-gradient-sunset", label: "Innováció" },
+  water: { icon: Droplets, color: "bg-gradient-ocean", label: "Víz" },
+  biodiversity: { icon: Bird, color: "bg-gradient-nature", label: "Biodiverzitás" },
+  "circular-economy": { icon: ArrowDownUp, color: "bg-gradient-primary", label: "Körforgásos gazdaság" },
+  "green-finance": { icon: TrendingUp, color: "bg-gradient-sunset", label: "Zöld finanszírozás" }
 };
 
 const difficultyConfig = {
