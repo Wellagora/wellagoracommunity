@@ -533,7 +533,7 @@ const HandprintCalculator = () => {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Leaf className="w-5 h-5 mr-2 text-success" />
-                Pozitív Környezeti Kéznyomod
+                {t('handprint.your_handprint')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -542,20 +542,20 @@ const HandprintCalculator = () => {
                 <div className="text-3xl font-bold text-success mb-2">
                   {handprint.totalCo2Saved} kg CO₂
                 </div>
-                <div className="text-sm text-muted-foreground mb-2">megtakarítva havonta</div>
+                <div className="text-sm text-muted-foreground mb-2">{t('handprint.kg_co2_monthly')}</div>
                 <div className="text-lg font-medium text-primary">
-                  🌳 {handprint.treesEquivalent} fa egyenérték
+                  🌳 {handprint.treesEquivalent} {t('handprint.trees_planted')}
                 </div>
               </div>
 
               {/* Breakdown */}
               <div className="space-y-3">
                 {[
-                  { label: 'Közlekedés', value: handprint.transport, icon: Car, color: 'text-primary' },
-                  { label: 'Energia', value: handprint.energy, icon: Lightbulb, color: 'text-warning' },
-                  { label: 'Hulladék', value: handprint.waste, icon: Recycle, color: 'text-success' },
-                  { label: 'Víz', value: handprint.water, icon: Droplets, color: 'text-info' },
-                  { label: 'Közösségi hatás', value: handprint.community, icon: Award, color: 'text-accent' }
+                  { label: t('handprint.transport'), value: handprint.transport, icon: Car, color: 'text-primary' },
+                  { label: t('handprint.energy'), value: handprint.energy, icon: Lightbulb, color: 'text-warning' },
+                  { label: t('handprint.waste'), value: handprint.waste, icon: Recycle, color: 'text-success' },
+                  { label: t('handprint.water'), value: handprint.water, icon: Droplets, color: 'text-info' },
+                  { label: t('handprint.community_impact'), value: handprint.community, icon: Award, color: 'text-accent' }
                 ].map((item) => (
                   <div key={item.label} className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
@@ -574,28 +574,28 @@ const HandprintCalculator = () => {
       {activeTab === 'trends' && (
         <Card>
           <CardHeader>
-            <CardTitle>Havi Trendek</CardTitle>
+            <CardTitle>{t('handprint.track_progress')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
                   <div className="text-2xl font-bold text-primary">+23%</div>
-                  <div className="text-sm text-muted-foreground">CO₂ megtakarítás növekedés</div>
+                  <div className="text-sm text-muted-foreground">{t('dashboard.co2_saved')} {t('dashboard.monthly_growth')}</div>
                 </div>
                 <div className="bg-success/10 p-4 rounded-lg border border-success/20">
-                  <div className="text-2xl font-bold text-success">12 nap</div>
-                  <div className="text-sm text-muted-foreground">Sorozatos fenntartható nap</div>
+                  <div className="text-2xl font-bold text-success">12 {t('dashboard.days')}</div>
+                  <div className="text-sm text-muted-foreground">{t('dashboard.current_streak')}</div>
                 </div>
                 <div className="bg-warning/10 p-4 rounded-lg border border-warning/20">
-                  <div className="text-2xl font-bold text-warning">Ranglétra #47</div>
-                  <div className="text-sm text-muted-foreground">Helyi rangsorban</div>
+                  <div className="text-2xl font-bold text-warning">{t('challenges.view_leaderboard')} #47</div>
+                  <div className="text-sm text-muted-foreground">{t('handprint.local_sustainability_ranking')}</div>
                 </div>
               </div>
 
               {/* Personalized Tips */}
               <div>
-                <h4 className="font-semibold mb-3">🎯 Személyre Szabott Tippek</h4>
+                <h4 className="font-semibold mb-3">🎯 {t('handprint.personalized_insights')}</h4>
                 <div className="grid gap-2">
                   {personalizationTips.map((tip, index) => (
                     <div key={index} className="p-3 bg-card/50 rounded-lg border border-border text-sm">
@@ -612,15 +612,15 @@ const HandprintCalculator = () => {
       {activeTab === 'goals' && (
         <Card>
           <CardHeader>
-            <CardTitle>Fenntarthatósági Célok</CardTitle>
+            <CardTitle>{t('handprint.your_goals')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-4">
               {[
-                { label: 'Havi 500 kg CO₂ megtakarítás', progress: 68, current: 340, target: 500 },
-                { label: 'Környezeti Bajnok rang elérése', progress: 45, current: 340, target: 750 },
-                { label: '5 kihívás teljesítése', progress: 80, current: 4, target: 5 },
-                { label: '20 fa egyenérték elérése', progress: 75, current: 15, target: 20 }
+                { label: t('handprint.q1_goal'), progress: 68, current: 340, target: 500 },
+                { label: t('handprint.reach_green_activist'), progress: 45, current: 340, target: 750 },
+                { label: t('handprint.complete_5_challenges'), progress: 80, current: 4, target: 5 },
+                { label: t('common.trees') + ' 20', progress: 75, current: 15, target: 20 }
               ].map((goal, index) => (
                 <div key={index} className="space-y-2">
                   <div className="flex justify-between text-sm">
@@ -633,14 +633,14 @@ const HandprintCalculator = () => {
             </div>
 
             <div className="pt-4 border-t">
-              <h4 className="font-semibold mb-3">🏆 Következő Mérföldkő</h4>
+              <h4 className="font-semibold mb-3">🏆 {t('handprint.next_badge')}</h4>
               <div className="bg-gradient-to-r from-primary/10 to-success/10 p-4 rounded-lg">
-                <div className="font-medium mb-1">Környezeti Bajnok rang</div>
+                <div className="font-medium mb-1">{t('handprint.eco_warrior_badge')}</div>
                 <div className="text-sm text-muted-foreground mb-2">
-                  Még 410 kg CO₂ megtakarítás szükséges
+                  {t('handprint.badge_requirements')}
                 </div>
                 <div className="text-xs text-primary">
-                  Becsült idő: 3 hét az eddigi tempóban
+                  {t('handprint.estimated_achievement')}
                 </div>
               </div>
             </div>
