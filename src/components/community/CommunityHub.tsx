@@ -27,8 +27,8 @@ const CommunityHub = () => {
   const forums = [
     {
       id: "general",
-      name: "General Sustainability",
-      description: "Discuss all things sustainability, share tips, and ask questions",
+      name: t('community.forums.general.name'),
+      description: t('community.forums.general.description'),
       category: "General",
       posts: 1247,
       members: 856,
@@ -36,8 +36,8 @@ const CommunityHub = () => {
       recentPosts: [
         {
           id: "1",
-          title: "Best solar panel options for small apartments?",
-          excerpt: "Looking for advice on compact solar solutions...",
+          title: t('community.forums.general.post1.title'),
+          excerpt: t('community.forums.general.post1.excerpt'),
           author: {
             name: "Sarah Chen",
             avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face",
@@ -51,8 +51,8 @@ const CommunityHub = () => {
         },
         {
           id: "2",
-          title: "Weekly Challenge: Share Your Green Wins",
-          excerpt: "Post your sustainability achievements from this week...",
+          title: t('community.forums.general.post2.title'),
+          excerpt: t('community.forums.general.post2.excerpt'),
           author: {
             name: "Mike Rodriguez",
             avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
@@ -68,8 +68,8 @@ const CommunityHub = () => {
     },
     {
       id: "transport",
-      name: "Sustainable Transport",
-      description: "Electric vehicles, cycling, public transport, and green mobility solutions",
+      name: t('community.forums.transport.name'),
+      description: t('community.forums.transport.description'),
       category: "Transport",
       posts: 634,
       members: 423,
@@ -77,8 +77,8 @@ const CommunityHub = () => {
       recentPosts: [
         {
           id: "3",
-          title: "E-bike vs Public Transport Cost Analysis",
-          excerpt: "Comparing monthly costs and environmental impact...",
+          title: t('community.forums.transport.post1.title'),
+          excerpt: t('community.forums.transport.post1.excerpt'),
           author: {
             name: "Emma Johnson",
             avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
@@ -94,8 +94,8 @@ const CommunityHub = () => {
     },
     {
       id: "business",
-      name: "Business & Corporate",
-      description: "ESG initiatives, corporate sustainability, and green business practices",
+      name: t('community.forums.business.name'),
+      description: t('community.forums.business.description'),
       category: "Business",
       posts: 456,
       members: 234,
@@ -103,8 +103,8 @@ const CommunityHub = () => {
       recentPosts: [
         {
           id: "4",
-          title: "Implementing Green Policies in Small Companies",
-          excerpt: "Step-by-step guide for businesses under 50 employees...",
+          title: t('community.forums.business.post1.title'),
+          excerpt: t('community.forums.business.post1.excerpt'),
           author: {
             name: "David Park",
             avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
@@ -123,30 +123,30 @@ const CommunityHub = () => {
   const upcomingEvents = [
     {
       id: "1",
-      title: "Community Tree Planting Day",
+      title: t('community.events.tree_planting.title'),
       date: "March 15, 2024",
       time: "9:00 AM",
-      location: "Central Park",
+      location: t('community.events.tree_planting.location'),
       attendees: 67,
-      organizer: "Green Future NGO"
+      organizer: t('community.events.tree_planting.organizer')
     },
     {
       id: "2",
-      title: "Sustainable Living Workshop",
+      title: t('community.events.workshop.title'),
       date: "March 20, 2024", 
       time: "2:00 PM",
-      location: "Community Center",
+      location: t('community.events.workshop.location'),
       attendees: 34,
-      organizer: "EcoTech Solutions"
+      organizer: t('community.events.workshop.organizer')
     },
     {
       id: "3",
-      title: "Bike to Work Challenge Kickoff",
+      title: t('community.events.bike_challenge.title'),
       date: "March 25, 2024",
       time: "7:00 AM",
-      location: "City Hall",
+      location: t('community.events.bike_challenge.location'),
       attendees: 123,
-      organizer: "Municipal Transport Dept"
+      organizer: t('community.events.bike_challenge.organizer')
     }
   ];
 
