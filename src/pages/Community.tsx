@@ -50,65 +50,65 @@ const Community = () => {
   const discussions = [
     {
       id: 1,
-      title: "Legjobb gyakorlatok az irodai energiafogyasztás csökkentésre",
+      title: t('community.discussion1.title'),
       author: "Sarah Chen",
       role: "Business",
       avatar: "SC",
-      content: "Gyakorlati tippeket keresek, hogy 30%-kal csökkentsük az irodai energiafogyasztásunkat...",
+      content: t('community.discussion1.content'),
       replies: 12,
       likes: 24,
       timeAgo: "2 órája",
-      category: "Energia"
+      category: t('community.discussion1.category')
     },
     {
       id: 2,
-      title: "Közösségi kert projekt sikere!",
+      title: t('community.discussion2.title'),
       author: "Mike Rodriguez",
       role: "Municipal",
       avatar: "MR",
-      content: "Városunk éppen befejezte a legnagyobb közösségi kert projektet, szeretném megosztani...",
+      content: t('community.discussion2.content'),
       replies: 8,
       likes: 45,
       timeAgo: "5 órája",
-      category: "Közösség"
+      category: t('community.discussion2.category')
     },
     {
       id: 3,
-      title: "Fenntartható közlekedési alternatívák",
+      title: t('community.discussion3.title'),
       author: "Emma Johnson",
       role: "Citizen",
       avatar: "EJ",
-      content: "Különböző módokat kutatunk az autófüggőség csökkentésére vidéki területeken...",
+      content: t('community.discussion3.content'),
       replies: 15,
       likes: 32,
       timeAgo: "1 napja",
-      category: "Közlekedés"
+      category: t('community.discussion3.category')
     }
   ];
 
   const successStories = [
     {
       id: 1,
-      title: "Hulladékmentes Iroda Eredmény",
-      description: "TechCorp 6 hónap alatt 95%-kal csökkentette az irodai hulladékot",
+      title: t('community.story1.title'),
+      description: t('community.story1.description'),
       type: "Business",
-      impact: "2.3 tonna hulladék megtakarítva",
+      impact: t('community.story1.impact'),
       gradient: "from-success/20 to-primary/20"
     },
     {
       id: 2,
-      title: "Közösségi Napenergia Kezdeményezés",
-      description: "GreenFuture NGO 200 otthont látott el napenergiával",
+      title: t('community.story2.title'),
+      description: t('community.story2.description'),
       type: "NGO",
-      impact: "150 MWh tiszta energia",
+      impact: t('community.story2.impact'),
       gradient: "from-primary/20 to-accent/20"
     },
     {
       id: 3,
-      title: "Városi Bicikli Program",
-      description: "A város új biciklis rendszere 40%-kal csökkentette a forgalmat",
+      title: t('community.story3.title'),
+      description: t('community.story3.description'),
       type: "Municipal",
-      impact: "12 tonna CO₂ megtakarítás",
+      impact: t('community.story3.impact'),
       gradient: "from-warning/20 to-success/20"
     }
   ];
@@ -167,16 +167,16 @@ const Community = () => {
               {t('nav.community')}
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-              Kapcsolódj, oszd meg tapasztalataidat és működj együtt fenntarthatósági bajnokokkal világszerte
+              {t('community.hero.subtitle')}
             </p>
             <div className="flex items-center justify-center space-x-8">
               <div className="flex items-center space-x-2">
                 <Users className="w-5 h-5 text-success" />
-                <span className="text-foreground font-medium">12,847 aktív tag</span>
+                <span className="text-foreground font-medium">12,847 {t('community.hero.active_members')}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Award className="w-5 h-5 text-warning" />
-                <span className="text-foreground font-medium">45,293 teljesített kihívás</span>
+                <span className="text-foreground font-medium">45,293 {t('community.hero.completed_challenges')}</span>
               </div>
             </div>
           </div>
@@ -196,7 +196,7 @@ const Community = () => {
                   className="flex items-center space-x-2"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span>Beszélgetések</span>
+                  <span>{t('community.tabs.discussions')}</span>
                 </Button>
                 <Button
                   variant={activeTab === "stories" ? "default" : "outline"}
@@ -204,14 +204,14 @@ const Community = () => {
                   className="flex items-center space-x-2"
                 >
                   <Trophy className="w-4 h-4" />
-                  <span>Sikertörténetek</span>
+                  <span>{t('community.tabs.success_stories')}</span>
                 </Button>
               </div>
 
               {/* New Post Input */}
               <div className="mb-6 p-4 bg-background/50 rounded-2xl border border-border/50">
                 <Textarea
-                  placeholder="Oszd meg gondolataidat a közösséggel..."
+                  placeholder={t('community.share_thoughts')}
                   value={newPost}
                   onChange={(e) => setNewPost(e.target.value)}
                   className="mb-3 bg-transparent border-none resize-none"
@@ -220,15 +220,15 @@ const Community = () => {
                 <div className="flex justify-between items-center">
                   <div className="flex space-x-2">
                     <Button variant="outline" size="sm">
-                      📷 Kép
+                      📷 {t('community.image')}
                     </Button>
                     <Button variant="outline" size="sm">
-                      📊 Eredmény
+                      📊 {t('community.result')}
                     </Button>
                   </div>
                   <Button className="bg-gradient-to-r from-primary to-success">
                     <Send className="w-4 h-4 mr-2" />
-                    Küldés
+                    {t('community.send')}
                   </Button>
                 </div>
               </div>
@@ -263,11 +263,11 @@ const Community = () => {
                           <div className="flex items-center space-x-6 text-sm text-muted-foreground">
                             <div className="flex items-center space-x-2">
                               <MessageCircle className="w-4 h-4" />
-                              <span>{discussion.replies} válasz</span>
+                              <span>{discussion.replies} {t('community.replies')}</span>
                             </div>
                             <div className="flex items-center space-x-2">
                               <ThumbsUp className="w-4 h-4" />
-                              <span>{discussion.likes} tetszik</span>
+                              <span>{discussion.likes} {t('community.likes')}</span>
                             </div>
                             <div className="flex items-center space-x-2">
                               <Calendar className="w-4 h-4" />
@@ -310,23 +310,23 @@ const Community = () => {
             <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
               <h2 className="text-xl font-bold text-foreground mb-6 flex items-center space-x-2">
                 <TrendingUp className="w-5 h-5 text-primary" />
-                <span>Közösségi Statisztikák</span>
+                <span>{t('community.stats_title')}</span>
               </h2>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Aktív Tagok</span>
+                  <span className="text-muted-foreground">{t('community.active_members_stat')}</span>
                   <span className="font-semibold text-foreground">12,847</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Teljesített Kihívások</span>
+                  <span className="text-muted-foreground">{t('community.completed_challenges_stat')}</span>
                   <span className="font-semibold text-foreground">45,293</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">CO₂ Megtakarítás (tonna)</span>
+                  <span className="text-muted-foreground">{t('community.co2_saved')}</span>
                   <span className="font-semibold text-success">2,156</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Részt vevő Városok</span>
+                  <span className="text-muted-foreground">{t('community.participating_cities')}</span>
                   <span className="font-semibold text-foreground">89</span>
                 </div>
               </div>
@@ -336,7 +336,7 @@ const Community = () => {
             <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
               <h2 className="text-xl font-bold text-foreground mb-6 flex items-center space-x-2">
                 <Trophy className="w-5 h-5 text-warning" />
-                <span>Top Hozzájárulók</span>
+                <span>{t('community.top_contributors_title')}</span>
               </h2>
               <div className="space-y-4">
                 {topContributors.map((contributor, index) => (
@@ -349,7 +349,7 @@ const Community = () => {
                     </Avatar>
                     <div className="flex-1">
                       <p className="font-semibold text-foreground text-sm">{contributor.name}</p>
-                      <p className="text-xs text-muted-foreground">{contributor.points.toLocaleString()} pont</p>
+                      <p className="text-xs text-muted-foreground">{contributor.points.toLocaleString()} {t('community.points')}</p>
                     </div>
                   </div>
                 ))}
@@ -358,16 +358,16 @@ const Community = () => {
 
             {/* Quick Actions */}
             <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
-              <h2 className="text-xl font-bold text-foreground mb-6">Gyors Műveletek</h2>
+              <h2 className="text-xl font-bold text-foreground mb-6">{t('community.quick_actions')}</h2>
               <div className="space-y-3">
                 <Button className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground shadow-premium hover:shadow-glow transition-all duration-300">
-                  Új Beszélgetés Indítása
+                  {t('community.start_discussion')}
                 </Button>
                 <Button variant="outline" className="w-full border-border/50 hover:bg-card/50">
-                  Sikertörténet Megosztása
+                  {t('community.share_success')}
                 </Button>
                 <Button variant="outline" className="w-full border-border/50 hover:bg-card/50">
-                  Helyi Csoportok Keresése
+                  {t('community.find_groups')}
                 </Button>
               </div>
             </Card3D>
