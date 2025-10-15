@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import mapboxgl from "mapbox-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { User, Building2, Users, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 
 interface Stakeholder {
   id: string;
@@ -32,13 +32,12 @@ interface RegionalStakeholderMapProps {
 const RegionalStakeholderMap = ({ 
   stakeholders, 
   onStakeholderClick,
-  center = [19.0402, 47.4979], // Budapest
+  center = [47.4979, 19.0402], // Budapest (lat, lng for Leaflet)
   zoom = 10
 }: RegionalStakeholderMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const markersRef = useRef<mapboxgl.Marker[]>([]);
-  const [mapboxToken, setMapboxToken] = useState<string>("");
+  const map = useRef<L.Map | null>(null);
+  const markersRef = useRef<L.Marker[]>([]);
   const [selectedStakeholder, setSelectedStakeholder] = useState<Stakeholder | null>(null);
 
   const getStakeholderColor = (type: string) => {
@@ -62,32 +61,24 @@ const RegionalStakeholderMap = ({
   };
 
   useEffect(() => {
-    if (!mapContainer.current || !mapboxToken) return;
+    if (!mapContainer.current || map.current) return;
 
-    mapboxgl.accessToken = mapboxToken;
-    
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/light-v11',
-      center: center,
-      zoom: zoom,
-    });
+    // Initialize Leaflet map with OpenStreetMap
+    map.current = L.map(mapContainer.current).setView(center, zoom);
 
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
-    map.current.addControl(
-      new mapboxgl.GeolocateControl({
-        positionOptions: { enableHighAccuracy: true },
-        trackUserLocation: true,
-      }),
-      'top-right'
-    );
+    // Add OpenStreetMap tile layer (free!)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19,
+    }).addTo(map.current);
 
     return () => {
       markersRef.current.forEach(marker => marker.remove());
       markersRef.current = [];
       map.current?.remove();
+      map.current = null;
     };
-  }, [mapboxToken, center, zoom]);
+  }, []);
 
   useEffect(() => {
     if (!map.current) return;
@@ -100,9 +91,8 @@ const RegionalStakeholderMap = ({
     stakeholders.forEach((stakeholder) => {
       if (!stakeholder.latitude || !stakeholder.longitude) return;
 
-      const el = document.createElement('div');
-      el.className = 'stakeholder-marker';
-      el.innerHTML = `
+      // Create custom icon
+      const iconHtml = `
         <div style="
           width: 40px;
           height: 40px;
@@ -120,67 +110,43 @@ const RegionalStakeholderMap = ({
           ${getStakeholderIcon(stakeholder.type)}
         </div>
       `;
-      
-      el.addEventListener('mouseenter', () => {
-        el.style.transform = 'scale(1.2)';
-      });
-      
-      el.addEventListener('mouseleave', () => {
-        el.style.transform = 'scale(1)';
+
+      const customIcon = L.divIcon({
+        html: iconHtml,
+        className: 'stakeholder-marker',
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
       });
 
-      el.addEventListener('click', () => {
+      const marker = L.marker([stakeholder.latitude, stakeholder.longitude], {
+        icon: customIcon,
+      }).addTo(map.current!);
+
+      marker.on('click', () => {
         setSelectedStakeholder(stakeholder);
         onStakeholderClick?.(stakeholder);
       });
-
-      const marker = new mapboxgl.Marker(el)
-        .setLngLat([stakeholder.longitude, stakeholder.latitude])
-        .addTo(map.current!);
 
       markersRef.current.push(marker);
     });
 
     // Fit map to markers
     if (stakeholders.length > 0) {
-      const bounds = new mapboxgl.LngLatBounds();
-      stakeholders.forEach(s => {
-        if (s.latitude && s.longitude) {
-          bounds.extend([s.longitude, s.latitude]);
-        }
-      });
-      map.current.fitBounds(bounds, { padding: 50, maxZoom: 12 });
+      const bounds = L.latLngBounds(
+        stakeholders
+          .filter(s => s.latitude && s.longitude)
+          .map(s => [s.latitude, s.longitude] as [number, number])
+      );
+      map.current.fitBounds(bounds, { padding: [50, 50], maxZoom: 12 });
     }
   }, [stakeholders, onStakeholderClick]);
 
-  if (!mapboxToken) {
-    return (
-      <Card className="p-6 sm:p-8">
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-foreground">Mapbox API kulcs szükséges</h3>
-          <p className="text-sm text-muted-foreground">
-            A térkép megjelenítéséhez add meg a Mapbox public token-t:
-          </p>
-          <input
-            type="text"
-            placeholder="pk.eyJ1..."
-            className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground"
-            onChange={(e) => setMapboxToken(e.target.value)}
-          />
-          <p className="text-xs text-muted-foreground">
-            Token beszerzése: <a href="https://mapbox.com" target="_blank" rel="noopener noreferrer" className="text-primary underline">mapbox.com</a>
-          </p>
-        </div>
-      </Card>
-    );
-  }
-
   return (
     <div className="relative w-full h-full">
-      <div ref={mapContainer} className="w-full h-full rounded-lg shadow-lg" />
+      <div ref={mapContainer} className="w-full h-full rounded-lg shadow-lg" style={{ minHeight: '500px' }} />
       
       {/* Legend */}
-      <Card className="absolute top-4 left-4 p-3 bg-card/95 backdrop-blur-sm">
+      <Card className="absolute top-4 left-4 p-3 bg-card/95 backdrop-blur-sm z-[1000]">
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-xs">
             <div className="w-3 h-3 rounded-full bg-success"></div>
@@ -203,7 +169,7 @@ const RegionalStakeholderMap = ({
 
       {/* Selected Stakeholder Card */}
       {selectedStakeholder && (
-        <Card className="absolute bottom-4 left-4 right-4 p-4 bg-card/95 backdrop-blur-sm max-w-md">
+        <Card className="absolute bottom-4 left-4 right-4 p-4 bg-card/95 backdrop-blur-sm max-w-md z-[1000]">
           <div className="space-y-3">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
