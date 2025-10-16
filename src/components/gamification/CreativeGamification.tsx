@@ -19,6 +19,7 @@ import {
   Timer
 } from "lucide-react";
 import { useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ImpactTree {
   id: string;
@@ -52,6 +53,7 @@ interface TeamChallenge {
 }
 
 const CreativeGamification = () => {
+  const { t } = useLanguage();
   const [selectedTab, setSelectedTab] = useState<"forest" | "events" | "teams" | "gifts">("forest");
 
   // Mock data for Impact Forest
@@ -168,7 +170,7 @@ const CreativeGamification = () => {
           className="flex items-center space-x-2"
         >
           <TreePine className="w-4 h-4" />
-          <span>Impact Forest</span>
+          <span>{t('gamification.impact_forest')}</span>
         </Button>
         <Button 
           variant={selectedTab === "events" ? "default" : "ghost"} 
@@ -176,7 +178,7 @@ const CreativeGamification = () => {
           className="flex items-center space-x-2"
         >
           <Calendar className="w-4 h-4" />
-          <span>Events</span>
+          <span>{t('gamification.events')}</span>
         </Button>
         <Button 
           variant={selectedTab === "teams" ? "default" : "ghost"} 
@@ -184,7 +186,7 @@ const CreativeGamification = () => {
           className="flex items-center space-x-2"
         >
           <Users className="w-4 h-4" />
-          <span>Teams</span>
+          <span>{t('gamification.teams')}</span>
         </Button>
         <Button 
           variant={selectedTab === "gifts" ? "default" : "ghost"} 
@@ -192,7 +194,7 @@ const CreativeGamification = () => {
           className="flex items-center space-x-2"
         >
           <Gift className="w-4 h-4" />
-          <span>Rewards</span>
+          <span>{t('gamification.rewards')}</span>
         </Button>
       </div>
 
@@ -203,10 +205,10 @@ const CreativeGamification = () => {
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <TreePine className="w-6 h-6 text-green-600" />
-                <span>Your Impact Forest</span>
+                <span>{t('gamification.your_impact_forest')}</span>
               </CardTitle>
               <CardDescription>
-                Watch your sustainability actions grow into a thriving digital forest. Each category of actions grows its own tree!
+                {t('gamification.forest_description')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -217,22 +219,22 @@ const CreativeGamification = () => {
                       <div className="flex flex-col items-center text-center space-y-3">
                         {getTreeIcon(tree.stage)}
                         <div>
-                          <h3 className="font-medium text-sm">{tree.name}</h3>
+                          <h3 className="font-medium text-sm">{t(`gamification.tree.${tree.id}`)}</h3>
                           <Badge className={getStageColor(tree.stage)} variant="secondary">
-                            {tree.stage}
+                            {t(`gamification.stage.${tree.stage}`)}
                           </Badge>
                         </div>
                         <div className="text-xs space-y-1 w-full">
                           <div className="flex justify-between">
-                            <span>CO₂ Absorbed:</span>
+                            <span>{t('gamification.co2_absorbed')}:</span>
                             <span className="font-medium">{tree.co2Absorbed} kg</span>
                           </div>
                           <div className="flex justify-between">
-                            <span>Actions:</span>
+                            <span>{t('gamification.actions')}:</span>
                             <span className="font-medium">{tree.actions}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span>Days Active:</span>
+                            <span>{t('gamification.days_active')}:</span>
                             <span className="font-medium">{tree.daysActive}</span>
                           </div>
                         </div>
@@ -245,12 +247,12 @@ const CreativeGamification = () => {
               <div className="mt-6 p-4 bg-green-100 rounded-lg">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-medium text-green-800">Forest Health Score</h3>
-                    <p className="text-sm text-green-600">Your overall ecosystem impact</p>
+                    <h3 className="font-medium text-green-800">{t('gamification.forest_health_score')}</h3>
+                    <p className="text-sm text-green-600">{t('gamification.overall_ecosystem')}</p>
                   </div>
                   <div className="text-right">
                     <div className="text-2xl font-bold text-green-800">87%</div>
-                    <p className="text-xs text-green-600">Thriving</p>
+                    <p className="text-xs text-green-600">{t('gamification.thriving')}</p>
                   </div>
                 </div>
                 <Progress value={87} className="mt-2" />
