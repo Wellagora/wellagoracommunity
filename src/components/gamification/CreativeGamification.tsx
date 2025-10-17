@@ -95,23 +95,23 @@ const CreativeGamification = () => {
   const seasonalEvents: SeasonalEvent[] = [
     {
       id: "1",
-      name: "Earth Month Mega Challenge",
-      description: "Join 10,000+ participants in the largest sustainability challenge ever!",
+      name: t('gamification.events.earth_month.name'),
+      description: t('gamification.events.earth_month.description'),
       startDate: "2024-04-01",
       endDate: "2024-04-30", 
       participantCount: 8742,
-      reward: "Exclusive Earth Guardian Badge + Tree Planting Certificate",
+      reward: t('gamification.events.earth_month.reward'),
       progress: 67,
       isActive: true
     },
     {
       id: "2",
-      name: "Summer Solstice Solar Sprint", 
-      description: "Switch to renewable energy and win solar-powered rewards",
+      name: t('gamification.events.solar_sprint.name'), 
+      description: t('gamification.events.solar_sprint.description'),
       startDate: "2024-06-15",
       endDate: "2024-06-25",
       participantCount: 2156,
-      reward: "Solar Power Bank + Sustainability Toolkit",
+      reward: t('gamification.events.solar_sprint.reward'),
       progress: 23,
       isActive: false
     }
@@ -120,21 +120,21 @@ const CreativeGamification = () => {
   const teamChallenges: TeamChallenge[] = [
     {
       id: "1",
-      name: "Neighborhood Green Squad",
+      name: t('gamification.team_challenges.green_squad.name'),
       members: 7,
       maxMembers: 10,
       progress: 78,
-      timeLeft: "5 days",
-      reward: "Community Garden Startup Kit"
+      timeLeft: t('gamification.team_challenges.green_squad.time_left'),
+      reward: t('gamification.team_challenges.green_squad.reward')
     },
     {
       id: "2", 
-      name: "Office Eco Warriors",
+      name: t('gamification.team_challenges.eco_warriors.name'),
       members: 12,
       maxMembers: 15,
       progress: 45,
-      timeLeft: "12 days", 
-      reward: "Company Sustainability Audit"
+      timeLeft: t('gamification.team_challenges.eco_warriors.time_left'), 
+      reward: t('gamification.team_challenges.eco_warriors.reward')
     }
   ];
 
@@ -273,13 +273,13 @@ const CreativeGamification = () => {
                     <CardTitle className="flex items-center space-x-2">
                       <Sparkles className="w-5 h-5 text-warning" />
                       <span>{event.name}</span>
-                      {event.isActive && <Badge variant="default">Active</Badge>}
+                      {event.isActive && <Badge variant="default">{t('gamification.active')}</Badge>}
                     </CardTitle>
                     <CardDescription>{event.description}</CardDescription>
                   </div>
                   <div className="text-right">
                     <div className="text-sm font-medium">{event.participantCount.toLocaleString()}</div>
-                    <div className="text-xs text-muted-foreground">participants</div>
+                    <div className="text-xs text-muted-foreground">{t('gamification.participants')}</div>
                   </div>
                 </div>
               </CardHeader>
@@ -287,7 +287,7 @@ const CreativeGamification = () => {
                 <div className="space-y-4">
                   <div>
                     <div className="flex justify-between text-sm mb-2">
-                      <span>Event Progress</span>
+                      <span>{t('gamification.event_progress')}</span>
                       <span>{event.progress}%</span>
                     </div>
                     <Progress value={event.progress} />
@@ -296,10 +296,10 @@ const CreativeGamification = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <Gift className="w-4 h-4 text-primary" />
-                      <span className="text-sm font-medium">Reward: {event.reward}</span>
+                      <span className="text-sm font-medium">{t('gamification.reward')}: {event.reward}</span>
                     </div>
                     <Button variant={event.isActive ? "default" : "outline"} size="sm">
-                      {event.isActive ? "Join Event" : "Coming Soon"}
+                      {event.isActive ? t('gamification.join_event') : t('gamification.coming_soon')}
                     </Button>
                   </div>
                 </div>
@@ -320,14 +320,14 @@ const CreativeGamification = () => {
                   <span>{team.name}</span>
                 </CardTitle>
                 <CardDescription>
-                  {team.members}/{team.maxMembers} members • {team.timeLeft} remaining
+                  {team.members}/{team.maxMembers} {t('gamification.members')} • {team.timeLeft} {t('gamification.remaining')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div>
                     <div className="flex justify-between text-sm mb-2">
-                      <span>Team Progress</span>
+                      <span>{t('gamification.team_progress')}</span>
                       <span>{team.progress}%</span>
                     </div>
                     <Progress value={team.progress} />
@@ -336,15 +336,15 @@ const CreativeGamification = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <Trophy className="w-4 h-4 text-warning" />
-                      <span className="text-sm font-medium">Reward: {team.reward}</span>
+                      <span className="text-sm font-medium">{t('gamification.reward')}: {team.reward}</span>
                     </div>
                     <div className="flex space-x-2">
                       <Button variant="outline" size="sm">
                         <Share2 className="w-4 h-4 mr-2" />
-                        Invite Friends
+                        {t('gamification.invite_friends')}
                       </Button>
                       <Button variant="default" size="sm">
-                        Join Team
+                        {t('gamification.join_team')}
                       </Button>
                     </div>
                   </div>
@@ -365,10 +365,10 @@ const CreativeGamification = () => {
                   <TreePine className="w-8 h-8 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="font-medium">Plant a Real Tree</h3>
-                  <p className="text-sm text-muted-foreground">1,000 points</p>
+                  <h3 className="font-medium">{t('gamification.rewards_catalog.plant_tree.name')}</h3>
+                  <p className="text-sm text-muted-foreground">{t('gamification.rewards_catalog.plant_tree.points')}</p>
                 </div>
-                <Button variant="default" className="w-full">Redeem</Button>
+                <Button variant="default" className="w-full">{t('gamification.redeem')}</Button>
               </div>
             </CardContent>
           </Card>
@@ -380,10 +380,10 @@ const CreativeGamification = () => {
                   <Gift className="w-8 h-8 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="font-medium">Eco Product Bundle</h3>
-                  <p className="text-sm text-muted-foreground">1,500 points</p>
+                  <h3 className="font-medium">{t('gamification.rewards_catalog.eco_bundle.name')}</h3>
+                  <p className="text-sm text-muted-foreground">{t('gamification.rewards_catalog.eco_bundle.points')}</p>
                 </div>
-                <Button variant="default" className="w-full">Redeem</Button>
+                <Button variant="default" className="w-full">{t('gamification.redeem')}</Button>
               </div>
             </CardContent>
           </Card>
@@ -395,10 +395,10 @@ const CreativeGamification = () => {
                   <Heart className="w-8 h-8 text-purple-600" />
                 </div>
                 <div>
-                  <h3 className="font-medium">Charity Donation</h3>
-                  <p className="text-sm text-muted-foreground">500 points</p>
+                  <h3 className="font-medium">{t('gamification.rewards_catalog.charity.name')}</h3>
+                  <p className="text-sm text-muted-foreground">{t('gamification.rewards_catalog.charity.points')}</p>
                 </div>
-                <Button variant="default" className="w-full">Donate</Button>
+                <Button variant="default" className="w-full">{t('gamification.donate')}</Button>
               </div>
             </CardContent>
           </Card>
