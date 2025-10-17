@@ -14,6 +14,7 @@ import {
   Medal,
   Award
 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface UserStats {
   totalPoints: number;
@@ -44,6 +45,8 @@ interface LeaderboardEntry {
 }
 
 const PointsSystem = () => {
+  const { t } = useLanguage();
+  
   // Mock user data - will be replaced with real data from Supabase
   const userStats: UserStats = {
     totalPoints: 2847,
@@ -53,24 +56,24 @@ const PointsSystem = () => {
     badgesEarned: [
       {
         id: "1",
-        name: "First Steps",
-        description: "Completed your first challenge",
+        name: t('points.badge.first_steps'),
+        description: t('points.badge.first_steps_desc'),
         icon: "🌱",
         rarity: "common",
         earnedAt: "2024-03-01"
       },
       {
         id: "2", 
-        name: "Plastic Warrior",
-        description: "Completed 5 waste reduction challenges",
+        name: t('points.badge.plastic_warrior'),
+        description: t('points.badge.plastic_warrior_desc'),
         icon: "♻️",
         rarity: "rare",
         earnedAt: "2024-03-15"
       },
       {
         id: "3",
-        name: "Energy Saver",
-        description: "Reduced energy consumption by 30%",
+        name: t('points.badge.energy_saver'),
+        description: t('points.badge.energy_saver_desc'),
         icon: "⚡",
         rarity: "epic",
         earnedAt: "2024-03-20"
@@ -83,22 +86,22 @@ const PointsSystem = () => {
   const availableBadges: Badge[] = [
     {
       id: "4",
-      name: "Transport Hero", 
-      description: "Complete 3 sustainable transport challenges",
+      name: t('points.badge.transport_hero'), 
+      description: t('points.badge.transport_hero_desc'),
       icon: "🚴‍♀️",
       rarity: "rare"
     },
     {
       id: "5",
-      name: "Community Leader",
-      description: "Organize a community environmental project",
+      name: t('points.badge.community_leader'),
+      description: t('points.badge.community_leader_desc'),
       icon: "👑",
       rarity: "legendary"
     },
     {
       id: "6",
-      name: "Green Streak",
-      description: "Maintain a 30-day activity streak",
+      name: t('points.badge.green_streak'),
+      description: t('points.badge.green_streak_desc'),
       icon: "🔥",
       rarity: "epic"
     }
@@ -167,7 +170,7 @@ const PointsSystem = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-white/80 text-sm">Total Points</p>
+                <p className="text-white/80 text-sm">{t('points.total_points')}</p>
                 <p className="text-2xl font-bold">{userStats.totalPoints.toLocaleString()}</p>
               </div>
               <Trophy className="w-8 h-8 text-white/80" />
@@ -179,11 +182,11 @@ const PointsSystem = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-muted-foreground text-sm">Level</p>
+                <p className="text-muted-foreground text-sm">{t('points.level')}</p>
                 <p className="text-2xl font-bold">{userStats.level}</p>
                 <Progress value={progressToNextLevel} className="w-full mt-2" />
                 <p className="text-xs text-muted-foreground mt-1">
-                  {userStats.nextLevelPoints - userStats.totalPoints} points to level {userStats.level + 1}
+                  {userStats.nextLevelPoints - userStats.totalPoints} {t('points.points_to_level')} {userStats.level + 1}
                 </p>
               </div>
               <Star className="w-8 h-8 text-warning" />
@@ -195,7 +198,7 @@ const PointsSystem = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-muted-foreground text-sm">Challenges Completed</p>
+                <p className="text-muted-foreground text-sm">{t('points.challenges_completed')}</p>
                 <p className="text-2xl font-bold">{userStats.challengesCompleted}</p>
               </div>
               <Target className="w-8 h-8 text-success" />
@@ -207,8 +210,8 @@ const PointsSystem = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-muted-foreground text-sm">Current Streak</p>
-                <p className="text-2xl font-bold">{userStats.streakDays} days</p>
+                <p className="text-muted-foreground text-sm">{t('points.current_streak')}</p>
+                <p className="text-2xl font-bold">{userStats.streakDays} {t('points.days')}</p>
               </div>
               <Zap className="w-8 h-8 text-accent" />
             </div>
@@ -222,10 +225,10 @@ const PointsSystem = () => {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Award className="w-5 h-5" />
-              <span>Your Badges</span>
+              <span>{t('points.your_badges')}</span>
             </CardTitle>
             <CardDescription>
-              Achievements you've unlocked through your sustainability journey
+              {t('points.your_badges_desc')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -236,13 +239,13 @@ const PointsSystem = () => {
                   <div className="flex items-center space-x-2">
                     <h4 className="font-medium">{badge.name}</h4>
                     <Badge className={getRarityColor(badge.rarity)} variant="secondary">
-                      {badge.rarity}
+                      {t(`points.rarity.${badge.rarity}`)}
                     </Badge>
                   </div>
                   <p className="text-sm text-muted-foreground">{badge.description}</p>
                   {badge.earnedAt && (
                     <p className="text-xs text-muted-foreground mt-1">
-                      Earned on {new Date(badge.earnedAt).toLocaleDateString()}
+                      {t('points.earned_on')} {new Date(badge.earnedAt).toLocaleDateString()}
                     </p>
                   )}
                 </div>
@@ -256,10 +259,10 @@ const PointsSystem = () => {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Medal className="w-5 h-5" />
-              <span>Available Badges</span>
+              <span>{t('points.available_badges')}</span>
             </CardTitle>
             <CardDescription>
-              Unlock these badges by completing specific challenges and milestones
+              {t('points.available_badges_desc')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -270,7 +273,7 @@ const PointsSystem = () => {
                   <div className="flex items-center space-x-2">
                     <h4 className="font-medium">{badge.name}</h4>
                     <Badge className={getRarityColor(badge.rarity)} variant="outline">
-                      {badge.rarity}
+                      {t(`points.rarity.${badge.rarity}`)}
                     </Badge>
                   </div>
                   <p className="text-sm text-muted-foreground">{badge.description}</p>
@@ -286,10 +289,10 @@ const PointsSystem = () => {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Crown className="w-5 h-5 text-warning" />
-            <span>Leaderboard</span>
+            <span>{t('points.leaderboard')}</span>
           </CardTitle>
           <CardDescription>
-            See how you rank among other sustainability champions
+            {t('points.leaderboard_desc')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -312,19 +315,19 @@ const PointsSystem = () => {
                 </Avatar>
                 <div className="flex-1">
                   <div className="flex items-center space-x-2">
-                    <h4 className="font-medium">{entry.name}</h4>
+                    <h4 className="font-medium">{entry.name === "You" ? t('points.you') : entry.name}</h4>
                     {index === 0 && <Crown className="w-4 h-4 text-warning" />}
-                    {entry.name === "You" && <Badge variant="outline">You</Badge>}
+                    {entry.name === "You" && <Badge variant="outline">{t('points.you')}</Badge>}
                   </div>
                   <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                    <span>Level {entry.level}</span>
+                    <span>{t('points.level')} {entry.level}</span>
                     <span>•</span>
-                    <span>{entry.challengesCompleted} challenges</span>
+                    <span>{entry.challengesCompleted} {t('points.challenges')}</span>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className="font-bold text-lg">{entry.points.toLocaleString()}</p>
-                  <p className="text-sm text-muted-foreground">points</p>
+                  <p className="text-sm text-muted-foreground">{t('points.points')}</p>
                 </div>
               </div>
             ))}
