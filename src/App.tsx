@@ -9,6 +9,7 @@ import Index from "@/pages/Index";
 import AuthPage from "@/pages/AuthPage";
 import DashboardPage from "@/pages/DashboardPage";
 import DynamicRegionalDashboard from "@/pages/DynamicRegionalDashboard";
+import RevolutionaryPage from "@/pages/RevolutionaryPage";
 import Community from "@/pages/Community";
 import AIAssistantPage from "@/pages/AIAssistantPage";
 import ChallengesPage from "@/pages/ChallengesPage";
@@ -41,6 +42,7 @@ function App() {
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/admin" element={<AdminDashboardPage />} />
                 <Route path="/dynamic-regional" element={<DynamicRegionalDashboard />} />
+                <Route path="/revolutionary" element={<RevolutionaryPage />} />
                 <Route path="/community" element={<Community />} />
                 <Route path="/ai-assistant" element={<AIAssistantPage />} />
                 <Route path="/challenges" element={<ChallengesPage />} />
