@@ -2,22 +2,40 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Navigation from '@/components/Navigation';
 import RegionSelector, { Region } from '@/components/dynamic/RegionSelector';
-import ModernDashboard3D from '@/components/enhanced/ModernDashboard3D';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useLanguage } from '@/contexts/LanguageContext';
+import RegionalStakeholderMap from '@/components/matching/RegionalStakeholderMap';
+import StakeholderFilters from '@/components/matching/StakeholderFilters';
 import { 
   Globe, 
   MapPin, 
-  Zap, 
   Users, 
-  Target,
-  BarChart3,
-  Settings,
-  RefreshCw,
-  Search
+  Search,
+  Map,
+  Layers,
+  Building2,
+  Sprout
 } from 'lucide-react';
+
+interface MatchProfile {
+  id: string;
+  name: string;
+  type: 'citizen' | 'business' | 'government' | 'ngo';
+  organization?: string;
+  location: string;
+  region: string;
+  city?: string;
+  latitude: number;
+  longitude: number;
+  description: string;
+  sustainabilityGoals: string[];
+  avatar: string;
+  verified: boolean;
+  impactScore: number;
+}
 
 const DynamicRegionalDashboard = () => {
   const { t } = useLanguage();
@@ -25,6 +43,10 @@ const DynamicRegionalDashboard = () => {
   const [showRegionSelector, setShowRegionSelector] = useState(!selectedRegion);
   const [recentRegions, setRecentRegions] = useState<Region[]>([]);
   const [favoriteRegions] = useState<Region[]>([]);
+  const [viewMode, setViewMode] = useState<'map' | 'cards'>('map');
+  const [selectedTypes, setSelectedTypes] = useState<string[]>(['citizen', 'business', 'government', 'ngo']);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [selectedStakeholder, setSelectedStakeholder] = useState<MatchProfile | null>(null);
 
   const handleRegionSelect = (region: Region) => {
     setSelectedRegion(region);
@@ -41,6 +63,101 @@ const DynamicRegionalDashboard = () => {
     setShowRegionSelector(true);
   };
 
+  const handleTypeToggle = (type: string) => {
+    setSelectedTypes(prev => 
+      prev.includes(type) 
+        ? prev.filter(t => t !== type)
+        : [...prev, type]
+    );
+  };
+
+  // Mock stakeholder data based on selected region
+  const getRegionalStakeholders = (): MatchProfile[] => {
+    if (!selectedRegion) return [];
+    
+    const baseStakeholders: MatchProfile[] = [
+      {
+        id: "1",
+        name: "GreenTech Solutions",
+        type: "business",
+        organization: "GreenTech Solutions Kft.",
+        location: selectedRegion.displayName,
+        region: selectedRegion.id,
+        city: selectedRegion.displayName,
+        latitude: selectedRegion.coordinates.lat + 0.01,
+        longitude: selectedRegion.coordinates.lng + 0.01,
+        description: "Megújuló energia technológiák fejlesztése és telepítése.",
+        sustainabilityGoals: ["Megújuló energia", "Szén-dioxid csökkentés"],
+        avatar: "🏢",
+        verified: true,
+        impactScore: 2450,
+      },
+      {
+        id: "2",
+        name: `${selectedRegion.displayName} Önkormányzat`,
+        type: "government",
+        organization: `${selectedRegion.displayName} Önkormányzat`,
+        location: selectedRegion.displayName,
+        region: selectedRegion.id,
+        city: selectedRegion.displayName,
+        latitude: selectedRegion.coordinates.lat - 0.01,
+        longitude: selectedRegion.coordinates.lng - 0.01,
+        description: "Városi fenntarthatósági programok koordinálása.",
+        sustainabilityGoals: ["Városi zöld területek", "Közlekedés optimalizálás"],
+        avatar: "🏛️",
+        verified: true,
+        impactScore: 3200,
+      },
+      {
+        id: "3",
+        name: "Zöld Jövő Alapítvány",
+        type: "ngo",
+        organization: "Zöld Jövő Közhasznú Alapítvány",
+        location: selectedRegion.displayName,
+        region: selectedRegion.id,
+        city: selectedRegion.displayName,
+        latitude: selectedRegion.coordinates.lat + 0.02,
+        longitude: selectedRegion.coordinates.lng - 0.02,
+        description: "Környezettudatossági oktatás és közösségi kertészkedés programok.",
+        sustainabilityGoals: ["Oktatás", "Közösségi kertek", "Biodiverzitás"],
+        avatar: "🌱",
+        verified: true,
+        impactScore: 1850,
+      },
+      {
+        id: "4",
+        name: "Kovács Anna",
+        type: "citizen",
+        location: selectedRegion.displayName,
+        region: selectedRegion.id,
+        city: selectedRegion.displayName,
+        latitude: selectedRegion.coordinates.lat - 0.02,
+        longitude: selectedRegion.coordinates.lng + 0.02,
+        description: "Környezetmérnök, aki helyi fenntarthatósági projekteket koordinál.",
+        sustainabilityGoals: ["Hulladék csökkentés", "Helyi termelés"],
+        avatar: "👩‍🔬",
+        verified: false,
+        impactScore: 920,
+      },
+    ];
+
+    return baseStakeholders;
+  };
+
+  const allProfiles = getRegionalStakeholders();
+  
+  // Filter profiles
+  let filteredProfiles = allProfiles.filter(p => selectedTypes.includes(p.type));
+  
+  // Filter by search query
+  if (searchQuery) {
+    filteredProfiles = filteredProfiles.filter(p => 
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.organization?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.description.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -55,15 +172,15 @@ const DynamicRegionalDashboard = () => {
           transition={{ duration: 0.6 }}
         >
           <div className="flex items-center justify-center gap-3 mb-4">
-            <Globe className="w-8 h-8 text-primary" />
+            <Users className="w-8 h-8 text-primary" />
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground text-center">
-              {selectedRegion ? `${selectedRegion.displayName} - ${t('3d_dashboard.sustainability')}` : t('3d_dashboard.title')}
+              {selectedRegion ? `${selectedRegion.displayName} - ${t('matching.regional_network')}` : t('matching.regional_network')}
             </h1>
           </div>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-6 text-center px-4">
             {selectedRegion 
-              ? `${t('3d_dashboard.explore_ecosystem').replace('{region}', selectedRegion.displayName)}`
-              : t('3d_dashboard.select_region_desc')
+              ? `${t('matching.find_partners_in')} ${selectedRegion.displayName}`
+              : t('matching.regional_desc')
             }
           </p>
           
@@ -90,95 +207,27 @@ const DynamicRegionalDashboard = () => {
           
           <div className="flex flex-wrap items-center justify-center gap-2">
             {selectedRegion && (
-              <Badge className="bg-gradient-to-r from-success to-warning text-white px-4 py-2">
-                🌍 {selectedRegion.displayName} • {selectedRegion.population?.toLocaleString() || "N/A"} lakos • {selectedRegion.area?.toFixed(0) || "N/A"} km²
-              </Badge>
+              <>
+                <Badge className="bg-gradient-to-r from-success to-warning text-white px-4 py-2">
+                  📍 {selectedRegion.displayName}
+                </Badge>
+                <Badge variant="secondary" className="bg-primary/20 text-primary">
+                  {filteredProfiles.length} {t('matching.stakeholders')}
+                </Badge>
+              </>
             )}
-            <Badge variant="secondary" className="bg-primary/20 text-primary">
-              3D Visualization
+            <Badge variant="secondary" className="bg-success/20 text-success">
+              {t('matching.partner_matching')}
             </Badge>
             <Badge variant="secondary" className="bg-accent/20 text-accent">
-              Real-time Data
-            </Badge>
-            <Badge variant="secondary" className="bg-success/20 text-success">
-              AI-Powered Matching
-            </Badge>
-            <Badge variant="secondary" className="bg-warning/20 text-warning">
-              Global Coverage
+              {t('matching.regional_collaboration')}
             </Badge>
           </div>
         </motion.div>
 
-        {/* Quick Actions Bar */}
-        {selectedRegion && (
-          <motion.div
-            className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 p-4 bg-card/60 backdrop-blur-sm rounded-2xl border"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <div className="flex items-center gap-3 flex-wrap">
-              <MapPin className="w-5 h-5 text-primary flex-shrink-0" />
-              <div>
-                <div className="font-semibold text-foreground">{selectedRegion.displayName}</div>
-                <div className="text-sm text-muted-foreground capitalize">{selectedRegion.type}</div>
-              </div>
-              <Badge variant="outline">{selectedRegion.language.toUpperCase()}</Badge>
-            </div>
-            
-            <div className="flex items-center gap-2 flex-wrap w-full md:w-auto">
-              <Button variant="outline" size="sm" onClick={handleChangeRegion} className="flex-1 md:flex-none">
-                <Search className="w-4 h-4 mr-2" />
-                <span className="hidden sm:inline">{t('nav.change_region')}</span>
-                <span className="sm:hidden">{t('3d_dashboard.region_change')}</span>
-              </Button>
-              <Button variant="outline" size="sm" className="hidden md:flex">
-                <Settings className="w-4 h-4 mr-2" />
-                {t('nav.settings')}
-              </Button>
-              <Button variant="outline" size="sm" className="hidden md:flex">
-                <RefreshCw className="w-4 h-4 mr-2" />
-                {t('nav.refresh')}
-              </Button>
-            </div>
-          </motion.div>
-        )}
 
-        {/* Recent Regions */}
-        {recentRegions.length > 0 && !showRegionSelector && (
-          <motion.div
-            className="mb-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-          >
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base md:text-lg flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5" />
-                  {t('nav.recent_regions')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {recentRegions.map((region) => (
-                    <Button
-                      key={region.id}
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleRegionSelect(region)}
-                      className={selectedRegion?.id === region.id ? 'bg-primary/10 border-primary' : ''}
-                    >
-                      {region.displayName}
-                    </Button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
 
-        {/* Main Dashboard Content */}
+        {/* Main Content */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -186,12 +235,12 @@ const DynamicRegionalDashboard = () => {
         >
           {!selectedRegion ? (
             <div className="text-center py-12 md:py-20 px-4">
-              <Globe className="w-16 md:w-24 h-16 md:h-24 mx-auto mb-6 text-primary opacity-50" />
+              <Users className="w-16 md:w-24 h-16 md:h-24 mx-auto mb-6 text-primary opacity-50" />
               <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-                {t('3d_dashboard.choose_your_region')}
+                {t('matching.choose_region_to_start')}
               </h2>
               <p className="text-base md:text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-                {t('3d_dashboard.select_region_info')}
+                {t('matching.select_region_find_partners')}
               </p>
               <Button 
                 size="lg"
@@ -203,7 +252,107 @@ const DynamicRegionalDashboard = () => {
               </Button>
             </div>
           ) : (
-            <ModernDashboard3D />
+            <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'map' | 'cards')} className="space-y-6">
+              <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
+                <TabsTrigger value="map" className="flex items-center gap-2">
+                  <Map className="w-4 h-4" />
+                  {t('matching.map_view')}
+                </TabsTrigger>
+                <TabsTrigger value="cards" className="flex items-center gap-2">
+                  <Layers className="w-4 h-4" />
+                  {t('matching.list_view')}
+                </TabsTrigger>
+              </TabsList>
+
+              {/* Filters */}
+              <StakeholderFilters
+                selectedTypes={selectedTypes}
+                onTypeToggle={handleTypeToggle}
+                selectedRegion={selectedRegion.id}
+                onRegionChange={() => {}}
+                regions={[]}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                totalCount={filteredProfiles.length}
+              />
+
+              {/* Map View */}
+              <TabsContent value="map" className="mt-6">
+                <div className="h-[600px] rounded-lg overflow-hidden border-2 border-primary/20">
+                  <RegionalStakeholderMap
+                    stakeholders={filteredProfiles.map(p => ({
+                      id: p.id,
+                      name: p.name,
+                      type: p.type,
+                      organization: p.organization,
+                      location: p.location,
+                      region: p.region,
+                      city: p.city,
+                      latitude: p.latitude,
+                      longitude: p.longitude,
+                      bio: p.description,
+                      sustainability_goals: p.sustainabilityGoals,
+                      avatar: p.avatar
+                    }))}
+                    onStakeholderClick={(s) => {
+                      const fullProfile = filteredProfiles.find(p => p.id === s.id);
+                      if (fullProfile) setSelectedStakeholder(fullProfile);
+                    }}
+                    center={[selectedRegion.coordinates.lat, selectedRegion.coordinates.lng]}
+                    zoom={11}
+                  />
+                </div>
+              </TabsContent>
+
+              {/* Cards View */}
+              <TabsContent value="cards" className="mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filteredProfiles.map((profile) => (
+                    <Card key={profile.id} className="hover:shadow-lg transition-all hover:scale-105 cursor-pointer border-2 hover:border-primary/50">
+                      <CardHeader>
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="text-4xl">{profile.avatar}</div>
+                            <div>
+                              <CardTitle className="text-base">{profile.name}</CardTitle>
+                              {profile.organization && (
+                                <p className="text-xs text-muted-foreground">{profile.organization}</p>
+                              )}
+                            </div>
+                          </div>
+                          {profile.verified && (
+                            <Badge className="bg-success/20 text-success">✓</Badge>
+                          )}
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-muted-foreground line-clamp-3 mb-4">{profile.description}</p>
+                        <div className="flex flex-wrap gap-1 mb-4">
+                          {profile.sustainabilityGoals.slice(0, 3).map((goal, i) => (
+                            <Badge key={i} variant="outline" className="text-xs">
+                              <Sprout className="w-3 h-3 mr-1" />
+                              {goal}
+                            </Badge>
+                          ))}
+                        </div>
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="text-xs text-muted-foreground">
+                            <MapPin className="w-3 h-3 inline mr-1" />
+                            {profile.city}
+                          </div>
+                          <div className="text-xs font-semibold text-primary">
+                            {profile.impactScore} {t('points.points')}
+                          </div>
+                        </div>
+                        <Button className="w-full" size="sm">
+                          {t('matching.contact')}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
           )}
         </motion.div>
 
@@ -215,32 +364,32 @@ const DynamicRegionalDashboard = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
-            <Card className="text-center">
+            <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-4 md:p-6">
-                <Globe className="w-10 md:w-12 h-10 md:h-12 mx-auto mb-4 text-primary" />
-                <h3 className="text-lg md:text-xl font-semibold mb-3">{t('3d_dashboard.global_coverage')}</h3>
+                <Users className="w-10 md:w-12 h-10 md:h-12 mx-auto mb-4 text-primary" />
+                <h3 className="text-lg md:text-xl font-semibold mb-3">{t('matching.find_partners')}</h3>
                 <p className="text-sm md:text-base text-muted-foreground">
-                  {t('3d_dashboard.global_coverage_desc')}
+                  {t('matching.find_partners_desc')}
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="text-center">
+            <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-4 md:p-6">
-                <Zap className="w-10 md:w-12 h-10 md:h-12 mx-auto mb-4 text-accent" />
-                <h3 className="text-lg md:text-xl font-semibold mb-3">{t('3d_dashboard.real_time_analytics')}</h3>
+                <Building2 className="w-10 md:w-12 h-10 md:h-12 mx-auto mb-4 text-accent" />
+                <h3 className="text-lg md:text-xl font-semibold mb-3">{t('matching.local_collaboration')}</h3>
                 <p className="text-sm md:text-base text-muted-foreground">
-                  {t('3d_dashboard.real_time_analytics_desc')}
+                  {t('matching.local_collaboration_desc')}
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="text-center">
+            <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-4 md:p-6">
-                <Users className="w-10 md:w-12 h-10 md:h-12 mx-auto mb-4 text-success" />
-                <h3 className="text-lg md:text-xl font-semibold mb-3">{t('3d_dashboard.smart_stakeholders')}</h3>
+                <MapPin className="w-10 md:w-12 h-10 md:h-12 mx-auto mb-4 text-success" />
+                <h3 className="text-lg md:text-xl font-semibold mb-3">{t('matching.regional_focus')}</h3>
                 <p className="text-sm md:text-base text-muted-foreground">
-                  {t('3d_dashboard.smart_stakeholders_desc')}
+                  {t('matching.regional_focus_desc')}
                 </p>
               </CardContent>
             </Card>
