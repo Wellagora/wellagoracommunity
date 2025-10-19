@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MapPin } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface Stakeholder {
   id: string;
@@ -39,6 +40,7 @@ const RegionalStakeholderMap = ({
   const map = useRef<L.Map | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
   const [selectedStakeholder, setSelectedStakeholder] = useState<Stakeholder | null>(null);
+  const { toast } = useToast();
 
   const getStakeholderColor = (type: string) => {
     switch (type) {
@@ -282,11 +284,9 @@ const RegionalStakeholderMap = ({
               <Button 
                 className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
                 onClick={() => {
-                  import('@/hooks/use-toast').then(({ toast }) => {
-                    toast({
-                      title: "Kapcsolatfelvétel kezdeményezése",
-                      description: `Hamarosan felveheted a kapcsolatot ezzel: ${selectedStakeholder.name}`,
-                    });
+                  toast({
+                    title: "Kapcsolatfelvétel kezdeményezése",
+                    description: `Hamarosan felveheted a kapcsolatot ezzel: ${selectedStakeholder.name}`,
                   });
                   setSelectedStakeholder(null);
                 }}

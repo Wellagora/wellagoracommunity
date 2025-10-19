@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useLanguage } from '@/contexts/LanguageContext';
 import RegionalStakeholderMap from '@/components/matching/RegionalStakeholderMap';
 import StakeholderFilters from '@/components/matching/StakeholderFilters';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Globe, 
   MapPin, 
@@ -39,6 +40,7 @@ interface MatchProfile {
 
 const DynamicRegionalDashboard = () => {
   const { t } = useLanguage();
+  const { toast } = useToast();
   const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
   const [showRegionSelector, setShowRegionSelector] = useState(!selectedRegion);
   const [recentRegions, setRecentRegions] = useState<Region[]>([]);
@@ -184,31 +186,26 @@ const DynamicRegionalDashboard = () => {
             }
           </p>
           
-          {/* Region Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
-            <Button 
-              onClick={() => setShowRegionSelector(true)}
-              size="lg"
-              className="bg-gradient-to-r from-success to-warning hover:from-success/90 hover:to-warning/90 text-white px-8 py-4 rounded-2xl font-semibold shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300"
-            >
-              🌍 {selectedRegion ? t('3d_dashboard.region_change') : t('3d_dashboard.region_select')}
-            </Button>
-            {selectedRegion && (
+          {/* Region Action Button */}
+          {!selectedRegion && (
+            <div className="flex justify-center mb-6">
               <Button 
-                onClick={() => handleChangeRegion()}
-                variant="outline"
+                onClick={() => setShowRegionSelector(true)}
                 size="lg"
-                className="border-2 border-success hover:bg-success hover:text-white px-6 md:px-8 py-4 rounded-2xl font-semibold transition-all duration-300"
+                className="bg-gradient-to-r from-success to-warning hover:from-success/90 hover:to-warning/90 text-white px-8 py-4 rounded-2xl font-semibold shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300"
               >
-                🔄 {t('3d_dashboard.browse_another')}
+                🌍 {t('3d_dashboard.region_select')}
               </Button>
-            )}
-          </div>
+            </div>
+          )}
           
           <div className="flex flex-wrap items-center justify-center gap-2">
             {selectedRegion && (
               <>
-                <Badge className="bg-gradient-to-r from-success to-warning text-white px-4 py-2">
+                <Badge 
+                  className="bg-gradient-to-r from-success to-warning text-white px-4 py-2 cursor-pointer hover:shadow-lg transition-all"
+                  onClick={() => setShowRegionSelector(true)}
+                >
                   📍 {selectedRegion.displayName}
                 </Badge>
                 <Badge variant="secondary" className="bg-primary/20 text-primary">
@@ -216,12 +213,6 @@ const DynamicRegionalDashboard = () => {
                 </Badge>
               </>
             )}
-            <Badge variant="secondary" className="bg-success/20 text-success">
-              {t('matching.partner_matching')}
-            </Badge>
-            <Badge variant="secondary" className="bg-accent/20 text-accent">
-              {t('matching.regional_collaboration')}
-            </Badge>
           </div>
         </motion.div>
 
@@ -345,11 +336,9 @@ const DynamicRegionalDashboard = () => {
                           </div>
                         </div>
                         <Button className="w-full" size="sm" onClick={() => {
-                          import('@/hooks/use-toast').then(({ toast }) => {
-                            toast({
-                              title: t('matching.contact'),
-                              description: `${t('matching.contact')} - ${profile.name}`,
-                            });
+                          toast({
+                            title: t('matching.contact'),
+                            description: `${t('matching.contact')} - ${profile.name}`,
                           });
                         }}>
                           {t('matching.contact')}
