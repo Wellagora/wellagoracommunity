@@ -344,7 +344,14 @@ const DynamicRegionalDashboard = () => {
                             {profile.impactScore} {t('points.points')}
                           </div>
                         </div>
-                        <Button className="w-full" size="sm">
+                        <Button className="w-full" size="sm" onClick={() => {
+                          import('@/hooks/use-toast').then(({ toast }) => {
+                            toast({
+                              title: t('matching.contact'),
+                              description: `${t('matching.contact')} - ${profile.name}`,
+                            });
+                          });
+                        }}>
                           {t('matching.contact')}
                         </Button>
                       </CardContent>

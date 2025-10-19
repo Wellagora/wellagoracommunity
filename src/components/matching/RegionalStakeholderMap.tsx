@@ -279,7 +279,18 @@ const RegionalStakeholderMap = ({
                 </div>
               )}
               
-              <Button className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all">
+              <Button 
+                className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                onClick={() => {
+                  import('@/hooks/use-toast').then(({ toast }) => {
+                    toast({
+                      title: "Kapcsolatfelvétel kezdeményezése",
+                      description: `Hamarosan felveheted a kapcsolatot ezzel: ${selectedStakeholder.name}`,
+                    });
+                  });
+                  setSelectedStakeholder(null);
+                }}
+              >
                 Kapcsolatfelvétel
               </Button>
             </div>
