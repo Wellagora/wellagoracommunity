@@ -278,7 +278,7 @@ const DynamicRegionalDashboard = () => {
 
               {/* Map View */}
               <TabsContent value="map" className="mt-6">
-                <div className="h-[600px] rounded-lg overflow-hidden border-2 border-primary/20">
+                <div className="relative rounded-2xl overflow-hidden" style={{ height: '70vh', minHeight: '500px', maxHeight: '800px' }}>
                   <RegionalStakeholderMap
                     stakeholders={filteredProfiles.map(p => ({
                       id: p.id,

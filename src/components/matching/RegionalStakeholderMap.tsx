@@ -42,21 +42,36 @@ const RegionalStakeholderMap = ({
 
   const getStakeholderColor = (type: string) => {
     switch (type) {
-      case 'citizen': return '#10b981'; // green
-      case 'business': return '#3b82f6'; // blue
-      case 'government': return '#ef4444'; // red
-      case 'ngo': return '#f59e0b'; // yellow
-      default: return '#6b7280';
+      case 'citizen': return 'rgba(16, 185, 129, 1)'; // emerald green
+      case 'business': return 'rgba(59, 130, 246, 1)'; // bright blue
+      case 'government': return 'rgba(239, 68, 68, 1)'; // vibrant red
+      case 'ngo': return 'rgba(245, 158, 11, 1)'; // golden yellow
+      default: return 'rgba(107, 114, 128, 1)';
     }
   };
 
   const getStakeholderIcon = (type: string) => {
     switch (type) {
-      case 'citizen': return '👤';
-      case 'business': return '🏢';
-      case 'government': return '🏛️';
-      case 'ngo': return '🌱';
-      default: return '📍';
+      case 'citizen': 
+        return `<svg width="32" height="32" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>`;
+      case 'business': 
+        return `<svg width="32" height="32" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/>
+        </svg>`;
+      case 'government': 
+        return `<svg width="32" height="32" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 1L2 6v2h20V6M2 19v2h20v-2M10 10v9h4v-9M5 10v9h2v-9M17 10v9h2v-9"/>
+        </svg>`;
+      case 'ngo': 
+        return `<svg width="32" height="32" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>`;
+      default: 
+        return `<svg width="32" height="32" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+        </svg>`;
     }
   };
 
@@ -91,31 +106,66 @@ const RegionalStakeholderMap = ({
     stakeholders.forEach((stakeholder) => {
       if (!stakeholder.latitude || !stakeholder.longitude) return;
 
-      // Create custom icon
+      // Create custom icon with modern design
       const iconHtml = `
-        <div style="
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          background: ${getStakeholderColor(stakeholder.type)};
-          border: 3px solid white;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 20px;
-          cursor: pointer;
-          transition: transform 0.2s;
+        <div class="stakeholder-marker-wrapper" style="
+          position: relative;
+          width: 72px;
+          height: 72px;
         ">
-          ${getStakeholderIcon(stakeholder.type)}
+          <div class="pulse-ring" style="
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: ${getStakeholderColor(stakeholder.type)};
+            opacity: 0.3;
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+          "></div>
+          <div style="
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: ${getStakeholderColor(stakeholder.type)};
+            border: 4px solid white;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25), 0 0 0 2px ${getStakeholderColor(stakeholder.type)}40;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          " 
+          onmouseover="this.style.transform='translate(-50%, -50%) scale(1.15)'"
+          onmouseout="this.style.transform='translate(-50%, -50%) scale(1)'">
+            ${getStakeholderIcon(stakeholder.type)}
+          </div>
         </div>
+        <style>
+          @keyframes pulse {
+            0%, 100% {
+              opacity: 0.3;
+              transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+              opacity: 0.1;
+              transform: translate(-50%, -50%) scale(1.2);
+            }
+          }
+        </style>
       `;
 
       const customIcon = L.divIcon({
         html: iconHtml,
-        className: 'stakeholder-marker',
-        iconSize: [40, 40],
-        iconAnchor: [20, 20],
+        className: 'stakeholder-marker-custom',
+        iconSize: [72, 72],
+        iconAnchor: [36, 36],
       });
 
       const marker = L.marker([stakeholder.latitude, stakeholder.longitude], {
@@ -143,67 +193,98 @@ const RegionalStakeholderMap = ({
 
   return (
     <div className="relative w-full h-full">
-      <div ref={mapContainer} className="w-full h-full rounded-lg shadow-lg" style={{ minHeight: '500px' }} />
+      <div ref={mapContainer} className="w-full h-full rounded-2xl shadow-2xl overflow-hidden border-2 border-primary/10" style={{ minHeight: '500px' }} />
       
-      {/* Legend */}
-      <Card className="absolute top-4 left-4 p-3 bg-card/95 backdrop-blur-sm z-[1000]">
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 text-xs">
-            <div className="w-3 h-3 rounded-full bg-success"></div>
-            <span>Magánszemély</span>
-          </div>
-          <div className="flex items-center gap-2 text-xs">
-            <div className="w-3 h-3 rounded-full bg-primary"></div>
-            <span>Cég</span>
-          </div>
-          <div className="flex items-center gap-2 text-xs">
-            <div className="w-3 h-3 rounded-full bg-destructive"></div>
-            <span>Önkormányzat</span>
-          </div>
-          <div className="flex items-center gap-2 text-xs">
-            <div className="w-3 h-3 rounded-full bg-warning"></div>
-            <span>Civil szervezet</span>
+      {/* Modern Legend with Glassmorphism */}
+      <div className="absolute top-6 left-6 z-[1000]">
+        <div className="bg-background/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 p-4 min-w-[200px]">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 group cursor-pointer hover:translate-x-1 transition-transform">
+              <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'rgba(16, 185, 129, 1)' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"/>
+                </svg>
+              </div>
+              <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">Magánszemély</span>
+            </div>
+            <div className="flex items-center gap-3 group cursor-pointer hover:translate-x-1 transition-transform">
+              <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'rgba(59, 130, 246, 1)' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 7V3H2v18h20V7H12z"/>
+                </svg>
+              </div>
+              <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">Cég</span>
+            </div>
+            <div className="flex items-center gap-3 group cursor-pointer hover:translate-x-1 transition-transform">
+              <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'rgba(239, 68, 68, 1)' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 1L2 6v2h20V6M10 10v9h4v-9"/>
+                </svg>
+              </div>
+              <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">Önkormányzat</span>
+            </div>
+            <div className="flex items-center gap-3 group cursor-pointer hover:translate-x-1 transition-transform">
+              <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'rgba(245, 158, 11, 1)' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10"/>
+                </svg>
+              </div>
+              <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">Civil szervezet</span>
+            </div>
           </div>
         </div>
-      </Card>
+      </div>
 
-      {/* Selected Stakeholder Card */}
+      {/* Selected Stakeholder Card - Modern Design */}
       {selectedStakeholder && (
-        <Card className="absolute bottom-4 left-4 right-4 p-4 bg-card/95 backdrop-blur-sm max-w-md z-[1000]">
-          <div className="space-y-3">
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-3">
-                <div className="text-3xl">{selectedStakeholder.avatar || getStakeholderIcon(selectedStakeholder.type)}</div>
-                <div>
-                  <h4 className="font-semibold text-foreground">{selectedStakeholder.name}</h4>
-                  {selectedStakeholder.organization && (
-                    <p className="text-xs text-muted-foreground">{selectedStakeholder.organization}</p>
-                  )}
+        <div className="absolute bottom-6 left-6 right-6 z-[1000] max-w-md mx-auto">
+          <div className="bg-background/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 p-6 transform transition-all duration-300 animate-in slide-in-from-bottom">
+            <div className="space-y-4">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="text-4xl">{selectedStakeholder.avatar || '📍'}</div>
+                  <div>
+                    <h4 className="font-bold text-lg text-foreground">{selectedStakeholder.name}</h4>
+                    {selectedStakeholder.organization && (
+                      <p className="text-sm text-muted-foreground">{selectedStakeholder.organization}</p>
+                    )}
+                  </div>
                 </div>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => setSelectedStakeholder(null)}
+                  className="rounded-full hover:bg-destructive/20 hover:text-destructive"
+                >
+                  ✕
+                </Button>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => setSelectedStakeholder(null)}>✕</Button>
-            </div>
-            
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <MapPin className="w-3 h-3" />
-              <span>{selectedStakeholder.city || selectedStakeholder.location}</span>
-            </div>
-            
-            {selectedStakeholder.bio && (
-              <p className="text-sm text-foreground line-clamp-2">{selectedStakeholder.bio}</p>
-            )}
-            
-            {selectedStakeholder.sustainability_goals && selectedStakeholder.sustainability_goals.length > 0 && (
-              <div className="flex flex-wrap gap-1">
-                {selectedStakeholder.sustainability_goals.slice(0, 3).map((goal, i) => (
-                  <Badge key={i} variant="outline" className="text-xs">{goal}</Badge>
-                ))}
+              
+              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
+                <MapPin className="w-4 h-4" />
+                <span>{selectedStakeholder.city || selectedStakeholder.location}</span>
               </div>
-            )}
-            
-            <Button className="w-full" size="sm">Kapcsolatfelvétel</Button>
+              
+              {selectedStakeholder.bio && (
+                <p className="text-sm text-foreground leading-relaxed">{selectedStakeholder.bio}</p>
+              )}
+              
+              {selectedStakeholder.sustainability_goals && selectedStakeholder.sustainability_goals.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {selectedStakeholder.sustainability_goals.slice(0, 3).map((goal, i) => (
+                    <Badge key={i} variant="outline" className="text-xs bg-primary/10 border-primary/30 text-primary">
+                      {goal}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+              
+              <Button className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                Kapcsolatfelvétel
+              </Button>
+            </div>
           </div>
-        </Card>
+        </div>
       )}
     </div>
   );
