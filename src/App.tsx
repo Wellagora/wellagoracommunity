@@ -5,20 +5,17 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
+import RegionalHub from './pages/RegionalHub';
 import Index from "@/pages/Index";
 import AuthPage from "@/pages/AuthPage";
 import DashboardPage from "@/pages/DashboardPage";
-import DynamicRegionalDashboard from "@/pages/DynamicRegionalDashboard";
-import RevolutionaryPage from "@/pages/RevolutionaryPage";
 import Community from "@/pages/Community";
 import AIAssistantPage from "@/pages/AIAssistantPage";
 import ChallengesPage from "@/pages/ChallengesPage";
 import ChallengeDetailPage from "@/pages/ChallengeDetailPage";
 import ProfilePage from "@/pages/ProfilePage";
 import OrganizationDashboard from "@/pages/OrganizationDashboard";
-import MatchingPage from "@/pages/MatchingPage";
 import BusinessSponsorshipPage from "@/pages/BusinessSponsorshipPage";
-import InteractiveMapPage from "@/pages/InteractiveMapPage";
 import HandprintPage from "@/pages/HandprintPage";
 import PublicOrganizationPage from "@/pages/PublicOrganizationPage";
 import AdminDashboardPage from "@/pages/AdminDashboardPage";
@@ -41,8 +38,7 @@ function App() {
                 <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/admin" element={<AdminDashboardPage />} />
-                <Route path="/dynamic-regional" element={<DynamicRegionalDashboard />} />
-                <Route path="/revolutionary" element={<RevolutionaryPage />} />
+                <Route path="/regional-hub" element={<RegionalHub />} />
                 <Route path="/community" element={<Community />} />
                 <Route path="/ai-assistant" element={<AIAssistantPage />} />
                 <Route path="/challenges" element={<ChallengesPage />} />
@@ -50,9 +46,7 @@ function App() {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/organization" element={<OrganizationDashboard />} />
                 <Route path="/organization/:organizationId" element={<PublicOrganizationPage />} />
-                <Route path="/matching" element={<MatchingPage />} />
                 <Route path="/business-sponsorship" element={<BusinessSponsorshipPage />} />
-                <Route path="/interactive-map" element={<InteractiveMapPage />} />
               </Routes>
               <Toaster />
               <SonnerToaster />

@@ -154,12 +154,13 @@ const Navigation = () => {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
               </span>
             </Link>
-            <Link to="/matching" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
-              <Heart className="w-4 h-4" />
-              <span className="relative">
-                {t('nav.partners')}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
-              </span>
+            <Link to="/regional-hub" className="group flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-success/10 to-warning/10 border border-success/30 rounded-lg hover:from-success/20 hover:to-warning/20 transition-all duration-300 font-medium">
+              <MapPin className="w-4 h-4 text-success" />
+              <span className="hidden xl:inline">Regionális Központ</span>
+              <span className="xl:hidden">Régiók</span>
+              <Badge variant="secondary" className="ml-1 bg-gradient-to-r from-success to-warning text-white text-xs px-1.5 py-0.5">
+                ÚJ
+              </Badge>
             </Link>
             <Link to="/dashboard" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
               <span className="relative">
@@ -179,22 +180,6 @@ const Navigation = () => {
             <Link to="/ai-assistant" className="group flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-xl hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent-foreground">
               <span className="text-lg">🤖</span>
               <span>{t('nav.ai_assistant')}</span>
-            </Link>
-            <Link to="/dynamic-regional" className="group flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-success/10 to-warning/10 border border-success/30 rounded-lg hover:from-success/20 hover:to-warning/20 transition-all duration-300 font-medium">
-              <Globe className="w-4 h-4 text-success" />
-              <span className="hidden xl:inline">{t('nav.dynamic_3d')}</span>
-              <span className="xl:hidden">3D</span>
-              <Badge variant="secondary" className="ml-1 bg-gradient-to-r from-success to-warning text-white text-xs px-1.5 py-0.5">
-                3D
-              </Badge>
-            </Link>
-            <Link to="/interactive-map" className="group flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-warning/10 to-destructive/10 border border-warning/30 rounded-lg hover:from-warning/20 hover:to-destructive/20 transition-all duration-300 font-medium">
-              <MapPin className="w-4 h-4 text-warning" />
-              <span className="hidden xl:inline">{t('nav.stakeholder_map_label')}</span>
-              <span className="xl:hidden">Map</span>
-              <Badge variant="secondary" className="ml-1 bg-gradient-to-r from-warning to-destructive text-white text-xs px-1.5 py-0.5">
-                MAP
-              </Badge>
             </Link>
           </div>
 
@@ -345,12 +330,13 @@ const Navigation = () => {
               </Link>
               
               <Link 
-                to="/matching" 
-                className="flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
+                to="/regional-hub" 
+                className="flex items-center space-x-3 px-3 py-2.5 bg-gradient-to-r from-success/20 to-warning/20 border border-success/30 text-success-foreground rounded-xl transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                <Heart className="w-5 h-5" />
-                <span className="font-medium">{t('nav.partners')}</span>
+                <MapPin className="w-5 h-5" />
+                <span className="font-medium">Regionális Központ</span>
+                <Badge variant="secondary" className="ml-auto bg-gradient-to-r from-success to-warning text-white text-xs">ÚJ</Badge>
               </Link>
               
               <Link 
