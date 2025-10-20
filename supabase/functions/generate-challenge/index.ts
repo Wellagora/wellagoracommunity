@@ -1,10 +1,42 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Validation schemas
+const categorySchema = z.enum([
+  'energy', 'transport', 'food', 'waste', 'community', 
+  'innovation', 'water', 'biodiversity', 'circular-economy', 'green-finance'
+]);
+
+const difficultySchema = z.enum(['beginner', 'intermediate', 'advanced', 'expert']);
+
+const userProfileSchema = z.object({
+  type: z.string().max(50).optional(),
+  location: z.object({
+    city: z.string().max(100).optional(),
+    region: z.string().max(100).optional(),
+  }).optional(),
+  interests: z.array(z.string().max(100)).max(10).optional(),
+  skillLevel: z.string().max(50).optional(),
+}).optional();
+
+const regionalDataSchema = z.object({
+  climate: z.string().max(100).optional(),
+  infrastructure: z.string().max(100).optional(),
+  localIssues: z.array(z.string().max(200)).max(10).optional(),
+}).optional();
+
+const generateChallengeSchema = z.object({
+  userProfile: userProfileSchema,
+  regionalData: regionalDataSchema,
+  category: categorySchema.optional(),
+  difficulty: difficultySchema.optional(),
+});
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -39,10 +71,11 @@ serve(async (req) => {
 
     console.log('[GENERATE-CHALLENGE] User authenticated:', user.id);
 
-    // Parse request body
-    const { userProfile, regionalData, category, difficulty } = await req.json();
+    // Validate and parse request body
+    const rawBody = await req.json();
+    const { userProfile, regionalData, category, difficulty } = generateChallengeSchema.parse(rawBody);
     
-    console.log('[GENERATE-CHALLENGE] Input data:', { 
+    console.log('[GENERATE-CHALLENGE] Input data validated:', { 
       userType: userProfile?.type, 
       location: userProfile?.location,
       category,
@@ -66,15 +99,15 @@ FONTOS SZABÁLYOK:
     const userPrompt = `Generálj egy fenntarthatósági kihívást az alábbi paraméterek alapján:
 
 FELHASZNÁLÓI PROFIL:
-- Típus: ${userProfile?.type || 'citizen'}
-- Lokáció: ${userProfile?.location?.city || 'Budapest'}, ${userProfile?.location?.region || 'Magyarország'}
-- Érdeklődési területek: ${userProfile?.interests?.join(', ') || 'általános fenntarthatóság'}
-- Szint: ${userProfile?.skillLevel || 'kezdő'}
+- Típus: ${(userProfile?.type || 'citizen').substring(0, 50)}
+- Lokáció: ${(userProfile?.location?.city || 'Budapest').substring(0, 100)}, ${(userProfile?.location?.region || 'Magyarország').substring(0, 100)}
+- Érdeklődési területek: ${(userProfile?.interests?.join(', ') || 'általános fenntarthatóság').substring(0, 500)}
+- Szint: ${(userProfile?.skillLevel || 'kezdő').substring(0, 50)}
 
 REGIONÁLIS KONTEXTUS:
-- Időjárás: ${regionalData?.climate || 'mérsékelt'}
-- Infrastruktúra: ${regionalData?.infrastructure || 'városi'}
-- Helyi problémák: ${regionalData?.localIssues?.join(', ') || 'nincs megadva'}
+- Időjárás: ${(regionalData?.climate || 'mérsékelt').substring(0, 100)}
+- Infrastruktúra: ${(regionalData?.infrastructure || 'városi').substring(0, 100)}
+- Helyi problémák: ${(regionalData?.localIssues?.join(', ') || 'nincs megadva').substring(0, 500)}
 
 KIHÍVÁS PARAMÉTEREI:
 - Kategória: ${category || 'bármilyen'}
@@ -204,9 +237,22 @@ Formázd a választ JSON objektumként az alábbi struktúrában:
 
   } catch (error) {
     console.error('[GENERATE-CHALLENGE] Error:', error);
+    
+    // Handle validation errors specifically
+    if (error instanceof z.ZodError) {
+      return new Response(JSON.stringify({ 
+        error: 'Validation error',
+        details: error.errors.map(e => ({ field: e.path.join('.'), message: e.message }))
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    
+    // Generic error response (no stack traces)
     return new Response(JSON.stringify({ 
-      error: error instanceof Error ? error.message : 'Unknown error',
-      details: error instanceof Error ? error.stack : undefined
+      error: 'An error occurred generating the challenge',
+      code: 'INTERNAL_ERROR'
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

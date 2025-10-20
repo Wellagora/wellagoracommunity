@@ -1,10 +1,27 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Validation schemas
+const businessProfileSchema = z.object({
+  id: z.string().min(1).max(100),
+  name: z.string().min(1).max(200),
+  industry: z.string().max(100).optional(),
+  size: z.number().int().min(0).max(1000000).optional(),
+  location: z.string().max(200).optional(),
+  csr_goals: z.array(z.string().max(200)).max(20).optional(),
+  budget: z.string().max(100).optional(),
+});
+
+const matchChallengeSchema = z.object({
+  businessProfile: businessProfileSchema,
+  challengeId: z.string().uuid('Invalid challenge ID format'),
+});
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -39,14 +56,11 @@ serve(async (req) => {
 
     console.log('[MATCH-CHALLENGE] User authenticated:', user.id);
 
-    // Parse request body
-    const { businessProfile, challengeId } = await req.json();
-    
-    if (!businessProfile || !challengeId) {
-      throw new Error('Missing required parameters: businessProfile or challengeId');
-    }
+    // Validate and parse request body
+    const rawBody = await req.json();
+    const { businessProfile, challengeId } = matchChallengeSchema.parse(rawBody);
 
-    console.log('[MATCH-CHALLENGE] Matching business to challenge:', { 
+    console.log('[MATCH-CHALLENGE] Matching business to challenge (validated):', { 
       businessId: businessProfile.id,
       challengeId 
     });
@@ -84,18 +98,18 @@ A matching szempontjai:
     const userPrompt = `Értékeld a következő vállalat és kihívás illeszkedését:
 
 VÁLLALAT ADATAI:
-- Név: ${businessProfile.name}
-- Iparág: ${businessProfile.industry || 'Nem megadva'}
+- Név: ${businessProfile.name.substring(0, 200)}
+- Iparág: ${(businessProfile.industry || 'Nem megadva').substring(0, 100)}
 - Méret: ${businessProfile.size || 'Nem megadva'} alkalmazott
-- Lokáció: ${businessProfile.location || 'Nem megadva'}
-- CSR Célok: ${businessProfile.csr_goals?.join(', ') || 'Nem megadva'}
-- Költségvetés: ${businessProfile.budget || 'Nem megadva'}
+- Lokáció: ${(businessProfile.location || 'Nem megadva').substring(0, 200)}
+- CSR Célok: ${(businessProfile.csr_goals?.join(', ') || 'Nem megadva').substring(0, 500)}
+- Költségvetés: ${(businessProfile.budget || 'Nem megadva').substring(0, 100)}
 
 KIHÍVÁS ADATAI:
-- Cím: ${challenge.title}
-- Leírás: ${challenge.description}
-- Kategória: ${challenge.category}
-- Nehézség: ${challenge.difficulty}
+- Cím: ${(challenge.title || 'N/A').substring(0, 200)}
+- Leírás: ${(challenge.description || 'N/A').substring(0, 500)}
+- Kategória: ${(challenge.category || 'N/A').substring(0, 50)}
+- Nehézség: ${(challenge.difficulty || 'N/A').substring(0, 50)}
 - Várható résztvevők: 50-100 fő
 - Várható CO2 megtakarítás: ${challenge.base_impact?.co2_saved || 'N/A'} kg
 
@@ -187,9 +201,22 @@ Formázd a választ JSON objektumként:
 
   } catch (error) {
     console.error('[MATCH-CHALLENGE] Error:', error);
+    
+    // Handle validation errors specifically
+    if (error instanceof z.ZodError) {
+      return new Response(JSON.stringify({ 
+        error: 'Validation error',
+        details: error.errors.map(e => ({ field: e.path.join('.'), message: e.message }))
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    
+    // Generic error response (no stack traces)
     return new Response(JSON.stringify({ 
-      error: error instanceof Error ? error.message : 'Unknown error',
-      details: error instanceof Error ? error.stack : undefined
+      error: 'An error occurred processing the matching request',
+      code: 'INTERNAL_ERROR'
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

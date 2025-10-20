@@ -1,16 +1,52 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Validation schemas
+const completionTypeSchema = z.enum(['manual', 'photo', 'api_verified', 'peer_verified']);
+
+const userInputSchema = z.object({
+  distance: z.number().min(0).max(1000).optional(),
+  bulbCount: z.number().int().min(0).max(1000).optional(),
+  waterSaved: z.number().min(0).max(100000).optional(),
+}).optional();
+
+const evidenceDataSchema = z.object({
+  photoUrl: z.string().url().max(2048).optional(),
+  gpsData: z.object({
+    lat: z.number().min(-90).max(90),
+    lng: z.number().min(-180).max(180),
+  }).optional(),
+}).passthrough().optional();
+
+const completeChallengeSchema = z.object({
+  action: z.literal('complete-challenge'),
+  challengeId: z.string().uuid('Invalid challenge ID format'),
+  completionType: completionTypeSchema,
+  userInput: userInputSchema,
+  evidenceData: evidenceDataSchema,
+  notes: z.string().max(5000, 'Notes cannot exceed 5000 characters').optional(),
+});
+
+const getUserHandprintSchema = z.object({
+  action: z.literal('get-user-handprint'),
+});
+
+const requestSchema = z.discriminatedUnion('action', [
+  completeChallengeSchema,
+  getUserHandprintSchema,
+]);
+
 interface ChallengeCompletion {
   challengeId: string;
   completionType: 'manual' | 'photo' | 'api_verified' | 'peer_verified';
-  userInput?: any; // km, bulb_count, stb.
-  evidenceData?: any; // foto URL, GPS data, stb.
+  userInput?: any;
+  evidenceData?: any;
   notes?: string;
 }
 
@@ -37,10 +73,18 @@ serve(async (req) => {
       });
     }
 
-    const { action, ...payload }: { action: string } & any = await req.json();
+    // Validate and parse request body
+    const rawBody = await req.json();
+    const validatedBody = requestSchema.parse(rawBody);
 
-    if (action === 'complete-challenge') {
-      const completion: ChallengeCompletion = payload;
+    if (validatedBody.action === 'complete-challenge') {
+      const completion: ChallengeCompletion = {
+        challengeId: validatedBody.challengeId,
+        completionType: validatedBody.completionType,
+        userInput: validatedBody.userInput,
+        evidenceData: validatedBody.evidenceData,
+        notes: validatedBody.notes?.trim(),
+      };
       
       // Challenge definition lekérése
       const { data: challengeDef, error: challengeError } = await supabase
@@ -148,7 +192,23 @@ serve(async (req) => {
     
   } catch (error) {
     console.error('Challenge validation error:', error);
-    return new Response(JSON.stringify({ error: 'Internal server error' }), {
+    
+    // Handle validation errors specifically
+    if (error instanceof z.ZodError) {
+      return new Response(JSON.stringify({ 
+        error: 'Validation error',
+        details: error.errors.map(e => ({ field: e.path.join('.'), message: e.message }))
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    
+    // Generic error response (no stack traces)
+    return new Response(JSON.stringify({ 
+      error: 'An error occurred processing your request',
+      code: 'INTERNAL_ERROR'
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
@@ -254,9 +314,9 @@ async function calculateImpactAndValidate(
             },
             {
               role: 'user',
-              content: `Challenge: ${challengeDef.title}
-              Kategória: ${challengeDef.category}
-              Felhasználó jegyzete: ${completion.notes || 'Nincs jegyzet'}
+              content: `Challenge: ${challengeDef.title?.substring(0, 200) || 'N/A'}
+              Kategória: ${challengeDef.category?.substring(0, 50) || 'N/A'}
+              Felhasználó jegyzete: ${completion.notes?.substring(0, 500) || 'Nincs jegyzet'}
               Számított CO2 megtakarítás: ${co2Saved.toFixed(2)} kg
               Validálási típus: ${completion.completionType}`
             }
