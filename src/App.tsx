@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
@@ -39,6 +39,10 @@ function App() {
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/admin" element={<AdminDashboardPage />} />
                 <Route path="/regional-hub" element={<RegionalHub />} />
+                <Route path="/interactive-map" element={<Navigate to="/regional-hub" replace />} />
+                <Route path="/matching" element={<Navigate to="/regional-hub" replace />} />
+                <Route path="/dynamic-regional" element={<Navigate to="/regional-hub" replace />} />
+                <Route path="/revolutionary" element={<Navigate to="/regional-hub" replace />} />
                 <Route path="/community" element={<Community />} />
                 <Route path="/ai-assistant" element={<AIAssistantPage />} />
                 <Route path="/challenges" element={<ChallengesPage />} />
