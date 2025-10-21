@@ -328,19 +328,34 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
           
           {/* Sponsor Info */}
           {challenge.sponsor && (
-            <div className="p-4 rounded-lg bg-card border border-border">
+            <div 
+              className="p-4 rounded-lg bg-card border border-border cursor-pointer hover:border-primary/50 transition-all group"
+              onClick={() => {
+                const sponsor = challenge.sponsor;
+                if (sponsor) {
+                  // Navigate based on available IDs
+                  window.location.href = `/profile?userId=${sponsor.name}`;
+                }
+              }}
+            >
               <div className="flex items-center space-x-3">
-                <img 
-                  src={challenge.sponsor.logo} 
-                  alt={challenge.sponsor.name}
-                  className="w-12 h-12 rounded-lg object-cover"
-                />
-                <div>
-                  <div className="font-semibold text-foreground">
+                {typeof challenge.sponsor.logo === 'string' && challenge.sponsor.logo.startsWith('http') ? (
+                  <img 
+                    src={challenge.sponsor.logo} 
+                    alt={challenge.sponsor.name}
+                    className="w-12 h-12 rounded-lg object-cover"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-2xl">
+                    {challenge.sponsor.logo}
+                  </div>
+                )}
+                <div className="flex-1">
+                  <div className="font-semibold text-foreground group-hover:text-primary transition-colors">
                     Szponzor: {challenge.sponsor.name}
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    Támogatja ezt a kihívást
+                    Támogatja ezt a kihívást • Kattints a profilhoz
                   </div>
                 </div>
               </div>

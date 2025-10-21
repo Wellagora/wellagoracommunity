@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Navigation from "@/components/Navigation";
@@ -31,20 +31,131 @@ import { useToast } from "@/hooks/use-toast";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const viewingUserId = searchParams.get('userId');
   const { user, profile, updateProfile, loading: authLoading } = useAuth();
   const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [viewedProfile, setViewedProfile] = useState<any>(null);
   const { toast } = useToast();
 
-  // Redirect if not authenticated
+  // Fetch profile if viewing another user
   useEffect(() => {
-    if (!authLoading && !user) {
+    if (viewingUserId && viewingUserId !== user?.id) {
+      const fetchProfile = async () => {
+        setIsLoading(true);
+        const { data, error } = await supabase
+          .from('profiles')
+          .select(`
+            *,
+            organizations(*)
+          `)
+          .eq('id', viewingUserId)
+          .eq('is_public_profile', true)
+          .single();
+        
+        if (error) {
+          toast({
+            title: 'Hiba',
+            description: 'A profil nem található vagy nem publikus',
+            variant: 'destructive'
+          });
+          navigate('/');
+        } else {
+          setViewedProfile(data);
+        }
+        setIsLoading(false);
+      };
+      fetchProfile();
+    }
+  }, [viewingUserId, user, navigate, toast]);
+
+  // Redirect if not authenticated and not viewing another profile
+  useEffect(() => {
+    if (!authLoading && !user && !viewingUserId) {
       navigate("/auth");
     }
-  }, [user, authLoading, navigate]);
+  }, [user, authLoading, navigate, viewingUserId]);
+
+  // If viewing another user's profile, show public view
+  if (viewingUserId && viewingUserId !== user?.id) {
+    if (isLoading) {
+      return (
+        <div className="min-h-screen bg-background">
+          <Navigation />
+          <div className="flex items-center justify-center h-screen">
+            <Loader2 className="w-8 h-8 animate-spin" />
+          </div>
+        </div>
+      );
+    }
+
+    if (!viewedProfile) {
+      return null;
+    }
+
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="container mx-auto px-4 pt-24 pb-8">
+          <Card className="max-w-3xl mx-auto">
+            <CardHeader>
+              <div className="flex items-center gap-4">
+                <Avatar className="w-20 h-20">
+                  <AvatarImage src={viewedProfile.avatar_url} />
+                  <AvatarFallback>{viewedProfile.first_name?.[0]}{viewedProfile.last_name?.[0]}</AvatarFallback>
+                </Avatar>
+                <div>
+                  <CardTitle className="text-2xl">
+                    {viewedProfile.public_display_name || `${viewedProfile.first_name} ${viewedProfile.last_name}`}
+                  </CardTitle>
+                  {viewedProfile.organization && (
+                    <p className="text-muted-foreground">{viewedProfile.organization}</p>
+                  )}
+                  <Badge className="mt-2">{viewedProfile.user_role}</Badge>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {viewedProfile.bio && (
+                <div>
+                  <h3 className="font-semibold mb-2">Bemutatkozás</h3>
+                  <p className="text-muted-foreground">{viewedProfile.bio}</p>
+                </div>
+              )}
+              {viewedProfile.location && (
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-muted-foreground" />
+                  <span>{viewedProfile.location}</span>
+                </div>
+              )}
+              {viewedProfile.website_url && (
+                <div className="flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-muted-foreground" />
+                  <a href={viewedProfile.website_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    {viewedProfile.website_url}
+                  </a>
+                </div>
+              )}
+              {viewedProfile.sustainability_goals && viewedProfile.sustainability_goals.length > 0 && (
+                <div>
+                  <h3 className="font-semibold mb-2">Fenntarthatósági célok</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {viewedProfile.sustainability_goals.map((goal: string, idx: number) => (
+                      <Badge key={idx} variant="outline">{goal}</Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   const [profileForm, setProfileForm] = useState({
     first_name: profile?.first_name || "",

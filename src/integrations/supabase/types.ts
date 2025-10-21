@@ -104,6 +104,59 @@ export type Database = {
         }
         Relationships: []
       }
+      challenge_sponsorships: {
+        Row: {
+          amount_paid: number | null
+          challenge_id: string
+          created_at: string | null
+          end_date: string | null
+          id: string
+          package_type: string
+          region: string
+          sponsor_organization_id: string | null
+          sponsor_user_id: string
+          start_date: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          amount_paid?: number | null
+          challenge_id: string
+          created_at?: string | null
+          end_date?: string | null
+          id?: string
+          package_type: string
+          region: string
+          sponsor_organization_id?: string | null
+          sponsor_user_id: string
+          start_date?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          amount_paid?: number | null
+          challenge_id?: string
+          created_at?: string | null
+          end_date?: string | null
+          id?: string
+          package_type?: string
+          region?: string
+          sponsor_organization_id?: string | null
+          sponsor_user_id?: string
+          start_date?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_sponsorships_sponsor_organization_id_fkey"
+            columns: ["sponsor_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           co2_reduction_total: number | null

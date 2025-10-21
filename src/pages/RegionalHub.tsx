@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import Navigation from '@/components/Navigation';
 import RegionSelector, { Region } from '@/components/dynamic/RegionSelector';
 import { Button } from '@/components/ui/button';
@@ -9,7 +10,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useLanguage } from '@/contexts/LanguageContext';
 import RegionalStakeholderMap from '@/components/matching/RegionalStakeholderMap';
 import StakeholderFilters from '@/components/matching/StakeholderFilters';
+import ChallengeSponsorshipModal from '@/components/challenges/ChallengeSponsorshipModal';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { 
   Globe, 
   MapPin, 
@@ -42,24 +46,36 @@ interface StakeholderProfile {
   isRegistered: boolean;
 }
 
+interface SponsorInfo {
+  id: string;
+  userId: string;
+  name: string;
+  logo: string;
+  package: string;
+  organizationId?: string;
+}
+
 interface RegionalChallenge extends Omit<Challenge, 'sponsor'> {
   region: string;
-  sponsor?: {
-    name: string;
-    logo: string;
-    package: string;
-  };
+  sponsor?: SponsorInfo;
 }
 
 const RegionalHub = () => {
   const { t } = useLanguage();
   const { toast } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
   const [showRegionSelector, setShowRegionSelector] = useState(true);
   const [recentRegions, setRecentRegions] = useState<Region[]>([]);
   const [viewMode, setViewMode] = useState<'stakeholders' | 'challenges' | 'sponsorship'>('stakeholders');
   const [selectedTypes, setSelectedTypes] = useState<string[]>(['citizen', 'business', 'government', 'ngo']);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [sponsorships, setSponsorships] = useState<any[]>([]);
+  const [selectedChallengeForSponsorship, setSelectedChallengeForSponsorship] = useState<{
+    id: string;
+    title: string;
+  } | null>(null);
 
   const handleRegionSelect = (region: Region) => {
     setSelectedRegion(region);
@@ -171,20 +187,64 @@ const RegionalHub = () => {
     ];
   };
 
-  // Generate regional challenges
+  // Fetch sponsorships from database
+  useEffect(() => {
+    if (!selectedRegion) return;
+
+    const fetchSponsorships = async () => {
+      const { data, error } = await supabase
+        .from('challenge_sponsorships')
+        .select(`
+          *,
+          profiles!challenge_sponsorships_sponsor_user_id_fkey(
+            first_name,
+            last_name,
+            public_display_name,
+            avatar_url,
+            organization
+          ),
+          organizations(
+            name,
+            logo_url
+          )
+        `)
+        .eq('region', selectedRegion.id)
+        .eq('status', 'active');
+
+      if (!error && data) {
+        setSponsorships(data);
+      }
+    };
+
+    fetchSponsorships();
+  }, [selectedRegion]);
+
+  // Generate regional challenges with real sponsorship data
   const getRegionalChallenges = (): RegionalChallenge[] => {
     if (!selectedRegion) return [];
     
     return challenges.slice(0, 6).map(challenge => {
-      const baseSponsor = challenge.sponsor;
-      const sponsor = baseSponsor ? {
-        ...baseSponsor,
-        package: 'Bronze'
-      } : (Math.random() > 0.5 ? {
-        name: "Local Business Sponsor",
-        logo: "🏢",
-        package: "Bronze"
-      } : undefined);
+      // Find sponsorship for this challenge in this region
+      const sponsorship = sponsorships.find(
+        s => s.challenge_id === challenge.id
+      );
+
+      let sponsor: SponsorInfo | undefined;
+      
+      if (sponsorship) {
+        const profile = sponsorship.profiles;
+        const org = sponsorship.organizations;
+        
+        sponsor = {
+          id: sponsorship.id,
+          userId: sponsorship.sponsor_user_id,
+          name: org?.name || profile?.organization || profile?.public_display_name || 
+                `${profile?.first_name} ${profile?.last_name}`,
+          logo: org?.logo_url || profile?.avatar_url || "🏢",
+          package: sponsorship.package_type,
+          organizationId: sponsorship.sponsor_organization_id
+        };
+      }
 
       return {
         ...challenge,
@@ -399,16 +459,37 @@ const RegionalHub = () => {
                           {t(challenge.descriptionKey)}
                         </p>
                         
-                        {challenge.sponsor && (
-                          <div className="bg-muted/50 rounded-lg p-3 mb-4">
+                        {challenge.sponsor ? (
+                          <div 
+                            className="bg-muted/50 rounded-lg p-3 mb-4 cursor-pointer hover:bg-muted transition-all group"
+                            onClick={() => {
+                              if (challenge.sponsor?.organizationId) {
+                                navigate(`/organization/${challenge.sponsor.organizationId}`);
+                              } else if (challenge.sponsor?.userId) {
+                                navigate(`/profile?userId=${challenge.sponsor.userId}`);
+                              }
+                            }}
+                          >
                             <p className="text-xs text-muted-foreground mb-1">Szponzor:</p>
                             <div className="flex items-center gap-2">
-                              <span className="text-2xl">{challenge.sponsor.logo}</span>
-                              <div>
-                                <p className="text-sm font-semibold">{challenge.sponsor.name}</p>
-                                <p className="text-xs text-muted-foreground">{challenge.sponsor.package} csomag</p>
+                              {challenge.sponsor.logo.startsWith('http') ? (
+                                <img src={challenge.sponsor.logo} alt={challenge.sponsor.name} className="w-8 h-8 rounded object-cover" />
+                              ) : (
+                                <span className="text-2xl">{challenge.sponsor.logo}</span>
+                              )}
+                              <div className="flex-1">
+                                <p className="text-sm font-semibold group-hover:text-primary transition-colors">
+                                  {challenge.sponsor.name}
+                                </p>
+                                <p className="text-xs text-muted-foreground capitalize">
+                                  {challenge.sponsor.package} csomag
+                                </p>
                               </div>
                             </div>
+                          </div>
+                        ) : (
+                          <div className="bg-warning/10 rounded-lg p-3 mb-4 border border-warning/20">
+                            <p className="text-xs text-warning">Még nincs szponzor</p>
                           </div>
                         )}
                         
@@ -422,9 +503,23 @@ const RegionalHub = () => {
                           </div>
                         </div>
                         
-                        <Button className="w-full" size="sm">
-                          Részletek
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button className="flex-1" size="sm" variant="outline">
+                            Részletek
+                          </Button>
+                          {!challenge.sponsor && user && (
+                            <Button 
+                              className="flex-1" 
+                              size="sm"
+                              onClick={() => setSelectedChallengeForSponsorship({
+                                id: challenge.id,
+                                title: t(challenge.titleKey)
+                              })}
+                            >
+                              Szponzorálás
+                            </Button>
+                          )}
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
@@ -561,6 +656,16 @@ const RegionalHub = () => {
           )}
         </motion.div>
       </div>
+
+      {selectedChallengeForSponsorship && (
+        <ChallengeSponsorshipModal
+          open={!!selectedChallengeForSponsorship}
+          onOpenChange={(open) => !open && setSelectedChallengeForSponsorship(null)}
+          challengeId={selectedChallengeForSponsorship.id}
+          challengeTitle={selectedChallengeForSponsorship.title}
+          region={selectedRegion?.id || ''}
+        />
+      )}
 
       {showRegionSelector && (
         <RegionSelector
