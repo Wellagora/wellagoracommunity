@@ -7,6 +7,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
+import ChallengeCelebrationModal from "./ChallengeCelebrationModal";
 import { 
   Calendar, 
   Clock, 
@@ -25,7 +26,10 @@ import {
   Droplets,
   Bird,
   ArrowDownUp,
-  TrendingUp
+  TrendingUp,
+  Sparkles,
+  Award,
+  Flame
 } from "lucide-react";
 
 interface Challenge {
@@ -91,6 +95,7 @@ const difficultyConfig = {
 const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: ChallengeDetailProps) => {
   const [activeStep, setActiveStep] = useState(0);
   const [showTips, setShowTips] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
   const { toast } = useToast();
   const { t } = useLanguage();
   
@@ -114,10 +119,7 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
 
   const handleCompleteChallenge = () => {
     onComplete?.(challenge.id);
-    toast({
-      title: t('challenges.challenge_completed'),
-      description: t('challenges.challenge_completed_desc'),
-    });
+    setShowCelebration(true);
   };
 
   const handleShare = () => {
@@ -128,7 +130,52 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
+    <>
+      <ChallengeCelebrationModal
+        isOpen={showCelebration}
+        onClose={() => setShowCelebration(false)}
+        challengeTitle={t(challenge.titleKey)}
+        pointsEarned={challenge.pointsReward}
+        co2Saved={challenge.impact.co2Saved}
+      />
+      
+      <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
+        {/* Motivational Success Stories Banner */}
+        {!userProgress?.isParticipating && (
+          <Card className="bg-gradient-primary border-0 text-white overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16" />
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12" />
+            <CardContent className="pt-6 relative z-10">
+              <div className="flex items-start justify-between gap-4 flex-col sm:flex-row">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Sparkles className="w-5 h-5" />
+                    <span className="text-sm font-semibold uppercase tracking-wide">
+                      {t('challenges.success_stories_title')}
+                    </span>
+                  </div>
+                  <p className="text-lg sm:text-xl font-semibold mb-2">
+                    {t('challenges.success_stories_desc')}
+                  </p>
+                  <p className="text-white/90 text-sm">
+                    {t('challenges.success_stories_subtitle')}
+                  </p>
+                </div>
+                <div className="flex gap-4 sm:flex-col">
+                  <div className="text-center bg-white/20 rounded-lg p-3 backdrop-blur-sm">
+                    <div className="text-2xl font-bold">{challenge.participants.toLocaleString()}</div>
+                    <div className="text-xs opacity-90">{t('challenges.joined')}</div>
+                  </div>
+                  <div className="text-center bg-white/20 rounded-lg p-3 backdrop-blur-sm">
+                    <div className="text-2xl font-bold">{challenge.completionRate}%</div>
+                    <div className="text-xs opacity-90">{t('challenges.completed')}</div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+        
       {/* Main Challenge Card */}
       <Card className="shadow-card">
         <CardHeader className="pb-4">
@@ -364,15 +411,57 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
         </CardContent>
         
         <CardFooter className="flex flex-col space-y-4 pt-6">
+          {/* Inspirational CTA Section */}
+          {!userProgress?.isParticipating && (
+            <div className="w-full p-4 rounded-lg bg-gradient-to-br from-primary/10 via-accent/10 to-success/10 border border-primary/20 mb-2">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center">
+                  <Flame className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-foreground">{t('challenges.ready_to_make_impact')}</h4>
+                  <p className="text-sm text-muted-foreground">{t('challenges.join_others')}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Award className="w-4 h-4 text-warning" />
+                <span>{challenge.pointsReward} {t('challenges.points')}</span>
+                <span className="text-muted-foreground/50">•</span>
+                <Leaf className="w-4 h-4 text-success" />
+                <span>{challenge.impact.co2Saved}kg CO₂</span>
+              </div>
+            </div>
+          )}
+          
+          {/* Progress Milestones */}
+          {userProgress?.isParticipating && !userProgress.isCompleted && (
+            <div className="w-full p-4 rounded-lg bg-primary/5 border border-primary/20 mb-2">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Target className="w-5 h-5 text-primary" />
+                  <span className="font-semibold text-foreground">{t('challenges.your_journey')}</span>
+                </div>
+                <Badge className="bg-primary/20 text-primary border-primary/30">
+                  {userProgress.completedSteps?.length || 0}/{challenge.stepsKeys.length} {t('challenges.steps')}
+                </Badge>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Sparkles className="w-4 h-4 text-warning" />
+                <span>{t('challenges.keep_going')}</span>
+              </div>
+            </div>
+          )}
+          
           {/* Action Buttons - mobile optimized */}
           <div className="flex flex-col sm:flex-row gap-3 w-full">
             {!userProgress?.isParticipating ? (
               <Button 
                 onClick={handleJoinChallenge}
-                className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth h-11 sm:h-10"
+                className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth h-12 sm:h-11 text-base font-semibold group"
               >
-                <Trophy className="w-4 h-4 mr-2" />
+                <Trophy className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
                 {t('challenges.join_challenge')}
+                <Sparkles className="w-4 h-4 ml-2 opacity-70" />
               </Button>
             ) : userProgress.isCompleted ? (
               <Button 
@@ -385,10 +474,11 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
             ) : (
               <Button 
                 onClick={handleCompleteChallenge}
-                className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth h-11 sm:h-10"
+                className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth h-12 sm:h-11 text-base font-semibold group"
               >
-                <CheckCircle className="w-4 h-4 mr-2" />
+                <CheckCircle className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
                 {t('challenges.complete_challenge')}
+                <Award className="w-4 h-4 ml-2 opacity-70" />
               </Button>
             )}
             
@@ -422,6 +512,7 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
         </CardFooter>
       </Card>
     </div>
+    </>
   );
 };
 
