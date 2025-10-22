@@ -18,6 +18,7 @@ const translationCache: Record<Language, Record<string, string>> = {} as any;
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
   if (!context) {
+    console.error('useLanguage called outside LanguageProvider - this should not happen!');
     throw new Error('useLanguage must be used within a LanguageProvider');
   }
   return context;

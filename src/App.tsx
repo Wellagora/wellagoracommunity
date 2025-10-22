@@ -23,7 +23,13 @@ import HandprintCalculatorPage from "@/pages/HandprintCalculatorPage";
 import "./index.css";
 
 function App() {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 1000 * 60 * 5, // 5 minutes
+      },
+    },
+  });
 
   return (
     <QueryClientProvider client={queryClient}>
