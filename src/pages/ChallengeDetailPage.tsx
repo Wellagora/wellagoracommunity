@@ -3,15 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import ChallengeDetail from "@/components/challenges/ChallengeDetail";
-import ChallengeCelebrationModal from "@/components/challenges/ChallengeCelebrationModal";
 import Navigation from "@/components/Navigation";
 import { getChallengeById, challenges } from "@/data/challenges";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 const ChallengeDetailPage = () => {
   const { challengeId } = useParams();
   const navigate = useNavigate();
-  const { t } = useLanguage();
   
   // Get challenge data by ID
   const challenge = challengeId ? getChallengeById(challengeId) : null;
@@ -24,23 +21,15 @@ const ChallengeDetailPage = () => {
     completedSteps: [0, 1, 2, 3]
   });
 
-  const [showCelebration, setShowCelebration] = useState(false);
-
-  // Get next challenge for suggestion
-  const currentIndex = challenges.findIndex(c => c.id === challengeId);
-  const nextChallenge = currentIndex !== -1 && currentIndex < challenges.length - 1 
-    ? challenges[currentIndex + 1] 
-    : challenges[0];
-
   if (!challenge) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <Navigation />
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">{t('challenges.challenge_not_found')}</h1>
-            <p className="text-muted-foreground mb-4">{t('challenges.challenge_not_exist')}</p>
-            <Button onClick={() => navigate("/")}>{t('challenges.back_to_home')}</Button>
+            <h1 className="text-2xl font-bold mb-4">Challenge not found</h1>
+            <p className="text-muted-foreground mb-4">This challenge does not exist</p>
+            <Button onClick={() => navigate("/challenges")}>Back to Challenges</Button>
           </div>
         </div>
       </div>
@@ -55,7 +44,6 @@ const ChallengeDetailPage = () => {
   const handleCompleteChallenge = (challengeId: string) => {
     // TODO: Implement with Supabase
     console.log("Completing challenge:", challengeId);
-    setShowCelebration(true);
   };
 
   const handleGoBack = () => {
@@ -75,7 +63,7 @@ const ChallengeDetailPage = () => {
             className="hover:bg-muted text-sm sm:text-base"
           >
             <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
-            {t('challenges.back_to_challenges')}
+            Back to Challenges
           </Button>
         </div>
 
@@ -86,15 +74,6 @@ const ChallengeDetailPage = () => {
           onComplete={handleCompleteChallenge}
         />
       </div>
-
-      <ChallengeCelebrationModal
-        isOpen={showCelebration}
-        onClose={() => setShowCelebration(false)}
-        challengeTitle={t(challenge.titleKey)}
-        pointsEarned={challenge.pointsReward}
-        co2Saved={challenge.impact.co2Saved}
-        nextChallengeId={nextChallenge?.id}
-      />
     </div>
   );
 };
