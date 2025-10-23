@@ -156,10 +156,10 @@ const Navigation = () => {
             </Link>
             <Link to="/regional-hub" className="group flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-success/10 to-warning/10 border border-success/30 rounded-lg hover:from-success/20 hover:to-warning/20 transition-all duration-300 font-medium">
               <MapPin className="w-4 h-4 text-success" />
-              <span className="hidden xl:inline">Regionális Központ</span>
-              <span className="xl:hidden">Régiók</span>
+              <span className="hidden xl:inline">{t('nav.regional_hub')}</span>
+              <span className="xl:hidden">{t('nav.regional_hub_short')}</span>
               <Badge variant="secondary" className="ml-1 bg-gradient-to-r from-success to-warning text-white text-xs px-1.5 py-0.5">
-                ÚJ
+                {t('nav.regional_hub_badge')}
               </Badge>
             </Link>
             <Link to="/dashboard" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
@@ -335,8 +335,8 @@ const Navigation = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 <MapPin className="w-5 h-5" />
-                <span className="font-medium">Regionális Központ</span>
-                <Badge variant="secondary" className="ml-auto bg-gradient-to-r from-success to-warning text-white text-xs">ÚJ</Badge>
+                <span className="font-medium">{t('nav.regional_hub')}</span>
+                <Badge variant="secondary" className="ml-auto bg-gradient-to-r from-success to-warning text-white text-xs">{t('nav.regional_hub_badge')}</Badge>
               </Link>
               
               <Link 
