@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useLanguage } from '@/contexts/LanguageContext';
 import RegionalStakeholderMap from '@/components/matching/RegionalStakeholderMap';
+import ModernRegionalVisualization from '@/components/matching/ModernRegionalVisualization';
 import StakeholderFilters from '@/components/matching/StakeholderFilters';
 import ChallengeSponsorshipModal from '@/components/challenges/ChallengeSponsorshipModal';
 import { useToast } from '@/hooks/use-toast';
@@ -364,26 +365,30 @@ const RegionalHub = () => {
                   totalCount={filteredProfiles.length}
                 />
 
-                <div className="relative rounded-2xl overflow-hidden" style={{ height: '70vh', minHeight: '500px' }}>
-                  <RegionalStakeholderMap
-                    stakeholders={filteredProfiles.map(p => ({
-                      id: p.id,
-                      name: p.name,
-                      type: p.type,
-                      organization: p.organization,
-                      location: p.location,
-                      region: p.region,
-                      city: p.city,
-                      latitude: p.latitude,
-                      longitude: p.longitude,
-                      bio: p.description,
-                      sustainability_goals: p.sustainabilityGoals,
-                      avatar: p.avatar
-                    }))}
-                    center={[selectedRegion.coordinates.lat, selectedRegion.coordinates.lng]}
-                    zoom={11}
-                  />
-                </div>
+                <ModernRegionalVisualization
+                  stakeholders={filteredProfiles.map(p => ({
+                    id: p.id,
+                    name: p.name,
+                    type: p.type,
+                    organization: p.organization,
+                    location: p.location,
+                    region: p.region,
+                    city: p.city,
+                    district: p.city,
+                    latitude: p.latitude,
+                    longitude: p.longitude,
+                    bio: p.description,
+                    sustainability_goals: p.sustainabilityGoals,
+                    avatar: p.avatar,
+                    impactScore: p.impactScore
+                  }))}
+                  onStakeholderClick={(stakeholder) => {
+                    toast({
+                      title: "Stakeholder kiválasztva",
+                      description: stakeholder.name,
+                    });
+                  }}
+                />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {filteredProfiles.map((profile) => (
