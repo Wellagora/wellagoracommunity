@@ -7,6 +7,96 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Prompt injection detection and sanitization
+const INJECTION_PATTERNS = [
+  /ignore\s+(previous|above|all)\s+(instructions?|prompts?|rules?)/i,
+  /forget\s+(previous|everything|all)/i,
+  /new\s+(instructions?|prompts?|rules?|task)/i,
+  /system\s*:/i,
+  /\[?system\]?/i,
+  /assistant\s*:/i,
+  /\[?assistant\]?/i,
+  /you\s+are\s+now/i,
+  /act\s+as/i,
+  /pretend\s+to\s+be/i,
+  /disregard/i,
+  /override/i,
+];
+
+function detectPromptInjection(text: string): boolean {
+  if (!text || typeof text !== 'string') return false;
+  return INJECTION_PATTERNS.some(pattern => pattern.test(text));
+}
+
+function sanitizeInput(input: string, maxLength: number): string {
+  if (!input || typeof input !== 'string') return '';
+  
+  // Remove control characters and normalize whitespace
+  let sanitized = input
+    .replace(/[\x00-\x1F\x7F]/g, '') // Remove control chars
+    .replace(/\s+/g, ' ') // Normalize whitespace
+    .trim();
+  
+  // Truncate to max length
+  sanitized = sanitized.substring(0, maxLength);
+  
+  return sanitized;
+}
+
+function validateAndSanitizeInputs(userProfile: any, regionalData: any): { 
+  sanitized: { userProfile: any, regionalData: any }, 
+  blocked: boolean,
+  reason?: string 
+} {
+  const fieldsToCheck: string[] = [];
+  
+  // Collect all text fields for injection detection
+  if (userProfile) {
+    if (userProfile.type) fieldsToCheck.push(userProfile.type);
+    if (userProfile.location?.city) fieldsToCheck.push(userProfile.location.city);
+    if (userProfile.location?.region) fieldsToCheck.push(userProfile.location.region);
+    if (userProfile.interests) fieldsToCheck.push(...userProfile.interests);
+    if (userProfile.skillLevel) fieldsToCheck.push(userProfile.skillLevel);
+  }
+  
+  if (regionalData) {
+    if (regionalData.climate) fieldsToCheck.push(regionalData.climate);
+    if (regionalData.infrastructure) fieldsToCheck.push(regionalData.infrastructure);
+    if (regionalData.localIssues) fieldsToCheck.push(...regionalData.localIssues);
+  }
+  
+  // Check for injection patterns
+  for (const field of fieldsToCheck) {
+    if (detectPromptInjection(field)) {
+      return { 
+        sanitized: { userProfile: {}, regionalData: {} }, 
+        blocked: true,
+        reason: 'Potential prompt injection detected in input' 
+      };
+    }
+  }
+  
+  // Sanitize all inputs
+  const sanitized = {
+    userProfile: userProfile ? {
+      type: sanitizeInput(userProfile.type || '', 50),
+      location: {
+        city: sanitizeInput(userProfile.location?.city || '', 100),
+        region: sanitizeInput(userProfile.location?.region || '', 100),
+      },
+      interests: (userProfile.interests || []).map((i: string) => sanitizeInput(i, 100)).filter(Boolean),
+      skillLevel: sanitizeInput(userProfile.skillLevel || '', 50),
+    } : {},
+    regionalData: regionalData ? {
+      climate: sanitizeInput(regionalData.climate || '', 100),
+      infrastructure: sanitizeInput(regionalData.infrastructure || '', 100),
+      localIssues: (regionalData.localIssues || []).map((i: string) => sanitizeInput(i, 200)).filter(Boolean),
+    } : {},
+  };
+  
+  return { sanitized, blocked: false };
+}
+
 // Validation schemas
 const categorySchema = z.enum([
   'energy', 'transport', 'food', 'waste', 'community', 
@@ -82,6 +172,22 @@ serve(async (req) => {
       difficulty 
     });
 
+    // Check for prompt injection and sanitize inputs
+    const { sanitized, blocked, reason } = validateAndSanitizeInputs(userProfile, regionalData);
+    
+    if (blocked) {
+      console.warn('[GENERATE-CHALLENGE] Blocked potential injection:', reason);
+      return new Response(JSON.stringify({ 
+        error: 'Invalid input detected',
+        code: 'INVALID_INPUT'
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    console.log('[GENERATE-CHALLENGE] Inputs sanitized successfully');
+
     // Build AI prompt based on user data
     const systemPrompt = `Te egy fenntarthatósági kihívás generátor vagy a Wellagora platformhoz.
 A Wellagora mottója: "Together we thrive" - közösen építjük a pozitív környezeti hatást (handprint).
@@ -99,15 +205,15 @@ FONTOS SZABÁLYOK:
     const userPrompt = `Generálj egy fenntarthatósági kihívást az alábbi paraméterek alapján:
 
 FELHASZNÁLÓI PROFIL:
-- Típus: ${(userProfile?.type || 'citizen').substring(0, 50)}
-- Lokáció: ${(userProfile?.location?.city || 'Budapest').substring(0, 100)}, ${(userProfile?.location?.region || 'Magyarország').substring(0, 100)}
-- Érdeklődési területek: ${(userProfile?.interests?.join(', ') || 'általános fenntarthatóság').substring(0, 500)}
-- Szint: ${(userProfile?.skillLevel || 'kezdő').substring(0, 50)}
+- Típus: ${sanitized.userProfile.type || 'citizen'}
+- Lokáció: ${sanitized.userProfile.location?.city || 'Budapest'}, ${sanitized.userProfile.location?.region || 'Magyarország'}
+- Érdeklődési területek: ${sanitized.userProfile.interests?.join(', ') || 'általános fenntarthatóság'}
+- Szint: ${sanitized.userProfile.skillLevel || 'kezdő'}
 
 REGIONÁLIS KONTEXTUS:
-- Időjárás: ${(regionalData?.climate || 'mérsékelt').substring(0, 100)}
-- Infrastruktúra: ${(regionalData?.infrastructure || 'városi').substring(0, 100)}
-- Helyi problémák: ${(regionalData?.localIssues?.join(', ') || 'nincs megadva').substring(0, 500)}
+- Időjárás: ${sanitized.regionalData.climate || 'mérsékelt'}
+- Infrastruktúra: ${sanitized.regionalData.infrastructure || 'városi'}
+- Helyi problémák: ${sanitized.regionalData.localIssues?.join(', ') || 'nincs megadva'}
 
 KIHÍVÁS PARAMÉTEREI:
 - Kategória: ${category || 'bármilyen'}
