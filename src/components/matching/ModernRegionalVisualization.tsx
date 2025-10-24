@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { 
   Users, 
   Building2, 
@@ -43,13 +44,14 @@ const ModernRegionalVisualization = ({
 }: ModernRegionalVisualizationProps) => {
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [hoveredStakeholder, setHoveredStakeholder] = useState<string | null>(null);
+  const { t } = useLanguage();
 
   const getTypeInfo = (type: string) => {
     switch (type) {
       case 'citizen':
         return {
           icon: Users,
-          label: 'Magánszemély',
+          label: t('matching.type.citizen'),
           color: 'from-emerald-500 to-teal-500',
           bgGlow: 'shadow-emerald-500/20',
           textColor: 'text-emerald-400',
@@ -58,7 +60,7 @@ const ModernRegionalVisualization = ({
       case 'business':
         return {
           icon: Building2,
-          label: 'Cég',
+          label: t('matching.type.business'),
           color: 'from-blue-500 to-cyan-500',
           bgGlow: 'shadow-blue-500/20',
           textColor: 'text-blue-400',
@@ -67,7 +69,7 @@ const ModernRegionalVisualization = ({
       case 'government':
         return {
           icon: Landmark,
-          label: 'Önkormányzat',
+          label: t('matching.type.government'),
           color: 'from-red-500 to-rose-500',
           bgGlow: 'shadow-red-500/20',
           textColor: 'text-red-400',
@@ -76,7 +78,7 @@ const ModernRegionalVisualization = ({
       case 'ngo':
         return {
           icon: Heart,
-          label: 'Civil szervezet',
+          label: t('matching.type.ngo'),
           color: 'from-amber-500 to-orange-500',
           bgGlow: 'shadow-amber-500/20',
           textColor: 'text-amber-400',
@@ -85,7 +87,7 @@ const ModernRegionalVisualization = ({
       default:
         return {
           icon: Target,
-          label: 'Egyéb',
+          label: t('matching.type.other'),
           color: 'from-gray-500 to-slate-500',
           bgGlow: 'shadow-gray-500/20',
           textColor: 'text-gray-400',
@@ -165,7 +167,7 @@ const ModernRegionalVisualization = ({
                   <div className="mt-4 flex items-center gap-2">
                     <TrendingUp className={`w-4 h-4 ${info.textColor}`} />
                     <span className={`text-sm ${info.textColor}`}>
-                      {Math.round((count / stakeholders.length) * 100)}% részesedés
+                      {Math.round((count / stakeholders.length) * 100)}% {t('matching.share')}
                     </span>
                   </div>
                 </CardContent>
@@ -180,7 +182,7 @@ const ModernRegionalVisualization = ({
         <CardContent className="p-6">
           <div className="flex items-center gap-2 mb-4">
             <Sparkles className="w-5 h-5 text-primary" />
-            <h3 className="text-lg font-semibold">Top területek aktivitás szerint</h3>
+            <h3 className="text-lg font-semibold">{t('matching.top_districts')}</h3>
           </div>
           
           <div className="space-y-3">
@@ -200,7 +202,7 @@ const ModernRegionalVisualization = ({
                       <span className="font-medium">{district}</span>
                     </div>
                     <span className="text-sm text-muted-foreground">
-                      {count} érdeklődő ({percentage.toFixed(1)}%)
+                      {count} {t('matching.stakeholder')} ({percentage.toFixed(1)}%)
                     </span>
                   </div>
                   <div className="relative h-2 bg-muted rounded-full overflow-hidden">
@@ -224,7 +226,7 @@ const ModernRegionalVisualization = ({
           <h3 className="text-lg font-semibold">
             {selectedType 
               ? `${getTypeInfo(selectedType).label} (${filteredStakeholders.length})`
-              : `Összes érdeklődő (${stakeholders.length})`
+              : `${t('matching.all_stakeholders')} (${stakeholders.length})`
             }
           </h3>
           {selectedType && (
@@ -233,7 +235,7 @@ const ModernRegionalVisualization = ({
               size="sm"
               onClick={() => setSelectedType(null)}
             >
-              Összes megjelenítése
+              {t('matching.show_all')}
             </Button>
           )}
         </div>
@@ -340,7 +342,7 @@ const ModernRegionalVisualization = ({
         {filteredStakeholders.length > 12 && (
           <div className="text-center">
             <Button variant="outline" size="lg">
-              További {filteredStakeholders.length - 12} érdeklődő betöltése
+              {t('matching.load_more').replace('{count}', String(filteredStakeholders.length - 12))}
             </Button>
           </div>
         )}
