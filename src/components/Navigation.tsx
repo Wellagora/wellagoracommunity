@@ -21,7 +21,9 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useProject } from "@/contexts/ProjectContext";
 import LanguageSelector from "./LanguageSelector";
+import { ProjectSelector } from "./ProjectSelector";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -29,6 +31,7 @@ const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, profile, signOut } = useAuth();
   const { t } = useLanguage();
+  const { currentProject } = useProject();
   const [hasAdminAccess, setHasAdminAccess] = useState(false);
 
   // Check if user has admin access - SECURITY: Server-side verification
@@ -190,6 +193,7 @@ const Navigation = () => {
           <div className="flex items-center space-x-4">
             {user ? (
               <div className="flex items-center space-x-4">
+                {currentProject && <ProjectSelector />}
                 <Link 
                   to="/profile" 
                   className="flex items-center space-x-3 px-4 py-2 bg-gradient-to-r from-card/80 to-background/80 backdrop-blur-sm rounded-xl border border-border hover:from-card hover:to-background/90 transition-all duration-300"
@@ -248,6 +252,16 @@ const Navigation = () => {
               >
                 <Shield className="w-4 h-4" />
                 <span className="text-sm">{t('nav.admin_dashboard')}</span>
+              </Link>
+            )}
+            
+            {user && currentProject && (
+              <Link
+                to="/project-admin"
+                className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-xl hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent"
+              >
+                <Building2 className="w-4 h-4" />
+                <span className="text-sm">Projekt Admin</span>
               </Link>
             )}
                 </div>

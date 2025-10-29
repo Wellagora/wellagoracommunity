@@ -56,17 +56,17 @@ const Index = () => {
           
           {/* Main Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center mb-6 sm:mb-8 px-4">
-            <Link to="/challenges" className="w-full sm:w-auto">
+            <Link to="/projects" className="w-full sm:w-auto">
               <Button size="lg" className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300">
+                Csatlakozz egy projekthez
+              </Button>
+            </Link>
+            <Link to="/challenges" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="w-full border-2 border-primary hover:bg-primary hover:text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold transition-all duration-300">
                 {t('index.cta_start_challenge')}
               </Button>
             </Link>
-            <Link to="/auth" className="w-full sm:w-auto">
-              <Button size="lg" variant="outline" className="w-full border-2 border-primary hover:bg-primary hover:text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold transition-all duration-300">
-                {t('index.cta_join_now')}
-              </Button>
-            </Link>
-            <Link to="/dynamic-regional" className="w-full sm:w-auto">
+            <Link to="/regional-hub" className="w-full sm:w-auto">
               <Button size="lg" variant="outline" className="w-full border-2 border-primary hover:bg-primary hover:text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold transition-all duration-300">
                 {t('index.cta_explore_region')}
               </Button>

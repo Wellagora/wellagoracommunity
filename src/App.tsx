@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
+import { ProjectProvider } from "@/contexts/ProjectContext";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import RegionalHub from './pages/RegionalHub';
@@ -22,6 +23,8 @@ import AdminDashboardPage from "@/pages/AdminDashboardPage";
 import HandprintCalculatorPage from "@/pages/HandprintCalculatorPage";
 import SponsorDashboardPage from "@/pages/SponsorDashboardPage";
 import ProjectAdminPage from "@/pages/ProjectAdminPage";
+import JoinProjectPage from "@/pages/JoinProjectPage";
+import ProjectsListPage from "@/pages/ProjectsListPage";
 import "./index.css";
 
 function App() {
@@ -38,7 +41,8 @@ function App() {
       <AuthProvider>
         <SubscriptionProvider>
           <LanguageProvider>
-            <BrowserRouter>
+            <ProjectProvider>
+              <BrowserRouter>
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<AuthPage />} />
@@ -61,10 +65,13 @@ function App() {
                 <Route path="/business-sponsorship" element={<BusinessSponsorshipPage />} />
                 <Route path="/sponsor-dashboard" element={<SponsorDashboardPage />} />
                 <Route path="/project-admin" element={<ProjectAdminPage />} />
+                <Route path="/projects" element={<ProjectsListPage />} />
+                <Route path="/join/:projectSlug" element={<JoinProjectPage />} />
               </Routes>
               <Toaster />
               <SonnerToaster />
-            </BrowserRouter>
+              </BrowserRouter>
+            </ProjectProvider>
           </LanguageProvider>
         </SubscriptionProvider>
       </AuthProvider>
