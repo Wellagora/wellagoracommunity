@@ -163,12 +163,14 @@ const Navigation = () => {
                 {t('nav.regional_hub_badge')}
               </Badge>
             </Link>
-            <Link to="/dashboard" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
-              <span className="relative">
-                {t('nav.dashboard')}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
-              </span>
-            </Link>
+            {user && profile?.user_role === "citizen" && (
+              <Link to="/dashboard" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
+                <span className="relative">
+                  {t('nav.dashboard')}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
+                </span>
+              </Link>
+            )}
             {user && profile?.user_role !== "citizen" && (
               <Link to="/organization" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
                 <Building2 className="w-4 h-4" />
@@ -220,33 +222,22 @@ const Navigation = () => {
                     <span className="text-sm font-medium">{t('nav.edit_profile')}</span>
                   </Link>
                   
-            {profile?.user_role !== "citizen" && (
+            {(profile?.user_role === 'business' || profile?.email === 'attila.kelemen@proself.org') && (
               <>
                 <Link
-                  to="/organization"
-                  className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-xl hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent-foreground"
+                  to="/business-sponsorship"
+                  className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-primary/20 to-success/20 border border-primary/30 rounded-xl hover:from-primary/30 hover:to-success/30 transition-all duration-300 font-medium text-primary"
                 >
-                  <Building2 className="w-4 h-4" />
-                   <span className="text-sm">{t('nav.organization_label')}</span>
+                  <CreditCard className="w-4 h-4" />
+                  <span className="text-sm">{t('nav.sponsorship_label')}</span>
                 </Link>
-                {(profile?.user_role === 'business' || profile?.email === 'attila.kelemen@proself.org') && (
-                  <>
-                    <Link
-                      to="/business-sponsorship"
-                      className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-primary/20 to-success/20 border border-primary/30 rounded-xl hover:from-primary/30 hover:to-success/30 transition-all duration-300 font-medium text-primary"
-                    >
-                      <CreditCard className="w-4 h-4" />
-                      <span className="text-sm">{t('nav.sponsorship_label')}</span>
-                    </Link>
-                    <Link
-                      to="/sponsor-dashboard"
-                      className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-warning/20 to-accent/20 border border-warning/30 rounded-xl hover:from-warning/30 hover:to-accent/30 transition-all duration-300 font-medium text-warning"
-                    >
-                      <Coins className="w-4 h-4" />
-                      <span className="text-sm">{t('nav.sponsor_dashboard')}</span>
-                    </Link>
-                  </>
-                )}
+                <Link
+                  to="/sponsor-dashboard"
+                  className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-warning/20 to-accent/20 border border-warning/30 rounded-xl hover:from-warning/30 hover:to-accent/30 transition-all duration-300 font-medium text-warning"
+                >
+                  <Coins className="w-4 h-4" />
+                  <span className="text-sm">{t('nav.sponsor_dashboard')}</span>
+                </Link>
               </>
             )}
             
@@ -349,14 +340,27 @@ const Navigation = () => {
                 <Badge variant="secondary" className="ml-auto bg-gradient-to-r from-success to-warning text-white text-xs">{t('nav.regional_hub_badge')}</Badge>
               </Link>
               
-              <Link 
-                to="/dashboard" 
-                className="flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <span className="text-lg">📊</span>
-                <span className="font-medium">{t('nav.dashboard')}</span>
-              </Link>
+              {profile?.user_role === "citizen" && (
+                <Link 
+                  to="/dashboard" 
+                  className="flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <span className="text-lg">📊</span>
+                  <span className="font-medium">{t('nav.dashboard')}</span>
+                </Link>
+              )}
+              
+              {profile?.user_role !== "citizen" && (
+                <Link 
+                  to="/organization" 
+                  className="flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Building2 className="w-5 h-5" />
+                  <span className="font-medium">{t('nav.organization_label')}</span>
+                </Link>
+              )}
               
               <Link 
                 to="/ai-assistant" 
@@ -378,16 +382,6 @@ const Navigation = () => {
               {/* Additional Actions for Logged in Users */}
               {user && (
                 <div className="pt-3 mt-3 border-t border-border space-y-2">
-                  {profile?.user_role !== "citizen" && (
-                    <Link 
-                      to="/organization"
-                      className="flex items-center space-x-3 px-3 py-2.5 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-xl"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <Building2 className="w-5 h-5" />
-                      <span className="font-medium">{t('nav.organization_label')}</span>
-                    </Link>
-                  )}
                   
                   {hasAdminAccess && (
                     <Link 
