@@ -13,8 +13,8 @@ interface SubscriptionContextType {
 }
 
 const packageTiers = {
-  small: {
-    name: 'Kis Vállalat',
+  bronze: {
+    name: 'Bronz',
     priceHuf: 100000,
     priceEur: 250,
     currency: 'HUF/EUR',
@@ -30,8 +30,8 @@ const packageTiers = {
       'Email támogatás'
     ]
   },
-  medium: {
-    name: 'Közepes Vállalat',
+  silver: {
+    name: 'Ezüst',
     priceHuf: 250000,
     priceEur: 625,
     currency: 'HUF/EUR',
@@ -49,8 +49,8 @@ const packageTiers = {
       'Co-sponsorship lehetőség'
     ]
   },
-  large: {
-    name: 'Nagyvállalat',
+  gold: {
+    name: 'Arany',
     priceHuf: 500000,
     priceEur: 1250,
     currency: 'HUF/EUR',
@@ -70,8 +70,8 @@ const packageTiers = {
       'Stratégiai konzultáció'
     ]
   },
-  enterprise: {
-    name: 'Enterprise',
+  diamond: {
+    name: 'Gyémánt',
     priceHuf: 1000000,
     priceEur: 2500,
     currency: 'HUF/EUR',

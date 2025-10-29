@@ -28,7 +28,7 @@ const BusinessSponsorshipPage = () => {
   const { createCheckout, packageTiers } = useSubscription();
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'overview' | 'dashboard' | 'marketplace'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'dashboard'>('overview');
 
   // Mock sponsored challenges data
   const sponsoredChallenges = [
@@ -133,15 +133,6 @@ const BusinessSponsorshipPage = () => {
           >
             <span className="hidden sm:inline">{t('business_sponsorship.tab_dashboard')}</span>
             <span className="sm:hidden">{t('business_sponsorship.tab_dashboard_short')}</span>
-          </Button>
-          <Button
-            variant={activeTab === 'marketplace' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => setActiveTab('marketplace')}
-            className="flex-1 text-xs sm:text-sm"
-          >
-            <span className="hidden sm:inline">{t('business_sponsorship.tab_marketplace')}</span>
-            <span className="sm:hidden">{t('business_sponsorship.tab_marketplace_short')}</span>
           </Button>
         </div>
 
@@ -261,7 +252,7 @@ const BusinessSponsorshipPage = () => {
                 </div>
                 
                 <div className="mt-6 text-center">
-                  <Button onClick={() => setActiveTab('marketplace')} className="bg-gradient-to-r from-primary to-success">
+                  <Button onClick={() => setActiveTab('dashboard')} className="bg-gradient-to-r from-primary to-success">
                     <Plus className="w-4 h-4 mr-2" />
                     {t('business_sponsorship.sponsor_new')}
                   </Button>
@@ -272,10 +263,6 @@ const BusinessSponsorshipPage = () => {
         )}
 
         {activeTab === 'dashboard' && (
-          <SponsorshipDashboard companyId={profile?.organization_id || 'company-1'} />
-        )}
-
-        {activeTab === 'marketplace' && (
           <div className="space-y-6">
             {/* Sponsorship Packages */}
             <Card>
@@ -293,108 +280,7 @@ const BusinessSponsorshipPage = () => {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Target className="w-5 h-5 mr-2" />
-                  {t('business_sponsorship.marketplace_title')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground mb-6">
-                  {t('business_sponsorship.marketplace_desc')}
-                </p>
-                
-                {/* Available Challenges */}
-                <div className="grid md:grid-cols-2 gap-6">
-                  {[
-                    {
-                      title: 'Városi Kerékpározás Kihívás',
-                      description: 'Ösztönözd a fenntartható közlekedést a városban',
-                      category: 'Közlekedés',
-                      estimatedParticipants: 500,
-                      requiredCredits: 20000,
-                      potentialImpact: '1,200 kg CO₂'
-                    },
-                    {
-                      title: 'Zéró Hulladék Iroda',
-                      description: 'Segíts irodáknak elérni a zero waste célt',
-                      category: 'Hulladék',
-                      estimatedParticipants: 300,
-                      requiredCredits: 15000,
-                      potentialImpact: '800 kg CO₂'
-                    },
-                    {
-                      title: 'Helyi Élelmiszer Kihívás',
-                      description: 'Támogasd a helyi termelőket és csökkentsd a szállítási lábnyomot',
-                      category: 'Élelmiszer',
-                      estimatedParticipants: 700,
-                      requiredCredits: 25000,
-                      potentialImpact: '1,500 kg CO₂'
-                    }
-                  ].map((challenge, index) => (
-                    <Card key={index} className="border-2 border-dashed border-border hover:border-primary/50 transition-colors">
-                      <CardContent className="p-6">
-                        <div className="space-y-4">
-                          <div>
-                            <h3 className="font-semibold text-lg mb-2">{challenge.title}</h3>
-                            <p className="text-muted-foreground text-sm mb-3">{challenge.description}</p>
-                            <Badge variant="outline">{challenge.category}</Badge>
-                          </div>
-                          
-                          <div className="space-y-2 text-sm">
-                            <div className="flex justify-between">
-                              <span>{t('business_sponsorship.estimated_participants')}</span>
-                              <span className="font-medium">{challenge.estimatedParticipants.toLocaleString()}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span>{t('business_sponsorship.required_credits')}</span>
-                              <span className="font-medium">{challenge.requiredCredits.toLocaleString()}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span>{t('business_sponsorship.potential_impact')}</span>
-                              <span className="font-medium text-success">{challenge.potentialImpact}</span>
-                            </div>
-                          </div>
-                          
-                          <Button 
-                            variant="outline" 
-                            className="w-full"
-                            onClick={() => {
-                              // Mock sponsorship initiation - show available packages
-                              const packageKeys = Object.keys(packageTiers);
-                              const randomPackage = packageKeys[Math.floor(Math.random() * packageKeys.length)];
-                              const tier = packageTiers[randomPackage as keyof typeof packageTiers];
-                              if (confirm(`Szponzorálás a ${tier.name} csomaggal (${tier.priceHuf.toLocaleString()} HUF / ${tier.priceEur} EUR)?`)) {
-                                createCheckout(tier.price_id);
-                              }
-                            }}
-                          >
-                            <CreditCard className="w-4 h-4 mr-2" />
-                            {t('business_sponsorship.start_sponsorship')}
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-                
-                <div className="mt-8 text-center">
-                  <Card className="bg-gradient-to-r from-accent/10 to-secondary/10 border-accent/20">
-                    <CardContent className="p-6">
-                      <h3 className="font-semibold mb-3">{t('business_sponsorship.create_custom')}</h3>
-                      <p className="text-muted-foreground mb-4">
-                        {t('business_sponsorship.create_custom_desc')}
-                      </p>
-                      <Button className="bg-gradient-to-r from-accent to-secondary">
-                        <Sparkles className="w-4 h-4 mr-2" />
-                        {t('business_sponsorship.contact_sales')}
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </div>
-              </CardContent>
-            </Card>
+            <SponsorshipDashboard companyId={profile?.organization_id || 'company-1'} />
           </div>
         )}
       </div>
