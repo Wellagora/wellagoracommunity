@@ -20,10 +20,10 @@ const SponsorshipPackageSelector: React.FC = () => {
 
   const getPackageGradient = (tier: string) => {
     switch (tier) {
-      case 'bronze': return 'from-amber-50 to-orange-50 border-amber-200';
-      case 'silver': return 'from-gray-50 to-slate-50 border-gray-300';
-      case 'gold': return 'from-yellow-50 to-amber-50 border-yellow-300';
-      case 'diamond': return 'from-purple-50 to-pink-50 border-purple-300';
+      case 'bronze': return 'from-orange-400/20 via-amber-500/20 to-orange-400/20 border-amber-400/50 shadow-lg shadow-amber-500/20';
+      case 'silver': return 'from-slate-400/20 via-gray-300/20 to-slate-400/20 border-slate-400/50 shadow-lg shadow-slate-400/20';
+      case 'gold': return 'from-yellow-400/20 via-amber-300/20 to-yellow-400/20 border-yellow-400/50 shadow-lg shadow-yellow-500/20';
+      case 'diamond': return 'from-purple-400/20 via-pink-400/20 to-purple-400/20 border-purple-400/50 shadow-lg shadow-purple-500/20';
       default: return 'from-gray-50 to-gray-100 border-gray-200';
     }
   };
@@ -44,9 +44,9 @@ const SponsorshipPackageSelector: React.FC = () => {
         {Object.entries(packageTiers).map(([key, tier]) => (
         <Card 
           key={key} 
-          className={`relative bg-gradient-to-br ${getPackageGradient(key)} ${
-            isCurrentPackage(key) ? 'ring-2 ring-primary shadow-lg' : ''
-          }`}
+          className={`relative overflow-hidden bg-gradient-to-br ${getPackageGradient(key)} ${
+            isCurrentPackage(key) ? 'ring-2 ring-primary' : ''
+          } hover:scale-105 transition-all duration-300`}
         >
           {isCurrentPackage(key) && (
             <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-primary text-white">
@@ -54,34 +54,44 @@ const SponsorshipPackageSelector: React.FC = () => {
             </Badge>
           )}
           
-          <CardHeader className="text-center pb-2">
-            <div className="flex justify-center mb-2">
-              {getPackageIcon(key)}
+          <CardHeader className="text-center pb-2 relative z-10">
+            <div className="flex justify-center mb-3">
+              <div className="p-3 rounded-full bg-gradient-to-br from-primary/20 to-success/20">
+                {getPackageIcon(key)}
+              </div>
             </div>
-            <CardTitle className="text-xl">{tier.name}</CardTitle>
-            <div className="text-2xl font-bold text-primary">
-              {tier.priceHuf.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">HUF</span>
+            <CardTitle className="text-2xl font-bold mb-2">{tier.name}</CardTitle>
+            <div className="space-y-1">
+              <div className="text-3xl font-bold bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
+                {tier.priceHuf.toLocaleString()} <span className="text-xl">HUF</span>
+              </div>
+              <div className="text-xl font-semibold text-foreground">
+                {tier.priceEur} <span className="text-base">EUR</span>
+              </div>
+              <div className="inline-block px-4 py-1 bg-gradient-to-r from-primary to-success rounded-full mt-2">
+                <p className="text-sm font-bold text-white">
+                  {tier.credits} kredit
+                </p>
+              </div>
             </div>
-            <div className="text-lg font-semibold text-secondary">
-              {tier.priceEur} <span className="text-sm font-normal text-muted-foreground">EUR</span>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              {tier.credits} kredit
-            </p>
           </CardHeader>
           
-          <CardContent className="pt-4">
-            <ul className="space-y-2 mb-6">
+          <CardContent className="pt-4 relative z-10">
+            <ul className="space-y-2 mb-6 min-h-[200px]">
               {tier.features.map((feature, index) => (
-                <li key={index} className="text-sm text-muted-foreground">
-                  • {feature}
+                <li key={index} className="text-sm font-medium text-foreground flex items-start">
+                  <span className="text-primary mr-2">✓</span>
+                  <span>{feature}</span>
                 </li>
               ))}
             </ul>
             
             <Button 
-              className="w-full" 
-              variant={isCurrentPackage(key) ? "outline" : "default"}
+              className={`w-full font-bold ${
+                isCurrentPackage(key) 
+                  ? 'bg-gradient-to-r from-success to-primary' 
+                  : 'bg-gradient-to-r from-primary to-success hover:shadow-xl'
+              }`}
               disabled={isCurrentPackage(key)}
               onClick={() => {
                 if (!isCurrentPackage(key)) {

@@ -21,7 +21,6 @@ const packageTiers = {
     credits: 2,
     price_id: MockPaymentService.PRICE_IDS.small,
     product_id: MockPaymentService.PRODUCT_IDS.small,
-    idealFor: '10-50 fő',
     features: [
       '2 challenge kampány',
       '50-100 fő elérés kampányonként',
@@ -38,7 +37,6 @@ const packageTiers = {
     credits: 5,
     price_id: MockPaymentService.PRICE_IDS.medium,
     product_id: MockPaymentService.PRODUCT_IDS.medium,
-    idealFor: '50-250 fő',
     features: [
       '5 challenge kampány',
       '50-100 fő elérés kampányonként',
@@ -57,7 +55,6 @@ const packageTiers = {
     credits: 10,
     price_id: MockPaymentService.PRICE_IDS.large,
     product_id: MockPaymentService.PRODUCT_IDS.large,
-    idealFor: '250-1000+ fő',
     features: [
       '10 challenge kampány',
       '50-100 fő elérés kampányonként',
@@ -78,7 +75,6 @@ const packageTiers = {
     credits: 20,
     price_id: MockPaymentService.PRICE_IDS.enterprise,
     product_id: MockPaymentService.PRODUCT_IDS.enterprise,
-    idealFor: '1000+ fő',
     features: [
       '20+ challenge kampány',
       'Korlátlan elérés',
