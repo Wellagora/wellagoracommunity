@@ -23,10 +23,10 @@ const packageTiers = {
     product_id: MockPaymentService.PRODUCT_IDS.small,
     idealFor: '10-50 fő',
     features: [
-      '2 challenge kampány/hónap',
+      '2 challenge kampány',
       '50-100 fő elérés kampányonként',
       'Logo megjelenítés challenge cardon',
-      'Havi impact riport',
+      'Impact riportok',
       'Email támogatás'
     ]
   },
@@ -40,10 +40,10 @@ const packageTiers = {
     product_id: MockPaymentService.PRODUCT_IDS.medium,
     idealFor: '50-250 fő',
     features: [
-      '5 challenge kampány/hónap',
+      '5 challenge kampány',
       '50-100 fő elérés kampányonként',
       'Kiterjesztett branding',
-      'Heti impact riportok',
+      'Impact riportok',
       'Prioritás email támogatás',
       'Social media említések',
       'Co-sponsorship lehetőség'
@@ -59,7 +59,7 @@ const packageTiers = {
     product_id: MockPaymentService.PRODUCT_IDS.large,
     idealFor: '250-1000+ fő',
     features: [
-      '10 challenge kampány/hónap',
+      '10 challenge kampány',
       '50-100 fő elérés kampányonként',
       'Prémium logo elhelyezés',
       'Dedikált account manager',
@@ -67,7 +67,7 @@ const packageTiers = {
       'Egyedi challenge létrehozás',
       'Haladó analytics dashboard',
       'Employee engagement program',
-      'Havi stratégiai konzultáció'
+      'Stratégiai konzultáció'
     ]
   },
   enterprise: {
@@ -80,7 +80,7 @@ const packageTiers = {
     product_id: MockPaymentService.PRODUCT_IDS.enterprise,
     idealFor: '1000+ fő',
     features: [
-      '20+ challenge kampány/hónap',
+      '20+ challenge kampány',
       'Korlátlan elérés',
       'Teljes márka integráció',
       'Dedikált success team',
