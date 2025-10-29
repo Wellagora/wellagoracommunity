@@ -953,6 +953,7 @@
   "sponsor.view_analytics": "Analitika Megtekintése",
   "sponsor.manage": "Kezelés",
   "sponsor.buy_credits": "Creditek Vásárlása",
+  "sponsor.choose_package": "Válassz Csomagot",
   "sponsor.stripe_coming_soon": "Stripe integráció - Hamarosan elérhető!",
   "sponsor.access_denied": "Hozzáférés Megtagadva",
   "sponsor.sponsor_only": "Ez az oldal csak üzleti szponzorok számára érhető el",

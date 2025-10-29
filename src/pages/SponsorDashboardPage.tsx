@@ -1,16 +1,21 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, X } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import SponsorCreditsOverview from '@/components/sponsor/SponsorCreditsOverview';
 import SponsorTransactionHistory from '@/components/sponsor/SponsorTransactionHistory';
 import SponsorActiveSponsorships from '@/components/sponsor/SponsorActiveSponsorships';
+import SponsorshipPackageSelector from '@/components/business/SponsorshipPackageSelector';
 
 const SponsorDashboardPage = () => {
   const navigate = useNavigate();
   const { user, profile } = useAuth();
   const { t } = useLanguage();
+  const [showPackages, setShowPackages] = useState(false);
 
   // Check if user is a business/sponsor type
   const isSponsor = profile?.user_role && ['business', 'government', 'ngo'].includes(profile.user_role);
@@ -65,10 +70,7 @@ const SponsorDashboardPage = () => {
           </div>
           <Button
             className="bg-gradient-primary hover:shadow-glow"
-            onClick={() => {
-              // TODO: Navigate to credit purchase page
-              alert(t('sponsor.stripe_coming_soon'));
-            }}
+            onClick={() => setShowPackages(true)}
           >
             <ShoppingCart className="w-4 h-4 mr-2" />
             {t('sponsor.buy_credits')}
@@ -90,6 +92,20 @@ const SponsorDashboardPage = () => {
           <SponsorTransactionHistory />
         </div>
       </div>
+
+      {/* Package Selection Dialog */}
+      <Dialog open={showPackages} onOpenChange={setShowPackages}>
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold">
+              {t('sponsor.choose_package')}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="mt-4">
+            <SponsorshipPackageSelector />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

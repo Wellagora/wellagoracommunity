@@ -16,7 +16,6 @@ import ChallengesPage from "@/pages/ChallengesPage";
 import ChallengeDetailPage from "@/pages/ChallengeDetailPage";
 import ProfilePage from "@/pages/ProfilePage";
 import OrganizationDashboard from "@/pages/OrganizationDashboard";
-import BusinessSponsorshipPage from "@/pages/BusinessSponsorshipPage";
 import HandprintPage from "@/pages/HandprintPage";
 import PublicOrganizationPage from "@/pages/PublicOrganizationPage";
 import AdminDashboardPage from "@/pages/AdminDashboardPage";
@@ -62,7 +61,6 @@ function App() {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/organization" element={<OrganizationDashboard />} />
                 <Route path="/organization/:organizationId" element={<PublicOrganizationPage />} />
-                <Route path="/business-sponsorship" element={<BusinessSponsorshipPage />} />
                 <Route path="/sponsor-dashboard" element={<SponsorDashboardPage />} />
                 <Route path="/project-admin" element={<ProjectAdminPage />} />
                 <Route path="/projects" element={<ProjectsListPage />} />
