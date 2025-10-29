@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '@/components/Navigation';
 import SponsorshipDashboard from '@/components/business/SponsorshipDashboard';
@@ -25,6 +26,7 @@ import {
 const BusinessSponsorshipPage = () => {
   const { user, profile } = useAuth();
   const { createCheckout, packageTiers } = useSubscription();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'overview' | 'dashboard' | 'marketplace'>('overview');
 
@@ -60,12 +62,12 @@ const BusinessSponsorshipPage = () => {
           <Card>
             <CardContent className="p-8">
               <Building2 className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-              <h2 className="text-2xl font-bold mb-4">Üzleti Szponzoráció</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('business_sponsorship.login_title')}</h2>
               <p className="text-muted-foreground mb-6">
-                Jelentkezz be vállalati szponzorációs lehetőségek eléréséhez
+                {t('business_sponsorship.login_desc')}
               </p>
               <Button onClick={() => navigate('/auth')} className="bg-gradient-to-r from-primary to-success">
-                Bejelentkezés
+                {t('business_sponsorship.login_button')}
               </Button>
             </CardContent>
           </Card>
@@ -82,8 +84,7 @@ const BusinessSponsorshipPage = () => {
           <Alert>
             <Building2 className="h-4 w-4" />
             <AlertDescription>
-              Ez a funkció csak vállalati felhasználók számára érhető el. 
-              Váltsd át a profil típusodat vállalkozásra a beállításokban.
+              {t('business_sponsorship.access_denied')}
             </AlertDescription>
           </Alert>
         </div>
@@ -101,15 +102,15 @@ const BusinessSponsorshipPage = () => {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
             <div>
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground mb-1 sm:mb-2">
-                Üzleti Szponzoráció Platform
+                {t('business_sponsorship.title')}
               </h1>
               <p className="text-sm sm:text-base text-muted-foreground">
-                Szponzorálj fenntarthatósági kihívásokat és építsd a márka tudatosságodat
+                {t('business_sponsorship.subtitle')}
               </p>
             </div>
             <Badge className="bg-gradient-to-r from-primary to-success text-white px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm whitespace-nowrap">
               <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-              Business Premium
+              {t('business_sponsorship.premium_badge')}
             </Badge>
           </div>
         </div>
@@ -122,7 +123,7 @@ const BusinessSponsorshipPage = () => {
             onClick={() => setActiveTab('overview')}
             className="flex-1 text-xs sm:text-sm"
           >
-            Áttekintés
+            {t('business_sponsorship.tab_overview')}
           </Button>
           <Button
             variant={activeTab === 'dashboard' ? 'default' : 'ghost'}
@@ -130,8 +131,8 @@ const BusinessSponsorshipPage = () => {
             onClick={() => setActiveTab('dashboard')}
             className="flex-1 text-xs sm:text-sm"
           >
-            <span className="hidden sm:inline">Szponzorációs Dashboard</span>
-            <span className="sm:hidden">Dashboard</span>
+            <span className="hidden sm:inline">{t('business_sponsorship.tab_dashboard')}</span>
+            <span className="sm:hidden">{t('business_sponsorship.tab_dashboard_short')}</span>
           </Button>
           <Button
             variant={activeTab === 'marketplace' ? 'default' : 'ghost'}
@@ -139,8 +140,8 @@ const BusinessSponsorshipPage = () => {
             onClick={() => setActiveTab('marketplace')}
             className="flex-1 text-xs sm:text-sm"
           >
-            <span className="hidden sm:inline">Kihívás Marketplace</span>
-            <span className="sm:hidden">Marketplace</span>
+            <span className="hidden sm:inline">{t('business_sponsorship.tab_marketplace')}</span>
+            <span className="sm:hidden">{t('business_sponsorship.tab_marketplace_short')}</span>
           </Button>
         </div>
 
@@ -152,21 +153,21 @@ const BusinessSponsorshipPage = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Building2 className="w-5 h-5 mr-2" />
-                  Üzleti Modell: Szponzorációs Rendszer
+                  {t('business_sponsorship.business_model')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-4">
-                    <h3 className="font-semibold text-lg">Hogyan működik?</h3>
+                    <h3 className="font-semibold text-lg">{t('business_sponsorship.how_it_works')}</h3>
                     <ul className="space-y-3">
                       <li className="flex items-start space-x-3">
                         <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                           <span className="text-xs font-semibold text-primary">1</span>
                         </div>
                         <div>
-                          <p className="font-medium">Szponzorációs csomag vásárlása</p>
-                          <p className="text-sm text-muted-foreground">Válassz a Bronz, Ezüst vagy Arany csomagok közül</p>
+                          <p className="font-medium">{t('business_sponsorship.step1_title')}</p>
+                          <p className="text-sm text-muted-foreground">{t('business_sponsorship.step1_desc')}</p>
                         </div>
                       </li>
                       <li className="flex items-start space-x-3">
@@ -174,8 +175,8 @@ const BusinessSponsorshipPage = () => {
                           <span className="text-xs font-semibold text-primary">2</span>
                         </div>
                         <div>
-                          <p className="font-medium">Kreditek elosztása</p>
-                          <p className="text-sm text-muted-foreground">Oszd el kreditjeidet különböző kihívások között</p>
+                          <p className="font-medium">{t('business_sponsorship.step2_title')}</p>
+                          <p className="text-sm text-muted-foreground">{t('business_sponsorship.step2_desc')}</p>
                         </div>
                       </li>
                       <li className="flex items-start space-x-3">
@@ -183,8 +184,8 @@ const BusinessSponsorshipPage = () => {
                           <span className="text-xs font-semibold text-primary">3</span>
                         </div>
                         <div>
-                          <p className="font-medium">Láthatóság és hatás</p>
-                          <p className="text-sm text-muted-foreground">Márkád megjelenik a szponzorált kihívásoknál</p>
+                          <p className="font-medium">{t('business_sponsorship.step3_title')}</p>
+                          <p className="text-sm text-muted-foreground">{t('business_sponsorship.step3_desc')}</p>
                         </div>
                       </li>
                       <li className="flex items-start space-x-3">
@@ -192,31 +193,31 @@ const BusinessSponsorshipPage = () => {
                           <span className="text-xs font-semibold text-primary">4</span>
                         </div>
                         <div>
-                          <p className="font-medium">Valós idejű jelentések</p>
-                          <p className="text-sm text-muted-foreground">Kövesd nyomon a hatást és a befektetés megtérülését</p>
+                          <p className="font-medium">{t('business_sponsorship.step4_title')}</p>
+                          <p className="text-sm text-muted-foreground">{t('business_sponsorship.step4_desc')}</p>
                         </div>
                       </li>
                     </ul>
                   </div>
                   
                   <div className="bg-gradient-to-br from-primary/5 to-success/5 p-6 rounded-lg border border-primary/20">
-                    <h3 className="font-semibold text-lg mb-4">Miért érdemes?</h3>
+                    <h3 className="font-semibold text-lg mb-4">{t('business_sponsorship.why_sponsor')}</h3>
                     <div className="space-y-3">
                       <div className="flex items-center space-x-2">
                         <TrendingUp className="w-4 h-4 text-success" />
-                        <span className="text-sm">Brand awareness növelés</span>
+                        <span className="text-sm">{t('business_sponsorship.benefit_awareness')}</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Users className="w-4 h-4 text-primary" />
-                        <span className="text-sm">Célzott közösség elérése</span>
+                        <span className="text-sm">{t('business_sponsorship.benefit_community')}</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Leaf className="w-4 h-4 text-success" />
-                        <span className="text-sm">Mérhető környezeti hatás</span>
+                        <span className="text-sm">{t('business_sponsorship.benefit_impact')}</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Award className="w-4 h-4 text-accent" />
-                        <span className="text-sm">ESG célok teljesítése</span>
+                        <span className="text-sm">{t('business_sponsorship.benefit_esg')}</span>
                       </div>
                     </div>
                   </div>
@@ -230,9 +231,9 @@ const BusinessSponsorshipPage = () => {
                 <CardTitle className="flex items-center justify-between">
                   <span className="flex items-center">
                     <Target className="w-5 h-5 mr-2" />
-                    Aktív Szponzorációk
+                    {t('business_sponsorship.active_sponsorships')}
                   </span>
-                  <Badge variant="secondary">{sponsoredChallenges.length} aktív</Badge>
+                  <Badge variant="secondary">{sponsoredChallenges.length} {t('business_sponsorship.active_count')}</Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -246,14 +247,14 @@ const BusinessSponsorshipPage = () => {
                         <div>
                           <h4 className="font-semibold">{challenge.title}</h4>
                           <p className="text-sm text-muted-foreground">
-                            {challenge.participants} résztvevő • {challenge.co2Saved} kg CO₂ megtakarítás
+                            {challenge.participants} {t('business_sponsorship.participants')} • {challenge.co2Saved} {t('business_sponsorship.co2_saved')}
                           </p>
                         </div>
                       </div>
                       <div className="text-right space-y-1">
-                        <div className="text-sm font-medium">{challenge.creditsUsed.toLocaleString()} kredit</div>
-                        <div className="text-xs text-muted-foreground">Lejárat: {challenge.endDate}</div>
-                        <Badge className="bg-success/20 text-success">Aktív</Badge>
+                        <div className="text-sm font-medium">{challenge.creditsUsed.toLocaleString()} {t('business_sponsorship.credits_used')}</div>
+                        <div className="text-xs text-muted-foreground">{t('business_sponsorship.expiry')}: {challenge.endDate}</div>
+                        <Badge className="bg-success/20 text-success">{t('business_sponsorship.status_active')}</Badge>
                       </div>
                     </div>
                   ))}
@@ -262,7 +263,7 @@ const BusinessSponsorshipPage = () => {
                 <div className="mt-6 text-center">
                   <Button onClick={() => setActiveTab('marketplace')} className="bg-gradient-to-r from-primary to-success">
                     <Plus className="w-4 h-4 mr-2" />
-                    Új Kihívás Szponzorálása
+                    {t('business_sponsorship.sponsor_new')}
                   </Button>
                 </div>
               </CardContent>
@@ -281,12 +282,12 @@ const BusinessSponsorshipPage = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <CreditCard className="w-5 h-5 mr-2" />
-                  Szponzorációs Csomagok
+                  {t('business_sponsorship.packages_title')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground mb-6">
-                  Válassz szponzorációs csomagot a kihívások támogatásához.
+                  {t('business_sponsorship.packages_desc')}
                 </p>
                 <SponsorshipPackageSelector />
               </CardContent>
@@ -296,12 +297,12 @@ const BusinessSponsorshipPage = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Target className="w-5 h-5 mr-2" />
-                  Kihívás Marketplace
+                  {t('business_sponsorship.marketplace_title')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground mb-6">
-                  Válassz a rendelkezésre álló kihívások közül, vagy hozz létre saját kihívást szponzorálásra.
+                  {t('business_sponsorship.marketplace_desc')}
                 </p>
                 
                 {/* Available Challenges */}
@@ -343,15 +344,15 @@ const BusinessSponsorshipPage = () => {
                           
                           <div className="space-y-2 text-sm">
                             <div className="flex justify-between">
-                              <span>Becsült résztvevők:</span>
+                              <span>{t('business_sponsorship.estimated_participants')}</span>
                               <span className="font-medium">{challenge.estimatedParticipants.toLocaleString()}</span>
                             </div>
                             <div className="flex justify-between">
-                              <span>Szükséges kreditek:</span>
+                              <span>{t('business_sponsorship.required_credits')}</span>
                               <span className="font-medium">{challenge.requiredCredits.toLocaleString()}</span>
                             </div>
                             <div className="flex justify-between">
-                              <span>Potenciális hatás:</span>
+                              <span>{t('business_sponsorship.potential_impact')}</span>
                               <span className="font-medium text-success">{challenge.potentialImpact}</span>
                             </div>
                           </div>
@@ -370,7 +371,7 @@ const BusinessSponsorshipPage = () => {
                             }}
                           >
                             <CreditCard className="w-4 h-4 mr-2" />
-                            Szponzorálás Indítása
+                            {t('business_sponsorship.start_sponsorship')}
                           </Button>
                         </div>
                       </CardContent>
@@ -381,13 +382,13 @@ const BusinessSponsorshipPage = () => {
                 <div className="mt-8 text-center">
                   <Card className="bg-gradient-to-r from-accent/10 to-secondary/10 border-accent/20">
                     <CardContent className="p-6">
-                      <h3 className="font-semibold mb-3">Saját Kihívás Létrehozása</h3>
+                      <h3 className="font-semibold mb-3">{t('business_sponsorship.create_custom')}</h3>
                       <p className="text-muted-foreground mb-4">
-                        Hozz létre testreszabott kihívást a vállalati céloknak megfelelően
+                        {t('business_sponsorship.create_custom_desc')}
                       </p>
                       <Button className="bg-gradient-to-r from-accent to-secondary">
                         <Sparkles className="w-4 h-4 mr-2" />
-                        Egyedi Kihívás Tervezése
+                        {t('business_sponsorship.contact_sales')}
                       </Button>
                     </CardContent>
                   </Card>
