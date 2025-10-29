@@ -3,10 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import HandprintMethodology from './HandprintMethodology';
 import { 
   Leaf, 
   TrendingUp, 
@@ -17,7 +19,8 @@ import {
   Utensils,
   Trash2,
   Droplet,
-  TreePine
+  TreePine,
+  BookOpen
 } from 'lucide-react';
 
 interface HandprintData {
@@ -336,9 +339,26 @@ const HandprintCalculator = () => {
             >
               {calculating ? t('handprint.calculating') : t('handprint.recalculate')}
             </Button>
-            <Button variant="outline" className="flex-1">
-              {t('handprint.details')}
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="flex-1">
+                  <BookOpen className="w-4 h-4 mr-2" />
+                  {t('handprint.details')}
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2">
+                    <BookOpen className="w-5 h-5 text-primary" />
+                    {t('handprint.methodology.title')}
+                  </DialogTitle>
+                  <DialogDescription>
+                    {t('handprint.methodology.dialog_desc')}
+                  </DialogDescription>
+                </DialogHeader>
+                <HandprintMethodology />
+              </DialogContent>
+            </Dialog>
           </div>
         </CardContent>
       </Card>
