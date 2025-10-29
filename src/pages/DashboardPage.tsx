@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useProject } from "@/contexts/ProjectContext";
 import Navigation from "@/components/Navigation";
 import Dashboard from "@/components/dashboard/Dashboard";
 import PointsSystem from "@/components/gamification/PointsSystem";
@@ -9,6 +10,8 @@ import CreativeGamification from "@/components/gamification/CreativeGamification
 import HandprintWidget from "@/components/dashboard/HandprintWidget";
 import ProgressVisualization from "@/components/ProgressVisualization";
 import CelebrationModal from "@/components/CelebrationModal";
+import { ProjectLeaderboard } from "@/components/dashboard/ProjectLeaderboard";
+import { ProjectActivities } from "@/components/dashboard/ProjectActivities";
 import { Card3D, FeatureCard3D } from "@/components/ui/card-3d";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +37,7 @@ const DashboardPage = () => {
   const navigate = useNavigate();
   const { user, profile, loading } = useAuth();
   const { t } = useLanguage();
+  const { currentProject } = useProject();
   const [currentRole, setCurrentRole] = useState<UserRole>("citizen");
   const [showCelebration, setShowCelebration] = useState(false);
 
@@ -423,6 +427,14 @@ const DashboardPage = () => {
 
                 <CreativeGamification />
                 <PointsSystem />
+                
+                {/* Project-specific components for citizens */}
+                {currentProject && (
+                  <div className="space-y-6">
+                    <ProjectLeaderboard />
+                    <ProjectActivities />
+                  </div>
+                )}
               </div>
             ) : (
               /* Regional Recognition & Impact Stories for organizations */
@@ -592,6 +604,14 @@ const DashboardPage = () => {
                     </div>
                   </CardContent>
                 </Card>
+                
+                {/* Project-specific components for organizations */}
+                {currentProject && (
+                  <div className="space-y-6">
+                    <ProjectLeaderboard />
+                    <ProjectActivities />
+                  </div>
+                )}
               </div>
             )}
           </TabsContent>

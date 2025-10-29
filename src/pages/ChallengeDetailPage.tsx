@@ -1,25 +1,65 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import ChallengeDetail from "@/components/challenges/ChallengeDetail";
 import Navigation from "@/components/Navigation";
 import { getChallengeById, challenges } from "@/data/challenges";
+import { useAuth } from "@/contexts/AuthContext";
+import { useProject } from "@/contexts/ProjectContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const ChallengeDetailPage = () => {
   const { challengeId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { currentProject } = useProject();
+  const { toast } = useToast();
   
   // Get challenge data by ID
   const challenge = challengeId ? getChallengeById(challengeId) : null;
   
   // Mock user progress - will be fetched from Supabase
-  const [userProgress] = useState({
-    isParticipating: true,
+  const [userProgress, setUserProgress] = useState({
+    isParticipating: false,
     isCompleted: false,
-    progress: 65,
-    completedSteps: [0, 1, 2, 3]
+    progress: 0,
+    completedSteps: [] as number[]
   });
+
+  // Load user progress
+  useEffect(() => {
+    if (user && challengeId) {
+      loadUserProgress();
+    }
+  }, [user, challengeId]);
+
+  const loadUserProgress = async () => {
+    if (!user || !challengeId) return;
+
+    try {
+      const { data, error } = await supabase
+        .from("challenge_completions")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("challenge_id", challengeId)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (data) {
+        setUserProgress({
+          isParticipating: true,
+          isCompleted: data.validation_status === "approved",
+          progress: 100,
+          completedSteps: []
+        });
+      }
+    } catch (error) {
+      console.error("Error loading progress:", error);
+    }
+  };
 
   if (!challenge) {
     return (
@@ -36,14 +76,61 @@ const ChallengeDetailPage = () => {
     );
   }
 
-  const handleJoinChallenge = (challengeId: string) => {
-    // TODO: Implement with Supabase
-    console.log("Joining challenge:", challengeId);
+  const handleJoinChallenge = async (challengeId: string) => {
+    if (!user) {
+      toast({
+        title: "Bejelentkezés szükséges",
+        description: "Jelentkezz be a challenge-hez való csatlakozáshoz!",
+        variant: "destructive",
+      });
+      navigate("/auth");
+      return;
+    }
+
+    setUserProgress(prev => ({ ...prev, isParticipating: true }));
+    
+    toast({
+      title: "Csatlakoztál!",
+      description: "Sikeresen csatlakoztál a challenge-hez!",
+    });
   };
 
-  const handleCompleteChallenge = (challengeId: string) => {
-    // TODO: Implement with Supabase
-    console.log("Completing challenge:", challengeId);
+  const handleCompleteChallenge = async (challengeId: string) => {
+    if (!user) {
+      toast({
+        title: "Bejelentkezés szükséges",
+        variant: "destructive",
+      });
+      navigate("/auth");
+      return;
+    }
+
+    try {
+      const { error } = await supabase.from("challenge_completions").insert({
+        user_id: user.id,
+        challenge_id: challengeId,
+        project_id: currentProject?.id || null,
+        completion_type: "manual",
+        validation_status: "pending",
+        impact_data: challenge?.impact || {},
+        points_earned: challenge?.pointsReward || 0,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Gratulálunk!",
+        description: "Challenge teljesítve! Jóváhagyásra vár.",
+      });
+
+      loadUserProgress();
+    } catch (error: any) {
+      toast({
+        title: "Hiba",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   const handleGoBack = () => {
