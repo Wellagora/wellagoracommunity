@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useSubscription } from '@/contexts/SubscriptionContext';
-import { CheckCircle, Star, Crown, Award, Sparkles } from 'lucide-react';
+import { Star, Crown, Award, Sparkles } from 'lucide-react';
 
 const SponsorshipPackageSelector: React.FC = () => {
   const { packageTiers, createCheckout, subscription } = useSubscription();
@@ -66,16 +66,15 @@ const SponsorshipPackageSelector: React.FC = () => {
               {tier.priceEur} <span className="text-sm font-normal text-muted-foreground">EUR</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              {tier.credits} kredit · {tier.idealFor}
+              {tier.credits} kredit
             </p>
           </CardHeader>
           
           <CardContent className="pt-4">
-            <ul className="space-y-3 mb-6">
+            <ul className="space-y-2 mb-6">
               {tier.features.map((feature, index) => (
-                <li key={index} className="flex items-start space-x-2">
-                  <CheckCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">{feature}</span>
+                <li key={index} className="text-sm text-muted-foreground">
+                  • {feature}
                 </li>
               ))}
             </ul>
