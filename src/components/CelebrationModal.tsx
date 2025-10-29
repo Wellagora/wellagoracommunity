@@ -13,6 +13,7 @@ import {
   Leaf,
   Star
 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import celebrationImage from "@/assets/community-celebration.jpg";
 
 interface CelebrationModalProps {
@@ -28,6 +29,7 @@ interface CelebrationModalProps {
 }
 
 const CelebrationModal = ({ isOpen, onClose, achievement }: CelebrationModalProps) => {
+  const { t } = useLanguage();
   const [confettiActive, setConfettiActive] = useState(false);
 
   useEffect(() => {
@@ -91,7 +93,7 @@ const CelebrationModal = ({ isOpen, onClose, achievement }: CelebrationModalProp
 
             <div className="space-y-4">
               <Badge className="bg-gradient-primary text-white px-6 py-2 text-lg font-semibold">
-                🎉 Achievement Unlocked!
+                🎉 {t('celebration.achievement_unlocked')}
               </Badge>
               
               <DialogTitle className="text-3xl lg:text-4xl font-heading font-bold text-center">
@@ -111,20 +113,20 @@ const CelebrationModal = ({ isOpen, onClose, achievement }: CelebrationModalProp
             <div className="bg-glass backdrop-blur-md rounded-2xl p-6 text-center border border-white/20">
               <Star className="w-8 h-8 text-warning mx-auto mb-2" />
               <div className="text-2xl font-bold text-foreground">+{achievement.points}</div>
-              <div className="text-sm text-muted-foreground">Points Earned</div>
+              <div className="text-sm text-muted-foreground">{t('celebration.points_earned')}</div>
             </div>
             
             <div className="bg-glass backdrop-blur-md rounded-2xl p-6 text-center border border-white/20">
               <Leaf className="w-8 h-8 text-success mx-auto mb-2" />
               <div className="text-2xl font-bold text-foreground">{achievement.impact}</div>
-              <div className="text-sm text-muted-foreground">CO₂ Saved</div>
+              <div className="text-sm text-muted-foreground">{t('celebration.co2_saved')}</div>
             </div>
             
             {achievement.level && (
               <div className="bg-glass backdrop-blur-md rounded-2xl p-6 text-center border border-white/20">
                 <Trophy className="w-8 h-8 text-accent mx-auto mb-2" />
-                <div className="text-2xl font-bold text-foreground">Level {achievement.level}</div>
-                <div className="text-sm text-muted-foreground">Reached</div>
+                <div className="text-2xl font-bold text-foreground">{t('celebration.level')} {achievement.level}</div>
+                <div className="text-sm text-muted-foreground">{t('celebration.reached')}</div>
               </div>
             )}
           </div>
@@ -133,15 +135,15 @@ const CelebrationModal = ({ isOpen, onClose, achievement }: CelebrationModalProp
           <div className="bg-gradient-primary/10 rounded-2xl p-6 border border-primary/20">
             <div className="flex items-center space-x-3 mb-4">
               <Users className="w-6 h-6 text-primary" />
-              <h3 className="text-lg font-semibold">Community Impact</h3>
+              <h3 className="text-lg font-semibold">{t('celebration.community_impact')}</h3>
             </div>
             <p className="text-muted-foreground mb-4">
-              Your actions inspire others! You're part of a movement of 50,000+ champions.
+              {t('celebration.your_actions')}
             </p>
             <Progress value={75} className="h-3" />
             <div className="flex justify-between text-sm text-muted-foreground mt-2">
-              <span>Community Goal Progress</span>
-              <span>75% Complete</span>
+              <span>{t('celebration.community_goal')}</span>
+              <span>75% {t('celebration.complete')}</span>
             </div>
           </div>
 
@@ -149,12 +151,15 @@ const CelebrationModal = ({ isOpen, onClose, achievement }: CelebrationModalProp
           <div className="bg-success/10 rounded-xl p-4 border border-success/20">
             <div className="flex items-center space-x-2 mb-2">
               <Heart className="w-5 h-5 text-success" />
-              <span className="font-medium text-foreground">You're making a difference!</span>
+              <span className="font-medium text-foreground">{t('celebration.making_difference')}</span>
             </div>
-            <p className="text-sm text-muted-foreground">
-              <strong>18 people</strong> from your region completed similar actions this week. 
-              Together, we've saved <strong>2.4 tons</strong> of CO₂!
-            </p>
+            <p className="text-sm text-muted-foreground"
+              dangerouslySetInnerHTML={{
+                __html: t('celebration.regional_impact')
+                  .replace('{count}', '<strong>18</strong>')
+                  .replace('{tons}', '<strong>2.4</strong>')
+              }}
+            />
           </div>
 
           {/* Action Buttons */}
@@ -165,22 +170,22 @@ const CelebrationModal = ({ isOpen, onClose, achievement }: CelebrationModalProp
               className="flex-1 border-2 border-primary/30 hover:bg-primary/10 hover:border-primary/50 transition-spring group"
             >
               <Share2 className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
-              Share Achievement
+              {t('celebration.share_achievement')}
             </Button>
             <Button 
               onClick={onClose}
               className="flex-1 bg-gradient-primary hover:shadow-glow transition-spring group"
             >
-              Continue Journey
+              {t('celebration.continue_journey')}
               <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
           </div>
 
           {/* Next Challenge Preview */}
           <div className="text-center p-4 bg-accent/5 rounded-xl border border-accent/20">
-            <p className="text-sm text-muted-foreground mb-2">Ready for your next challenge?</p>
+            <p className="text-sm text-muted-foreground mb-2">{t('celebration.next_challenge_ready')}</p>
             <Badge className="bg-accent/10 text-accent border-accent/20">
-              🚴‍♀️ Bike to Work Week - Starting Soon!
+              🚴‍♀️ {t('celebration.bike_week_coming')}
             </Badge>
           </div>
         </div>

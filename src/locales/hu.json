@@ -789,5 +789,21 @@
   "points.badge.community_leader": "Közösségi Vezető",
   "points.badge.community_leader_desc": "Közösségi környezetvédelmi projekt szervezése",
   "points.badge.green_streak": "Zöld Sorozat",
-  "points.badge.green_streak_desc": "30 napos aktivitási sorozat fenntartása"
+  "points.badge.green_streak_desc": "30 napos aktivitási sorozat fenntartása",
+  "celebration.achievement_unlocked": "Eredmény feloldva!",
+  "celebration.points_earned": "Pont megszerzve",
+  "celebration.co2_saved": "CO₂ megtakarítva",
+  "celebration.level": "Szint",
+  "celebration.reached": "Elérve",
+  "celebration.community_impact": "Közösségi Hatás",
+  "celebration.your_actions": "A te cselekedeted másokat inspirál! Több mint 50.000 bajnok mozgalmának részese vagy.",
+  "celebration.community_goal": "Közösségi cél előrehaladása",
+  "celebration.complete": "Teljesítve",
+  "celebration.making_difference": "Változást hoz létre!",
+  "celebration.regional_impact": "{count} ember a régiódban hasonló akciókat teljesített ezen a héten. Együtt {tons} tonna CO₂-t takarítottunk meg!",
+  "celebration.share_achievement": "Eredmény megosztása",
+  "celebration.continue_journey": "Utazás folytatása",
+  "celebration.next_challenge_ready": "Készen állsz a következő kihívásra?",
+  "celebration.bike_week_coming": "Biciklizz a munkába hét - Hamarosan indul!",
+  "challenges.challenges_count": "kihívás"
 }

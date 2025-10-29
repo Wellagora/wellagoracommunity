@@ -129,7 +129,7 @@ const ChallengesSection = () => {
                   <category.icon className={`w-6 h-6 text-${category.color}`} />
                 </div>
                 <h3 className="font-semibold text-foreground mb-1">{category.name}</h3>
-                <p className="text-sm text-muted-foreground">{category.count} challenges</p>
+                <p className="text-sm text-muted-foreground">{category.count} {t('challenges.challenges_count')}</p>
               </CardContent>
             </Card>
           ))}

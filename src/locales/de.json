@@ -913,5 +913,21 @@
   "points.badge.community_leader": "Community-Leiter",
   "points.badge.community_leader_desc": "Ein gemeinschaftliches Umweltprojekt organisieren",
   "points.badge.green_streak": "Grüne Serie",
-  "points.badge.green_streak_desc": "Eine 30-tägige Aktivitätsserie aufrechterhalten"
+  "points.badge.green_streak_desc": "Eine 30-tägige Aktivitätsserie aufrechterhalten",
+  "celebration.achievement_unlocked": "Erfolg freigeschaltet!",
+  "celebration.points_earned": "Punkte erhalten",
+  "celebration.co2_saved": "CO₂ gespart",
+  "celebration.level": "Level",
+  "celebration.reached": "Erreicht",
+  "celebration.community_impact": "Community-Wirkung",
+  "celebration.your_actions": "Ihre Aktionen inspirieren andere! Sie sind Teil einer Bewegung von 50.000+ Champions.",
+  "celebration.community_goal": "Community-Ziel-Fortschritt",
+  "celebration.complete": "Abgeschlossen",
+  "celebration.making_difference": "Sie machen einen Unterschied!",
+  "celebration.regional_impact": "{count} Personen aus Ihrer Region haben diese Woche ähnliche Aktionen abgeschlossen. Gemeinsam haben wir {tons} Tonnen CO₂ gespart!",
+  "celebration.share_achievement": "Erfolg teilen",
+  "celebration.continue_journey": "Reise fortsetzen",
+  "celebration.next_challenge_ready": "Bereit für Ihre nächste Herausforderung?",
+  "celebration.bike_week_coming": "Fahrrad zur Arbeit Woche - Startet bald!",
+  "challenges.challenges_count": "Herausforderungen"
 }
