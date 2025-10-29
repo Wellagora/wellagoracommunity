@@ -25,6 +25,7 @@ export type Database = {
           impact_data: Json
           notes: string | null
           points_earned: number
+          project_id: string | null
           updated_at: string
           user_id: string
           validation_score: number | null
@@ -40,6 +41,7 @@ export type Database = {
           impact_data: Json
           notes?: string | null
           points_earned?: number
+          project_id?: string | null
           updated_at?: string
           user_id: string
           validation_score?: number | null
@@ -55,12 +57,21 @@ export type Database = {
           impact_data?: Json
           notes?: string | null
           points_earned?: number
+          project_id?: string | null
           updated_at?: string
           user_id?: string
           validation_score?: number | null
           validation_status?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "challenge_completions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       challenge_definitions: {
         Row: {
@@ -113,6 +124,7 @@ export type Database = {
           end_date: string | null
           id: string
           package_type: string
+          project_id: string | null
           region: string
           sponsor_organization_id: string | null
           sponsor_user_id: string
@@ -129,6 +141,7 @@ export type Database = {
           end_date?: string | null
           id?: string
           package_type: string
+          project_id?: string | null
           region: string
           sponsor_organization_id?: string | null
           sponsor_user_id: string
@@ -145,6 +158,7 @@ export type Database = {
           end_date?: string | null
           id?: string
           package_type?: string
+          project_id?: string | null
           region?: string
           sponsor_organization_id?: string | null
           sponsor_user_id?: string
@@ -154,6 +168,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "challenge_sponsorships_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "challenge_sponsorships_sponsor_organization_id_fkey"
             columns: ["sponsor_organization_id"]
@@ -240,6 +261,7 @@ export type Database = {
           location: string | null
           logo_url: string | null
           name: string
+          project_id: string | null
           sustainability_score: number | null
           type: Database["public"]["Enums"]["user_role"]
           updated_at: string | null
@@ -256,6 +278,7 @@ export type Database = {
           location?: string | null
           logo_url?: string | null
           name: string
+          project_id?: string | null
           sustainability_score?: number | null
           type: Database["public"]["Enums"]["user_role"]
           updated_at?: string | null
@@ -272,12 +295,21 @@ export type Database = {
           location?: string | null
           logo_url?: string | null
           name?: string
+          project_id?: string | null
           sustainability_score?: number | null
           type?: Database["public"]["Enums"]["user_role"]
           updated_at?: string | null
           website_url?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "organizations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -302,6 +334,7 @@ export type Database = {
           organization_id: string | null
           preferred_language: string | null
           preferred_stakeholder_types: string[] | null
+          project_id: string | null
           public_display_name: string | null
           region: string | null
           region_type: string | null
@@ -335,6 +368,7 @@ export type Database = {
           organization_id?: string | null
           preferred_language?: string | null
           preferred_stakeholder_types?: string[] | null
+          project_id?: string | null
           public_display_name?: string | null
           region?: string | null
           region_type?: string | null
@@ -368,6 +402,7 @@ export type Database = {
           organization_id?: string | null
           preferred_language?: string | null
           preferred_stakeholder_types?: string[] | null
+          project_id?: string | null
           public_display_name?: string | null
           region?: string | null
           region_type?: string | null
@@ -387,7 +422,91 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "profiles_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      project_members: {
+        Row: {
+          created_at: string | null
+          id: string
+          project_id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          project_id: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          project_id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_members_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          branding: Json | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          region_name: string
+          settings: Json | null
+          slug: string
+          updated_at: string | null
+          villages: string[] | null
+        }
+        Insert: {
+          branding?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          region_name: string
+          settings?: Json | null
+          slug: string
+          updated_at?: string | null
+          villages?: string[] | null
+        }
+        Update: {
+          branding?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          region_name?: string
+          settings?: Json | null
+          slug?: string
+          updated_at?: string | null
+          villages?: string[] | null
+        }
+        Relationships: []
       }
       security_audit_log: {
         Row: {
@@ -472,6 +591,7 @@ export type Database = {
           impact_amount: number
           organization_id: string | null
           points_earned: number | null
+          project_id: string | null
           user_id: string
           validation_method: string | null
         }
@@ -488,6 +608,7 @@ export type Database = {
           impact_amount: number
           organization_id?: string | null
           points_earned?: number | null
+          project_id?: string | null
           user_id: string
           validation_method?: string | null
         }
@@ -504,6 +625,7 @@ export type Database = {
           impact_amount?: number
           organization_id?: string | null
           points_earned?: number | null
+          project_id?: string | null
           user_id?: string
           validation_method?: string | null
         }
@@ -520,6 +642,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sustainability_activities_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
           {
@@ -710,6 +839,15 @@ export type Database = {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
       }
+      get_user_projects: {
+        Args: { _user_id: string }
+        Returns: {
+          project_id: string
+          project_name: string
+          project_slug: string
+          user_role: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -718,6 +856,14 @@ export type Database = {
         Returns: boolean
       }
       is_profile_public: { Args: { _profile_id: string }; Returns: boolean }
+      is_project_admin: {
+        Args: { _project_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_project_member: {
+        Args: { _project_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role:
@@ -727,6 +873,7 @@ export type Database = {
         | "government"
         | "ngo"
         | "citizen"
+        | "project_admin"
       user_role: "citizen" | "business" | "government" | "ngo"
     }
     CompositeTypes: {
@@ -862,6 +1009,7 @@ export const Constants = {
         "government",
         "ngo",
         "citizen",
+        "project_admin",
       ],
       user_role: ["citizen", "business", "government", "ngo"],
     },
