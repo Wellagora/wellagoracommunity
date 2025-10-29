@@ -44,6 +44,13 @@ const DashboardPage = () => {
     }
   }, [user, loading, navigate]);
 
+  // Redirect organizations to their specialized dashboard
+  useEffect(() => {
+    if (profile?.user_role && ['business', 'government', 'ngo'].includes(profile.user_role)) {
+      navigate("/organization");
+    }
+  }, [profile?.user_role, navigate]);
+
   // Mock achievement for demonstration
   const mockAchievement = {
     title: "Energy Efficiency Master",
