@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +30,11 @@ import {
   TrendingUp,
   Sparkles,
   Award,
-  Flame
+  Flame,
+  Camera,
+  Upload,
+  X,
+  UserPlus
 } from "lucide-react";
 
 interface Challenge {
@@ -98,6 +102,8 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
   const [showTips, setShowTips] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [uploadedPhoto, setUploadedPhoto] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { t } = useLanguage();
   
@@ -124,11 +130,43 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
     setShowCelebration(true);
   };
 
-  const handleShare = () => {
-    toast({
-      title: t('challenges.share'),
-      description: t('challenges.share_desc'),
-    });
+  const handleShare = async () => {
+    const shareText = userProgress?.isParticipating 
+      ? `${t('challenges.im_taking_challenge')} "${t(challenge.titleKey)}"! 🌱\n\n💪 ${userProgress.progress}% ${t('challenges.completed')}\n🌍 ${challenge.impact.co2Saved} kg CO₂ ${t('challenges.impact')}`
+      : `${t('challenges.check_out_challenge')} "${t(challenge.titleKey)}"! 🌱\n\n🏆 ${challenge.pointsReward} ${t('challenges.points')}\n🌍 ${challenge.impact.co2Saved} kg CO₂ ${t('challenges.impact')}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: t(challenge.titleKey),
+          text: shareText,
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.log('Share cancelled');
+      }
+    } else {
+      navigator.clipboard.writeText(shareText + '\n' + window.location.href);
+      toast({
+        title: t('challenges.link_copied'),
+        description: t('challenges.link_copied_desc'),
+      });
+    }
+  };
+
+  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setUploadedPhoto(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      toast({
+        title: t('challenges.photo_uploaded'),
+        description: t('challenges.progress_photo_desc'),
+      });
+    }
   };
 
   return (
@@ -307,6 +345,78 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
             </div>
           </div>
           
+          {/* Inspiring Action Cards - Show when participating */}
+          {userProgress?.isParticipating && !userProgress.isCompleted && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+              {/* Share Progress Photo */}
+              <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5 hover:shadow-glow transition-smooth">
+                <CardContent className="pt-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Camera className="w-5 h-5 text-primary" />
+                    <h4 className="font-semibold text-foreground">{t('challenges.share_progress_photo')}</h4>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {t('challenges.inspire_community')}
+                  </p>
+                  {uploadedPhoto ? (
+                    <div className="relative">
+                      <img 
+                        src={uploadedPhoto} 
+                        alt="Progress" 
+                        className="w-full h-32 object-cover rounded-lg mb-2"
+                      />
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => setUploadedPhoto(null)}
+                      >
+                        <X className="w-4 h-4 mr-2" />
+                        {t('challenges.remove_photo')}
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      className="w-full border-dashed border-2 hover:border-primary hover:bg-primary/10"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <Upload className="w-4 h-4 mr-2" />
+                      {t('challenges.upload_photo')}
+                    </Button>
+                  )}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handlePhotoUpload}
+                  />
+                </CardContent>
+              </Card>
+
+              {/* Invite Friends */}
+              <Card className="border-2 border-accent/30 bg-gradient-to-br from-accent/5 to-success/5 hover:shadow-glow transition-smooth">
+                <CardContent className="pt-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <UserPlus className="w-5 h-5 text-accent" />
+                    <h4 className="font-semibold text-foreground">{t('challenges.invite_friends_cta')}</h4>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {t('challenges.double_impact')}
+                  </p>
+                  <Button
+                    onClick={() => setShowInviteModal(true)}
+                    className="w-full bg-gradient-primary hover:shadow-glow"
+                  >
+                    <Users className="w-4 h-4 mr-2" />
+                    {t('challenges.invite_now')}
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
           {/* Steps Section - mobile optimized */}
           <div className="mb-6">
             <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4">{t('challenges.steps_to_complete')}</h3>
