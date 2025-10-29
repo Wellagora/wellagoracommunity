@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useProject } from "@/contexts/ProjectContext";
 import Navigation from "@/components/Navigation";
 import { Card3D, FeatureCard3D } from "@/components/ui/card-3d";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -41,6 +42,7 @@ const ChallengesPage = () => {
   const navigate = useNavigate();
   const { user, loading, profile } = useAuth();
   const { t } = useLanguage();
+  const { currentProject } = useProject();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("all");
@@ -48,17 +50,17 @@ const ChallengesPage = () => {
   const [enrichedChallenges, setEnrichedChallenges] = useState<Challenge[]>(challenges);
   const [sponsorsLoading, setSponsorsLoading] = useState(true);
 
-  // Load sponsorship data
+  // Load sponsorship data (project-specific if project selected)
   useEffect(() => {
     const loadSponsors = async () => {
       setSponsorsLoading(true);
-      const enriched = await enrichChallengesWithSponsors(challenges);
+      const enriched = await enrichChallengesWithSponsors(challenges, currentProject?.id);
       setEnrichedChallenges(enriched);
       setSponsorsLoading(false);
     };
     
     loadSponsors();
-  }, []);
+  }, [currentProject]);
 
   // Temporarily disable auth check to debug challenges display
   // useEffect(() => {

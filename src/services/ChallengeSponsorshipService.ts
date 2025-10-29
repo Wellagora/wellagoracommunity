@@ -27,16 +27,23 @@ interface ProfileData {
 }
 
 /**
- * Fetches active sponsorships from database
+ * Fetches active sponsorships from database, optionally filtered by project
  */
-export const getActiveSponsorships = async (): Promise<Map<string, SponsorInfo>> => {
+export const getActiveSponsorships = async (projectId?: string): Promise<Map<string, SponsorInfo>> => {
   try {
-    // First get active sponsorships
-    const { data: sponsorships, error: sponsorshipsError } = await supabase
+    // Build the query
+    let query = supabase
       .from('challenge_sponsorships')
-      .select('id, challenge_id, sponsor_user_id, tier, status, start_date, end_date')
+      .select('id, challenge_id, sponsor_user_id, tier, status, start_date, end_date, project_id')
       .eq('status', 'active')
       .gte('end_date', new Date().toISOString().split('T')[0]);
+    
+    // Filter by project if provided
+    if (projectId) {
+      query = query.eq('project_id', projectId);
+    }
+
+    const { data: sponsorships, error: sponsorshipsError } = await query;
 
     if (sponsorshipsError) {
       console.error('Error fetching sponsorships:', sponsorshipsError);
@@ -95,12 +102,13 @@ export const getActiveSponsorships = async (): Promise<Map<string, SponsorInfo>>
 };
 
 /**
- * Enriches challenges with sponsorship data
+ * Enriches challenges with sponsorship data, optionally filtered by project
  */
 export const enrichChallengesWithSponsors = async (
-  challenges: Challenge[]
+  challenges: Challenge[],
+  projectId?: string
 ): Promise<Challenge[]> => {
-  const sponsorships = await getActiveSponsorships();
+  const sponsorships = await getActiveSponsorships(projectId);
   
   return challenges.map(challenge => {
     const sponsorInfo = sponsorships.get(challenge.id);
@@ -120,11 +128,12 @@ export const enrichChallengesWithSponsors = async (
 };
 
 /**
- * Gets sponsor info for a specific challenge
+ * Gets sponsor info for a specific challenge, optionally filtered by project
  */
 export const getChallengeSponsor = async (
-  challengeId: string
+  challengeId: string,
+  projectId?: string
 ): Promise<SponsorInfo | null> => {
-  const sponsorships = await getActiveSponsorships();
+  const sponsorships = await getActiveSponsorships(projectId);
   return sponsorships.get(challengeId) || null;
 };
