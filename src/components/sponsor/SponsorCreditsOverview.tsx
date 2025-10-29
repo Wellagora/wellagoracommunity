@@ -56,7 +56,9 @@ const SponsorCreditsOverview = () => {
     );
   }
 
-  const usagePercentage = credits ? (credits.used_credits / credits.total_credits) * 100 : 0;
+  const usagePercentage = credits && credits.total_credits > 0 
+    ? (credits.used_credits / credits.total_credits) * 100 
+    : 0;
 
   return (
     <div className="grid gap-4 md:grid-cols-3">
