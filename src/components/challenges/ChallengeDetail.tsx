@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import ChallengeCelebrationModal from "./ChallengeCelebrationModal";
+import InviteFriendsModal from "./InviteFriendsModal";
 import { 
   Calendar, 
   Clock, 
@@ -96,6 +97,7 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
   const [activeStep, setActiveStep] = useState(0);
   const [showTips, setShowTips] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
   const { toast } = useToast();
   const { t } = useLanguage();
   
@@ -137,6 +139,14 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
         challengeTitle={t(challenge.titleKey)}
         pointsEarned={challenge.pointsReward}
         co2Saved={challenge.impact.co2Saved}
+        onInviteFriends={() => setShowInviteModal(true)}
+      />
+      
+      <InviteFriendsModal
+        isOpen={showInviteModal}
+        onClose={() => setShowInviteModal(false)}
+        challengeTitle={t(challenge.titleKey)}
+        challengeId={challenge.id}
       />
       
       <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
