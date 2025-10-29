@@ -658,13 +658,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "sustainability_activities_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "regional_stakeholders"
-            referencedColumns: ["id"]
-          },
         ]
       }
       user_roles: {
@@ -693,101 +686,7 @@ export type Database = {
       }
     }
     Views: {
-      my_roles: {
-        Row: {
-          role: Database["public"]["Enums"]["app_role"] | null
-        }
-        Insert: {
-          role?: Database["public"]["Enums"]["app_role"] | null
-        }
-        Update: {
-          role?: Database["public"]["Enums"]["app_role"] | null
-        }
-        Relationships: []
-      }
-      regional_stakeholders: {
-        Row: {
-          avatar_url: string | null
-          bio: string | null
-          city: string | null
-          country: string | null
-          district: string | null
-          first_name: string | null
-          id: string | null
-          is_public_profile: boolean | null
-          last_name: string | null
-          latitude: number | null
-          location: string | null
-          longitude: number | null
-          organization: string | null
-          organization_id: string | null
-          preferred_stakeholder_types: string[] | null
-          public_display_name: string | null
-          region: string | null
-          region_type: string | null
-          seeking_partnerships: boolean | null
-          sustainability_goals: string[] | null
-          user_role: Database["public"]["Enums"]["user_role"] | null
-          visibility_radius_km: number | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          bio?: string | null
-          city?: string | null
-          country?: string | null
-          district?: string | null
-          first_name?: string | null
-          id?: string | null
-          is_public_profile?: boolean | null
-          last_name?: string | null
-          latitude?: number | null
-          location?: string | null
-          longitude?: number | null
-          organization?: string | null
-          organization_id?: string | null
-          preferred_stakeholder_types?: string[] | null
-          public_display_name?: string | null
-          region?: string | null
-          region_type?: string | null
-          seeking_partnerships?: boolean | null
-          sustainability_goals?: string[] | null
-          user_role?: Database["public"]["Enums"]["user_role"] | null
-          visibility_radius_km?: number | null
-        }
-        Update: {
-          avatar_url?: string | null
-          bio?: string | null
-          city?: string | null
-          country?: string | null
-          district?: string | null
-          first_name?: string | null
-          id?: string | null
-          is_public_profile?: boolean | null
-          last_name?: string | null
-          latitude?: number | null
-          location?: string | null
-          longitude?: number | null
-          organization?: string | null
-          organization_id?: string | null
-          preferred_stakeholder_types?: string[] | null
-          public_display_name?: string | null
-          region?: string | null
-          region_type?: string | null
-          seeking_partnerships?: boolean | null
-          sustainability_goals?: string[] | null
-          user_role?: Database["public"]["Enums"]["user_role"] | null
-          visibility_radius_km?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "profiles_organization_id_fkey"
-            columns: ["organization_id"]
-            isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       get_current_user_role: {
