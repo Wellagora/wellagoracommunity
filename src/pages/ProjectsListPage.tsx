@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +21,7 @@ interface Project {
 export default function ProjectsListPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useLanguage();
 
   useEffect(() => {
     loadProjects();
@@ -49,24 +51,23 @@ export default function ProjectsListPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Fenntarthatósági Projektek
+              {t('projects.title')}
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Csatlakozz a régiódbeli közösséghez és légy részese a helyi fenntarthatósági
-              kezdeményezéseknek!
+              {t('projects.subtitle')}
             </p>
           </div>
 
           {loading ? (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">Projektek betöltése...</p>
+              <p className="text-muted-foreground">{t('projects.loading')}</p>
             </div>
           ) : projects.length === 0 ? (
             <Card>
               <CardHeader>
-                <CardTitle>Még nincsenek aktív projektek</CardTitle>
+                <CardTitle>{t('projects.no_projects')}</CardTitle>
                 <CardDescription>
-                  Hamarosan új projektek indulnak! Maradj velünk!
+                  {t('projects.no_projects_desc')}
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -86,7 +87,7 @@ export default function ProjectsListPage() {
                           {project.region_name}
                         </CardDescription>
                       </div>
-                      <Badge variant="default">Aktív</Badge>
+                      <Badge variant="default">{t('projects.active')}</Badge>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -98,7 +99,7 @@ export default function ProjectsListPage() {
                       <div>
                         <p className="text-sm font-semibold mb-2 flex items-center gap-2">
                           <Users className="h-4 w-4" />
-                          Részt vevő települések:
+                          {t('projects.participating_villages')}
                         </p>
                         <div className="flex flex-wrap gap-2">
                           {project.villages.map((village, index) => (
@@ -112,7 +113,7 @@ export default function ProjectsListPage() {
 
                     <Link to={`/join/${project.slug}`} className="block">
                       <Button className="w-full" size="lg">
-                        Csatlakozás a projekthez
+                        {t('projects.join_project')}
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </Link>
@@ -125,15 +126,14 @@ export default function ProjectsListPage() {
           <div className="mt-12 text-center">
             <Card className="bg-gradient-to-r from-primary/10 to-success/10 border-primary/20">
               <CardHeader>
-                <CardTitle>Kérdésed van?</CardTitle>
+                <CardTitle>{t('projects.help_title')}</CardTitle>
                 <CardDescription>
-                  Ha szeretnél többet megtudni a projektekről, vagy segítségre van szükséged,
-                  lépj kapcsolatba velünk!
+                  {t('projects.help_desc')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Button variant="outline" size="lg">
-                  Kapcsolatfelvétel
+                  {t('projects.contact')}
                 </Button>
               </CardContent>
             </Card>

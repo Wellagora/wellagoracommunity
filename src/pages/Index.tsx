@@ -58,7 +58,7 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center mb-6 sm:mb-8 px-4">
             <Link to="/projects" className="w-full sm:w-auto">
               <Button size="lg" className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300">
-                Csatlakozz egy projekthez
+                {t('index.cta_join_project')}
               </Button>
             </Link>
             <Link to="/challenges" className="w-full sm:w-auto">

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useProject } from "@/contexts/ProjectContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -18,6 +19,7 @@ interface LeaderboardEntry {
 
 export function ProjectLeaderboard() {
   const { currentProject } = useProject();
+  const { t } = useLanguage();
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -133,9 +135,9 @@ export function ProjectLeaderboard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Trophy className="h-5 w-5" />
-            Projekt Ranglista
+            {t('leaderboard.title')}
           </CardTitle>
-          <CardDescription>Betöltés...</CardDescription>
+          <CardDescription>{t('leaderboard.loading')}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -146,16 +148,16 @@ export function ProjectLeaderboard() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Trophy className="h-5 w-5" />
-          {currentProject.name} - Ranglista
+          {currentProject.name} - {t('leaderboard.title')}
         </CardTitle>
         <CardDescription>
-          Top 10 résztvevő a projektben
+          {t('leaderboard.subtitle')}
         </CardDescription>
       </CardHeader>
       <CardContent>
         {leaderboard.length === 0 ? (
           <p className="text-center text-muted-foreground py-8">
-            Még nincsenek teljesített challenge-ek a projektben
+            {t('leaderboard.no_completions')}
           </p>
         ) : (
           <div className="space-y-3">
@@ -184,13 +186,13 @@ export function ProjectLeaderboard() {
                       {entry.first_name} {entry.last_name}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {entry.challenges_completed} challenge teljesítve
+                      {entry.challenges_completed} {t('leaderboard.challenges_completed')}
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
                   <Badge variant="default" className="mb-1">
-                    {entry.total_points} pont
+                    {entry.total_points} {t('leaderboard.points')}
                   </Badge>
                   <p className="text-xs text-muted-foreground flex items-center gap-1">
                     <TrendingUp className="w-3 h-3" />

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProject } from "@/contexts/ProjectContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +22,7 @@ interface Activity {
 export function ProjectActivities() {
   const { user } = useAuth();
   const { currentProject } = useProject();
+  const { t } = useLanguage();
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -128,9 +130,9 @@ export function ProjectActivities() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Leaf className="h-5 w-5" />
-            Projekt Aktivitások
+            {t('activities.title')}
           </CardTitle>
-          <CardDescription>Betöltés...</CardDescription>
+          <CardDescription>{t('activities.loading')}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -141,14 +143,14 @@ export function ProjectActivities() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Leaf className="h-5 w-5" />
-          {currentProject.name} - Legutóbbi Aktivitások
+          {currentProject.name} - {t('activities.recent')}
         </CardTitle>
-        <CardDescription>A projekt tagok fenntarthatósági tevékenységei</CardDescription>
+        <CardDescription>{t('activities.subtitle')}</CardDescription>
       </CardHeader>
       <CardContent>
         {activities.length === 0 ? (
           <p className="text-center text-muted-foreground py-8">
-            Még nincsenek rögzített aktivitások a projektben
+            {t('activities.no_activities')}
           </p>
         ) : (
           <div className="space-y-3">
@@ -181,7 +183,7 @@ export function ProjectActivities() {
                     {activity.impact_amount} kg CO₂
                   </div>
                   <Badge variant="secondary" className="text-xs">
-                    {activity.points_earned} pont
+                    {activity.points_earned} {t('leaderboard.points')}
                   </Badge>
                 </div>
               </div>
