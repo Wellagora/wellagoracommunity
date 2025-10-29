@@ -109,6 +109,7 @@ export type Database = {
           amount_paid: number | null
           challenge_id: string
           created_at: string | null
+          credit_cost: number | null
           end_date: string | null
           id: string
           package_type: string
@@ -117,12 +118,14 @@ export type Database = {
           sponsor_user_id: string
           start_date: string
           status: string
+          tier: string | null
           updated_at: string | null
         }
         Insert: {
           amount_paid?: number | null
           challenge_id: string
           created_at?: string | null
+          credit_cost?: number | null
           end_date?: string | null
           id?: string
           package_type: string
@@ -131,12 +134,14 @@ export type Database = {
           sponsor_user_id: string
           start_date?: string
           status?: string
+          tier?: string | null
           updated_at?: string | null
         }
         Update: {
           amount_paid?: number | null
           challenge_id?: string
           created_at?: string | null
+          credit_cost?: number | null
           end_date?: string | null
           id?: string
           package_type?: string
@@ -145,6 +150,7 @@ export type Database = {
           sponsor_user_id?: string
           start_date?: string
           status?: string
+          tier?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -153,6 +159,71 @@ export type Database = {
             columns: ["sponsor_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      credit_packages: {
+        Row: {
+          created_at: string | null
+          credits: number
+          id: string
+          name: string
+          price_eur: number
+          price_huf: number
+        }
+        Insert: {
+          created_at?: string | null
+          credits: number
+          id?: string
+          name: string
+          price_eur: number
+          price_huf: number
+        }
+        Update: {
+          created_at?: string | null
+          credits?: number
+          id?: string
+          name?: string
+          price_eur?: number
+          price_huf?: number
+        }
+        Relationships: []
+      }
+      credit_transactions: {
+        Row: {
+          created_at: string | null
+          credits: number
+          description: string | null
+          id: string
+          related_sponsorship_id: string | null
+          sponsor_user_id: string
+          transaction_type: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits: number
+          description?: string | null
+          id?: string
+          related_sponsorship_id?: string | null
+          sponsor_user_id: string
+          transaction_type: string
+        }
+        Update: {
+          created_at?: string | null
+          credits?: number
+          description?: string | null
+          id?: string
+          related_sponsorship_id?: string | null
+          sponsor_user_id?: string
+          transaction_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_transactions_related_sponsorship_id_fkey"
+            columns: ["related_sponsorship_id"]
+            isOneToOne: false
+            referencedRelation: "challenge_sponsorships"
             referencedColumns: ["id"]
           },
         ]
@@ -323,7 +394,7 @@ export type Database = {
           action: string
           created_at: string | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           new_data: Json | null
           old_data: Json | null
           record_id: string | null
@@ -335,7 +406,7 @@ export type Database = {
           action: string
           created_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           new_data?: Json | null
           old_data?: Json | null
           record_id?: string | null
@@ -347,13 +418,43 @@ export type Database = {
           action?: string
           created_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           new_data?: Json | null
           old_data?: Json | null
           record_id?: string | null
           table_name?: string | null
           user_agent?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      sponsor_credits: {
+        Row: {
+          available_credits: number | null
+          created_at: string | null
+          id: string
+          sponsor_user_id: string
+          total_credits: number
+          updated_at: string | null
+          used_credits: number
+        }
+        Insert: {
+          available_credits?: number | null
+          created_at?: string | null
+          id?: string
+          sponsor_user_id: string
+          total_credits?: number
+          updated_at?: string | null
+          used_credits?: number
+        }
+        Update: {
+          available_credits?: number | null
+          created_at?: string | null
+          id?: string
+          sponsor_user_id?: string
+          total_credits?: number
+          updated_at?: string | null
+          used_credits?: number
         }
         Relationships: []
       }
@@ -561,7 +662,7 @@ export type Database = {
     }
     Functions: {
       get_current_user_role: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: Database["public"]["Enums"]["user_role"]
       }
       get_organization_member_profiles: {
@@ -604,10 +705,7 @@ export type Database = {
           website_url: string
         }[]
       }
-      get_user_organization_id: {
-        Args: { _user_id: string }
-        Returns: string
-      }
+      get_user_organization_id: { Args: { _user_id: string }; Returns: string }
       get_user_primary_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
@@ -619,10 +717,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_profile_public: {
-        Args: { _profile_id: string }
-        Returns: boolean
-      }
+      is_profile_public: { Args: { _profile_id: string }; Returns: boolean }
     }
     Enums: {
       app_role:
