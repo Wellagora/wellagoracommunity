@@ -93,9 +93,9 @@ const SponsorshipPackageSelector: React.FC = () => {
           <CardContent className="pt-4 relative z-10">
             <ul className="space-y-3 mb-8 min-h-[200px]">
               {tier.features.map((feature, index) => (
-                <li key={index} className="text-sm font-medium text-foreground flex items-start group/item hover:translate-x-1 transition-transform duration-200">
-                  <span className={`bg-gradient-to-r ${getPackageGradient(key)} bg-clip-text text-transparent font-bold mr-2 text-lg`}>✓</span>
-                  <span className="group-hover/item:text-primary transition-colors duration-200">{feature}</span>
+                <li key={index} className="text-sm font-medium flex items-start group/item hover:translate-x-1 transition-transform duration-200">
+                  <span className={`bg-gradient-to-r ${getPackageGradient(key)} bg-clip-text text-transparent font-bold mr-2 text-lg flex-shrink-0`}>✓</span>
+                  <span className="text-gray-900 dark:text-gray-100">{feature}</span>
                 </li>
               ))}
             </ul>
