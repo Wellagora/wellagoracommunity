@@ -35,6 +35,7 @@ import {
   Calculator
 } from "lucide-react";
 import { challenges, Challenge } from "@/data/challenges";
+import { enrichChallengesWithSponsors } from "@/services/ChallengeSponsorshipService";
 
 const ChallengesPage = () => {
   const navigate = useNavigate();
@@ -44,6 +45,20 @@ const ChallengesPage = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("all");
   const [filteredChallenges, setFilteredChallenges] = useState<Challenge[]>(challenges);
+  const [enrichedChallenges, setEnrichedChallenges] = useState<Challenge[]>(challenges);
+  const [sponsorsLoading, setSponsorsLoading] = useState(true);
+
+  // Load sponsorship data
+  useEffect(() => {
+    const loadSponsors = async () => {
+      setSponsorsLoading(true);
+      const enriched = await enrichChallengesWithSponsors(challenges);
+      setEnrichedChallenges(enriched);
+      setSponsorsLoading(false);
+    };
+    
+    loadSponsors();
+  }, []);
 
   // Temporarily disable auth check to debug challenges display
   // useEffect(() => {
@@ -54,7 +69,7 @@ const ChallengesPage = () => {
 
   // Filter challenges based on search and filters
   useEffect(() => {
-    let filtered = [...challenges]; // Create a copy to avoid mutations
+    let filtered = [...enrichedChallenges]; // Use enriched challenges with sponsors
 
     console.log('Debug - All challenges count:', challenges.length);
     console.log('Debug - Challenges:', challenges);
@@ -83,7 +98,7 @@ const ChallengesPage = () => {
     console.log('Debug - Filtered challenges count:', filtered.length);
     console.log('Debug - Filtered challenges:', filtered);
     setFilteredChallenges(filtered);
-  }, [searchTerm, selectedCategory, selectedDifficulty, t]);
+  }, [searchTerm, selectedCategory, selectedDifficulty, t, enrichedChallenges]);
 
   const getCategoryIcon = (category: Challenge['category']) => {
     switch (category) {
