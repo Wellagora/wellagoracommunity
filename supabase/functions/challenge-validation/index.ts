@@ -162,7 +162,7 @@ serve(async (req) => {
       });
     }
 
-    if (action === 'get-user-handprint') {
+    if (validatedBody.action === 'get-user-handprint') {
       // Felhasználó összes aktivitásának összesítése
       const { data: activities, error: activitiesError } = await supabase
         .from('sustainability_activities')
