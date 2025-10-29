@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Shield, UserPlus, Trash2, Search } from 'lucide-react';
 
@@ -19,6 +20,7 @@ interface UserWithRoles {
 
 const UserRoleManager = () => {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [users, setUsers] = useState<UserWithRoles[]>([]);
   const [searchEmail, setSearchEmail] = useState('');
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
@@ -73,8 +75,8 @@ const UserRoleManager = () => {
   const assignRole = async () => {
     if (!selectedUserId || !selectedRole) {
       toast({
-        title: 'Hiányzó adatok',
-        description: 'Válassz felhasználót és szerepet',
+        title: t('users.missing_data'),
+        description: t('users.select_user_and_role'),
         variant: 'destructive'
       });
       return;
@@ -94,8 +96,8 @@ const UserRoleManager = () => {
       if (error) throw error;
 
       toast({
-        title: 'Szerep hozzárendelve',
-        description: 'A szerepet sikeresen hozzárendeltük a felhasználóhoz',
+        title: t('users.role_assigned'),
+        description: t('users.role_assigned_success'),
       });
 
       loadUsers();
@@ -104,8 +106,8 @@ const UserRoleManager = () => {
     } catch (error: any) {
       console.error('Error assigning role:', error);
       toast({
-        title: 'Hiba',
-        description: error.message || 'Nem sikerült hozzárendelni a szerepet',
+        title: t('users.error'),
+        description: error.message || t('users.assign_error'),
         variant: 'destructive'
       });
     }
@@ -122,16 +124,16 @@ const UserRoleManager = () => {
       if (error) throw error;
 
       toast({
-        title: 'Szerep eltávolítva',
-        description: 'A szerepet sikeresen eltávolítottuk',
+        title: t('users.role_removed'),
+        description: t('users.role_removed_success'),
       });
 
       loadUsers();
     } catch (error) {
       console.error('Error removing role:', error);
       toast({
-        title: 'Hiba',
-        description: 'Nem sikerült eltávolítani a szerepet',
+        title: t('users.error'),
+        description: t('users.remove_error'),
         variant: 'destructive'
       });
     }
@@ -161,10 +163,10 @@ const UserRoleManager = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="w-5 h-5" />
-            Felhasználói Szerepkezelés
+            {t('users.title')}
           </CardTitle>
           <CardDescription>
-            Szerepek hozzárendelése és eltávolítása felhasználóktól (csak super_admin)
+            {t('users.subtitle')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -172,7 +174,7 @@ const UserRoleManager = () => {
           <div className="flex items-center gap-2">
             <Search className="w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Keresés email vagy név alapján..."
+              placeholder={t('users.search_placeholder')}
               value={searchEmail}
               onChange={(e) => setSearchEmail(e.target.value)}
             />
@@ -181,10 +183,10 @@ const UserRoleManager = () => {
           {/* Assign Role */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted/50 rounded-lg">
             <div className="space-y-2">
-              <Label>Felhasználó</Label>
+              <Label>{t('users.select_user')}</Label>
               <Select value={selectedUserId || ''} onValueChange={setSelectedUserId}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Válassz felhasználót..." />
+                  <SelectValue placeholder={t('users.select_user_placeholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   {users.map(user => (
@@ -197,10 +199,10 @@ const UserRoleManager = () => {
             </div>
 
             <div className="space-y-2">
-              <Label>Szerep</Label>
+              <Label>{t('users.select_role')}</Label>
               <Select value={selectedRole} onValueChange={setSelectedRole}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Válassz szerepet..." />
+                  <SelectValue placeholder={t('users.select_role_placeholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="super_admin">Super Admin</SelectItem>
@@ -216,14 +218,14 @@ const UserRoleManager = () => {
             <div className="flex items-end">
               <Button onClick={assignRole} className="w-full">
                 <UserPlus className="w-4 h-4 mr-2" />
-                Szerep hozzárendelése
+                {t('users.assign_role')}
               </Button>
             </div>
           </div>
 
           {/* Users List */}
           <div className="space-y-2">
-            <h3 className="font-semibold mb-4">Felhasználók és szerepeik:</h3>
+            <h3 className="font-semibold mb-4">{t('users.users_and_roles')}</h3>
             {loading ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
@@ -238,7 +240,7 @@ const UserRoleManager = () => {
                     </div>
                     <div className="flex items-center gap-2 flex-wrap justify-end">
                       {user.roles.length === 0 ? (
-                        <Badge variant="outline">Nincs szerep</Badge>
+                        <Badge variant="outline">{t('users.no_role')}</Badge>
                       ) : (
                         user.roles.map(role => (
                           <div key={role} className="flex items-center gap-1">

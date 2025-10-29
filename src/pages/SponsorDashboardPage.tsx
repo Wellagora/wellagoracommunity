@@ -67,7 +67,7 @@ const SponsorDashboardPage = () => {
             className="bg-gradient-primary hover:shadow-glow"
             onClick={() => {
               // TODO: Navigate to credit purchase page
-              alert('Stripe integráció - Hamarosan elérhető!');
+              alert(t('sponsor.stripe_coming_soon'));
             }}
           >
             <ShoppingCart className="w-4 h-4 mr-2" />

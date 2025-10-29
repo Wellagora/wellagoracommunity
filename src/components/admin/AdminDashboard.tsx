@@ -7,6 +7,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { CheckCircle, XCircle, Clock, Sparkles, TrendingUp, Users, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import UserRoleManager from './UserRoleManager';
 
@@ -34,6 +35,7 @@ interface PendingChallenge {
 const AdminDashboard = () => {
   const { toast } = useToast();
   const { user, profile } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [pendingChallenges, setPendingChallenges] = useState<PendingChallenge[]>([]);
   const [loading, setLoading] = useState(true);
@@ -305,8 +307,8 @@ const AdminDashboard = () => {
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <CheckCircle className="w-16 h-16 text-green-600 mb-4" />
-                <h3 className="text-xl font-semibold mb-2">Minden kihívás jóváhagyva!</h3>
-                <p className="text-muted-foreground">Jelenleg nincs új kihívás moderálásra várva.</p>
+                <h3 className="text-xl font-semibold mb-2">{t('admin.all_approved')}</h3>
+                <p className="text-muted-foreground">{t('admin.no_pending')}</p>
               </CardContent>
             </Card>
           ) : (

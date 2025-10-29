@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Target, Trophy, Euro, TrendingUp, Check } from 'lucide-react';
 
@@ -54,6 +55,7 @@ const ChallengeSponsorshipModal = ({
   const [selectedPackage, setSelectedPackage] = useState<string>('bronze');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const handleSponsor = async () => {
     setIsSubmitting(true);
@@ -63,8 +65,8 @@ const ChallengeSponsorshipModal = ({
       
       if (!user) {
         toast({
-          title: 'Hiba',
-          description: 'Be kell jelentkezned a szponzoráláshoz',
+          title: t('admin.error'),
+          description: t('sponsorship.login_required'),
           variant: 'destructive'
         });
         return;
@@ -91,15 +93,17 @@ const ChallengeSponsorshipModal = ({
       if (error) throw error;
 
       toast({
-        title: 'Sikeres szponzorálás!',
-        description: `Most már szponzor vagy a "${challengeTitle}" kihíváson a(z) ${region} régióban.`
+        title: t('sponsorship.success'),
+        description: t('sponsorship.success_desc')
+          .replace('{challengeTitle}', challengeTitle)
+          .replace('{region}', region)
       });
 
       onOpenChange(false);
     } catch (error: any) {
       toast({
-        title: 'Hiba történt',
-        description: error.message || 'Nem sikerült a szponzorálás',
+        title: t('sponsorship.error'),
+        description: error.message || t('sponsorship.error_desc'),
         variant: 'destructive'
       });
     } finally {
@@ -113,10 +117,10 @@ const ChallengeSponsorshipModal = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Trophy className="w-6 h-6 text-primary" />
-            Kihívás szponzorálása
+            {t('sponsorship.title')}
           </DialogTitle>
           <DialogDescription>
-            Válassz szponzorálási csomagot a "{challengeTitle}" kihíváshoz
+            {t('sponsorship.subtitle').replace('{challengeTitle}', challengeTitle)}
           </DialogDescription>
         </DialogHeader>
 
@@ -126,12 +130,12 @@ const ChallengeSponsorshipModal = ({
               <div className="flex items-start gap-3">
                 <Target className="w-8 h-8 text-primary flex-shrink-0" />
                 <div>
-                  <h3 className="font-semibold mb-1">Miért szponzorálj?</h3>
+                  <h3 className="font-semibold mb-1">{t('sponsorship.why_sponsor')}</h3>
                   <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Növeld a cég láthatóságát a helyi közösségben</li>
-                    <li>• Támogasd a fenntarthatóságot és az ESG célokat</li>
-                    <li>• Építs kapcsolatot a környezettudatos fogyasztókkal</li>
-                    <li>• Mérhető eredmények az ESG beszámolókhoz</li>
+                    <li>• {t('sponsorship.benefit_1')}</li>
+                    <li>• {t('sponsorship.benefit_2')}</li>
+                    <li>• {t('sponsorship.benefit_3')}</li>
+                    <li>• {t('sponsorship.benefit_4')}</li>
                   </ul>
                 </div>
               </div>
@@ -139,7 +143,7 @@ const ChallengeSponsorshipModal = ({
           </Card>
 
           <div>
-            <h3 className="text-lg font-semibold mb-4">Válassz csomagot:</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('sponsorship.choose_package')}</h3>
             <RadioGroup value={selectedPackage} onValueChange={setSelectedPackage}>
               <div className="grid gap-4">
                 {packageOptions.map((pkg) => (
@@ -169,7 +173,7 @@ const ChallengeSponsorshipModal = ({
                         {selectedPackage === pkg.value && (
                           <Badge className="bg-primary">
                             <Check className="w-3 h-3 mr-1" />
-                            Kiválasztva
+                            {t('sponsorship.selected')}
                           </Badge>
                         )}
                       </div>
@@ -196,14 +200,14 @@ const ChallengeSponsorshipModal = ({
               onClick={() => onOpenChange(false)}
               className="flex-1"
             >
-              Mégse
+              {t('sponsorship.cancel')}
             </Button>
             <Button
               onClick={handleSponsor}
               disabled={isSubmitting}
               className="flex-1 bg-gradient-primary"
             >
-              {isSubmitting ? 'Feldolgozás...' : 'Szponzorálás indítása'}
+              {isSubmitting ? t('sponsorship.processing') : t('sponsorship.start')}
             </Button>
           </div>
         </div>

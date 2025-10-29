@@ -1,4 +1,5 @@
 import { useProject } from "@/contexts/ProjectContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   Select,
   SelectContent,
@@ -10,6 +11,7 @@ import { Building2 } from "lucide-react";
 
 export function ProjectSelector() {
   const { currentProject, userProjects, setCurrentProject, isLoading } = useProject();
+  const { t } = useLanguage();
 
   if (isLoading || userProjects.length === 0) {
     return null;
@@ -36,7 +38,7 @@ export function ProjectSelector() {
       <SelectTrigger className="w-[250px]">
         <div className="flex items-center gap-2">
           <Building2 className="h-4 w-4" />
-          <SelectValue placeholder="Válassz projektet" />
+          <SelectValue placeholder={t('project.select_project')} />
         </div>
       </SelectTrigger>
       <SelectContent>
