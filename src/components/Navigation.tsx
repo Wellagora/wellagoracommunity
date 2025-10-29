@@ -16,7 +16,8 @@ import {
   Zap,
   Edit3,
   CreditCard,
-  Shield
+  Shield,
+  Coins
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -229,13 +230,22 @@ const Navigation = () => {
                    <span className="text-sm">{t('nav.organization_label')}</span>
                 </Link>
                 {(profile?.user_role === 'business' || profile?.email === 'attila.kelemen@proself.org') && (
-                  <Link
-                    to="/business-sponsorship"
-                    className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-primary/20 to-success/20 border border-primary/30 rounded-xl hover:from-primary/30 hover:to-success/30 transition-all duration-300 font-medium text-primary"
-                  >
-                    <CreditCard className="w-4 h-4" />
-                    <span className="text-sm">{t('nav.sponsorship_label')}</span>
-                  </Link>
+                  <>
+                    <Link
+                      to="/business-sponsorship"
+                      className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-primary/20 to-success/20 border border-primary/30 rounded-xl hover:from-primary/30 hover:to-success/30 transition-all duration-300 font-medium text-primary"
+                    >
+                      <CreditCard className="w-4 h-4" />
+                      <span className="text-sm">{t('nav.sponsorship_label')}</span>
+                    </Link>
+                    <Link
+                      to="/sponsor-dashboard"
+                      className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-warning/20 to-accent/20 border border-warning/30 rounded-xl hover:from-warning/30 hover:to-accent/30 transition-all duration-300 font-medium text-warning"
+                    >
+                      <Coins className="w-4 h-4" />
+                      <span className="text-sm">{t('nav.sponsor_dashboard')}</span>
+                    </Link>
+                  </>
                 )}
               </>
             )}
