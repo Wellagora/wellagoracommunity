@@ -10,21 +10,31 @@ const SponsorshipPackageSelector: React.FC = () => {
 
   const getPackageIcon = (tier: string) => {
     switch (tier) {
-      case 'bronze': return <Award className="w-6 h-6 text-amber-600" />;
-      case 'silver': return <Star className="w-6 h-6 text-gray-500" />;
-      case 'gold': return <Crown className="w-6 h-6 text-yellow-500" />;
-      case 'diamond': return <Sparkles className="w-6 h-6 text-purple-500" />;
-      default: return <Award className="w-6 h-6" />;
+      case 'bronze': return <Award className="w-10 h-10 text-amber-500" strokeWidth={2.5} />;
+      case 'silver': return <Star className="w-10 h-10 text-slate-400" strokeWidth={2.5} />;
+      case 'gold': return <Crown className="w-10 h-10 text-yellow-400" strokeWidth={2.5} />;
+      case 'diamond': return <Sparkles className="w-10 h-10 text-purple-400" strokeWidth={2.5} />;
+      default: return <Award className="w-10 h-10" />;
     }
   };
 
   const getPackageGradient = (tier: string) => {
     switch (tier) {
-      case 'bronze': return 'from-orange-400/20 via-amber-500/20 to-orange-400/20 border-amber-400/50 shadow-lg shadow-amber-500/20';
-      case 'silver': return 'from-slate-400/20 via-gray-300/20 to-slate-400/20 border-slate-400/50 shadow-lg shadow-slate-400/20';
-      case 'gold': return 'from-yellow-400/20 via-amber-300/20 to-yellow-400/20 border-yellow-400/50 shadow-lg shadow-yellow-500/20';
-      case 'diamond': return 'from-purple-400/20 via-pink-400/20 to-purple-400/20 border-purple-400/50 shadow-lg shadow-purple-500/20';
-      default: return 'from-gray-50 to-gray-100 border-gray-200';
+      case 'bronze': return 'from-orange-500 via-amber-400 to-orange-600';
+      case 'silver': return 'from-slate-400 via-gray-300 to-slate-500';
+      case 'gold': return 'from-yellow-400 via-amber-300 to-yellow-500';
+      case 'diamond': return 'from-purple-500 via-pink-400 to-purple-600';
+      default: return 'from-gray-400 to-gray-600';
+    }
+  };
+
+  const getBackgroundGradient = (tier: string) => {
+    switch (tier) {
+      case 'bronze': return 'from-orange-50 via-amber-50 to-orange-100 dark:from-orange-950/40 dark:via-amber-950/40 dark:to-orange-900/40';
+      case 'silver': return 'from-slate-50 via-gray-50 to-slate-100 dark:from-slate-950/40 dark:via-gray-950/40 dark:to-slate-900/40';
+      case 'gold': return 'from-yellow-50 via-amber-50 to-yellow-100 dark:from-yellow-950/40 dark:via-amber-950/40 dark:to-yellow-900/40';
+      case 'diamond': return 'from-purple-50 via-pink-50 to-purple-100 dark:from-purple-950/40 dark:via-pink-950/40 dark:to-purple-900/40';
+      default: return 'from-gray-50 to-gray-100';
     }
   };
 
@@ -44,32 +54,36 @@ const SponsorshipPackageSelector: React.FC = () => {
         {Object.entries(packageTiers).map(([key, tier]) => (
         <Card 
           key={key} 
-          className={`relative overflow-hidden bg-gradient-to-br ${getPackageGradient(key)} ${
-            isCurrentPackage(key) ? 'ring-2 ring-primary' : ''
-          } hover:scale-105 transition-all duration-300`}
+          className={`relative overflow-hidden bg-gradient-to-br ${getBackgroundGradient(key)} border-2 ${
+            isCurrentPackage(key) ? 'ring-4 ring-primary ring-offset-2' : 'border-transparent'
+          } hover:scale-105 hover:shadow-2xl transition-all duration-300 group`}
         >
           {isCurrentPackage(key) && (
-            <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-primary text-white">
+            <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-primary to-success text-white z-10 shadow-lg">
               Jelenlegi csomag
             </Badge>
           )}
           
-          <CardHeader className="text-center pb-2 relative z-10">
-            <div className="flex justify-center mb-3">
-              <div className="p-3 rounded-full bg-gradient-to-br from-primary/20 to-success/20">
+          {/* Animated Background Gradient */}
+          <div className={`absolute inset-0 bg-gradient-to-br ${getPackageGradient(key)} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
+          
+          <CardHeader className="text-center pb-4 relative z-10">
+            <div className="flex justify-center mb-4 animate-fade-in">
+              <div className={`p-4 rounded-2xl bg-gradient-to-br ${getPackageGradient(key)} shadow-xl group-hover:scale-110 transition-transform duration-300`}>
                 {getPackageIcon(key)}
               </div>
             </div>
-            <CardTitle className="text-2xl font-bold mb-2">{tier.name}</CardTitle>
-            <div className="space-y-1">
-              <div className="text-3xl font-bold bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
-                {tier.priceHuf.toLocaleString()} <span className="text-xl">HUF</span>
+            <CardTitle className="text-2xl font-bold mb-3 group-hover:scale-105 transition-transform duration-200">{tier.name}</CardTitle>
+            <div className="space-y-2">
+              <div className={`text-4xl font-extrabold bg-gradient-to-r ${getPackageGradient(key)} bg-clip-text text-transparent animate-fade-in`}>
+                {tier.priceHuf.toLocaleString()}
               </div>
-              <div className="text-xl font-semibold text-foreground">
-                {tier.priceEur} <span className="text-base">EUR</span>
+              <div className="text-sm text-muted-foreground">HUF</div>
+              <div className="text-2xl font-bold text-foreground">
+                {tier.priceEur} <span className="text-base text-muted-foreground">EUR</span>
               </div>
-              <div className="inline-block px-4 py-1 bg-gradient-to-r from-primary to-success rounded-full mt-2">
-                <p className="text-sm font-bold text-white">
+              <div className={`inline-block px-5 py-2 bg-gradient-to-r ${getPackageGradient(key)} rounded-full mt-3 shadow-lg group-hover:shadow-xl transition-shadow duration-300`}>
+                <p className="text-base font-bold text-white">
                   {tier.credits} kredit
                 </p>
               </div>
@@ -77,20 +91,20 @@ const SponsorshipPackageSelector: React.FC = () => {
           </CardHeader>
           
           <CardContent className="pt-4 relative z-10">
-            <ul className="space-y-2 mb-6 min-h-[200px]">
+            <ul className="space-y-3 mb-8 min-h-[200px]">
               {tier.features.map((feature, index) => (
-                <li key={index} className="text-sm font-medium text-foreground flex items-start">
-                  <span className="text-primary mr-2">✓</span>
-                  <span>{feature}</span>
+                <li key={index} className="text-sm font-medium text-foreground flex items-start group/item hover:translate-x-1 transition-transform duration-200">
+                  <span className={`bg-gradient-to-r ${getPackageGradient(key)} bg-clip-text text-transparent font-bold mr-2 text-lg`}>✓</span>
+                  <span className="group-hover/item:text-primary transition-colors duration-200">{feature}</span>
                 </li>
               ))}
             </ul>
             
             <Button 
-              className={`w-full font-bold ${
+              className={`w-full h-12 font-bold text-base shadow-lg hover:shadow-xl transition-all duration-300 ${
                 isCurrentPackage(key) 
-                  ? 'bg-gradient-to-r from-success to-primary' 
-                  : 'bg-gradient-to-r from-primary to-success hover:shadow-xl'
+                  ? `bg-gradient-to-r ${getPackageGradient(key)} text-white` 
+                  : `bg-gradient-to-r ${getPackageGradient(key)} text-white hover:scale-105`
               }`}
               disabled={isCurrentPackage(key)}
               onClick={() => {
@@ -99,7 +113,7 @@ const SponsorshipPackageSelector: React.FC = () => {
                 }
               }}
             >
-              {isCurrentPackage(key) ? 'Aktív csomag' : 'Csomag választása'}
+              {isCurrentPackage(key) ? '✓ Aktív csomag' : 'Csomag választása →'}
             </Button>
           </CardContent>
         </Card>
