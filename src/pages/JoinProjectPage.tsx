@@ -63,8 +63,8 @@ export default function JoinProjectPage() {
 
       if (!data) {
         toast({
-          title: "Projekt nem található",
-          description: "Ez a projekt nem létezik vagy nem aktív.",
+          title: t('join.project_not_found'),
+          description: t('join.project_not_exist'),
           variant: "destructive",
         });
         navigate("/");
@@ -74,7 +74,7 @@ export default function JoinProjectPage() {
       setProject(data);
     } catch (error: any) {
       toast({
-        title: "Hiba",
+        title: t('join.error'),
         description: error.message,
         variant: "destructive",
       });
@@ -98,8 +98,8 @@ export default function JoinProjectPage() {
       if (data) {
         // Already a member, redirect to dashboard
         toast({
-          title: "Már tag vagy!",
-          description: `Már csatlakoztál a(z) ${project.name} projekthez.`,
+          title: t('join.already_member'),
+          description: t('join.already_joined').replace('{projectName}', project.name),
         });
         navigate("/dashboard");
       }
@@ -131,7 +131,7 @@ export default function JoinProjectPage() {
       if (signUpError) throw signUpError;
 
       if (!authData.user) {
-        throw new Error("Regisztráció sikertelen");
+        throw new Error(t('join.registration_failed'));
       }
 
       // Add to project
@@ -152,14 +152,14 @@ export default function JoinProjectPage() {
       if (profileError) throw profileError;
 
       toast({
-        title: "Sikeres regisztráció!",
-        description: `Csatlakoztál a(z) ${project.name} projekthez!`,
+        title: t('join.success'),
+        description: t('join.success_desc').replace('{projectName}', project.name),
       });
 
       navigate("/dashboard");
     } catch (error: any) {
       toast({
-        title: "Hiba",
+        title: t('join.error'),
         description: error.message,
         variant: "destructive",
       });
@@ -197,14 +197,14 @@ export default function JoinProjectPage() {
       }
 
       toast({
-        title: "Sikeres csatlakozás!",
-        description: `Csatlakoztál a(z) ${project.name} projekthez!`,
+        title: t('join.join_success'),
+        description: t('join.join_success_desc').replace('{projectName}', project.name),
       });
 
       navigate("/dashboard");
     } catch (error: any) {
       toast({
-        title: "Hiba",
+        title: t('join.error'),
         description: error.message,
         variant: "destructive",
       });
@@ -239,7 +239,7 @@ export default function JoinProjectPage() {
                   </CardDescription>
                 </div>
                 <Badge variant="default" className="text-sm">
-                  Aktív projekt
+                  {t('join.active_project')}
                 </Badge>
               </div>
             </CardHeader>
@@ -251,7 +251,7 @@ export default function JoinProjectPage() {
                 <div>
                   <p className="text-sm font-semibold mb-2 flex items-center gap-2">
                     <Users className="h-4 w-4" />
-                    Részt vevő települések:
+                    {t('join.participating_villages')}
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {project.villages.map((village, index) => (
@@ -269,9 +269,9 @@ export default function JoinProjectPage() {
           {user ? (
             <Card>
               <CardHeader>
-                <CardTitle>Csatlakozás a projekthez</CardTitle>
+                <CardTitle>{t('join.join_project')}</CardTitle>
                 <CardDescription>
-                  Már be vagy jelentkezve. Csatlakozz a projekthez!
+                  {t('join.already_logged_in')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -279,10 +279,10 @@ export default function JoinProjectPage() {
                   {joining ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Csatlakozás...
+                      {t('join.joining')}
                     </>
                   ) : (
-                    "Csatlakozás most"
+                    t('join.join_now')
                   )}
                 </Button>
               </CardContent>
@@ -290,16 +290,16 @@ export default function JoinProjectPage() {
           ) : (
             <Card>
               <CardHeader>
-                <CardTitle>Regisztráció a projekthez</CardTitle>
+                <CardTitle>{t('join.register_title')}</CardTitle>
                 <CardDescription>
-                  Hozz létre egy fiókot és csatlakozz a közösséghez!
+                  {t('join.register_desc')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="firstName">Keresztnév</Label>
+                      <Label htmlFor="firstName">{t('join.first_name')}</Label>
                       <Input
                         id="firstName"
                         value={firstName}
@@ -308,7 +308,7 @@ export default function JoinProjectPage() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="lastName">Vezetéknév</Label>
+                      <Label htmlFor="lastName">{t('join.last_name')}</Label>
                       <Input
                         id="lastName"
                         value={lastName}
@@ -319,7 +319,7 @@ export default function JoinProjectPage() {
                   </div>
 
                   <div>
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">{t('join.email')}</Label>
                     <Input
                       id="email"
                       type="email"
@@ -330,7 +330,7 @@ export default function JoinProjectPage() {
                   </div>
 
                   <div>
-                    <Label htmlFor="password">Jelszó</Label>
+                    <Label htmlFor="password">{t('join.password')}</Label>
                     <Input
                       id="password"
                       type="password"
@@ -342,17 +342,17 @@ export default function JoinProjectPage() {
                   </div>
 
                   <div>
-                    <Label htmlFor="userRole">Kategória</Label>
+                    <Label htmlFor="userRole">{t('join.user_role')}</Label>
                     <select
                       id="userRole"
                       value={userRole}
                       onChange={(e) => setUserRole(e.target.value as any)}
                       className="w-full p-2 border rounded-md"
                     >
-                      <option value="citizen">Lakos</option>
-                      <option value="business">Vállalkozás</option>
-                      <option value="ngo">Civil szervezet</option>
-                      <option value="government">Önkormányzat/Intézmény</option>
+                      <option value="citizen">{t('join.role.citizen')}</option>
+                      <option value="business">{t('join.role.business')}</option>
+                      <option value="ngo">{t('join.role.ngo')}</option>
+                      <option value="government">{t('join.role.government')}</option>
                     </select>
                   </div>
 
@@ -360,17 +360,17 @@ export default function JoinProjectPage() {
                     {joining ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Regisztráció...
+                        {t('join.registering')}
                       </>
                     ) : (
-                      "Regisztráció és csatlakozás"
+                      t('join.register_button')
                     )}
                   </Button>
 
                   <p className="text-sm text-center text-muted-foreground">
-                    Már van fiókod?{" "}
+                    {t('join.already_have_account')}{" "}
                     <Button variant="link" className="p-0" onClick={() => navigate("/auth")}>
-                      Jelentkezz be
+                      {t('join.login')}
                     </Button>
                   </p>
                 </form>
