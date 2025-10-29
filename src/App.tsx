@@ -21,6 +21,7 @@ import PublicOrganizationPage from "@/pages/PublicOrganizationPage";
 import AdminDashboardPage from "@/pages/AdminDashboardPage";
 import HandprintCalculatorPage from "@/pages/HandprintCalculatorPage";
 import SponsorDashboardPage from "@/pages/SponsorDashboardPage";
+import ProjectAdminPage from "@/pages/ProjectAdminPage";
 import "./index.css";
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
                 <Route path="/organization/:organizationId" element={<PublicOrganizationPage />} />
                 <Route path="/business-sponsorship" element={<BusinessSponsorshipPage />} />
                 <Route path="/sponsor-dashboard" element={<SponsorDashboardPage />} />
+                <Route path="/project-admin" element={<ProjectAdminPage />} />
               </Routes>
               <Toaster />
               <SonnerToaster />
