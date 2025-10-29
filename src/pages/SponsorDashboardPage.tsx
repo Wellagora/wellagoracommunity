@@ -56,10 +56,10 @@ const SponsorDashboardPage = () => {
               <ArrowLeft className="w-4 h-4 mr-2" />
               {t('common.back_to_dashboard')}
             </Button>
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-foreground">
               {t('sponsor.dashboard_title')}
             </h1>
-            <p className="text-muted-foreground mt-2">
+            <p className="text-gray-700 dark:text-muted-foreground mt-2">
               {t('sponsor.dashboard_subtitle')}
             </p>
           </div>
