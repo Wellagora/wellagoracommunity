@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   MapPin, 
   Users, 
@@ -33,6 +34,7 @@ interface Stakeholder {
 
 const InteractiveMap = () => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [selectedStakeholder, setSelectedStakeholder] = useState<Stakeholder | null>(null);
   const [mapView, setMapView] = useState<'registered' | 'motivation'>('registered');
 
@@ -114,11 +116,11 @@ const InteractiveMap = () => {
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'citizen': return 'Állampolgár';
-      case 'business': return 'Vállalkozás';
-      case 'government': return 'Önkormányzat';
-      case 'ngo': return 'Civil Szervezet';
-      default: return 'Stakeholder';
+      case 'citizen': return t('matching.type.citizen');
+      case 'business': return t('matching.type.business');
+      case 'government': return t('matching.type.government');
+      case 'ngo': return t('matching.type.ngo');
+      default: return t('matching.stakeholder');
     }
   };
 
@@ -130,7 +132,7 @@ const InteractiveMap = () => {
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Globe className="w-5 h-5 text-primary" />
-              <span>Interaktív Stakeholder Térkép</span>
+              <span>{t('map.interactive_stakeholder_map')}</span>
             </div>
             <div className="flex items-center space-x-2">
               <Button
@@ -138,14 +140,14 @@ const InteractiveMap = () => {
                 size="sm"
                 onClick={() => setMapView('registered')}
               >
-                Regisztrált Partnerek
+                {t('map.registered_partners')}
               </Button>
               <Button
                 variant={mapView === 'motivation' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setMapView('motivation')}
               >
-                Potenciális Partnerek
+                {t('map.potential_partners')}
               </Button>
             </div>
           </CardTitle>
@@ -156,10 +158,10 @@ const InteractiveMap = () => {
               <div className="bg-gradient-to-r from-primary/10 to-success/10 p-6 rounded-lg border border-primary/20">
                 <div className="text-center mb-4">
                   <h3 className="text-xl font-semibold text-foreground mb-2">
-                    Magyarország Fenntartható Térképe
+                    {t('map.hungary_sustainable_map')}
                   </h3>
                   <p className="text-muted-foreground">
-                    {registeredStakeholders.length} aktív stakeholder országszerte
+                    {registeredStakeholders.length} {t('map.active_stakeholders_nationwide')}
                   </p>
                 </div>
                 
@@ -194,8 +196,8 @@ const InteractiveMap = () => {
                   
                   <div className="relative z-10">
                     <div className="absolute top-4 left-4 bg-background/90 backdrop-blur-sm p-3 rounded-lg border border-border">
-                      <h4 className="font-semibold mb-1">Magyarország</h4>
-                      <p className="text-sm text-muted-foreground">Fenntartható Stakeholder Térkép</p>
+                      <h4 className="font-semibold mb-1">{t('map.hungary')}</h4>
+                      <p className="text-sm text-muted-foreground">{t('map.sustainable_stakeholder_map')}</p>
                     </div>
                   </div>
                   
@@ -262,7 +264,7 @@ const InteractiveMap = () => {
                         </div>
                         <div className="text-right">
                           <div className="text-lg font-bold text-primary">{stakeholder.sustainabilityScore}</div>
-                          <div className="text-xs text-muted-foreground">Fenntart. pontszám</div>
+                          <div className="text-xs text-muted-foreground">{t('map.sustainability_score')}</div>
                         </div>
                       </div>
                     </CardContent>
@@ -276,18 +278,18 @@ const InteractiveMap = () => {
               <div className="bg-gradient-to-r from-warning/10 to-accent/10 p-6 rounded-lg border border-warning/20">
                 <div className="text-center mb-6">
                   <h3 className="text-xl font-semibold text-foreground mb-2">
-                    Csatlakozz a Térképhez!
+                    {t('map.join_the_map')}
                   </h3>
                   <p className="text-muted-foreground mb-4">
-                    Még nem regisztrált stakeholderek a területeden - ez a te lehetőséged a vezetésre!
+                    {t('map.unregistered_stakeholders_opportunity')}
                   </p>
                   {!user && (
                     <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
                       <p className="text-sm font-medium text-primary mb-3">
-                        🚀 Regisztrálj most és jelenj meg az interaktív térképen!
+                        {t('map.register_now_appear_on_map')}
                       </p>
                       <Button className="bg-gradient-to-r from-primary to-success">
-                        Regisztráció és Térképre Kerülés
+                        {t('map.register_and_appear_on_map')}
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </Button>
                     </div>
@@ -298,7 +300,7 @@ const InteractiveMap = () => {
                 <div>
                   <h4 className="font-semibold mb-4 flex items-center">
                     <Users className="w-5 h-5 mr-2 text-warning" />
-                    Potenciális Partnerek (Még nem regisztráltak)
+                    {t('map.potential_partners_not_registered')}
                   </h4>
                   <div className="grid md:grid-cols-2 gap-4">
                     {nonRegisteredStakeholders.map((stakeholder, index) => (
@@ -315,16 +317,16 @@ const InteractiveMap = () => {
                               </div>
                             </div>
                             <Badge variant="outline" className="border-warning text-warning">
-                              {stakeholder.potential} potenciál
+                              {stakeholder.potential} {t('map.potential')}
                             </Badge>
                           </div>
                           <div className="mt-3 pt-3 border-t border-dashed border-muted-foreground/20">
                             <p className="text-xs text-muted-foreground mb-2">
-                              Ez a szervezet még nem csatlakozott a platformhoz
+                              {t('map.organization_not_joined_yet')}
                             </p>
                             <Button size="sm" variant="outline" className="w-full border-warning text-warning hover:bg-warning/10">
                               <Plus className="w-3 h-3 mr-1" />
-                              Hívd meg a csatlakozásra
+                              {t('map.invite_to_join')}
                             </Button>
                           </div>
                         </CardContent>
@@ -339,25 +341,25 @@ const InteractiveMap = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center text-primary">
                     <Star className="w-5 h-5 mr-2" />
-                    Miért érdemes regisztrálni?
+                    {t('map.why_register')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid md:grid-cols-3 gap-4">
                     <div className="text-center p-4 bg-primary/5 rounded-lg">
                       <MapPin className="w-8 h-8 text-primary mx-auto mb-2" />
-                      <h4 className="font-semibold mb-1">Láthatóság</h4>
-                      <p className="text-sm text-muted-foreground">Megjelenés az országos térképen</p>
+                      <h4 className="font-semibold mb-1">{t('map.visibility')}</h4>
+                      <p className="text-sm text-muted-foreground">{t('map.visibility_desc')}</p>
                     </div>
                     <div className="text-center p-4 bg-success/5 rounded-lg">
                       <Users className="w-8 h-8 text-success mx-auto mb-2" />
-                      <h4 className="font-semibold mb-1">Kapcsolatok</h4>
-                      <p className="text-sm text-muted-foreground">Partnerek megtalálása közelben</p>
+                      <h4 className="font-semibold mb-1">{t('map.connections')}</h4>
+                      <p className="text-sm text-muted-foreground">{t('map.connections_desc')}</p>
                     </div>
                     <div className="text-center p-4 bg-accent/5 rounded-lg">
                       <Leaf className="w-8 h-8 text-accent mx-auto mb-2" />
-                      <h4 className="font-semibold mb-1">Hatás</h4>
-                      <p className="text-sm text-muted-foreground">Fenntartható projektek együtt</p>
+                      <h4 className="font-semibold mb-1">{t('map.impact')}</h4>
+                      <p className="text-sm text-muted-foreground">{t('map.impact_desc')}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -384,33 +386,33 @@ const InteractiveMap = () => {
           <CardContent>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="space-y-4">
-                <h4 className="font-semibold">Fenntarthatósági Profil</h4>
+                <h4 className="font-semibold">{t('map.sustainability_profile')}</h4>
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-sm">Fenntarthatósági pontszám</span>
+                    <span className="text-sm">{t('map.sustainability_score')}</span>
                     <span className="font-semibold text-primary">{selectedStakeholder.sustainabilityScore}/100</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm">Aktív projektek</span>
+                    <span className="text-sm">{t('map.active_projects')}</span>
                     <span className="font-medium">{selectedStakeholder.activeProjects}</span>
                   </div>
                 </div>
               </div>
               
               <div className="space-y-4">
-                <h4 className="font-semibold">Hatás Métrikus</h4>
+                <h4 className="font-semibold">{t('map.impact_metrics')}</h4>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm flex items-center">
                       <Leaf className="w-4 h-4 mr-1 text-success" />
-                      CO₂ megtakarítás
+                      {t('map.co2_savings')}
                     </span>
                     <span className="font-semibold text-success">{selectedStakeholder.impact.co2Saved} kg</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm flex items-center">
                       <Users className="w-4 h-4 mr-1 text-primary" />
-                      Kapcsolt partnerek
+                      {t('map.connected_partners')}
                     </span>
                     <span className="font-semibold">{selectedStakeholder.impact.partnersConnected}</span>
                   </div>
@@ -418,14 +420,14 @@ const InteractiveMap = () => {
               </div>
               
               <div className="space-y-4">
-                <h4 className="font-semibold">Lehetőségek</h4>
+                <h4 className="font-semibold">{t('map.opportunities')}</h4>
                 <div className="space-y-2">
                   <Button size="sm" className="w-full">
                     <Heart className="w-4 h-4 mr-2" />
-                    Kapcsolat felvétel
+                    {t('map.contact')}
                   </Button>
                   <Button size="sm" variant="outline" className="w-full">
-                    Együttműködés ajánlása
+                    {t('map.propose_collaboration')}
                   </Button>
                 </div>
               </div>
