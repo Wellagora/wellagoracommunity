@@ -136,7 +136,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
           {/* Role Selection */}
           <div className="space-y-2">
             <Label htmlFor="role">Choose Your Role</Label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               {userRoles.map((role) => {
                 const Icon = role.icon;
                 return (
@@ -144,17 +144,15 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
                     key={role.id}
                     type="button"
                     onClick={() => handleRoleSelect(role.id)}
-                    className={`p-2 sm:p-3 border rounded-lg text-left transition-all hover:border-primary min-h-[70px] sm:min-h-[80px] flex flex-col justify-center ${
+                    className={`p-2 sm:p-3 border rounded-lg text-center transition-all hover:border-primary min-h-[85px] sm:min-h-[90px] flex flex-col items-center justify-center ${
                       watchedRole === role.id 
                         ? "border-primary bg-primary/5 shadow-sm" 
                         : "border-border hover:bg-muted/50"
                     }`}
                   >
-                    <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1">
-                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
-                      <span className="font-medium text-xs sm:text-sm leading-tight break-words hyphens-auto" lang="de">{role.name}</span>
-                    </div>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground leading-tight break-words line-clamp-2">{role.description}</p>
+                    <Icon className="w-8 h-8 sm:w-10 sm:h-10 mb-1.5 sm:mb-2" />
+                    <span className="font-medium text-[11px] sm:text-sm leading-tight break-words w-full px-1">{role.name}</span>
+                    <p className="text-[9px] sm:text-xs text-muted-foreground leading-tight mt-0.5 sm:mt-1 line-clamp-2 w-full px-0.5">{role.description}</p>
                   </button>
                 );
               })}
