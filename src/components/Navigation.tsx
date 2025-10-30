@@ -441,6 +441,11 @@ const Navigation = () => {
                   </Link>
                 </div>
               )}
+              
+              {/* Language Selector - Mobile */}
+              <div className="px-3 py-3 border-t border-border mt-3 pt-3">
+                <LanguageSelector />
+              </div>
             </div>
           </div>
         )}
