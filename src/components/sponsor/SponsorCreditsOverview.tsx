@@ -126,7 +126,7 @@ const SponsorCreditsOverview = () => {
           <Card className="bg-gradient-to-br from-success/10 to-success/5 border-success/20">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Elért Emberek
+                {t('sponsor.people_reached')}
               </CardTitle>
               <Users className="h-4 w-4 text-success" />
             </CardHeader>
@@ -135,7 +135,7 @@ const SponsorCreditsOverview = () => {
                 {metrics.total_participants.toLocaleString()}
               </div>
               <p className="text-xs text-muted-foreground">
-                {metrics.total_completions} teljesítés
+                {metrics.total_completions} {t('sponsor.completions')}
               </p>
             </CardContent>
           </Card>
@@ -143,7 +143,7 @@ const SponsorCreditsOverview = () => {
           <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                CO₂ Megtakarítás
+                {t('sponsor.co2_savings')}
               </CardTitle>
               <Leaf className="h-4 w-4 text-primary" />
             </CardHeader>
@@ -152,7 +152,7 @@ const SponsorCreditsOverview = () => {
                 {metrics.total_co2_saved.toFixed(1)} kg
               </div>
               <p className="text-xs text-muted-foreground">
-                ≈ {metrics.trees_equivalent.toFixed(1)} fa
+                ≈ {metrics.trees_equivalent.toFixed(1)} {t('sponsor.trees')}
               </p>
             </CardContent>
           </Card>
@@ -160,7 +160,7 @@ const SponsorCreditsOverview = () => {
           <Card className="bg-gradient-to-br from-warning/10 to-warning/5 border-warning/20">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Pontok Osztva
+                {t('sponsor.points_distributed')}
               </CardTitle>
               <Award className="h-4 w-4 text-warning" />
             </CardHeader>
@@ -169,7 +169,7 @@ const SponsorCreditsOverview = () => {
                 {metrics.total_points_distributed.toLocaleString()}
               </div>
               <p className="text-xs text-muted-foreground">
-                gamifikációs pontok
+                {t('sponsor.gamification_points')}
               </p>
             </CardContent>
           </Card>
@@ -177,7 +177,7 @@ const SponsorCreditsOverview = () => {
           <Card className="bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Validációs Pontosság
+                {t('sponsor.validation_accuracy')}
               </CardTitle>
               <TrendingUp className="h-4 w-4 text-accent" />
             </CardHeader>
@@ -186,7 +186,7 @@ const SponsorCreditsOverview = () => {
                 {(metrics.average_validation_score * 100).toFixed(0)}%
               </div>
               <p className="text-xs text-muted-foreground">
-                átlagos megbízhatóság
+                {t('sponsor.average_reliability')}
               </p>
             </CardContent>
           </Card>
@@ -198,7 +198,7 @@ const SponsorCreditsOverview = () => {
         <CardHeader>
           <CardTitle>{t('sponsor.credit_usage')}</CardTitle>
           <CardDescription>
-            Valós idejű adatok az adatbázisból • {metrics?.active_sponsorships || 0} aktív szponzoráció
+            {t('sponsor.realtime_data')} • {metrics?.active_sponsorships || 0} {t('sponsor.active_sponsorships_count')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

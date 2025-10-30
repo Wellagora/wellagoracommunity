@@ -141,61 +141,61 @@ const SponsorActiveSponsorships = () => {
                     {sponsorship.total_completions > 0 ? (
                       <div className="border-t pt-4">
                         <div className="text-xs font-semibold text-muted-foreground mb-3 uppercase flex items-center gap-2">
-                          <span>🎯 Valós Hatás (Adatbázisból)</span>
+                          <span>🎯 {t('sponsor.real_impact_from_db')}</span>
                           <Badge variant="outline" className="text-xs">
-                            {(sponsorship.average_validation_score * 100).toFixed(0)}% pontosság
+                            {(sponsorship.average_validation_score * 100).toFixed(0)}% {t('sponsor.accuracy')}
                           </Badge>
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                           <div className="space-y-1">
                             <div className="flex items-center gap-2 text-success">
                               <Users className="w-4 h-4" />
-                              <span className="text-xs font-medium">Résztvevők</span>
+                              <span className="text-xs font-medium">{t('sponsor.participants')}</span>
                             </div>
                             <p className="text-xl font-bold text-success">
                               {sponsorship.total_participants}
                             </p>
                             <p className="text-xs text-muted-foreground">
-                              {sponsorship.total_completions} teljesítés
+                              {sponsorship.total_completions} {t('sponsor.completions')}
                             </p>
                           </div>
 
                           <div className="space-y-1">
                             <div className="flex items-center gap-2 text-primary">
                               <Leaf className="w-4 h-4" />
-                              <span className="text-xs font-medium">CO₂ Hatás</span>
+                              <span className="text-xs font-medium">{t('sponsor.co2_impact')}</span>
                             </div>
                             <p className="text-xl font-bold text-primary">
                               {sponsorship.total_co2_saved.toFixed(1)} kg
                             </p>
                             <p className="text-xs text-muted-foreground">
-                              ≈ {sponsorship.trees_equivalent.toFixed(1)} fa
+                              ≈ {sponsorship.trees_equivalent.toFixed(1)} {t('sponsor.trees')}
                             </p>
                           </div>
 
                           <div className="space-y-1">
                             <div className="flex items-center gap-2 text-warning">
                               <Award className="w-4 h-4" />
-                              <span className="text-xs font-medium">Pontok</span>
+                              <span className="text-xs font-medium">{t('sponsor.points')}</span>
                             </div>
                             <p className="text-xl font-bold text-warning">
                               {sponsorship.total_points_earned.toLocaleString()}
                             </p>
                             <p className="text-xs text-muted-foreground">
-                              gamifikáció
+                              {t('sponsor.gamification')}
                             </p>
                           </div>
 
                           <div className="space-y-1">
                             <div className="flex items-center gap-2 text-accent">
                               <TrendingUp className="w-4 h-4" />
-                              <span className="text-xs font-medium">Átlagos Kéznyom</span>
+                              <span className="text-xs font-medium">{t('sponsor.average_handprint')}</span>
                             </div>
                             <p className="text-xl font-bold text-accent">
                               {(sponsorship.total_co2_saved / sponsorship.total_participants).toFixed(1)} kg
                             </p>
                             <p className="text-xs text-muted-foreground">
-                              per résztvevő
+                              {t('sponsor.per_participant')}
                             </p>
                           </div>
                         </div>
@@ -204,7 +204,7 @@ const SponsorActiveSponsorships = () => {
                         {Object.keys(sponsorship.activities_by_type).length > 0 && (
                           <div className="mt-4 pt-4 border-t">
                             <div className="text-xs font-semibold text-muted-foreground mb-2">
-                              Aktivitás típusok:
+                              {t('sponsor.activity_types')}
                             </div>
                             <div className="flex flex-wrap gap-2">
                               {Object.entries(sponsorship.activities_by_type).map(([type, data]) => (
@@ -219,7 +219,7 @@ const SponsorActiveSponsorships = () => {
                     ) : (
                       <div className="border-t pt-4 text-center">
                         <p className="text-sm text-muted-foreground">
-                          Még nincs teljesítés ehhez a kihíváshoz
+                          {t('sponsor.no_completions_yet')}
                         </p>
                       </div>
                     )}
