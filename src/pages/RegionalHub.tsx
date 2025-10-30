@@ -284,13 +284,13 @@ const RegionalHub = () => {
           <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
             <Globe className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
             <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-foreground">
-              {selectedRegion ? selectedRegion.displayName : 'Regionális Központ'}
+              {selectedRegion ? selectedRegion.displayName : t('regional.title')}
             </h1>
           </div>
           <p className="text-sm sm:text-base md:text-xl text-muted-foreground max-w-3xl mx-auto mb-4 sm:mb-6 px-4">
             {selectedRegion 
-              ? 'Partnerek, kihívások és szponzorálási lehetőségek egy helyen'
-              : 'Válassz régiót a fenntartható együttműködésekhez'
+              ? t('regional.subtitle_selected')
+              : t('regional.subtitle_choose')
             }
           </p>
           
@@ -303,10 +303,10 @@ const RegionalHub = () => {
                 📍 {selectedRegion.displayName}
               </Badge>
               <Badge variant="secondary" className="bg-success/20 text-success text-xs sm:text-sm">
-                {filteredProfiles.filter(p => p.isRegistered).length} regisztrált
+                {filteredProfiles.filter(p => p.isRegistered).length} {t('regional.registered')}
               </Badge>
               <Badge variant="secondary" className="bg-warning/20 text-warning text-xs sm:text-sm">
-                {filteredProfiles.filter(p => !p.isRegistered).length} potenciális
+                {filteredProfiles.filter(p => !p.isRegistered).length} {t('regional.potential')}
               </Badge>
             </div>
           )}
@@ -321,10 +321,10 @@ const RegionalHub = () => {
             <div className="text-center py-12 sm:py-20 px-4">
               <Map className="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 text-primary opacity-50" />
               <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-3 sm:mb-4">
-                Válassz régiót
+                {t('regional.choose_region')}
               </h2>
               <p className="text-sm sm:text-base md:text-lg text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto">
-                Fedezd fel a helyi fenntarthatósági ökoszisztémát, találj partnereket és támogass regionális kezdeményezéseket.
+                {t('regional.choose_region_desc')}
               </p>
               <Button 
                 size="lg"
@@ -332,7 +332,7 @@ const RegionalHub = () => {
                 className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-sm sm:text-base"
               >
                 <Search className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                Régió kiválasztása
+                {t('regional.select_region_button')}
               </Button>
             </div>
           ) : (
@@ -340,18 +340,18 @@ const RegionalHub = () => {
               <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3 h-auto">
                 <TabsTrigger value="stakeholders" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
                   <Users className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline">Partnerek</span>
-                  <span className="sm:hidden">Part.</span>
+                  <span className="hidden sm:inline">{t('regional.partners')}</span>
+                  <span className="sm:hidden">{t('regional.partners_short')}</span>
                 </TabsTrigger>
                 <TabsTrigger value="challenges" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
                   <Target className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline">Kihívások</span>
-                  <span className="sm:hidden">Kih.</span>
+                  <span className="hidden sm:inline">{t('regional.challenges')}</span>
+                  <span className="sm:hidden">{t('regional.challenges_short')}</span>
                 </TabsTrigger>
                 <TabsTrigger value="sponsorship" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
                   <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline">Szponzorálás</span>
-                  <span className="sm:hidden">Szp.</span>
+                  <span className="hidden sm:inline">{t('regional.sponsorship')}</span>
+                  <span className="sm:hidden">{t('regional.sponsorship_short')}</span>
                 </TabsTrigger>
               </TabsList>
 
@@ -387,7 +387,7 @@ const RegionalHub = () => {
                   }))}
                   onStakeholderClick={(stakeholder) => {
                     toast({
-                      title: "Stakeholder kiválasztva",
+                      title: t('regional.stakeholder_selected'),
                       description: stakeholder.name,
                     });
                   }}
@@ -408,7 +408,7 @@ const RegionalHub = () => {
                             </div>
                           </div>
                           <Badge className={profile.isRegistered ? "bg-success/20 text-success" : "bg-warning/20 text-warning"}>
-                            {profile.isRegistered ? "Regisztrált" : "Potenciális"}
+                            {profile.isRegistered ? t('regional.registered_badge') : t('regional.potential_badge')}
                           </Badge>
                         </div>
                       </CardHeader>
@@ -424,11 +424,11 @@ const RegionalHub = () => {
                         </div>
                         <Button className="w-full" size="sm" onClick={() => {
                           toast({
-                            title: profile.isRegistered ? "Kapcsolatfelvétel" : "Meghívás küldése",
-                            description: `${profile.isRegistered ? "Hamarosan" : "Meghívó küldése"} - ${profile.name}`,
+                            title: profile.isRegistered ? t('regional.contact') : t('regional.send_invite'),
+                            description: `${profile.isRegistered ? t('regional.coming_soon') : t('regional.sending_invite')} - ${profile.name}`,
                           });
                         }}>
-                          {profile.isRegistered ? "Kapcsolatfelvétel" : "Meghívás küldése"}
+                          {profile.isRegistered ? t('regional.contact') : t('regional.send_invite')}
                         </Button>
                       </CardContent>
                     </Card>
@@ -443,9 +443,9 @@ const RegionalHub = () => {
                     <div className="flex items-start gap-4">
                       <Target className="w-12 h-12 text-primary flex-shrink-0" />
                       <div>
-                        <h3 className="text-xl font-bold mb-2">Regionális Kihívások</h3>
+                        <h3 className="text-xl font-bold mb-2">{t('regional.regional_challenges')}</h3>
                         <p className="text-muted-foreground">
-                          Ezek a kihívások specifikusan ehhez a régióhoz kapcsolódnak. Vállalatok szponzorálhatják őket a láthatóság növelése és az ESG célok elérése érdekében.
+                          {t('regional.regional_challenges_desc')}
                         </p>
                       </div>
                     </div>
@@ -478,7 +478,7 @@ const RegionalHub = () => {
                               }
                             }}
                           >
-                            <p className="text-xs text-muted-foreground mb-1">Szponzor:</p>
+                            <p className="text-xs text-muted-foreground mb-1">{t('regional.sponsor_label')}:</p>
                             <div className="flex items-center gap-2">
                               {challenge.sponsor.logo.startsWith('http') ? (
                                 <img src={challenge.sponsor.logo} alt={challenge.sponsor.name} className="w-8 h-8 rounded object-cover" />
@@ -490,14 +490,14 @@ const RegionalHub = () => {
                                   {challenge.sponsor.name}
                                 </p>
                                 <p className="text-xs text-muted-foreground capitalize">
-                                  {challenge.sponsor.package} csomag
+                                  {challenge.sponsor.package} {t('regional.package')}
                                 </p>
                               </div>
                             </div>
                           </div>
                         ) : (
                           <div className="bg-warning/10 rounded-lg p-3 mb-4 border border-warning/20">
-                            <p className="text-xs text-warning">Még nincs szponzor</p>
+                            <p className="text-xs text-warning">{t('regional.no_sponsor_yet')}</p>
                           </div>
                         )}
                         
@@ -507,13 +507,13 @@ const RegionalHub = () => {
                             {selectedRegion.displayName}
                           </div>
                           <div className="text-sm font-semibold text-primary">
-                            {challenge.pointsReward} pont
+                            {challenge.pointsReward} {t('regional.points')}
                           </div>
                         </div>
                         
                         <div className="flex gap-2">
                           <Button className="flex-1" size="sm" variant="outline">
-                            Részletek
+                            {t('regional.details')}
                           </Button>
                           {!challenge.sponsor && user && (
                             <Button 
@@ -524,7 +524,7 @@ const RegionalHub = () => {
                                 title: t(challenge.titleKey)
                               })}
                             >
-                              Szponzorálás
+                              {t('regional.sponsor_button')}
                             </Button>
                           )}
                         </div>
@@ -541,13 +541,13 @@ const RegionalHub = () => {
                     <div className="flex items-start gap-4">
                       <Building2 className="w-12 h-12 text-warning flex-shrink-0" />
                       <div>
-                        <h3 className="text-xl font-bold mb-2">Regionális Szponzorálás</h3>
+                        <h3 className="text-xl font-bold mb-2">{t('regional.sponsorship_title')}</h3>
                         <p className="text-muted-foreground mb-4">
-                          Támogasd a helyi fenntarthatósági kezdeményezéseket, növeld a márkaismertségedet és érj el mérhető ESG célokat.
+                          {t('regional.sponsorship_desc')}
                         </p>
                         <div className="flex flex-wrap gap-2">
-                          <Badge className="bg-success/20 text-success">Márkaismertség</Badge>
-                          <Badge className="bg-primary/20 text-primary">ESG jelentések</Badge>
+                          <Badge className="bg-success/20 text-success">{t('regional.brand_awareness')}</Badge>
+                          <Badge className="bg-primary/20 text-primary">{t('regional.esg_reports')}</Badge>
                           <Badge className="bg-accent/20 text-accent">Közösségi hatás</Badge>
                         </div>
                       </div>
