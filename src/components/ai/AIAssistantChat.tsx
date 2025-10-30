@@ -16,6 +16,7 @@ import {
   Car,
   Home
 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Message {
   id: string;
@@ -26,17 +27,19 @@ interface Message {
 }
 
 const AIAssistantChat = () => {
+  const { t } = useLanguage();
+  
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Hello! I'm your AI sustainability assistant. I can help you reduce your environmental impact, suggest eco-friendly alternatives, and answer questions about sustainable living. How can I help you today?",
+      content: t('wellbot.greeting'),
       sender: "ai",
       timestamp: new Date(),
       suggestions: [
-        "How can I reduce my carbon footprint?",
-        "What are the best sustainable transport options?",
-        "Help me create a waste reduction plan",
-        "Find energy-efficient alternatives for my home"
+        t('wellbot.suggestion_carbon'),
+        t('wellbot.suggestion_transport'),
+        t('wellbot.suggestion_waste'),
+        t('wellbot.suggestion_energy')
       ]
     }
   ]);
@@ -47,11 +50,11 @@ const AIAssistantChat = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const quickActions = [
-    { icon: Leaf, label: "Carbon Calculator", description: "Calculate your environmental impact" },
-    { icon: Zap, label: "Energy Tips", description: "Reduce your energy consumption" },
-    { icon: Recycle, label: "Waste Reduction", description: "Minimize waste and maximize recycling" },
-    { icon: Car, label: "Green Transport", description: "Sustainable transportation options" },
-    { icon: Home, label: "Eco Home", description: "Make your home more sustainable" }
+    { icon: Leaf, label: t('wellbot.action_carbon'), description: t('wellbot.action_carbon_desc') },
+    { icon: Zap, label: t('wellbot.action_energy'), description: t('wellbot.action_energy_desc') },
+    { icon: Recycle, label: t('wellbot.action_waste'), description: t('wellbot.action_waste_desc') },
+    { icon: Car, label: t('wellbot.action_transport'), description: t('wellbot.action_transport_desc') },
+    { icon: Home, label: t('wellbot.action_home'), description: t('wellbot.action_home_desc') }
   ];
 
   const scrollToBottom = () => {
@@ -165,9 +168,9 @@ const AIAssistantChat = () => {
             <div className="p-2 bg-gradient-primary rounded-full">
               <Bot className="w-5 h-5 text-white" />
             </div>
-            <span>AI Sustainability Assistant</span>
+            <span>{t('wellbot.assistant')}</span>
             <Badge variant="secondary" className="bg-success text-success-foreground">
-              Online
+              {t('wellbot.online')}
             </Badge>
           </CardTitle>
         </CardHeader>
@@ -175,7 +178,7 @@ const AIAssistantChat = () => {
         <CardContent className="flex-1 flex flex-col p-0">
           {/* Quick Actions */}
           <div className="p-4 border-b bg-muted/30">
-            <h4 className="text-sm font-medium mb-3 text-muted-foreground">Quick Actions</h4>
+            <h4 className="text-sm font-medium mb-3 text-muted-foreground">{t('wellbot.quick_actions')}</h4>
             <div className="flex flex-wrap gap-2">
               {quickActions.map((action) => (
                 <Button
@@ -237,7 +240,7 @@ const AIAssistantChat = () => {
                       <div className="mt-3 space-y-2">
                         <p className="text-xs text-muted-foreground flex items-center space-x-1">
                           <Lightbulb className="w-3 h-3" />
-                          <span>Suggested follow-ups:</span>
+                          <span>{t('wellbot.suggestions')}:</span>
                         </p>
                         <div className="flex flex-wrap gap-2">
                           {message.suggestions.map((suggestion, index) => (
@@ -287,7 +290,7 @@ const AIAssistantChat = () => {
                 ref={inputRef}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Ask me anything about sustainability..."
+                placeholder={t('wellbot.input_placeholder')}
                 onKeyPress={(e) => {
                   if (e.key === "Enter") {
                     handleSendMessage(inputValue);
