@@ -7,6 +7,7 @@ import Navigation from "@/components/Navigation";
 import { getChallengeById, challenges } from "@/data/challenges";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProject } from "@/contexts/ProjectContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -15,6 +16,7 @@ const ChallengeDetailPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { currentProject } = useProject();
+  const { t } = useLanguage();
   const { toast } = useToast();
   
   // Get challenge data by ID
@@ -67,9 +69,9 @@ const ChallengeDetailPage = () => {
         <Navigation />
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Challenge not found</h1>
-            <p className="text-muted-foreground mb-4">This challenge does not exist</p>
-            <Button onClick={() => navigate("/challenges")}>Back to Challenges</Button>
+            <h1 className="text-2xl font-bold mb-4">{t('challenges.not_found')}</h1>
+            <p className="text-muted-foreground mb-4">{t('challenges.not_found_desc')}</p>
+            <Button onClick={() => navigate("/challenges")}>{t('challenges.back_to_challenges')}</Button>
           </div>
         </div>
       </div>
@@ -79,8 +81,8 @@ const ChallengeDetailPage = () => {
   const handleJoinChallenge = async (challengeId: string) => {
     if (!user) {
       toast({
-        title: "Bejelentkezés szükséges",
-        description: "Jelentkezz be a challenge-hez való csatlakozáshoz!",
+        title: t('challenges.login_required'),
+        description: t('challenges.login_required_desc'),
         variant: "destructive",
       });
       navigate("/auth");
@@ -90,15 +92,15 @@ const ChallengeDetailPage = () => {
     setUserProgress(prev => ({ ...prev, isParticipating: true }));
     
     toast({
-      title: "Csatlakoztál!",
-      description: "Sikeresen csatlakoztál a challenge-hez!",
+      title: t('challenges.joined_success'),
+      description: t('challenges.joined_success_desc'),
     });
   };
 
   const handleCompleteChallenge = async (challengeId: string) => {
     if (!user) {
       toast({
-        title: "Bejelentkezés szükséges",
+        title: t('challenges.login_required'),
         variant: "destructive",
       });
       navigate("/auth");
@@ -119,14 +121,14 @@ const ChallengeDetailPage = () => {
       if (error) throw error;
 
       toast({
-        title: "Gratulálunk!",
-        description: "Challenge teljesítve! Jóváhagyásra vár.",
+        title: t('challenges.congratulations'),
+        description: t('challenges.completed_pending'),
       });
 
       loadUserProgress();
     } catch (error: any) {
       toast({
-        title: "Hiba",
+        title: t('common.error'),
         description: error.message,
         variant: "destructive",
       });
@@ -150,7 +152,7 @@ const ChallengeDetailPage = () => {
             className="hover:bg-muted text-sm sm:text-base xl:text-lg"
           >
             <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 xl:w-5 xl:h-5 mr-2" />
-            Back to Challenges
+            {t('challenges.back_to_challenges')}
           </Button>
         </div>
 

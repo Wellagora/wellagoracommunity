@@ -261,7 +261,7 @@ const Navigation = () => {
                 className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-xl hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent"
               >
                 <Building2 className="w-4 h-4" />
-                <span className="text-sm">Projekt Admin</span>
+                <span className="text-sm">{t('nav.project_admin')}</span>
               </Link>
             )}
                 </div>
