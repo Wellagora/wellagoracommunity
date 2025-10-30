@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ import {
 
 const HelpPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const { t } = useLanguage();
 
   const faqCategories = [
     {
@@ -200,10 +202,10 @@ const HelpPage = () => {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <HelpCircle className="w-12 h-12 sm:w-16 sm:h-16 xl:w-20 xl:h-20 mx-auto mb-4 sm:mb-6 xl:mb-8 opacity-80" />
             <h1 className="text-2xl sm:text-3xl md:text-5xl xl:text-6xl font-bold mb-3 sm:mb-4 xl:mb-6">
-              How Can We Help You?
+              {t('help.title')}
             </h1>
             <p className="text-sm sm:text-base md:text-xl xl:text-2xl max-w-2xl xl:max-w-3xl mx-auto opacity-90 mb-6 sm:mb-8 xl:mb-10 px-4">
-              Find answers, get support, and learn how to make the most of your sustainability journey
+              {t('help.subtitle')}
             </p>
             
             {/* Search Bar */}
@@ -211,7 +213,7 @@ const HelpPage = () => {
               <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 sm:w-5 sm:h-5" />
               <Input
                 type="text"
-                placeholder="Search for help..."
+                placeholder={t('help.search_placeholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 sm:pl-12 py-4 sm:py-6 text-sm sm:text-base lg:text-lg bg-background text-foreground"
@@ -223,7 +225,7 @@ const HelpPage = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12 xl:py-16">
           {/* Quick Links */}
           <section className="mb-8 sm:mb-12 xl:mb-16">
-            <h2 className="text-xl sm:text-2xl xl:text-3xl font-bold mb-4 sm:mb-6 xl:mb-8 text-center">Quick Links</h2>
+            <h2 className="text-xl sm:text-2xl xl:text-3xl font-bold mb-4 sm:mb-6 xl:mb-8 text-center">{t('help.quick_links')}</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 xl:gap-6">
               {quickLinks.map((link, index) => (
                 <Card key={index} className="hover:bg-muted/50 transition-colors cursor-pointer group">

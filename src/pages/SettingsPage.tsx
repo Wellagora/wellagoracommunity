@@ -98,9 +98,9 @@ const SettingsPage = () => {
             <TabsContent value="profile" className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Profile Information</CardTitle>
+                  <CardTitle>{t('settings.profile_info')}</CardTitle>
                   <CardDescription>
-                    Update your personal information and public profile
+                    {t('settings.update_profile')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -112,10 +112,10 @@ const SettingsPage = () => {
                     <div>
                       <Button variant="outline" className="mb-2">
                         <Upload className="w-4 h-4 mr-2" />
-                        Change Photo
+                        {t('settings.change_photo')}
                       </Button>
                       <p className="text-sm text-muted-foreground">
-                        JPG, PNG or GIF. Max size 2MB.
+                        {t('settings.photo_requirements')}
                       </p>
                     </div>
                   </div>

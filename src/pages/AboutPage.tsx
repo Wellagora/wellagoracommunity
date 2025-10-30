@@ -133,13 +133,11 @@ const AboutPage = () => {
               <Card className="bg-gradient-to-br from-primary/5 to-primary-glow/5 border-primary/20">
                 <CardHeader>
                   <Target className="w-12 h-12 text-primary mb-4" />
-                  <CardTitle className="text-2xl">Our Mission</CardTitle>
+                  <CardTitle className="text-2xl">{t('about.our_mission')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-lg text-muted-foreground leading-relaxed">
-                    To empower every person and organization to take meaningful climate action through 
-                    gamified challenges, community support, and data-driven insights that make 
-                    sustainability engaging and achievable.
+                    {t('about.mission_text')}
                   </p>
                 </CardContent>
               </Card>
@@ -147,13 +145,11 @@ const AboutPage = () => {
               <Card className="bg-gradient-to-br from-secondary/5 to-accent/5 border-secondary/20">
                 <CardHeader>
                   <Globe className="w-12 h-12 text-secondary mb-4" />
-                  <CardTitle className="text-2xl">Our Vision</CardTitle>
+                  <CardTitle className="text-2xl">{t('about.our_vision')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-lg text-muted-foreground leading-relaxed">
-                    A world where sustainable living is the norm, not the exception. Where every 
-                    individual feels empowered to make a difference and connected to a global 
-                    community working toward a thriving planet.
+                    {t('about.vision_text')}
                   </p>
                 </CardContent>
               </Card>
@@ -165,9 +161,9 @@ const AboutPage = () => {
         <section className="py-8 sm:py-12 lg:py-16 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="text-center mb-8 sm:mb-12">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Our Global Impact</h2>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">{t('about.our_global_impact')}</h2>
               <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
-                Together, we're creating measurable change for our planet
+                {t('about.creating_change')}
               </p>
             </div>
 
@@ -189,9 +185,9 @@ const AboutPage = () => {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Values</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('about.our_values')}</h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                The principles that guide everything we do
+                {t('about.values_subtitle')}
               </p>
             </div>
 
@@ -217,9 +213,9 @@ const AboutPage = () => {
         <section className="py-16 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Journey</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('about.our_journey')}</h2>
               <p className="text-xl text-muted-foreground">
-                Key milestones in building the sustainability platform
+                {t('about.journey_subtitle')}
               </p>
             </div>
 
@@ -247,9 +243,9 @@ const AboutPage = () => {
         <section className="py-8 sm:py-12 lg:py-16 xl:py-20">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-8 sm:mb-12 xl:mb-16">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl font-bold mb-3 sm:mb-4 xl:mb-6">Meet Our Team</h2>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl font-bold mb-3 sm:mb-4 xl:mb-6">{t('about.meet_our_team')}</h2>
               <p className="text-base sm:text-lg lg:text-xl xl:text-2xl text-muted-foreground px-4">
-                Passionate individuals dedicated to climate action
+                {t('about.team_subtitle')}
               </p>
             </div>
 
@@ -297,24 +293,23 @@ const AboutPage = () => {
         <section className="py-20 bg-gradient-secondary text-secondary-foreground">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to Make a Difference?
+              {t('about.ready_to_make_difference')}
             </h2>
             <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
-              Join our global community and start your sustainability journey today. 
-              Every action counts, and together we can create lasting change.
+              {t('about.join_community_text')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a 
                 href="/dashboard" 
                 className="bg-background text-foreground px-8 py-3 rounded-md font-medium hover:bg-background/90 transition-colors"
               >
-                Get Started Now
+                {t('about.get_started_now')}
               </a>
               <a 
                 href="/community" 
                 className="border border-background/20 px-8 py-3 rounded-md font-medium hover:bg-background/10 transition-colors"
               >
-                Join the Community
+                {t('about.join_the_community')}
               </a>
             </div>
           </div>
