@@ -8,7 +8,7 @@ import Dashboard from "@/components/dashboard/Dashboard";
 import PointsSystem from "@/components/gamification/PointsSystem";
 import CreativeGamification from "@/components/gamification/CreativeGamification";
 import HandprintWidget from "@/components/dashboard/HandprintWidget";
-import ProgressVisualization from "@/components/ProgressVisualization";
+import ForestGrowth from "@/components/dashboard/ForestGrowth";
 import CelebrationModal from "@/components/CelebrationModal";
 import { ProjectLeaderboard } from "@/components/dashboard/ProjectLeaderboard";
 import { ProjectActivities } from "@/components/dashboard/ProjectActivities";
@@ -241,7 +241,7 @@ const DashboardPage = () => {
               <>
                 {/* Erdőm Növekedése és Kéznyom - Only for citizens */}
                 <div className="grid md:grid-cols-2 gap-6 mb-8">
-                  <ProgressVisualization />
+                  <ForestGrowth />
                   <HandprintWidget />
                 </div>
                 <div className="mt-8 text-center">
