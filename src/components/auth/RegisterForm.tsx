@@ -144,17 +144,17 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
                     key={role.id}
                     type="button"
                     onClick={() => handleRoleSelect(role.id)}
-                    className={`p-3 border rounded-lg text-left transition-all hover:border-primary min-h-[80px] flex flex-col ${
+                    className={`p-2 sm:p-3 border rounded-lg text-left transition-all hover:border-primary min-h-[70px] sm:min-h-[80px] flex flex-col justify-center ${
                       watchedRole === role.id 
                         ? "border-primary bg-primary/5 shadow-sm" 
                         : "border-border hover:bg-muted/50"
                     }`}
                   >
-                    <div className="flex items-center space-x-2 mb-1">
-                      <Icon className="w-4 h-4 flex-shrink-0" />
-                      <span className="font-medium text-sm break-words">{role.name}</span>
+                    <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1">
+                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                      <span className="font-medium text-xs sm:text-sm leading-tight break-words hyphens-auto" lang="de">{role.name}</span>
                     </div>
-                    <p className="text-xs text-muted-foreground break-words">{role.description}</p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground leading-tight break-words line-clamp-2">{role.description}</p>
                   </button>
                 );
               })}
