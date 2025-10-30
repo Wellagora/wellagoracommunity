@@ -100,16 +100,16 @@ const ProfilePage = () => {
     return (
       <div className="min-h-screen bg-background">
         <Navigation />
-        <div className="container mx-auto px-4 pt-24 pb-8">
+        <div className="container mx-auto px-4 sm:px-6 pt-20 sm:pt-24 pb-6 sm:pb-8">
           <Card className="max-w-3xl mx-auto">
             <CardHeader>
-              <div className="flex items-center gap-4">
-                <Avatar className="w-20 h-20">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+                <Avatar className="w-16 h-16 sm:w-20 sm:h-20">
                   <AvatarImage src={viewedProfile.avatar_url} />
                   <AvatarFallback>{viewedProfile.first_name?.[0]}{viewedProfile.last_name?.[0]}</AvatarFallback>
                 </Avatar>
-                <div>
-                  <CardTitle className="text-2xl">
+                <div className="text-center sm:text-left">
+                  <CardTitle className="text-xl sm:text-2xl">
                     {viewedProfile.public_display_name || `${viewedProfile.first_name} ${viewedProfile.last_name}`}
                   </CardTitle>
                   {viewedProfile.organization && (
@@ -122,30 +122,30 @@ const ProfilePage = () => {
             <CardContent className="space-y-4">
               {viewedProfile.bio && (
                 <div>
-                  <h3 className="font-semibold mb-2">Bemutatkozás</h3>
-                  <p className="text-muted-foreground">{viewedProfile.bio}</p>
+                  <h3 className="font-semibold mb-2 text-sm sm:text-base">Bemutatkozás</h3>
+                  <p className="text-muted-foreground text-sm sm:text-base">{viewedProfile.bio}</p>
                 </div>
               )}
               {viewedProfile.location && (
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-muted-foreground" />
+                <div className="flex items-center gap-2 text-sm sm:text-base">
+                  <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" />
                   <span>{viewedProfile.location}</span>
                 </div>
               )}
               {viewedProfile.website_url && (
-                <div className="flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-muted-foreground" />
-                  <a href={viewedProfile.website_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                <div className="flex items-center gap-2 text-sm sm:text-base">
+                  <Globe className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" />
+                  <a href={viewedProfile.website_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline break-all">
                     {viewedProfile.website_url}
                   </a>
                 </div>
               )}
               {viewedProfile.sustainability_goals && viewedProfile.sustainability_goals.length > 0 && (
                 <div>
-                  <h3 className="font-semibold mb-2">Fenntarthatósági célok</h3>
+                  <h3 className="font-semibold mb-2 text-sm sm:text-base">Fenntarthatósági célok</h3>
                   <div className="flex flex-wrap gap-2">
                     {viewedProfile.sustainability_goals.map((goal: string, idx: number) => (
-                      <Badge key={idx} variant="outline">{goal}</Badge>
+                      <Badge key={idx} variant="outline" className="text-xs">{goal}</Badge>
                     ))}
                   </div>
                 </div>
@@ -333,15 +333,15 @@ const ProfilePage = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
-          <div className="relative inline-block mb-6">
-            <Avatar className="w-24 h-24 shadow-premium">
+          <div className="relative inline-block mb-4 sm:mb-6">
+            <Avatar className="w-20 h-20 sm:w-24 sm:h-24 shadow-premium">
               <AvatarImage src={profile?.avatar_url} alt="Profilkép" />
-              <AvatarFallback className={`text-white text-2xl bg-gradient-to-r ${getRoleGradient()}`}>
+              <AvatarFallback className={`text-white text-xl sm:text-2xl bg-gradient-to-r ${getRoleGradient()}`}>
                 {profile?.first_name?.[0]}{profile?.last_name?.[0]}
               </AvatarFallback>
             </Avatar>
-            <label className="absolute -bottom-1 -right-1 w-8 h-8 bg-accent hover:bg-accent/90 rounded-full flex items-center justify-center shadow-lg transition-colors cursor-pointer">
-              <Camera className="w-4 h-4 text-accent-foreground" />
+            <label className="absolute -bottom-1 -right-1 w-7 h-7 sm:w-8 sm:h-8 bg-accent hover:bg-accent/90 rounded-full flex items-center justify-center shadow-lg transition-colors cursor-pointer">
+              <Camera className="w-3 h-3 sm:w-4 sm:h-4 text-accent-foreground" />
               <input
                 type="file"
                 className="hidden"

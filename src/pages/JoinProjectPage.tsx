@@ -225,37 +225,37 @@ export default function JoinProjectPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-16 mt-14 sm:mt-0">
         <div className="max-w-4xl mx-auto">
           {/* Project Info */}
-          <Card className="mb-8">
+          <Card className="mb-6 sm:mb-8">
             <CardHeader>
-              <div className="flex items-start justify-between">
-                <div>
-                  <CardTitle className="text-3xl mb-2">{project.name}</CardTitle>
-                  <CardDescription className="flex items-center gap-2 text-lg">
-                    <MapPin className="h-4 w-4" />
+              <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4">
+                <div className="flex-1">
+                  <CardTitle className="text-2xl sm:text-3xl mb-2">{project.name}</CardTitle>
+                  <CardDescription className="flex items-center gap-2 text-base sm:text-lg">
+                    <MapPin className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                     {project.region_name}
                   </CardDescription>
                 </div>
-                <Badge variant="default" className="text-sm">
+                <Badge variant="default" className="text-xs sm:text-sm">
                   {t('join.active_project')}
                 </Badge>
               </div>
             </CardHeader>
             <CardContent>
               {project.description && (
-                <p className="text-muted-foreground mb-4">{project.description}</p>
+                <p className="text-sm sm:text-base text-muted-foreground mb-4">{project.description}</p>
               )}
               {project.villages && project.villages.length > 0 && (
                 <div>
-                  <p className="text-sm font-semibold mb-2 flex items-center gap-2">
-                    <Users className="h-4 w-4" />
+                  <p className="text-xs sm:text-sm font-semibold mb-2 flex items-center gap-2">
+                    <Users className="h-3 w-3 sm:h-4 sm:w-4" />
                     {t('join.participating_villages')}
                   </p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {project.villages.map((village, index) => (
-                      <Badge key={index} variant="secondary">
+                      <Badge key={index} variant="secondary" className="text-xs">
                         {village}
                       </Badge>
                     ))}
@@ -269,13 +269,13 @@ export default function JoinProjectPage() {
           {user ? (
             <Card>
               <CardHeader>
-                <CardTitle>{t('join.join_project')}</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-lg sm:text-xl">{t('join.join_project')}</CardTitle>
+                <CardDescription className="text-sm sm:text-base">
                   {t('join.already_logged_in')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button onClick={handleJoinExisting} disabled={joining} size="lg" className="w-full">
+                <Button onClick={handleJoinExisting} disabled={joining} size="lg" className="w-full text-sm sm:text-base">
                   {joining ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -113,29 +113,29 @@ const PublicOrganizationPage = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 mt-14 sm:mt-16">
         {/* Organization Header */}
-        <Card className="mb-8 bg-gradient-to-r from-primary/5 via-card to-accent/5">
-          <CardContent className="p-8">
-            <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+        <Card className="mb-6 sm:mb-8 bg-gradient-to-r from-primary/5 via-card to-accent/5">
+          <CardContent className="p-4 sm:p-6 md:p-8">
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-4 sm:gap-6">
               {/* Logo */}
-              <Avatar className="w-24 h-24">
+              <Avatar className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto md:mx-0">
                 <AvatarImage src={organizationData.logo} />
-                <AvatarFallback className="text-3xl bg-gradient-primary text-white">
+                <AvatarFallback className="text-2xl sm:text-3xl bg-gradient-primary text-white">
                   {getTypeIcon(organizationData.type)}
                 </AvatarFallback>
               </Avatar>
 
               {/* Info */}
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <h1 className="text-3xl font-bold text-foreground">{organizationData.name}</h1>
-                  <Badge variant="outline">{getTypeName(organizationData.type)}</Badge>
+              <div className="flex-1 text-center md:text-left">
+                <div className="flex flex-col sm:flex-row items-center md:items-start gap-2 sm:gap-3 mb-2">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{organizationData.name}</h1>
+                  <Badge variant="outline" className="text-xs sm:text-sm">{getTypeName(organizationData.type)}</Badge>
                 </div>
-                <p className="text-muted-foreground mb-4">{organizationData.description}</p>
-                <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4 px-4 md:px-0">{organizationData.description}</p>
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
                   <span className="flex items-center gap-1">
-                    <MapPin className="w-4 h-4" />
+                    <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
                     {organizationData.location}
                   </span>
                   {organizationData.website && (
@@ -145,7 +145,7 @@ const PublicOrganizationPage = () => {
                       rel="noopener noreferrer"
                       className="flex items-center gap-1 hover:text-primary transition-colors"
                     >
-                      <ExternalLink className="w-4 h-4" />
+                      <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
                       Visit Website
                     </a>
                   )}
@@ -153,9 +153,9 @@ const PublicOrganizationPage = () => {
               </div>
 
               {/* Actions */}
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm">
-                  <Share2 className="w-4 h-4 mr-2" />
+              <div className="flex gap-2 w-full md:w-auto justify-center">
+                <Button variant="outline" size="sm" className="text-xs sm:text-sm">
+                  <Share2 className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
                   Share
                 </Button>
               </div>
@@ -163,35 +163,35 @@ const PublicOrganizationPage = () => {
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {/* Regional Impact Stats */}
-          <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
             <Card>
-              <CardContent className="p-4">
-                <Target className="w-8 h-8 text-primary mb-2" />
-                <p className="text-2xl font-bold">{organizationData.stats.activeChallenges}</p>
-                <p className="text-xs text-muted-foreground">Active Initiatives</p>
+              <CardContent className="p-3 sm:p-4">
+                <Target className="w-6 h-6 sm:w-8 sm:h-8 text-primary mb-2" />
+                <p className="text-xl sm:text-2xl font-bold">{organizationData.stats.activeChallenges}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Active Initiatives</p>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="p-4">
-                <Users className="w-8 h-8 text-accent mb-2" />
-                <p className="text-2xl font-bold">{organizationData.stats.peopleReached.toLocaleString()}</p>
-                <p className="text-xs text-muted-foreground">People Engaged</p>
+              <CardContent className="p-3 sm:p-4">
+                <Users className="w-6 h-6 sm:w-8 sm:h-8 text-accent mb-2" />
+                <p className="text-xl sm:text-2xl font-bold">{organizationData.stats.peopleReached.toLocaleString()}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">People Engaged</p>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="p-4">
-                <TreePine className="w-8 h-8 text-success mb-2" />
-                <p className="text-2xl font-bold">{organizationData.stats.co2Saved}t</p>
-                <p className="text-xs text-muted-foreground">CO₂ Saved</p>
+              <CardContent className="p-3 sm:p-4">
+                <TreePine className="w-6 h-6 sm:w-8 sm:h-8 text-success mb-2" />
+                <p className="text-xl sm:text-2xl font-bold">{organizationData.stats.co2Saved}t</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">CO₂ Saved</p>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="p-4">
-                <Building className="w-8 h-8 text-warning mb-2" />
-                <p className="text-2xl font-bold">{organizationData.stats.partnerships}</p>
-                <p className="text-xs text-muted-foreground">Partnerships</p>
+              <CardContent className="p-3 sm:p-4">
+                <Building className="w-6 h-6 sm:w-8 sm:h-8 text-warning mb-2" />
+                <p className="text-xl sm:text-2xl font-bold">{organizationData.stats.partnerships}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Partnerships</p>
               </CardContent>
             </Card>
           </div>

@@ -101,7 +101,7 @@ const SponsorshipPackageSelector: React.FC = () => {
             </ul>
             
             <Button 
-              className={`w-full h-12 font-bold text-base shadow-lg hover:shadow-xl transition-all duration-300 ${
+              className={`w-full h-10 sm:h-12 font-bold text-sm sm:text-base shadow-lg hover:shadow-xl transition-all duration-300 ${
                 isCurrentPackage(key) 
                   ? `bg-gradient-to-r ${getPackageGradient(key)} text-white` 
                   : `bg-gradient-to-r ${getPackageGradient(key)} text-white hover:scale-105`

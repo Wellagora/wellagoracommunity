@@ -273,21 +273,21 @@ const RegionalHub = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <div className="container mx-auto px-4 pt-20 pb-8">
+      <div className="container mx-auto px-4 sm:px-6 pt-16 sm:pt-20 pb-6 sm:pb-8">
         {/* Header */}
         <motion.div
-          className="text-center mb-8"
+          className="text-center mb-6 sm:mb-8"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Globe className="w-8 h-8 text-primary" />
-            <h1 className="text-3xl md:text-5xl font-bold text-foreground">
+          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <Globe className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-foreground">
               {selectedRegion ? selectedRegion.displayName : 'Regionális Központ'}
             </h1>
           </div>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
+          <p className="text-sm sm:text-base md:text-xl text-muted-foreground max-w-3xl mx-auto mb-4 sm:mb-6 px-4">
             {selectedRegion 
               ? 'Partnerek, kihívások és szponzorálási lehetőségek egy helyen'
               : 'Válassz régiót a fenntartható együttműködésekhez'
@@ -297,15 +297,15 @@ const RegionalHub = () => {
           {selectedRegion && (
             <div className="flex flex-wrap items-center justify-center gap-2">
               <Badge 
-                className="bg-gradient-to-r from-primary to-accent text-white px-4 py-2 cursor-pointer hover:shadow-lg transition-all"
+                className="bg-gradient-to-r from-primary to-accent text-white px-3 sm:px-4 py-1.5 sm:py-2 cursor-pointer hover:shadow-lg transition-all text-xs sm:text-sm"
                 onClick={() => setShowRegionSelector(true)}
               >
                 📍 {selectedRegion.displayName}
               </Badge>
-              <Badge variant="secondary" className="bg-success/20 text-success">
+              <Badge variant="secondary" className="bg-success/20 text-success text-xs sm:text-sm">
                 {filteredProfiles.filter(p => p.isRegistered).length} regisztrált
               </Badge>
-              <Badge variant="secondary" className="bg-warning/20 text-warning">
+              <Badge variant="secondary" className="bg-warning/20 text-warning text-xs sm:text-sm">
                 {filteredProfiles.filter(p => !p.isRegistered).length} potenciális
               </Badge>
             </div>
@@ -318,37 +318,40 @@ const RegionalHub = () => {
           transition={{ duration: 0.8 }}
         >
           {!selectedRegion ? (
-            <div className="text-center py-20">
-              <Map className="w-24 h-24 mx-auto mb-6 text-primary opacity-50" />
-              <h2 className="text-3xl font-bold text-foreground mb-4">
+            <div className="text-center py-12 sm:py-20 px-4">
+              <Map className="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 text-primary opacity-50" />
+              <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-3 sm:mb-4">
                 Válassz régiót
               </h2>
-              <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+              <p className="text-sm sm:text-base md:text-lg text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto">
                 Fedezd fel a helyi fenntarthatósági ökoszisztémát, találj partnereket és támogass regionális kezdeményezéseket.
               </p>
               <Button 
                 size="lg"
                 onClick={() => setShowRegionSelector(true)}
-                className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
+                className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-sm sm:text-base"
               >
-                <Search className="w-5 h-5 mr-2" />
+                <Search className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 Régió kiválasztása
               </Button>
             </div>
           ) : (
-            <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as any)} className="space-y-6">
-              <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3">
-                <TabsTrigger value="stakeholders" className="flex items-center gap-2">
-                  <Users className="w-4 h-4" />
-                  Partnerek
+            <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as any)} className="space-y-4 sm:space-y-6">
+              <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3 h-auto">
+                <TabsTrigger value="stakeholders" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
+                  <Users className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Partnerek</span>
+                  <span className="sm:hidden">Part.</span>
                 </TabsTrigger>
-                <TabsTrigger value="challenges" className="flex items-center gap-2">
-                  <Target className="w-4 h-4" />
-                  Kihívások
+                <TabsTrigger value="challenges" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
+                  <Target className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Kihívások</span>
+                  <span className="sm:hidden">Kih.</span>
                 </TabsTrigger>
-                <TabsTrigger value="sponsorship" className="flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4" />
-                  Szponzorálás
+                <TabsTrigger value="sponsorship" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
+                  <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Szponzorálás</span>
+                  <span className="sm:hidden">Szp.</span>
                 </TabsTrigger>
               </TabsList>
 

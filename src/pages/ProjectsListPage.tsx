@@ -47,63 +47,63 @@ export default function ProjectsListPage() {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-16 mt-14 sm:mt-16">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          <div className="text-center mb-8 sm:mb-12">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4">
               {t('projects.title')}
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
               {t('projects.subtitle')}
             </p>
           </div>
 
           {loading ? (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">{t('projects.loading')}</p>
+            <div className="text-center py-8 sm:py-12">
+              <p className="text-sm sm:text-base text-muted-foreground">{t('projects.loading')}</p>
             </div>
           ) : projects.length === 0 ? (
             <Card>
               <CardHeader>
-                <CardTitle>{t('projects.no_projects')}</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-lg sm:text-xl">{t('projects.no_projects')}</CardTitle>
+                <CardDescription className="text-sm sm:text-base">
                   {t('projects.no_projects_desc')}
                 </CardDescription>
               </CardHeader>
             </Card>
           ) : (
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               {projects.map((project) => (
                 <Card
                   key={project.id}
                   className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02]"
                 >
                   <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="text-2xl mb-2">{project.name}</CardTitle>
-                        <CardDescription className="flex items-center gap-2 text-base">
-                          <MapPin className="h-4 w-4" />
+                    <div className="flex flex-col sm:flex-row items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <CardTitle className="text-xl sm:text-2xl mb-2">{project.name}</CardTitle>
+                        <CardDescription className="flex items-center gap-2 text-sm sm:text-base">
+                          <MapPin className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                           {project.region_name}
                         </CardDescription>
                       </div>
-                      <Badge variant="default">{t('projects.active')}</Badge>
+                      <Badge variant="default" className="text-xs sm:text-sm">{t('projects.active')}</Badge>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-3 sm:space-y-4">
                     {project.description && (
-                      <p className="text-muted-foreground">{project.description}</p>
+                      <p className="text-sm sm:text-base text-muted-foreground">{project.description}</p>
                     )}
 
                     {project.villages && project.villages.length > 0 && (
                       <div>
-                        <p className="text-sm font-semibold mb-2 flex items-center gap-2">
-                          <Users className="h-4 w-4" />
+                        <p className="text-xs sm:text-sm font-semibold mb-2 flex items-center gap-2">
+                          <Users className="h-3 w-3 sm:h-4 sm:w-4" />
                           {t('projects.participating_villages')}
                         </p>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2">
                           {project.villages.map((village, index) => (
-                            <Badge key={index} variant="secondary">
+                            <Badge key={index} variant="secondary" className="text-xs">
                               {village}
                             </Badge>
                           ))}
@@ -112,9 +112,9 @@ export default function ProjectsListPage() {
                     )}
 
                     <Link to={`/join/${project.slug}`} className="block">
-                      <Button className="w-full" size="lg">
+                      <Button className="w-full text-sm sm:text-base" size="lg">
                         {t('projects.join_project')}
-                        <ArrowRight className="ml-2 h-4 w-4" />
+                        <ArrowRight className="ml-2 h-3 w-3 sm:h-4 sm:w-4" />
                       </Button>
                     </Link>
                   </CardContent>
@@ -123,16 +123,16 @@ export default function ProjectsListPage() {
             </div>
           )}
 
-          <div className="mt-12 text-center">
+          <div className="mt-8 sm:mt-12 text-center px-4">
             <Card className="bg-gradient-to-r from-primary/10 to-success/10 border-primary/20">
               <CardHeader>
-                <CardTitle>{t('projects.help_title')}</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-lg sm:text-xl">{t('projects.help_title')}</CardTitle>
+                <CardDescription className="text-sm sm:text-base">
                   {t('projects.help_desc')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button variant="outline" size="lg">
+                <Button variant="outline" size="lg" className="text-sm sm:text-base">
                   {t('projects.contact')}
                 </Button>
               </CardContent>

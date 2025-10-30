@@ -231,10 +231,10 @@ export default function ProjectAdminPage() {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Projekt Adminisztráció</h1>
-          <p className="text-muted-foreground">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 mt-14 sm:mt-16">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">Projekt Adminisztráció</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Kezeld a projekteket és a tagokat
           </p>
         </div>
@@ -249,20 +249,20 @@ export default function ProjectAdminPage() {
             </CardHeader>
           </Card>
         ) : (
-          <div className="grid gap-6">
+          <div className="grid gap-4 sm:gap-6">
             {/* Project Selector */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Building2 className="h-5 w-5" />
+                <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                  <Building2 className="h-4 w-4 sm:h-5 sm:w-5" />
                   Projektek
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 sm:space-y-4">
                 {projects.map((project) => (
                   <div
                     key={project.id}
-                    className={`p-4 rounded-lg border cursor-pointer transition-colors ${
+                    className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-colors ${
                       selectedProject?.id === project.id
                         ? "border-primary bg-primary/5"
                         : "border-border hover:border-primary/50"
@@ -272,23 +272,23 @@ export default function ProjectAdminPage() {
                       loadMembers(project.id);
                     }}
                   >
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="font-semibold">{project.name}</h3>
-                        <p className="text-sm text-muted-foreground">
+                    <div className="flex flex-col sm:flex-row items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-base sm:text-lg">{project.name}</h3>
+                        <p className="text-xs sm:text-sm text-muted-foreground">
                           {project.region_name}
                         </p>
                         {project.villages && project.villages.length > 0 && (
                           <div className="flex flex-wrap gap-1 mt-2">
                             {project.villages.map((village, index) => (
-                              <Badge key={index} variant="secondary">
+                              <Badge key={index} variant="secondary" className="text-xs">
                                 {village}
                               </Badge>
                             ))}
                           </div>
                         )}
                       </div>
-                      <Badge variant={project.is_active ? "default" : "secondary"}>
+                      <Badge variant={project.is_active ? "default" : "secondary"} className="text-xs">
                         {project.is_active ? "Aktív" : "Inaktív"}
                       </Badge>
                     </div>
@@ -300,18 +300,18 @@ export default function ProjectAdminPage() {
             {/* Selected Project Details */}
             {selectedProject && (
               <Tabs defaultValue="members" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="members">
-                    <Users className="h-4 w-4 mr-2" />
-                    Tagok
+                <TabsList className="grid w-full grid-cols-2 h-auto">
+                  <TabsTrigger value="members" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                    <Users className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span>Tagok</span>
                   </TabsTrigger>
-                  <TabsTrigger value="settings">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Beállítások
+                  <TabsTrigger value="settings" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                    <Settings className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span>Beállítások</span>
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="members" className="space-y-4">
+                <TabsContent value="members" className="space-y-3 sm:space-y-4">
                   {!isCurrentUserMember && (
                     <Card>
                       <CardHeader>
@@ -338,24 +338,24 @@ export default function ProjectAdminPage() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                       {members.length === 0 ? (
-                        <p className="text-muted-foreground">Még nincsenek tagok</p>
+                        <p className="text-sm sm:text-base text-muted-foreground">Még nincsenek tagok</p>
                       ) : (
                         <div className="space-y-2">
                           {members.map((member) => (
                             <div
                               key={member.id}
-                              className="flex items-center justify-between p-3 rounded-lg border"
+                              className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 rounded-lg border"
                             >
-                              <div>
-                                <p className="font-medium">
+                              <div className="flex-1">
+                                <p className="font-medium text-sm sm:text-base">
                                   {member.profiles.first_name} {member.profiles.last_name}
                                 </p>
-                                <p className="text-sm text-muted-foreground">
+                                <p className="text-xs sm:text-sm text-muted-foreground break-all">
                                   {member.profiles.email}
                                 </p>
                               </div>
-                              <div className="flex items-center gap-2">
-                                <Badge variant={member.role === "admin" ? "default" : "secondary"}>
+                              <div className="flex items-center gap-2 w-full sm:w-auto">
+                                <Badge variant={member.role === "admin" ? "default" : "secondary"} className="text-xs">
                                   {member.role === "admin" ? "Admin" : "Tag"}
                                 </Badge>
                                 {isCurrentUserAdmin && member.user_id !== user?.id && (
@@ -363,6 +363,7 @@ export default function ProjectAdminPage() {
                                     size="sm"
                                     variant="destructive"
                                     onClick={() => removeMember(member.id)}
+                                    className="text-xs"
                                   >
                                     Eltávolítás
                                   </Button>
@@ -374,16 +375,17 @@ export default function ProjectAdminPage() {
                       )}
 
                       {isCurrentUserAdmin && (
-                        <div className="pt-4 border-t space-y-4">
-                          <Label>Új tag hozzáadása</Label>
-                          <div className="flex gap-2">
+                        <div className="pt-4 border-t space-y-3 sm:space-y-4">
+                          <Label className="text-sm sm:text-base">Új tag hozzáadása</Label>
+                          <div className="flex flex-col sm:flex-row gap-2">
                             <Input
                               placeholder="Email cím"
                               value={newMemberEmail}
                               onChange={(e) => setNewMemberEmail(e.target.value)}
+                              className="text-sm sm:text-base"
                             />
-                            <Button onClick={addMember}>
-                              <Plus className="h-4 w-4 mr-2" />
+                            <Button onClick={addMember} className="w-full sm:w-auto text-sm">
+                              <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                               Hozzáadás
                             </Button>
                           </div>
@@ -396,23 +398,23 @@ export default function ProjectAdminPage() {
                 <TabsContent value="settings">
                   <Card>
                     <CardHeader>
-                      <CardTitle>Projekt beállítások</CardTitle>
-                      <CardDescription>
+                      <CardTitle className="text-lg sm:text-xl">Projekt beállítások</CardTitle>
+                      <CardDescription className="text-xs sm:text-sm">
                         A projekt alapvető információi
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-3 sm:space-y-4">
                       <div>
-                        <Label>Projekt név</Label>
-                        <p className="text-lg font-semibold">{selectedProject.name}</p>
+                        <Label className="text-sm sm:text-base">Projekt név</Label>
+                        <p className="text-base sm:text-lg font-semibold">{selectedProject.name}</p>
                       </div>
                       <div>
-                        <Label>Régió</Label>
-                        <p>{selectedProject.region_name}</p>
+                        <Label className="text-sm sm:text-base">Régió</Label>
+                        <p className="text-sm sm:text-base">{selectedProject.region_name}</p>
                       </div>
                       <div>
-                        <Label>Leírás</Label>
-                        <p className="text-muted-foreground">
+                        <Label className="text-sm sm:text-base">Leírás</Label>
+                        <p className="text-xs sm:text-sm text-muted-foreground">
                           {selectedProject.description || "Nincs leírás"}
                         </p>
                       </div>
