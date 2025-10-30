@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,28 +15,29 @@ import { z } from "zod";
 const AuthPage = () => {
   const navigate = useNavigate();
   const { user, signIn, signUp, loading } = useAuth();
+  const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
   // Validation schemas
   const loginSchema = z.object({
-    email: z.string().email("Please enter a valid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
+    email: z.string().email(t('auth.email_invalid')),
+    password: z.string().min(6, t('auth.password_min')),
   });
 
   const signupSchema = z.object({
-    email: z.string().email("Please enter a valid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
+    email: z.string().email(t('auth.email_invalid')),
+    password: z.string().min(6, t('auth.password_min')),
     confirmPassword: z.string(),
-    firstName: z.string().min(1, "First name is required").max(50, "First name must be less than 50 characters"),
-    lastName: z.string().min(1, "Last name is required").max(50, "Last name must be less than 50 characters"),
+    firstName: z.string().min(1, t('auth.first_name_required')).max(50, t('auth.first_name_max')),
+    lastName: z.string().min(1, t('auth.last_name_required')).max(50, t('auth.last_name_max')),
     role: z.enum(["citizen", "business", "government", "ngo"], { 
-      message: "Please select a role" 
+      message: t('auth.role_required') 
     }),
-    organization: z.string().max(100, "Organization name must be less than 100 characters").optional(),
+    organization: z.string().max(100, t('auth.organization_max')).optional(),
   }).refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: t('auth.password_match'),
     path: ["confirmPassword"],
   });
 
@@ -83,14 +85,14 @@ const AuthPage = () => {
     if (error) {
       console.error("Login error:", error);
       if (error.message.includes("Invalid login credentials")) {
-        setError("Invalid email or password. Please check your credentials and try again.");
+        setError(t('auth.invalid_credentials'));
       } else if (error.message.includes("Email not confirmed")) {
-        setError("Please check your email and click the confirmation link before signing in.");
+        setError(t('auth.email_not_confirmed'));
       } else {
-        setError(error.message || "An error occurred during login. Please try again.");
+        setError(error.message || t('auth.login_error'));
       }
     } else {
-      setSuccess("Login successful! Redirecting...");
+      setSuccess(t('auth.login_successful'));
       setTimeout(() => navigate("/dashboard"), 1000);
     }
     
@@ -126,16 +128,16 @@ const AuthPage = () => {
     if (error) {
       console.error("Signup error:", error);
       if (error.message.includes("User already registered")) {
-        setError("An account with this email already exists. Please sign in instead.");
+        setError(t('auth.account_exists'));
       } else if (error.message.includes("Password should be at least")) {
-        setError("Password must be at least 6 characters long.");
+        setError(t('auth.password_short'));
       } else if (error.message.includes("Invalid email")) {
-        setError("Please enter a valid email address.");
+        setError(t('auth.email_invalid_error'));
       } else {
-        setError(error.message || "An error occurred during signup. Please try again.");
+        setError(error.message || t('auth.signup_error'));
       }
     } else {
-      setSuccess("Account created successfully! Please check your email for confirmation, then sign in.");
+      setSuccess(t('auth.account_created'));
     }
     
     setIsLoading(false);
