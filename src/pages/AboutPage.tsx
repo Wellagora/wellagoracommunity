@@ -114,13 +114,13 @@ const AboutPage = () => {
       
       <main className="pt-14 sm:pt-16">
         {/* Hero Section */}
-        <section className="bg-gradient-primary text-primary-foreground py-12 sm:py-16 lg:py-20">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
+        <section className="bg-gradient-primary text-primary-foreground py-12 sm:py-16 lg:py-20 xl:py-24">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 xl:mb-8">
               {t('about.title')}
               <span className="block text-primary-glow">{t('about.title_together')}</span>
             </h1>
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto opacity-90 px-4">
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl max-w-3xl xl:max-w-4xl mx-auto opacity-90 px-4">
               {t('about.subtitle')}
             </p>
           </div>
@@ -244,16 +244,16 @@ const AboutPage = () => {
         </section>
 
         {/* Team */}
-        <section className="py-8 sm:py-12 lg:py-16">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-8 sm:mb-12">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Meet Our Team</h2>
-              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground px-4">
+        <section className="py-8 sm:py-12 lg:py-16 xl:py-20">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-8 sm:mb-12 xl:mb-16">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl font-bold mb-3 sm:mb-4 xl:mb-6">Meet Our Team</h2>
+              <p className="text-base sm:text-lg lg:text-xl xl:text-2xl text-muted-foreground px-4">
                 Passionate individuals dedicated to climate action
               </p>
             </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 xl:gap-10 max-w-6xl xl:max-w-7xl mx-auto">
               {teamMembers.map((member, index) => (
                 <Card key={index} className="text-center">
                   <CardHeader>

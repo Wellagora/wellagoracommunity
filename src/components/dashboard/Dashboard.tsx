@@ -91,9 +91,9 @@ const Dashboard = ({ userRole }: DashboardProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 xl:space-y-8">
       {/* Top Impact Bar */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 xl:gap-6">
         <Card className="bg-gradient-to-br from-success/10 to-primary/10 border-success/20">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -144,7 +144,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
       </div>
 
       {/* Main Two-Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 xl:gap-8">
         {/* Left Column */}
         <div className="space-y-6">
           {/* Active Challenges */}

@@ -176,16 +176,16 @@ const OrganizationDashboard = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 xl:py-16">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
-          <div className={`inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r ${roleInfo.gradient} rounded-2xl shadow-elegant mb-4 sm:mb-6`}>
-            <RoleIcon className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+        <div className="text-center mb-8 sm:mb-12 xl:mb-16">
+          <div className={`inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 xl:w-24 xl:h-24 bg-gradient-to-r ${roleInfo.gradient} rounded-2xl shadow-elegant mb-4 sm:mb-6 xl:mb-8`}>
+            <RoleIcon className="w-8 h-8 sm:w-10 sm:h-10 xl:w-12 xl:h-12 text-white" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2 sm:mb-4">
+          <h1 className="text-3xl sm:text-4xl xl:text-5xl font-bold text-foreground mb-2 sm:mb-4 xl:mb-6">
             {roleInfo.title}
           </h1>
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
+          <p className="text-lg sm:text-xl xl:text-2xl text-muted-foreground max-w-2xl xl:max-w-3xl mx-auto px-4">
             {roleInfo.subtitle}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mt-4 sm:mt-6">

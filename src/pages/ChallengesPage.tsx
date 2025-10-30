@@ -180,14 +180,14 @@ const ChallengesPage = () => {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="relative py-8 sm:py-16 lg:py-20 bg-card/20 overflow-hidden">
+      <section className="relative py-8 sm:py-16 lg:py-20 xl:py-24 bg-card/20 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center animate-fade-up-3d">
-            <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-foreground mb-3 sm:mb-6">
+            <h1 className="text-2xl sm:text-3xl lg:text-5xl xl:text-6xl font-bold text-foreground mb-3 sm:mb-6 xl:mb-8">
               {t('nav.challenges')}
             </h1>
-            <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-6 sm:mb-8 px-4">
+            <p className="text-sm sm:text-base lg:text-xl xl:text-2xl text-muted-foreground max-w-3xl xl:max-w-4xl mx-auto mb-6 sm:mb-8 xl:mb-10 px-4">
               {t('challenges.hero_subtitle')}
             </p>
             

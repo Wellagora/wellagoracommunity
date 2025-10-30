@@ -186,13 +186,13 @@ const CommunityHub = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <div className="max-w-7xl mx-auto space-y-8 xl:space-y-10">
       {/* Header */}
       <div className="text-center px-4">
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3 sm:mb-4">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground mb-3 sm:mb-4 xl:mb-6">
           {t('community.title')}
         </h1>
-        <p className="text-sm sm:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto">
+        <p className="text-sm sm:text-base lg:text-lg xl:text-xl text-muted-foreground max-w-2xl xl:max-w-3xl mx-auto">
           {t('community.subtitle')}
         </p>
       </div>

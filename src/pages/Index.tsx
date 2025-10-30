@@ -42,15 +42,15 @@ const Index = () => {
       {/* Hero Section with Clear Call-to-Action */}
       <div className="container mx-auto px-4 pt-6 sm:pt-8 pb-12 sm:pb-16">
         <motion.div 
-          className="text-center mb-12 sm:mb-16"
+          className="text-center mb-12 sm:mb-16 xl:mb-20"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6 px-4">
+          <h1 className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-bold text-foreground mb-4 sm:mb-6 xl:mb-8 px-4">
             {t('index.platform_title')}
           </h1>
-          <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto mb-6 sm:mb-8 px-4">
+          <p className="text-base sm:text-xl xl:text-2xl text-muted-foreground max-w-3xl xl:max-w-4xl mx-auto mb-6 sm:mb-8 xl:mb-10 px-4">
             {t('index.platform_subtitle')}
           </p>
           
