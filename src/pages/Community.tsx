@@ -159,75 +159,76 @@ const Community = () => {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="relative py-20 bg-card/20 overflow-hidden">
+      <section className="relative py-8 sm:py-12 lg:py-20 bg-card/20 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center animate-fade-up-3d">
-            <h1 className="text-4xl lg:text-6xl font-bold text-foreground mb-6">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-6xl font-bold text-foreground mb-3 sm:mb-4 lg:mb-6">
               {t('nav.community')}
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+            <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-4 sm:mb-6 lg:mb-8">
               {t('community.hero.subtitle')}
             </p>
-            <div className="flex items-center justify-center space-x-8">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-8">
               <div className="flex items-center space-x-2">
-                <Users className="w-5 h-5 text-success" />
-                <span className="text-foreground font-medium">12,847 {t('community.hero.active_members')}</span>
+                <Users className="w-4 h-4 sm:w-5 sm:h-5 text-success" />
+                <span className="text-xs sm:text-sm lg:text-base text-foreground font-medium">12,847 {t('community.hero.active_members')}</span>
               </div>
               <div className="flex items-center space-x-2">
-                <Award className="w-5 h-5 text-warning" />
-                <span className="text-foreground font-medium">45,293 {t('community.hero.completed_challenges')}</span>
+                <Award className="w-4 h-4 sm:w-5 sm:h-5 text-warning" />
+                <span className="text-xs sm:text-sm lg:text-base text-foreground font-medium">45,293 {t('community.hero.completed_challenges')}</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6 lg:space-y-8">
             {/* Community Tabs */}
-            <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
-              <div className="flex space-x-2 mb-6">
+            <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-3 sm:p-4 lg:p-6">
+              <div className="flex space-x-2 mb-4 sm:mb-6">
                 <Button
                   variant={activeTab === "discussions" ? "default" : "outline"}
                   onClick={() => setActiveTab("discussions")}
-                  className="flex items-center space-x-2"
+                  className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm px-2 sm:px-4"
                 >
-                  <MessageCircle className="w-4 h-4" />
+                  <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>{t('community.tabs.discussions')}</span>
                 </Button>
                 <Button
                   variant={activeTab === "stories" ? "default" : "outline"}
                   onClick={() => setActiveTab("stories")}
-                  className="flex items-center space-x-2"
+                  className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm px-2 sm:px-4"
                 >
-                  <Trophy className="w-4 h-4" />
-                  <span>{t('community.tabs.success_stories')}</span>
+                  <Trophy className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">{t('community.tabs.success_stories')}</span>
+                  <span className="sm:hidden">{t('community.tabs.stories_short') || 'Erfolge'}</span>
                 </Button>
               </div>
 
               {/* New Post Input */}
-              <div className="mb-6 p-4 bg-background/50 rounded-2xl border border-border/50">
+              <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-background/50 rounded-xl sm:rounded-2xl border border-border/50">
                 <Textarea
                   placeholder={t('community.share_thoughts')}
                   value={newPost}
                   onChange={(e) => setNewPost(e.target.value)}
-                  className="mb-3 bg-transparent border-none resize-none"
+                  className="mb-3 bg-transparent border-none resize-none text-sm sm:text-base"
                   rows={3}
                 />
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2 sm:gap-0">
                   <div className="flex space-x-2">
-                    <Button variant="outline" size="sm">
-                      📷 {t('community.image')}
+                    <Button variant="outline" size="sm" className="flex-1 sm:flex-none text-xs sm:text-sm">
+                      📷 <span className="hidden sm:inline ml-1">{t('community.image')}</span>
                     </Button>
-                    <Button variant="outline" size="sm">
-                      📊 {t('community.result')}
+                    <Button variant="outline" size="sm" className="flex-1 sm:flex-none text-xs sm:text-sm">
+                      📊 <span className="hidden sm:inline ml-1">{t('community.result')}</span>
                     </Button>
                   </div>
-                  <Button className="bg-gradient-to-r from-primary to-success">
-                    <Send className="w-4 h-4 mr-2" />
+                  <Button className="bg-gradient-to-r from-primary to-success w-full sm:w-auto text-xs sm:text-sm">
+                    <Send className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                     {t('community.send')}
                   </Button>
                 </div>
@@ -235,42 +236,42 @@ const Community = () => {
 
               {/* Tab Content */}
               {activeTab === "discussions" && (
-                <div className="space-y-6">
+                <div className="space-y-3 sm:space-y-4 lg:space-y-6">
                   {discussions.map((discussion, index) => (
                     <Card3D 
                       key={discussion.id} 
-                      className="bg-background/50 border border-border/50 p-6 hover:bg-background/70 transition-all duration-300 animate-slide-in-3d"
+                      className="bg-background/50 border border-border/50 p-3 sm:p-4 lg:p-6 hover:bg-background/70 transition-all duration-300 animate-slide-in-3d"
                       style={{ animationDelay: `${index * 0.1}s` }}
                     >
-                      <div className="flex items-start space-x-4">
-                        <Avatar className="w-12 h-12 shadow-premium">
-                          <AvatarFallback className="bg-gradient-to-br from-primary to-success text-primary-foreground font-semibold">
+                      <div className="flex items-start space-x-2 sm:space-x-3 lg:space-x-4">
+                        <Avatar className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 shadow-premium flex-shrink-0">
+                          <AvatarFallback className="bg-gradient-to-br from-primary to-success text-primary-foreground font-semibold text-xs sm:text-sm">
                             {discussion.avatar}
                           </AvatarFallback>
                         </Avatar>
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-3 mb-2">
-                            <h3 className="font-semibold text-foreground text-lg">{discussion.title}</h3>
-                            <Badge className={`${getRoleColor(discussion.role)} text-xs px-2 py-1 rounded-full`}>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+                            <h3 className="font-semibold text-foreground text-sm sm:text-base lg:text-lg">{discussion.title}</h3>
+                            <Badge className={`${getRoleColor(discussion.role)} text-xs px-2 py-0.5 rounded-full w-fit`}>
                               {getRoleIcon(discussion.role)}
                               <span className="ml-1">{discussion.category}</span>
                             </Badge>
                           </div>
-                          <p className="text-sm text-muted-foreground mb-2">
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-2">
                             {discussion.author} • {discussion.role}
                           </p>
-                          <p className="text-foreground mb-4">{discussion.content}</p>
-                          <div className="flex items-center space-x-6 text-sm text-muted-foreground">
-                            <div className="flex items-center space-x-2">
-                              <MessageCircle className="w-4 h-4" />
+                          <p className="text-xs sm:text-sm lg:text-base text-foreground mb-3 sm:mb-4">{discussion.content}</p>
+                          <div className="flex flex-wrap items-center gap-3 sm:gap-4 lg:gap-6 text-xs sm:text-sm text-muted-foreground">
+                            <div className="flex items-center space-x-1 sm:space-x-2">
+                              <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4" />
                               <span>{discussion.replies} {t('community.replies')}</span>
                             </div>
-                            <div className="flex items-center space-x-2">
-                              <ThumbsUp className="w-4 h-4" />
+                            <div className="flex items-center space-x-1 sm:space-x-2">
+                              <ThumbsUp className="w-3 h-3 sm:w-4 sm:h-4" />
                               <span>{discussion.likes} {t('community.likes')}</span>
                             </div>
-                            <div className="flex items-center space-x-2">
-                              <Calendar className="w-4 h-4" />
+                            <div className="flex items-center space-x-1 sm:space-x-2">
+                              <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
                               <span>{discussion.timeAgo}</span>
                             </div>
                           </div>
@@ -282,17 +283,17 @@ const Community = () => {
               )}
 
               {activeTab === "stories" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
                   {successStories.map((story, index) => (
                     <Card3D 
                       key={story.id} 
-                      className={`bg-gradient-to-br ${story.gradient} border border-border/50 p-6 animate-slide-in-3d`}
+                      className={`bg-gradient-to-br ${story.gradient} border border-border/50 p-3 sm:p-4 lg:p-6 animate-slide-in-3d`}
                       style={{ animationDelay: `${index * 0.1}s` }}
                     >
-                      <h3 className="font-semibold text-foreground text-lg mb-2">{story.title}</h3>
-                      <p className="text-sm text-muted-foreground mb-4">{story.description}</p>
+                      <h3 className="font-semibold text-foreground text-sm sm:text-base lg:text-lg mb-2">{story.title}</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">{story.description}</p>
                       <div className="flex justify-between items-center">
-                        <Badge className="bg-background/50 text-foreground">
+                        <Badge className="bg-background/50 text-foreground text-xs">
                           {story.type}
                         </Badge>
                         <span className="text-xs font-medium text-success">{story.impact}</span>
@@ -305,50 +306,50 @@ const Community = () => {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-8">
+          <div className="space-y-4 sm:space-y-6 lg:space-y-8">
             {/* Community Stats */}
-            <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
-              <h2 className="text-xl font-bold text-foreground mb-6 flex items-center space-x-2">
-                <TrendingUp className="w-5 h-5 text-primary" />
+            <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-4 sm:p-5 lg:p-6">
+              <h2 className="text-base sm:text-lg lg:text-xl font-bold text-foreground mb-4 sm:mb-5 lg:mb-6 flex items-center space-x-2">
+                <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 <span>{t('community.stats_title')}</span>
               </h2>
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">{t('community.active_members_stat')}</span>
-                  <span className="font-semibold text-foreground">12,847</span>
+                  <span className="text-xs sm:text-sm text-muted-foreground">{t('community.active_members_stat')}</span>
+                  <span className="font-semibold text-sm sm:text-base text-foreground">12,847</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">{t('community.completed_challenges_stat')}</span>
-                  <span className="font-semibold text-foreground">45,293</span>
+                  <span className="text-xs sm:text-sm text-muted-foreground">{t('community.completed_challenges_stat')}</span>
+                  <span className="font-semibold text-sm sm:text-base text-foreground">45,293</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">{t('community.co2_saved')}</span>
-                  <span className="font-semibold text-success">2,156</span>
+                  <span className="text-xs sm:text-sm text-muted-foreground">{t('community.co2_saved')}</span>
+                  <span className="font-semibold text-sm sm:text-base text-success">2,156</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">{t('community.participating_cities')}</span>
-                  <span className="font-semibold text-foreground">89</span>
+                  <span className="text-xs sm:text-sm text-muted-foreground">{t('community.participating_cities')}</span>
+                  <span className="font-semibold text-sm sm:text-base text-foreground">89</span>
                 </div>
               </div>
             </Card3D>
 
             {/* Top Contributors */}
-            <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
-              <h2 className="text-xl font-bold text-foreground mb-6 flex items-center space-x-2">
-                <Trophy className="w-5 h-5 text-warning" />
+            <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-4 sm:p-5 lg:p-6">
+              <h2 className="text-base sm:text-lg lg:text-xl font-bold text-foreground mb-4 sm:mb-5 lg:mb-6 flex items-center space-x-2">
+                <Trophy className="w-4 h-4 sm:w-5 sm:h-5 text-warning" />
                 <span>{t('community.top_contributors_title')}</span>
               </h2>
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {topContributors.map((contributor, index) => (
-                  <div key={index} className="flex items-center space-x-3 p-3 bg-background/50 rounded-2xl border border-border/30">
-                    <span className="text-xl">{contributor.badge}</span>
-                    <Avatar className="w-8 h-8 shadow-premium">
+                  <div key={index} className="flex items-center space-x-2 sm:space-x-3 p-2 sm:p-3 bg-background/50 rounded-xl sm:rounded-2xl border border-border/30">
+                    <span className="text-base sm:text-lg lg:text-xl flex-shrink-0">{contributor.badge}</span>
+                    <Avatar className="w-7 h-7 sm:w-8 sm:h-8 shadow-premium flex-shrink-0">
                       <AvatarFallback className="bg-gradient-to-br from-primary to-success text-primary-foreground text-xs">
                         {contributor.avatar}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="flex-1">
-                      <p className="font-semibold text-foreground text-sm">{contributor.name}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-foreground text-xs sm:text-sm truncate">{contributor.name}</p>
                       <p className="text-xs text-muted-foreground">{contributor.points.toLocaleString()} {t('community.points')}</p>
                     </div>
                   </div>
@@ -357,16 +358,16 @@ const Community = () => {
             </Card3D>
 
             {/* Quick Actions */}
-            <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
-              <h2 className="text-xl font-bold text-foreground mb-6">{t('community.quick_actions')}</h2>
-              <div className="space-y-3">
-                <Button className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground shadow-premium hover:shadow-glow transition-all duration-300">
+            <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-4 sm:p-5 lg:p-6">
+              <h2 className="text-base sm:text-lg lg:text-xl font-bold text-foreground mb-4 sm:mb-5 lg:mb-6">{t('community.quick_actions')}</h2>
+              <div className="space-y-2 sm:space-y-3">
+                <Button className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground shadow-premium hover:shadow-glow transition-all duration-300 text-xs sm:text-sm">
                   {t('community.start_discussion')}
                 </Button>
-                <Button variant="outline" className="w-full border-border/50 hover:bg-card/50">
+                <Button variant="outline" className="w-full border-border/50 hover:bg-card/50 text-xs sm:text-sm">
                   {t('community.share_success')}
                 </Button>
-                <Button variant="outline" className="w-full border-border/50 hover:bg-card/50">
+                <Button variant="outline" className="w-full border-border/50 hover:bg-card/50 text-xs sm:text-sm">
                   {t('community.find_groups')}
                 </Button>
               </div>
