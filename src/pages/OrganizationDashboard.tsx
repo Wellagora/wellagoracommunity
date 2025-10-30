@@ -162,7 +162,7 @@ const OrganizationDashboard = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex items-center space-x-2">
           <Loader2 className="h-4 w-4 animate-spin text-primary" />
-          <span className="text-foreground">Betöltés...</span>
+          <span className="text-foreground">{t('common.loading')}</span>
         </div>
       </div>
     );
@@ -190,7 +190,7 @@ const OrganizationDashboard = () => {
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mt-4 sm:mt-6">
             <Badge className={`bg-gradient-to-r ${roleInfo.gradient} text-white px-3 sm:px-4 py-1.5 sm:py-2`}>
-              {profile?.organization || "Szervezet"}
+              {profile?.organization || t('organization.organization')}
             </Badge>
           <div className="flex items-center space-x-2 text-sm text-muted-foreground">
             <MapPin className="w-4 h-4" />
@@ -259,23 +259,23 @@ const OrganizationDashboard = () => {
           <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-2 gap-2">
             <TabsTrigger value="overview" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
               <Globe2 className="w-4 h-4" />
-              <span className="hidden sm:inline">Áttekintés</span>
-              <span className="sm:hidden">Áttekintés</span>
+              <span className="hidden sm:inline">{t('organization.overview')}</span>
+              <span className="sm:hidden">{t('organization.overview')}</span>
             </TabsTrigger>
             <TabsTrigger value="challenges" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
               <Target className="w-4 h-4" />
-              <span className="hidden sm:inline">Kihívások</span>
-              <span className="sm:hidden">Kihívások</span>
+              <span className="hidden sm:inline">{t('organization.challenges')}</span>
+              <span className="sm:hidden">{t('organization.challenges')}</span>
             </TabsTrigger>
             <TabsTrigger value="partnerships" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
               <Handshake className="w-4 h-4" />
-              <span className="hidden sm:inline">Partnerségek</span>
-              <span className="sm:hidden">Partnerek</span>
+              <span className="hidden sm:inline">{t('organization.partnerships')}</span>
+              <span className="sm:hidden">{t('organization.partners')}</span>
             </TabsTrigger>
             <TabsTrigger value="stories" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
               <Sparkles className="w-4 h-4" />
-              <span className="hidden sm:inline">Impact Stories</span>
-              <span className="sm:hidden">Stories</span>
+              <span className="hidden sm:inline">{t('organization.impact_stories')}</span>
+              <span className="sm:hidden">{t('organization.stories')}</span>
             </TabsTrigger>
           </TabsList>
 
@@ -286,22 +286,22 @@ const OrganizationDashboard = () => {
               <CardContent className="p-6 sm:p-8">
                 <div className="text-center py-12 sm:py-16">
                   <Globe2 className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 text-primary/40" />
-                  <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">Regionális Hatás Térkép</h3>
+                  <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">{t('organization.regional_impact_map')}</h3>
                   <p className="text-muted-foreground mb-6 px-4">
-                    Interaktív térkép a szponzorált, létrehozott és csapatban vállalt kihívásokról
+                    {t('organization.interactive_map_desc')}
                   </p>
                   <div className="flex flex-wrap justify-center gap-4 text-sm">
                     <div className="flex items-center space-x-2">
                       <div className="w-3 h-3 rounded-full bg-warning"></div>
-                      <span>Szponzorált</span>
+                      <span>{t('organization.sponsored')}</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <div className="w-3 h-3 rounded-full bg-success"></div>
-                      <span>Létrehozott</span>
+                      <span>{t('organization.created')}</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <div className="w-3 h-3 rounded-full bg-primary"></div>
-                      <span>Csapat részvétel</span>
+                      <span>{t('organization.team_participation')}</span>
                     </div>
                   </div>
                 </div>
@@ -315,7 +315,7 @@ const OrganizationDashboard = () => {
                 onClick={() => setSelectedTab("challenges")}
               >
                 <Plus className="w-5 h-5 mr-2" />
-                Új Kihívás Létrehozása
+                {t('organization.create_new_challenge')}
               </Button>
               <Button 
                 variant="outline"
@@ -323,7 +323,7 @@ const OrganizationDashboard = () => {
                 onClick={() => navigate('/sponsor-dashboard')}
               >
                 <Award className="w-5 h-5 mr-2 text-warning" />
-                Kihívás Szponzorálása
+                {t('organization.sponsor_challenge')}
               </Button>
               <Button 
                 variant="outline"
@@ -331,7 +331,7 @@ const OrganizationDashboard = () => {
                 onClick={() => setSelectedTab("challenges")}
               >
                 <Users className="w-5 h-5 mr-2 text-accent" />
-                Csapat Mozgósítása
+                {t('organization.mobilize_team')}
               </Button>
             </div>
           </TabsContent>
@@ -339,10 +339,10 @@ const OrganizationDashboard = () => {
           {/* Challenges Tab */}
           <TabsContent value="challenges" className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-              <h3 className="text-xl sm:text-2xl font-bold text-foreground">Kihívás Ökoszisztéma</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-foreground">{t('organization.challenge_ecosystem')}</h3>
               <Button className="bg-gradient-primary hover:shadow-glow transition-smooth w-full sm:w-auto">
                 <Plus className="w-4 h-4 mr-2" />
-                Új Kihívás
+                {t('organization.new_challenge')}
               </Button>
             </div>
 
@@ -365,18 +365,18 @@ const OrganizationDashboard = () => {
                                 <Badge className={`${typeInfo.color} text-white text-xs`}>
                                   {typeInfo.label}
                                 </Badge>
-                                {challenge.status === 'completed' && (
-                                  <Badge variant="outline" className="text-success border-success">
-                                    <CheckCircle2 className="w-3 h-3 mr-1" />
-                                    Teljesítve
-                                  </Badge>
-                                )}
-                              </div>
-                              <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-muted-foreground">
-                                <span className="flex items-center space-x-1">
-                                  <Users className="w-4 h-4" />
-                                  <span>{challenge.participants} résztvevő</span>
-                                </span>
+                            {challenge.status === 'completed' && (
+                              <Badge variant="outline" className="text-success border-success">
+                                <CheckCircle2 className="w-3 h-3 mr-1" />
+                                {t('organization.completed')}
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-muted-foreground">
+                            <span className="flex items-center space-x-1">
+                              <Users className="w-4 h-4" />
+                              <span>{challenge.participants} {t('organization.participants')}</span>
+                            </span>
                                 <span className="flex items-center space-x-1">
                                   <Leaf className="w-4 h-4 text-success" />
                                   <span>{challenge.co2_saved}t CO₂</span>
@@ -384,18 +384,18 @@ const OrganizationDashboard = () => {
                               </div>
                             </div>
                           </div>
-                          <div className="space-y-2">
-                            <div className="flex justify-between text-xs sm:text-sm">
-                              <span className="text-muted-foreground">Haladás</span>
-                              <span className="font-medium">{challenge.progress}%</span>
-                            </div>
-                            <Progress value={challenge.progress} className="h-2" />
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-xs sm:text-sm">
+                            <span className="text-muted-foreground">{t('organization.progress')}</span>
+                            <span className="font-medium">{challenge.progress}%</span>
                           </div>
+                          <Progress value={challenge.progress} className="h-2" />
                         </div>
-                        <Button variant="outline" size="sm" className="w-full sm:w-auto">
-                          <BarChart3 className="w-4 h-4 mr-2" />
-                          Részletek
-                        </Button>
+                      </div>
+                      <Button variant="outline" size="sm" className="w-full sm:w-auto">
+                        <BarChart3 className="w-4 h-4 mr-2" />
+                        {t('organization.details')}
+                      </Button>
                       </div>
                     </CardContent>
                   </Card>
@@ -407,10 +407,10 @@ const OrganizationDashboard = () => {
           {/* Partnerships Tab */}
           <TabsContent value="partnerships" className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-              <h3 className="text-xl sm:text-2xl font-bold text-foreground">Közösségi Kapcsolatok</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-foreground">{t('organization.community_connections')}</h3>
               <Button className="bg-gradient-primary hover:shadow-glow transition-smooth w-full sm:w-auto">
                 <Plus className="w-4 h-4 mr-2" />
-                Új Partner Keresése
+                {t('organization.find_partner')}
               </Button>
             </div>
 
@@ -427,20 +427,20 @@ const OrganizationDashboard = () => {
                         <div className="flex-1 min-w-0">
                           <h4 className="text-base font-semibold text-foreground mb-1 truncate">{partner.name}</h4>
                           <Badge variant="outline" className="text-xs">
-                            {partner.type === 'ngo' ? 'NGO' : 
-                             partner.type === 'government' ? 'Önkormányzat' : 'Vállalat'}
+                            {partner.type === 'ngo' ? t('organization.ngo_badge') : 
+                             partner.type === 'government' ? t('organization.government_badge') : t('organization.business_badge')}
                           </Badge>
                         </div>
                       </div>
                       
                       <div className="space-y-3">
                         <div className="flex justify-between items-center text-sm">
-                          <span className="text-muted-foreground">Közös projektek</span>
+                          <span className="text-muted-foreground">{t('organization.joint_projects')}</span>
                           <span className="font-semibold">{partner.projects}</span>
                         </div>
                         <div className="space-y-1">
                           <div className="flex justify-between text-xs sm:text-sm">
-                            <span className="text-muted-foreground">Hatás érték</span>
+                            <span className="text-muted-foreground">{t('organization.impact_score')}</span>
                             <span className="font-medium">{partner.impact_score}</span>
                           </div>
                           <Progress value={partner.impact_score} className="h-2" />
@@ -449,7 +449,7 @@ const OrganizationDashboard = () => {
                       
                       <Button variant="outline" className="w-full mt-4" size="sm">
                         <Zap className="w-4 h-4 mr-2" />
-                        Kapcsolatfelvétel
+                        {t('organization.contact')}
                       </Button>
                     </CardContent>
                   </Card>
@@ -462,25 +462,25 @@ const OrganizationDashboard = () => {
           <TabsContent value="stories" className="space-y-6">
             <div className="text-center py-12 sm:py-16">
               <Sparkles className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 text-warning/60" />
-              <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">Impact Stories</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">{t('organization.impact_stories')}</h3>
               <p className="text-muted-foreground max-w-2xl mx-auto mb-6 px-4">
-                Success stories a régióból - vállalati hozzájárulás és brandépítés a fenntarthatóság terén
+                {t('organization.success_stories_desc')}
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto px-4">
                 <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-success/10 to-success/5">
                   <TrendingUp className="w-8 h-8 mx-auto mb-2 text-success" />
                   <p className="text-2xl sm:text-3xl font-bold text-success">+145%</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Brand Engagement</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.brand_engagement')}</p>
                 </Card>
                 <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-primary/10 to-primary/5">
                   <Users className="w-8 h-8 mx-auto mb-2 text-primary" />
                   <p className="text-2xl sm:text-3xl font-bold text-primary">12.5K</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Média Elérés</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.media_reach')}</p>
                 </Card>
                 <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-warning/10 to-warning/5">
                   <Award className="w-8 h-8 mx-auto mb-2 text-warning" />
                   <p className="text-2xl sm:text-3xl font-bold text-warning">3</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Fenntarthatósági Díj</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.sustainability_awards')}</p>
                 </Card>
               </div>
             </div>
