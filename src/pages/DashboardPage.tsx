@@ -217,18 +217,15 @@ const DashboardPage = () => {
           <TabsList className="grid w-full grid-cols-3 bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl p-1 sm:p-2">
             <TabsTrigger value="analytics" className="flex items-center justify-center space-x-1 sm:space-x-2 text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-lg sm:rounded-xl transition-all duration-300">
               <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="hidden sm:inline">{t('dashboard.tabs.analytics')}</span>
-              <span className="sm:hidden">Analytics</span>
+              <span>{t('dashboard.tabs.analytics')}</span>
             </TabsTrigger>
             <TabsTrigger value="progress" className="flex items-center justify-center space-x-1 sm:space-x-2 text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-lg sm:rounded-xl transition-all duration-300">
               <Target className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="hidden sm:inline">{t('dashboard.tabs.progress')}</span>
-              <span className="sm:hidden">Progress</span>
+              <span>{t('dashboard.tabs.progress')}</span>
             </TabsTrigger>
             <TabsTrigger value="rewards" className="flex items-center justify-center space-x-1 sm:space-x-2 text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-success data-[state=active]:text-primary-foreground rounded-lg sm:rounded-xl transition-all duration-300">
               <Trophy className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="hidden sm:inline">{t('dashboard.tabs.rewards')}</span>
-              <span className="sm:hidden">Rewards</span>
+              <span>{t('dashboard.tabs.rewards')}</span>
             </TabsTrigger>
           </TabsList>
 
