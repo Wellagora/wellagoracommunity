@@ -57,8 +57,8 @@ const DashboardPage = () => {
 
   // Mock achievement for demonstration
   const mockAchievement = {
-    title: "Energy Efficiency Master",
-    description: "You've reduced your energy consumption by 30% this month!",
+    title: "Energia Mester",
+    description: "30%-kal csökkented az energiafogyasztásod ezen a hónapon!",
     points: 500,
     impact: "45.2kg",
     level: 13
