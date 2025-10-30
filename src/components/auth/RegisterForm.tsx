@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { User, Building2, MapPin, Heart, Mail, Lock, UserCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const registerSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required").max(50, "First name must be less than 50 characters"),
@@ -29,33 +30,33 @@ const registerSchema = z.object({
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
-const userRoles = [
+const getUserRoles = (t: any) => [
   { 
     id: "citizen", 
-    name: "Citizen", 
+    name: t('journey.role_citizen') || "Einzelperson", 
     icon: User, 
-    description: "Individual sustainability journey",
+    description: t('profile.role_citizen_desc') || "Persönliche Nachhaltigkeitsreise",
     color: "bg-success"
   },
   { 
     id: "business", 
-    name: "Business", 
+    name: t('journey.role_business') || "Unternehmen", 
     icon: Building2, 
-    description: "Corporate sustainability goals",
+    description: t('profile.role_business_desc') || "Unternehmensziele",
     color: "bg-accent"
   },
   { 
     id: "municipal", 
-    name: "Municipal", 
+    name: t('journey.role_government') || "Gemeinde", 
     icon: MapPin, 
-    description: "City-wide initiatives",
+    description: t('profile.role_government_desc') || "Stadtweite Initiativen",
     color: "bg-warning"
   },
   { 
     id: "ngo", 
-    name: "NGO", 
+    name: t('journey.role_ngo') || "Zivilorganisation", 
     icon: Heart, 
-    description: "Community organization",
+    description: t('profile.role_ngo_desc') || "Gemeinschaftsorganisation",
     color: "bg-primary"
   },
 ];
@@ -68,6 +69,7 @@ interface RegisterFormProps {
 const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
   const [selectedRole, setSelectedRole] = useState<string>("");
   const { toast } = useToast();
+  const { t } = useLanguage();
   
   const {
     register,
@@ -80,6 +82,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
   });
 
   const watchedRole = watch("role");
+  const userRoles = getUserRoles(t);
   const selectedRoleInfo = userRoles.find(role => role.id === watchedRole);
 
   const onSubmit = async (data: RegisterFormData) => {
@@ -125,9 +128,9 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold">Join Wellagora</CardTitle>
-        <CardDescription>
-          Start your sustainability journey and connect with your community
+        <CardTitle className="text-xl sm:text-2xl font-bold">{t('journey.step_1_title') || 'Registrierung'}</CardTitle>
+        <CardDescription className="text-sm sm:text-base">
+          {t('journey.step_1_desc') || 'Wähle deine Rolle und erstelle dein Konto'}
         </CardDescription>
       </CardHeader>
       
@@ -135,7 +138,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Role Selection */}
           <div className="space-y-2">
-            <Label htmlFor="role">Choose Your Role</Label>
+            <Label htmlFor="role" className="text-sm sm:text-base">{t('journey.choose_role') || 'Wähle eine Rolle:'}</Label>
             <div className="grid grid-cols-2 gap-2 sm:gap-3">
               {userRoles.map((role) => {
                 const Icon = role.icon;
