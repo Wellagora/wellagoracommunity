@@ -1173,5 +1173,12 @@
   "organization.brand_engagement": "Brand Engagement",
   "organization.media_reach": "Media Reach",
   "organization.sustainability_awards": "Sustainability Awards",
-  "organization.organization": "Organization"
+  "organization.organization": "Organization",
+  "sponsor.important": "Important",
+  "sponsor.credit_explanation": "1 credit = 1 month campaign support. You can flexibly use your credits to sponsor different challenges",
+  "sponsor.current_package": "Current Package",
+  "sponsor.credits": "credits",
+  "sponsor.active_package": "Active Package",
+  "sponsor.challenge_sponsorship": "challenge sponsorship",
+  "sponsor.package_purchase": "package purchase"
 }

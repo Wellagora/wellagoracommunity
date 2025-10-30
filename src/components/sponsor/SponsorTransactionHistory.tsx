@@ -78,6 +78,32 @@ const SponsorTransactionHistory = () => {
     }
   };
 
+  const getTranslatedDescription = (transaction: Transaction): string => {
+    if (!transaction.description) {
+      return t(`sponsor.transaction_type.${transaction.transaction_type}`);
+    }
+
+    const desc = transaction.description;
+
+    // Pattern: "{name} kihívás szponzorálása - {region}"
+    const sponsorshipMatch = desc.match(/^(.+?)\s+kihívás\s+szponzorálása\s+-\s+(.+)$/i);
+    if (sponsorshipMatch) {
+      const challengeName = sponsorshipMatch[1];
+      const region = sponsorshipMatch[2];
+      return `${challengeName} ${t('sponsor.challenge_sponsorship')} - ${region}`;
+    }
+
+    // Pattern: "{package} csomag vásárlás"
+    const packageMatch = desc.match(/^(.+?)\s+csomag\s+vásárlás$/i);
+    if (packageMatch) {
+      const packageName = packageMatch[1];
+      return `${packageName} ${t('sponsor.package_purchase')}`;
+    }
+
+    // Fallback: return description as-is
+    return desc;
+  };
+
   if (loading) {
     return (
       <Card>
@@ -110,7 +136,7 @@ const SponsorTransactionHistory = () => {
                   {getTransactionIcon(transaction.transaction_type)}
                   <div>
                     <p className="font-medium">
-                      {transaction.description || t(`sponsor.transaction_type.${transaction.transaction_type}`)}
+                      {getTranslatedDescription(transaction)}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {format(new Date(transaction.created_at), 'PPP p', {

@@ -1195,5 +1195,12 @@
   "organization.brand_engagement": "Markenengagement",
   "organization.media_reach": "Medienreichweite",
   "organization.sustainability_awards": "Nachhaltigkeitspreise",
-  "organization.organization": "Organisation"
+  "organization.organization": "Organisation",
+  "sponsor.important": "Wichtig",
+  "sponsor.credit_explanation": "1 Kredit = 1 Monat Kampagnenunterstützung. Sie können Ihre Kredite flexibel für verschiedene Herausforderungen einsetzen",
+  "sponsor.current_package": "Aktuelles Paket",
+  "sponsor.credits": "Kredite",
+  "sponsor.active_package": "Aktives Paket",
+  "sponsor.challenge_sponsorship": "Herausforderungssponsoring",
+  "sponsor.package_purchase": "Paket-Kauf"
 }
