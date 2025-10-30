@@ -5,7 +5,8 @@ import { Progress } from '@/components/ui/progress';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Coins, TrendingUp, TrendingDown, Wallet } from 'lucide-react';
+import { Coins, TrendingUp, TrendingDown, Wallet, Leaf, Users, Award } from 'lucide-react';
+import { getSponsorDashboardMetrics, type SponsorDashboardMetrics } from '@/services/SponsorImpactService';
 
 interface SponsorCredits {
   total_credits: number;
@@ -17,28 +18,33 @@ const SponsorCreditsOverview = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const [credits, setCredits] = useState<SponsorCredits | null>(null);
+  const [metrics, setMetrics] = useState<SponsorDashboardMetrics | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (user) {
-      loadCredits();
+      loadData();
     }
   }, [user]);
 
-  const loadCredits = async () => {
+  const loadData = async () => {
     try {
-      const { data, error } = await supabase
+      // Load credits
+      const { data: creditsData, error: creditsError } = await supabase
         .from('sponsor_credits')
         .select('total_credits, used_credits, available_credits')
         .eq('sponsor_user_id', user?.id)
         .single();
 
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error loading credits:', error);
-        return;
+      if (creditsError && creditsError.code !== 'PGRST116') {
+        console.error('Error loading credits:', creditsError);
       }
 
-      setCredits(data || { total_credits: 0, used_credits: 0, available_credits: 0 });
+      setCredits(creditsData || { total_credits: 0, used_credits: 0, available_credits: 0 });
+
+      // Load real impact metrics
+      const impactMetrics = await getSponsorDashboardMetrics(user?.id || '');
+      setMetrics(impactMetrics);
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -61,62 +67,139 @@ const SponsorCreditsOverview = () => {
     : 0;
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
-      {/* Total Credits */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">
-            {t('sponsor.total_credits')}
-          </CardTitle>
-          <Wallet className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{credits?.total_credits || 0}</div>
-          <p className="text-xs text-muted-foreground">
-            {t('sponsor.purchased_total')}
-          </p>
-        </CardContent>
-      </Card>
+    <>
+      <div className="grid gap-4 md:grid-cols-3 mb-6">
+        {/* Total Credits */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              {t('sponsor.total_credits')}
+            </CardTitle>
+            <Wallet className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{credits?.total_credits || 0}</div>
+            <p className="text-xs text-muted-foreground">
+              {t('sponsor.purchased_total')}
+            </p>
+          </CardContent>
+        </Card>
 
-      {/* Available Credits */}
-      <Card className="border-2 border-primary">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">
-            {t('sponsor.available_credits')}
-          </CardTitle>
-          <Coins className="h-4 w-4 text-primary" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-primary">
-            {credits?.available_credits || 0}
-          </div>
-          <p className="text-xs text-muted-foreground">
-            {t('sponsor.ready_to_use')}
-          </p>
-        </CardContent>
-      </Card>
+        {/* Available Credits */}
+        <Card className="border-2 border-primary">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              {t('sponsor.available_credits')}
+            </CardTitle>
+            <Coins className="h-4 w-4 text-primary" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-primary">
+              {credits?.available_credits || 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {t('sponsor.ready_to_use')}
+            </p>
+          </CardContent>
+        </Card>
 
-      {/* Used Credits */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">
-            {t('sponsor.used_credits')}
-          </CardTitle>
-          <TrendingDown className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{credits?.used_credits || 0}</div>
-          <p className="text-xs text-muted-foreground">
-            {usagePercentage.toFixed(1)}% {t('sponsor.utilized')}
-          </p>
-        </CardContent>
-      </Card>
+        {/* Used Credits */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              {t('sponsor.used_credits')}
+            </CardTitle>
+            <TrendingDown className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{credits?.used_credits || 0}</div>
+            <p className="text-xs text-muted-foreground">
+              {usagePercentage.toFixed(1)}% {t('sponsor.utilized')}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Real Impact Metrics */}
+      {metrics && (
+        <div className="grid gap-4 md:grid-cols-4 mb-6">
+          <Card className="bg-gradient-to-br from-success/10 to-success/5 border-success/20">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Elért Emberek
+              </CardTitle>
+              <Users className="h-4 w-4 text-success" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-success">
+                {metrics.total_participants.toLocaleString()}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {metrics.total_completions} teljesítés
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                CO₂ Megtakarítás
+              </CardTitle>
+              <Leaf className="h-4 w-4 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-primary">
+                {metrics.total_co2_saved.toFixed(1)} kg
+              </div>
+              <p className="text-xs text-muted-foreground">
+                ≈ {metrics.trees_equivalent.toFixed(1)} fa
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-warning/10 to-warning/5 border-warning/20">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Pontok Osztva
+              </CardTitle>
+              <Award className="h-4 w-4 text-warning" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-warning">
+                {metrics.total_points_distributed.toLocaleString()}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                gamifikációs pontok
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Validációs Pontosság
+              </CardTitle>
+              <TrendingUp className="h-4 w-4 text-accent" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-accent">
+                {(metrics.average_validation_score * 100).toFixed(0)}%
+              </div>
+              <p className="text-xs text-muted-foreground">
+                átlagos megbízhatóság
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Credit Usage Progress */}
-      <Card className="md:col-span-3">
+      <Card>
         <CardHeader>
           <CardTitle>{t('sponsor.credit_usage')}</CardTitle>
-          <CardDescription>{t('sponsor.usage_overview')}</CardDescription>
+          <CardDescription>
+            Valós idejű adatok az adatbázisból • {metrics?.active_sponsorships || 0} aktív szponzoráció
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -146,7 +229,7 @@ const SponsorCreditsOverview = () => {
           )}
         </CardContent>
       </Card>
-    </div>
+    </>
   );
 };
 
