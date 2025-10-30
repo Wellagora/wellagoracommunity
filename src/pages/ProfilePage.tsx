@@ -58,11 +58,11 @@ const ProfilePage = () => {
           .single();
         
         if (error) {
-          toast({
-            title: 'Hiba',
-            description: 'A profil nem található vagy nem publikus',
-            variant: 'destructive'
-          });
+        toast({
+          title: t('common.error'),
+          description: t('profile.not_found_or_private'),
+          variant: 'destructive'
+        });
           navigate('/');
         } else {
           setViewedProfile(data);
@@ -122,7 +122,7 @@ const ProfilePage = () => {
             <CardContent className="space-y-4">
               {viewedProfile.bio && (
                 <div>
-                  <h3 className="font-semibold mb-2 text-sm sm:text-base">Bemutatkozás</h3>
+                  <h3 className="font-semibold mb-2 text-sm sm:text-base">{t('profile.bio_section')}</h3>
                   <p className="text-muted-foreground text-sm sm:text-base">{viewedProfile.bio}</p>
                 </div>
               )}
@@ -142,7 +142,7 @@ const ProfilePage = () => {
               )}
               {viewedProfile.sustainability_goals && viewedProfile.sustainability_goals.length > 0 && (
                 <div>
-                  <h3 className="font-semibold mb-2 text-sm sm:text-base">Fenntarthatósági célok</h3>
+                  <h3 className="font-semibold mb-2 text-sm sm:text-base">{t('profile.sustainability_goals')}</h3>
                   <div className="flex flex-wrap gap-2">
                     {viewedProfile.sustainability_goals.map((goal: string, idx: number) => (
                       <Badge key={idx} variant="outline" className="text-xs">{goal}</Badge>
@@ -335,7 +335,7 @@ const ProfilePage = () => {
         <div className="text-center mb-6 sm:mb-8">
           <div className="relative inline-block mb-4 sm:mb-6">
             <Avatar className="w-20 h-20 sm:w-24 sm:h-24 shadow-premium">
-              <AvatarImage src={profile?.avatar_url} alt="Profilkép" />
+              <AvatarImage src={profile?.avatar_url} alt={t('profile.avatar_alt')} />
               <AvatarFallback className={`text-white text-xl sm:text-2xl bg-gradient-to-r ${getRoleGradient()}`}>
                 {profile?.first_name?.[0]}{profile?.last_name?.[0]}
               </AvatarFallback>
@@ -372,21 +372,21 @@ const ProfilePage = () => {
                 onValueChange={async (newRole) => {
                   const { error } = await updateProfile({ user_role: newRole as any });
                   if (error) {
-                    setError("Hiba a szerepváltás során");
+                    setError(t('profile.role_change_error'));
                   } else {
-                    setSuccess("Szerepváltás sikeres! Újratöltjük az oldalt...");
+                    setSuccess(t('profile.role_change_success'));
                     setTimeout(() => window.location.reload(), 1000);
                   }
                 }}
               >
                 <SelectTrigger className="w-48 bg-gradient-to-r from-warning/20 to-destructive/20 border-warning text-sm">
-                  <SelectValue placeholder="Super Admin: Szerepváltás" />
+                  <SelectValue placeholder={t('profile.super_admin_switch')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="citizen">🏡 Állampolgár</SelectItem>
-                  <SelectItem value="business">🏢 Vállalkozás</SelectItem>
-                  <SelectItem value="government">🏛️ Önkormányzat</SelectItem>
-                  <SelectItem value="ngo">❤️ Civil Szervezet</SelectItem>
+                  <SelectItem value="citizen">🏡 {t('profile.role_citizen')}</SelectItem>
+                  <SelectItem value="business">🏢 {t('profile.role_business')}</SelectItem>
+                  <SelectItem value="government">🏛️ {t('profile.role_government')}</SelectItem>
+                  <SelectItem value="ngo">❤️ {t('profile.role_ngo')}</SelectItem>
                 </SelectContent>
               </Select>
             )}
@@ -498,9 +498,9 @@ const ProfilePage = () => {
                 <Label htmlFor="sustainability_goals">{t('profile.sustainability_goals')} *</Label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                   {[
-                    'Energia hatékonyság', 'Hulladék csökkentés', 'Közlekedés', 
-                    'Biodiverzitás', 'Körforgásos gazdaság', 'Vízvédelem',
-                    'Zöld finanszírozás', 'Innováció', 'Közösségépítés'
+                    t('profile.goal_energy'), t('profile.goal_waste'), t('profile.goal_transport'), 
+                    t('profile.goal_biodiversity'), t('profile.goal_circular'), t('profile.goal_water'),
+                    t('profile.goal_finance'), t('profile.goal_innovation'), t('profile.goal_community')
                   ].map((goal) => (
                     <label key={goal} className="flex items-center space-x-2 p-2 bg-background/30 rounded cursor-pointer hover:bg-background/50">
                       <input
@@ -550,54 +550,54 @@ const ProfilePage = () => {
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Building2 className="w-5 h-5 text-accent" />
-                  <span>További szervezeti információk</span>
+                  <span>{t('profile.org_info_section')}</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="industry">Iparág</Label>
+                    <Label htmlFor="industry">{t('profile.industry')}</Label>
                     <Select
                       value={profileForm.industry}
                       onValueChange={(value) => setProfileForm({ ...profileForm, industry: value })}
                     >
                       <SelectTrigger className="bg-background/50">
-                        <SelectValue placeholder="Válassz iparágat" />
+                        <SelectValue placeholder={t('profile.industry_placeholder')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="tech">Technológia</SelectItem>
-                        <SelectItem value="energy">Energia</SelectItem>
-                        <SelectItem value="manufacturing">Gyártás</SelectItem>
-                        <SelectItem value="retail">Kiskereskedelem</SelectItem>
-                        <SelectItem value="finance">Pénzügy</SelectItem>
-                        <SelectItem value="healthcare">Egészségügy</SelectItem>
-                        <SelectItem value="education">Oktatás</SelectItem>
-                        <SelectItem value="other">Egyéb</SelectItem>
+                        <SelectItem value="tech">{t('profile.industry_tech')}</SelectItem>
+                        <SelectItem value="energy">{t('profile.industry_energy')}</SelectItem>
+                        <SelectItem value="manufacturing">{t('profile.industry_manufacturing')}</SelectItem>
+                        <SelectItem value="retail">{t('profile.industry_retail')}</SelectItem>
+                        <SelectItem value="finance">{t('profile.industry_finance')}</SelectItem>
+                        <SelectItem value="healthcare">{t('profile.industry_healthcare')}</SelectItem>
+                        <SelectItem value="education">{t('profile.industry_education')}</SelectItem>
+                        <SelectItem value="other">{t('profile.industry_other')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="company_size">Céges méret</Label>
+                    <Label htmlFor="company_size">{t('profile.company_size')}</Label>
                     <Select
                       value={profileForm.company_size}
                       onValueChange={(value) => setProfileForm({ ...profileForm, company_size: value })}
                     >
                       <SelectTrigger className="bg-background/50">
-                        <SelectValue placeholder="Válassz méretet" />
+                        <SelectValue placeholder={t('profile.company_size_placeholder')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="1-10">1-10 alkalmazott</SelectItem>
-                        <SelectItem value="11-50">11-50 alkalmazott</SelectItem>
-                        <SelectItem value="51-200">51-200 alkalmazott</SelectItem>
-                        <SelectItem value="201-1000">201-1000 alkalmazott</SelectItem>
-                        <SelectItem value="1000+">1000+ alkalmazott</SelectItem>
+                        <SelectItem value="1-10">{t('profile.size_1_10')}</SelectItem>
+                        <SelectItem value="11-50">{t('profile.size_11_50')}</SelectItem>
+                        <SelectItem value="51-200">{t('profile.size_51_200')}</SelectItem>
+                        <SelectItem value="201-1000">{t('profile.size_201_1000')}</SelectItem>
+                        <SelectItem value="1000+">{t('profile.size_1000_plus')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="website_url">Weboldal URL</Label>
+                  <Label htmlFor="website_url">{t('profile.website_url')}</Label>
                   <Input
                     id="website_url"
                     type="url"
@@ -609,21 +609,21 @@ const ProfilePage = () => {
                 </div>
 
                 <div className="p-4 bg-info/10 rounded-lg border border-info/20">
-                  <h4 className="font-semibold text-info mb-2">Szponzoráció és Üzleti Lehetőségek</h4>
+                  <h4 className="font-semibold text-info mb-2">{t('profile.sponsorship_title')}</h4>
                   <p className="text-sm text-muted-foreground mb-3">
-                    Vállalatok szponzorálhatnak kihívásokat és vásárolhatnak szponzorációs csomagokat:
+                    {t('profile.sponsorship_desc')}
                   </p>
                   <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• <strong>Bronz csomag:</strong> 50.000 Ft - 1 havi kihívás szponzoráció</li>
-                    <li>• <strong>Ezüst csomag:</strong> 150.000 Ft - 3 havi + brandelt challenges</li>
-                    <li>• <strong>Arany csomag:</strong> 300.000 Ft - 6 havi + dedikált matching</li>
+                    <li>• <strong>{t('profile.bronze_package')}:</strong> {t('profile.bronze_desc')}</li>
+                    <li>• <strong>{t('profile.silver_package')}:</strong> {t('profile.silver_desc')}</li>
+                    <li>• <strong>{t('profile.gold_package')}:</strong> {t('profile.gold_desc')}</li>
                   </ul>
                   <div className="flex gap-2 mt-3">
                     <Button size="sm" variant="outline">
-                      Szponzorációs ajánlat kérése
+                      {t('profile.request_quote')}
                     </Button>
                     <Button size="sm" className="bg-gradient-to-r from-primary to-accent">
-                      Szponzorációs Dashboard
+                      {t('profile.sponsorship_dashboard')}
                     </Button>
                   </div>
                 </div>
@@ -636,15 +636,15 @@ const ProfilePage = () => {
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Users className="w-5 h-5 text-success" />
-                <span>Adatvédelmi beállítások</span>
+                <span>{t('profile.privacy_settings')}</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between p-4 bg-background/30 rounded-xl">
                 <div className="space-y-1">
-                  <div className="font-medium text-foreground">Nyilvános profil</div>
+                  <div className="font-medium text-foreground">{t('profile.public_profile')}</div>
                   <div className="text-sm text-muted-foreground">
-                    A profilja látható lesz más felhasználók számára
+                    {t('profile.public_profile_desc')}
                   </div>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
