@@ -3,10 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useSubscription } from '@/contexts/SubscriptionContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Star, Crown, Award, Sparkles } from 'lucide-react';
 
 const SponsorshipPackageSelector: React.FC = () => {
   const { packageTiers, createCheckout, subscription } = useSubscription();
+  const { t } = useLanguage();
 
   const getPackageIcon = (tier: string) => {
     switch (tier) {
@@ -46,7 +48,7 @@ const SponsorshipPackageSelector: React.FC = () => {
     <div className="space-y-4 sm:space-y-6">
       <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 sm:p-4 text-xs sm:text-sm">
         <p className="text-blue-900 dark:text-blue-100">
-          <strong>Fontos:</strong> 1 kredit = 1 hónap kampánytámogatás. A krediteket rugalmasan használhatod fel különböző kihívások szponzorálására.
+          <strong>{t('sponsor.important')}:</strong> {t('sponsor.credit_explanation')}
         </p>
       </div>
       
@@ -60,7 +62,7 @@ const SponsorshipPackageSelector: React.FC = () => {
         >
           {isCurrentPackage(key) && (
             <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-primary to-success text-white z-10 shadow-lg">
-              Jelenlegi csomag
+              {t('sponsor.current_package')}
             </Badge>
           )}
           
@@ -84,7 +86,7 @@ const SponsorshipPackageSelector: React.FC = () => {
               </div>
               <div className={`inline-block px-3 sm:px-5 py-1.5 sm:py-2 bg-gradient-to-r ${getPackageGradient(key)} rounded-full mt-2 sm:mt-3 shadow-lg group-hover:shadow-xl transition-shadow duration-300`}>
                 <p className="text-sm sm:text-base font-bold text-white">
-                  {tier.credits} kredit
+                  {tier.credits} {t('sponsor.credits')}
                 </p>
               </div>
             </div>
@@ -113,7 +115,7 @@ const SponsorshipPackageSelector: React.FC = () => {
                 }
               }}
             >
-              {isCurrentPackage(key) ? '✓ Aktív csomag' : 'Csomag választása →'}
+              {isCurrentPackage(key) ? `✓ ${t('sponsor.active_package')}` : `${t('sponsor.choose_package')} →`}
             </Button>
           </CardContent>
         </Card>
