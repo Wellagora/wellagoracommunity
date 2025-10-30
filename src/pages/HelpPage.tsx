@@ -196,13 +196,13 @@ const HelpPage = () => {
       
       <main className="pt-14 sm:pt-16">
         {/* Hero Section */}
-        <section className="bg-gradient-secondary text-secondary-foreground py-8 sm:py-12 lg:py-16">
-          <div className="container mx-auto px-4 text-center">
-            <HelpCircle className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 opacity-80" />
-            <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-3 sm:mb-4">
+        <section className="bg-gradient-secondary text-secondary-foreground py-8 sm:py-12 lg:py-16 xl:py-20">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <HelpCircle className="w-12 h-12 sm:w-16 sm:h-16 xl:w-20 xl:h-20 mx-auto mb-4 sm:mb-6 xl:mb-8 opacity-80" />
+            <h1 className="text-2xl sm:text-3xl md:text-5xl xl:text-6xl font-bold mb-3 sm:mb-4 xl:mb-6">
               How Can We Help You?
             </h1>
-            <p className="text-sm sm:text-base md:text-xl max-w-2xl mx-auto opacity-90 mb-6 sm:mb-8 px-4">
+            <p className="text-sm sm:text-base md:text-xl xl:text-2xl max-w-2xl xl:max-w-3xl mx-auto opacity-90 mb-6 sm:mb-8 xl:mb-10 px-4">
               Find answers, get support, and learn how to make the most of your sustainability journey
             </p>
             
@@ -220,11 +220,11 @@ const HelpPage = () => {
           </div>
         </section>
 
-        <div className="container mx-auto px-4 py-6 sm:py-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12 xl:py-16">
           {/* Quick Links */}
-          <section className="mb-8 sm:mb-12">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center">Quick Links</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+          <section className="mb-8 sm:mb-12 xl:mb-16">
+            <h2 className="text-xl sm:text-2xl xl:text-3xl font-bold mb-4 sm:mb-6 xl:mb-8 text-center">Quick Links</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 xl:gap-6">
               {quickLinks.map((link, index) => (
                 <Card key={index} className="hover:bg-muted/50 transition-colors cursor-pointer group">
                   <CardContent className="p-4 text-center">

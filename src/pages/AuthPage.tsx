@@ -190,8 +190,8 @@ const AuthPage = () => {
 
       <div className="relative z-10 flex flex-col lg:flex-row min-h-screen">
         {/* Left side - Features */}
-        <div className="hidden lg:flex flex-1 flex-col justify-center px-6 sm:px-8 lg:px-12 xl:px-20">
-          <div className="max-w-lg">
+        <div className="hidden lg:flex flex-1 flex-col justify-center px-6 sm:px-8 lg:px-12 xl:px-20 2xl:px-24">
+          <div className="max-w-lg xl:max-w-xl">
             {/* Logo and brand */}
             <div className="flex items-center mb-8">
               <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center mr-4 border border-primary/30">
@@ -203,7 +203,7 @@ const AuthPage = () => {
               </div>
             </div>
 
-            <h2 className="text-4xl font-bold text-foreground mb-6 leading-tight">
+            <h2 className="text-4xl xl:text-5xl font-bold text-foreground mb-6 xl:mb-8 leading-tight">
               Join the future of 
               <span className="block bg-gradient-primary bg-clip-text text-transparent">
                 sustainable living
@@ -239,16 +239,16 @@ const AuthPage = () => {
         </div>
 
         {/* Right side - Auth form */}
-        <div className="flex-shrink-0 w-full max-w-md p-4 sm:p-6 lg:p-12">
+        <div className="flex-shrink-0 w-full max-w-md xl:max-w-lg p-4 sm:p-6 lg:p-12 xl:p-16">
           <div className="flex flex-col justify-center min-h-full">
             <div className="w-full">
               {/* Auth form header */}
-              <div className="text-center mb-8">
-                <div className="w-16 h-16 mx-auto mb-4 bg-card/80 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-border/50">
-                  <Users className="w-8 h-8 text-primary-glow" />
+              <div className="text-center mb-8 xl:mb-10">
+                <div className="w-16 h-16 xl:w-20 xl:h-20 mx-auto mb-4 xl:mb-6 bg-card/80 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-border/50">
+                  <Users className="w-8 h-8 xl:w-10 xl:h-10 text-primary-glow" />
                 </div>
-                <h3 className="text-2xl font-bold text-foreground mb-2">Welcome back!</h3>
-                <p className="text-muted-foreground">Please enter your details</p>
+                <h3 className="text-2xl xl:text-3xl font-bold text-foreground mb-2">Welcome back!</h3>
+                <p className="text-sm xl:text-base text-muted-foreground">Please enter your details</p>
               </div>
 
               {error && (

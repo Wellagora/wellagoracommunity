@@ -141,15 +141,15 @@ const ChallengeDetailPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <Navigation />
       
-      <div className="container mx-auto px-4 py-6 sm:py-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 xl:py-12">
         {/* Back Button */}
-        <div className="mb-4 sm:mb-6">
+        <div className="mb-4 sm:mb-6 xl:mb-8">
           <Button 
             variant="ghost" 
             onClick={handleGoBack}
-            className="hover:bg-muted text-sm sm:text-base"
+            className="hover:bg-muted text-sm sm:text-base xl:text-lg"
           >
-            <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+            <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 xl:w-5 xl:h-5 mr-2" />
             Back to Challenges
           </Button>
         </div>

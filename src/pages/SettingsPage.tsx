@@ -60,13 +60,13 @@ const SettingsPage = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <main className="container mx-auto px-4 py-6 sm:py-8 mt-14 sm:mt-16">
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-6 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 xl:py-12 mt-14 sm:mt-16">
+        <div className="max-w-4xl xl:max-w-5xl mx-auto">
+          <div className="mb-6 sm:mb-8 xl:mb-10">
+            <h1 className="text-2xl sm:text-3xl xl:text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
               {t('settings.title')}
             </h1>
-            <p className="text-sm sm:text-base text-muted-foreground mt-2">
+            <p className="text-sm sm:text-base xl:text-lg text-muted-foreground mt-2">
               {t('settings.subtitle')}
             </p>
           </div>
