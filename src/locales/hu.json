@@ -1362,5 +1362,21 @@
   "wellbot.suggestion_waste": "Segíts hulladékcsökkentési tervet készíteni",
   "wellbot.suggestion_energy": "Találj energiahatékony alternatívákat otthonomhoz",
   "wellbot.input_placeholder": "Kérdezz bármit a fenntarthatóságról...",
-  "wellbot.suggestions": "Javasolt továbbvezetés"
+  "wellbot.suggestions": "Javasolt továbbvezetés",
+  "organization.regional_impact_hub": "Regionális Hatás Hub",
+  "organization.corporate_environmental_impact": "Vállalati környezeti hatás a közösségben",
+  "organization.municipal_impact_hub": "Önkormányzati Hatás Hub",
+  "organization.urban_sustainability_coordination": "Városi fenntarthatósági koordináció",
+  "organization.ngo_impact_hub": "NGO Hatás Hub",
+  "organization.community_environmental_initiatives": "Közösségi környezetvédelmi kezdeményezések",
+  "organization.community_sustainability_participation": "Közösségi fenntarthatósági részvétel",
+  "organization.sponsored": "Szponzorált",
+  "organization.created": "Létrehozott",
+  "organization.team_participation": "Csapat részvétel",
+  "organization.budapest_region": "Budapest Régió",
+  "organization.ranking": "Rangsor",
+  "organization.active_challenges": "Aktív Kihívások",
+  "organization.people_reached": "Elért Emberek",
+  "organization.co2_savings": "CO₂ Megtakarítás",
+  "organization.partnerships": "Partnerségek"
 }

@@ -1125,5 +1125,21 @@
   "wellbot.suggestion_waste": "Helfen Sie mir, einen Abfallreduzierungsplan zu erstellen",
   "wellbot.suggestion_energy": "Finden Sie energieeffiziente Alternativen für mein Zuhause",
   "wellbot.input_placeholder": "Fragen Sie mich alles über Nachhaltigkeit...",
-  "wellbot.suggestions": "Vorgeschlagene Folgefragen"
+  "wellbot.suggestions": "Vorgeschlagene Folgefragen",
+  "organization.regional_impact_hub": "Regionaler Impact-Hub",
+  "organization.corporate_environmental_impact": "Unternehmensumweltauswirkungen in der Gemeinschaft",
+  "organization.municipal_impact_hub": "Kommunaler Impact-Hub",
+  "organization.urban_sustainability_coordination": "Städtische Nachhaltigkeitskoordination",
+  "organization.ngo_impact_hub": "NGO Impact-Hub",
+  "organization.community_environmental_initiatives": "Gemeinschaftsumweltinitiativen",
+  "organization.community_sustainability_participation": "Gemeinschaftsnachhaltigkeitsbeteiligung",
+  "organization.sponsored": "Gesponsert",
+  "organization.created": "Erstellt",
+  "organization.team_participation": "Teamteilnahme",
+  "organization.budapest_region": "Budapest Region",
+  "organization.ranking": "Rang",
+  "organization.active_challenges": "Aktive Herausforderungen",
+  "organization.people_reached": "Erreichte Personen",
+  "organization.co2_savings": "CO₂-Einsparung",
+  "organization.partnerships": "Partnerschaften"
 }

@@ -1103,5 +1103,21 @@
   "wellbot.suggestion_waste": "Help me create a waste reduction plan",
   "wellbot.suggestion_energy": "Find energy-efficient alternatives for my home",
   "wellbot.input_placeholder": "Ask me anything about sustainability...",
-  "wellbot.suggestions": "Suggested follow-ups"
+  "wellbot.suggestions": "Suggested follow-ups",
+  "organization.regional_impact_hub": "Regional Impact Hub",
+  "organization.corporate_environmental_impact": "Corporate environmental impact in the community",
+  "organization.municipal_impact_hub": "Municipal Impact Hub",
+  "organization.urban_sustainability_coordination": "Urban sustainability coordination",
+  "organization.ngo_impact_hub": "NGO Impact Hub",
+  "organization.community_environmental_initiatives": "Community environmental initiatives",
+  "organization.community_sustainability_participation": "Community sustainability participation",
+  "organization.sponsored": "Sponsored",
+  "organization.created": "Created",
+  "organization.team_participation": "Team participation",
+  "organization.budapest_region": "Budapest Region",
+  "organization.ranking": "Ranking",
+  "organization.active_challenges": "Active Challenges",
+  "organization.people_reached": "People Reached",
+  "organization.co2_savings": "CO₂ Savings",
+  "organization.partnerships": "Partnerships"
 }

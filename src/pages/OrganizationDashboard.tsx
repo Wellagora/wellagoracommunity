@@ -100,29 +100,29 @@ const OrganizationDashboard = () => {
     switch (profile?.user_role) {
       case "business":
         return {
-          title: "Regionális Hatás Hub",
-          subtitle: "Vállalati környezeti hatás a közösségben",
+          title: t('organization.regional_impact_hub'),
+          subtitle: t('organization.corporate_environmental_impact'),
           gradient: "from-accent to-secondary",
           icon: Building2
         };
       case "government":
         return {
-          title: "Önkormányzati Hatás Hub", 
-          subtitle: "Városi fenntarthatósági koordináció",
+          title: t('organization.municipal_impact_hub'), 
+          subtitle: t('organization.urban_sustainability_coordination'),
           gradient: "from-warning to-destructive",
           icon: MapPin
         };
       case "ngo":
         return {
-          title: "NGO Hatás Hub",
-          subtitle: "Közösségi környezetvédelmi kezdeményezések", 
+          title: t('organization.ngo_impact_hub'),
+          subtitle: t('organization.community_environmental_initiatives'), 
           gradient: "from-success to-primary",
           icon: Heart
         };
       default:
         return {
-          title: "Regionális Hatás Hub",
-          subtitle: "Közösségi fenntarthatósági részvétel",
+          title: t('organization.regional_impact_hub'),
+          subtitle: t('organization.community_sustainability_participation'),
           gradient: "from-primary to-success", 
           icon: Building2
         };
@@ -132,11 +132,11 @@ const OrganizationDashboard = () => {
   const getChallengeTypeInfo = (type: Challenge['type']) => {
     switch (type) {
       case 'sponsored':
-        return { label: 'Szponzorált', color: 'bg-warning', icon: Award };
+        return { label: t('organization.sponsored'), color: 'bg-warning', icon: Award };
       case 'created':
-        return { label: 'Létrehozott', color: 'bg-success', icon: Sparkles };
+        return { label: t('organization.created'), color: 'bg-success', icon: Sparkles };
       case 'team_joined':
-        return { label: 'Csapat részvétel', color: 'bg-primary', icon: Users };
+        return { label: t('organization.team_participation'), color: 'bg-primary', icon: Users };
     }
   };
 
@@ -192,66 +192,66 @@ const OrganizationDashboard = () => {
             <Badge className={`bg-gradient-to-r ${roleInfo.gradient} text-white px-3 sm:px-4 py-1.5 sm:py-2`}>
               {profile?.organization || "Szervezet"}
             </Badge>
-            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-              <MapPin className="w-4 h-4" />
-              <span>Budapest Régió</span>
-            </div>
-            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-              <Trophy className="w-4 h-4 text-warning" />
-              <span>#{regionalRank} Rangsor</span>
-            </div>
+          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+            <MapPin className="w-4 h-4" />
+            <span>{t('organization.budapest_region')}</span>
+          </div>
+          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+            <Trophy className="w-4 h-4 text-warning" />
+            <span>#{regionalRank} {t('organization.ranking')}</span>
+          </div>
           </div>
         </div>
 
         {/* Regional Impact Overview */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Aktív Kihívások</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-primary">{activeChallenges}</p>
-                </div>
-                <Target className="w-8 h-8 sm:w-10 sm:h-10 text-primary/60" />
+        <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.active_challenges')}</p>
+                <p className="text-2xl sm:text-3xl font-bold text-primary">{activeChallenges}</p>
               </div>
-            </CardContent>
-          </Card>
+              <Target className="w-8 h-8 sm:w-10 sm:h-10 text-primary/60" />
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card className="bg-gradient-to-br from-success/10 to-success/5 border-success/20">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Elért Emberek</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-success">{totalParticipants}</p>
-                </div>
-                <Users className="w-8 h-8 sm:w-10 sm:h-10 text-success/60" />
+        <Card className="bg-gradient-to-br from-success/10 to-success/5 border-success/20">
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.people_reached')}</p>
+                <p className="text-2xl sm:text-3xl font-bold text-success">{totalParticipants}</p>
               </div>
-            </CardContent>
-          </Card>
+              <Users className="w-8 h-8 sm:w-10 sm:h-10 text-success/60" />
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card className="bg-gradient-to-br from-warning/10 to-warning/5 border-warning/20">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs sm:text-sm text-muted-foreground">CO₂ Megtakarítás</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-warning">{totalCO2.toFixed(1)}t</p>
-                </div>
-                <Leaf className="w-8 h-8 sm:w-10 sm:h-10 text-warning/60" />
+        <Card className="bg-gradient-to-br from-warning/10 to-warning/5 border-warning/20">
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.co2_savings')}</p>
+                <p className="text-2xl sm:text-3xl font-bold text-warning">{totalCO2.toFixed(1)}t</p>
               </div>
-            </CardContent>
-          </Card>
+              <Leaf className="w-8 h-8 sm:w-10 sm:h-10 text-warning/60" />
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card className="bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Partnerségek</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-accent">{partnerships.length}</p>
-                </div>
-                <Handshake className="w-8 h-8 sm:w-10 sm:h-10 text-accent/60" />
+        <Card className="bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20">
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.partnerships')}</p>
+                <p className="text-2xl sm:text-3xl font-bold text-accent">{partnerships.length}</p>
               </div>
-            </CardContent>
-          </Card>
+              <Handshake className="w-8 h-8 sm:w-10 sm:h-10 text-accent/60" />
+            </div>
+          </CardContent>
+        </Card>
         </div>
 
         {/* Main Content Tabs */}
