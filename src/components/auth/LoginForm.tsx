@@ -8,6 +8,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Mail, Lock, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const loginSchema = z.object({
   email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters"),
@@ -24,6 +25,7 @@ interface LoginFormProps {
 
 const LoginForm = ({ onSuccess, onSwitchToRegister, onForgotPassword }: LoginFormProps) => {
   const { toast } = useToast();
+  const { t } = useLanguage();
   
   const {
     register,
@@ -45,15 +47,15 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, onForgotPassword }: LoginFor
       }
       
       toast({
-        title: "Welcome back!",
-        description: "You have successfully logged in to Wellagora.",
+        title: t('auth.welcome_back'),
+        description: t('auth.login_success_desc'),
       });
       
       onSuccess?.();
     } catch (error: any) {
       toast({
-        title: "Login Failed",
-        description: error.message || "Invalid email or password. Please try again.",
+        title: t('auth.login_failed'),
+        description: error.message || t('auth.invalid_credentials'),
         variant: "destructive",
       });
     }
@@ -62,9 +64,9 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, onForgotPassword }: LoginFor
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
+        <CardTitle className="text-2xl font-bold">{t('auth.welcome_back')}</CardTitle>
         <CardDescription>
-          Sign in to continue your sustainability journey
+          {t('auth.signin_subtitle')}
         </CardDescription>
       </CardHeader>
       
@@ -72,7 +74,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, onForgotPassword }: LoginFor
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Email */}
           <div className="space-y-2">
-            <Label htmlFor="email">Email Address</Label>
+            <Label htmlFor="email">{t('auth.email_address')}</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
@@ -91,13 +93,13 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, onForgotPassword }: LoginFor
           {/* Password */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t('auth.password')}</Label>
               <button
                 type="button"
                 onClick={onForgotPassword}
                 className="text-sm text-primary hover:underline"
               >
-                Forgot password?
+                {t('auth.forgot_password')}
               </button>
             </div>
             <div className="relative">
@@ -121,10 +123,10 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, onForgotPassword }: LoginFor
             disabled={isSubmitting}
           >
             {isSubmitting ? (
-              "Signing In..."
+              t('auth.signing_in')
             ) : (
               <>
-                Sign In
+                {t('auth.sign_in')}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </>
             )}
@@ -138,7 +140,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, onForgotPassword }: LoginFor
               <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+              <span className="bg-card px-2 text-muted-foreground">{t('auth.or_continue_with')}</span>
             </div>
           </div>
           
@@ -164,13 +166,13 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, onForgotPassword }: LoginFor
 
       <CardFooter className="text-center">
         <div className="text-sm text-muted-foreground">
-          Don't have an account?{" "}
+          {t('auth.no_account')}{" "}
           <button
             type="button"
             onClick={onSwitchToRegister}
             className="text-primary hover:underline font-medium"
           >
-            Sign up here
+            {t('auth.sign_up_here')}
           </button>
         </div>
       </CardFooter>
