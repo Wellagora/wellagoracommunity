@@ -43,14 +43,14 @@ const SponsorshipPackageSelector: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 text-sm">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 sm:p-4 text-xs sm:text-sm">
         <p className="text-blue-900 dark:text-blue-100">
           <strong>Fontos:</strong> 1 kredit = 1 hónap kampánytámogatás. A krediteket rugalmasan használhatod fel különböző kihívások szponzorálására.
         </p>
       </div>
       
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {Object.entries(packageTiers).map(([key, tier]) => (
         <Card 
           key={key} 
@@ -73,28 +73,28 @@ const SponsorshipPackageSelector: React.FC = () => {
                 {getPackageIcon(key)}
               </div>
             </div>
-            <CardTitle className="text-2xl font-bold mb-3 group-hover:scale-105 transition-transform duration-200">{tier.name}</CardTitle>
-            <div className="space-y-2">
-              <div className={`text-4xl font-extrabold bg-gradient-to-r ${getPackageGradient(key)} bg-clip-text text-transparent animate-fade-in`}>
+            <CardTitle className="text-lg sm:text-2xl font-bold mb-2 sm:mb-3 group-hover:scale-105 transition-transform duration-200">{tier.name}</CardTitle>
+            <div className="space-y-1 sm:space-y-2">
+              <div className={`text-2xl sm:text-4xl font-extrabold bg-gradient-to-r ${getPackageGradient(key)} bg-clip-text text-transparent animate-fade-in`}>
                 {tier.priceHuf.toLocaleString()}
               </div>
-              <div className="text-sm text-muted-foreground">HUF</div>
-              <div className="text-2xl font-bold text-foreground">
-                {tier.priceEur} <span className="text-base text-muted-foreground">EUR</span>
+              <div className="text-xs sm:text-sm text-muted-foreground">HUF</div>
+              <div className="text-xl sm:text-2xl font-bold text-foreground">
+                {tier.priceEur} <span className="text-sm sm:text-base text-muted-foreground">EUR</span>
               </div>
-              <div className={`inline-block px-5 py-2 bg-gradient-to-r ${getPackageGradient(key)} rounded-full mt-3 shadow-lg group-hover:shadow-xl transition-shadow duration-300`}>
-                <p className="text-base font-bold text-white">
+              <div className={`inline-block px-3 sm:px-5 py-1.5 sm:py-2 bg-gradient-to-r ${getPackageGradient(key)} rounded-full mt-2 sm:mt-3 shadow-lg group-hover:shadow-xl transition-shadow duration-300`}>
+                <p className="text-sm sm:text-base font-bold text-white">
                   {tier.credits} kredit
                 </p>
               </div>
             </div>
           </CardHeader>
           
-          <CardContent className="pt-4 relative z-10">
-            <ul className="space-y-3 mb-8 min-h-[200px]">
+          <CardContent className="pt-3 sm:pt-4 relative z-10">
+            <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8 min-h-[160px] sm:min-h-[200px]">
               {tier.features.map((feature, index) => (
-                <li key={index} className="text-sm font-medium flex items-start group/item hover:translate-x-1 transition-transform duration-200">
-                  <span className={`bg-gradient-to-r ${getPackageGradient(key)} bg-clip-text text-transparent font-bold mr-2 text-lg flex-shrink-0`}>✓</span>
+                <li key={index} className="text-xs sm:text-sm font-medium flex items-start group/item hover:translate-x-1 transition-transform duration-200">
+                  <span className={`bg-gradient-to-r ${getPackageGradient(key)} bg-clip-text text-transparent font-bold mr-1.5 sm:mr-2 text-base sm:text-lg flex-shrink-0`}>✓</span>
                   <span className="text-gray-900 dark:text-gray-100">{feature}</span>
                 </li>
               ))}

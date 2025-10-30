@@ -95,9 +95,9 @@ const SponsorDashboardPage = () => {
 
       {/* Package Selection Dialog */}
       <Dialog open={showPackages} onOpenChange={setShowPackages}>
-        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[95vw] max-w-6xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold">
+            <DialogTitle className="text-xl sm:text-2xl font-bold">
               {t('sponsor.choose_package')}
             </DialogTitle>
           </DialogHeader>
