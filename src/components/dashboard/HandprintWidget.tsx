@@ -111,7 +111,7 @@ const HandprintWidget = () => {
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg font-bold text-primary flex items-center gap-2">
               <Target className="w-5 h-5 text-primary" />
-              Regionális Hatás
+              {t('handprint.regional_impact')}
             </CardTitle>
             <Badge className="bg-gradient-to-r from-primary to-accent text-white border-0">
               <TrendingUp className="w-3 h-3 mr-1" />
@@ -145,7 +145,7 @@ const HandprintWidget = () => {
 
           {/* Regional Initiatives */}
           <div className="space-y-2">
-            <div className="text-sm font-medium text-gray-700 mb-2">Aktív kezdeményezések:</div>
+            <div className="text-sm font-medium text-gray-700 mb-2">{t('handprint.active_initiatives')}:</div>
             
             {[
               { label: '🏢 Vállalati Zöld Program', status: 'Aktív', color: 'bg-success' },
@@ -171,7 +171,7 @@ const HandprintWidget = () => {
               }}
             >
               <Sparkles className="w-4 h-4 mr-2" />
-              Részletes Regionális Elemzés
+              {t('handprint.detailed_regional_analysis')}
             </Button>
           </div>
         </CardContent>
@@ -208,7 +208,7 @@ const HandprintWidget = () => {
               <TreePine className="w-5 h-5" />
               {handprint.treesEquivalent}
             </div>
-            <div className="text-xs text-blue-600">fa egyenérték</div>
+            <div className="text-xs text-blue-600">{t('handprint.trees_equivalent')}</div>
           </div>
           
           <div className="text-center bg-white/60 rounded-lg p-3">
@@ -216,20 +216,20 @@ const HandprintWidget = () => {
               <Trophy className="w-5 h-5" />
               {handprint.totalPoints}
             </div>
-            <div className="text-xs text-purple-600">pont</div>
+            <div className="text-xs text-purple-600">{t('handprint.points')}</div>
           </div>
         </div>
 
         {/* Category Breakdown */}
         <div className="space-y-2">
-          <div className="text-sm font-medium text-gray-700 mb-2">Kategóriák szerinti bontás:</div>
+          <div className="text-sm font-medium text-gray-700 mb-2">{t('handprint.breakdown_by_category')}:</div>
           
           {[
-            { key: 'transport', label: '🚲 Közlekedés', value: handprint.transport, color: 'bg-blue-500' },
-            { key: 'energy', label: '⚡ Energia', value: handprint.energy, color: 'bg-yellow-500' },
-            { key: 'waste', label: '♻️ Hulladék', value: handprint.waste, color: 'bg-green-500' },
-            { key: 'water', label: '💧 Víz', value: handprint.water, color: 'bg-cyan-500' },
-            { key: 'community', label: '🤝 Közösség', value: handprint.community, color: 'bg-purple-500' }
+            { key: 'transport', label: `🚲 ${t('handprint.category.transport')}`, value: handprint.transport, color: 'bg-blue-500' },
+            { key: 'energy', label: `⚡ ${t('handprint.category.energy')}`, value: handprint.energy, color: 'bg-yellow-500' },
+            { key: 'waste', label: `♻️ ${t('handprint.category.waste')}`, value: handprint.waste, color: 'bg-green-500' },
+            { key: 'water', label: `💧 ${t('handprint.category.water')}`, value: handprint.water, color: 'bg-cyan-500' },
+            { key: 'community', label: `🤝 ${t('handprint.category.community')}`, value: handprint.community, color: 'bg-purple-500' }
           ].filter(cat => cat.value > 0).map((category) => (
             <div key={category.key} className="flex items-center justify-between text-sm">
               <span className="text-gray-700">{category.label}</span>
@@ -250,13 +250,13 @@ const HandprintWidget = () => {
             }}
           >
             <Sparkles className="w-4 h-4 mr-2" />
-            Részletek és Kihívások
+            {t('handprint.details_challenges')}
           </Button>
         </div>
 
         {handprint.activitiesCount > 0 && (
           <div className="text-xs text-gray-600 text-center">
-            {handprint.activitiesCount} tevékenység ezen a hónapon
+            {handprint.activitiesCount} {t('handprint.activities_this_month')}
           </div>
         )}
       </CardContent>
