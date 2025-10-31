@@ -143,18 +143,11 @@ const Index = () => {
                 <p className="text-muted-foreground">{t('index.advanced_features_desc')}</p>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
-                  <Link to="/revolutionary">
-                    <Button variant="outline" className="w-full border-warning hover:bg-warning hover:text-warning-foreground">
-                      {t('index.revolutionary_mode')}
-                    </Button>
-                  </Link>
-                  <Link to="/dynamic-regional">
-                    <Button variant="outline" className="w-full border-success hover:bg-success hover:text-success-foreground">
-                      {t('index.dynamic_regional')}
-                    </Button>
-                  </Link>
-                </div>
+                <Link to="/regional-hub">
+                  <Button variant="outline" className="w-full border-success hover:bg-success hover:text-success-foreground">
+                    {t('index.regional_hub_button')}
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           </motion.div>
