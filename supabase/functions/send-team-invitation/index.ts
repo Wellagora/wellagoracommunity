@@ -4,7 +4,7 @@ import { Resend } from "npm:resend@2.0.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -36,8 +36,8 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("No authorization header");
     }
 
-    // Create Supabase client with the user's token
-    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+    // Create Supabase client with the user's token - uses anon key with JWT for RLS
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: {
         headers: { authorization: authHeader },
       },
