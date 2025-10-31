@@ -31,6 +31,7 @@ const ProfilePage = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [logoUploading, setLogoUploading] = useState(false);
   const [viewedProfile, setViewedProfile] = useState<any>(null);
   const { toast } = useToast();
 
@@ -166,7 +167,8 @@ const ProfilePage = () => {
     is_public_profile: profile?.is_public_profile || false,
     bio: "",
     org_description: "",
-    org_logo_url: ""
+    org_logo_url: "",
+    org_logo_file: undefined as File | undefined
   });
 
   // Sync form with profile data
@@ -187,7 +189,8 @@ const ProfilePage = () => {
         is_public_profile: profile.is_public_profile || false,
         bio: extendedProfile.bio || "",
         org_description: "",
-        org_logo_url: ""
+        org_logo_url: "",
+        org_logo_file: undefined
       });
 
       // Fetch organization data if user has organization_id
@@ -253,6 +256,49 @@ const ProfilePage = () => {
 
   const handleFormChange = (field: string, value: any) => {
     setProfileForm(prev => ({ ...prev, [field]: value }));
+    
+    // If logo file is uploaded, upload it immediately
+    if (field === 'org_logo_file' && value instanceof File) {
+      handleLogoUpload(value);
+    }
+  };
+
+  const handleLogoUpload = async (file: File) => {
+    if (!user || !profile) return;
+
+    setLogoUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/logo.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('organization-logos')
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('organization-logos')
+        .getPublicUrl(filePath);
+
+      // Update form with new logo URL
+      setProfileForm(prev => ({ ...prev, org_logo_url: publicUrl }));
+
+      toast({
+        title: "Siker!",
+        description: "A logó sikeresen feltöltve",
+      });
+    } catch (error) {
+      console.error('Error uploading logo:', error);
+      toast({
+        title: "Hiba",
+        description: "A logó feltöltése sikertelen",
+        variant: "destructive",
+      });
+    } finally {
+      setLogoUploading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -284,28 +330,47 @@ const ProfilePage = () => {
       } as any);
 
       if (error) {
-        setError("Hiba történt a profil mentése során");
+        setError("Hiba történt a profil mentése során: " + error.message);
         console.error("Profile update error:", error);
-      } else {
-        // Update organization if user has organization_id
-        if ((profile as any)?.organization_id) {
-          const { error: orgError } = await supabase
-            .from('organizations')
-            .update({
-              description: profileForm.org_description.trim() || null,
-              logo_url: profileForm.org_logo_url.trim() || null,
-              website_url: normalizedUrl || null
-            })
-            .eq('id', (profile as any).organization_id);
-
-          if (orgError) {
-            console.error("Organization update error:", orgError);
-          }
-        }
-        
-        setSuccess("A profil sikeresen mentve!");
-        setTimeout(() => setSuccess(null), 3000);
+        return;
       }
+
+      // Update organization if user has organization_id
+      if ((profile as any)?.organization_id) {
+        const { error: orgError } = await supabase
+          .from('organizations')
+          .update({
+            description: profileForm.org_description.trim() || null,
+            logo_url: profileForm.org_logo_url.trim() || null,
+            website_url: normalizedUrl || null
+          })
+          .eq('id', (profile as any).organization_id);
+
+        if (orgError) {
+          console.error("Organization update error:", orgError);
+          setError("A profil mentve, de a szervezeti adatok mentése sikertelen: " + orgError.message);
+          return;
+        }
+
+        // Reload organization data after successful save
+        const { data: orgData } = await supabase
+          .from('organizations')
+          .select('description, logo_url, website_url')
+          .eq('id', (profile as any).organization_id)
+          .single();
+
+        if (orgData) {
+          setProfileForm(prev => ({
+            ...prev,
+            org_description: orgData.description || "",
+            org_logo_url: orgData.logo_url || "",
+            website_url: orgData.website_url || prev.website_url
+          }));
+        }
+      }
+      
+      setSuccess("A profil és a szervezeti adatok sikeresen mentve!");
+      setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError("Hiba történt a profil mentése során");
       console.error("Profile update error:", err);
@@ -364,6 +429,7 @@ const ProfilePage = () => {
               <OrganizationProfileForm
                 formData={profileForm}
                 onChange={handleFormChange}
+                logoUploading={logoUploading}
               />
             ) : (
               <CitizenProfileForm

@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Building2, Globe, MapPin, Mail, Users, Image } from "lucide-react";
+import { Building2, Globe, MapPin, Mail, Users, Image, Loader2 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface OrganizationProfileFormProps {
@@ -22,12 +22,14 @@ interface OrganizationProfileFormProps {
     bio: string;
     org_description: string;
     org_logo_url: string;
+    org_logo_file?: File;
     is_public_profile: boolean;
   };
   onChange: (field: string, value: any) => void;
+  logoUploading?: boolean;
 }
 
-export const OrganizationProfileForm = ({ formData, onChange }: OrganizationProfileFormProps) => {
+export const OrganizationProfileForm = ({ formData, onChange, logoUploading }: OrganizationProfileFormProps) => {
   const { t } = useLanguage();
 
   return (
@@ -102,22 +104,48 @@ export const OrganizationProfileForm = ({ formData, onChange }: OrganizationProf
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="org_logo_url">
+            <Label htmlFor="org_logo">
               <div className="flex items-center gap-2">
                 <Image className="w-4 h-4" />
-                Szervezet logója URL
+                Szervezet logója
               </div>
             </Label>
-            <Input
-              id="org_logo_url"
-              type="text"
-              value={formData.org_logo_url}
-              onChange={(e) => onChange('org_logo_url', e.target.value)}
-              placeholder="https://example.com/logo.png"
-              className="bg-background/50"
-            />
+            {formData.org_logo_url && (
+              <div className="mb-3 p-4 bg-background/30 rounded-lg border border-border/50">
+                <p className="text-xs text-muted-foreground mb-2">Jelenlegi logó:</p>
+                <img 
+                  src={formData.org_logo_url} 
+                  alt="Szervezet logója" 
+                  className="max-h-24 rounded"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              </div>
+            )}
+            <div className="flex gap-2">
+              <Input
+                id="org_logo"
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    onChange('org_logo_file', file);
+                  }
+                }}
+                className="bg-background/50"
+                disabled={logoUploading}
+              />
+              {logoUploading && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Feltöltés...
+                </div>
+              )}
+            </div>
             <p className="text-xs text-muted-foreground">
-              Adja meg a szervezet logójának URL-jét (megjelenik a nyilvános szervezet oldalon)
+              Töltsön fel egy képet a szervezet logójának (JPG, PNG, max 2MB). Ez jelenik meg a nyilvános szervezet oldalon.
             </p>
           </div>
 
