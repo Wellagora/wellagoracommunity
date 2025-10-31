@@ -79,7 +79,7 @@ const OrganizationDashboard = () => {
       progress: 45
     },
     {
-      id: "energy-saving-home",
+      id: "local-food-week",
       title: "Helyi Étel Hét",
       type: 'team_joined',
       participants: 156,
