@@ -1,33 +1,14 @@
 import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
-import RealTimeAnalytics from "@/components/revolutionary/RealTimeAnalytics";
-import StakeholderOrchestration from "@/components/revolutionary/StakeholderOrchestration";
-import GuildSystem from "@/components/revolutionary/GuildSystem";
-import PredictiveImpactDashboard from "@/components/revolutionary/PredictiveImpactDashboard";
-import RegionalOrchestrator2D from "@/components/premium/RegionalOrchestrator2D";
-import StakeholderMatcher from "@/components/premium/StakeholderMatcher";
-import PredictiveAnalytics from "@/components/premium/PredictiveAnalytics";
-import CircularEconomyFlow from "@/components/premium/CircularEconomyFlow";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
 import { 
   Users, 
-  Target, 
-  TrendingUp, 
-  Award,
-  Globe,
-  Zap,
-  Leaf,
-  Shield,
-  Trophy,
-  Building2,
-  ArrowRight,
-  Activity,
-  BarChart3
+  BarChart3,
+  Zap
 } from "lucide-react";
 
 import CustomerJourney from "@/components/CustomerJourney";
