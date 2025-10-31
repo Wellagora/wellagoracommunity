@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 
@@ -88,6 +89,7 @@ const REGIONS = [
 export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSponsorModalProps) => {
   const { toast } = useToast();
   const { profile } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [selectedChallenge, setSelectedChallenge] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("Országos");
@@ -157,8 +159,8 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
 
     if (!selectedChallenge || !selectedTier) {
       toast({
-        title: "Hiba",
-        description: "Válassz ki egy kihívást és szponzori csomagot!",
+        title: t('organization.error'),
+        description: t('organization.select_challenge_and_package'),
         variant: "destructive",
       });
       return;
@@ -169,8 +171,10 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
 
     if (credits < tier.credits) {
       toast({
-        title: "Nincs elég kredit",
-        description: `Ehhez a szponzoráláshoz ${tier.credits} kredit szükséges, de csak ${credits} áll rendelkezésre.`,
+        title: t('organization.not_enough_credits'),
+        description: t('organization.need_credits')
+          .replace('{amount}', tier.credits.toString())
+          .replace('{available}', credits.toString()),
         variant: "destructive",
       });
       // Navigate to purchase page
@@ -222,8 +226,10 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
         });
 
       toast({
-        title: "Sikeres szponzorálás!",
-        description: `${tier.name} csomag aktiválva a ${selectedChallengeData.title} kihívásra.`,
+        title: t('organization.sponsorship_success'),
+        description: t('organization.package_activated')
+          .replace('{tier}', tier.name)
+          .replace('{challenge}', selectedChallengeData.title),
       });
 
       onOpenChange(false);
@@ -233,8 +239,8 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
     } catch (error: any) {
       console.error("Error creating sponsorship:", error);
       toast({
-        title: "Hiba",
-        description: error.message || "Nem sikerült létrehozni a szponzorálást",
+        title: t('organization.error'),
+        description: error.message || t('organization.sponsorship_failed'),
         variant: "destructive",
       });
     } finally {
@@ -250,10 +256,10 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Award className="w-5 h-5 text-warning" />
-            Challenge szponzorálása
+            {t('organization.sponsor_challenge_title')}
           </DialogTitle>
           <DialogDescription>
-            Válassz kihívást, régiót és szponzori csomagot
+            {t('organization.sponsor_challenge_desc')}
           </DialogDescription>
         </DialogHeader>
 
@@ -261,7 +267,7 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
           {/* Available Credits */}
           <div className="p-4 bg-success/5 rounded-lg border border-success/20">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Elérhető kreditek:</span>
+              <span className="text-sm font-medium">{t('organization.available_credits')}</span>
               <span className="text-2xl font-bold text-success">{credits}</span>
             </div>
           </div>
@@ -270,7 +276,7 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
           <div className="space-y-3">
             <Label className="flex items-center gap-2">
               <MapPin className="w-4 h-4" />
-              Régió kiválasztása *
+              {t('organization.select_region')} *
             </Label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {REGIONS.map((region) => (
@@ -291,14 +297,14 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
           <div className="space-y-3">
             <Label className="flex items-center gap-2">
               <Target className="w-4 h-4" />
-              Challenge kiválasztása *
+              {t('organization.select_challenge_required')}
             </Label>
             {loading ? (
               <div className="flex items-center justify-center p-8">
                 <Loader2 className="w-6 h-6 animate-spin text-primary" />
               </div>
             ) : challenges.length === 0 ? (
-              <p className="text-sm text-muted-foreground p-4 text-center">Nincs elérhető kihívás</p>
+              <p className="text-sm text-muted-foreground p-4 text-center">{t('organization.no_available_challenges')}</p>
             ) : (
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {challenges.map((challenge) => (
@@ -335,7 +341,7 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
           <div className="space-y-3">
             <Label className="flex items-center gap-2">
               <Crown className="w-4 h-4" />
-              Szponzori csomag *
+              {t('organization.select_sponsor_package')}
             </Label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {SPONSOR_TIERS.map((tier) => {
@@ -382,23 +388,23 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
             <div className="p-4 bg-success/5 rounded-lg border border-success/20">
               <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
                 <TrendingUp className="w-4 h-4" />
-                Várható hatás
+                {t('organization.expected_impact')}
               </h4>
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
                   <MapPin className="w-5 h-5 mx-auto mb-1 text-primary" />
                   <p className="text-sm font-bold">{selectedRegion}</p>
-                  <p className="text-xs text-muted-foreground">Hatókör</p>
+                  <p className="text-xs text-muted-foreground">{t('organization.scope')}</p>
                 </div>
                 <div>
                   <Crown className="w-5 h-5 mx-auto mb-1 text-warning" />
                   <p className="text-sm font-bold">{selectedTierData.name}</p>
-                  <p className="text-xs text-muted-foreground">Csomag</p>
+                  <p className="text-xs text-muted-foreground">{t('organization.package')}</p>
                 </div>
                 <div>
                   <Award className="w-5 h-5 mx-auto mb-1 text-success" />
                   <p className="text-sm font-bold">-{selectedTierData.credits}</p>
-                  <p className="text-xs text-muted-foreground">Kredit</p>
+                  <p className="text-xs text-muted-foreground">{t('organization.credit')}</p>
                 </div>
               </div>
             </div>
@@ -412,7 +418,7 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
               className="flex-1" 
               onClick={() => onOpenChange(false)}
             >
-              Mégsem
+              {t('organization.cancel')}
             </Button>
             <Button 
               type="submit" 
@@ -422,10 +428,10 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
               {submitting ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Szponzorálás...
+                  {t('organization.sponsoring')}
                 </>
               ) : (
-                `Szponzorálás (${selectedTierData?.credits || 0} kredit)`
+                `${t('organization.sponsor_button')} (${selectedTierData?.credits || 0} ${t('organization.credit')})`
               )}
             </Button>
           </div>

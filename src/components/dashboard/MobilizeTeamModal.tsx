@@ -15,6 +15,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Users, Mail, Target, TrendingUp, Award, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 
 interface MobilizeTeamModalProps {
@@ -34,6 +35,7 @@ interface TeamMember {
 export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps) => {
   const { toast } = useToast();
   const { profile } = useAuth();
+  const { t } = useLanguage();
   const [selectedChallenge, setSelectedChallenge] = useState("");
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const [message, setMessage] = useState("");
@@ -56,8 +58,8 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
         if (error) {
           console.error("Error loading team members:", error);
           toast({
-            title: "Error",
-            description: "Failed to load team members",
+            title: t('organization.error'),
+            description: t('organization.failed_to_send'),
             variant: "destructive",
           });
           return;
@@ -132,8 +134,8 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
     
     if (!profile?.organization_id) {
       toast({
-        title: "Error",
-        description: "You must be part of an organization",
+        title: t('organization.error'),
+        description: t('organization.must_be_part_of_org'),
         variant: "destructive",
       });
       return;
@@ -167,9 +169,10 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
 
       if (error) throw error;
 
+      const sent = data.sent || 0;
       toast({
-        title: "Team Mobilized Successfully!",
-        description: `${data.sent} team member${data.sent !== 1 ? 's' : ''} ${data.sent !== 1 ? 'have' : 'has'} been invited to join the challenge.`,
+        title: t('organization.team_mobilized_success'),
+        description: `${sent} ${sent !== 1 ? t('organization.members_invited') : t('organization.member_invited')}`,
       });
       
       onOpenChange(false);
@@ -179,8 +182,8 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
     } catch (error: any) {
       console.error("Error sending invitations:", error);
       toast({
-        title: "Error",
-        description: error.message || "Failed to send invitations",
+        title: t('organization.error'),
+        description: error.message || t('organization.failed_to_send'),
         variant: "destructive",
       });
     } finally {
@@ -196,23 +199,23 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Users className="w-5 h-5 text-primary" />
-            Mobilize Your Team
+            {t('organization.mobilize_team_title')}
           </DialogTitle>
           <DialogDescription>
-            Invite team members to join a sustainability challenge
+            {t('organization.mobilize_team_desc')}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Challenge Selection */}
           <div className="space-y-3">
-            <Label>Select Challenge *</Label>
+            <Label>{t('organization.select_challenge')} *</Label>
             {loading ? (
               <div className="flex items-center justify-center p-8">
                 <Loader2 className="w-6 h-6 animate-spin text-primary" />
               </div>
             ) : challenges.length === 0 ? (
-              <p className="text-sm text-muted-foreground p-4 text-center">No active challenges available</p>
+              <p className="text-sm text-muted-foreground p-4 text-center">{t('organization.no_challenges')}</p>
             ) : (
               <div className="space-y-2">
                 {challenges.map((challenge) => (
@@ -254,7 +257,7 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
           {/* Team Member Selection */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <Label>Select Team Members *</Label>
+              <Label>{t('organization.select_team_members')} *</Label>
               <Button
                 type="button"
                 variant="ghost"
@@ -262,7 +265,7 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
                 onClick={handleSelectAll}
                 className="text-xs"
               >
-                {selectedMembers.length === teamMembers.length ? 'Deselect All' : 'Select All'}
+                {selectedMembers.length === teamMembers.length ? t('organization.deselect_all') : t('organization.select_all')}
               </Button>
             </div>
 
@@ -271,7 +274,7 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
                 <Loader2 className="w-6 h-6 animate-spin text-primary" />
               </div>
             ) : teamMembers.length === 0 ? (
-              <p className="text-sm text-muted-foreground p-4 text-center border rounded-lg">No team members found</p>
+              <p className="text-sm text-muted-foreground p-4 text-center border rounded-lg">{t('organization.no_team_members')}</p>
             ) : (
               <div className="border rounded-lg divide-y max-h-64 overflow-y-auto">
                 {teamMembers.map((member) => {
@@ -307,16 +310,16 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
             )}
 
             <p className="text-xs text-muted-foreground">
-              {selectedMembers.length} of {teamMembers.length} members selected
+              {selectedMembers.length} {t('organization.of')} {teamMembers.length} {t('organization.members_selected')}
             </p>
           </div>
 
           {/* Custom Message */}
           <div className="space-y-2">
-            <Label htmlFor="message">Invitation Message (Optional)</Label>
+            <Label htmlFor="message">{t('organization.invitation_message')}</Label>
             <Textarea
               id="message"
-              placeholder="Add a personal message to inspire your team..."
+              placeholder={t('organization.invitation_placeholder')}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={3}
@@ -328,27 +331,27 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
             <div className="p-4 bg-success/5 rounded-lg border border-success/20">
               <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
                 <Target className="w-4 h-4" />
-                Projected Team Impact
+                {t('organization.projected_team_impact')}
               </h4>
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
                   <Users className="w-5 h-5 mx-auto mb-1 text-primary" />
                   <p className="text-lg font-bold">+{selectedMembers.length}</p>
-                  <p className="text-xs text-muted-foreground">New participants</p>
+                  <p className="text-xs text-muted-foreground">{t('organization.new_participants')}</p>
                 </div>
                 <div>
                   <Award className="w-5 h-5 mx-auto mb-1 text-warning" />
                   <p className="text-lg font-bold">
                     {selectedChallengeData.points_base * selectedMembers.length}
                   </p>
-                  <p className="text-xs text-muted-foreground">Total points</p>
+                  <p className="text-xs text-muted-foreground">{t('organization.total_points')}</p>
                 </div>
                 <div>
                   <TrendingUp className="w-5 h-5 mx-auto mb-1 text-success" />
                   <p className="text-lg font-bold">
-                    {selectedChallengeData.duration_days} days
+                    {selectedChallengeData.duration_days} {t('organization.days')}
                   </p>
-                  <p className="text-xs text-muted-foreground">Challenge duration</p>
+                  <p className="text-xs text-muted-foreground">{t('organization.challenge_duration')}</p>
                 </div>
               </div>
             </div>
@@ -359,12 +362,12 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
             <div className="flex items-start gap-3">
               <Mail className="w-5 h-5 text-muted-foreground mt-0.5" />
               <div className="flex-1">
-                <p className="text-sm font-medium mb-1">Team members will receive:</p>
+                <p className="text-sm font-medium mb-1">{t('organization.team_members_receive')}</p>
                 <ul className="text-xs text-muted-foreground space-y-1 list-disc list-inside">
-                  <li>Email invitation with challenge details</li>
-                  <li>In-app notification</li>
-                  <li>Your custom message (if provided)</li>
-                  <li>Quick join link</li>
+                  <li>{t('organization.email_invitation')}</li>
+                  <li>{t('organization.inapp_notification')}</li>
+                  <li>{t('organization.custom_message')}</li>
+                  <li>{t('organization.quick_join_link')}</li>
                 </ul>
               </div>
             </div>
@@ -373,7 +376,7 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
           {/* Actions */}
           <div className="flex gap-3 pt-4 border-t">
             <Button type="button" variant="outline" className="flex-1" onClick={() => onOpenChange(false)}>
-              Cancel
+              {t('organization.cancel')}
             </Button>
             <Button 
               type="submit" 
@@ -383,10 +386,10 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
               {submitting ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Sending...
+                  {t('organization.sending')}
                 </>
               ) : (
-                `Send Invitations (${selectedMembers.length})`
+                `${t('organization.send_invitations')} (${selectedMembers.length})`
               )}
             </Button>
           </div>
