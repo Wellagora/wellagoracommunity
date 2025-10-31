@@ -83,6 +83,9 @@ export type Database = {
           duration_days: number | null
           id: string
           is_active: boolean | null
+          is_team_challenge: boolean | null
+          max_team_size: number | null
+          min_team_size: number | null
           points_base: number
           title: string
           validation_requirements: Json | null
@@ -96,6 +99,9 @@ export type Database = {
           duration_days?: number | null
           id: string
           is_active?: boolean | null
+          is_team_challenge?: boolean | null
+          max_team_size?: number | null
+          min_team_size?: number | null
           points_base?: number
           title: string
           validation_requirements?: Json | null
@@ -109,6 +115,9 @@ export type Database = {
           duration_days?: number | null
           id?: string
           is_active?: boolean | null
+          is_team_challenge?: boolean | null
+          max_team_size?: number | null
+          min_team_size?: number | null
           points_base?: number
           title?: string
           validation_requirements?: Json | null
@@ -656,6 +665,59 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_invitations: {
+        Row: {
+          challenge_id: string | null
+          created_at: string | null
+          expires_at: string
+          id: string
+          invitee_email: string
+          invitee_name: string | null
+          inviter_user_id: string
+          message: string | null
+          organization_id: string
+          status: string
+          token: string
+          updated_at: string | null
+        }
+        Insert: {
+          challenge_id?: string | null
+          created_at?: string | null
+          expires_at: string
+          id?: string
+          invitee_email: string
+          invitee_name?: string | null
+          inviter_user_id: string
+          message?: string | null
+          organization_id: string
+          status?: string
+          token?: string
+          updated_at?: string | null
+        }
+        Update: {
+          challenge_id?: string | null
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          invitee_email?: string
+          invitee_name?: string | null
+          inviter_user_id?: string
+          message?: string | null
+          organization_id?: string
+          status?: string
+          token?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_invitations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
