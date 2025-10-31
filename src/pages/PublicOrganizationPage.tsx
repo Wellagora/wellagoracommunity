@@ -1,4 +1,5 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +7,9 @@ import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 import { 
   Award, 
   Building, 
@@ -19,22 +23,82 @@ import {
 
 const PublicOrganizationPage = () => {
   const { organizationId } = useParams();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(true);
+  const [organizationData, setOrganizationData] = useState<any>(null);
 
-  // Mock data - would come from Supabase based on organizationId
-  const organizationData = {
-    name: "GreenTech Solutions",
-    type: "business", // or "government" or "ngo"
-    logo: "",
-    description: "Leading the way in corporate sustainability and environmental responsibility",
-    location: "Budapest, Hungary",
-    website: "https://greentech.example.com",
+  useEffect(() => {
+    const fetchOrganization = async () => {
+      if (!organizationId) {
+        navigate('/');
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('organizations')
+          .select('*')
+          .eq('id', organizationId)
+          .eq('is_public', true)
+          .single();
+
+        if (error || !data) {
+          toast({
+            title: "Error",
+            description: "Organization not found or is not public",
+            variant: "destructive"
+          });
+          navigate('/');
+          return;
+        }
+
+        setOrganizationData(data);
+      } catch (err) {
+        console.error('Error fetching organization:', err);
+        toast({
+          title: "Error",
+          description: "Failed to load organization",
+          variant: "destructive"
+        });
+        navigate('/');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrganization();
+  }, [organizationId, navigate, toast]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="flex items-center justify-center h-screen">
+          <Loader2 className="w-8 h-8 animate-spin" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!organizationData) {
+    return null;
+  }
+
+  // Mock data for features not yet in database
+  const extendedData = {
+    ...organizationData,
+    description: organizationData.description || "Making a positive impact on sustainability",
+    location: organizationData.location || "Hungary",
+    website: organizationData.website_url,
     regionalRank: 3,
     totalOrganizations: 47,
     stats: {
-      activeChallenges: 12,
-      peopleReached: 2847,
-      co2Saved: 45.6,
-      partnerships: 8
+      activeChallenges: 0, // TODO: fetch from challenge_sponsorships
+      peopleReached: 0, // TODO: calculate from activities
+      co2Saved: organizationData.co2_reduction_total || 0,
+      partnerships: 0 // TODO: fetch from partnerships
     },
     recentChallenges: [
       {
@@ -120,27 +184,27 @@ const PublicOrganizationPage = () => {
             <div className="flex flex-col md:flex-row items-start md:items-center gap-4 sm:gap-6">
               {/* Logo */}
               <Avatar className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto md:mx-0">
-                <AvatarImage src={organizationData.logo} />
+                <AvatarImage src={extendedData.logo_url} />
                 <AvatarFallback className="text-2xl sm:text-3xl bg-gradient-primary text-white">
-                  {getTypeIcon(organizationData.type)}
+                  {getTypeIcon(extendedData.type)}
                 </AvatarFallback>
               </Avatar>
 
               {/* Info */}
               <div className="flex-1 text-center md:text-left">
                 <div className="flex flex-col sm:flex-row items-center md:items-start gap-2 sm:gap-3 mb-2">
-                  <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{organizationData.name}</h1>
-                  <Badge variant="outline" className="text-xs sm:text-sm">{getTypeName(organizationData.type)}</Badge>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{extendedData.name}</h1>
+                  <Badge variant="outline" className="text-xs sm:text-sm">{getTypeName(extendedData.type)}</Badge>
                 </div>
-                <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4 px-4 md:px-0">{organizationData.description}</p>
+                <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4 px-4 md:px-0">{extendedData.description}</p>
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
                   <span className="flex items-center gap-1">
                     <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
-                    {organizationData.location}
+                    {extendedData.location}
                   </span>
-                  {organizationData.website && (
+                  {extendedData.website && (
                     <a 
-                      href={organizationData.website} 
+                      href={extendedData.website} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="flex items-center gap-1 hover:text-primary transition-colors"
@@ -169,28 +233,28 @@ const PublicOrganizationPage = () => {
             <Card>
               <CardContent className="p-3 sm:p-4">
                 <Target className="w-6 h-6 sm:w-8 sm:h-8 text-primary mb-2" />
-                <p className="text-xl sm:text-2xl font-bold">{organizationData.stats.activeChallenges}</p>
+                <p className="text-xl sm:text-2xl font-bold">{extendedData.stats.activeChallenges}</p>
                 <p className="text-[10px] sm:text-xs text-muted-foreground">Active Initiatives</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-3 sm:p-4">
                 <Users className="w-6 h-6 sm:w-8 sm:h-8 text-accent mb-2" />
-                <p className="text-xl sm:text-2xl font-bold">{organizationData.stats.peopleReached.toLocaleString()}</p>
+                <p className="text-xl sm:text-2xl font-bold">{extendedData.stats.peopleReached.toLocaleString()}</p>
                 <p className="text-[10px] sm:text-xs text-muted-foreground">People Engaged</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-3 sm:p-4">
                 <TreePine className="w-6 h-6 sm:w-8 sm:h-8 text-success mb-2" />
-                <p className="text-xl sm:text-2xl font-bold">{organizationData.stats.co2Saved}t</p>
+                <p className="text-xl sm:text-2xl font-bold">{extendedData.stats.co2Saved}t</p>
                 <p className="text-[10px] sm:text-xs text-muted-foreground">CO₂ Saved</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-3 sm:p-4">
                 <Building className="w-6 h-6 sm:w-8 sm:h-8 text-warning mb-2" />
-                <p className="text-xl sm:text-2xl font-bold">{organizationData.stats.partnerships}</p>
+                <p className="text-xl sm:text-2xl font-bold">{extendedData.stats.partnerships}</p>
                 <p className="text-[10px] sm:text-xs text-muted-foreground">Partnerships</p>
               </CardContent>
             </Card>
@@ -202,12 +266,12 @@ const PublicOrganizationPage = () => {
               <div className="text-center">
                 <Award className="w-12 h-12 text-warning mx-auto mb-3" />
                 <h3 className="text-sm text-muted-foreground mb-2">Regional Rank</h3>
-                <p className="text-4xl font-bold text-foreground mb-1">#{organizationData.regionalRank}</p>
-                <p className="text-xs text-muted-foreground">out of {organizationData.totalOrganizations} organizations</p>
+                <p className="text-4xl font-bold text-foreground mb-1">#{extendedData.regionalRank}</p>
+                <p className="text-xs text-muted-foreground">out of {extendedData.totalOrganizations} organizations</p>
                 <div className="mt-4 pt-4 border-t border-border/50">
-                  <p className="text-xs text-muted-foreground mb-2">Impact Score</p>
-                  <Progress value={85} className="h-2" />
-                  <p className="text-xs text-muted-foreground mt-1">85/100</p>
+                  <p className="text-xs text-muted-foreground mb-2">Sustainability Score</p>
+                  <Progress value={extendedData.sustainability_score || 0} className="h-2" />
+                  <p className="text-xs text-muted-foreground mt-1">{extendedData.sustainability_score || 0}/100</p>
                 </div>
               </div>
             </CardContent>
@@ -223,7 +287,7 @@ const PublicOrganizationPage = () => {
 
           <TabsContent value="challenges" className="space-y-4 mt-6">
             <div className="grid gap-4">
-              {organizationData.recentChallenges.map((challenge) => (
+              {extendedData.recentChallenges.map((challenge: any) => (
                 <Card key={challenge.id}>
                   <CardContent className="p-6">
                     <div className="flex items-start justify-between mb-4">
@@ -260,7 +324,7 @@ const PublicOrganizationPage = () => {
 
           <TabsContent value="impact" className="space-y-4 mt-6">
             <div className="grid gap-4">
-              {organizationData.impactStories.map((story) => (
+              {extendedData.impactStories.map((story: any) => (
                 <Card key={story.id}>
                   <CardHeader>
                     <div className="flex items-start justify-between">
