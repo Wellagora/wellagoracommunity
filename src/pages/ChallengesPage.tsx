@@ -144,19 +144,18 @@ const ChallengesPage = () => {
     }
   };
 
-  const getJoinButtonText = () => {
+  const isOrganization = () => {
+    return profile && ['business', 'government', 'ngo'].includes(profile.user_role);
+  };
+
+  const getButtonText = () => {
     if (!profile) return t('challenges.join_challenge');
     
-    switch (profile.user_role) {
-      case "business":
-        return t('challenges.join_and_sponsor');
-      case "ngo":
-        return t('challenges.join_and_support');
-      case "government":
-        return t('challenges.join_and_support');
-      default:
-        return t('challenges.join_challenge');
+    if (isOrganization()) {
+      return t('challenges.sponsor_challenge');
     }
+    
+    return t('challenges.join_challenge');
   };
 
   // Temporarily allow access without authentication
@@ -356,7 +355,7 @@ const ChallengesPage = () => {
                   onClick={() => navigate(`/challenges/${challenge.id}`)}
                   className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground font-semibold rounded-2xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300"
                 >
-                  {getJoinButtonText()}
+                  {getButtonText()}
                 </Button>
               </CardContent>
             </Card3D>

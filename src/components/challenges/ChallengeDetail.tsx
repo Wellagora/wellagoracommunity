@@ -7,8 +7,10 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 import ChallengeCelebrationModal from "./ChallengeCelebrationModal";
 import InviteFriendsModal from "./InviteFriendsModal";
+import ChallengeSponsorshipModal from "./ChallengeSponsorshipModal";
 import { 
   Calendar, 
   Clock, 
@@ -102,10 +104,14 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
   const [showTips, setShowTips] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [showSponsorModal, setShowSponsorModal] = useState(false);
   const [uploadedPhoto, setUploadedPhoto] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { t } = useLanguage();
+  const { profile } = useAuth();
+  
+  const isOrganization = profile && ['business', 'government', 'ngo'].includes(profile.user_role);
   
   const CategoryIcon = categoryConfig[challenge.category].icon;
   
@@ -185,6 +191,14 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
         onClose={() => setShowInviteModal(false)}
         challengeTitle={t(challenge.titleKey)}
         challengeId={challenge.id}
+      />
+
+      <ChallengeSponsorshipModal
+        open={showSponsorModal}
+        onOpenChange={setShowSponsorModal}
+        challengeId={challenge.id}
+        challengeTitle={t(challenge.titleKey)}
+        region="Hungary"
       />
       
       <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
@@ -575,14 +589,25 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
           {/* Action Buttons - mobile optimized */}
           <div className="flex flex-col sm:flex-row gap-3 w-full">
             {!userProgress?.isParticipating ? (
-              <Button 
-                onClick={handleJoinChallenge}
-                className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth h-12 sm:h-11 text-base font-semibold group"
-              >
-                <Trophy className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                {t('challenges.join_challenge')}
-                <Sparkles className="w-4 h-4 ml-2 opacity-70" />
-              </Button>
+              isOrganization ? (
+                <Button 
+                  onClick={() => setShowSponsorModal(true)}
+                  className="flex-1 bg-gradient-to-r from-warning to-primary hover:shadow-glow transition-smooth h-12 sm:h-11 text-base font-semibold group"
+                >
+                  <Star className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                  {t('challenges.sponsor_challenge')}
+                  <Sparkles className="w-4 h-4 ml-2 opacity-70" />
+                </Button>
+              ) : (
+                <Button 
+                  onClick={handleJoinChallenge}
+                  className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth h-12 sm:h-11 text-base font-semibold group"
+                >
+                  <Trophy className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                  {t('challenges.join_challenge')}
+                  <Sparkles className="w-4 h-4 ml-2 opacity-70" />
+                </Button>
+              )
             ) : userProgress.isCompleted ? (
               <Button 
                 disabled
