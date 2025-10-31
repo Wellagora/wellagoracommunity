@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,7 +8,8 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Target, Trophy, Euro, TrendingUp, Check } from 'lucide-react';
+import { Target, Trophy, Coins, TrendingUp, Check, AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface ChallengeSponsorshipModalProps {
   open: boolean;
@@ -22,25 +23,25 @@ const packageOptions = [
   {
     value: 'bronze',
     name: 'Bronz',
-    price: '50,000 Ft',
+    credits: 10,
     benefits: ['Logo megjelenítés', 'Cég neve a kihíváson', 'Egyszerű említés']
   },
   {
     value: 'silver',
     name: 'Ezüst',
-    price: '100,000 Ft',
+    credits: 20,
     benefits: ['Logo megjelenítés', 'Kiemelt cég név', 'Profilra linkelt név', 'ESG beszámoló megemlítés']
   },
   {
     value: 'gold',
     name: 'Arany',
-    price: '200,000 Ft',
+    credits: 40,
     benefits: ['Nagy logo', 'Kiemelt pozíció', 'Teljes profilra linkelt kártya', 'ESG jelentés részletes adat', 'Social media említés']
   },
   {
     value: 'platinum',
     name: 'Platinum',
-    price: '500,000 Ft',
+    credits: 100,
     benefits: ['Premium logo', 'Exkluzív szponzor státusz', 'Dedikált landing page', 'Teljes ESG marketing csomag', 'Média megjelenések']
   }
 ];
@@ -54,10 +55,52 @@ const ChallengeSponsorshipModal = ({
 }: ChallengeSponsorshipModalProps) => {
   const [selectedPackage, setSelectedPackage] = useState<string>('bronze');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [availableCredits, setAvailableCredits] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const { t } = useLanguage();
 
+  // Load available credits
+  useEffect(() => {
+    if (open) {
+      loadCredits();
+    }
+  }, [open]);
+
+  const loadCredits = async () => {
+    setLoading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('sponsor_credits')
+        .select('available_credits')
+        .eq('sponsor_user_id', user.id)
+        .maybeSingle();
+
+      if (error) throw error;
+      setAvailableCredits(data?.available_credits || 0);
+    } catch (error) {
+      console.error('Error loading credits:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const selectedPackageData = packageOptions.find(p => p.value === selectedPackage);
+  const hasEnoughCredits = availableCredits >= (selectedPackageData?.credits || 0);
+
   const handleSponsor = async () => {
+    if (!hasEnoughCredits) {
+      toast({
+        title: t('sponsorship.insufficient_credits'),
+        description: t('sponsorship.purchase_credits'),
+        variant: 'destructive'
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
@@ -79,7 +122,10 @@ const ChallengeSponsorshipModal = ({
         .eq('id', user.id)
         .single();
 
-      const { error } = await supabase
+      const creditCost = selectedPackageData?.credits || 0;
+
+      // Insert sponsorship with credit cost
+      const { error: sponsorError } = await supabase
         .from('challenge_sponsorships')
         .insert({
           challenge_id: challengeId,
@@ -87,19 +133,54 @@ const ChallengeSponsorshipModal = ({
           sponsor_organization_id: profile?.organization_id,
           region: region,
           package_type: selectedPackage,
+          tier: selectedPackage,
+          credit_cost: creditCost,
           status: 'active'
         });
 
-      if (error) throw error;
+      if (sponsorError) throw sponsorError;
+
+      // Deduct credits manually - first get current credits
+      const { data: currentCredits } = await supabase
+        .from('sponsor_credits')
+        .select('used_credits, available_credits')
+        .eq('sponsor_user_id', user.id)
+        .single();
+
+      if (currentCredits) {
+        const { error: creditError } = await supabase
+          .from('sponsor_credits')
+          .update({ 
+            used_credits: (currentCredits.used_credits || 0) + creditCost,
+            available_credits: (currentCredits.available_credits || 0) - creditCost
+          })
+          .eq('sponsor_user_id', user.id);
+
+        if (creditError) {
+          console.error('Credit deduction error:', creditError);
+        }
+      }
+
+      // Also log transaction
+      await supabase
+        .from('credit_transactions')
+        .insert({
+          sponsor_user_id: user.id,
+          credits: -creditCost,
+          transaction_type: 'sponsorship',
+          description: `Sponsorship for challenge: ${challengeTitle}`,
+          related_sponsorship_id: null
+        });
 
       toast({
         title: t('sponsorship.success'),
         description: t('sponsorship.success_desc')
           .replace('{challengeTitle}', challengeTitle)
-          .replace('{region}', region)
+          .replace('{credits}', creditCost.toString())
       });
 
       onOpenChange(false);
+      loadCredits(); // Reload credits
     } catch (error: any) {
       toast({
         title: t('sponsorship.error'),
@@ -122,6 +203,19 @@ const ChallengeSponsorshipModal = ({
           <DialogDescription>
             {t('sponsorship.subtitle').replace('{challengeTitle}', challengeTitle)}
           </DialogDescription>
+          
+          {/* Credits Display */}
+          <div className="mt-4 p-4 rounded-lg bg-primary/10 border border-primary/20">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Coins className="w-5 h-5 text-primary" />
+                <span className="font-semibold">{t('sponsorship.available_credits')}</span>
+              </div>
+              <div className="text-2xl font-bold text-primary">
+                {loading ? '...' : availableCredits}
+              </div>
+            </div>
+          </div>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -165,8 +259,8 @@ const ChallengeSponsorshipModal = ({
                               {pkg.name}
                             </Label>
                             <div className="flex items-center gap-2 mt-1">
-                              <Euro className="w-4 h-4 text-muted-foreground" />
-                              <span className="text-sm text-muted-foreground">{pkg.price}</span>
+                              <Coins className="w-4 h-4 text-primary" />
+                              <span className="text-sm font-semibold text-primary">{pkg.credits} {t('sponsorship.credits')}</span>
                             </div>
                           </div>
                         </div>
@@ -194,6 +288,16 @@ const ChallengeSponsorshipModal = ({
             </RadioGroup>
           </div>
 
+          {/* Insufficient Credits Warning */}
+          {!hasEnoughCredits && selectedPackageData && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                {t('sponsorship.need_more_credits')} {selectedPackageData.credits - availableCredits} {t('sponsorship.credits')}
+              </AlertDescription>
+            </Alert>
+          )}
+
           <div className="flex gap-3 pt-4">
             <Button
               variant="outline"
@@ -204,7 +308,7 @@ const ChallengeSponsorshipModal = ({
             </Button>
             <Button
               onClick={handleSponsor}
-              disabled={isSubmitting}
+              disabled={isSubmitting || !hasEnoughCredits}
               className="flex-1 bg-gradient-primary"
             >
               {isSubmitting ? t('sponsorship.processing') : t('sponsorship.start')}
