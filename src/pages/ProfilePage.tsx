@@ -172,7 +172,9 @@ const ProfilePage = () => {
     company_size: "",
     website_url: "",
     is_public_profile: profile?.is_public_profile || false,
-    bio: ""
+    bio: "",
+    org_description: "",
+    org_logo_url: ""
   });
 
   // Sync form with profile data
@@ -192,8 +194,30 @@ const ProfilePage = () => {
         company_size: extendedProfile.company_size || "",
         website_url: extendedProfile.website_url || "",
         is_public_profile: profile.is_public_profile || false,
-        bio: extendedProfile.bio || ""
+        bio: extendedProfile.bio || "",
+        org_description: "",
+        org_logo_url: ""
       });
+
+      // Fetch organization data if user has organization_id
+      if (extendedProfile.organization_id) {
+        const fetchOrgData = async () => {
+          const { data, error } = await supabase
+            .from('organizations')
+            .select('description, logo_url')
+            .eq('id', extendedProfile.organization_id)
+            .single();
+          
+          if (!error && data) {
+            setProfileForm(prev => ({
+              ...prev,
+              org_description: data.description || "",
+              org_logo_url: data.logo_url || ""
+            }));
+          }
+        };
+        fetchOrgData();
+      }
     }
   }, [profile]);
 
@@ -252,6 +276,12 @@ const ProfilePage = () => {
     setSuccess(null);
 
     try {
+      // Normalize website URL - add https:// if missing protocol
+      let normalizedUrl = profileForm.website_url.trim();
+      if (normalizedUrl && !normalizedUrl.match(/^https?:\/\//i)) {
+        normalizedUrl = `https://${normalizedUrl}`;
+      }
+
       // Use type assertion for new fields until types are regenerated
       const { error } = await updateProfile({
         first_name: profileForm.first_name.trim(),
@@ -264,7 +294,7 @@ const ProfilePage = () => {
         ...(profileForm.sustainability_goals.length > 0 && { sustainability_goals: profileForm.sustainability_goals }),
         ...(profileForm.industry && { industry: profileForm.industry.trim() }),
         ...(profileForm.company_size && { company_size: profileForm.company_size.trim() }),
-        ...(profileForm.website_url && { website_url: profileForm.website_url.trim() }),
+        ...(normalizedUrl && { website_url: normalizedUrl }),
         ...(profileForm.bio && { bio: profileForm.bio.trim() })
       } as any);
 
@@ -272,6 +302,22 @@ const ProfilePage = () => {
         setError(t('profile.error'));
         console.error("Profile update error:", error);
       } else {
+        // Update organization if user has organization_id
+        if ((profile as any)?.organization_id) {
+          const { error: orgError } = await supabase
+            .from('organizations')
+            .update({
+              description: profileForm.org_description.trim() || null,
+              logo_url: profileForm.org_logo_url.trim() || null,
+              website_url: normalizedUrl || null
+            })
+            .eq('id', (profile as any).organization_id);
+
+          if (orgError) {
+            console.error("Organization update error:", orgError);
+          }
+        }
+        
         setSuccess(t('profile.success'));
       }
     } catch (err) {
@@ -557,6 +603,35 @@ const ProfilePage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="org_logo_url">Szervezet logója URL</Label>
+                  <Input
+                    id="org_logo_url"
+                    type="text"
+                    value={profileForm.org_logo_url}
+                    onChange={(e) => setProfileForm({ ...profileForm, org_logo_url: e.target.value })}
+                    placeholder="https://example.com/logo.png"
+                    className="bg-background/50"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Adja meg a szervezet logójának URL-jét (megjelenik a nyilvános szervezet oldalon)
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="org_description">Szervezet bemutatkozása</Label>
+                  <Textarea
+                    id="org_description"
+                    value={profileForm.org_description}
+                    onChange={(e) => setProfileForm({ ...profileForm, org_description: e.target.value })}
+                    placeholder="Írja le a szervezet küldetését és céljait..."
+                    className="min-h-[100px] bg-background/50"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Ez jelenik meg a nyilvános szervezet oldalon
+                  </p>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="industry">{t('profile.industry')}</Label>
@@ -603,12 +678,15 @@ const ProfilePage = () => {
                   <Label htmlFor="website_url">{t('profile.website_url')}</Label>
                   <Input
                     id="website_url"
-                    type="url"
+                    type="text"
                     value={profileForm.website_url}
                     onChange={(e) => setProfileForm({ ...profileForm, website_url: e.target.value })}
-                    placeholder="https://example.com"
+                    placeholder="www.example.com vagy https://example.com"
                     className="bg-background/50"
                   />
+                  <p className="text-xs text-muted-foreground">
+                    Adja meg a weboldal címét (automatikusan hozzáadjuk a https:// előtagot)
+                  </p>
                 </div>
 
                 <div className="p-4 bg-info/10 rounded-lg border border-info/20">
