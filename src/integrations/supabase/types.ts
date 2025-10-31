@@ -775,6 +775,17 @@ export type Database = {
           website_url: string
         }[]
       }
+      get_organization_members_for_invitations: {
+        Args: { _organization_id: string }
+        Returns: {
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          public_display_name: string
+          user_role: Database["public"]["Enums"]["user_role"]
+        }[]
+      }
       get_public_profile: {
         Args: { _profile_id: string }
         Returns: {

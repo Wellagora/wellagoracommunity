@@ -49,7 +49,7 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
 
       try {
         setLoading(true);
-        const { data, error } = await supabase.rpc('get_organization_member_profiles', {
+        const { data, error } = await supabase.rpc('get_organization_members_for_invitations', {
           _organization_id: profile.organization_id,
         });
 
@@ -63,9 +63,18 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
           return;
         }
 
-        // Filter out current user
-        const filteredMembers = (data || []).filter((m: TeamMember) => m.id !== profile.id);
-        setTeamMembers(filteredMembers);
+        // Filter out current user and map to TeamMember type
+        const filteredMembers = (data || [])
+          .filter((m: any) => m.id !== profile.id)
+          .map((m: any) => ({
+            id: m.id,
+            first_name: m.first_name,
+            last_name: m.last_name,
+            email: m.email,
+            user_role: m.user_role,
+            public_display_name: m.public_display_name,
+          }));
+        setTeamMembers(filteredMembers as TeamMember[]);
       } catch (error) {
         console.error("Error:", error);
       } finally {
@@ -253,7 +262,7 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
                 onClick={handleSelectAll}
                 className="text-xs"
               >
-                {selectedMembers.length === mockTeamMembers.length ? 'Deselect All' : 'Select All'}
+                {selectedMembers.length === teamMembers.length ? 'Deselect All' : 'Select All'}
               </Button>
             </div>
 
