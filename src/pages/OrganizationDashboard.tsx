@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Navigation from "@/components/Navigation";
+import { MobilizeTeamModal } from "@/components/dashboard/MobilizeTeamModal";
+import { OrganizationSponsorModal } from "@/components/dashboard/OrganizationSponsorModal";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -51,6 +54,9 @@ const OrganizationDashboard = () => {
   const { user, profile, loading: authLoading } = useAuth();
   const { t } = useLanguage();
   const [selectedTab, setSelectedTab] = useState("overview");
+  const [mobilizeModalOpen, setMobilizeModalOpen] = useState(false);
+  const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
+  const [creatingOrg, setCreatingOrg] = useState(false);
 
   // Mock data
   const [challenges] = useState<Challenge[]>([
@@ -95,6 +101,55 @@ const OrganizationDashboard = () => {
       navigate("/dashboard");
     }
   }, [user, profile, authLoading, navigate]);
+
+  // Auto-create organization if user has org name but no org ID
+  useEffect(() => {
+    const createOrganization = async () => {
+      if (!profile || profile.user_role === "citizen" || creatingOrg) return;
+      if (profile.organization_id || !profile.organization) return;
+
+      try {
+        setCreatingOrg(true);
+        console.log("Creating organization:", profile.organization);
+
+        // Create organization
+        const { data: orgData, error: orgError } = await supabase
+          .from('organizations')
+          .insert({
+            name: profile.organization,
+            type: profile.user_role,
+            is_public: true,
+          })
+          .select()
+          .single();
+
+        if (orgError) {
+          console.error("Error creating organization:", orgError);
+          return;
+        }
+
+        // Update profile with organization_id
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({ organization_id: orgData.id })
+          .eq('id', profile.id);
+
+        if (profileError) {
+          console.error("Error updating profile:", profileError);
+          return;
+        }
+
+        console.log("Organization created successfully:", orgData.id);
+        window.location.reload(); // Reload to get updated profile
+      } catch (error) {
+        console.error("Error in organization creation:", error);
+      } finally {
+        setCreatingOrg(false);
+      }
+    };
+
+    createOrganization();
+  }, [profile, creatingOrg]);
 
   const getRoleInfo = () => {
     switch (profile?.user_role) {
@@ -320,7 +375,7 @@ const OrganizationDashboard = () => {
               <Button 
                 variant="outline"
                 className="border-warning/50 hover:bg-warning/10 transition-smooth py-6 text-base"
-                onClick={() => navigate('/sponsor-dashboard')}
+                onClick={() => setSponsorModalOpen(true)}
               >
                 <Award className="w-5 h-5 mr-2 text-warning" />
                 {t('organization.sponsor_challenge')}
@@ -328,7 +383,8 @@ const OrganizationDashboard = () => {
               <Button 
                 variant="outline"
                 className="border-accent/50 hover:bg-accent/10 transition-smooth py-6 text-base"
-                onClick={() => setSelectedTab("challenges")}
+                onClick={() => setMobilizeModalOpen(true)}
+                disabled={!profile?.organization_id}
               >
                 <Users className="w-5 h-5 mr-2 text-accent" />
                 {t('organization.mobilize_team')}
@@ -487,6 +543,16 @@ const OrganizationDashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Modals */}
+      <MobilizeTeamModal 
+        open={mobilizeModalOpen} 
+        onOpenChange={setMobilizeModalOpen} 
+      />
+      <OrganizationSponsorModal
+        open={sponsorModalOpen}
+        onOpenChange={setSponsorModalOpen}
+      />
     </div>
   );
 };
