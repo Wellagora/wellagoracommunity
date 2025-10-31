@@ -53,6 +53,8 @@ interface Challenge {
   sponsor?: {
     name: string;
     logo: string;
+    sponsorUserId?: string;
+    organizationId?: string;
   };
   stepsKeys: string[];
   tipsKeys: string[];
@@ -514,8 +516,12 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
               onClick={() => {
                 const sponsor = challenge.sponsor;
                 if (sponsor) {
-                  // Navigate based on available IDs
-                  window.location.href = `/profile?userId=${sponsor.name}`;
+                  // Navigate to organization profile if available, otherwise user profile
+                  if (sponsor.organizationId) {
+                    window.location.href = `/organization/${sponsor.organizationId}`;
+                  } else if (sponsor.sponsorUserId) {
+                    window.location.href = `/profile/${sponsor.sponsorUserId}`;
+                  }
                 }
               }}
             >
@@ -533,10 +539,10 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
                 )}
                 <div className="flex-1">
                   <div className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                    Szponzor: {challenge.sponsor.name}
+                    {t('challenges.sponsored_by')}: {challenge.sponsor.name}
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    Támogatja ezt a kihívást • Kattints a profilhoz
+                    {t('challenges.click_for_profile')}
                   </div>
                 </div>
               </div>

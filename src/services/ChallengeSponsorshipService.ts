@@ -6,6 +6,8 @@ interface SponsorInfo {
   logo: string;
   tier: string;
   organization?: string;
+  sponsorUserId?: string;
+  organizationId?: string;
 }
 
 interface ChallengeSponsorshipData {
@@ -19,7 +21,9 @@ interface ChallengeSponsorshipData {
 }
 
 interface ProfileData {
+  id: string;
   organization: string | null;
+  organization_id: string | null;
   public_display_name: string | null;
   first_name: string;
   last_name: string;
@@ -60,7 +64,7 @@ export const getActiveSponsorships = async (projectId?: string): Promise<Map<str
     // Fetch sponsor profiles
     const { data: profiles, error: profilesError } = await supabase
       .from('profiles')
-      .select('id, organization, public_display_name, first_name, last_name, avatar_url')
+      .select('id, organization, organization_id, public_display_name, first_name, last_name, avatar_url')
       .in('id', sponsorUserIds);
 
     if (profilesError) {
@@ -89,7 +93,9 @@ export const getActiveSponsorships = async (projectId?: string): Promise<Map<str
           name: sponsorName,
           logo: profile.avatar_url || '/placeholder.svg',
           tier: sponsorship.tier || 'bronze',
-          organization: profile.organization || undefined
+          organization: profile.organization || undefined,
+          sponsorUserId: sponsorship.sponsor_user_id,
+          organizationId: profile.organization_id || undefined
         });
       }
     });
@@ -118,7 +124,9 @@ export const enrichChallengesWithSponsors = async (
         ...challenge,
         sponsor: {
           name: sponsorInfo.name,
-          logo: sponsorInfo.logo
+          logo: sponsorInfo.logo,
+          sponsorUserId: sponsorInfo.sponsorUserId,
+          organizationId: sponsorInfo.organizationId
         }
       };
     }

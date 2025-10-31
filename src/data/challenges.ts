@@ -13,6 +13,8 @@ export interface Challenge {
   sponsor?: {
     name: string;
     logo: string;
+    sponsorUserId?: string;
+    organizationId?: string;
   };
   stepsKeys: string[];
   tipsKeys: string[];
