@@ -1517,6 +1517,8 @@
   "organization.impact_score": "Hatás érték",
   "organization.contact": "Kapcsolatfelvétel",
   "organization.saved": "megtakarítva",
+  "organization.no_impact_stories": "Még nincsenek sikertörténetek",
+  "organization.sponsor_challenges_hint": "Szponzorálj kihívásokat, hogy megjelenjenek a résztvevők történetei",
   "organization.success_stories_desc": "Success stories a régióból - vállalati hozzájárulás és brandépítés a fenntarthatóság terén",
   "organization.brand_engagement": "Brand Engagement",
   "organization.media_reach": "Média Elérés",

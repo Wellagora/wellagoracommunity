@@ -110,56 +110,101 @@ const OrganizationDashboard = () => {
     { id: "3", name: "EcoTech Solutions", type: 'business', projects: 1, impact_score: 78 }
   ]);
 
-  const [impactStories] = useState<ImpactStory[]>([
-    {
-      id: "1",
-      type: 'participant',
-      userName: "Kovács János",
-      userAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face",
-      challengeTitle: t("challenges.bikeToWork.title"),
-      story: "Teljesítettem a kerékpáros kihívást! 30 napig kerékpároztam munkába, és hihetetlen érzés volt részese lenni ennek a mozgalomnak.",
-      impact: {
-        co2_saved: 50,
-        participants: 1
-      },
-      date: "2024-10-15"
-    },
-    {
-      id: "2",
-      type: 'milestone',
-      challengeTitle: t("challenges.plasticFree.title"),
-      story: "500. résztvevő csatlakozott a szervezet által támogatott műanyagmentes kihíváshoz!",
-      impact: {
-        participants: 500,
-        co2_saved: 125
-      },
-      date: "2024-10-20"
-    },
-    {
-      id: "3",
-      type: 'participant',
-      userName: "Nagy Anna",
-      userAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
-      challengeTitle: t("challenges.localFood.title"),
-      story: "A helyi étel hét teljesen megváltoztatta a vásárlási szokásaimat. Most minden héten a helyi piacon vásárolok!",
-      impact: {
-        co2_saved: 18,
-        participants: 1
-      },
-      date: "2024-10-25"
-    },
-    {
-      id: "4",
-      type: 'partnership',
-      challengeTitle: "Green Future NGO közös projekt",
-      story: "Közös projektünk keretében 1 tonna CO₂ megtakarítást értünk el a régióban.",
-      impact: {
-        co2_saved: 1000,
-        achievement: "1t CO₂ milestone"
-      },
-      date: "2024-10-28"
-    }
-  ]);
+  const [impactStories, setImpactStories] = useState<ImpactStory[]>([]);
+  const [loadingStories, setLoadingStories] = useState(true);
+
+  // Load real impact stories from sponsored challenges
+  useEffect(() => {
+    const loadImpactStories = async () => {
+      if (!user || !profile?.organization_id) {
+        setLoadingStories(false);
+        return;
+      }
+
+      try {
+        setLoadingStories(true);
+
+        // Get challenges sponsored by this organization
+        const { data: sponsorships, error: sponsorshipsError } = await supabase
+          .from('challenge_sponsorships')
+          .select('challenge_id, created_at')
+          .eq('sponsor_organization_id', profile.organization_id)
+          .eq('status', 'active');
+
+        if (sponsorshipsError) throw sponsorshipsError;
+
+        if (!sponsorships || sponsorships.length === 0) {
+          setImpactStories([]);
+          setLoadingStories(false);
+          return;
+        }
+
+        const challengeIds = sponsorships.map(s => s.challenge_id);
+
+        // Get completions for sponsored challenges with user profiles
+        const { data: completions, error: completionsError } = await supabase
+          .from('challenge_completions')
+          .select(`
+            id,
+            challenge_id,
+            user_id,
+            completion_date,
+            notes,
+            impact_data,
+            profiles:user_id (
+              first_name,
+              last_name,
+              avatar_url
+            )
+          `)
+          .in('challenge_id', challengeIds)
+          .eq('validation_status', 'approved')
+          .order('completion_date', { ascending: false })
+          .limit(10);
+
+        if (completionsError) throw completionsError;
+
+        // Transform completions to impact stories
+        const stories: ImpactStory[] = (completions || []).map(completion => {
+          const profile = Array.isArray(completion.profiles) 
+            ? completion.profiles[0] 
+            : completion.profiles;
+          
+          const impactData = completion.impact_data as any || {};
+          const userName = profile 
+            ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim()
+            : 'Névtelen Felhasználó';
+
+          // Get challenge title from challenges data
+          const challenge = challenges.find(c => c.id === completion.challenge_id);
+          const challengeTitle = challenge?.title || completion.challenge_id;
+
+          return {
+            id: completion.id,
+            type: 'participant',
+            userName,
+            userAvatar: profile?.avatar_url || undefined,
+            challengeTitle,
+            story: completion.notes || `Sikeresen teljesítette a(z) ${challengeTitle} kihívást!`,
+            impact: {
+              co2_saved: impactData.co2_saved || 0,
+              participants: 1
+            },
+            date: completion.completion_date
+          };
+        });
+
+        setImpactStories(stories);
+      } catch (error) {
+        console.error('Error loading impact stories:', error);
+        setImpactStories([]);
+      } finally {
+        setLoadingStories(false);
+      }
+    };
+
+    loadImpactStories();
+  }, [user, profile?.organization_id, challenges]);
 
   // Redirect if not authenticated or not an organization
   useEffect(() => {
@@ -615,7 +660,21 @@ const OrganizationDashboard = () => {
 
             {/* Impact Stories */}
             <div className="space-y-4">
-              {impactStories.map((story) => (
+              {loadingStories ? (
+                <div className="flex justify-center items-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              ) : impactStories.length === 0 ? (
+                <Card className="p-8 text-center bg-card/50">
+                  <Sparkles className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
+                  <p className="text-muted-foreground">
+                    {t('organization.no_impact_stories')}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    {t('organization.sponsor_challenges_hint')}
+                  </p>
+                </Card>
+              ) : impactStories.map((story) => (
                 <Card key={story.id} className="bg-card/50 backdrop-blur-sm border-border/50">
                   <CardContent className="p-4 sm:p-6">
                     <div className="flex flex-col sm:flex-row gap-4">

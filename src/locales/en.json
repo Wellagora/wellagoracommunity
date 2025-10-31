@@ -1256,6 +1256,8 @@
   "organization.impact_score": "Impact score",
   "organization.contact": "Contact",
   "organization.saved": "saved",
+  "organization.no_impact_stories": "No impact stories yet",
+  "organization.sponsor_challenges_hint": "Sponsor challenges to see participant stories",
   "organization.success_stories_desc": "Success stories from the region - corporate contribution and brand building in sustainability",
   "organization.brand_engagement": "Brand Engagement",
   "organization.media_reach": "Media Reach",
