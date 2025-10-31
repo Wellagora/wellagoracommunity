@@ -18,3 +18,6 @@ verify_jwt = true
 
 [functions.verify-admin-access]
 verify_jwt = true
+
+[functions.send-team-invitation]
+verify_jwt = true

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,39 +7,100 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Users, Mail, Target, TrendingUp, Award } from "lucide-react";
+import { Users, Mail, Target, TrendingUp, Award, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 interface MobilizeTeamModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-const mockTeamMembers = [
-  { id: "1", name: "Sarah Johnson", email: "sarah.j@company.com", role: "HR Manager", department: "HR" },
-  { id: "2", name: "Mike Chen", email: "mike.c@company.com", role: "Senior Developer", department: "IT" },
-  { id: "3", name: "Emma Davis", email: "emma.d@company.com", role: "Marketing Lead", department: "Marketing" },
-  { id: "4", name: "James Wilson", email: "james.w@company.com", role: "Operations Manager", department: "Operations" },
-  { id: "5", name: "Lisa Anderson", email: "lisa.a@company.com", role: "Finance Director", department: "Finance" },
-];
-
-const mockChallenges = [
-  { id: "c1", title: "Green Office Initiative", participants: 342, co2: 18.5 },
-  { id: "c2", title: "Bike to Work Campaign", participants: 156, co2: 8.2 },
-  { id: "c3", title: "Zero Waste Week", participants: 89, co2: 4.3 },
-];
+interface TeamMember {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  user_role: string;
+  public_display_name?: string;
+}
 
 export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps) => {
   const { toast } = useToast();
+  const { profile } = useAuth();
   const [selectedChallenge, setSelectedChallenge] = useState("");
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const [message, setMessage] = useState("");
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [challenges, setChallenges] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  // Load team members
+  useEffect(() => {
+    const loadTeamMembers = async () => {
+      if (!profile?.organization_id || !open) return;
+
+      try {
+        setLoading(true);
+        const { data, error } = await supabase.rpc('get_organization_member_profiles', {
+          _organization_id: profile.organization_id,
+        });
+
+        if (error) {
+          console.error("Error loading team members:", error);
+          toast({
+            title: "Error",
+            description: "Failed to load team members",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        // Filter out current user
+        const filteredMembers = (data || []).filter((m: TeamMember) => m.id !== profile.id);
+        setTeamMembers(filteredMembers);
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadTeamMembers();
+  }, [profile?.organization_id, open]);
+
+  // Load challenges
+  useEffect(() => {
+    const loadChallenges = async () => {
+      if (!open) return;
+
+      try {
+        const { data, error } = await supabase
+          .from('challenge_definitions')
+          .select('*')
+          .eq('is_active', true)
+          .limit(10);
+
+        if (error) {
+          console.error("Error loading challenges:", error);
+          return;
+        }
+
+        setChallenges(data || []);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    loadChallenges();
+  }, [open]);
 
   const handleToggleMember = (memberId: string) => {
     setSelectedMembers(prev =>
@@ -50,28 +111,75 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
   };
 
   const handleSelectAll = () => {
-    if (selectedMembers.length === mockTeamMembers.length) {
+    if (selectedMembers.length === teamMembers.length) {
       setSelectedMembers([]);
     } else {
-      setSelectedMembers(mockTeamMembers.map(m => m.id));
+      setSelectedMembers(teamMembers.map(m => m.id));
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    toast({
-      title: "Team Mobilized Successfully!",
-      description: `${selectedMembers.length} team members have been invited to join the challenge.`,
-    });
-    
-    onOpenChange(false);
-    setSelectedChallenge("");
-    setSelectedMembers([]);
-    setMessage("");
+    if (!profile?.organization_id) {
+      toast({
+        title: "Error",
+        description: "You must be part of an organization",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const selectedChallengeData = challenges.find(c => c.id === selectedChallenge);
+    if (!selectedChallengeData) return;
+
+    setSubmitting(true);
+
+    try {
+      // Prepare invitations
+      const invitations = selectedMembers.map(memberId => {
+        const member = teamMembers.find(m => m.id === memberId);
+        return {
+          email: member!.email,
+          name: member!.public_display_name || `${member!.first_name} ${member!.last_name}`,
+        };
+      });
+
+      // Call edge function
+      const { data, error } = await supabase.functions.invoke('send-team-invitation', {
+        body: {
+          challengeId: selectedChallenge,
+          challengeTitle: selectedChallengeData.title,
+          invitations,
+          message: message || undefined,
+          organizationId: profile.organization_id,
+        },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Team Mobilized Successfully!",
+        description: `${data.sent} team member${data.sent !== 1 ? 's' : ''} ${data.sent !== 1 ? 'have' : 'has'} been invited to join the challenge.`,
+      });
+      
+      onOpenChange(false);
+      setSelectedChallenge("");
+      setSelectedMembers([]);
+      setMessage("");
+    } catch (error: any) {
+      console.error("Error sending invitations:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send invitations",
+        variant: "destructive",
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const selectedChallengeData = mockChallenges.find(c => c.id === selectedChallenge);
+  const selectedChallengeData = challenges.find(c => c.id === selectedChallenge);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -90,8 +198,15 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
           {/* Challenge Selection */}
           <div className="space-y-3">
             <Label>Select Challenge *</Label>
-            <div className="space-y-2">
-              {mockChallenges.map((challenge) => (
+            {loading ? (
+              <div className="flex items-center justify-center p-8">
+                <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              </div>
+            ) : challenges.length === 0 ? (
+              <p className="text-sm text-muted-foreground p-4 text-center">No active challenges available</p>
+            ) : (
+              <div className="space-y-2">
+                {challenges.map((challenge) => (
                 <div
                   key={challenge.id}
                   className={`p-4 border rounded-lg cursor-pointer transition-all ${
@@ -104,14 +219,16 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <h4 className="font-medium">{challenge.title}</h4>
-                      <div className="flex gap-4 mt-2">
+                      <p className="text-sm text-muted-foreground mt-1">{challenge.description}</p>
+                      <div className="flex gap-2 mt-2">
                         <Badge variant="secondary" className="text-xs">
-                          <Users className="w-3 h-3 mr-1" />
-                          {challenge.participants} participants
+                          {challenge.difficulty}
                         </Badge>
                         <Badge variant="secondary" className="text-xs">
-                          <TrendingUp className="w-3 h-3 mr-1" />
-                          {challenge.co2}t CO₂
+                          {challenge.category}
+                        </Badge>
+                        <Badge variant="secondary" className="text-xs">
+                          {challenge.points_base} points
                         </Badge>
                       </div>
                     </div>
@@ -120,8 +237,9 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
                     )}
                   </div>
                 </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Team Member Selection */}
@@ -139,35 +257,48 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
               </Button>
             </div>
 
-            <div className="border rounded-lg divide-y max-h-64 overflow-y-auto">
-              {mockTeamMembers.map((member) => (
+            {loading ? (
+              <div className="flex items-center justify-center p-8 border rounded-lg">
+                <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              </div>
+            ) : teamMembers.length === 0 ? (
+              <p className="text-sm text-muted-foreground p-4 text-center border rounded-lg">No team members found</p>
+            ) : (
+              <div className="border rounded-lg divide-y max-h-64 overflow-y-auto">
+                {teamMembers.map((member) => {
+                  const displayName = member.public_display_name || `${member.first_name} ${member.last_name}`;
+                  const initials = `${member.first_name[0]}${member.last_name[0]}`;
+                  
+                  return (
                 <div
-                  key={member.id}
-                  className="flex items-center gap-3 p-3 hover:bg-muted/50 cursor-pointer"
-                  onClick={() => handleToggleMember(member.id)}
-                >
-                  <Checkbox
-                    checked={selectedMembers.includes(member.id)}
-                    onCheckedChange={() => handleToggleMember(member.id)}
-                  />
-                  <Avatar className="w-8 h-8">
-                    <AvatarFallback className="text-xs">
-                      {member.name.split(' ').map(n => n[0]).join('')}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm truncate">{member.name}</p>
-                    <p className="text-xs text-muted-foreground truncate">{member.role}</p>
+                    key={member.id}
+                    className="flex items-center gap-3 p-3 hover:bg-muted/50 cursor-pointer"
+                    onClick={() => handleToggleMember(member.id)}
+                  >
+                    <Checkbox
+                      checked={selectedMembers.includes(member.id)}
+                      onCheckedChange={() => handleToggleMember(member.id)}
+                    />
+                    <Avatar className="w-8 h-8">
+                      <AvatarFallback className="text-xs">
+                        {initials}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{displayName}</p>
+                      <p className="text-xs text-muted-foreground truncate">{member.email}</p>
+                    </div>
+                    <Badge variant="outline" className="text-xs">
+                      {member.user_role}
+                    </Badge>
                   </div>
-                  <Badge variant="outline" className="text-xs">
-                    {member.department}
-                  </Badge>
-                </div>
-              ))}
-            </div>
+                  );
+                })}
+              </div>
+            )}
 
             <p className="text-xs text-muted-foreground">
-              {selectedMembers.length} of {mockTeamMembers.length} members selected
+              {selectedMembers.length} of {teamMembers.length} members selected
             </p>
           </div>
 
@@ -197,18 +328,18 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
                   <p className="text-xs text-muted-foreground">New participants</p>
                 </div>
                 <div>
-                  <TrendingUp className="w-5 h-5 mx-auto mb-1 text-success" />
-                  <p className="text-lg font-bold">
-                    ~{(selectedChallengeData.co2 * selectedMembers.length / selectedChallengeData.participants).toFixed(1)}t
-                  </p>
-                  <p className="text-xs text-muted-foreground">Est. CO₂ saved</p>
-                </div>
-                <div>
                   <Award className="w-5 h-5 mx-auto mb-1 text-warning" />
                   <p className="text-lg font-bold">
-                    +{Math.round(selectedMembers.length / selectedChallengeData.participants * 100)}%
+                    {selectedChallengeData.points_base * selectedMembers.length}
                   </p>
-                  <p className="text-xs text-muted-foreground">Impact boost</p>
+                  <p className="text-xs text-muted-foreground">Total points</p>
+                </div>
+                <div>
+                  <TrendingUp className="w-5 h-5 mx-auto mb-1 text-success" />
+                  <p className="text-lg font-bold">
+                    {selectedChallengeData.duration_days} days
+                  </p>
+                  <p className="text-xs text-muted-foreground">Challenge duration</p>
                 </div>
               </div>
             </div>
@@ -238,9 +369,16 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
             <Button 
               type="submit" 
               className="flex-1"
-              disabled={!selectedChallenge || selectedMembers.length === 0}
+              disabled={!selectedChallenge || selectedMembers.length === 0 || submitting || loading}
             >
-              Send Invitations ({selectedMembers.length})
+              {submitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                `Send Invitations (${selectedMembers.length})`
+              )}
             </Button>
           </div>
         </form>
