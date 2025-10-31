@@ -85,8 +85,9 @@ export const getActiveSponsorships = async (projectId?: string): Promise<Map<str
       const profile = profilesMap.get(sponsorship.sponsor_user_id);
 
       if (profile) {
-        const sponsorName = profile.public_display_name || 
-                          profile.organization || 
+        // Prefer organization name for sponsors, then display name, then full name
+        const sponsorName = profile.organization ||
+                          profile.public_display_name || 
                           `${profile.first_name} ${profile.last_name}`;
         
         sponsorshipMap.set(sponsorship.challenge_id, {
