@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
+// Supported language codes for the application
 type Language = 'en' | 'de' | 'hu' | 'cs' | 'sk' | 'hr' | 'ro' | 'pl';
 
 interface LanguageContextType {
@@ -10,6 +11,7 @@ interface LanguageContextType {
   isLoading: boolean;
 }
 
+// Create the context with undefined as default
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 // Translation cache
