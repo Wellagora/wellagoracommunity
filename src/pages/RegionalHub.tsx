@@ -103,16 +103,16 @@ const RegionalHub = () => {
       // Registered stakeholders
       {
         id: "1",
-        name: "GreenTech Solutions",
+        name: t('regional.stakeholder.greentech.name'),
         type: "business",
-        organization: "GreenTech Solutions Kft.",
+        organization: t('regional.stakeholder.greentech.org'),
         location: selectedRegion.displayName,
         region: selectedRegion.id,
         city: selectedRegion.displayName,
         latitude: selectedRegion.coordinates.lat + 0.01,
         longitude: selectedRegion.coordinates.lng + 0.01,
-        description: "Megújuló energia technológiák fejlesztése.",
-        sustainabilityGoals: ["Megújuló energia", "CO₂ csökkentés"],
+        description: t('regional.stakeholder.greentech.desc'),
+        sustainabilityGoals: [t('regional.stakeholder.greentech.goal1'), t('regional.stakeholder.greentech.goal2')],
         avatar: "🏢",
         verified: true,
         impactScore: 2450,
@@ -120,16 +120,16 @@ const RegionalHub = () => {
       },
       {
         id: "2",
-        name: `${selectedRegion.displayName} Önkormányzat`,
+        name: `${selectedRegion.displayName} ${t('regional.stakeholder.municipality.name')}`,
         type: "government",
-        organization: `${selectedRegion.displayName} Önkormányzat`,
+        organization: `${selectedRegion.displayName} ${t('regional.stakeholder.municipality.name')}`,
         location: selectedRegion.displayName,
         region: selectedRegion.id,
         city: selectedRegion.displayName,
         latitude: selectedRegion.coordinates.lat - 0.01,
         longitude: selectedRegion.coordinates.lng - 0.01,
-        description: "Városi fenntarthatósági programok.",
-        sustainabilityGoals: ["Zöld területek", "Közlekedés"],
+        description: t('regional.stakeholder.municipality.desc'),
+        sustainabilityGoals: [t('regional.stakeholder.municipality.goal1'), t('regional.stakeholder.municipality.goal2')],
         avatar: "🏛️",
         verified: true,
         impactScore: 3200,
@@ -138,15 +138,15 @@ const RegionalHub = () => {
       // Potential stakeholders (not yet registered)
       {
         id: "3",
-        name: "Helyi Napelemes Projektek",
+        name: t('regional.stakeholder.solar.name'),
         type: "business",
         location: selectedRegion.displayName,
         region: selectedRegion.id,
         city: selectedRegion.displayName,
         latitude: selectedRegion.coordinates.lat + 0.015,
         longitude: selectedRegion.coordinates.lng - 0.015,
-        description: "Potenciális partner napelemes telepítésekhez.",
-        sustainabilityGoals: ["Napenergia", "Energia hatékonyság"],
+        description: t('regional.stakeholder.solar.desc'),
+        sustainabilityGoals: [t('regional.stakeholder.solar.goal1'), t('regional.stakeholder.solar.goal2')],
         avatar: "☀️",
         verified: false,
         impactScore: 0,
@@ -154,16 +154,16 @@ const RegionalHub = () => {
       },
       {
         id: "4",
-        name: "Zöld Jövő Alapítvány",
+        name: t('regional.stakeholder.foundation.name'),
         type: "ngo",
-        organization: "Zöld Jövő Közhasznú Alapítvány",
+        organization: t('regional.stakeholder.foundation.org'),
         location: selectedRegion.displayName,
         region: selectedRegion.id,
         city: selectedRegion.displayName,
         latitude: selectedRegion.coordinates.lat + 0.02,
         longitude: selectedRegion.coordinates.lng - 0.02,
-        description: "Környezettudatossági oktatás.",
-        sustainabilityGoals: ["Oktatás", "Közösségi kertek"],
+        description: t('regional.stakeholder.foundation.desc'),
+        sustainabilityGoals: [t('regional.stakeholder.foundation.goal1'), t('regional.stakeholder.foundation.goal2')],
         avatar: "🌱",
         verified: true,
         impactScore: 1850,
@@ -171,15 +171,15 @@ const RegionalHub = () => {
       },
       {
         id: "5",
-        name: "Körforgásos Gazdaság Centrum",
+        name: t('regional.stakeholder.circular.name'),
         type: "business",
         location: selectedRegion.displayName,
         region: selectedRegion.id,
         city: selectedRegion.displayName,
         latitude: selectedRegion.coordinates.lat - 0.02,
         longitude: selectedRegion.coordinates.lng + 0.015,
-        description: "Potenciális partner újrahasznosításhoz.",
-        sustainabilityGoals: ["Körforgásos gazdaság", "Újrahasznosítás"],
+        description: t('regional.stakeholder.circular.desc'),
+        sustainabilityGoals: [t('regional.stakeholder.circular.goal1'), t('regional.stakeholder.circular.goal2')],
         avatar: "♻️",
         verified: false,
         impactScore: 0,
@@ -548,7 +548,7 @@ const RegionalHub = () => {
                         <div className="flex flex-wrap gap-2">
                           <Badge className="bg-success/20 text-success">{t('regional.brand_awareness')}</Badge>
                           <Badge className="bg-primary/20 text-primary">{t('regional.esg_reports')}</Badge>
-                          <Badge className="bg-accent/20 text-accent">Közösségi hatás</Badge>
+                          <Badge className="bg-accent/20 text-accent">{t('regional.community_impact')}</Badge>
                         </div>
                       </div>
                     </div>
@@ -559,79 +559,79 @@ const RegionalHub = () => {
                   {/* Bronze Package */}
                   <Card className="border-2 border-amber-500/20 hover:border-amber-500/40 transition-all">
                     <CardHeader>
-                      <Badge className="bg-amber-500/10 text-amber-600 w-fit">Bronz</Badge>
-                      <CardTitle className="text-2xl mt-2">150.000 HUF</CardTitle>
-                      <p className="text-sm text-muted-foreground">500 EUR / 3 hónap</p>
+                      <Badge className="bg-amber-500/10 text-amber-600 w-fit">{t('regional.package_bronze')}</Badge>
+                      <CardTitle className="text-2xl mt-2">{t('regional.package_bronze_price')}</CardTitle>
+                      <p className="text-sm text-muted-foreground">{t('regional.package_bronze_price_sub')}</p>
                     </CardHeader>
                     <CardContent>
                       <ul className="space-y-2 mb-6">
                         <li className="text-sm flex items-start">
                           <span className="text-success mr-2">✓</span>
-                          1 szponzorált kihívás
+                          {t('regional.package_bronze_feature1')}
                         </li>
                         <li className="text-sm flex items-start">
                           <span className="text-success mr-2">✓</span>
-                          Logó megjelenítés
+                          {t('regional.package_bronze_feature2')}
                         </li>
                         <li className="text-sm flex items-start">
                           <span className="text-success mr-2">✓</span>
-                          Havi riport
+                          {t('regional.package_bronze_feature3')}
                         </li>
                       </ul>
-                      <Button className="w-full">Választás</Button>
+                      <Button className="w-full">{t('regional.choose_button')}</Button>
                     </CardContent>
                   </Card>
 
                   {/* Silver Package */}
                   <Card className="border-2 border-gray-400/20 hover:border-gray-400/40 transition-all">
                     <CardHeader>
-                      <Badge className="bg-gray-400/10 text-gray-600 w-fit">Ezüst</Badge>
-                      <CardTitle className="text-2xl mt-2">300.000 HUF</CardTitle>
-                      <p className="text-sm text-muted-foreground">1.000 EUR / 6 hónap</p>
+                      <Badge className="bg-gray-400/10 text-gray-600 w-fit">{t('regional.package_silver')}</Badge>
+                      <CardTitle className="text-2xl mt-2">{t('regional.package_silver_price')}</CardTitle>
+                      <p className="text-sm text-muted-foreground">{t('regional.package_silver_price_sub')}</p>
                     </CardHeader>
                     <CardContent>
                       <ul className="space-y-2 mb-6">
                         <li className="text-sm flex items-start">
                           <span className="text-success mr-2">✓</span>
-                          3 szponzorált kihívás
+                          {t('regional.package_silver_feature1')}
                         </li>
                         <li className="text-sm flex items-start">
                           <span className="text-success mr-2">✓</span>
-                          Kiemelt megjelenés
+                          {t('regional.package_silver_feature2')}
                         </li>
                         <li className="text-sm flex items-start">
                           <span className="text-success mr-2">✓</span>
-                          Heti riport + ESG metrikák
+                          {t('regional.package_silver_feature3')}
                         </li>
                       </ul>
-                      <Button className="w-full bg-gray-600 hover:bg-gray-700">Választás</Button>
+                      <Button className="w-full bg-gray-600 hover:bg-gray-700">{t('regional.choose_button')}</Button>
                     </CardContent>
                   </Card>
 
                   {/* Gold Package */}
                   <Card className="border-2 border-yellow-500/20 hover:border-yellow-500/40 transition-all bg-gradient-to-br from-yellow-500/5 to-orange-500/5">
                     <CardHeader>
-                      <Badge className="bg-yellow-500/10 text-yellow-600 w-fit">Arany</Badge>
-                      <CardTitle className="text-2xl mt-2">600.000 HUF</CardTitle>
-                      <p className="text-sm text-muted-foreground">2.000 EUR / 12 hónap</p>
+                      <Badge className="bg-yellow-500/10 text-yellow-600 w-fit">{t('regional.package_gold')}</Badge>
+                      <CardTitle className="text-2xl mt-2">{t('regional.package_gold_price')}</CardTitle>
+                      <p className="text-sm text-muted-foreground">{t('regional.package_gold_price_sub')}</p>
                     </CardHeader>
                     <CardContent>
                       <ul className="space-y-2 mb-6">
                         <li className="text-sm flex items-start">
                           <span className="text-success mr-2">✓</span>
-                          Korlátlan kihívások
+                          {t('regional.package_gold_feature1')}
                         </li>
                         <li className="text-sm flex items-start">
                           <span className="text-success mr-2">✓</span>
-                          Exkluzív márkajelenlét
+                          {t('regional.package_gold_feature2')}
                         </li>
                         <li className="text-sm flex items-start">
                           <span className="text-success mr-2">✓</span>
-                          Valós idejű analytics + dedikált support
+                          {t('regional.package_gold_feature3')}
                         </li>
                       </ul>
                       <Button className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600">
-                        Választás
+                        {t('regional.choose_button')}
                       </Button>
                     </CardContent>
                   </Card>
@@ -639,22 +639,22 @@ const RegionalHub = () => {
 
                 <Card>
                   <CardContent className="p-6">
-                    <h3 className="text-lg font-semibold mb-4">Regionális Hatás Kalkulátor</h3>
+                    <h3 className="text-lg font-semibold mb-4">{t('regional.impact_calculator')}</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="p-4 rounded-lg bg-muted/50">
-                        <p className="text-sm text-muted-foreground mb-1">Várható elérés</p>
-                        <p className="text-2xl font-bold text-primary">5.000+</p>
-                        <p className="text-xs text-muted-foreground">résztvevő/hónap</p>
+                        <p className="text-sm text-muted-foreground mb-1">{t('regional.expected_reach')}</p>
+                        <p className="text-2xl font-bold text-primary">{t('regional.expected_reach_value')}</p>
+                        <p className="text-xs text-muted-foreground">{t('regional.expected_reach_unit')}</p>
                       </div>
                       <div className="p-4 rounded-lg bg-muted/50">
-                        <p className="text-sm text-muted-foreground mb-1">CO₂ megtakarítás</p>
-                        <p className="text-2xl font-bold text-success">250 kg</p>
-                        <p className="text-xs text-muted-foreground">átlagosan/kihívás</p>
+                        <p className="text-sm text-muted-foreground mb-1">{t('regional.co2_savings')}</p>
+                        <p className="text-2xl font-bold text-success">{t('regional.co2_savings_value')}</p>
+                        <p className="text-xs text-muted-foreground">{t('regional.co2_savings_unit')}</p>
                       </div>
                       <div className="p-4 rounded-lg bg-muted/50">
-                        <p className="text-sm text-muted-foreground mb-1">Márkaismertség</p>
-                        <p className="text-2xl font-bold text-accent">+35%</p>
-                        <p className="text-xs text-muted-foreground">átlagos növekedés</p>
+                        <p className="text-sm text-muted-foreground mb-1">{t('regional.brand_awareness_calc')}</p>
+                        <p className="text-2xl font-bold text-accent">{t('regional.brand_awareness_value')}</p>
+                        <p className="text-xs text-muted-foreground">{t('regional.brand_awareness_unit')}</p>
                       </div>
                     </div>
                   </CardContent>
