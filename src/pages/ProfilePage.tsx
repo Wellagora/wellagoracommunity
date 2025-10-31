@@ -108,13 +108,16 @@ const ProfilePage = () => {
                   <AvatarImage src={viewedProfile.avatar_url} />
                   <AvatarFallback>{viewedProfile.first_name?.[0]}{viewedProfile.last_name?.[0]}</AvatarFallback>
                 </Avatar>
-                <div className="text-center sm:text-left">
+                <div className="text-center sm:text-left flex-1">
+                  {viewedProfile.organization && (
+                    <div className="flex items-center gap-2 mb-2 text-muted-foreground">
+                      <Building2 className="w-4 h-4" />
+                      <span className="text-lg font-semibold text-foreground">{viewedProfile.organization}</span>
+                    </div>
+                  )}
                   <CardTitle className="text-xl sm:text-2xl">
                     {viewedProfile.public_display_name || `${viewedProfile.first_name} ${viewedProfile.last_name}`}
                   </CardTitle>
-                  {viewedProfile.organization && (
-                    <p className="text-muted-foreground">{viewedProfile.organization}</p>
-                  )}
                   <Badge className="mt-2">{viewedProfile.user_role}</Badge>
                 </div>
               </div>
