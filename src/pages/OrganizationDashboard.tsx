@@ -61,7 +61,7 @@ const OrganizationDashboard = () => {
   // Mock data
   const [challenges] = useState<Challenge[]>([
     {
-      id: "1",
+      id: "3",
       title: "Városi Kerékpározás Kihívás",
       type: 'sponsored',
       participants: 234,
@@ -70,7 +70,7 @@ const OrganizationDashboard = () => {
       progress: 68
     },
     {
-      id: "2",
+      id: "4",
       title: "Zero Waste Workplace",
       type: 'created',
       participants: 89,
@@ -79,7 +79,7 @@ const OrganizationDashboard = () => {
       progress: 45
     },
     {
-      id: "3",
+      id: "energy-saving-home",
       title: "Helyi Étel Hét",
       type: 'team_joined',
       participants: 156,
