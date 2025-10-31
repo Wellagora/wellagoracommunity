@@ -326,6 +326,35 @@ const ChallengesPage = () => {
                   </div>
                 </div>
 
+                {/* Sponsor Badge - Prominent Display */}
+                {challenge.sponsor && (
+                  <div 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (challenge.sponsor?.organizationId) {
+                        navigate(`/organization/${challenge.sponsor.organizationId}`);
+                      } else if (challenge.sponsor?.sponsorUserId) {
+                        navigate(`/profile/${challenge.sponsor.sponsorUserId}`);
+                      }
+                    }}
+                    className="bg-gradient-to-r from-warning/10 to-primary/10 rounded-2xl p-3 border border-warning/30 cursor-pointer hover:border-warning/50 hover:shadow-glow transition-all duration-300"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Avatar className="w-10 h-10 border-2 border-warning/50 shadow-premium">
+                        <AvatarImage src={challenge.sponsor.logo || undefined} />
+                        <AvatarFallback className="bg-gradient-to-br from-warning to-primary text-primary-foreground font-semibold">
+                          {challenge.sponsor.name.substring(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs text-muted-foreground mb-1">{t('challenges.sponsored_by')}</div>
+                        <div className="text-sm font-semibold text-foreground truncate">{challenge.sponsor.name}</div>
+                      </div>
+                      <Star className="w-4 h-4 text-warning flex-shrink-0" />
+                    </div>
+                  </div>
+                )}
+
                 {/* Participants Preview */}
                 <div className="flex items-center justify-between">
                   <div className="flex -space-x-2">
@@ -343,12 +372,6 @@ const ChallengesPage = () => {
                       </div>
                     )}
                   </div>
-                  
-                  {challenge.sponsor && (
-                    <div className="text-xs text-muted-foreground">
-                      {t('challenges.sponsor')}: {challenge.sponsor.name}
-                    </div>
-                  )}
                 </div>
 
                 <Button 
