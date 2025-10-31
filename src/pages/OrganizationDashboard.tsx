@@ -77,7 +77,7 @@ const OrganizationDashboard = () => {
   const [challenges] = useState<Challenge[]>([
     {
       id: "bike-to-work-month",
-      title: t("challenges.bikeToWork.title"),
+      title: "Városi Kerékpározás Kihívás",
       type: 'sponsored',
       participants: 234,
       co2_saved: 1.2,
@@ -86,7 +86,7 @@ const OrganizationDashboard = () => {
     },
     {
       id: "plastic-free-lifestyle",
-      title: t("challenges.plasticFree.title"),
+      title: "Zero Waste Workplace",
       type: 'created',
       participants: 89,
       co2_saved: 0.8,
@@ -95,7 +95,7 @@ const OrganizationDashboard = () => {
     },
     {
       id: "local-food-week",
-      title: t("challenges.localFood.title"),
+      title: "Helyi Étel Hét",
       type: 'team_joined',
       participants: 156,
       co2_saved: 2.3,
