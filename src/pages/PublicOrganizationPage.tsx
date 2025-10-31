@@ -86,14 +86,12 @@ const PublicOrganizationPage = () => {
     return null;
   }
 
-  // Mock data for features not yet in database
+  // Extended data with defaults for missing values
   const extendedData = {
     ...organizationData,
-    description: organizationData.description || "Making a positive impact on sustainability",
-    location: organizationData.location || "Hungary",
+    description: organizationData.description || "Együtt dolgozunk a fenntartható jövőért",
+    location: organizationData.location || "Magyarország",
     website: organizationData.website_url,
-    regionalRank: 3,
-    totalOrganizations: 47,
     stats: {
       activeChallenges: 0, // TODO: fetch from challenge_sponsorships
       peopleReached: 0, // TODO: calculate from activities
@@ -227,62 +225,53 @@ const PublicOrganizationPage = () => {
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          {/* Regional Impact Stats */}
-          <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-            <Card>
-              <CardContent className="p-3 sm:p-4">
-                <Target className="w-6 h-6 sm:w-8 sm:h-8 text-primary mb-2" />
-                <p className="text-xl sm:text-2xl font-bold">{extendedData.stats.activeChallenges}</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">Active Initiatives</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-3 sm:p-4">
-                <Users className="w-6 h-6 sm:w-8 sm:h-8 text-accent mb-2" />
-                <p className="text-xl sm:text-2xl font-bold">{extendedData.stats.peopleReached.toLocaleString()}</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">People Engaged</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-3 sm:p-4">
-                <TreePine className="w-6 h-6 sm:w-8 sm:h-8 text-success mb-2" />
-                <p className="text-xl sm:text-2xl font-bold">{extendedData.stats.co2Saved}t</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">CO₂ Saved</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-3 sm:p-4">
-                <Building className="w-6 h-6 sm:w-8 sm:h-8 text-warning mb-2" />
-                <p className="text-xl sm:text-2xl font-bold">{extendedData.stats.partnerships}</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">Partnerships</p>
-              </CardContent>
-            </Card>
+        <div className="grid grid-cols-1 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          {/* Impact Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            {extendedData.stats.activeChallenges > 0 && (
+              <Card>
+                <CardContent className="p-3 sm:p-4">
+                  <Target className="w-6 h-6 sm:w-8 sm:h-8 text-primary mb-2" />
+                  <p className="text-xl sm:text-2xl font-bold">{extendedData.stats.activeChallenges}</p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">Aktív kezdeményezések</p>
+                </CardContent>
+              </Card>
+            )}
+            {extendedData.stats.peopleReached > 0 && (
+              <Card>
+                <CardContent className="p-3 sm:p-4">
+                  <Users className="w-6 h-6 sm:w-8 sm:h-8 text-accent mb-2" />
+                  <p className="text-xl sm:text-2xl font-bold">{extendedData.stats.peopleReached.toLocaleString()}</p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">Elért emberek</p>
+                </CardContent>
+              </Card>
+            )}
+            {extendedData.stats.co2Saved > 0 && (
+              <Card>
+                <CardContent className="p-3 sm:p-4">
+                  <TreePine className="w-6 h-6 sm:w-8 sm:h-8 text-success mb-2" />
+                  <p className="text-xl sm:text-2xl font-bold">{extendedData.stats.co2Saved}t</p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">Megtakarított CO₂</p>
+                </CardContent>
+              </Card>
+            )}
+            {extendedData.stats.partnerships > 0 && (
+              <Card>
+                <CardContent className="p-3 sm:p-4">
+                  <Building className="w-6 h-6 sm:w-8 sm:h-8 text-warning mb-2" />
+                  <p className="text-xl sm:text-2xl font-bold">{extendedData.stats.partnerships}</p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">Partnerségek</p>
+                </CardContent>
+              </Card>
+            )}
           </div>
-
-          {/* Regional Rank */}
-          <Card className="bg-gradient-to-br from-warning/10 to-accent/10">
-            <CardContent className="p-6">
-              <div className="text-center">
-                <Award className="w-12 h-12 text-warning mx-auto mb-3" />
-                <h3 className="text-sm text-muted-foreground mb-2">Regional Rank</h3>
-                <p className="text-4xl font-bold text-foreground mb-1">#{extendedData.regionalRank}</p>
-                <p className="text-xs text-muted-foreground">out of {extendedData.totalOrganizations} organizations</p>
-                <div className="mt-4 pt-4 border-t border-border/50">
-                  <p className="text-xs text-muted-foreground mb-2">Sustainability Score</p>
-                  <Progress value={extendedData.sustainability_score || 0} className="h-2" />
-                  <p className="text-xs text-muted-foreground mt-1">{extendedData.sustainability_score || 0}/100</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Tabbed Content */}
         <Tabs defaultValue="challenges" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="challenges">Challenges & Initiatives</TabsTrigger>
-            <TabsTrigger value="impact">Impact Stories</TabsTrigger>
+            <TabsTrigger value="challenges">Kihívások és kezdeményezések</TabsTrigger>
+            <TabsTrigger value="impact">Hatástörténetek</TabsTrigger>
           </TabsList>
 
           <TabsContent value="challenges" className="space-y-4 mt-6">
