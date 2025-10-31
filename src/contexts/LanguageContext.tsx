@@ -6,23 +6,26 @@ type Language = 'en' | 'de' | 'hu' | 'cs' | 'sk' | 'hr' | 'ro' | 'pl';
 
 interface LanguageContextType {
   language: Language;
-  setLanguage: (lang: Language) => void;
+  setLanguage: (lang: Language) => Promise<void>;
   t: (key: string) => string;
   isLoading: boolean;
 }
 
-// Create the context with undefined as default
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+// Create the context with a default value
+const defaultContextValue: LanguageContextType = {
+  language: 'en',
+  setLanguage: async () => {},
+  t: (key: string) => key,
+  isLoading: true
+};
+
+const LanguageContext = createContext<LanguageContextType>(defaultContextValue);
 
 // Translation cache
 const translationCache: Record<Language, Record<string, string>> = {} as any;
 
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
-  if (!context) {
-    console.error('useLanguage hook called outside LanguageProvider');
-    throw new Error('useLanguage must be used within a LanguageProvider');
-  }
   return context;
 };
 
