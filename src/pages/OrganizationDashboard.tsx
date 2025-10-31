@@ -49,6 +49,21 @@ interface Partnership {
   impact_score: number;
 }
 
+interface ImpactStory {
+  id: string;
+  type: 'participant' | 'milestone' | 'partnership';
+  userName?: string;
+  userAvatar?: string;
+  challengeTitle: string;
+  story: string;
+  impact: {
+    co2_saved?: number;
+    participants?: number;
+    achievement?: string;
+  };
+  date: string;
+}
+
 const OrganizationDashboard = () => {
   const navigate = useNavigate();
   const { user, profile, loading: authLoading } = useAuth();
@@ -93,6 +108,57 @@ const OrganizationDashboard = () => {
     { id: "1", name: "Green Future NGO", type: 'ngo', projects: 3, impact_score: 92 },
     { id: "2", name: "Városi Önkormányzat", type: 'government', projects: 2, impact_score: 85 },
     { id: "3", name: "EcoTech Solutions", type: 'business', projects: 1, impact_score: 78 }
+  ]);
+
+  const [impactStories] = useState<ImpactStory[]>([
+    {
+      id: "1",
+      type: 'participant',
+      userName: "Kovács János",
+      userAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face",
+      challengeTitle: t("challenges.bikeToWork.title"),
+      story: "Teljesítettem a kerékpáros kihívást! 30 napig kerékpároztam munkába, és hihetetlen érzés volt részese lenni ennek a mozgalomnak.",
+      impact: {
+        co2_saved: 50,
+        participants: 1
+      },
+      date: "2024-10-15"
+    },
+    {
+      id: "2",
+      type: 'milestone',
+      challengeTitle: t("challenges.plasticFree.title"),
+      story: "500. résztvevő csatlakozott a szervezet által támogatott műanyagmentes kihíváshoz!",
+      impact: {
+        participants: 500,
+        co2_saved: 125
+      },
+      date: "2024-10-20"
+    },
+    {
+      id: "3",
+      type: 'participant',
+      userName: "Nagy Anna",
+      userAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
+      challengeTitle: t("challenges.localFood.title"),
+      story: "A helyi étel hét teljesen megváltoztatta a vásárlási szokásaimat. Most minden héten a helyi piacon vásárolok!",
+      impact: {
+        co2_saved: 18,
+        participants: 1
+      },
+      date: "2024-10-25"
+    },
+    {
+      id: "4",
+      type: 'partnership',
+      challengeTitle: "Green Future NGO közös projekt",
+      story: "Közös projektünk keretében 1 tonna CO₂ megtakarítást értünk el a régióban.",
+      impact: {
+        co2_saved: 1000,
+        achievement: "1t CO₂ milestone"
+      },
+      date: "2024-10-28"
+    }
   ]);
 
   // Redirect if not authenticated or not an organization
@@ -521,29 +587,104 @@ const OrganizationDashboard = () => {
 
           {/* Impact Stories Tab */}
           <TabsContent value="stories" className="space-y-6">
-            <div className="text-center py-12 sm:py-16">
-              <Sparkles className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 text-warning/60" />
+            <div className="mb-6">
               <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">{t('organization.impact_stories')}</h3>
-              <p className="text-muted-foreground max-w-2xl mx-auto mb-6 px-4">
+              <p className="text-muted-foreground">
                 {t('organization.success_stories_desc')}
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto px-4">
-                <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-success/10 to-success/5">
-                  <TrendingUp className="w-8 h-8 mx-auto mb-2 text-success" />
-                  <p className="text-2xl sm:text-3xl font-bold text-success">+145%</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.brand_engagement')}</p>
+            </div>
+
+            {/* ESG Metrics Overview */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+              <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-success/10 to-success/5">
+                <TrendingUp className="w-8 h-8 mx-auto mb-2 text-success" />
+                <p className="text-2xl sm:text-3xl font-bold text-success">+145%</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.brand_engagement')}</p>
+              </Card>
+              <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-primary/10 to-primary/5">
+                <Users className="w-8 h-8 mx-auto mb-2 text-primary" />
+                <p className="text-2xl sm:text-3xl font-bold text-primary">12.5K</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.media_reach')}</p>
+              </Card>
+              <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-warning/10 to-warning/5">
+                <Award className="w-8 h-8 mx-auto mb-2 text-warning" />
+                <p className="text-2xl sm:text-3xl font-bold text-warning">3</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.sustainability_awards')}</p>
+              </Card>
+            </div>
+
+            {/* Impact Stories */}
+            <div className="space-y-4">
+              {impactStories.map((story) => (
+                <Card key={story.id} className="bg-card/50 backdrop-blur-sm border-border/50">
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      {/* Avatar/Icon */}
+                      <div className="flex-shrink-0">
+                        {story.type === 'participant' && story.userAvatar ? (
+                          <img 
+                            src={story.userAvatar} 
+                            alt={story.userName}
+                            className="w-12 h-12 rounded-full object-cover"
+                          />
+                        ) : story.type === 'milestone' ? (
+                          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                            <Trophy className="w-6 h-6 text-primary" />
+                          </div>
+                        ) : (
+                          <div className="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center">
+                            <Handshake className="w-6 h-6 text-success" />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Story Content */}
+                      <div className="flex-1 space-y-3">
+                        <div>
+                          {story.userName && (
+                            <p className="font-semibold text-foreground">{story.userName}</p>
+                          )}
+                          <p className="text-sm text-muted-foreground">{story.challengeTitle}</p>
+                        </div>
+                        
+                        <p className="text-foreground">{story.story}</p>
+
+                        {/* Impact Metrics */}
+                        <div className="flex flex-wrap gap-4 text-sm">
+                          {story.impact.co2_saved && (
+                            <div className="flex items-center gap-1">
+                              <Leaf className="w-4 h-4 text-success" />
+                              <span className="font-medium text-success">{story.impact.co2_saved}kg CO₂</span>
+                              <span className="text-muted-foreground">{t('organization.saved')}</span>
+                            </div>
+                          )}
+                          {story.impact.participants && (
+                            <div className="flex items-center gap-1">
+                              <Users className="w-4 h-4 text-primary" />
+                              <span className="font-medium text-primary">{story.impact.participants}</span>
+                              <span className="text-muted-foreground">{t('organization.participants')}</span>
+                            </div>
+                          )}
+                          {story.impact.achievement && (
+                            <Badge variant="outline" className="text-warning border-warning">
+                              <Award className="w-3 h-3 mr-1" />
+                              {story.impact.achievement}
+                            </Badge>
+                          )}
+                        </div>
+
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(story.date).toLocaleDateString('hu-HU', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
                 </Card>
-                <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-primary/10 to-primary/5">
-                  <Users className="w-8 h-8 mx-auto mb-2 text-primary" />
-                  <p className="text-2xl sm:text-3xl font-bold text-primary">12.5K</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.media_reach')}</p>
-                </Card>
-                <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-warning/10 to-warning/5">
-                  <Award className="w-8 h-8 mx-auto mb-2 text-warning" />
-                  <p className="text-2xl sm:text-3xl font-bold text-warning">3</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.sustainability_awards')}</p>
-                </Card>
-              </div>
+              ))}
             </div>
           </TabsContent>
         </Tabs>
