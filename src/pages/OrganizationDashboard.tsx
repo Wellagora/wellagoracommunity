@@ -448,7 +448,12 @@ const OrganizationDashboard = () => {
                           <Progress value={challenge.progress} className="h-2" />
                         </div>
                       </div>
-                      <Button variant="outline" size="sm" className="w-full sm:w-auto">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full sm:w-auto"
+                        onClick={() => navigate(`/challenges/${challenge.id}`)}
+                      >
                         <BarChart3 className="w-4 h-4 mr-2" />
                         {t('organization.details')}
                       </Button>
