@@ -5,11 +5,15 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { CheckCircle, XCircle, Clock, Sparkles, TrendingUp, Users, ArrowLeft } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Sparkles, TrendingUp, Users, ArrowLeft, Plus, Building2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import UserRoleManager from './UserRoleManager';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 interface PendingChallenge {
   id: string;
@@ -32,14 +36,34 @@ interface PendingChallenge {
   created_at: string;
 }
 
+interface Project {
+  id: string;
+  name: string;
+  slug: string;
+  region_name: string;
+  villages: string[];
+  description: string | null;
+  is_active: boolean;
+  created_at: string;
+}
+
 const AdminDashboard = () => {
   const { toast } = useToast();
   const { user, profile } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [pendingChallenges, setPendingChallenges] = useState<PendingChallenge[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [hasAdminAccess, setHasAdminAccess] = useState(false);
+  const [showCreateProject, setShowCreateProject] = useState(false);
+  const [newProject, setNewProject] = useState({
+    name: '',
+    slug: '',
+    region_name: '',
+    villages: '',
+    description: ''
+  });
   const [stats, setStats] = useState({
     totalChallenges: 0,
     activeChallenges: 0,
@@ -90,6 +114,15 @@ const AdminDashboard = () => {
   const loadData = async () => {
     try {
       setLoading(true);
+
+      // Load projects
+      const { data: projectsData, error: projectsError } = await supabase
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (projectsError) throw projectsError;
+      setProjects(projectsData || []);
 
       // Load pending challenges
       const { data: pending, error: pendingError } = await supabase
@@ -216,6 +249,87 @@ const AdminDashboard = () => {
     return colors[difficulty] || 'bg-gray-100 text-gray-800';
   };
 
+  const createProject = async () => {
+    try {
+      if (!newProject.name || !newProject.slug || !newProject.region_name) {
+        toast({
+          title: 'Hiányzó mezők',
+          description: 'Kérlek töltsd ki az összes kötelező mezőt',
+          variant: 'destructive'
+        });
+        return;
+      }
+
+      const villagesArray = newProject.villages
+        .split(',')
+        .map(v => v.trim())
+        .filter(v => v.length > 0);
+
+      const { data, error } = await supabase
+        .from('projects')
+        .insert({
+          name: newProject.name,
+          slug: newProject.slug,
+          region_name: newProject.region_name,
+          villages: villagesArray,
+          description: newProject.description || null,
+          is_active: true,
+          created_by: user?.id
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      toast({
+        title: 'Projekt létrehozva',
+        description: `A "${newProject.name}" projekt sikeresen létrejött`,
+      });
+
+      setNewProject({
+        name: '',
+        slug: '',
+        region_name: '',
+        villages: '',
+        description: ''
+      });
+      setShowCreateProject(false);
+      loadData();
+    } catch (error: any) {
+      console.error('Error creating project:', error);
+      toast({
+        title: 'Hiba',
+        description: error.message || 'Nem sikerült létrehozni a projektet',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const toggleProjectStatus = async (projectId: string, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('projects')
+        .update({ is_active: !currentStatus })
+        .eq('id', projectId);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Projekt frissítve',
+        description: `A projekt státusza megváltozott`,
+      });
+
+      loadData();
+    } catch (error: any) {
+      console.error('Error updating project:', error);
+      toast({
+        title: 'Hiba',
+        description: 'Nem sikerült frissíteni a projektet',
+        variant: 'destructive'
+      });
+    }
+  };
+
   if (!hasAdminAccess || loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -292,8 +406,11 @@ const AdminDashboard = () => {
       </div>
 
       {/* Main Content Tabs */}
-      <Tabs defaultValue="pending" className="space-y-4">
+      <Tabs defaultValue="projects" className="space-y-4">
         <TabsList>
+          <TabsTrigger value="projects">
+            Projektek ({projects.length})
+          </TabsTrigger>
           <TabsTrigger value="pending">
             Jóváhagyásra vár ({pendingChallenges.length})
           </TabsTrigger>
@@ -301,6 +418,160 @@ const AdminDashboard = () => {
           <TabsTrigger value="users">Felhasználók</TabsTrigger>
           <TabsTrigger value="analytics">Analitika</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="projects" className="space-y-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <h3 className="text-lg font-semibold">Projektek kezelése</h3>
+              <p className="text-sm text-muted-foreground">Hozz létre és kezelj projekteket</p>
+            </div>
+            <Dialog open={showCreateProject} onOpenChange={setShowCreateProject}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Új projekt
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[525px]">
+                <DialogHeader>
+                  <DialogTitle>Új projekt létrehozása</DialogTitle>
+                  <DialogDescription>
+                    Töltsd ki a projekt alapvető adatait
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Projekt név *</Label>
+                    <Input
+                      id="name"
+                      value={newProject.name}
+                      onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
+                      placeholder="Káli medence"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="slug">URL-barát azonosító (slug) *</Label>
+                    <Input
+                      id="slug"
+                      value={newProject.slug}
+                      onChange={(e) => setNewProject({ ...newProject, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
+                      placeholder="kali-medence"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="region">Régió név *</Label>
+                    <Input
+                      id="region"
+                      value={newProject.region_name}
+                      onChange={(e) => setNewProject({ ...newProject, region_name: e.target.value })}
+                      placeholder="Káli medence"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="villages">Falvak (vesszővel elválasztva)</Label>
+                    <Input
+                      id="villages"
+                      value={newProject.villages}
+                      onChange={(e) => setNewProject({ ...newProject, villages: e.target.value })}
+                      placeholder="Köveskál, Szentbékkálla, Mindszentkálla"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="description">Leírás</Label>
+                    <Textarea
+                      id="description"
+                      value={newProject.description}
+                      onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
+                      placeholder="A projekt részletes leírása..."
+                      rows={3}
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => setShowCreateProject(false)}>
+                    Mégse
+                  </Button>
+                  <Button onClick={createProject}>
+                    Létrehozás
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+
+          <div className="grid gap-4">
+            {projects.length === 0 ? (
+              <Card>
+                <CardContent className="flex flex-col items-center justify-center py-12">
+                  <Building2 className="w-16 h-16 text-muted-foreground mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">Még nincsenek projektek</h3>
+                  <p className="text-muted-foreground mb-4">Hozd létre az első projektet a platform használatához</p>
+                  <Button onClick={() => setShowCreateProject(true)}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Új projekt létrehozása
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              projects.map((project) => (
+                <Card key={project.id}>
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Building2 className="w-5 h-5 text-primary" />
+                          <CardTitle className="text-xl">{project.name}</CardTitle>
+                          <Badge variant={project.is_active ? "default" : "secondary"}>
+                            {project.is_active ? "Aktív" : "Inaktív"}
+                          </Badge>
+                        </div>
+                        <CardDescription>{project.region_name}</CardDescription>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground mb-1">Slug:</p>
+                      <code className="text-sm bg-muted px-2 py-1 rounded">{project.slug}</code>
+                    </div>
+                    {project.villages && project.villages.length > 0 && (
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground mb-2">Falvak:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {project.villages.map((village, idx) => (
+                            <Badge key={idx} variant="outline">
+                              {village}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {project.description && (
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground mb-1">Leírás:</p>
+                        <p className="text-sm">{project.description}</p>
+                      </div>
+                    )}
+                    <div className="flex gap-2 pt-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => toggleProjectStatus(project.id, project.is_active)}
+                      >
+                        {project.is_active ? 'Deaktiválás' : 'Aktiválás'}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => navigate('/project-admin')}
+                      >
+                        Tagok kezelése
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
+        </TabsContent>
 
         <TabsContent value="pending" className="space-y-4">
           {pendingChallenges.length === 0 ? (
