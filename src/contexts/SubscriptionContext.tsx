@@ -16,8 +16,6 @@ const packageTiers = {
   bronze: {
     name: 'Bronz',
     priceHuf: 100000,
-    priceEur: 250,
-    currency: 'HUF/EUR',
     credits: 2,
     price_id: MockPaymentService.PRICE_IDS.small,
     product_id: MockPaymentService.PRODUCT_IDS.small,
@@ -32,8 +30,6 @@ const packageTiers = {
   silver: {
     name: 'Ezüst',
     priceHuf: 250000,
-    priceEur: 625,
-    currency: 'HUF/EUR',
     credits: 5,
     price_id: MockPaymentService.PRICE_IDS.medium,
     product_id: MockPaymentService.PRODUCT_IDS.medium,
@@ -50,8 +46,6 @@ const packageTiers = {
   gold: {
     name: 'Arany',
     priceHuf: 500000,
-    priceEur: 1250,
-    currency: 'HUF/EUR',
     credits: 10,
     price_id: MockPaymentService.PRICE_IDS.large,
     product_id: MockPaymentService.PRODUCT_IDS.large,
@@ -70,8 +64,6 @@ const packageTiers = {
   diamond: {
     name: 'Gyémánt',
     priceHuf: 1000000,
-    priceEur: 2500,
-    currency: 'HUF/EUR',
     credits: 20,
     price_id: MockPaymentService.PRICE_IDS.enterprise,
     product_id: MockPaymentService.PRODUCT_IDS.enterprise,

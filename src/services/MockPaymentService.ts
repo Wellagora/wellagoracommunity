@@ -17,11 +17,11 @@ export class MockPaymentService {
   private static subscriptions = new Map<string, MockSubscriptionStatus>();
   
   // Mock price IDs from our Stripe products (Wellagora Credit System)
-  // 1 credit = 50,000 HUF = 125 EUR = 1 full challenge campaign sponsorship
+  // 1 credit = 50,000 HUF = 1 full challenge campaign sponsorship
   static readonly PRICE_IDS = {
-    small: "price_mock_small_100k",      // 100,000 HUF / 250 EUR = 2 credits
-    medium: "price_mock_medium_250k",    // 250,000 HUF / 625 EUR = 5 credits
-    large: "price_mock_large_500k",      // 500,000 HUF / 1,250 EUR = 10 credits
+    small: "price_mock_small_100k",      // 100,000 HUF = 2 credits
+    medium: "price_mock_medium_250k",    // 250,000 HUF = 5 credits
+    large: "price_mock_large_500k",      // 500,000 HUF = 10 credits
     enterprise: "price_mock_enterprise"  // Custom pricing = 20+ credits
   };
 

@@ -5,7 +5,6 @@ export interface SponsoredChallenge extends Challenge {
   sponsorshipPackage?: {
     level: 'small' | 'medium' | 'large' | 'enterprise';
     priceHuf: number;
-    priceEur: number;
     benefits: string[];
     creditsRemaining: number;
     totalCredits: number;
@@ -19,7 +18,6 @@ export interface SponsorshipPackage {
   name: string;
   level: 'small' | 'medium' | 'large' | 'enterprise';
   priceHuf: number;
-  priceEur: number;
   duration: string;
   credits: number;
   benefits: string[];
@@ -34,7 +32,6 @@ export const sponsorshipPackages: SponsorshipPackage[] = [
     name: 'Kis Vállalat',
     level: 'small',
     priceHuf: 100000,
-    priceEur: 250,
     duration: '1 hónap',
     credits: 2,
     expectedReach: '100-200 fő',
@@ -54,7 +51,6 @@ export const sponsorshipPackages: SponsorshipPackage[] = [
     name: 'Közepes Vállalat',
     level: 'medium',
     priceHuf: 250000,
-    priceEur: 625,
     duration: '1 hónap',
     credits: 5,
     expectedReach: '250-500 fő',
@@ -76,7 +72,6 @@ export const sponsorshipPackages: SponsorshipPackage[] = [
     name: 'Nagyvállalat', 
     level: 'large',
     priceHuf: 500000,
-    priceEur: 1250,
     duration: '1 hónap',
     credits: 10,
     expectedReach: '500-1000 fő',
@@ -99,7 +94,6 @@ export const sponsorshipPackages: SponsorshipPackage[] = [
     name: 'Enterprise',
     level: 'enterprise',
     priceHuf: 1000000,
-    priceEur: 2500,
     duration: '1 hónap',
     credits: 20,
     expectedReach: '1000+ fő',
@@ -142,7 +136,6 @@ export const generateDynamicChallenges = (category?: string, difficulty?: string
       sponsorshipPackage: {
         level: 'medium' as const,
         priceHuf: 250000,
-        priceEur: 625,
         benefits: ['5 kampány/hó', 'Kiterjesztett branding'],
         creditsRemaining: 3,
         totalCredits: 5
@@ -187,7 +180,6 @@ export const generateDynamicChallenges = (category?: string, difficulty?: string
       sponsorshipPackage: {
         level: 'small' as const,
         priceHuf: 100000,
-        priceEur: 250,
         benefits: ['2 kampány/hó', 'Logo megjelenés'],
         creditsRemaining: 1,
         totalCredits: 2
@@ -231,7 +223,6 @@ export const generateDynamicChallenges = (category?: string, difficulty?: string
       sponsorshipPackage: {
         level: 'large' as const,
         priceHuf: 500000,
-        priceEur: 1250,
         benefits: ['10 kampány/hó', 'Prémium branding', 'Account manager'],
         creditsRemaining: 7,
         totalCredits: 10

@@ -78,11 +78,7 @@ const SponsorshipPackageSelector: React.FC = () => {
             <CardTitle className="text-lg sm:text-2xl font-bold mb-2 sm:mb-3 group-hover:scale-105 transition-transform duration-200">{tier.name}</CardTitle>
             <div className="space-y-1 sm:space-y-2">
               <div className={`text-2xl sm:text-4xl font-extrabold bg-gradient-to-r ${getPackageGradient(key)} bg-clip-text text-transparent animate-fade-in`}>
-                {tier.priceHuf.toLocaleString()}
-              </div>
-              <div className="text-xs sm:text-sm text-muted-foreground">HUF</div>
-              <div className="text-xl sm:text-2xl font-bold text-foreground">
-                {tier.priceEur} <span className="text-sm sm:text-base text-muted-foreground">EUR</span>
+                {tier.priceHuf.toLocaleString()} HUF
               </div>
               <div className={`inline-block px-3 sm:px-5 py-1.5 sm:py-2 bg-gradient-to-r ${getPackageGradient(key)} rounded-full mt-2 sm:mt-3 shadow-lg group-hover:shadow-xl transition-shadow duration-300`}>
                 <p className="text-sm sm:text-base font-bold text-white">
