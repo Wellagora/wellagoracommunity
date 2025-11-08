@@ -57,6 +57,7 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [hasAdminAccess, setHasAdminAccess] = useState(false);
   const [showCreateProject, setShowCreateProject] = useState(false);
+  const [defaultProjectId, setDefaultProjectId] = useState<string | null>(null);
   const [newProject, setNewProject] = useState({
     name: '',
     slug: '',
@@ -123,6 +124,18 @@ const AdminDashboard = () => {
 
       if (projectsError) throw projectsError;
       setProjects(projectsData || []);
+
+      // Load default project setting
+      const { data: settingsData, error: settingsError } = await supabase
+        .from('system_settings')
+        .select('value')
+        .eq('key', 'default_project')
+        .maybeSingle();
+
+      if (!settingsError && settingsData) {
+        const valueData = settingsData.value as { project_id: string };
+        setDefaultProjectId(valueData.project_id);
+      }
 
       // Load pending challenges
       const { data: pending, error: pendingError } = await supabase
@@ -330,6 +343,50 @@ const AdminDashboard = () => {
     }
   };
 
+  const setDefaultProject = async (projectId: string) => {
+    try {
+      // Check if setting exists
+      const { data: existing } = await supabase
+        .from('system_settings')
+        .select('id')
+        .eq('key', 'default_project')
+        .maybeSingle();
+
+      if (existing) {
+        // Update existing
+        const { error } = await supabase
+          .from('system_settings')
+          .update({ value: { project_id: projectId } })
+          .eq('key', 'default_project');
+
+        if (error) throw error;
+      } else {
+        // Insert new
+        const { error } = await supabase
+          .from('system_settings')
+          .insert({
+            key: 'default_project',
+            value: { project_id: projectId }
+          });
+
+        if (error) throw error;
+      }
+
+      setDefaultProjectId(projectId);
+      toast({
+        title: 'Alapértelmezett projekt beállítva',
+        description: 'Az új felhasználók automatikusan ehhez a projekthez kerülnek',
+      });
+    } catch (error: any) {
+      console.error('Error setting default project:', error);
+      toast({
+        title: 'Hiba',
+        description: 'Nem sikerült beállítani az alapértelmezett projektet',
+        variant: 'destructive'
+      });
+    }
+  };
+
   if (!hasAdminAccess || loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -524,6 +581,11 @@ const AdminDashboard = () => {
                           <Badge variant={project.is_active ? "default" : "secondary"}>
                             {project.is_active ? "Aktív" : "Inaktív"}
                           </Badge>
+                          {defaultProjectId === project.id && (
+                            <Badge variant="outline" className="bg-primary/10">
+                              Alapértelmezett
+                            </Badge>
+                          )}
                         </div>
                         <CardDescription>{project.region_name}</CardDescription>
                       </div>
@@ -552,7 +614,7 @@ const AdminDashboard = () => {
                         <p className="text-sm">{project.description}</p>
                       </div>
                     )}
-                    <div className="flex gap-2 pt-2">
+                    <div className="flex flex-wrap gap-2 pt-2">
                       <Button
                         variant="outline"
                         onClick={() => toggleProjectStatus(project.id, project.is_active)}
@@ -565,6 +627,14 @@ const AdminDashboard = () => {
                       >
                         Tagok kezelése
                       </Button>
+                      {defaultProjectId !== project.id && (
+                        <Button
+                          variant="default"
+                          onClick={() => setDefaultProject(project.id)}
+                        >
+                          Beállítás alapértelmezettnek
+                        </Button>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
