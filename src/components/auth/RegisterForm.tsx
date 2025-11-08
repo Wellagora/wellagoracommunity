@@ -106,15 +106,21 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
       }
       
       toast({
-        title: "Registration Successful!",
-        description: "Welcome to Wellagora! Please check your email to verify your account.",
+        title: t('auth.registration_success') || "Sikeres regisztráció!",
+        description: t('auth.registration_success_desc') || "Üdvözlünk a Káli medence projektben! Ellenőrizd az e-mail fiókodat a fiók megerősítéséhez.",
       });
       
       onSuccess?.();
     } catch (error: any) {
+      // Handle specific error messages
+      let errorMessage = error.message;
+      if (error.message?.includes('already registered')) {
+        errorMessage = t('auth.email_already_registered') || 'Ez az e-mail cím már regisztrálva van.';
+      }
+      
       toast({
-        title: "Registration Failed",
-        description: error.message || "Something went wrong. Please try again.",
+        title: t('auth.registration_failed') || "Sikertelen regisztráció",
+        description: errorMessage || t('auth.registration_error') || "Valami hiba történt. Kérlek próbáld újra.",
         variant: "destructive",
       });
     }
@@ -168,11 +174,11 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
           {/* Name Fields */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label htmlFor="firstName">First Name</Label>
+              <Label htmlFor="firstName">{t('profile.first_name') || "Keresztnév"}</Label>
               <Input
                 id="firstName"
                 type="text"
-                placeholder="John"
+                placeholder={t('profile.first_name_placeholder') || "János"}
                 {...register("firstName")}
                 className={errors.firstName ? "border-destructive" : ""}
               />
@@ -181,11 +187,11 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lastName">Last Name</Label>
+              <Label htmlFor="lastName">{t('profile.last_name') || "Vezetéknév"}</Label>
               <Input
                 id="lastName"
                 type="text"
-                placeholder="Doe"
+                placeholder={t('profile.last_name_placeholder') || "Kovács"}
                 {...register("lastName")}
                 className={errors.lastName ? "border-destructive" : ""}
               />
@@ -197,13 +203,13 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
 
           {/* Email */}
           <div className="space-y-2">
-            <Label htmlFor="email">Email Address</Label>
+            <Label htmlFor="email">{t('auth.email_address') || "E-mail cím"}</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 id="email"
                 type="email"
-                placeholder="john@example.com"
+                placeholder="pelda@email.hu"
                 className={`pl-10 ${errors.email ? "border-destructive" : ""}`}
                 {...register("email")}
               />
@@ -217,7 +223,8 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
           {watchedRole && (
             <div className="space-y-2">
               <Label htmlFor="organization">
-                {watchedRole === "citizen" ? "Company (Optional)" : "Organization Name"}
+                {watchedRole === "citizen" ? (t('profile.company_optional') || "Cég (opcionális)") : 
+                 (t('profile.organization_name') || "Szervezet neve")}
               </Label>
               <div className="relative">
                 <Building2 className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -225,10 +232,10 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
                   id="organization"
                   type="text"
                   placeholder={
-                    watchedRole === "citizen" ? "Which company do you work for?" :
-                    watchedRole === "business" ? "Your Company Name" :
-                    watchedRole === "municipal" ? "City/Municipality Name" :
-                    "Organization Name"
+                    watchedRole === "citizen" ? (t('profile.company_placeholder') || "Melyik cégnél dolgozol?") :
+                    watchedRole === "business" ? (t('profile.business_name_placeholder') || "Cég neve") :
+                    watchedRole === "municipal" ? (t('profile.municipality_placeholder') || "Önkormányzat / Település neve") :
+                    (t('profile.organization_placeholder') || "Szervezet neve")
                   }
                   className={`pl-10 ${errors.organization ? "border-destructive" : ""}`}
                   {...register("organization")}
@@ -236,7 +243,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
               </div>
               {watchedRole === "citizen" && (
                 <p className="text-xs text-muted-foreground">
-                  Help us track your company's regional impact
+                  {t('profile.company_help') || "Segíts nekünk nyomon követni a céged regionális hatását"}
                 </p>
               )}
               {errors.organization && (
@@ -247,7 +254,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
 
           {/* Password Fields */}
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t('auth.password') || "Jelszó"}</Label>
             <div className="relative">
               <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
@@ -264,7 +271,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <Label htmlFor="confirmPassword">{t('auth.confirm_password') || "Jelszó megerősítése"}</Label>
             <div className="relative">
               <UserCheck className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
@@ -285,20 +292,20 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
             className="w-full bg-gradient-primary hover:shadow-glow transition-smooth"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Creating Account..." : "Create Account"}
+            {isSubmitting ? (t('auth.creating_account') || "Fiók létrehozása...") : (t('auth.create_account') || "Fiók létrehozása")}
           </Button>
         </form>
       </CardContent>
 
       <CardFooter className="text-center">
         <div className="text-sm text-muted-foreground">
-          Already have an account?{" "}
+          {t('auth.already_have_account') || "Már van fiókod?"}{" "}
           <button
             type="button"
             onClick={onSwitchToLogin}
             className="text-primary hover:underline font-medium"
           >
-            Sign in here
+            {t('auth.sign_in_here') || "Jelentkezz be itt"}
           </button>
         </div>
       </CardFooter>
