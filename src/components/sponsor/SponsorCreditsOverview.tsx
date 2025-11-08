@@ -34,7 +34,7 @@ const SponsorCreditsOverview = () => {
         .from('sponsor_credits')
         .select('total_credits, used_credits, available_credits')
         .eq('sponsor_user_id', user?.id)
-        .single();
+        .maybeSingle();
 
       if (creditsError && creditsError.code !== 'PGRST116') {
         console.error('Error loading credits:', creditsError);

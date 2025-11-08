@@ -187,7 +187,7 @@ export default function JoinProjectPage() {
         .from("profiles")
         .select("project_id")
         .eq("id", user.id)
-        .single();
+        .maybeSingle();
 
       if (!profile?.project_id) {
         await supabase

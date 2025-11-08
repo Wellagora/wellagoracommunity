@@ -138,7 +138,7 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
           .from('sponsor_credits')
           .select('available_credits')
           .eq('sponsor_user_id', profile.id)
-          .single();
+          .maybeSingle();
 
         if (error && error.code !== 'PGRST116') {
           console.error("Error loading credits:", error);

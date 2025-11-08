@@ -51,6 +51,49 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Helper function to fetch profile data
+  const fetchProfileData = async (userId: string) => {
+    try {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select(`
+          id,
+          first_name,
+          last_name,
+          email,
+          user_role,
+          organization,
+          organization_id,
+          avatar_url,
+          created_at,
+          updated_at,
+          public_display_name,
+          is_public_profile,
+          bio,
+          location,
+          industry,
+          website_url,
+          sustainability_goals,
+          preferred_language,
+          company_size,
+          employee_count,
+          role
+        `)
+        .eq('id', userId)
+        .maybeSingle();
+      
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching profile:', error);
+        return null;
+      }
+      
+      return profile as Profile;
+    } catch (err) {
+      console.error('Profile fetch error:', err);
+      return null;
+    }
+  };
+
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -59,110 +102,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Fetch user profile with error handling
-          setTimeout(async () => {
-            try {
-              const { data: profile, error } = await supabase
-                .from('profiles')
-                .select(`
-                  id,
-                  first_name,
-                  last_name,
-                  email,
-                  user_role,
-                  organization,
-                  organization_id,
-                  avatar_url,
-                  created_at,
-                  updated_at,
-                  public_display_name,
-                  is_public_profile,
-                  bio,
-                  location,
-                  industry,
-                  website_url,
-                  sustainability_goals,
-                  preferred_language,
-                  company_size,
-                  employee_count,
-                  role
-                `)
-                .eq('id', session.user.id)
-                .single();
-              
-              if (error && error.code !== 'PGRST116') {
-                console.error('Error fetching profile:', error);
-              }
-              
-              setProfile(profile as Profile);
-            } catch (err) {
-              console.error('Profile fetch error:', err);
-              setProfile(null);
-            } finally {
-              setLoading(false);
-            }
-          }, 0);
+          const profile = await fetchProfileData(session.user.id);
+          setProfile(profile);
         } else {
           setProfile(null);
-          setLoading(false);
         }
+        setLoading(false);
       }
     );
 
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        // Fetch user profile with error handling
-        const fetchProfile = async () => {
-          try {
-            const { data: profile, error } = await supabase
-              .from('profiles')
-              .select(`
-                id,
-                first_name,
-                last_name,
-                email,
-                user_role,
-                organization,
-                organization_id,
-                avatar_url,
-                created_at,
-                updated_at,
-                public_display_name,
-                is_public_profile,
-                bio,
-                location,
-                industry,
-                website_url,
-                sustainability_goals,
-                preferred_language,
-                company_size,
-                employee_count,
-                role
-              `)
-              .eq('id', session.user.id)
-              .single();
-            
-            if (error && error.code !== 'PGRST116') {
-              console.error('Error fetching profile:', error);
-            }
-            
-            setProfile(profile as Profile);
-          } catch (err) {
-            console.error('Profile fetch error:', err);
-            setProfile(null);
-          } finally {
-            setLoading(false);
-          }
-        };
-        
-        fetchProfile();
-      } else {
-        setLoading(false);
+        const profile = await fetchProfileData(session.user.id);
+        setProfile(profile);
       }
+      setLoading(false);
     });
 
     return () => subscription.unsubscribe();

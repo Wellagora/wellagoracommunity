@@ -120,7 +120,7 @@ const ChallengeSponsorshipModal = ({
         .from('profiles')
         .select('organization_id')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
       const creditCost = selectedPackageData?.credits || 0;
 
@@ -145,7 +145,7 @@ const ChallengeSponsorshipModal = ({
         .from('sponsor_credits')
         .select('used_credits, available_credits')
         .eq('sponsor_user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (currentCredits) {
         const { error: creditError } = await supabase

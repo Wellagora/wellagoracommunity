@@ -154,9 +154,9 @@ export default function ProjectAdminPage() {
         .from("profiles")
         .select("id")
         .eq("email", newMemberEmail)
-        .single();
+        .maybeSingle();
 
-      if (profileError) throw new Error("Felhasználó nem található ezzel az email címmel");
+      if (profileError || !profileData) throw new Error("Felhasználó nem található ezzel az email címmel");
 
       // Add as member
       const { error } = await supabase

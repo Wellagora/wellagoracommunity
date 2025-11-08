@@ -48,7 +48,7 @@ const ProfilePage = () => {
           `)
           .eq('id', viewingUserId)
           .eq('is_public_profile', true)
-          .single();
+          .maybeSingle();
         
         if (error) {
           toast({
@@ -200,7 +200,7 @@ const ProfilePage = () => {
             .from('organizations')
             .select('description, logo_url, website_url')
             .eq('id', extendedProfile.organization_id)
-            .single();
+            .maybeSingle();
           
           if (!error && data) {
             setProfileForm(prev => ({
@@ -357,7 +357,7 @@ const ProfilePage = () => {
           .from('organizations')
           .select('description, logo_url, website_url')
           .eq('id', (profile as any).organization_id)
-          .single();
+          .maybeSingle();
 
         if (orgData) {
           setProfileForm(prev => ({

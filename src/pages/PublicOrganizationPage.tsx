@@ -42,7 +42,7 @@ const PublicOrganizationPage = () => {
           .select('*')
           .eq('id', organizationId)
           .eq('is_public', true)
-          .single();
+          .maybeSingle();
 
         if (error || !data) {
           toast({
