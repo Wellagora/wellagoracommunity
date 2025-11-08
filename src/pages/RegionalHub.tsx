@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '@/components/Navigation';
-import RegionSelector, { Region } from '@/components/dynamic/RegionSelector';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useProject } from '@/contexts/ProjectContext';
 import RegionalStakeholderMap from '@/components/matching/RegionalStakeholderMap';
 import ModernRegionalVisualization from '@/components/matching/ModernRegionalVisualization';
 import StakeholderFilters from '@/components/matching/StakeholderFilters';
@@ -66,9 +66,7 @@ const RegionalHub = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
-  const [showRegionSelector, setShowRegionSelector] = useState(true);
-  const [recentRegions, setRecentRegions] = useState<Region[]>([]);
+  const { currentProject, isLoading: projectLoading } = useProject();
   const [viewMode, setViewMode] = useState<'stakeholders' | 'challenges' | 'sponsorship'>('stakeholders');
   const [selectedTypes, setSelectedTypes] = useState<string[]>(['citizen', 'business', 'government', 'ngo']);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -78,15 +76,6 @@ const RegionalHub = () => {
     title: string;
   } | null>(null);
 
-  const handleRegionSelect = (region: Region) => {
-    setSelectedRegion(region);
-    setShowRegionSelector(false);
-    setRecentRegions(prev => {
-      const filtered = prev.filter(r => r.id !== region.id);
-      return [region, ...filtered].slice(0, 5);
-    });
-  };
-
   const handleTypeToggle = (type: string) => {
     setSelectedTypes(prev => 
       prev.includes(type) 
@@ -95,9 +84,12 @@ const RegionalHub = () => {
     );
   };
 
-  // Generate regional stakeholders (registered + potential)
+  // Generate regional stakeholders (registered + potential) for current project
   const getRegionalStakeholders = (): StakeholderProfile[] => {
-    if (!selectedRegion) return [];
+    if (!currentProject) return [];
+    
+    // Base coordinates for Káli-medence region (approximately)
+    const baseCoords = { lat: 46.9, lng: 17.6 };
     
     return [
       // Registered stakeholders
@@ -106,11 +98,11 @@ const RegionalHub = () => {
         name: t('regional.stakeholder.greentech.name'),
         type: "business",
         organization: t('regional.stakeholder.greentech.org'),
-        location: selectedRegion.displayName,
-        region: selectedRegion.id,
-        city: selectedRegion.displayName,
-        latitude: selectedRegion.coordinates.lat + 0.01,
-        longitude: selectedRegion.coordinates.lng + 0.01,
+        location: currentProject.region_name,
+        region: currentProject.region_name,
+        city: currentProject.villages[0] || currentProject.region_name,
+        latitude: baseCoords.lat + 0.01,
+        longitude: baseCoords.lng + 0.01,
         description: t('regional.stakeholder.greentech.desc'),
         sustainabilityGoals: [t('regional.stakeholder.greentech.goal1'), t('regional.stakeholder.greentech.goal2')],
         avatar: "🏢",
@@ -120,14 +112,14 @@ const RegionalHub = () => {
       },
       {
         id: "2",
-        name: `${selectedRegion.displayName} ${t('regional.stakeholder.municipality.name')}`,
+        name: `${currentProject.region_name} ${t('regional.stakeholder.municipality.name')}`,
         type: "government",
-        organization: `${selectedRegion.displayName} ${t('regional.stakeholder.municipality.name')}`,
-        location: selectedRegion.displayName,
-        region: selectedRegion.id,
-        city: selectedRegion.displayName,
-        latitude: selectedRegion.coordinates.lat - 0.01,
-        longitude: selectedRegion.coordinates.lng - 0.01,
+        organization: `${currentProject.region_name} ${t('regional.stakeholder.municipality.name')}`,
+        location: currentProject.region_name,
+        region: currentProject.region_name,
+        city: currentProject.villages[0] || currentProject.region_name,
+        latitude: baseCoords.lat - 0.01,
+        longitude: baseCoords.lng - 0.01,
         description: t('regional.stakeholder.municipality.desc'),
         sustainabilityGoals: [t('regional.stakeholder.municipality.goal1'), t('regional.stakeholder.municipality.goal2')],
         avatar: "🏛️",
@@ -140,11 +132,11 @@ const RegionalHub = () => {
         id: "3",
         name: t('regional.stakeholder.solar.name'),
         type: "business",
-        location: selectedRegion.displayName,
-        region: selectedRegion.id,
-        city: selectedRegion.displayName,
-        latitude: selectedRegion.coordinates.lat + 0.015,
-        longitude: selectedRegion.coordinates.lng - 0.015,
+        location: currentProject.region_name,
+        region: currentProject.region_name,
+        city: currentProject.villages[1] || currentProject.region_name,
+        latitude: baseCoords.lat + 0.015,
+        longitude: baseCoords.lng - 0.015,
         description: t('regional.stakeholder.solar.desc'),
         sustainabilityGoals: [t('regional.stakeholder.solar.goal1'), t('regional.stakeholder.solar.goal2')],
         avatar: "☀️",
@@ -157,11 +149,11 @@ const RegionalHub = () => {
         name: t('regional.stakeholder.foundation.name'),
         type: "ngo",
         organization: t('regional.stakeholder.foundation.org'),
-        location: selectedRegion.displayName,
-        region: selectedRegion.id,
-        city: selectedRegion.displayName,
-        latitude: selectedRegion.coordinates.lat + 0.02,
-        longitude: selectedRegion.coordinates.lng - 0.02,
+        location: currentProject.region_name,
+        region: currentProject.region_name,
+        city: currentProject.villages[2] || currentProject.region_name,
+        latitude: baseCoords.lat + 0.02,
+        longitude: baseCoords.lng - 0.02,
         description: t('regional.stakeholder.foundation.desc'),
         sustainabilityGoals: [t('regional.stakeholder.foundation.goal1'), t('regional.stakeholder.foundation.goal2')],
         avatar: "🌱",
@@ -173,11 +165,11 @@ const RegionalHub = () => {
         id: "5",
         name: t('regional.stakeholder.circular.name'),
         type: "business",
-        location: selectedRegion.displayName,
-        region: selectedRegion.id,
-        city: selectedRegion.displayName,
-        latitude: selectedRegion.coordinates.lat - 0.02,
-        longitude: selectedRegion.coordinates.lng + 0.015,
+        location: currentProject.region_name,
+        region: currentProject.region_name,
+        city: currentProject.villages[3] || currentProject.region_name,
+        latitude: baseCoords.lat - 0.02,
+        longitude: baseCoords.lng + 0.015,
         description: t('regional.stakeholder.circular.desc'),
         sustainabilityGoals: [t('regional.stakeholder.circular.goal1'), t('regional.stakeholder.circular.goal2')],
         avatar: "♻️",
@@ -188,9 +180,9 @@ const RegionalHub = () => {
     ];
   };
 
-  // Fetch sponsorships from database
+  // Fetch sponsorships from database for current project
   useEffect(() => {
-    if (!selectedRegion) return;
+    if (!currentProject) return;
 
     const fetchSponsorships = async () => {
       const { data, error } = await supabase
@@ -209,7 +201,8 @@ const RegionalHub = () => {
             logo_url
           )
         `)
-        .eq('region', selectedRegion.id)
+        .eq('region', currentProject.region_name)
+        .eq('project_id', currentProject.id)
         .eq('status', 'active');
 
       if (!error && data) {
@@ -218,14 +211,14 @@ const RegionalHub = () => {
     };
 
     fetchSponsorships();
-  }, [selectedRegion]);
+  }, [currentProject]);
 
-  // Generate regional challenges with real sponsorship data
+  // Generate regional challenges with real sponsorship data for current project
   const getRegionalChallenges = (): RegionalChallenge[] => {
-    if (!selectedRegion) return [];
+    if (!currentProject) return [];
     
     return challenges.slice(0, 6).map(challenge => {
-      // Find sponsorship for this challenge in this region
+      // Find sponsorship for this challenge in this project
       const sponsorship = sponsorships.find(
         s => s.challenge_id === challenge.id
       );
@@ -250,7 +243,7 @@ const RegionalHub = () => {
       return {
         ...challenge,
         sponsor,
-        region: selectedRegion.id,
+        region: currentProject.region_name,
       };
     });
   };
@@ -269,6 +262,38 @@ const RegionalHub = () => {
     );
   }
 
+  // Show loading or no project message
+  if (projectLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="container mx-auto px-4 pt-20 text-center">
+          <p className="text-muted-foreground">{t('common.loading')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentProject) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="container mx-auto px-4 pt-20 text-center">
+          <Map className="w-24 h-24 mx-auto mb-6 text-primary opacity-50" />
+          <h2 className="text-3xl font-bold text-foreground mb-4">
+            {t('regional.no_project')}
+          </h2>
+          <p className="text-muted-foreground mb-8">
+            {t('regional.join_project_desc')}
+          </p>
+          <Button onClick={() => navigate('/projects')} size="lg">
+            {t('regional.view_projects')}
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -282,34 +307,33 @@ const RegionalHub = () => {
           transition={{ duration: 0.6 }}
         >
           <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-            <Globe className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+            <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
             <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-foreground">
-              {selectedRegion ? selectedRegion.displayName : t('regional.title')}
+              {currentProject.name}
             </h1>
           </div>
           <p className="text-sm sm:text-base md:text-xl text-muted-foreground max-w-3xl mx-auto mb-4 sm:mb-6 px-4">
-            {selectedRegion 
-              ? t('regional.subtitle_selected')
-              : t('regional.subtitle_choose')
-            }
+            {currentProject.description || t('regional.subtitle_selected')}
           </p>
           
-          {selectedRegion && (
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              <Badge 
-                className="bg-gradient-to-r from-primary to-accent text-white px-3 sm:px-4 py-1.5 sm:py-2 cursor-pointer hover:shadow-lg transition-all text-xs sm:text-sm"
-                onClick={() => setShowRegionSelector(true)}
-              >
-                📍 {selectedRegion.displayName}
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <Badge 
+              className="bg-gradient-to-r from-primary to-accent text-white px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm"
+            >
+              📍 {currentProject.region_name}
+            </Badge>
+            <Badge variant="secondary" className="bg-success/20 text-success text-xs sm:text-sm">
+              {filteredProfiles.filter(p => p.isRegistered).length} {t('regional.registered')}
+            </Badge>
+            <Badge variant="secondary" className="bg-warning/20 text-warning text-xs sm:text-sm">
+              {filteredProfiles.filter(p => !p.isRegistered).length} {t('regional.potential')}
+            </Badge>
+            {currentProject.villages && currentProject.villages.length > 0 && (
+              <Badge variant="outline" className="text-xs sm:text-sm">
+                {currentProject.villages.length} {t('regional.villages')}
               </Badge>
-              <Badge variant="secondary" className="bg-success/20 text-success text-xs sm:text-sm">
-                {filteredProfiles.filter(p => p.isRegistered).length} {t('regional.registered')}
-              </Badge>
-              <Badge variant="secondary" className="bg-warning/20 text-warning text-xs sm:text-sm">
-                {filteredProfiles.filter(p => !p.isRegistered).length} {t('regional.potential')}
-              </Badge>
-            </div>
-          )}
+            )}
+          </div>
         </motion.div>
 
         <motion.div
@@ -317,25 +341,7 @@ const RegionalHub = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8 }}
         >
-          {!selectedRegion ? (
-            <div className="text-center py-12 sm:py-20 px-4">
-              <Map className="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 text-primary opacity-50" />
-              <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-3 sm:mb-4">
-                {t('regional.choose_region')}
-              </h2>
-              <p className="text-sm sm:text-base md:text-lg text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto">
-                {t('regional.choose_region_desc')}
-              </p>
-              <Button 
-                size="lg"
-                onClick={() => setShowRegionSelector(true)}
-                className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-sm sm:text-base"
-              >
-                <Search className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                {t('regional.select_region_button')}
-              </Button>
-            </div>
-          ) : (
+          {(
             <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as any)} className="space-y-4 sm:space-y-6">
               <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3 h-auto">
                 <TabsTrigger value="stakeholders" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
@@ -360,7 +366,7 @@ const RegionalHub = () => {
                 <StakeholderFilters
                   selectedTypes={selectedTypes}
                   onTypeToggle={handleTypeToggle}
-                  selectedRegion={selectedRegion.id}
+                  selectedRegion={currentProject.region_name}
                   onRegionChange={() => {}}
                   regions={[]}
                   searchQuery={searchQuery}
@@ -504,7 +510,7 @@ const RegionalHub = () => {
                         <div className="flex items-center justify-between mb-4">
                           <div className="text-sm">
                             <MapPin className="w-3 h-3 inline mr-1" />
-                            {selectedRegion.displayName}
+                            {currentProject.region_name}
                           </div>
                           <div className="text-sm font-semibold text-primary">
                             {challenge.pointsReward} {t('regional.points')}
@@ -671,17 +677,7 @@ const RegionalHub = () => {
           onOpenChange={(open) => !open && setSelectedChallengeForSponsorship(null)}
           challengeId={selectedChallengeForSponsorship.id}
           challengeTitle={selectedChallengeForSponsorship.title}
-          region={selectedRegion?.id || ''}
-        />
-      )}
-
-      {showRegionSelector && (
-        <RegionSelector
-          selectedRegion={selectedRegion}
-          onRegionSelect={handleRegionSelect}
-          onClose={() => setShowRegionSelector(false)}
-          recentRegions={recentRegions}
-          favoriteRegions={[]}
+          region={currentProject.region_name}
         />
       )}
     </div>
