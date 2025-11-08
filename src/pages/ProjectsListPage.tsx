@@ -29,14 +29,22 @@ export default function ProjectsListPage() {
 
   const loadProjects = async () => {
     try {
+      console.log("Loading projects...");
       const { data, error } = await supabase
         .from("projects")
         .select("*")
         .eq("is_active", true)
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
+      console.log("Projects query result:", { data, error });
+      
+      if (error) {
+        console.error("Error loading projects:", error);
+        throw error;
+      }
+      
       setProjects(data || []);
+      console.log("Projects loaded:", data?.length || 0);
     } catch (error) {
       console.error("Error loading projects:", error);
     } finally {
