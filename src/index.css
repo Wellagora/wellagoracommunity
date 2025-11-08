@@ -2,45 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Wellagora Sustainability Platform Design System
-Enhanced design with premium typography and sophisticated color palette
+/* Káli medence - Közösség Építés Design System
+Természetes színpaletta és elegáns tipográfia a közösség építés támogatásához
 */
 
 @layer base {
   :root {
-    /* DARK MODERN DESIGN - Revolutionary Sustainability Platform */
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* KÁLI MEDENCE - Közösség Építés Színséma */
+    --background: 0 0% 100%;
+    --foreground: 120 15% 15%;
 
-    --card: 217.2 32.6% 17.5%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 120 15% 15%;
 
-    --popover: 217.2 32.6% 17.5%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 120 15% 15%;
 
-    /* Revolutionary warm blue primary - #2563EB */
-    --primary: 219 100% 60%;
-    --primary-foreground: 210 40% 98%;
-    --primary-glow: 219 85% 70%;
-    --primary-dark: 219 100% 45%;
+    /* Természetes erdei zöld primary - #506B3C */
+    --primary: 100 30% 33%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 100 30% 45%;
+    --primary-dark: 100 35% 25%;
 
-    /* Dark secondary */
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    /* Meleg földszín secondary - #9B8F5C */
+    --secondary: 45 26% 49%;
+    --secondary-foreground: 0 0% 100%;
 
-    /* Dark muted tones */
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    /* Muted tones */
+    --muted: 45 10% 90%;
+    --muted-foreground: 120 10% 40%;
 
-    /* Revolutionary orange accent - #FB923C */
-    --accent: 22 93% 58%;
-    --accent-foreground: 210 40% 98%;
-    --accent-light: 22 85% 70%;
+    /* Meleg narancs accent - #D4A574 */
+    --accent: 35 48% 64%;
+    --accent-foreground: 120 15% 15%;
+    --accent-light: 35 48% 75%;
 
-    /* Success green */
-    --success: 142 76% 36%;
-    --success-foreground: 355.7 100% 97.3%;
-    --success-light: 142 69% 58%;
+    /* Success világos zöld - #66BB6A */
+    --success: 122 39% 57%;
+    --success-foreground: 0 0% 100%;
+    --success-light: 122 39% 70%;
 
     /* Napfény sárga warning */
     --warning: 47.9 95.8% 53.1%;
@@ -48,34 +48,34 @@ Enhanced design with premium typography and sophisticated color palette
 
     /* Info kék */
     --info: 204 94% 49%;
-    --info-foreground: 210 40% 98%;
+    --info-foreground: 0 0% 100%;
 
     /* Lágy piros destructive */
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 219 100% 60%;
+    --border: 45 10% 85%;
+    --input: 45 10% 90%;
+    --ring: 100 30% 33%;
 
     --radius: 0.75rem;
 
-    /* Revolutionary gradients with blue and orange */
-    --gradient-primary: linear-gradient(135deg, hsl(219 100% 60%), hsl(219 85% 70%), hsl(22 93% 58%));
-    --gradient-earth: linear-gradient(135deg, hsl(219 85% 70%), hsl(210 100% 92%), hsl(22 93% 70%));
-    --gradient-nature: linear-gradient(180deg, hsl(0 0% 100%), hsl(210 40% 98%));
-    --gradient-hero: linear-gradient(135deg, hsl(219 100% 95%) 0%, hsl(219 85% 90%) 30%, hsl(22 93% 85%) 60%, hsl(0 0% 100%) 100%);
-    --gradient-wave: linear-gradient(135deg, hsl(219 100% 85%) 0%, hsl(219 85% 75%) 50%, hsl(22 93% 75%) 100%);
-    --gradient-light-transition: linear-gradient(180deg, hsl(219 100% 95%) 0%, hsl(219 85% 90%) 40%, hsl(0 0% 100%) 70%, hsl(210 40% 98%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(210 40% 98%), hsl(210 40% 96%));
-    --gradient-sunset: linear-gradient(135deg, hsl(22 93% 70%), hsl(219 85% 70%), hsl(219 100% 80%));
-    --gradient-ocean: linear-gradient(135deg, hsl(219 100% 80%), hsl(219 85% 70%), hsl(22 93% 75%));
+    /* Természetes gradientek */
+    --gradient-primary: linear-gradient(135deg, hsl(100 30% 33%), hsl(100 30% 45%), hsl(122 39% 57%));
+    --gradient-earth: linear-gradient(135deg, hsl(35 48% 64%), hsl(45 26% 49%), hsl(100 30% 33%));
+    --gradient-nature: linear-gradient(180deg, hsl(122 39% 95%), hsl(100 30% 95%));
+    --gradient-hero: linear-gradient(135deg, hsl(122 39% 95%) 0%, hsl(100 30% 90%) 30%, hsl(35 48% 90%) 60%, hsl(0 0% 100%) 100%);
+    --gradient-wave: linear-gradient(135deg, hsl(100 30% 85%) 0%, hsl(122 39% 75%) 50%, hsl(35 48% 75%) 100%);
+    --gradient-light-transition: linear-gradient(180deg, hsl(122 39% 95%) 0%, hsl(100 30% 90%) 40%, hsl(0 0% 100%) 70%, hsl(45 10% 98%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(122 39% 98%), hsl(100 30% 97%));
+    --gradient-sunset: linear-gradient(135deg, hsl(35 48% 70%), hsl(45 26% 55%), hsl(100 30% 45%));
+    --gradient-ocean: linear-gradient(135deg, hsl(122 39% 70%), hsl(100 30% 50%), hsl(35 48% 65%));
 
-    /* Revolutionary shadows with primary blue */
-    --shadow-eco: 0 8px 32px -4px hsl(219 100% 60% / 0.15);
-    --shadow-glow: 0 0 40px hsl(219 85% 70% / 0.25);
-    --shadow-card: 0 4px 24px -2px hsl(219 100% 85% / 0.12);
-    --shadow-premium: 0 12px 48px -8px hsl(219 100% 60% / 0.18);
+    /* Természetes árnyékok */
+    --shadow-eco: 0 8px 32px -4px hsl(100 30% 33% / 0.15);
+    --shadow-glow: 0 0 40px hsl(122 39% 57% / 0.25);
+    --shadow-card: 0 4px 24px -2px hsl(100 30% 33% / 0.12);
+    --shadow-premium: 0 12px 48px -8px hsl(100 30% 33% / 0.18);
 
     /* Smooth animation system */
     --transition-smooth: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -87,13 +87,13 @@ Enhanced design with premium typography and sophisticated color palette
     --font-body: 'Inter', sans-serif;
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222.2 84% 4.9%;
-    --sidebar-primary: 219 100% 60%;
-    --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: 210 40% 96%;
-    --sidebar-accent-foreground: 222.2 84% 4.9%;
-    --sidebar-border: 214.3 31.8% 91.4%;
-    --sidebar-ring: 219 100% 60%;
+    --sidebar-foreground: 120 15% 15%;
+    --sidebar-primary: 100 30% 33%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 122 39% 95%;
+    --sidebar-accent-foreground: 120 15% 15%;
+    --sidebar-border: 45 10% 85%;
+    --sidebar-ring: 100 30% 33%;
   }
 
   /* Dark mode - megtartjuk opcióként */

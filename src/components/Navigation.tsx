@@ -26,6 +26,7 @@ import LanguageSelector from "./LanguageSelector";
 import { ProjectSelector } from "./ProjectSelector";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import kaliLogo from "@/assets/kali-medence-logo.png";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -73,14 +74,14 @@ const Navigation = () => {
         <div className="lg:hidden flex justify-between items-center h-14">
           {/* Logo - Compact */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 flex items-center justify-center bg-gradient-to-br from-primary to-success rounded-xl shadow-md">
+            <div className="w-10 h-10 flex items-center justify-center bg-white rounded-xl shadow-md">
               <img 
-                src="/lovable-uploads/3911d8a5-aebe-4ede-83a5-33c26952916a.png" 
-                alt="Wellagora Logo" 
+                src={kaliLogo} 
+                alt="Káli medence Logo" 
                 className="w-8 h-8 object-contain"
               />
             </div>
-            <span className="text-lg font-bold text-foreground">Wellagora</span>
+            <span className="text-lg font-bold text-foreground">Káli medence</span>
           </Link>
 
           {/* Mobile menu button */}
@@ -97,10 +98,10 @@ const Navigation = () => {
           {/* Logo */}
           <div className="flex items-center space-x-4">
             <Link to="/" className="relative group">
-              <div className="w-20 h-20 flex items-center justify-center bg-gradient-to-br from-primary to-success rounded-2xl shadow-premium group-hover:scale-105 transition-transform duration-300">
+              <div className="w-20 h-20 flex items-center justify-center bg-white rounded-2xl shadow-premium group-hover:scale-105 transition-transform duration-300">
                 <img 
-                  src="/lovable-uploads/3911d8a5-aebe-4ede-83a5-33c26952916a.png" 
-                  alt="Wellagora Logo" 
+                  src={kaliLogo} 
+                  alt="Káli medence Logo" 
                   className="w-16 h-16 object-contain logo-enhanced"
                 />
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-warning rounded-full flex items-center justify-center animate-pulse">
@@ -110,11 +111,11 @@ const Navigation = () => {
             </Link>
             <Link to="/" className="flex flex-col group">
               <span className="text-3xl font-bold text-foreground group-hover:text-primary transition-all duration-300">
-                Wellagora
+                Káli medence
               </span>
               <div className="flex items-center space-x-2">
                 <Users className="w-3 h-3 text-primary" />
-                <span className="text-xs text-primary font-medium">Sustainability Community</span>
+                <span className="text-xs text-primary font-medium">Közösség Építés</span>
                 <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
               </div>
             </Link>
