@@ -173,19 +173,21 @@ const AdminDashboard = () => {
 
       // Load draft challenges (project-specific)
       let draftsCount = 0;
+      let pendingCount = 0;
       if (settingsData && settingsData.value) {
         const valueData = settingsData.value as { project_id: string };
         try {
-          const result = await supabase
+          // @ts-ignore - Complex type inference issue with Supabase
+          const draftResult = await supabase
             .from('challenge_definitions')
-            .select('*')
+            .select('id, title, description, category, difficulty, duration_days, points_base, base_impact, validation_requirements, created_at')
             .eq('is_active', false)
             .eq('project_id', valueData.project_id)
             .order('created_at', { ascending: false });
 
-          if (result.data) {
-            setDraftChallenges(result.data as any);
-            draftsCount = result.data.length;
+          if (draftResult.data) {
+            setDraftChallenges(draftResult.data as any);
+            draftsCount = draftResult.data.length;
           }
         } catch (e) {
           console.error('Error loading drafts:', e);
@@ -194,15 +196,17 @@ const AdminDashboard = () => {
 
       // Load pending challenges
       try {
-        const result = await supabase
+        // @ts-ignore - Complex type inference issue with Supabase
+        const pendingResult = await supabase
           .from('challenge_definitions')
-          .select('*')
+          .select('id, title, description, category, difficulty, duration_days, points_base, base_impact, validation_requirements, created_at')
           .eq('is_active', false)
           .is('project_id', null)
           .order('created_at', { ascending: false });
 
-        if (result.data) {
-          setPendingChallenges(result.data as any);
+        if (pendingResult.data) {
+          setPendingChallenges(pendingResult.data as any);
+          pendingCount = pendingResult.data.length;
         }
       } catch (e) {
         console.error('Error loading pending:', e);
@@ -221,7 +225,7 @@ const AdminDashboard = () => {
       setStats({
         totalChallenges: totalCount || 0,
         activeChallenges: activeCount || 0,
-        pendingReview: (pending?.length || 0) + draftsCount,
+        pendingReview: pendingCount + draftsCount,
         totalImpact: 0
       });
 
