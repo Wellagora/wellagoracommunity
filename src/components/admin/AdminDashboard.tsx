@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { CheckCircle, XCircle, Clock, Sparkles, TrendingUp, Users, ArrowLeft, Plus, Building2 } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Sparkles, TrendingUp, Users, ArrowLeft, Plus, Building2, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
@@ -47,16 +47,34 @@ interface Project {
   created_at: string;
 }
 
+interface NewChallenge {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  difficulty: string;
+  duration_days: number;
+  points_base: number;
+  co2_saved: number;
+  impact_description: string;
+  validation_type: string;
+  validation_description: string;
+  steps: string[];
+  tips: string[];
+}
+
 const AdminDashboard = () => {
   const { toast } = useToast();
   const { user, profile } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [pendingChallenges, setPendingChallenges] = useState<PendingChallenge[]>([]);
+  const [draftChallenges, setDraftChallenges] = useState<PendingChallenge[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [hasAdminAccess, setHasAdminAccess] = useState(false);
   const [showCreateProject, setShowCreateProject] = useState(false);
+  const [showCreateChallenge, setShowCreateChallenge] = useState(false);
   const [defaultProjectId, setDefaultProjectId] = useState<string | null>(null);
   const [newProject, setNewProject] = useState({
     name: '',
@@ -64,6 +82,21 @@ const AdminDashboard = () => {
     region_name: '',
     villages: '',
     description: ''
+  });
+  const [newChallenge, setNewChallenge] = useState<NewChallenge>({
+    id: '',
+    title: '',
+    description: '',
+    category: 'community',
+    difficulty: 'beginner',
+    duration_days: 7,
+    points_base: 100,
+    co2_saved: 0,
+    impact_description: '',
+    validation_type: 'manual',
+    validation_description: '',
+    steps: [''],
+    tips: ['']
   });
   const [stats, setStats] = useState({
     totalChallenges: 0,
@@ -117,45 +150,63 @@ const AdminDashboard = () => {
       setLoading(true);
 
       // Load projects
-      const { data: projectsData, error: projectsError } = await supabase
+      const { data: projectsData } = await supabase
         .from('projects')
-        .select('*')
+        .select('id, name, slug, region_name, villages, description, is_active, created_at')
         .order('created_at', { ascending: false });
 
-      if (projectsError) throw projectsError;
-      setProjects(projectsData || []);
+      if (projectsData) {
+        setProjects(projectsData as any[]);
+      }
 
       // Load default project setting
-      const { data: settingsData, error: settingsError } = await supabase
+      const { data: settingsData } = await supabase
         .from('system_settings')
         .select('value')
         .eq('key', 'default_project')
-        .maybeSingle();
+        .maybeSingle() as { data: any | null };
 
-      if (!settingsError && settingsData) {
+      if (settingsData && settingsData.value) {
         const valueData = settingsData.value as { project_id: string };
         setDefaultProjectId(valueData.project_id);
       }
 
-      // Load pending challenges
-      const { data: pending, error: pendingError } = await supabase
-        .from('challenge_definitions')
-        .select('*')
-        .eq('is_active', false)
-        .order('created_at', { ascending: false });
+      // Load draft challenges (project-specific)
+      let draftsCount = 0;
+      if (settingsData && settingsData.value) {
+        const valueData = settingsData.value as { project_id: string };
+        try {
+          const result = await supabase
+            .from('challenge_definitions')
+            .select('*')
+            .eq('is_active', false)
+            .eq('project_id', valueData.project_id)
+            .order('created_at', { ascending: false });
 
-      if (pendingError) throw pendingError;
-
-      setPendingChallenges(pending?.map(p => ({
-        ...p,
-        base_impact: p.base_impact as { co2_saved: number; description: string },
-        validation_requirements: p.validation_requirements as {
-          type: string;
-          description: string;
-          steps: string[];
-          tips: string[];
+          if (result.data) {
+            setDraftChallenges(result.data as any);
+            draftsCount = result.data.length;
+          }
+        } catch (e) {
+          console.error('Error loading drafts:', e);
         }
-      })) || []);
+      }
+
+      // Load pending challenges
+      try {
+        const result = await supabase
+          .from('challenge_definitions')
+          .select('*')
+          .eq('is_active', false)
+          .is('project_id', null)
+          .order('created_at', { ascending: false });
+
+        if (result.data) {
+          setPendingChallenges(result.data as any);
+        }
+      } catch (e) {
+        console.error('Error loading pending:', e);
+      }
 
       // Load stats
       const { count: totalCount } = await supabase
@@ -170,8 +221,8 @@ const AdminDashboard = () => {
       setStats({
         totalChallenges: totalCount || 0,
         activeChallenges: activeCount || 0,
-        pendingReview: pending?.length || 0,
-        totalImpact: 0 // Calculate from completions
+        pendingReview: (pending?.length || 0) + draftsCount,
+        totalImpact: 0
       });
 
     } catch (error) {
@@ -387,6 +438,157 @@ const AdminDashboard = () => {
     }
   };
 
+  const createChallenge = async (publish: boolean = false) => {
+    try {
+      // Validation
+      if (!newChallenge.id || !newChallenge.title || !newChallenge.description) {
+        toast({
+          title: 'Hiányzó mezők',
+          description: 'Kérlek töltsd ki az ID, cím és leírás mezőket',
+          variant: 'destructive'
+        });
+        return;
+      }
+
+      if (!defaultProjectId) {
+        toast({
+          title: 'Nincs alapértelmezett projekt',
+          description: 'Először állíts be egy alapértelmezett projektet',
+          variant: 'destructive'
+        });
+        return;
+      }
+
+      // Filter out empty steps and tips
+      const filteredSteps = newChallenge.steps.filter(s => s.trim().length > 0);
+      const filteredTips = newChallenge.tips.filter(t => t.trim().length > 0);
+
+      const { error } = await supabase
+        .from('challenge_definitions')
+        .insert({
+          id: newChallenge.id,
+          title: newChallenge.title,
+          description: newChallenge.description,
+          category: newChallenge.category,
+          difficulty: newChallenge.difficulty,
+          duration_days: newChallenge.duration_days,
+          points_base: newChallenge.points_base,
+          base_impact: {
+            co2_saved: newChallenge.co2_saved,
+            description: newChallenge.impact_description
+          },
+          validation_requirements: {
+            type: newChallenge.validation_type,
+            description: newChallenge.validation_description,
+            steps: filteredSteps,
+            tips: filteredTips
+          },
+          is_active: publish,
+          project_id: defaultProjectId
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: publish ? 'Kihívás közzétéve' : 'Kihívás létrehozva',
+        description: publish 
+          ? 'A kihívás aktív és elérhető a felhasználók számára' 
+          : 'A kihívás draft módban van, később teheted közzé',
+      });
+
+      // Reset form
+      setNewChallenge({
+        id: '',
+        title: '',
+        description: '',
+        category: 'community',
+        difficulty: 'beginner',
+        duration_days: 7,
+        points_base: 100,
+        co2_saved: 0,
+        impact_description: '',
+        validation_type: 'manual',
+        validation_description: '',
+        steps: [''],
+        tips: ['']
+      });
+      setShowCreateChallenge(false);
+      loadData();
+    } catch (error: any) {
+      console.error('Error creating challenge:', error);
+      toast({
+        title: 'Hiba',
+        description: error.message || 'Nem sikerült létrehozni a kihívást',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const publishChallenge = async (challengeId: string) => {
+    try {
+      const { error } = await supabase
+        .from('challenge_definitions')
+        .update({ is_active: true })
+        .eq('id', challengeId);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Kihívás közzétéve',
+        description: 'A kihívás mostantól elérhető a felhasználók számára',
+      });
+
+      loadData();
+    } catch (error: any) {
+      console.error('Error publishing challenge:', error);
+      toast({
+        title: 'Hiba',
+        description: 'Nem sikerült közzétenni a kihívást',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const addStep = () => {
+    setNewChallenge({
+      ...newChallenge,
+      steps: [...newChallenge.steps, '']
+    });
+  };
+
+  const updateStep = (index: number, value: string) => {
+    const updatedSteps = [...newChallenge.steps];
+    updatedSteps[index] = value;
+    setNewChallenge({ ...newChallenge, steps: updatedSteps });
+  };
+
+  const removeStep = (index: number) => {
+    setNewChallenge({
+      ...newChallenge,
+      steps: newChallenge.steps.filter((_, i) => i !== index)
+    });
+  };
+
+  const addTip = () => {
+    setNewChallenge({
+      ...newChallenge,
+      tips: [...newChallenge.tips, '']
+    });
+  };
+
+  const updateTip = (index: number, value: string) => {
+    const updatedTips = [...newChallenge.tips];
+    updatedTips[index] = value;
+    setNewChallenge({ ...newChallenge, tips: updatedTips });
+  };
+
+  const removeTip = (index: number) => {
+    setNewChallenge({
+      ...newChallenge,
+      tips: newChallenge.tips.filter((_, i) => i !== index)
+    });
+  };
+
   if (!hasAdminAccess || loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -467,6 +669,9 @@ const AdminDashboard = () => {
         <TabsList>
           <TabsTrigger value="projects">
             Projektek ({projects.length})
+          </TabsTrigger>
+          <TabsTrigger value="challenges">
+            Kihívások kezelése
           </TabsTrigger>
           <TabsTrigger value="pending">
             Jóváhagyásra vár ({pendingChallenges.length})
@@ -641,6 +846,289 @@ const AdminDashboard = () => {
               ))
             )}
           </div>
+        </TabsContent>
+
+        <TabsContent value="challenges" className="space-y-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <h3 className="text-lg font-semibold">Kihívások létrehozása</h3>
+              <p className="text-sm text-muted-foreground">Hozz létre új fenntarthatósági kihívásokat</p>
+            </div>
+            <Dialog open={showCreateChallenge} onOpenChange={setShowCreateChallenge}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Új kihívás
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Új kihívás létrehozása</DialogTitle>
+                  <DialogDescription>
+                    Töltsd ki a kihívás adatait. Mentheted draft-ként vagy azonnal közzéteheted.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="id">Egyedi azonosító (ID) *</Label>
+                      <Input
+                        id="id"
+                        value={newChallenge.id}
+                        onChange={(e) => setNewChallenge({ ...newChallenge, id: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
+                        placeholder="kali-komposzt-kezdo"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="category">Kategória</Label>
+                      <select
+                        id="category"
+                        value={newChallenge.category}
+                        onChange={(e) => setNewChallenge({ ...newChallenge, category: e.target.value })}
+                        className="w-full px-3 py-2 border rounded-md"
+                      >
+                        <option value="community">Közösség</option>
+                        <option value="energy">Energia</option>
+                        <option value="transport">Közlekedés</option>
+                        <option value="food">Élelmiszer</option>
+                        <option value="waste">Hulladék</option>
+                        <option value="water">Víz</option>
+                        <option value="biodiversity">Biodiverzitás</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="title">Cím *</Label>
+                    <Input
+                      id="title"
+                      value={newChallenge.title}
+                      onChange={(e) => setNewChallenge({ ...newChallenge, title: e.target.value })}
+                      placeholder="Házi komposztálás kezdő lépések"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="description">Leírás *</Label>
+                    <Textarea
+                      id="description"
+                      value={newChallenge.description}
+                      onChange={(e) => setNewChallenge({ ...newChallenge, description: e.target.value })}
+                      placeholder="Részletes leírás a kihívásról..."
+                      rows={3}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="difficulty">Nehézség</Label>
+                      <select
+                        id="difficulty"
+                        value={newChallenge.difficulty}
+                        onChange={(e) => setNewChallenge({ ...newChallenge, difficulty: e.target.value })}
+                        className="w-full px-3 py-2 border rounded-md"
+                      >
+                        <option value="beginner">Kezdő</option>
+                        <option value="intermediate">Középhaladó</option>
+                        <option value="advanced">Haladó</option>
+                        <option value="expert">Szakértő</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="duration">Időtartam (nap)</Label>
+                      <Input
+                        id="duration"
+                        type="number"
+                        value={newChallenge.duration_days}
+                        onChange={(e) => setNewChallenge({ ...newChallenge, duration_days: parseInt(e.target.value) })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="points">Pontok</Label>
+                      <Input
+                        id="points"
+                        type="number"
+                        value={newChallenge.points_base}
+                        onChange={(e) => setNewChallenge({ ...newChallenge, points_base: parseInt(e.target.value) })}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="co2">CO₂ megtakarítás (kg)</Label>
+                      <Input
+                        id="co2"
+                        type="number"
+                        step="0.1"
+                        value={newChallenge.co2_saved}
+                        onChange={(e) => setNewChallenge({ ...newChallenge, co2_saved: parseFloat(e.target.value) })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="validation">Validáció típusa</Label>
+                      <select
+                        id="validation"
+                        value={newChallenge.validation_type}
+                        onChange={(e) => setNewChallenge({ ...newChallenge, validation_type: e.target.value })}
+                        className="w-full px-3 py-2 border rounded-md"
+                      >
+                        <option value="manual">Manuális</option>
+                        <option value="photo">Fotó</option>
+                        <option value="api_verified">API hitelesítés</option>
+                        <option value="peer_verified">Közösségi hitelesítés</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="impact-desc">Impact leírás</Label>
+                    <Textarea
+                      id="impact-desc"
+                      value={newChallenge.impact_description}
+                      onChange={(e) => setNewChallenge({ ...newChallenge, impact_description: e.target.value })}
+                      placeholder="Hogyan járul hozzá ez a fenntarthatósághoz..."
+                      rows={2}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="validation-desc">Validáció leírás</Label>
+                    <Textarea
+                      id="validation-desc"
+                      value={newChallenge.validation_description}
+                      onChange={(e) => setNewChallenge({ ...newChallenge, validation_description: e.target.value })}
+                      placeholder="Hogyan ellenőrizzük a teljesítést..."
+                      rows={2}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <Label>Lépések</Label>
+                      <Button type="button" variant="outline" size="sm" onClick={addStep}>
+                        <Plus className="w-3 h-3 mr-1" />
+                        Lépés hozzáadása
+                      </Button>
+                    </div>
+                    {newChallenge.steps.map((step, index) => (
+                      <div key={index} className="flex gap-2">
+                        <Input
+                          value={step}
+                          onChange={(e) => updateStep(index, e.target.value)}
+                          placeholder={`${index + 1}. lépés...`}
+                        />
+                        {newChallenge.steps.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => removeStep(index)}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <Label>Tippek</Label>
+                      <Button type="button" variant="outline" size="sm" onClick={addTip}>
+                        <Plus className="w-3 h-3 mr-1" />
+                        Tipp hozzáadása
+                      </Button>
+                    </div>
+                    {newChallenge.tips.map((tip, index) => (
+                      <div key={index} className="flex gap-2">
+                        <Input
+                          value={tip}
+                          onChange={(e) => updateTip(index, e.target.value)}
+                          placeholder={`${index + 1}. tipp...`}
+                        />
+                        {newChallenge.tips.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => removeTip(index)}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => setShowCreateChallenge(false)}>
+                    Mégse
+                  </Button>
+                  <Button variant="outline" onClick={() => createChallenge(false)}>
+                    Mentés draft-ként
+                  </Button>
+                  <Button onClick={() => createChallenge(true)}>
+                    Létrehozás és közzététel
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Draft kihívások</CardTitle>
+              <CardDescription>
+                Ezeket a kihívásokat létrehoztad, de még nem tetted közzé
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {draftChallenges.length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  Még nincsenek draft kihívások. Hozz létre egyet a fenti gombbal!
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {draftChallenges.map((challenge) => (
+                    <div key={challenge.id} className="border rounded-lg p-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Badge className={getCategoryColor(challenge.category)}>
+                              {challenge.category}
+                            </Badge>
+                            <Badge className={getDifficultyColor(challenge.difficulty)} variant="secondary">
+                              {challenge.difficulty}
+                            </Badge>
+                            <Badge variant="outline">Draft</Badge>
+                          </div>
+                          <h3 className="font-semibold text-lg">{challenge.title}</h3>
+                          <p className="text-sm text-muted-foreground mt-1">{challenge.description}</p>
+                        </div>
+                        <div className="text-right ml-4">
+                          <div className="text-xl font-bold text-primary">{challenge.points_base}</div>
+                          <div className="text-xs text-muted-foreground">pont</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                        <span>{challenge.duration_days} nap</span>
+                        <span>•</span>
+                        <span>{challenge.base_impact.co2_saved} kg CO₂</span>
+                      </div>
+                      <Button
+                        onClick={() => publishChallenge(challenge.id)}
+                        className="w-full"
+                      >
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Közzététel
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="pending" className="space-y-4">
