@@ -13,7 +13,7 @@ interface LanguageContextType {
 
 // Create the context with a default value
 const defaultContextValue: LanguageContextType = {
-  language: 'en',
+  language: 'hu',
   setLanguage: async () => {},
   t: (key: string) => key,
   isLoading: true
@@ -30,7 +30,7 @@ export const useLanguage = () => {
 };
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>('en');
+  const [language, setLanguageState] = useState<Language>('hu');
   const [translations, setTranslations] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
@@ -99,17 +99,13 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const initializeLanguage = async () => {
       setIsLoading(true);
       
-      let initialLang: Language = 'en';
+      let initialLang: Language = 'hu'; // Káli medence projekt - mindig magyar
       
       if (profile && (profile as any).preferred_language) {
         initialLang = (profile as any).preferred_language as Language;
       } else {
-        // Detect browser language
-        const browserLang = navigator.language.split('-')[0] as Language;
-        const supportedLanguages: Language[] = ['en', 'de', 'hu', 'cs', 'sk', 'hr', 'ro', 'pl'];
-        if (supportedLanguages.includes(browserLang)) {
-          initialLang = browserLang;
-        }
+        // For Káli medence, always default to Hungarian
+        initialLang = 'hu';
       }
       
       setLanguageState(initialLang);

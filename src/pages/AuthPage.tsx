@@ -146,23 +146,23 @@ const AuthPage = () => {
   const features = [
     {
       icon: CheckCircle,
-      title: "Track your sustainable impact",
-      description: "Monitor your carbon footprint reduction"
+      title: t('auth.feature_track_impact') || "Kövesd a fenntartható hatásodat",
+      description: t('auth.feature_track_desc') || "Figyeld a szénlábnyom csökkentésedet"
     },
     {
       icon: Users,
-      title: "Join a vibrant community",
-      description: "Connect with like-minded sustainability advocates"
+      title: t('auth.feature_join_community') || "Csatlakozz az élénk közösséghez",
+      description: t('auth.feature_community_desc') || "Kapcsolódj hasonló gondolkodású fenntarthatósági támogatókhoz"
     },
     {
       icon: Target,
-      title: "Set and achieve green goals",
-      description: "Create personalized sustainability targets"
+      title: t('auth.feature_set_goals') || "Állíts be és érj el zöld célokat",
+      description: t('auth.feature_goals_desc') || "Hozz létre személyre szabott fenntarthatósági célokat"
     },
     {
       icon: Globe,
-      title: "Make a global difference",
-      description: "Contribute to worldwide environmental initiatives"
+      title: t('auth.feature_make_difference') || "Tégy globális különbséget",
+      description: t('auth.feature_difference_desc') || "Járulj hozzá világméretű környezetvédelmi kezdeményezésekhez"
     }
   ];
 
@@ -200,16 +200,13 @@ const AuthPage = () => {
                 <Leaf className="w-6 h-6 text-primary-glow" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">Wellagora</h1>
-                <p className="text-xs text-muted-foreground uppercase tracking-wide">Sustainability Platform</p>
+                <h1 className="text-2xl font-bold text-foreground">Káli medence</h1>
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">{t('auth.community_building') || 'Közösség Építés'}</p>
               </div>
             </div>
 
             <h2 className="text-4xl xl:text-5xl font-bold text-foreground mb-6 xl:mb-8 leading-tight">
-              Join the future of 
-              <span className="block bg-gradient-primary bg-clip-text text-transparent">
-                sustainable living
-              </span>
+              {t('auth.join_future') || 'Csatlakozz a fenntartható élet jövőjéhez'}
             </h2>
 
             {/* Features list */}
@@ -235,7 +232,7 @@ const AuthPage = () => {
             </div>
 
             <p className="text-sm text-muted-foreground">
-              Trusted by <span className="text-primary-glow font-semibold">1,500+</span> sustainability advocates worldwide
+              {t('auth.trusted_by') || 'Több mint'} <span className="text-primary-glow font-semibold">1,500+</span> {t('auth.sustainability_advocates') || 'fenntarthatósági támogató világszerte'}
             </p>
           </div>
         </div>
@@ -249,8 +246,8 @@ const AuthPage = () => {
                 <div className="w-16 h-16 xl:w-20 xl:h-20 mx-auto mb-4 xl:mb-6 bg-card/80 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-border/50">
                   <Users className="w-8 h-8 xl:w-10 xl:h-10 text-primary-glow" />
                 </div>
-                <h3 className="text-2xl xl:text-3xl font-bold text-foreground mb-2">Welcome back!</h3>
-                <p className="text-sm xl:text-base text-muted-foreground">Please enter your details</p>
+                <h3 className="text-2xl xl:text-3xl font-bold text-foreground mb-2">{t('auth.welcome_back') || 'Üdvözlünk vissza!'}</h3>
+                <p className="text-sm xl:text-base text-muted-foreground">{t('auth.enter_details') || 'Kérlek add meg az adataidat'}</p>
               </div>
 
               {error && (
@@ -268,10 +265,10 @@ const AuthPage = () => {
               <Tabs defaultValue="login" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 bg-card/50 backdrop-blur-sm border border-border/50">
                   <TabsTrigger value="login" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    Sign In
+                    {t('auth.sign_in') || 'Bejelentkezés'}
                   </TabsTrigger>
                   <TabsTrigger value="signup" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    Sign Up
+                    {t('auth.sign_up') || 'Regisztráció'}
                   </TabsTrigger>
                 </TabsList>
 
@@ -280,11 +277,11 @@ const AuthPage = () => {
                     <CardContent className="p-6">
                       <form onSubmit={handleLogin} className="space-y-4">
                         <div className="space-y-2">
-                          <Label htmlFor="login-email" className="text-foreground">Email</Label>
+                          <Label htmlFor="login-email" className="text-foreground">{t('auth.email_address') || 'E-mail'}</Label>
                           <Input
                             id="login-email"
                             type="email"
-                            placeholder="your.email@gmail.com"
+                            placeholder={t('auth.email_placeholder') || 'pelda@email.hu'}
                             value={loginForm.email}
                             onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
                             className="bg-background/50 backdrop-blur-sm border-border/50 text-foreground placeholder:text-muted-foreground"
@@ -292,11 +289,11 @@ const AuthPage = () => {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="login-password" className="text-foreground">Password</Label>
+                          <Label htmlFor="login-password" className="text-foreground">{t('auth.password') || 'Jelszó'}</Label>
                           <Input
                             id="login-password"
                             type="password"
-                            placeholder="Enter your password"
+                            placeholder={t('auth.password_placeholder') || 'Add meg a jelszavad'}
                             value={loginForm.password}
                             onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
                             className="bg-background/50 backdrop-blur-sm border-border/50 text-foreground placeholder:text-muted-foreground"
@@ -309,14 +306,14 @@ const AuthPage = () => {
                           disabled={isLoading}
                         >
                           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                          Continue
+                          {t('auth.continue') || 'Folytatás'}
                         </Button>
                       </form>
                     </CardContent>
                   </Card>
                   
                   <p className="text-center text-sm text-muted-foreground mt-4">
-                    Don't have an account yet?{" "}
+                    {t('auth.no_account') || 'Még nincs fiókod?'}{" "}
                     <button
                       onClick={() => {
                         const signupTab = document.querySelector('[data-value="signup"]') as HTMLElement;
@@ -324,7 +321,7 @@ const AuthPage = () => {
                       }}
                       className="text-primary-glow hover:text-primary transition-colors font-medium"
                     >
-                      Sign up
+                      {t('auth.sign_up_here') || 'Regisztrálj itt'}
                     </button>
                   </p>
                 </TabsContent>
