@@ -37,14 +37,14 @@ const Index = () => {
           
           {/* Main Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center mb-6 sm:mb-8 px-4">
-            <Link to="/projects" className="w-full sm:w-auto">
+            <Link to="/challenges" className="w-full sm:w-auto">
               <Button size="lg" className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300">
-                {t('index.cta_join_project')}
+                {t('index.cta_start_program')}
               </Button>
             </Link>
-            <Link to="/challenges" className="w-full sm:w-auto">
+            <Link to="/community" className="w-full sm:w-auto">
               <Button size="lg" variant="outline" className="w-full border-2 border-primary hover:bg-primary hover:text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold transition-all duration-300">
-                {t('index.cta_start_challenge')}
+                {t('index.cta_join_community')}
               </Button>
             </Link>
             <Link to="/regional-hub" className="w-full sm:w-auto">
@@ -96,13 +96,13 @@ const Index = () => {
                 <div className="w-12 h-12 bg-gradient-to-r from-accent to-secondary rounded-2xl flex items-center justify-center mb-4">
                   <Users className="w-6 h-6 text-white" />
                 </div>
-                <CardTitle className="text-xl mb-2">{t('index.community_challenges')}</CardTitle>
-                <p className="text-muted-foreground">{t('index.community_challenges_desc')}</p>
+                <CardTitle className="text-xl mb-2">{t('index.community_programs')}</CardTitle>
+                <p className="text-muted-foreground">{t('index.community_programs_desc')}</p>
               </CardHeader>
               <CardContent>
                 <Link to="/challenges">
                   <Button className="w-full bg-gradient-to-r from-accent to-secondary hover:from-accent/90 hover:to-secondary/90">
-                    {t('index.challenges_browse')}
+                    {t('index.programs_browse')}
                   </Button>
                 </Link>
               </CardContent>
@@ -143,26 +143,26 @@ const Index = () => {
         >
           <Card className="bg-card/60 backdrop-blur-sm border-border/30">
             <CardContent className="p-3 sm:p-4 text-center">
-              <div className="text-xl sm:text-2xl font-bold text-primary">2.5M kg</div>
-              <div className="text-xs sm:text-sm text-muted-foreground">{t('index.stats_co2_saved')}</div>
+              <div className="text-xl sm:text-2xl font-bold text-primary">15+</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">{t('index.stats_active_programs')}</div>
             </CardContent>
           </Card>
           <Card className="bg-card/60 backdrop-blur-sm border-border/30">
             <CardContent className="p-3 sm:p-4 text-center">
-              <div className="text-xl sm:text-2xl font-bold text-accent">10,000+</div>
-              <div className="text-xs sm:text-sm text-muted-foreground">{t('index.stats_active_users')}</div>
+              <div className="text-xl sm:text-2xl font-bold text-accent">350+</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">{t('index.stats_active_members')}</div>
             </CardContent>
           </Card>
           <Card className="bg-card/60 backdrop-blur-sm border-border/30">
             <CardContent className="p-3 sm:p-4 text-center">
-              <div className="text-xl sm:text-2xl font-bold text-success">245</div>
-              <div className="text-xs sm:text-sm text-muted-foreground">{t('index.stats_partnerships')}</div>
+              <div className="text-xl sm:text-2xl font-bold text-success">25</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">{t('index.stats_organizations')}</div>
             </CardContent>
           </Card>
           <Card className="bg-card/60 backdrop-blur-sm border-border/30">
             <CardContent className="p-3 sm:p-4 text-center">
-              <div className="text-xl sm:text-2xl font-bold text-secondary">67%</div>
-              <div className="text-xs sm:text-sm text-muted-foreground">{t('index.stats_goal_progress')}</div>
+              <div className="text-xl sm:text-2xl font-bold text-secondary">12</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">{t('index.stats_villages')}</div>
             </CardContent>
           </Card>
         </motion.div>
