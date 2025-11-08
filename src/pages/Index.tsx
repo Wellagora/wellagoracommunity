@@ -37,14 +37,14 @@ const Index = () => {
           
           {/* Main Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center mb-6 sm:mb-8 px-4">
-            <Link to="/challenges" className="w-full sm:w-auto">
+            <Link to="/projects" className="w-full sm:w-auto">
               <Button size="lg" className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300">
-                {t('index.cta_start_program')}
+                {t('index.cta_join_community')}
               </Button>
             </Link>
-            <Link to="/community" className="w-full sm:w-auto">
+            <Link to="/challenges" className="w-full sm:w-auto">
               <Button size="lg" variant="outline" className="w-full border-2 border-primary hover:bg-primary hover:text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold transition-all duration-300">
-                {t('index.cta_join_community')}
+                {t('index.cta_start_program')}
               </Button>
             </Link>
             <Link to="/regional-hub" className="w-full sm:w-auto">

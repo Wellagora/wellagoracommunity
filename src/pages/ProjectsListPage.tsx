@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Navigation from "@/components/Navigation";
@@ -22,10 +22,19 @@ export default function ProjectsListPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadProjects();
   }, []);
+
+  // Intelligent redirect: if only one project exists, go directly to join page
+  useEffect(() => {
+    if (!loading && projects.length === 1) {
+      console.log("Only one project found, redirecting to join page...");
+      navigate(`/join/${projects[0].slug}`);
+    }
+  }, [loading, projects, navigate]);
 
   const loadProjects = async () => {
     try {
