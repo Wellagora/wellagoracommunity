@@ -109,24 +109,24 @@ const Index = () => {
             </Card>
           </motion.div>
 
-          {/* Advanced Features */}
+          {/* Community Hub */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
           >
-            <Card className="h-full bg-gradient-to-br from-warning/10 to-destructive/10 border-warning/20 hover:shadow-glow transition-all duration-300 hover:scale-105">
+            <Card className="h-full bg-gradient-to-br from-warning/10 to-primary/10 border-warning/20 hover:shadow-glow transition-all duration-300 hover:scale-105">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-r from-warning to-destructive rounded-2xl flex items-center justify-center mb-4">
-                  <Zap className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 bg-gradient-to-r from-warning to-primary rounded-2xl flex items-center justify-center mb-4">
+                  <Users className="w-6 h-6 text-white" />
                 </div>
-                <CardTitle className="text-xl mb-2">{t('index.advanced_features')}</CardTitle>
-                <p className="text-muted-foreground">{t('index.advanced_features_desc')}</p>
+                <CardTitle className="text-xl mb-2">{t('index.community_hub')}</CardTitle>
+                <p className="text-muted-foreground">{t('index.community_hub_desc')}</p>
               </CardHeader>
               <CardContent>
-                <Link to="/regional-hub">
-                  <Button variant="outline" className="w-full border-success hover:bg-success hover:text-success-foreground">
-                    {t('index.regional_hub_button')}
+                <Link to="/community">
+                  <Button className="w-full bg-gradient-to-r from-warning to-primary hover:from-warning/90 hover:to-primary/90">
+                    {t('index.community_join')}
                   </Button>
                 </Link>
               </CardContent>
