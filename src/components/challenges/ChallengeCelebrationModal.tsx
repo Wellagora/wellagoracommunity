@@ -18,7 +18,6 @@ interface ChallengeCelebrationModalProps {
   onClose: () => void;
   challengeTitle: string;
   pointsEarned: number;
-  co2Saved: number;
   nextChallengeId?: string;
   onPhotoUpload?: (photo: File) => void;
   onInviteFriends?: () => void;
@@ -29,7 +28,6 @@ const ChallengeCelebrationModal = ({
   onClose,
   challengeTitle,
   pointsEarned,
-  co2Saved,
   nextChallengeId,
   onPhotoUpload,
   onInviteFriends,
@@ -67,7 +65,7 @@ const ChallengeCelebrationModal = ({
   };
 
   const handleShare = async () => {
-    const shareText = `${t('challenges.completed_challenge_share')} "${challengeTitle}"! 🌱\n\n🏆 ${pointsEarned} ${t('challenges.points')}\n🌍 ${co2Saved} kg CO₂ ${t('challenges.saved')}`;
+    const shareText = `${t('challenges.completed_challenge_share')} "${challengeTitle}"! 🌱\n\n🏆 ${pointsEarned} ${t('challenges.points')}`;
     
     if (navigator.share) {
       try {
@@ -147,17 +145,11 @@ const ChallengeCelebrationModal = ({
               {t('challenges.celebration_message')} <span className="font-semibold text-foreground">"{challengeTitle}"</span>
             </p>
 
-            <div className="grid grid-cols-2 gap-3 my-6">
+            <div className="grid grid-cols-1 gap-3 my-6">
               <div className="p-4 rounded-lg bg-warning/10 border border-warning/20">
                 <Trophy className="w-6 h-6 text-warning mx-auto mb-2" />
                 <div className="text-2xl font-bold text-foreground">{pointsEarned}</div>
                 <div className="text-xs text-muted-foreground">{t('challenges.points')}</div>
-              </div>
-
-              <div className="p-4 rounded-lg bg-success/10 border border-success/20">
-                <Target className="w-6 h-6 text-success mx-auto mb-2" />
-                <div className="text-2xl font-bold text-foreground">{co2Saved} kg</div>
-                <div className="text-xs text-muted-foreground">CO₂ {t('challenges.saved')}</div>
               </div>
             </div>
 
