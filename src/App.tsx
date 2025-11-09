@@ -7,6 +7,7 @@ import { ProjectProvider } from "@/contexts/ProjectContext";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import RegionalHub from './pages/RegionalHub';
+import ExploreRegionPage from './pages/ExploreRegionPage';
 import Index from "@/pages/Index";
 import AuthPage from "@/pages/AuthPage";
 import DashboardPage from "@/pages/DashboardPage";
@@ -50,6 +51,7 @@ function App() {
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/admin" element={<AdminDashboardPage />} />
                 <Route path="/regional-hub" element={<RegionalHub />} />
+                <Route path="/explore-region" element={<ExploreRegionPage />} />
                 <Route path="/interactive-map" element={<Navigate to="/regional-hub" replace />} />
                 <Route path="/matching" element={<Navigate to="/regional-hub" replace />} />
                 <Route path="/dynamic-regional" element={<Navigate to="/regional-hub" replace />} />

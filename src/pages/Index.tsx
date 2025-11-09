@@ -47,7 +47,7 @@ const Index = () => {
                 {t('index.cta_start_program')}
               </Button>
             </Link>
-            <Link to="/regional-hub" className="w-full sm:w-auto">
+            <Link to="/explore-region" className="w-full sm:w-auto">
               <Button size="lg" variant="outline" className="w-full border-2 border-primary hover:bg-primary hover:text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold transition-all duration-300">
                 {t('index.cta_explore_region')}
               </Button>
