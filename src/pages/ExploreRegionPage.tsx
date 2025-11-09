@@ -65,31 +65,36 @@ const ExploreRegionPage = () => {
 
   const fetchData = async () => {
     if (projectLoading) return;
-    
-    if (!currentProject) {
-      setLoading(false);
-      return;
-    }
 
     setLoading(true);
     try {
-      // Fetch public profiles for current project
-      const { data: profilesData, error: profilesError } = await supabase
+      // Fetch public profiles - with or without project filter
+      let profilesQuery = supabase
         .from('profiles')
         .select('*')
-        .eq('is_public_profile', true)
-        .eq('project_id', currentProject.id);
+        .eq('is_public_profile', true);
+      
+      if (currentProject) {
+        profilesQuery = profilesQuery.eq('project_id', currentProject.id);
+      }
+
+      const { data: profilesData, error: profilesError } = await profilesQuery;
 
       if (!profilesError && profilesData) {
         setProfiles(profilesData as Profile[]);
       }
 
-      // Fetch public organizations for current project
-      const { data: orgsData, error: orgsError } = await supabase
+      // Fetch public organizations - with or without project filter
+      let orgsQuery = supabase
         .from('organizations')
         .select('*')
-        .eq('is_public', true)
-        .eq('project_id', currentProject.id);
+        .eq('is_public', true);
+      
+      if (currentProject) {
+        orgsQuery = orgsQuery.eq('project_id', currentProject.id);
+      }
+
+      const { data: orgsData, error: orgsError } = await orgsQuery;
 
       if (!orgsError && orgsData) {
         setOrganizations(orgsData as Organization[]);
@@ -163,19 +168,6 @@ const ExploreRegionPage = () => {
     );
   }
 
-  if (!currentProject) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Navigation />
-        <div className="container mx-auto px-4 pt-20 text-center">
-          <h2 className="text-2xl font-bold mb-4">Nincs kiválasztott projekt</h2>
-          <Button onClick={() => navigate('/projects')}>
-            Projektek megtekintése
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -196,7 +188,9 @@ const ExploreRegionPage = () => {
             </h1>
           </div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Ismerd meg a {currentProject.region_name} fenntarthatósági közösségének tagjait
+            {currentProject 
+              ? `Ismerd meg a ${currentProject.region_name} fenntarthatósági közösségének tagjait`
+              : 'Ismerd meg a fenntarthatósági közösség tagjait'}
           </p>
         </motion.div>
 
