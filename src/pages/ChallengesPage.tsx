@@ -261,15 +261,6 @@ const ChallengesPage = () => {
           </div>
         </Card3D>
 
-        <div className="mb-4 sm:mb-6">
-          <Button 
-            onClick={() => navigate("/dashboard/handprint")}
-            className="w-full sm:w-auto bg-gradient-to-r from-primary to-success hover:shadow-lg text-sm sm:text-base"
-          >
-            <Calculator className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
-            {t('challenges.handprint_button')}
-          </Button>
-        </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {filteredChallenges.map((challenge, index) => (
@@ -317,14 +308,6 @@ const ChallengesPage = () => {
                   </div>
                 </div>
 
-                {/* Environmental Impact */}
-                <div className="bg-gradient-to-r from-success/10 to-primary/10 rounded-2xl p-4 border border-success/20">
-                  <div className="text-xs text-muted-foreground mb-2">{t('challenges.environmental_impact')}</div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-success font-medium">🌱 {challenge.impact.co2Saved}{t('challenges.co2_savings')}</span>
-                    <span className="text-primary font-medium">🌳 {challenge.impact.treesEquivalent} {t('challenges.trees_equivalent')}</span>
-                  </div>
-                </div>
 
                 {/* Sponsor Badge - Prominent Display */}
                 {challenge.sponsor && (

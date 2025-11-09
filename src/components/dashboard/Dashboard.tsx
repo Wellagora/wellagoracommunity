@@ -93,15 +93,15 @@ const Dashboard = ({ userRole }: DashboardProps) => {
   return (
     <div className="space-y-6 xl:space-y-8">
       {/* Top Impact Bar */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 xl:gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 xl:gap-6">
         <Card className="bg-gradient-to-br from-success/10 to-primary/10 border-success/20">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">{t('handprint.title')}</p>
+                <p className="text-sm text-muted-foreground">{t('dashboard.completed_programs')}</p>
                 <p className="text-2xl font-bold text-foreground">{dashboardData.handprint.score}</p>
               </div>
-              <Leaf className="w-8 h-8 text-success" />
+              <Award className="w-8 h-8 text-success" />
             </div>
           </CardContent>
         </Card>
@@ -110,22 +110,10 @@ const Dashboard = ({ userRole }: DashboardProps) => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">{t('dashboard.co2_saved')}</p>
-                <p className="text-2xl font-bold">{dashboardData.handprint.co2Saved}kg</p>
+                <p className="text-sm text-muted-foreground">{t('dashboard.total_participants')}</p>
+                <p className="text-2xl font-bold">{dashboardData.communityImpact.totalParticipants.toLocaleString()}</p>
               </div>
-              <TreePine className="w-8 h-8 text-success" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">{t('common.trees')}</p>
-                <p className="text-2xl font-bold">{dashboardData.handprint.treesEquivalent}</p>
-              </div>
-              <TreePine className="w-8 h-8 text-primary" />
+              <Users className="w-8 h-8 text-primary" />
             </div>
           </CardContent>
         </Card>
