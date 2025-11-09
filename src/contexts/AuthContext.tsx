@@ -102,35 +102,67 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    // Set up auth state listener
+    console.log('🔧 Setting up auth state listener...');
+    
+    // Set up auth state listener - MUST NOT be async!
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
+        console.log('🔔 Auth state changed:', event, { hasSession: !!session, hasUser: !!session?.user });
+        
+        // Only synchronous updates here
         setSession(session);
         setUser(session?.user ?? null);
         
+        // Defer profile fetch with setTimeout to prevent deadlock
         if (session?.user) {
-          const profile = await fetchProfileData(session.user.id);
-          setProfile(profile);
+          console.log('👤 User detected, deferring profile fetch...');
+          setTimeout(() => {
+            fetchProfileData(session.user.id).then(profile => {
+              console.log('✅ Profile fetched:', { hasProfile: !!profile });
+              setProfile(profile);
+              setLoading(false);
+            }).catch(err => {
+              console.error('❌ Profile fetch failed:', err);
+              setProfile(null);
+              setLoading(false);
+            });
+          }, 0);
         } else {
+          console.log('👤 No user, clearing profile');
           setProfile(null);
+          setLoading(false);
         }
-        setLoading(false);
       }
     );
 
     // Get initial session
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    console.log('🔍 Checking for existing session...');
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('📋 Initial session check:', { hasSession: !!session, hasUser: !!session?.user });
       setSession(session);
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        const profile = await fetchProfileData(session.user.id);
-        setProfile(profile);
+        setTimeout(() => {
+          fetchProfileData(session.user.id).then(profile => {
+            console.log('✅ Initial profile fetched:', { hasProfile: !!profile });
+            setProfile(profile);
+            setLoading(false);
+          }).catch(err => {
+            console.error('❌ Initial profile fetch failed:', err);
+            setProfile(null);
+            setLoading(false);
+          });
+        }, 0);
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      console.log('🧹 Cleaning up auth subscription');
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signUp = async (data: {
