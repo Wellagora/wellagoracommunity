@@ -53,6 +53,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Helper function to fetch profile data
   const fetchProfileData = async (userId: string) => {
+    console.log('🔍 Fetching profile for userId:', userId);
     try {
       const { data: profile, error } = await supabase
         .from('profiles')
@@ -82,14 +83,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .eq('id', userId)
         .maybeSingle();
       
+      console.log('📊 Profile query result:', { profile, error, hasData: !!profile });
+      
       if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching profile:', error);
+        console.error('❌ Error fetching profile:', error);
         return null;
+      }
+      
+      if (!profile) {
+        console.warn('⚠️ No profile found for user:', userId);
       }
       
       return profile as Profile;
     } catch (err) {
-      console.error('Profile fetch error:', err);
+      console.error('❌ Profile fetch error:', err);
       return null;
     }
   };
