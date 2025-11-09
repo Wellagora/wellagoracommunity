@@ -381,6 +381,16 @@ const ProfilePage = () => {
 
   const isOrganization = profile?.user_role !== "citizen";
 
+  // Debug logging
+  useEffect(() => {
+    console.log('Profile Page Debug:', { 
+      authLoading, 
+      hasUser: !!user, 
+      hasProfile: !!profile,
+      profileData: profile 
+    });
+  }, [authLoading, user, profile]);
+
   if (authLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -389,8 +399,21 @@ const ProfilePage = () => {
     );
   }
 
-  if (!user || !profile) {
+  if (!user) {
+    console.error('No user found');
+    navigate('/auth');
     return null;
+  }
+
+  if (!profile) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-muted-foreground">Profil betöltése...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
