@@ -40,8 +40,8 @@ export const challenges: Challenge[] = [
     difficulty: "beginner",
     durationKey: "challenges.duration.monthly",
     pointsReward: 150,
-    participants: 45,
-    completionRate: 92,
+    participants: 0,
+    completionRate: 0,
     stepsKeys: [
       "challenges.kaliMuhely.steps.registration",
       "challenges.kaliMuhely.steps.participation",
@@ -55,10 +55,7 @@ export const challenges: Challenge[] = [
       co2Saved: 5,
       treesEquivalent: 1
     },
-    participants_preview: [
-      { id: "1", name: "Kovács Anna", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face" },
-      { id: "2", name: "Nagy Péter", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face" }
-    ]
+    participants_preview: []
   },
   {
     id: "tudas-hid",
@@ -69,8 +66,8 @@ export const challenges: Challenge[] = [
     difficulty: "intermediate",
     durationKey: "challenges.duration.monthly",
     pointsReward: 200,
-    participants: 32,
-    completionRate: 88,
+    participants: 0,
+    completionRate: 0,
     stepsKeys: [
       "challenges.tudasHid.steps.mentor",
       "challenges.tudasHid.steps.share_skills",
@@ -84,10 +81,7 @@ export const challenges: Challenge[] = [
       co2Saved: 8,
       treesEquivalent: 1
     },
-    participants_preview: [
-      { id: "1", name: "Szabó István", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face" },
-      { id: "2", name: "Tóth Katalin", avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" }
-    ]
+    participants_preview: []
   },
   {
     id: "kali-kozos-kert",
@@ -98,8 +92,8 @@ export const challenges: Challenge[] = [
     difficulty: "beginner",
     durationKey: "challenges.duration.ongoing",
     pointsReward: 180,
-    participants: 67,
-    completionRate: 85,
+    participants: 0,
+    completionRate: 0,
     stepsKeys: [
       "challenges.kaliKozosKert.steps.join",
       "challenges.kaliKozosKert.steps.cultivate",
@@ -113,11 +107,7 @@ export const challenges: Challenge[] = [
       co2Saved: 15,
       treesEquivalent: 2
     },
-    participants_preview: [
-      { id: "1", name: "Horváth Mária", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face" },
-      { id: "2", name: "Kiss József", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face" },
-      { id: "3", name: "Varga Eszter", avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" }
-    ]
+    participants_preview: []
   },
   {
     id: "szomszed-segit",
@@ -128,8 +118,8 @@ export const challenges: Challenge[] = [
     difficulty: "beginner",
     durationKey: "challenges.duration.ongoing",
     pointsReward: 120,
-    participants: 89,
-    completionRate: 94,
+    participants: 0,
+    completionRate: 0,
     stepsKeys: [
       "challenges.szomszedSegit.steps.register",
       "challenges.szomszedSegit.steps.offer_help",
@@ -143,10 +133,7 @@ export const challenges: Challenge[] = [
       co2Saved: 12,
       treesEquivalent: 1
     },
-    participants_preview: [
-      { id: "1", name: "Molnár Gábor", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face" },
-      { id: "2", name: "Balogh Éva", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face" }
-    ]
+    participants_preview: []
   },
   {
     id: "kali-tortenetek",
@@ -157,8 +144,8 @@ export const challenges: Challenge[] = [
     difficulty: "beginner",
     durationKey: "challenges.duration.monthly",
     pointsReward: 140,
-    participants: 54,
-    completionRate: 90,
+    participants: 0,
+    completionRate: 0,
     stepsKeys: [
       "challenges.kaliTortenetek.steps.gather",
       "challenges.kaliTortenetek.steps.share_stories",
@@ -172,10 +159,7 @@ export const challenges: Challenge[] = [
       co2Saved: 3,
       treesEquivalent: 1
     },
-    participants_preview: [
-      { id: "1", name: "Németh László", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face" },
-      { id: "2", name: "Farkas Ildikó", avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" }
-    ]
+    participants_preview: []
   },
   // Kreatív ötletek - Creative Ideas
   {
@@ -187,8 +171,8 @@ export const challenges: Challenge[] = [
     difficulty: "beginner",
     durationKey: "challenges.duration.monthly",
     pointsReward: 160,
-    participants: 38,
-    completionRate: 87,
+    participants: 0,
+    completionRate: 0,
     stepsKeys: [
       "challenges.kaliKonyhak.steps.attend",
       "challenges.kaliKonyhak.steps.cook_together",
@@ -202,10 +186,7 @@ export const challenges: Challenge[] = [
       co2Saved: 10,
       treesEquivalent: 1
     },
-    participants_preview: [
-      { id: "1", name: "Papp Judit", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face" },
-      { id: "2", name: "Takács András", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face" }
-    ]
+    participants_preview: []
   },
   {
     id: "mestersegek-ejszakaja",
@@ -216,8 +197,8 @@ export const challenges: Challenge[] = [
     difficulty: "intermediate",
     durationKey: "challenges.duration.1_day",
     pointsReward: 200,
-    participants: 72,
-    completionRate: 91,
+    participants: 0,
+    completionRate: 0,
     stepsKeys: [
       "challenges.mestersegekEjszakaja.steps.register",
       "challenges.mestersegekEjszakaja.steps.learn_craft",
@@ -231,11 +212,7 @@ export const challenges: Challenge[] = [
       co2Saved: 5,
       treesEquivalent: 1
     },
-    participants_preview: [
-      { id: "1", name: "Lakatos Zsófia", avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" },
-      { id: "2", name: "Rácz Tamás", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face" },
-      { id: "3", name: "Simon Rita", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face" }
-    ]
+    participants_preview: []
   },
   {
     id: "kali-tortenetek-tuz",
@@ -246,8 +223,8 @@ export const challenges: Challenge[] = [
     difficulty: "beginner",
     durationKey: "challenges.duration.seasonal",
     pointsReward: 130,
-    participants: 48,
-    completionRate: 88,
+    participants: 0,
+    completionRate: 0,
     stepsKeys: [
       "challenges.kaliTortenetekTuz.steps.gather",
       "challenges.kaliTortenetekTuz.steps.share",
@@ -261,10 +238,7 @@ export const challenges: Challenge[] = [
       co2Saved: 4,
       treesEquivalent: 1
     },
-    participants_preview: [
-      { id: "1", name: "Pintér Mónika", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face" },
-      { id: "2", name: "Gál Norbert", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face" }
-    ]
+    participants_preview: []
   },
   {
     id: "szezonalis-unnepek",
@@ -275,8 +249,8 @@ export const challenges: Challenge[] = [
     difficulty: "beginner",
     durationKey: "challenges.duration.seasonal",
     pointsReward: 170,
-    participants: 95,
-    completionRate: 93,
+    participants: 0,
+    completionRate: 0,
     stepsKeys: [
       "challenges.szezonalisUnnepek.steps.participate",
       "challenges.szezonalisUnnepek.steps.celebrate",
@@ -290,11 +264,7 @@ export const challenges: Challenge[] = [
       co2Saved: 7,
       treesEquivalent: 1
     },
-    participants_preview: [
-      { id: "1", name: "Novák Petra", avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" },
-      { id: "2", name: "Barna Mihály", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face" },
-      { id: "3", name: "Fekete Judit", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face" }
-    ]
+    participants_preview: []
   },
   {
     id: "kali-csere-bere",
@@ -305,8 +275,8 @@ export const challenges: Challenge[] = [
     difficulty: "beginner",
     durationKey: "challenges.duration.monthly",
     pointsReward: 140,
-    participants: 61,
-    completionRate: 84,
+    participants: 0,
+    completionRate: 0,
     stepsKeys: [
       "challenges.kaliCsereBere.steps.bring_items",
       "challenges.kaliCsereBere.steps.exchange",
@@ -320,10 +290,7 @@ export const challenges: Challenge[] = [
       co2Saved: 18,
       treesEquivalent: 2
     },
-    participants_preview: [
-      { id: "1", name: "Varga Zsolt", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face" },
-      { id: "2", name: "Kovács Erika", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face" }
-    ]
+    participants_preview: []
   },
   {
     id: "idobank",
@@ -334,8 +301,8 @@ export const challenges: Challenge[] = [
     difficulty: "intermediate",
     durationKey: "challenges.duration.ongoing",
     pointsReward: 190,
-    participants: 43,
-    completionRate: 86,
+    participants: 0,
+    completionRate: 0,
     stepsKeys: [
       "challenges.idobank.steps.register",
       "challenges.idobank.steps.offer_service",
@@ -349,10 +316,7 @@ export const challenges: Challenge[] = [
       co2Saved: 14,
       treesEquivalent: 1
     },
-    participants_preview: [
-      { id: "1", name: "Szabó Kristóf", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face" },
-      { id: "2", name: "Nagy Dóra", avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" }
-    ]
+    participants_preview: []
   }
 ];
 

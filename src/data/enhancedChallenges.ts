@@ -125,21 +125,10 @@ export const generateDynamicChallenges = (category?: string, difficulty?: string
       difficulty: 'intermediate' as const,
       durationKey: 'challenges.duration.21_days',
       pointsReward: 450,
-      participants: 892,
-      completionRate: 67,
-      isSponsored: true,
-      sponsorVisibility: true,
-      sponsor: {
-        name: 'E.ON Hungária',
-        logo: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center'
-      },
-      sponsorshipPackage: {
-        level: 'medium' as const,
-        priceHuf: 250000,
-        benefits: ['5 kampány/hó', 'Kiterjesztett branding'],
-        creditsRemaining: 3,
-        totalCredits: 5
-      },
+      participants: 0,
+      completionRate: 0,
+      isSponsored: false,
+      sponsorVisibility: false,
       stepsKeys: [
         'challenges.energy_winter.steps.audit',
         'challenges.energy_winter.steps.insulation',
@@ -154,11 +143,7 @@ export const generateDynamicChallenges = (category?: string, difficulty?: string
         co2Saved: 28.5,
         treesEquivalent: 4
       },
-      participants_preview: [
-        { id: '1', name: 'Kovács Péter', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face' },
-        { id: '2', name: 'Nagy Anna', avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face' },
-        { id: '3', name: 'Szabó Márton', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face' }
-      ]
+      participants_preview: []
     },
     {
       id: 'urban-mobility',
@@ -169,21 +154,10 @@ export const generateDynamicChallenges = (category?: string, difficulty?: string
       difficulty: 'beginner' as const,
       durationKey: 'challenges.duration.14_days',
       pointsReward: 350,
-      participants: 1456,
-      completionRate: 82,
-      isSponsored: true,
-      sponsorVisibility: true,
-      sponsor: {
-        name: 'MOL Bubi',
-        logo: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=100&h=100&fit=crop&crop=center'
-      },
-      sponsorshipPackage: {
-        level: 'small' as const,
-        priceHuf: 100000,
-        benefits: ['2 kampány/hó', 'Logo megjelenés'],
-        creditsRemaining: 1,
-        totalCredits: 2
-      },
+      participants: 0,
+      completionRate: 0,
+      isSponsored: false,
+      sponsorVisibility: false,
       stepsKeys: [
         'challenges.urban_mobility.steps.assess',
         'challenges.urban_mobility.steps.plan_route',
@@ -198,10 +172,7 @@ export const generateDynamicChallenges = (category?: string, difficulty?: string
         co2Saved: 12.8,
         treesEquivalent: 2
       },
-      participants_preview: [
-        { id: '4', name: 'Tóth Zsuzsanna', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face' },
-        { id: '5', name: 'Kiss János', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face' }
-      ]
+      participants_preview: []
     },
     {
       id: 'zero-waste-office',
@@ -212,21 +183,10 @@ export const generateDynamicChallenges = (category?: string, difficulty?: string
       difficulty: 'advanced' as const,
       durationKey: 'challenges.duration.30_days',
       pointsReward: 650,
-      participants: 324,
-      completionRate: 58,
-      isSponsored: true,
-      sponsorVisibility: true,
-      sponsor: {
-        name: 'IKEA Magyarország',
-        logo: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=100&h=100&fit=crop&crop=center'
-      },
-      sponsorshipPackage: {
-        level: 'large' as const,
-        priceHuf: 500000,
-        benefits: ['10 kampány/hó', 'Prémium branding', 'Account manager'],
-        creditsRemaining: 7,
-        totalCredits: 10
-      },
+      participants: 0,
+      completionRate: 0,
+      isSponsored: false,
+      sponsorVisibility: false,
       stepsKeys: [
         'challenges.zero_waste_office.steps.audit',
         'challenges.zero_waste_office.steps.eliminate_disposables',
@@ -241,9 +201,7 @@ export const generateDynamicChallenges = (category?: string, difficulty?: string
         co2Saved: 45.2,
         treesEquivalent: 7
       },
-      participants_preview: [
-        { id: '6', name: 'Horváth Gábor', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face' }
-      ]
+      participants_preview: []
     }
   ];
 
