@@ -537,9 +537,6 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Award className="w-4 h-4 text-warning" />
                 <span>{challenge.pointsReward} {t('challenges.points')}</span>
-                <span className="text-muted-foreground/50">•</span>
-                <Leaf className="w-4 h-4 text-success" />
-                <span>{challenge.impact.co2Saved}kg CO₂</span>
               </div>
             </div>
           )}
