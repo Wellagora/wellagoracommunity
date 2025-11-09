@@ -61,10 +61,15 @@ const ExploreRegionPage = () => {
 
   useEffect(() => {
     fetchData();
-  }, [currentProject]);
+  }, [currentProject, projectLoading]);
 
   const fetchData = async () => {
-    if (!currentProject) return;
+    if (projectLoading) return;
+    
+    if (!currentProject) {
+      setLoading(false);
+      return;
+    }
 
     setLoading(true);
     try {
