@@ -22,6 +22,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useProject } from "@/contexts/ProjectContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 
@@ -78,6 +79,7 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
   const { toast } = useToast();
   const { profile } = useAuth();
   const { t } = useLanguage();
+  const { currentProject } = useProject();
   const navigate = useNavigate();
   const [selectedChallenge, setSelectedChallenge] = useState("");
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
@@ -97,6 +99,7 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
           .from('challenge_definitions')
           .select('*')
           .eq('is_active', true)
+          .eq('project_id', currentProject?.id || '')
           .limit(20);
 
         if (error) {

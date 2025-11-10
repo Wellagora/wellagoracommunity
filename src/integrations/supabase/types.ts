@@ -100,6 +100,7 @@ export type Database = {
           max_team_size: number | null
           min_team_size: number | null
           points_base: number
+          project_id: string | null
           start_date: string | null
           title: string
           validation_requirements: Json | null
@@ -120,6 +121,7 @@ export type Database = {
           max_team_size?: number | null
           min_team_size?: number | null
           points_base?: number
+          project_id?: string | null
           start_date?: string | null
           title: string
           validation_requirements?: Json | null
@@ -140,11 +142,20 @@ export type Database = {
           max_team_size?: number | null
           min_team_size?: number | null
           points_base?: number
+          project_id?: string | null
           start_date?: string | null
           title?: string
           validation_requirements?: Json | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "challenge_definitions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       challenge_sponsorships: {
         Row: {

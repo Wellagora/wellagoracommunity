@@ -16,6 +16,7 @@ import { Users, Mail, Target, TrendingUp, Award, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useProject } from "@/contexts/ProjectContext";
 import { supabase } from "@/integrations/supabase/client";
 
 interface MobilizeTeamModalProps {
@@ -36,6 +37,7 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
   const { toast } = useToast();
   const { profile } = useAuth();
   const { t } = useLanguage();
+  const { currentProject } = useProject();
   const [selectedChallenge, setSelectedChallenge] = useState("");
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const [message, setMessage] = useState("");
@@ -97,6 +99,7 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
           .from('challenge_definitions')
           .select('*')
           .eq('is_active', true)
+          .eq('project_id', currentProject?.id || '')
           .limit(10);
 
         if (error) {

@@ -32,7 +32,7 @@ const programSchema = z.object({
 
 type ProgramFormData = z.infer<typeof programSchema>;
 
-export const ProgramCreator = () => {
+export const ProgramCreator = ({ defaultProjectId }: { defaultProjectId: string | null }) => {
   const { t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isContinuous, setIsContinuous] = useState(true);
@@ -86,6 +86,7 @@ export const ProgramCreator = () => {
           location: data.location || null,
           is_active: true,
           base_impact: {},
+          project_id: defaultProjectId,
         });
 
       if (error) throw error;
