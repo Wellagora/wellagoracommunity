@@ -227,11 +227,11 @@ const ChallengesSection = () => {
                     </div>
 
                     {/* Action Buttons based on user role */}
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       {/* Join Challenge Button - shown to all authenticated users */}
                       {profile && (
                         <Button 
-                          className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth"
+                          className="w-full sm:flex-1 bg-gradient-primary hover:shadow-glow transition-smooth text-sm sm:text-base"
                           asChild
                         >
                           <Link to={`/challenges/${challenge.id}`}>
@@ -244,7 +244,7 @@ const ChallengesSection = () => {
                       {profile && ['business', 'ngo', 'government'].includes(profile.user_role) && (
                         <Button 
                           variant="outline"
-                          className="flex-1"
+                          className="w-full sm:flex-1 text-sm sm:text-base"
                           asChild
                         >
                           <Link to={`/challenges/${challenge.id}?action=sponsor`}>
@@ -256,7 +256,7 @@ const ChallengesSection = () => {
                       {/* Not logged in - show generic button */}
                       {!profile && (
                         <Button 
-                          className="w-full bg-gradient-primary hover:shadow-glow transition-smooth"
+                          className="w-full bg-gradient-primary hover:shadow-glow transition-smooth text-sm sm:text-base"
                           asChild
                         >
                           <Link to={`/challenges/${challenge.id}`}>
