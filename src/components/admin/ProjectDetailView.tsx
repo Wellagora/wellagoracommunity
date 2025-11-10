@@ -3,8 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ArrowLeft, Plus, CheckCircle, XCircle, Clock, Sparkles } from "lucide-react";
 import { ProgramCreator } from "./ProgramCreator";
+import { ProgramEditor } from "./ProgramEditor";
 
 interface Project {
   id: string;
@@ -54,9 +56,29 @@ export default function ProjectDetailView({
   onRefresh 
 }: ProjectDetailViewProps) {
   const [activeTab, setActiveTab] = useState("programs");
+  const [editingProgramId, setEditingProgramId] = useState<string | null>(null);
 
   return (
     <div className="space-y-6">
+      {/* Edit Program Dialog */}
+      <Dialog open={!!editingProgramId} onOpenChange={(open) => !open && setEditingProgramId(null)}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Program szerkesztése</DialogTitle>
+          </DialogHeader>
+          {editingProgramId && (
+            <ProgramEditor
+              programId={editingProgramId}
+              onSuccess={() => {
+                setEditingProgramId(null);
+                onRefresh();
+              }}
+              onCancel={() => setEditingProgramId(null)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+      
       {/* Header */}
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" onClick={onBack}>
