@@ -24,6 +24,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useProject } from "@/contexts/ProjectContext";
 import LanguageSelector from "./LanguageSelector";
 import { ProjectSelector } from "./ProjectSelector";
+import { RoleSwitcher } from "./admin/RoleSwitcher";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import kaliLogo from "@/assets/kali-medence-logo.png";
@@ -136,7 +137,7 @@ const Navigation = () => {
           </div>
         </div>
 
-        {/* Desktop Bottom Row - Navigation and Actions */}
+          {/* Desktop Bottom Row - Navigation and Actions */}
         <div className="hidden lg:flex justify-between items-center h-16">
           {/* Navigation Links */}
           <div className="flex items-center space-x-8">
@@ -194,8 +195,9 @@ const Navigation = () => {
           <div className="flex items-center space-x-4">
             {user ? (
               <div className="flex items-center space-x-4">
+                <RoleSwitcher />
                 {currentProject && <ProjectSelector />}
-                <Link 
+                <Link
                   to="/profile" 
                   className="flex items-center space-x-3 px-4 py-2 bg-gradient-to-r from-card/80 to-background/80 backdrop-blur-sm rounded-xl border border-border hover:from-card hover:to-background/90 transition-all duration-300"
                 >
