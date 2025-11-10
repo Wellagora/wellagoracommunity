@@ -81,6 +81,7 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
   const { t } = useLanguage();
   const { currentProject } = useProject();
   const navigate = useNavigate();
+  
   const [selectedChallenge, setSelectedChallenge] = useState("");
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
   const [challenges, setChallenges] = useState<any[]>([]);
