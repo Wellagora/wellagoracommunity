@@ -225,18 +225,20 @@ const AdminDashboard = () => {
         .select('*', { count: 'exact', head: true })
         .eq('is_active', true);
 
-      // Load active programs (challenge_definitions) - include global (NULL) and project-specific
+      // Load active programs (challenge_definitions) filtered by project
       try {
-        // @ts-ignore - Complex type inference issue with Supabase
-        const activeProgramsResult = await supabase
-          .from('challenge_definitions')
-          .select('id, title, description, category, difficulty, duration_days, points_base, base_impact, validation_requirements, created_at, location, project_id')
-          .eq('is_active', true)
-          .or(`project_id.is.null,project_id.eq.${defaultProjectId || ''}`)
-          .order('created_at', { ascending: false });
+        if (defaultProjectId) {
+          // @ts-ignore - Complex type inference issue with Supabase
+          const activeProgramsResult = await supabase
+            .from('challenge_definitions')
+            .select('id, title, description, category, difficulty, duration_days, points_base, base_impact, validation_requirements, created_at, location, project_id')
+            .eq('is_active', true)
+            .eq('project_id', defaultProjectId)
+            .order('created_at', { ascending: false });
 
-        if (activeProgramsResult.data) {
-          setActivePrograms(activeProgramsResult.data as any);
+          if (activeProgramsResult.data) {
+            setActivePrograms(activeProgramsResult.data as any);
+          }
         }
       } catch (e) {
         console.error('Error loading active programs:', e);
