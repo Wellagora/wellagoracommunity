@@ -1689,6 +1689,8 @@
   "organization.active_employees": "Aktív alkalmazott",
   "organization.total_completions": "Összes teljesítés",
   "organization.co2_saved": "CO₂ megtakarítva",
+  "admin.program_created_success": "Program sikeresen létrehozva!",
+  "admin.program_created_error": "Hiba történt a program létrehozásakor",
   "organization.employee_participation": "Alkalmazottak részvétele",
   "organization.no_employee_completions": "Még nincs alkalmazotti teljesítés",
   "organization.encourage_employees": "Bátorítsd az alkalmazottakat a kihívásokban való részvételre!",

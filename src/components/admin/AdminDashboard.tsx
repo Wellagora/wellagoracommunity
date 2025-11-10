@@ -10,6 +10,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import UserRoleManager from './UserRoleManager';
+import { ProgramCreator } from './ProgramCreator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -674,6 +675,9 @@ const AdminDashboard = () => {
           <TabsTrigger value="projects">
             Projektek ({projects.length})
           </TabsTrigger>
+          <TabsTrigger value="programs">
+            Új program létrehozása
+          </TabsTrigger>
           <TabsTrigger value="challenges">
             Kihívások kezelése
           </TabsTrigger>
@@ -850,6 +854,10 @@ const AdminDashboard = () => {
               ))
             )}
           </div>
+        </TabsContent>
+
+        <TabsContent value="programs" className="space-y-4">
+          <ProgramCreator />
         </TabsContent>
 
         <TabsContent value="challenges" className="space-y-4">

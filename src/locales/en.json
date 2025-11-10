@@ -1364,6 +1364,8 @@
   "organization.active_employees": "Active Employees",
   "organization.total_completions": "Total Completions",
   "organization.co2_saved": "CO₂ Saved",
+  "admin.program_created_success": "Program created successfully!",
+  "admin.program_created_error": "Failed to create program",
   "organization.employee_participation": "Employee Participation",
   "organization.no_employee_completions": "No employee completions yet",
   "organization.encourage_employees": "Encourage your employees to participate in challenges!",
