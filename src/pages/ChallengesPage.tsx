@@ -357,12 +357,39 @@ const ChallengesPage = () => {
                   </div>
                 </div>
 
-                <Button 
-                  onClick={() => navigate(`/challenges/${challenge.id}`)}
-                  className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground font-semibold rounded-2xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300"
-                >
-                  {getButtonText()}
-                </Button>
+                {/* Action Buttons based on user role */}
+                <div className="flex gap-2">
+                  {/* Join Challenge Button - shown to all authenticated users */}
+                  {profile && (
+                    <Button 
+                      onClick={() => navigate(`/challenges/${challenge.id}`)}
+                      className="flex-1 bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground font-semibold rounded-2xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300"
+                    >
+                      {t('challenges.join_challenge')}
+                    </Button>
+                  )}
+                  
+                  {/* Sponsor Button - shown only to business/ngo/government */}
+                  {profile && ['business', 'ngo', 'government'].includes(profile.user_role) && (
+                    <Button 
+                      onClick={() => navigate(`/challenges/${challenge.id}?action=sponsor`)}
+                      variant="outline"
+                      className="flex-1 rounded-2xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300"
+                    >
+                      {t('challenges.sponsor_challenge')}
+                    </Button>
+                  )}
+                  
+                  {/* Not logged in - show generic button */}
+                  {!profile && (
+                    <Button 
+                      onClick={() => navigate(`/challenges/${challenge.id}`)}
+                      className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground font-semibold rounded-2xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300"
+                    >
+                      {t('challenges.view_challenge')}
+                    </Button>
+                  )}
+                </div>
               </CardContent>
             </Card3D>
           ))}
