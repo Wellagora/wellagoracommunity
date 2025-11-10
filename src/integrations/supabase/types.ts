@@ -91,12 +91,16 @@ export type Database = {
           description: string
           difficulty: string
           duration_days: number | null
+          end_date: string | null
           id: string
           is_active: boolean | null
+          is_continuous: boolean | null
           is_team_challenge: boolean | null
+          location: string | null
           max_team_size: number | null
           min_team_size: number | null
           points_base: number
+          start_date: string | null
           title: string
           validation_requirements: Json | null
         }
@@ -107,12 +111,16 @@ export type Database = {
           description: string
           difficulty?: string
           duration_days?: number | null
+          end_date?: string | null
           id: string
           is_active?: boolean | null
+          is_continuous?: boolean | null
           is_team_challenge?: boolean | null
+          location?: string | null
           max_team_size?: number | null
           min_team_size?: number | null
           points_base?: number
+          start_date?: string | null
           title: string
           validation_requirements?: Json | null
         }
@@ -123,12 +131,16 @@ export type Database = {
           description?: string
           difficulty?: string
           duration_days?: number | null
+          end_date?: string | null
           id?: string
           is_active?: boolean | null
+          is_continuous?: boolean | null
           is_team_challenge?: boolean | null
+          location?: string | null
           max_team_size?: number | null
           min_team_size?: number | null
           points_base?: number
+          start_date?: string | null
           title?: string
           validation_requirements?: Json | null
         }
