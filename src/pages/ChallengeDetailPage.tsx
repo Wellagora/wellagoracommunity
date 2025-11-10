@@ -108,10 +108,18 @@ const ChallengeDetailPage = () => {
     }
 
     try {
+      // Get user's profile to link to organization
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("organization_id")
+        .eq("id", user.id)
+        .single();
+
       const { error } = await supabase.from("challenge_completions").insert({
         user_id: user.id,
         challenge_id: challengeId,
         project_id: currentProject?.id || null,
+        organization_id: profileData?.organization_id || null,
         completion_type: "manual",
         validation_status: "pending",
         impact_data: challenge?.impact || {},

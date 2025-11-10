@@ -563,16 +563,7 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
           {/* Action Buttons - mobile optimized */}
           <div className="flex flex-col sm:flex-row gap-3 w-full">
             {!userProgress?.isParticipating ? (
-              isOrganization ? (
-                <Button 
-                  onClick={() => setShowSponsorModal(true)}
-                  className="flex-1 bg-gradient-to-r from-warning to-primary hover:shadow-glow transition-smooth h-12 sm:h-11 text-base font-semibold group"
-                >
-                  <Star className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                  {t('challenges.sponsor_challenge')}
-                  <Sparkles className="w-4 h-4 ml-2 opacity-70" />
-                </Button>
-              ) : (
+              <>
                 <Button 
                   onClick={handleJoinChallenge}
                   className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth h-12 sm:h-11 text-base font-semibold group"
@@ -581,7 +572,17 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
                   {t('challenges.join_challenge')}
                   <Sparkles className="w-4 h-4 ml-2 opacity-70" />
                 </Button>
-              )
+                {isOrganization && (
+                  <Button 
+                    onClick={() => setShowSponsorModal(true)}
+                    variant="outline"
+                    className="sm:w-auto h-12 sm:h-11 border-warning text-warning hover:bg-warning/10"
+                  >
+                    <Star className="w-5 h-5 mr-2" />
+                    {t('challenges.sponsor_challenge')}
+                  </Button>
+                )}
+              </>
             ) : userProgress.isCompleted ? (
               <Button 
                 disabled

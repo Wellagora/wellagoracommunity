@@ -1677,5 +1677,14 @@
   "sponsor.credits": "kredit",
   "sponsor.active_package": "Aktív csomag",
   "sponsor.challenge_sponsorship": "program szponzorálás",
-  "sponsor.package_purchase": "csomag vásárlás"
+  "sponsor.package_purchase": "csomag vásárlás",
+  "organization.active_employees": "Aktív alkalmazott",
+  "organization.total_completions": "Összes teljesítés",
+  "organization.co2_saved": "CO₂ megtakarítva",
+  "organization.employee_participation": "Alkalmazottak részvétele",
+  "organization.no_employee_completions": "Még nincs alkalmazotti teljesítés",
+  "organization.encourage_employees": "Bátorítsd az alkalmazottakat a kihívásokban való részvételre!",
+  "organization.completions_by_employees": "teljesítés alkalmazottaktól",
+  "organization.more_completions": "további teljesítés",
+  "organization.sponsored_challenges": "Szponzorált programok"
 }

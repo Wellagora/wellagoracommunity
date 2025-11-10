@@ -1352,5 +1352,14 @@
   "sponsor.credits": "credits",
   "sponsor.active_package": "Active Package",
   "sponsor.challenge_sponsorship": "challenge sponsorship",
-  "sponsor.package_purchase": "package purchase"
+  "sponsor.package_purchase": "package purchase",
+  "organization.active_employees": "Active Employees",
+  "organization.total_completions": "Total Completions",
+  "organization.co2_saved": "CO₂ Saved",
+  "organization.employee_participation": "Employee Participation",
+  "organization.no_employee_completions": "No employee completions yet",
+  "organization.encourage_employees": "Encourage your employees to participate in challenges!",
+  "organization.completions_by_employees": "completions by employees",
+  "organization.more_completions": "more completions",
+  "organization.sponsored_challenges": "Sponsored Challenges"
 }

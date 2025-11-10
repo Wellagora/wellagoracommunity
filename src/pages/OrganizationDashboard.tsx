@@ -5,6 +5,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import Navigation from "@/components/Navigation";
 import { MobilizeTeamModal } from "@/components/dashboard/MobilizeTeamModal";
 import { OrganizationSponsorModal } from "@/components/dashboard/OrganizationSponsorModal";
+import { OrganizationChallengeStats } from "@/components/dashboard/OrganizationChallengeStats";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -507,10 +508,30 @@ const OrganizationDashboard = () => {
           <TabsContent value="challenges" className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <h3 className="text-xl sm:text-2xl font-bold text-foreground">{t('organization.challenge_ecosystem')}</h3>
-              <Button className="bg-gradient-primary hover:shadow-glow transition-smooth w-full sm:w-auto">
+              <Button 
+                className="bg-gradient-primary hover:shadow-glow transition-smooth w-full sm:w-auto"
+                onClick={() => setSponsorModalOpen(true)}
+              >
                 <Plus className="w-4 h-4 mr-2" />
-                {t('organization.new_challenge')}
+                {t('organization.sponsor_challenge')}
               </Button>
+            </div>
+
+            {/* Employee Participation Stats */}
+            <div className="mb-8">
+              <h4 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                <Users className="w-5 h-5 text-primary" />
+                {t('organization.employee_participation')}
+              </h4>
+              <OrganizationChallengeStats />
+            </div>
+
+            {/* Sponsored & Created Challenges */}
+            <div className="mb-4">
+              <h4 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                <Award className="w-5 h-5 text-warning" />
+                {t('organization.sponsored_challenges')}
+              </h4>
             </div>
 
             <div className="grid gap-4">

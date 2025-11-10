@@ -24,6 +24,7 @@ export type Database = {
           id: string
           impact_data: Json
           notes: string | null
+          organization_id: string | null
           points_earned: number
           project_id: string | null
           updated_at: string
@@ -40,6 +41,7 @@ export type Database = {
           id?: string
           impact_data: Json
           notes?: string | null
+          organization_id?: string | null
           points_earned?: number
           project_id?: string | null
           updated_at?: string
@@ -56,6 +58,7 @@ export type Database = {
           id?: string
           impact_data?: Json
           notes?: string | null
+          organization_id?: string | null
           points_earned?: number
           project_id?: string | null
           updated_at?: string
@@ -64,6 +67,13 @@ export type Database = {
           validation_status?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "challenge_completions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "challenge_completions_project_id_fkey"
             columns: ["project_id"]
