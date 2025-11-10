@@ -47,98 +47,6 @@ const Community = () => {
     }
   }, [user, loading, navigate]);
 
-  const discussions = [
-    {
-      id: 1,
-      title: t('community.discussion1.title'),
-      author: "Sarah Chen",
-      role: "Business",
-      avatar: "SC",
-      content: t('community.discussion1.content'),
-      replies: 12,
-      likes: 24,
-      timeAgo: "2 órája",
-      category: t('community.discussion1.category')
-    },
-    {
-      id: 2,
-      title: t('community.discussion2.title'),
-      author: "Mike Rodriguez",
-      role: "Municipal",
-      avatar: "MR",
-      content: t('community.discussion2.content'),
-      replies: 8,
-      likes: 45,
-      timeAgo: "5 órája",
-      category: t('community.discussion2.category')
-    },
-    {
-      id: 3,
-      title: t('community.discussion3.title'),
-      author: "Emma Johnson",
-      role: "Citizen",
-      avatar: "EJ",
-      content: t('community.discussion3.content'),
-      replies: 15,
-      likes: 32,
-      timeAgo: "1 napja",
-      category: t('community.discussion3.category')
-    }
-  ];
-
-  const successStories = [
-    {
-      id: 1,
-      title: t('community.story1.title'),
-      description: t('community.story1.description'),
-      type: "Business",
-      impact: t('community.story1.impact'),
-      gradient: "from-success/20 to-primary/20"
-    },
-    {
-      id: 2,
-      title: t('community.story2.title'),
-      description: t('community.story2.description'),
-      type: "NGO",
-      impact: t('community.story2.impact'),
-      gradient: "from-primary/20 to-accent/20"
-    },
-    {
-      id: 3,
-      title: t('community.story3.title'),
-      description: t('community.story3.description'),
-      type: "Municipal",
-      impact: t('community.story3.impact'),
-      gradient: "from-warning/20 to-success/20"
-    }
-  ];
-
-  const topContributors = [
-    { name: "Lisa Wang", points: 2450, avatar: "LW", badge: "🥇" },
-    { name: "David Kim", points: 2180, avatar: "DK", badge: "🥈" },
-    { name: "Team EcoTech", points: 1920, avatar: "ET", badge: "🥉" },
-    { name: "Maria Santos", points: 1850, avatar: "MS", badge: "🏆" },
-    { name: "Green Innovators", points: 1720, avatar: "GI", badge: "⭐" }
-  ];
-
-  const getRoleIcon = (role: string) => {
-    switch (role.toLowerCase()) {
-      case 'business': return <Building2 className="w-4 h-4" />;
-      case 'municipal': return <MapPin className="w-4 h-4" />;
-      case 'citizen': return <User className="w-4 h-4" />;
-      default: return <Heart className="w-4 h-4" />;
-    }
-  };
-
-  const getRoleColor = (role: string) => {
-    switch (role.toLowerCase()) {
-      case 'business': return 'bg-primary/20 text-primary';
-      case 'municipal': return 'bg-warning/20 text-warning';
-      case 'citizen': return 'bg-success/20 text-success';
-      default: return 'bg-accent/20 text-accent';
-    }
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -226,70 +134,16 @@ const Community = () => {
 
               {/* Tab Content */}
               {activeTab === "discussions" && (
-                <div className="space-y-3 sm:space-y-4 lg:space-y-6">
-                  {discussions.map((discussion, index) => (
-                    <Card3D 
-                      key={discussion.id} 
-                      className="bg-background/50 border border-border/50 p-3 sm:p-4 lg:p-6 hover:bg-background/70 transition-all duration-300 animate-slide-in-3d"
-                      style={{ animationDelay: `${index * 0.1}s` }}
-                    >
-                      <div className="flex items-start space-x-2 sm:space-x-3 lg:space-x-4">
-                        <Avatar className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 shadow-premium flex-shrink-0">
-                          <AvatarFallback className="bg-gradient-to-br from-primary to-success text-primary-foreground font-semibold text-xs sm:text-sm">
-                            {discussion.avatar}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
-                            <h3 className="font-semibold text-foreground text-sm sm:text-base lg:text-lg">{discussion.title}</h3>
-                            <Badge className={`${getRoleColor(discussion.role)} text-xs px-2 py-0.5 rounded-full w-fit`}>
-                              {getRoleIcon(discussion.role)}
-                              <span className="ml-1">{discussion.category}</span>
-                            </Badge>
-                          </div>
-                          <p className="text-xs sm:text-sm text-muted-foreground mb-2">
-                            {discussion.author} • {discussion.role}
-                          </p>
-                          <p className="text-xs sm:text-sm lg:text-base text-foreground mb-3 sm:mb-4">{discussion.content}</p>
-                          <div className="flex flex-wrap items-center gap-3 sm:gap-4 lg:gap-6 text-xs sm:text-sm text-muted-foreground">
-                            <div className="flex items-center space-x-1 sm:space-x-2">
-                              <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4" />
-                              <span>{discussion.replies} {t('community.replies')}</span>
-                            </div>
-                            <div className="flex items-center space-x-1 sm:space-x-2">
-                              <ThumbsUp className="w-3 h-3 sm:w-4 sm:h-4" />
-                              <span>{discussion.likes} {t('community.likes')}</span>
-                            </div>
-                            <div className="flex items-center space-x-1 sm:space-x-2">
-                              <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
-                              <span>{discussion.timeAgo}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </Card3D>
-                  ))}
+                <div className="text-center py-12">
+                  <MessageCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-muted-foreground">{t('community.no_discussions')}</p>
                 </div>
               )}
 
               {activeTab === "stories" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
-                  {successStories.map((story, index) => (
-                    <Card3D 
-                      key={story.id} 
-                      className={`bg-gradient-to-br ${story.gradient} border border-border/50 p-3 sm:p-4 lg:p-6 animate-slide-in-3d`}
-                      style={{ animationDelay: `${index * 0.1}s` }}
-                    >
-                      <h3 className="font-semibold text-foreground text-sm sm:text-base lg:text-lg mb-2">{story.title}</h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">{story.description}</p>
-                      <div className="flex justify-between items-center">
-                        <Badge className="bg-background/50 text-foreground text-xs">
-                          {story.type}
-                        </Badge>
-                        <span className="text-xs font-medium text-success">{story.impact}</span>
-                      </div>
-                    </Card3D>
-                  ))}
+                <div className="text-center py-12">
+                  <Trophy className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-muted-foreground">{t('community.no_stories')}</p>
                 </div>
               )}
             </Card3D>
@@ -297,30 +151,6 @@ const Community = () => {
 
           {/* Sidebar */}
           <div className="space-y-4 sm:space-y-6 lg:space-y-8">
-            {/* Top Contributors */}
-            <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-4 sm:p-5 lg:p-6">
-              <h2 className="text-base sm:text-lg lg:text-xl font-bold text-foreground mb-4 sm:mb-5 lg:mb-6 flex items-center space-x-2">
-                <Trophy className="w-4 h-4 sm:w-5 sm:h-5 text-warning" />
-                <span>{t('community.top_contributors_title')}</span>
-              </h2>
-              <div className="space-y-3 sm:space-y-4">
-                {topContributors.map((contributor, index) => (
-                  <div key={index} className="flex items-center space-x-2 sm:space-x-3 p-2 sm:p-3 bg-background/50 rounded-xl sm:rounded-2xl border border-border/30">
-                    <span className="text-base sm:text-lg lg:text-xl flex-shrink-0">{contributor.badge}</span>
-                    <Avatar className="w-7 h-7 sm:w-8 sm:h-8 shadow-premium flex-shrink-0">
-                      <AvatarFallback className="bg-gradient-to-br from-primary to-success text-primary-foreground text-xs">
-                        {contributor.avatar}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-foreground text-xs sm:text-sm truncate">{contributor.name}</p>
-                      <p className="text-xs text-muted-foreground">{contributor.points.toLocaleString()} {t('community.points')}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Card3D>
-
             {/* Quick Actions */}
             <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-4 sm:p-5 lg:p-6">
               <h2 className="text-base sm:text-lg lg:text-xl font-bold text-foreground mb-4 sm:mb-5 lg:mb-6">{t('community.quick_actions')}</h2>
