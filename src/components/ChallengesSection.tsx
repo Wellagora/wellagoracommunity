@@ -202,15 +202,6 @@ const ChallengesSection = () => {
                       </Badge>
                     </div>
 
-                    {/* Progress Bar */}
-                    <div>
-                      <div className="flex justify-between text-sm mb-2">
-                        <span className="text-muted-foreground">{t('challenges.progress')}</span>
-                        <span className="text-foreground font-medium">{challenge.completionRate}%</span>
-                      </div>
-                      <Progress value={challenge.completionRate} className="h-2" />
-                    </div>
-
                     {/* Stats Row */}
                     <div className="flex items-center justify-between text-sm">
                       <div className="flex items-center space-x-4">

@@ -302,10 +302,6 @@ const ChallengesPage = () => {
                     <Users className="w-4 h-4" />
                     <span>{challenge.participants.toLocaleString()}</span>
                   </div>
-                  <div className="flex items-center space-x-2 text-muted-foreground">
-                    <Target className="w-4 h-4" />
-                    <span>{challenge.completionRate}% {t('challenges.success')}</span>
-                  </div>
                 </div>
 
 
