@@ -706,7 +706,7 @@ const AdminDashboard = () => {
           <TabsTrigger value="pending">
             Jóváhagyásra vár ({pendingChallenges.length})
           </TabsTrigger>
-          <TabsTrigger value="active">Aktív kihívások</TabsTrigger>
+          <TabsTrigger value="active">Aktív programok</TabsTrigger>
           <TabsTrigger value="users">Felhasználók</TabsTrigger>
           <TabsTrigger value="analytics">Analitika</TabsTrigger>
         </TabsList>
@@ -714,8 +714,8 @@ const AdminDashboard = () => {
         <TabsContent value="projects" className="space-y-4">
           <div className="flex justify-between items-center">
             <div>
-              <h3 className="text-lg font-semibold">Projektek kezelése</h3>
-              <p className="text-sm text-muted-foreground">Hozz létre és kezelj projekteket</p>
+              <h3 className="text-lg font-semibold">Projektek</h3>
+              <p className="text-sm text-muted-foreground">Platformon lévő projektek listája</p>
             </div>
             <Dialog open={showCreateProject} onOpenChange={setShowCreateProject}>
               <DialogTrigger asChild>
@@ -805,75 +805,51 @@ const AdminDashboard = () => {
                 </CardContent>
               </Card>
             ) : (
-              projects.map((project) => (
-                <Card key={project.id}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Building2 className="w-5 h-5 text-primary" />
-                          <CardTitle className="text-xl">{project.name}</CardTitle>
-                          <Badge variant={project.is_active ? "default" : "secondary"}>
-                            {project.is_active ? "Aktív" : "Inaktív"}
-                          </Badge>
-                          {defaultProjectId === project.id && (
-                            <Badge variant="outline" className="bg-primary/10">
+              <div className="grid gap-3">
+                {projects.map((project) => (
+                  <Card key={project.id} className="hover:shadow-md transition-shadow">
+                    <CardContent className="py-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3 flex-1">
+                          <Building2 className="w-5 h-5 text-primary shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className="font-semibold text-lg truncate">{project.name}</h3>
+                              <Badge variant={project.is_active ? "default" : "secondary"} className="shrink-0">
+                                {project.is_active ? "Aktív" : "Inaktív"}
+                              </Badge>
+                              {defaultProjectId === project.id && (
+                                <Badge variant="outline" className="bg-primary/10 shrink-0">
+                                  Alapértelmezett
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground">{project.region_name}</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2 shrink-0">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => toggleProjectStatus(project.id, project.is_active)}
+                          >
+                            {project.is_active ? "Deaktiválás" : "Aktiválás"}
+                          </Button>
+                          {defaultProjectId !== project.id && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setDefaultProject(project.id)}
+                            >
                               Alapértelmezett
-                            </Badge>
+                            </Button>
                           )}
                         </div>
-                        <CardDescription>{project.region_name}</CardDescription>
                       </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground mb-1">Slug:</p>
-                      <code className="text-sm bg-muted px-2 py-1 rounded">{project.slug}</code>
-                    </div>
-                    {project.villages && project.villages.length > 0 && (
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground mb-2">Falvak:</p>
-                        <div className="flex flex-wrap gap-1">
-                          {project.villages.map((village, idx) => (
-                            <Badge key={idx} variant="outline">
-                              {village}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    {project.description && (
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground mb-1">Leírás:</p>
-                        <p className="text-sm">{project.description}</p>
-                      </div>
-                    )}
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      <Button
-                        variant="outline"
-                        onClick={() => toggleProjectStatus(project.id, project.is_active)}
-                      >
-                        {project.is_active ? 'Deaktiválás' : 'Aktiválás'}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        onClick={() => navigate('/project-admin')}
-                      >
-                        Tagok kezelése
-                      </Button>
-                      {defaultProjectId !== project.id && (
-                        <Button
-                          variant="default"
-                          onClick={() => setDefaultProject(project.id)}
-                        >
-                          Beállítás alapértelmezettnek
-                        </Button>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             )}
           </div>
         </TabsContent>
