@@ -71,6 +71,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const [pendingChallenges, setPendingChallenges] = useState<PendingChallenge[]>([]);
   const [draftChallenges, setDraftChallenges] = useState<PendingChallenge[]>([]);
+  const [activeChallenges, setActiveChallenges] = useState<PendingChallenge[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [hasAdminAccess, setHasAdminAccess] = useState(false);
@@ -222,6 +223,22 @@ const AdminDashboard = () => {
         .from('challenge_definitions')
         .select('*', { count: 'exact', head: true })
         .eq('is_active', true);
+
+      // Load active challenges
+      try {
+        // @ts-ignore - Complex type inference issue with Supabase
+        const activeResult = await supabase
+          .from('challenge_definitions')
+          .select('id, title, description, category, difficulty, duration_days, points_base, base_impact, validation_requirements, created_at')
+          .eq('is_active', true)
+          .order('created_at', { ascending: false });
+
+        if (activeResult.data) {
+          setActiveChallenges(activeResult.data as any);
+        }
+      } catch (e) {
+        console.error('Error loading active challenges:', e);
+      }
 
       setStats({
         totalChallenges: totalCount || 0,
@@ -549,6 +566,31 @@ const AdminDashboard = () => {
       toast({
         title: 'Hiba',
         description: 'Nem sikerült közzétenni a kihívást',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const deactivateChallenge = async (challengeId: string) => {
+    try {
+      const { error } = await supabase
+        .from('challenge_definitions')
+        .update({ is_active: false })
+        .eq('id', challengeId);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Kihívás deaktiválva',
+        description: 'A kihívás már nem elérhető a felhasználók számára',
+      });
+
+      loadData();
+    } catch (error: any) {
+      console.error('Error deactivating challenge:', error);
+      toast({
+        title: 'Hiba',
+        description: 'Nem sikerült deaktiválni a kihívást',
         variant: 'destructive'
       });
     }
@@ -1233,7 +1275,70 @@ const AdminDashboard = () => {
               <CardDescription>A platform-on jelenleg elérhető kihívások</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">Hamarosan...</p>
+              {activeChallenges.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8">
+                  Még nincsenek aktív kihívások. Hozz létre új kihívásokat vagy hagyj jóvá függőben lévőket.
+                </p>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {activeChallenges.map((challenge) => (
+                    <Card key={challenge.id} className="hover:shadow-lg transition-shadow">
+                      <CardHeader>
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <CardTitle className="text-base line-clamp-2">{challenge.title}</CardTitle>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              <Badge style={{ backgroundColor: getCategoryColor(challenge.category) }}>
+                                {challenge.category}
+                              </Badge>
+                              <Badge variant="outline" style={{ borderColor: getDifficultyColor(challenge.difficulty) }}>
+                                {challenge.difficulty}
+                              </Badge>
+                            </div>
+                          </div>
+                          <Badge variant="default" className="bg-green-500 shrink-0">
+                            Aktív
+                          </Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {challenge.description}
+                        </p>
+                        
+                        <div className="flex items-center justify-between text-sm">
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-4 h-4" />
+                            <span>{challenge.duration_days} nap</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Sparkles className="w-4 h-4" />
+                            <span>{challenge.points_base} pont</span>
+                          </div>
+                        </div>
+
+                        <div className="pt-2 border-t">
+                          <p className="text-xs font-medium mb-1">CO₂ hatás:</p>
+                          <p className="text-xs text-muted-foreground">
+                            {challenge.base_impact?.co2_saved || 0} kg megtakarítás
+                          </p>
+                        </div>
+
+                        <div className="flex gap-2 pt-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => deactivateChallenge(challenge.id)}
+                            className="flex-1"
+                          >
+                            Deaktiválás
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
