@@ -12,12 +12,12 @@ import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { 
-  Search, 
-  Filter, 
-  Users, 
-  Clock, 
-  Trophy, 
+import {
+  Search,
+  Filter,
+  Users,
+  Clock,
+  Trophy,
   Target,
   Leaf,
   Recycle,
@@ -33,7 +33,10 @@ import {
   Loader2,
   TrendingUp,
   Award,
-  Calculator
+  Calculator,
+  Calendar,
+  MapPin,
+  Zap
 } from "lucide-react";
 import { challenges, Challenge } from "@/data/challenges";
 import { enrichChallengesWithSponsors } from "@/services/ChallengeSponsorshipService";
@@ -303,6 +306,55 @@ const ChallengesPage = () => {
                     <span>{challenge.participants.toLocaleString()}</span>
                   </div>
                 </div>
+
+                {/* Event Date and Location */}
+                {challenge.isContinuous === false && (challenge.startDate || challenge.location) && (
+                  <div className="bg-accent/10 rounded-lg p-3 space-y-2 border border-accent/20">
+                    <div className="flex items-center gap-2 text-xs font-semibold text-accent">
+                      <Calendar className="w-3 h-3" />
+                      <span>{t('challenges.event_type.scheduled')}</span>
+                    </div>
+                    {challenge.startDate && (
+                      <div className="text-sm text-foreground">
+                        <span className="font-medium">{t('challenges.event_starts')}: </span>
+                        {new Date(challenge.startDate).toLocaleDateString('hu-HU', { 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </div>
+                    )}
+                    {challenge.endDate && (
+                      <div className="text-sm text-foreground">
+                        <span className="font-medium">{t('challenges.event_ends')}: </span>
+                        {new Date(challenge.endDate).toLocaleDateString('hu-HU', { 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </div>
+                    )}
+                    {challenge.location && (
+                      <div className="flex items-start gap-2 text-sm text-foreground">
+                        <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                        <span>{challenge.location}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {challenge.isContinuous !== false && (
+                  <div className="bg-success/10 rounded-lg p-3 border border-success/20">
+                    <div className="flex items-center gap-2 text-sm font-medium text-success">
+                      <Zap className="w-4 h-4" />
+                      <span>{t('challenges.event_type.continuous')}</span>
+                    </div>
+                  </div>
+                )}
 
 
                 {/* Sponsor Badge - Prominent Display */}

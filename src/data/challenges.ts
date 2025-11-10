@@ -23,6 +23,11 @@ export interface Challenge {
     name: string;
     avatar: string;
   }>;
+  // Event scheduling and location
+  isContinuous?: boolean;
+  startDate?: string;
+  endDate?: string;
+  location?: string;
 }
 
 export const challenges: Challenge[] = [
