@@ -18,10 +18,6 @@ export interface Challenge {
   };
   stepsKeys: string[];
   tipsKeys: string[];
-  impact: {
-    co2Saved: number;
-    treesEquivalent: number;
-  };
   participants_preview: Array<{
     id: string;
     name: string;
@@ -51,10 +47,6 @@ export const challenges: Challenge[] = [
       "challenges.kaliMuhely.tips.bring_ideas",
       "challenges.kaliMuhely.tips.connect"
     ],
-    impact: {
-      co2Saved: 5,
-      treesEquivalent: 1
-    },
     participants_preview: []
   },
   {
@@ -77,10 +69,6 @@ export const challenges: Challenge[] = [
       "challenges.tudasHid.tips.patience",
       "challenges.tudasHid.tips.mutual_learning"
     ],
-    impact: {
-      co2Saved: 8,
-      treesEquivalent: 1
-    },
     participants_preview: []
   },
   {
@@ -103,10 +91,6 @@ export const challenges: Challenge[] = [
       "challenges.kaliKozosKert.tips.seasonal",
       "challenges.kaliKozosKert.tips.share_knowledge"
     ],
-    impact: {
-      co2Saved: 15,
-      treesEquivalent: 2
-    },
     participants_preview: []
   },
   {
@@ -129,10 +113,6 @@ export const challenges: Challenge[] = [
       "challenges.szomszedSegit.tips.small_acts",
       "challenges.szomszedSegit.tips.reciprocity"
     ],
-    impact: {
-      co2Saved: 12,
-      treesEquivalent: 1
-    },
     participants_preview: []
   },
   {
@@ -155,10 +135,6 @@ export const challenges: Challenge[] = [
       "challenges.kaliTortenetek.tips.listen",
       "challenges.kaliTortenetek.tips.preserve"
     ],
-    impact: {
-      co2Saved: 3,
-      treesEquivalent: 1
-    },
     participants_preview: []
   },
   // Kreatív ötletek - Creative Ideas
@@ -182,10 +158,6 @@ export const challenges: Challenge[] = [
       "challenges.kaliKonyhak.tips.local_ingredients",
       "challenges.kaliKonyhak.tips.traditional_recipes"
     ],
-    impact: {
-      co2Saved: 10,
-      treesEquivalent: 1
-    },
     participants_preview: []
   },
   {
@@ -208,10 +180,6 @@ export const challenges: Challenge[] = [
       "challenges.mestersegekEjszakaja.tips.try_new",
       "challenges.mestersegekEjszakaja.tips.connect_artisans"
     ],
-    impact: {
-      co2Saved: 5,
-      treesEquivalent: 1
-    },
     participants_preview: []
   },
   {
@@ -234,10 +202,6 @@ export const challenges: Challenge[] = [
       "challenges.kaliTortenetekTuz.tips.warm_clothes",
       "challenges.kaliTortenetekTuz.tips.bring_snack"
     ],
-    impact: {
-      co2Saved: 4,
-      treesEquivalent: 1
-    },
     participants_preview: []
   },
   {
@@ -260,10 +224,6 @@ export const challenges: Challenge[] = [
       "challenges.szezonalisUnnepek.tips.family",
       "challenges.szezonalisUnnepek.tips.traditions"
     ],
-    impact: {
-      co2Saved: 7,
-      treesEquivalent: 1
-    },
     participants_preview: []
   },
   {
@@ -286,10 +246,6 @@ export const challenges: Challenge[] = [
       "challenges.kaliCsereBere.tips.quality",
       "challenges.kaliCsereBere.tips.fair_exchange"
     ],
-    impact: {
-      co2Saved: 18,
-      treesEquivalent: 2
-    },
     participants_preview: []
   },
   {
@@ -312,10 +268,6 @@ export const challenges: Challenge[] = [
       "challenges.idobank.tips.skills",
       "challenges.idobank.tips.time_value"
     ],
-    impact: {
-      co2Saved: 14,
-      treesEquivalent: 1
-    },
     participants_preview: []
   }
 ];

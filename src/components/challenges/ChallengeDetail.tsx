@@ -58,10 +58,6 @@ interface Challenge {
   };
   stepsKeys: string[];
   tipsKeys: string[];
-  impact: {
-    co2Saved: number;
-    treesEquivalent: number;
-  };
   participants_preview: Array<{
     id: string;
     name: string;

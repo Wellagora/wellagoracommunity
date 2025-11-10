@@ -218,10 +218,6 @@ const ChallengesSection = () => {
                           <Users className="w-4 h-4 mr-1" />
                           {challenge.participants.toLocaleString()}
                         </div>
-                        <div className="flex items-center text-success">
-                          <TrendingUp className="w-4 h-4 mr-1" />
-                          {challenge.impact.co2Saved}kg CO₂
-                        </div>
                       </div>
                       {challenge.sponsor && (
                         <div className="text-xs text-muted-foreground">

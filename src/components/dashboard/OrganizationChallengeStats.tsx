@@ -30,9 +30,6 @@ interface ChallengeStats {
   challenge_id: string;
   challenge_title: string;
   total_completions: number;
-  total_impact: {
-    co2Saved: number;
-  };
   employees: EmployeeCompletion[];
 }
 
@@ -44,8 +41,7 @@ export const OrganizationChallengeStats = () => {
   const [totalStats, setTotalStats] = useState({
     totalEmployees: 0,
     totalCompletions: 0,
-    totalPoints: 0,
-    totalCO2Saved: 0
+    totalPoints: 0
   });
 
   useEffect(() => {
@@ -80,31 +76,24 @@ export const OrganizationChallengeStats = () => {
       // Group by challenge
       const challengeMap = new Map<string, ChallengeStats>();
       let totalPoints = 0;
-      let totalCO2 = 0;
       const uniqueEmployees = new Set<string>();
 
       completions?.forEach((completion: any) => {
         const challengeId = completion.challenge_id;
         uniqueEmployees.add(completion.user_id);
         totalPoints += completion.points_earned || 0;
-        
-        if (completion.impact_data?.co2Saved) {
-          totalCO2 += completion.impact_data.co2Saved;
-        }
 
         if (!challengeMap.has(challengeId)) {
           challengeMap.set(challengeId, {
             challenge_id: challengeId,
             challenge_title: getChallengeTitle(challengeId),
             total_completions: 0,
-            total_impact: { co2Saved: 0 },
             employees: []
           });
         }
 
         const stats = challengeMap.get(challengeId)!;
         stats.total_completions++;
-        stats.total_impact.co2Saved += completion.impact_data?.co2Saved || 0;
         
         const profileData = completion.profiles;
         stats.employees.push({
@@ -124,8 +113,7 @@ export const OrganizationChallengeStats = () => {
       setTotalStats({
         totalEmployees: uniqueEmployees.size,
         totalCompletions: completions?.length || 0,
-        totalPoints,
-        totalCO2Saved: totalCO2
+        totalPoints
       });
     } catch (error) {
       console.error("Error loading stats:", error);
@@ -161,7 +149,7 @@ export const OrganizationChallengeStats = () => {
   return (
     <div className="space-y-6">
       {/* Overall Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
@@ -203,20 +191,6 @@ export const OrganizationChallengeStats = () => {
             </div>
           </CardContent>
         </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-lg bg-accent/10">
-                <Leaf className="w-5 h-5 text-accent" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{totalStats.totalCO2Saved.toFixed(1)} kg</p>
-                <p className="text-sm text-muted-foreground">{t('organization.co2_saved')}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Challenge Stats */}
@@ -245,14 +219,6 @@ export const OrganizationChallengeStats = () => {
                   <CardDescription className="mt-2">
                     {challengeStat.total_completions} {t('organization.completions_by_employees')}
                   </CardDescription>
-                </div>
-                <div className="text-right">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Leaf className="w-4 h-4 text-success" />
-                    <span className="font-semibold text-foreground">
-                      {challengeStat.total_impact.co2Saved.toFixed(1)} kg CO₂
-                    </span>
-                  </div>
                 </div>
               </div>
             </CardHeader>

@@ -122,7 +122,7 @@ const ChallengeDetailPage = () => {
         organization_id: profileData?.organization_id || null,
         completion_type: "manual",
         validation_status: "pending",
-        impact_data: challenge?.impact || {},
+        impact_data: {},
         points_earned: challenge?.pointsReward || 0,
       });
 
