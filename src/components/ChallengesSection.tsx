@@ -226,14 +226,45 @@ const ChallengesSection = () => {
                       )}
                     </div>
 
-                    <Button 
-                      className="w-full bg-gradient-primary hover:shadow-glow transition-smooth"
-                      asChild
-                    >
-                      <Link to={`/challenges/${challenge.id}`}>
-                        {getJoinButtonText()}
-                      </Link>
-                    </Button>
+                    {/* Action Buttons based on user role */}
+                    <div className="flex gap-2">
+                      {/* Join Challenge Button - shown to all authenticated users */}
+                      {profile && (
+                        <Button 
+                          className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth"
+                          asChild
+                        >
+                          <Link to={`/challenges/${challenge.id}`}>
+                            {t('challenges.join_challenge')}
+                          </Link>
+                        </Button>
+                      )}
+                      
+                      {/* Sponsor Button - shown only to business/ngo/government */}
+                      {profile && ['business', 'ngo', 'government'].includes(profile.user_role) && (
+                        <Button 
+                          variant="outline"
+                          className="flex-1"
+                          asChild
+                        >
+                          <Link to={`/challenges/${challenge.id}?action=sponsor`}>
+                            {t('challenges.sponsor_challenge')}
+                          </Link>
+                        </Button>
+                      )}
+                      
+                      {/* Not logged in - show generic button */}
+                      {!profile && (
+                        <Button 
+                          className="w-full bg-gradient-primary hover:shadow-glow transition-smooth"
+                          asChild
+                        >
+                          <Link to={`/challenges/${challenge.id}`}>
+                            {t('challenges.view_challenge')}
+                          </Link>
+                        </Button>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               ))}
