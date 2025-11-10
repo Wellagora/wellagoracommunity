@@ -284,30 +284,6 @@ const CommunityHub = () => {
                 </CardContent>
               </Card>
 
-              {/* Community Stats */}
-              <Card className="bg-card/50 backdrop-blur-sm border border-border/50">
-                <CardContent className="p-6">
-                  <h4 className="font-bold text-lg mb-4">{t('community.community_stats')}</h4>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('community.total_members')}</span>
-                      <span className="font-bold">8,247</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('community.posts_today')}</span>
-                      <span className="font-bold">156</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('community.active_forums')}</span>
-                      <span className="font-bold">12</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('community.online_now')}</span>
-                      <span className="font-bold">234</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </TabsContent>

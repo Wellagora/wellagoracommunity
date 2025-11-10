@@ -20,13 +20,6 @@ import {
 import communityImage from "@/assets/community-garden.jpg";
 
 const CommunitySection = () => {
-  const communityStats = [
-    { label: "Active Members", value: "48.2K", icon: Users },
-    { label: "Discussion Posts", value: "127K", icon: MessageCircle },
-    { label: "Local Events", value: "2.8K", icon: Calendar },
-    { label: "Success Stories", value: "15.6K", icon: Award },
-  ];
-
   const forumPosts = [
     {
       id: 1,
@@ -108,7 +101,7 @@ const CommunitySection = () => {
       author: "Team GreenTech",
       avatar: "GT",
       story: "Our office of 50 people completed the energy challenge and cut electricity usage by 25%!",
-      impact: "2.1 tons CO₂ saved",
+      impact: "25% energy savings",
       badge: "Energy Efficiency Leader"
     }
   ];
@@ -133,19 +126,6 @@ const CommunitySection = () => {
             Join a vibrant community of sustainability champions. Share experiences, 
             get advice, participate in local events, and celebrate collective impact.
           </p>
-        </div>
-
-        {/* Community Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-          {communityStats.map((stat, index) => (
-            <Card key={stat.label} className="text-center hover:shadow-eco transition-smooth">
-              <CardContent className="p-6">
-                <stat.icon className="w-8 h-8 text-primary mx-auto mb-3" />
-                <div className="text-2xl font-bold text-foreground mb-1">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
-              </CardContent>
-            </Card>
-          ))}
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">

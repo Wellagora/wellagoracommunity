@@ -166,19 +166,9 @@ const Community = () => {
             <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-6xl font-bold text-foreground mb-3 sm:mb-4 lg:mb-6">
               {t('nav.community')}
             </h1>
-            <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-4 sm:mb-6 lg:mb-8">
+            <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-3xl mx-auto">
               {t('community.hero.subtitle')}
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-8">
-              <div className="flex items-center space-x-2">
-                <Users className="w-4 h-4 sm:w-5 sm:h-5 text-success" />
-                <span className="text-xs sm:text-sm lg:text-base text-foreground font-medium">12,847 {t('community.hero.active_members')}</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Award className="w-4 h-4 sm:w-5 sm:h-5 text-warning" />
-                <span className="text-xs sm:text-sm lg:text-base text-foreground font-medium">45,293 {t('community.hero.completed_challenges')}</span>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -307,32 +297,6 @@ const Community = () => {
 
           {/* Sidebar */}
           <div className="space-y-4 sm:space-y-6 lg:space-y-8">
-            {/* Community Stats */}
-            <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-4 sm:p-5 lg:p-6">
-              <h2 className="text-base sm:text-lg lg:text-xl font-bold text-foreground mb-4 sm:mb-5 lg:mb-6 flex items-center space-x-2">
-                <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                <span>{t('community.stats_title')}</span>
-              </h2>
-              <div className="space-y-3 sm:space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs sm:text-sm text-muted-foreground">{t('community.active_members_stat')}</span>
-                  <span className="font-semibold text-sm sm:text-base text-foreground">12,847</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs sm:text-sm text-muted-foreground">{t('community.completed_challenges_stat')}</span>
-                  <span className="font-semibold text-sm sm:text-base text-foreground">45,293</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs sm:text-sm text-muted-foreground">{t('community.co2_saved')}</span>
-                  <span className="font-semibold text-sm sm:text-base text-success">2,156</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs sm:text-sm text-muted-foreground">{t('community.participating_cities')}</span>
-                  <span className="font-semibold text-sm sm:text-base text-foreground">89</span>
-                </div>
-              </div>
-            </Card3D>
-
             {/* Top Contributors */}
             <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-4 sm:p-5 lg:p-6">
               <h2 className="text-base sm:text-lg lg:text-xl font-bold text-foreground mb-4 sm:mb-5 lg:mb-6 flex items-center space-x-2">
