@@ -11,6 +11,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import UserRoleManager from './UserRoleManager';
 import { ProgramCreator } from './ProgramCreator';
+import ProjectDetailView from './ProjectDetailView';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -79,6 +80,7 @@ const AdminDashboard = () => {
   const [showCreateProject, setShowCreateProject] = useState(false);
   const [showCreateChallenge, setShowCreateChallenge] = useState(false);
   const [defaultProjectId, setDefaultProjectId] = useState<string | null>(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [newProject, setNewProject] = useState({
     name: '',
     slug: '',
@@ -225,15 +227,16 @@ const AdminDashboard = () => {
         .select('*', { count: 'exact', head: true })
         .eq('is_active', true);
 
-      // Load active programs (challenge_definitions) filtered by project
+      // Load active programs (challenge_definitions) filtered by selected project
       try {
-        if (defaultProjectId) {
+        const projectToLoad = selectedProject?.id || defaultProjectId;
+        if (projectToLoad) {
           // @ts-ignore - Complex type inference issue with Supabase
           const activeProgramsResult = await supabase
             .from('challenge_definitions')
             .select('id, title, description, category, difficulty, duration_days, points_base, base_impact, validation_requirements, created_at, location, project_id')
             .eq('is_active', true)
-            .eq('project_id', defaultProjectId)
+            .eq('project_id', projectToLoad)
             .order('created_at', { ascending: false });
 
           if (activeProgramsResult.data) {
@@ -242,6 +245,27 @@ const AdminDashboard = () => {
         }
       } catch (e) {
         console.error('Error loading active programs:', e);
+      }
+      
+      // Load draft challenges filtered by selected project
+      try {
+        const projectToLoad = selectedProject?.id || defaultProjectId;
+        if (projectToLoad) {
+          // @ts-ignore - Complex type inference issue with Supabase
+          const draftsResult = await supabase
+            .from('challenge_definitions')
+            .select('id, title, description, category, difficulty, duration_days, points_base, base_impact, validation_requirements, created_at')
+            .eq('is_active', false)
+            .eq('project_id', projectToLoad)
+            .order('created_at', { ascending: false });
+
+          if (draftsResult.data) {
+            setDraftChallenges(draftsResult.data as any);
+            draftsCount = draftsResult.data.length;
+          }
+        }
+      } catch (e) {
+        console.error('Error loading drafts:', e);
       }
 
       setStats({
@@ -644,54 +668,70 @@ const AdminDashboard = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-          <p className="text-muted-foreground">Kihívások moderálása és platform statisztikák</p>
+          <p className="text-muted-foreground">
+            {selectedProject 
+              ? `${selectedProject.name} - Programok kezelése`
+              : 'Projektek és platform statisztikák'
+            }
+          </p>
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Összes Kihívás</CardTitle>
-            <TrendingUp className="w-4 h-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalChallenges}</div>
-          </CardContent>
-        </Card>
+      {/* Show Project Detail View if a project is selected */}
+      {selectedProject ? (
+        <ProjectDetailView
+          project={selectedProject}
+          onBack={() => setSelectedProject(null)}
+          draftChallenges={draftChallenges}
+          activePrograms={activePrograms}
+          onRefresh={loadData}
+        />
+      ) : (
+        <>
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">Összes Kihívás</CardTitle>
+                <TrendingUp className="w-4 h-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats.totalChallenges}</div>
+              </CardContent>
+            </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Aktív Kihívások</CardTitle>
-            <CheckCircle className="w-4 h-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">{stats.activeChallenges}</div>
-          </CardContent>
-        </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">Aktív Kihívások</CardTitle>
+                <CheckCircle className="w-4 h-4 text-green-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-green-600">{stats.activeChallenges}</div>
+              </CardContent>
+            </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Jóváhagyásra Vár</CardTitle>
-            <Clock className="w-4 h-4 text-orange-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{stats.pendingReview}</div>
-          </CardContent>
-        </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">Jóváhagyásra Vár</CardTitle>
+                <Clock className="w-4 h-4 text-orange-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-orange-600">{stats.pendingReview}</div>
+              </CardContent>
+            </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Résztvevők</CardTitle>
-            <Users className="w-4 h-4 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">10,234</div>
-          </CardContent>
-        </Card>
-      </div>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">Résztvevők</CardTitle>
+                <Users className="w-4 h-4 text-primary" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">10,234</div>
+              </CardContent>
+            </Card>
+          </div>
 
-      {/* Main Content Tabs */}
+          {/* Main Content Tabs - Only show when no project is selected */}
       <Tabs defaultValue="projects" className="space-y-4">
         <TabsList>
           <TabsTrigger value="projects">
@@ -807,7 +847,11 @@ const AdminDashboard = () => {
             ) : (
               <div className="grid gap-3">
                 {projects.map((project) => (
-                  <Card key={project.id} className="hover:shadow-md transition-shadow">
+                  <Card 
+                    key={project.id} 
+                    className="hover:shadow-md transition-shadow cursor-pointer"
+                    onClick={() => setSelectedProject(project)}
+                  >
                     <CardContent className="py-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3 flex-1">
@@ -827,24 +871,16 @@ const AdminDashboard = () => {
                             <p className="text-sm text-muted-foreground">{project.region_name}</p>
                           </div>
                         </div>
-                        <div className="flex gap-2 shrink-0">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => toggleProjectStatus(project.id, project.is_active)}
-                          >
-                            {project.is_active ? "Deaktiválás" : "Aktiválás"}
-                          </Button>
-                          {defaultProjectId !== project.id && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => setDefaultProject(project.id)}
-                            >
-                              Alapértelmezett
-                            </Button>
-                          )}
-                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleProjectStatus(project.id, project.is_active);
+                          }}
+                        >
+                          {project.is_active ? "Deaktiválás" : "Aktiválás"}
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
@@ -1321,6 +1357,8 @@ const AdminDashboard = () => {
           </Card>
         </TabsContent>
       </Tabs>
+        </>
+      )}
     </div>
   );
 };

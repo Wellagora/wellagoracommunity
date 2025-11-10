@@ -32,7 +32,13 @@ const programSchema = z.object({
 
 type ProgramFormData = z.infer<typeof programSchema>;
 
-export const ProgramCreator = ({ defaultProjectId }: { defaultProjectId: string | null }) => {
+export const ProgramCreator = ({ 
+  defaultProjectId,
+  onSuccess 
+}: { 
+  defaultProjectId: string | null;
+  onSuccess?: () => void;
+}) => {
   const { t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isContinuous, setIsContinuous] = useState(true);
@@ -96,6 +102,11 @@ export const ProgramCreator = ({ defaultProjectId }: { defaultProjectId: string 
       setStartDate(undefined);
       setEndDate(undefined);
       setIsContinuous(true);
+      
+      // Call onSuccess callback if provided
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error: any) {
       console.error('Error creating program:', error);
       toast.error(error.message || t('admin.program_created_error') || 'Hiba történt a program létrehozásakor');
