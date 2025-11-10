@@ -222,11 +222,17 @@ export default function ProjectDetailView({
                           </div>
                         )}
 
-                        <div className="pt-2 border-t">
-                          <p className="text-xs font-medium mb-1">CO₂ hatás:</p>
-                          <p className="text-xs text-muted-foreground">
-                            {program.base_impact?.co2_saved || 0} kg megtakarítás
-                          </p>
+                        <div className="pt-2 border-t flex gap-2">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="flex-1"
+                            onClick={() => {
+                              setEditingProgramId(program.id);
+                            }}
+                          >
+                            Szerkesztés
+                          </Button>
                         </div>
                       </CardContent>
                     </Card>
