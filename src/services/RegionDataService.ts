@@ -211,7 +211,7 @@ class RegionDataService {
       hu: {
         municipality: ['Vezető szerepe a fenntartható városfejlesztésben', 'Zöld városi projektek megvalósítása', 'Megújuló energiák támogatása'],
         business: ['Innovatív megoldások a klímavédelemért', 'Fenntartható üzleti gyakorlatok', 'Zöld technológia fejlesztés'],
-        ngo: ['Környezetvédelem és oktatás', 'Közösségi klímakezdeményezések', 'Fenntartható életmód népszerűsítése'],
+        ngo: ['Fenntarthatóság és oktatás', 'Közösségi klímakezdeményezések', 'Fenntartható életmód népszerűsítése'],
         citizen: ['Aktív részvétel helyi projektekben', 'Környezeti tudatosság növelése', 'Polgári kezdeményezések a fenntarthatóságért'],
         educational: ['Klímaváltozás kutatása', 'Oktatás a fenntartható fejlődésért', 'Innováció zöld technológiákban'],
         government: ['Klímacélok megvalósítása', 'Fenntartható politikák fejlesztése', 'Regionális kezdeményezések koordinációja']
