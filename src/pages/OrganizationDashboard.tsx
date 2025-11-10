@@ -371,7 +371,7 @@ const OrganizationDashboard = () => {
         </div>
 
         {/* Regional Impact Overview */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
         <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
           <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
@@ -392,18 +392,6 @@ const OrganizationDashboard = () => {
                 <p className="text-2xl sm:text-3xl font-bold text-success">{totalParticipants}</p>
               </div>
               <Users className="w-8 h-8 sm:w-10 sm:h-10 text-success/60" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-warning/10 to-warning/5 border-warning/20">
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.co2_savings')}</p>
-                <p className="text-2xl sm:text-3xl font-bold text-warning">{totalCO2.toFixed(1)}t</p>
-              </div>
-              <Leaf className="w-8 h-8 sm:w-10 sm:h-10 text-warning/60" />
             </div>
           </CardContent>
         </Card>
