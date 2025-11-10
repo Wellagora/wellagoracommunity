@@ -35,6 +35,7 @@ interface PendingChallenge {
     tips: string[];
   };
   created_at: string;
+  location?: string;
 }
 
 interface Project {
@@ -71,7 +72,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const [pendingChallenges, setPendingChallenges] = useState<PendingChallenge[]>([]);
   const [draftChallenges, setDraftChallenges] = useState<PendingChallenge[]>([]);
-  const [activeProjects, setActiveProjects] = useState<Project[]>([]);
+  const [activePrograms, setActivePrograms] = useState<PendingChallenge[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [hasAdminAccess, setHasAdminAccess] = useState(false);
@@ -224,15 +225,20 @@ const AdminDashboard = () => {
         .select('*', { count: 'exact', head: true })
         .eq('is_active', true);
 
-      // Load active projects
-      const { data: activeProjectsData } = await supabase
-        .from('projects')
-        .select('*')
-        .eq('is_active', true)
-        .order('created_at', { ascending: false });
+      // Load active programs (challenge_definitions)
+      try {
+        // @ts-ignore - Complex type inference issue with Supabase
+        const activeProgramsResult = await supabase
+          .from('challenge_definitions')
+          .select('id, title, description, category, difficulty, duration_days, points_base, base_impact, validation_requirements, created_at, location')
+          .eq('is_active', true)
+          .order('created_at', { ascending: false });
 
-      if (activeProjectsData) {
-        setActiveProjects(activeProjectsData);
+        if (activeProgramsResult.data) {
+          setActivePrograms(activeProgramsResult.data as any);
+        }
+      } catch (e) {
+        console.error('Error loading active programs:', e);
       }
 
       setStats({
@@ -1243,30 +1249,28 @@ const AdminDashboard = () => {
           <Card>
             <CardHeader>
               <CardTitle>Aktív Programok</CardTitle>
-              <CardDescription>A platform-on jelenleg futó programok</CardDescription>
+              <CardDescription>A platformon jelenleg futó programok</CardDescription>
             </CardHeader>
             <CardContent>
-              {activeProjects.length === 0 ? (
+              {activePrograms.length === 0 ? (
                 <p className="text-muted-foreground text-center py-8">
-                  Még nincsenek aktív programok. Hozz létre új programokat a "Projektek" lapon.
+                  Még nincsenek aktív programok. Hozz létre új programokat vagy hagyj jóvá függőben lévőket.
                 </p>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {activeProjects.map((project) => (
-                    <Card key={project.id} className="hover:shadow-lg transition-shadow">
+                  {activePrograms.map((program) => (
+                    <Card key={program.id} className="hover:shadow-lg transition-shadow">
                       <CardHeader>
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1 min-w-0">
-                            <CardTitle className="text-base line-clamp-2">{project.name}</CardTitle>
+                            <CardTitle className="text-base line-clamp-2">{program.title}</CardTitle>
                             <div className="flex flex-wrap gap-2 mt-2">
-                              <Badge variant="outline">
-                                {project.region_name}
+                              <Badge style={{ backgroundColor: getCategoryColor(program.category) }}>
+                                {program.category}
                               </Badge>
-                              {project.slug && (
-                                <Badge variant="secondary" className="text-xs">
-                                  /{project.slug}
-                                </Badge>
-                              )}
+                              <Badge variant="outline" style={{ borderColor: getDifficultyColor(program.difficulty) }}>
+                                {program.difficulty}
+                              </Badge>
                             </div>
                           </div>
                           <Badge variant="default" className="bg-green-500 shrink-0">
@@ -1275,29 +1279,42 @@ const AdminDashboard = () => {
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-3">
-                        <p className="text-sm text-muted-foreground line-clamp-3">
-                          {project.description || 'Nincs leírás'}
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {program.description}
                         </p>
                         
+                        <div className="flex items-center justify-between text-sm">
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-4 h-4" />
+                            <span>{program.duration_days} nap</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Sparkles className="w-4 h-4" />
+                            <span>{program.points_base} pont</span>
+                          </div>
+                        </div>
+
+                        {program.location && (
+                          <div className="pt-2 border-t">
+                            <p className="text-xs font-medium mb-1">Helyszín:</p>
+                            <p className="text-xs text-muted-foreground">{program.location}</p>
+                          </div>
+                        )}
+
                         <div className="pt-2 border-t">
+                          <p className="text-xs font-medium mb-1">CO₂ hatás:</p>
                           <p className="text-xs text-muted-foreground">
-                            Létrehozva: {new Date(project.created_at).toLocaleDateString('hu-HU')}
+                            {program.base_impact?.co2_saved || 0} kg megtakarítás
                           </p>
-                          {project.villages && project.villages.length > 0 && (
-                            <p className="text-xs text-muted-foreground mt-1">
-                              Települések: {project.villages.length} db
-                            </p>
-                          )}
                         </div>
 
                         <div className="flex gap-2 pt-2">
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => navigate(`/project-admin?project=${project.slug}`)}
                             className="flex-1"
                           >
-                            Kezelés
+                            Szerkesztés
                           </Button>
                         </div>
                       </CardContent>
