@@ -93,6 +93,7 @@ export type Database = {
           duration_days: number | null
           end_date: string | null
           id: string
+          image_url: string | null
           is_active: boolean | null
           is_continuous: boolean | null
           is_team_challenge: boolean | null
@@ -114,6 +115,7 @@ export type Database = {
           duration_days?: number | null
           end_date?: string | null
           id: string
+          image_url?: string | null
           is_active?: boolean | null
           is_continuous?: boolean | null
           is_team_challenge?: boolean | null
@@ -135,6 +137,7 @@ export type Database = {
           duration_days?: number | null
           end_date?: string | null
           id?: string
+          image_url?: string | null
           is_active?: boolean | null
           is_continuous?: boolean | null
           is_team_challenge?: boolean | null
