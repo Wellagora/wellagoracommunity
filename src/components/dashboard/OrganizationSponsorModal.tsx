@@ -74,25 +74,12 @@ const SPONSOR_TIERS: SponsorTier[] = [
   }
 ];
 
-const REGIONS = [
-  'Országos',
-  'Budapest',
-  'Pest megye',
-  'Közép-Dunántúl',
-  'Nyugat-Dunántúl',
-  'Dél-Dunántúl',
-  'Észak-Magyarország',
-  'Észak-Alföld',
-  'Dél-Alföld'
-];
-
 export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSponsorModalProps) => {
   const { toast } = useToast();
   const { profile } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [selectedChallenge, setSelectedChallenge] = useState("");
-  const [selectedRegion, setSelectedRegion] = useState("Országos");
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
   const [challenges, setChallenges] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -196,7 +183,7 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
           sponsor_user_id: profile!.id,
           sponsor_organization_id: profile!.organization_id,
           tier: selectedTier,
-          region: selectedRegion,
+          region: 'Országos',
           status: 'active',
           credit_cost: tier.credits,
           package_type: selectedTier,
@@ -222,7 +209,7 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
           sponsor_user_id: profile!.id,
           transaction_type: 'spend',
           credits: -tier.credits,
-          description: `${selectedChallengeData.title} kihívás szponzorálása - ${selectedRegion}`
+          description: `${selectedChallengeData.title} kihívás szponzorálása`
         });
 
       toast({
@@ -235,7 +222,6 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
       onOpenChange(false);
       setSelectedChallenge("");
       setSelectedTier(null);
-      setSelectedRegion("Országos");
     } catch (error: any) {
       console.error("Error creating sponsorship:", error);
       toast({
@@ -269,27 +255,6 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">{t('organization.available_credits')}</span>
               <span className="text-2xl font-bold text-success">{credits}</span>
-            </div>
-          </div>
-
-          {/* Region Selection */}
-          <div className="space-y-3">
-            <Label className="flex items-center gap-2">
-              <MapPin className="w-4 h-4" />
-              {t('organization.select_region')} *
-            </Label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {REGIONS.map((region) => (
-                <Button
-                  key={region}
-                  type="button"
-                  variant={selectedRegion === region ? "default" : "outline"}
-                  className="w-full"
-                  onClick={() => setSelectedRegion(region)}
-                >
-                  {region}
-                </Button>
-              ))}
             </div>
           </div>
 
@@ -390,12 +355,7 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
                 <TrendingUp className="w-4 h-4" />
                 {t('organization.expected_impact')}
               </h4>
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div>
-                  <MapPin className="w-5 h-5 mx-auto mb-1 text-primary" />
-                  <p className="text-sm font-bold">{selectedRegion}</p>
-                  <p className="text-xs text-muted-foreground">{t('organization.scope')}</p>
-                </div>
+              <div className="grid grid-cols-2 gap-4 text-center">
                 <div>
                   <Crown className="w-5 h-5 mx-auto mb-1 text-warning" />
                   <p className="text-sm font-bold">{selectedTierData.name}</p>
