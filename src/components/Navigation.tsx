@@ -40,23 +40,31 @@ const Navigation = () => {
   useEffect(() => {
     const checkAdminAccess = async () => {
       if (!user) {
+        console.log('🔐 No user, setting hasAdminAccess to false');
         setHasAdminAccess(false);
         return;
       }
 
       try {
+        console.log('🔐 Checking admin access for user:', user.id);
         // Server-side admin verification via edge function
         const { data, error } = await supabase.functions.invoke('verify-admin-access');
-        console.log('🔐 Admin access check:', { hasAccess: data?.hasAccess, roles: data?.roles, error });
-        setHasAdminAccess(!error && data?.hasAccess === true);
+        console.log('🔐 Admin access result:', { 
+          hasAccess: data?.hasAccess, 
+          roles: data?.roles, 
+          error: error?.message 
+        });
+        const hasAccess = !error && data?.hasAccess === true;
+        setHasAdminAccess(hasAccess);
+        console.log('🔐 hasAdminAccess state set to:', hasAccess);
       } catch (error) {
-        console.error('Error verifying admin access:', error);
+        console.error('❌ Error verifying admin access:', error);
         setHasAdminAccess(false);
       }
     };
 
     checkAdminAccess();
-  }, [user]);
+  }, [user, profile]);
 
   const userRoles = [
     { name: "Citizen", icon: User, gradient: "from-emerald-400 to-green-600", description: "Individual sustainability journey" },
@@ -196,10 +204,23 @@ const Navigation = () => {
           <div className="flex items-center space-x-4">
             {user ? (
               <div className="flex items-center space-x-4">
-                <RoleSwitcher />
+                {/* Super Admin Controls */}
+                <div className="flex items-center space-x-2">
+                  <RoleSwitcher />
+                  {hasAdminAccess && (
+                    <Link
+                      to="/admin"
+                      className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl hover:from-purple-500/30 hover:to-pink-500/30 transition-all duration-300 font-medium text-purple-600"
+                    >
+                      <Shield className="w-4 h-4" />
+                      <span className="text-sm">{t('nav.admin_dashboard')}</span>
+                    </Link>
+                  )}
+                </div>
+                
                 {currentProject && <ProjectSelector />}
                 <Link
-                  to="/profile" 
+                  to="/profile"
                   className="flex items-center space-x-3 px-4 py-2 bg-gradient-to-r from-card/80 to-background/80 backdrop-blur-sm rounded-xl border border-border hover:from-card hover:to-background/90 transition-all duration-300"
                 >
                   <div className="relative">
@@ -230,9 +251,6 @@ const Navigation = () => {
                   <span className="text-sm font-medium">{t('nav.edit_profile')}</span>
                   </Link>
                   
-                  {/* Role Switcher for Super Admins */}
-                  <RoleSwitcher />
-                  
             {(profile?.user_role === 'business' || profile?.email === 'attila.kelemen@proself.org') && (
               <Link
                 to="/sponsor-dashboard"
@@ -240,16 +258,6 @@ const Navigation = () => {
               >
                 <Coins className="w-4 h-4" />
                 <span className="text-sm">{t('nav.sponsor_dashboard')}</span>
-              </Link>
-            )}
-            
-            {hasAdminAccess && (
-              <Link
-                to="/admin"
-                className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl hover:from-purple-500/30 hover:to-pink-500/30 transition-all duration-300 font-medium text-purple-600"
-              >
-                <Shield className="w-4 h-4" />
-                <span className="text-sm">{t('nav.admin_dashboard')}</span>
               </Link>
             )}
             
