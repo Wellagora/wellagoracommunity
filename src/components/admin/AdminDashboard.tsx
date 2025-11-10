@@ -150,7 +150,14 @@ const AdminDashboard = () => {
     loadData();
   }, []);
 
-  const loadData = async () => {
+  useEffect(() => {
+    // Reload data when a project is selected
+    if (selectedProject) {
+      loadData(selectedProject.id);
+    }
+  }, [selectedProject]);
+
+  const loadData = async (forceProjectId?: string) => {
     try {
       setLoading(true);
 
@@ -229,7 +236,7 @@ const AdminDashboard = () => {
 
       // Load active programs (challenge_definitions) filtered by selected project
       try {
-        const projectToLoad = selectedProject?.id || defaultProjectId;
+        const projectToLoad = forceProjectId || selectedProject?.id || defaultProjectId;
         if (projectToLoad) {
           // @ts-ignore - Complex type inference issue with Supabase
           const activeProgramsResult = await supabase
@@ -249,7 +256,7 @@ const AdminDashboard = () => {
       
       // Load draft challenges filtered by selected project
       try {
-        const projectToLoad = selectedProject?.id || defaultProjectId;
+        const projectToLoad = forceProjectId || selectedProject?.id || defaultProjectId;
         if (projectToLoad) {
           // @ts-ignore - Complex type inference issue with Supabase
           const draftsResult = await supabase
@@ -684,7 +691,7 @@ const AdminDashboard = () => {
           onBack={() => setSelectedProject(null)}
           draftChallenges={draftChallenges}
           activePrograms={activePrograms}
-          onRefresh={loadData}
+          onRefresh={() => loadData(selectedProject.id)}
         />
       ) : (
         <>
