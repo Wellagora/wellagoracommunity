@@ -47,6 +47,7 @@ const Navigation = () => {
       try {
         // Server-side admin verification via edge function
         const { data, error } = await supabase.functions.invoke('verify-admin-access');
+        console.log('🔐 Admin access check:', { hasAccess: data?.hasAccess, roles: data?.roles, error });
         setHasAdminAccess(!error && data?.hasAccess === true);
       } catch (error) {
         console.error('Error verifying admin access:', error);
@@ -226,8 +227,11 @@ const Navigation = () => {
                     className="flex items-center space-x-2 px-3 py-2 text-muted-foreground hover:text-primary hover:bg-card/50 rounded-xl transition-all duration-300"
                   >
                     <Edit3 className="w-4 h-4" />
-                    <span className="text-sm font-medium">{t('nav.edit_profile')}</span>
+                  <span className="text-sm font-medium">{t('nav.edit_profile')}</span>
                   </Link>
+                  
+                  {/* Role Switcher for Super Admins */}
+                  <RoleSwitcher />
                   
             {(profile?.user_role === 'business' || profile?.email === 'attila.kelemen@proself.org') && (
               <Link
