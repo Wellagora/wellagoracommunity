@@ -14,7 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { CalendarIcon, Loader2, MapPin } from "lucide-react";
+import { CalendarIcon, Loader2, MapPin, Upload, X } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
@@ -46,6 +46,8 @@ export const ProgramCreator = ({
   const [endDate, setEndDate] = useState<Date>();
   const [startTime, setStartTime] = useState("10:00");
   const [endTime, setEndTime] = useState("18:00");
+  const [uploadedImage, setUploadedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm<ProgramFormData>({
     resolver: zodResolver(programSchema),
@@ -56,10 +58,47 @@ export const ProgramCreator = ({
     }
   });
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUploadedImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setUploadedImage(null);
+    setImagePreview(null);
+  };
+
   const onSubmit = async (data: ProgramFormData) => {
     setIsSubmitting(true);
     
     try {
+      // Upload image if provided
+      let imageUrl = null;
+      if (uploadedImage) {
+        const fileExt = uploadedImage.name.split('.').pop();
+        const fileName = `${data.id}-${Date.now()}.${fileExt}`;
+        
+        const { error: uploadError, data: uploadData } = await supabase.storage
+          .from('program-images')
+          .upload(fileName, uploadedImage);
+
+        if (uploadError) throw uploadError;
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('program-images')
+          .getPublicUrl(fileName);
+        
+        imageUrl = publicUrl;
+      }
+
       // Combine date and time for scheduled events
       let startDateTime = null;
       let endDateTime = null;
@@ -90,6 +129,7 @@ export const ProgramCreator = ({
           start_date: startDateTime?.toISOString(),
           end_date: endDateTime?.toISOString(),
           location: data.location || null,
+          image_url: imageUrl,
           is_active: true,
           base_impact: {},
           project_id: defaultProjectId,
@@ -102,6 +142,7 @@ export const ProgramCreator = ({
       setStartDate(undefined);
       setEndDate(undefined);
       setIsContinuous(true);
+      removeImage();
       
       // Call onSuccess callback if provided
       if (onSuccess) {
@@ -221,6 +262,48 @@ export const ProgramCreator = ({
                 {errors.duration_days && <p className="text-sm text-destructive mt-1">{errors.duration_days.message}</p>}
               </div>
             </div>
+          </div>
+
+          {/* Image Upload */}
+          <div className="space-y-2">
+            <Label>Program fénykép</Label>
+            {!imagePreview ? (
+              <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
+                <input
+                  type="file"
+                  id="image-upload"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+                <Label htmlFor="image-upload" className="cursor-pointer">
+                  <Upload className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">
+                    Kattints ide vagy húzd ide a képet
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    PNG, JPG, max 5MB
+                  </p>
+                </Label>
+              </div>
+            ) : (
+              <div className="relative">
+                <img
+                  src={imagePreview}
+                  alt="Program előnézet"
+                  className="w-full h-48 object-cover rounded-lg"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  className="absolute top-2 right-2"
+                  onClick={removeImage}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Event Type Toggle */}

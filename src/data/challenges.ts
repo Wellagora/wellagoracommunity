@@ -28,6 +28,7 @@ export interface Challenge {
   startDate?: string;
   endDate?: string;
   location?: string;
+  imageUrl?: string;
 }
 
 export const challenges: Challenge[] = [

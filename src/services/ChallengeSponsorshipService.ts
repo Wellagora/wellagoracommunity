@@ -137,6 +137,77 @@ export const enrichChallengesWithSponsors = async (
 };
 
 /**
+ * Loads challenges from database and enriches with sponsorship data
+ */
+export const loadChallengesFromDatabase = async (
+  projectId?: string
+): Promise<Challenge[]> => {
+  try {
+    // Build the query
+    let query = supabase
+      .from('challenge_definitions')
+      .select('*')
+      .eq('is_active', true);
+    
+    // Filter by project if provided
+    if (projectId) {
+      query = query.eq('project_id', projectId);
+    }
+
+    const { data: dbChallenges, error } = await query;
+
+    if (error) {
+      console.error('Error fetching challenges:', error);
+      return [];
+    }
+
+    if (!dbChallenges || dbChallenges.length === 0) {
+      return [];
+    }
+
+    // Get sponsorships
+    const sponsorships = await getActiveSponsorships(projectId);
+
+    // Transform database challenges to Challenge format
+    const challenges: Challenge[] = dbChallenges.map((dbChallenge) => {
+      const sponsorInfo = sponsorships.get(dbChallenge.id);
+      
+      return {
+        id: dbChallenge.id,
+        titleKey: dbChallenge.title, // Using title directly as key
+        descriptionKey: dbChallenge.description, // Using description directly
+        longDescriptionKey: dbChallenge.description,
+        category: dbChallenge.category as Challenge['category'],
+        difficulty: dbChallenge.difficulty as Challenge['difficulty'],
+        durationKey: dbChallenge.is_continuous ? 'Folyamatos' : `${dbChallenge.duration_days} nap`,
+        pointsReward: dbChallenge.points_base,
+        participants: 0, // Default value
+        completionRate: 0, // Default value
+        stepsKeys: [],
+        tipsKeys: [],
+        participants_preview: [],
+        isContinuous: dbChallenge.is_continuous,
+        startDate: dbChallenge.start_date,
+        endDate: dbChallenge.end_date,
+        location: dbChallenge.location,
+        imageUrl: dbChallenge.image_url,
+        sponsor: sponsorInfo ? {
+          name: sponsorInfo.name,
+          logo: sponsorInfo.logo,
+          sponsorUserId: sponsorInfo.sponsorUserId,
+          organizationId: sponsorInfo.organizationId
+        } : undefined
+      };
+    });
+
+    return challenges;
+  } catch (error) {
+    console.error('Exception in loadChallengesFromDatabase:', error);
+    return [];
+  }
+};
+
+/**
  * Gets sponsor info for a specific challenge, optionally filtered by project
  */
 export const getChallengeSponsor = async (

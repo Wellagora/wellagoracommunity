@@ -39,7 +39,7 @@ import {
   Zap
 } from "lucide-react";
 import { challenges, Challenge } from "@/data/challenges";
-import { enrichChallengesWithSponsors } from "@/services/ChallengeSponsorshipService";
+import { loadChallengesFromDatabase } from "@/services/ChallengeSponsorshipService";
 
 const ChallengesPage = () => {
   const navigate = useNavigate();
@@ -49,20 +49,20 @@ const ChallengesPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("all");
-  const [filteredChallenges, setFilteredChallenges] = useState<Challenge[]>(challenges);
-  const [enrichedChallenges, setEnrichedChallenges] = useState<Challenge[]>(challenges);
+  const [filteredChallenges, setFilteredChallenges] = useState<Challenge[]>([]);
+  const [allChallenges, setAllChallenges] = useState<Challenge[]>([]);
   const [sponsorsLoading, setSponsorsLoading] = useState(true);
 
-  // Load sponsorship data (project-specific if project selected)
+  // Load challenges from database (project-specific if project selected)
   useEffect(() => {
-    const loadSponsors = async () => {
+    const loadChallenges = async () => {
       setSponsorsLoading(true);
-      const enriched = await enrichChallengesWithSponsors(challenges, currentProject?.id);
-      setEnrichedChallenges(enriched);
+      const dbChallenges = await loadChallengesFromDatabase(currentProject?.id);
+      setAllChallenges(dbChallenges);
       setSponsorsLoading(false);
     };
     
-    loadSponsors();
+    loadChallenges();
   }, [currentProject]);
 
   // Temporarily disable auth check to debug challenges display
@@ -74,18 +74,19 @@ const ChallengesPage = () => {
 
   // Filter challenges based on search and filters
   useEffect(() => {
-    let filtered = [...enrichedChallenges]; // Use enriched challenges with sponsors
+    let filtered = [...allChallenges];
 
-    console.log('Debug - All challenges count:', challenges.length);
-    console.log('Debug - Challenges:', challenges);
+    console.log('Debug - All challenges count:', allChallenges.length);
+    console.log('Debug - Challenges:', allChallenges);
     console.log('Debug - Search term:', searchTerm);
     console.log('Debug - Selected category:', selectedCategory);
     console.log('Debug - Selected difficulty:', selectedDifficulty);
 
     if (searchTerm) {
       filtered = filtered.filter(challenge => {
-        const title = t(challenge.titleKey);
-        const description = t(challenge.descriptionKey);
+        // Since we're using database values directly, no need for t()
+        const title = challenge.titleKey;
+        const description = challenge.descriptionKey;
         console.log('Debug - Checking challenge:', challenge.id, 'Title:', title, 'Desc:', description);
         return title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -103,7 +104,7 @@ const ChallengesPage = () => {
     console.log('Debug - Filtered challenges count:', filtered.length);
     console.log('Debug - Filtered challenges:', filtered);
     setFilteredChallenges(filtered);
-  }, [searchTerm, selectedCategory, selectedDifficulty, t, enrichedChallenges]);
+  }, [searchTerm, selectedCategory, selectedDifficulty, allChallenges]);
 
   const getCategoryIcon = (category: Challenge['category']) => {
     switch (category) {
@@ -196,18 +197,18 @@ const ChallengesPage = () => {
             {/* Quick Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 max-w-2xl mx-auto">
             <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
-                <div className="text-3xl font-bold text-foreground mb-1">{challenges.length}</div>
+                <div className="text-3xl font-bold text-foreground mb-1">{allChallenges.length}</div>
                 <div className="text-muted-foreground">{t('challenges.active_challenges')}</div>
               </Card3D>
               <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
                 <div className="text-3xl font-bold text-foreground mb-1">
-                  {challenges.reduce((sum, c) => sum + c.participants, 0).toLocaleString()}
+                  {allChallenges.reduce((sum, c) => sum + c.participants, 0).toLocaleString()}
                 </div>
                 <div className="text-muted-foreground">{t('challenges.total_participants')}</div>
               </Card3D>
               <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
                 <div className="text-3xl font-bold text-foreground mb-1">
-                  {Math.round(challenges.reduce((sum, c) => sum + c.completionRate, 0) / challenges.length)}%
+                  {allChallenges.length > 0 ? Math.round(allChallenges.reduce((sum, c) => sum + c.completionRate, 0) / allChallenges.length) : 0}%
                 </div>
                 <div className="text-muted-foreground">{t('challenges.average_completion')}</div>
               </Card3D>
@@ -269,24 +270,47 @@ const ChallengesPage = () => {
           {filteredChallenges.map((challenge, index) => (
             <Card3D 
               key={challenge.id} 
-              className="bg-card/50 backdrop-blur-sm border border-border/50 hover:bg-card/70 transition-all duration-300 hover:shadow-glow hover:scale-105 animate-slide-in-3d"
+              className="bg-card/50 backdrop-blur-sm border border-border/50 hover:bg-card/70 transition-all duration-300 hover:shadow-glow hover:scale-105 animate-slide-in-3d overflow-hidden"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <CardHeader className="pb-4">
-                <div className="flex items-start justify-between mb-3">
-                  <div className={`p-3 rounded-2xl ${getCategoryColor(challenge.category)} shadow-premium`}>
-                    {getCategoryIcon(challenge.category)}
+              {challenge.imageUrl && (
+                <div className="relative w-full h-48 overflow-hidden">
+                  <img 
+                    src={challenge.imageUrl} 
+                    alt={t(challenge.titleKey)}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-2 right-2">
+                    <Badge className={`${getDifficultyColor(challenge.difficulty)} text-xs font-medium px-3 py-1 rounded-full backdrop-blur-sm`}>
+                      {challenge.difficulty}
+                    </Badge>
                   </div>
-                  <Badge className={`${getDifficultyColor(challenge.difficulty)} text-xs font-medium px-3 py-1 rounded-full`}>
-                    {challenge.difficulty}
-                  </Badge>
                 </div>
+              )}
+              <CardHeader className="pb-4">
+                {!challenge.imageUrl && (
+                  <div className="flex items-start justify-between mb-3">
+                    <div className={`p-3 rounded-2xl ${getCategoryColor(challenge.category)} shadow-premium`}>
+                      {getCategoryIcon(challenge.category)}
+                    </div>
+                    <Badge className={`${getDifficultyColor(challenge.difficulty)} text-xs font-medium px-3 py-1 rounded-full`}>
+                      {challenge.difficulty}
+                    </Badge>
+                  </div>
+                )}
+                {challenge.imageUrl && (
+                  <div className="flex items-center mb-3">
+                    <div className={`p-3 rounded-2xl ${getCategoryColor(challenge.category)} shadow-premium`}>
+                      {getCategoryIcon(challenge.category)}
+                    </div>
+                  </div>
+                )}
                 
                 <CardTitle className="text-foreground text-lg leading-tight mb-2">
-                  {t(challenge.titleKey)}
+                  {challenge.titleKey}
                 </CardTitle>
                 <CardDescription className="text-muted-foreground text-sm leading-relaxed">
-                  {t(challenge.descriptionKey)}
+                  {challenge.descriptionKey}
                 </CardDescription>
               </CardHeader>
 
@@ -295,7 +319,7 @@ const ChallengesPage = () => {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="flex items-center space-x-2 text-muted-foreground">
                     <Clock className="w-4 h-4" />
-                    <span>{t(challenge.durationKey)}</span>
+                    <span>{challenge.durationKey}</span>
                   </div>
                   <div className="flex items-center space-x-2 text-muted-foreground">
                     <Trophy className="w-4 h-4" />
