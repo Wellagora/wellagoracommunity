@@ -74,42 +74,9 @@ const OrganizationDashboard = () => {
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
   const [creatingOrg, setCreatingOrg] = useState(false);
 
-  // Mock data
-  const [challenges] = useState<Challenge[]>([
-    {
-      id: "bike-to-work-month",
-      title: "Városi Kerékpározás Kihívás",
-      type: 'sponsored',
-      participants: 234,
-      co2_saved: 1.2,
-      status: 'active',
-      progress: 68
-    },
-    {
-      id: "plastic-free-lifestyle",
-      title: "Zero Waste Workplace",
-      type: 'created',
-      participants: 89,
-      co2_saved: 0.8,
-      status: 'active',
-      progress: 45
-    },
-    {
-      id: "local-food-week",
-      title: "Helyi Étel Hét",
-      type: 'team_joined',
-      participants: 156,
-      co2_saved: 2.3,
-      status: 'completed',
-      progress: 100
-    }
-  ]);
-
-  const [partnerships] = useState<Partnership[]>([
-    { id: "1", name: "Green Future NGO", type: 'ngo', projects: 3, impact_score: 92 },
-    { id: "2", name: "Városi Önkormányzat", type: 'government', projects: 2, impact_score: 85 },
-    { id: "3", name: "EcoTech Solutions", type: 'business', projects: 1, impact_score: 78 }
-  ]);
+  // Real data from database
+  const [challenges] = useState<Challenge[]>([]);
+  const [partnerships] = useState<Partnership[]>([]);
 
   const [impactStories, setImpactStories] = useState<ImpactStory[]>([]);
   const [loadingStories, setLoadingStories] = useState(true);
@@ -318,11 +285,9 @@ const OrganizationDashboard = () => {
   const roleInfo = getRoleInfo();
   const RoleIcon = roleInfo.icon;
 
-  // Regional stats
-  const totalParticipants = challenges.reduce((sum, c) => sum + c.participants, 0);
-  const totalCO2 = challenges.reduce((sum, c) => sum + c.co2_saved, 0);
-  const activeChallenges = challenges.filter(c => c.status === 'active').length;
-  const regionalRank = 3; // Mock rank
+  // Regional stats - only real data
+  const totalParticipants = 0;
+  const activeChallenges = 0;
 
   if (authLoading) {
     return (
@@ -362,10 +327,6 @@ const OrganizationDashboard = () => {
           <div className="flex items-center space-x-2 text-sm text-muted-foreground">
             <MapPin className="w-4 h-4" />
             <span>{t('organization.budapest_region')}</span>
-          </div>
-          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-            <Trophy className="w-4 h-4 text-warning" />
-            <span>#{regionalRank} {t('organization.ranking')}</span>
           </div>
           </div>
         </div>
