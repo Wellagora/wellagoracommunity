@@ -131,17 +131,8 @@ const Navigation = () => {
             </Link>
           </div>
 
-          {/* Community Stats and Language Selector */}
+          {/* Language Selector */}
           <div className="flex items-center space-x-4 text-sm">
-            <div className="flex items-center space-x-2 px-3 py-1.5 bg-card/50 backdrop-blur-sm rounded-full border border-border">
-              <Leaf className="w-4 h-4 text-success" />
-              <span className="text-foreground font-medium">{t('nav.community_stats.champions')}</span>
-            </div>
-            <div className="flex items-center space-x-2 px-3 py-1.5 bg-card/50 backdrop-blur-sm rounded-full border border-border">
-              <span className="w-2 h-2 bg-success rounded-full animate-pulse"></span>
-              <span className="text-foreground font-medium hidden xl:inline">{t('nav.live_impact')}</span>
-              <span className="text-foreground font-medium xl:hidden">Live: 847 CO₂</span>
-            </div>
             <LanguageSelector />
           </div>
         </div>

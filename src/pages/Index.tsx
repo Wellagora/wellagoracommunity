@@ -134,38 +134,6 @@ const Index = () => {
           </motion.div>
         </div>
 
-        {/* Bottom Stats Bar */}
-        <motion.div 
-          className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-8 px-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-        >
-          <Card className="bg-card/60 backdrop-blur-sm border-border/30">
-            <CardContent className="p-3 sm:p-4 text-center">
-              <div className="text-xl sm:text-2xl font-bold text-primary">15+</div>
-              <div className="text-xs sm:text-sm text-muted-foreground">{t('index.stats_active_programs')}</div>
-            </CardContent>
-          </Card>
-          <Card className="bg-card/60 backdrop-blur-sm border-border/30">
-            <CardContent className="p-3 sm:p-4 text-center">
-              <div className="text-xl sm:text-2xl font-bold text-accent">350+</div>
-              <div className="text-xs sm:text-sm text-muted-foreground">{t('index.stats_active_members')}</div>
-            </CardContent>
-          </Card>
-          <Card className="bg-card/60 backdrop-blur-sm border-border/30">
-            <CardContent className="p-3 sm:p-4 text-center">
-              <div className="text-xl sm:text-2xl font-bold text-success">25</div>
-              <div className="text-xs sm:text-sm text-muted-foreground">{t('index.stats_organizations')}</div>
-            </CardContent>
-          </Card>
-          <Card className="bg-card/60 backdrop-blur-sm border-border/30">
-            <CardContent className="p-3 sm:p-4 text-center">
-              <div className="text-xl sm:text-2xl font-bold text-secondary">12</div>
-              <div className="text-xs sm:text-sm text-muted-foreground">{t('index.stats_villages')}</div>
-            </CardContent>
-          </Card>
-        </motion.div>
       </div>
       
       {/* Customer Journey Section */}
