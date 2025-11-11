@@ -8,10 +8,12 @@ import { motion } from "framer-motion";
 import { 
   Users, 
   BarChart3,
-  Zap
+  User,
+  Building
 } from "lucide-react";
 
-import CustomerJourney from "@/components/CustomerJourney";
+import SuccessStories from "@/components/SuccessStories";
+import FeaturedChallenges from "@/components/FeaturedChallenges";
 
 const Index = () => {
   const { t } = useLanguage();
@@ -20,124 +22,160 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* Hero Section with Clear Call-to-Action */}
-      <div className="container mx-auto px-4 pt-6 sm:pt-8 pb-12 sm:pb-16">
-        <motion.div 
-          className="text-center mb-12 sm:mb-16 xl:mb-20"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <h1 className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-bold text-foreground mb-4 sm:mb-6 xl:mb-8 px-4">
-            {t('index.platform_title')}
-          </h1>
-          <p className="text-base sm:text-xl xl:text-2xl text-muted-foreground max-w-3xl xl:max-w-4xl mx-auto mb-6 sm:mb-8 xl:mb-10 px-4">
-            {t('index.platform_subtitle')}
-          </p>
-          
-          {/* Main Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center mb-6 sm:mb-8 px-4">
-            <Link to="/projects" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300">
-                {t('index.cta_join_community')}
-              </Button>
-            </Link>
-            <Link to="/challenges" className="w-full sm:w-auto">
-              <Button size="lg" variant="outline" className="w-full border-2 border-primary hover:bg-primary hover:text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold transition-all duration-300">
-                {t('index.cta_start_program')}
-              </Button>
-            </Link>
-            <Link to="/explore-region" className="w-full sm:w-auto">
-              <Button size="lg" variant="outline" className="w-full border-2 border-primary hover:bg-primary hover:text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold transition-all duration-300">
-                {t('index.cta_explore_region')}
-              </Button>
-            </Link>
-          </div>
-          
-          <Badge variant="secondary" className="bg-primary/20 text-primary px-4 py-2 text-sm">
-            {t('index.badge_features')}
-          </Badge>
-        </motion.div>
-
-        {/* Feature Cards - Simplified */}
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8 mb-12 sm:mb-16 px-4">
-          {/* Personal Dashboard */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
+      {/* Hero Section with Gradient Background */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-success/10 to-accent/10">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        <div className="container mx-auto px-4 py-20 sm:py-28 relative z-10">
+          <motion.div 
+            className="text-center max-w-4xl mx-auto"
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.8 }}
           >
-            <Card className="h-full bg-gradient-to-br from-primary/10 to-success/10 border-primary/20 hover:shadow-glow transition-all duration-300 hover:scale-105">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-r from-primary to-success rounded-2xl flex items-center justify-center mb-4">
-                  <BarChart3 className="w-6 h-6 text-white" />
-                </div>
-                <CardTitle className="text-xl mb-2">{t('index.personal_dashboard')}</CardTitle>
-                <p className="text-muted-foreground">{t('index.personal_dashboard_desc')}</p>
-              </CardHeader>
-              <CardContent>
-                <Link to="/dashboard">
-                  <Button className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90">
-                    {t('index.dashboard_open')}
-                  </Button>
+            <Badge variant="secondary" className="bg-primary/20 text-primary px-4 py-2 text-sm mb-6">
+              Káli medence közösségépítés
+            </Badge>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground mb-6 leading-tight">
+              Csatlakozz a Káli medence közösségéhez
+            </h1>
+            <p className="text-lg sm:text-xl xl:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto">
+              Vegyél részt programokban, oszd meg tapasztalataidat és építsük együtt a régiót!
+            </p>
+            
+            {/* Role Selection */}
+            <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <Link to="/auth?role=citizen">
+                  <Card className="h-full bg-card/80 backdrop-blur-sm hover:shadow-glow transition-all duration-300 border-2 border-transparent hover:border-primary cursor-pointer group">
+                    <CardContent className="p-8 text-center">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-success mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <User className="w-8 h-8 text-white" />
+                      </div>
+                      <h3 className="text-xl font-bold mb-2 text-foreground">Állampolgár vagyok</h3>
+                      <p className="text-muted-foreground text-sm">
+                        Csatlakozz programokhoz, gyűjts pontokat és légy része a közösségnek
+                      </p>
+                    </CardContent>
+                  </Card>
                 </Link>
-              </CardContent>
-            </Card>
-          </motion.div>
+              </motion.div>
 
-          {/* Community Challenges */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
-            <Card className="h-full bg-gradient-to-br from-accent/10 to-secondary/10 border-accent/20 hover:shadow-glow transition-all duration-300 hover:scale-105">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-r from-accent to-secondary rounded-2xl flex items-center justify-center mb-4">
-                  <Users className="w-6 h-6 text-white" />
-                </div>
-                <CardTitle className="text-xl mb-2">{t('index.community_programs')}</CardTitle>
-                <p className="text-muted-foreground">{t('index.community_programs_desc')}</p>
-              </CardHeader>
-              <CardContent>
-                <Link to="/challenges">
-                  <Button className="w-full bg-gradient-to-r from-accent to-secondary hover:from-accent/90 hover:to-secondary/90">
-                    {t('index.programs_browse')}
-                  </Button>
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                <Link to="/auth?role=organization">
+                  <Card className="h-full bg-card/80 backdrop-blur-sm hover:shadow-glow transition-all duration-300 border-2 border-transparent hover:border-accent cursor-pointer group">
+                    <CardContent className="p-8 text-center">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-accent to-secondary mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Building className="w-8 h-8 text-white" />
+                      </div>
+                      <h3 className="text-xl font-bold mb-2 text-foreground">Szervezet vagyok</h3>
+                      <p className="text-muted-foreground text-sm">
+                        Szponzoráld a programokat, építsd a márkádat és támogasd a közösséget
+                      </p>
+                    </CardContent>
+                  </Card>
                 </Link>
-              </CardContent>
-            </Card>
-          </motion.div>
+              </motion.div>
+            </div>
 
-          {/* Community Hub */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-          >
-            <Card className="h-full bg-gradient-to-br from-warning/10 to-primary/10 border-warning/20 hover:shadow-glow transition-all duration-300 hover:scale-105">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-r from-warning to-primary rounded-2xl flex items-center justify-center mb-4">
-                  <Users className="w-6 h-6 text-white" />
-                </div>
-                <CardTitle className="text-xl mb-2">{t('index.community_hub')}</CardTitle>
-                <p className="text-muted-foreground">{t('index.community_hub_desc')}</p>
-              </CardHeader>
-              <CardContent>
-                <Link to="/community">
-                  <Button className="w-full bg-gradient-to-r from-warning to-primary hover:from-warning/90 hover:to-primary/90">
-                    {t('index.community_join')}
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
+            <p className="text-sm text-muted-foreground mt-6">
+              Már van fiókod? <Link to="/auth" className="text-primary hover:underline font-semibold">Bejelentkezés</Link>
+            </p>
           </motion.div>
         </div>
+      </section>
 
-      </div>
+      {/* Quick Access Cards */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              <Card className="h-full bg-gradient-to-br from-primary/10 to-success/10 border-primary/20 hover:shadow-glow transition-all duration-300">
+                <CardHeader>
+                  <div className="w-12 h-12 bg-gradient-to-r from-primary to-success rounded-2xl flex items-center justify-center mb-4">
+                    <BarChart3 className="w-6 h-6 text-white" />
+                  </div>
+                  <CardTitle className="text-xl mb-2">Személyes Dashboard</CardTitle>
+                  <p className="text-muted-foreground">Kövesd nyomon a fejlődésed és impaktodat</p>
+                </CardHeader>
+                <CardContent>
+                  <Link to="/dashboard">
+                    <Button className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90">
+                      Dashboard megnyitása
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              viewport={{ once: true }}
+            >
+              <Card className="h-full bg-gradient-to-br from-accent/10 to-secondary/10 border-accent/20 hover:shadow-glow transition-all duration-300">
+                <CardHeader>
+                  <div className="w-12 h-12 bg-gradient-to-r from-accent to-secondary rounded-2xl flex items-center justify-center mb-4">
+                    <Users className="w-6 h-6 text-white" />
+                  </div>
+                  <CardTitle className="text-xl mb-2">Közösségi Programok</CardTitle>
+                  <p className="text-muted-foreground">Csatlakozz izgalmas kihívásokhoz</p>
+                </CardHeader>
+                <CardContent>
+                  <Link to="/challenges">
+                    <Button className="w-full bg-gradient-to-r from-accent to-secondary hover:from-accent/90 hover:to-secondary/90">
+                      Programok böngészése
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <Card className="h-full bg-gradient-to-br from-warning/10 to-primary/10 border-warning/20 hover:shadow-glow transition-all duration-300">
+                <CardHeader>
+                  <div className="w-12 h-12 bg-gradient-to-r from-warning to-primary rounded-2xl flex items-center justify-center mb-4">
+                    <Users className="w-6 h-6 text-white" />
+                  </div>
+                  <CardTitle className="text-xl mb-2">Közösségi Tér</CardTitle>
+                  <p className="text-muted-foreground">Kapcsolódj helyi csoportokhoz</p>
+                </CardHeader>
+                <CardContent>
+                  <Link to="/community">
+                    <Button className="w-full bg-gradient-to-r from-warning to-primary hover:from-warning/90 hover:to-primary/90">
+                      Közösség felfedezése
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Challenges */}
+      <FeaturedChallenges />
       
-      {/* Customer Journey Section */}
-      <CustomerJourney />
+      {/* Success Stories */}
+      <SuccessStories />
     </div>
   );
 };
