@@ -5,9 +5,6 @@ import { motion } from "framer-motion";
 import { Users, Sprout, BookOpen, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-import communityChallengesImg from "@/assets/community-challenges.jpg";
-import communityGardenImg from "@/assets/community-garden.jpg";
-import communityCelebrationImg from "@/assets/community-celebration.jpg";
 
 const FeaturedChallenges = () => {
   const { t } = useLanguage();
@@ -21,7 +18,7 @@ const FeaturedChallenges = () => {
       difficulty: "beginner",
       icon: Users,
       color: "from-primary to-secondary",
-      image: communityChallengesImg,
+      image: "https://vvunxewylcifwphxgqab.supabase.co/storage/v1/object/public/program-images/kali-muhely-1762876915224.jpg",
     },
     {
       id: "kali-kozos-kert",
@@ -31,7 +28,7 @@ const FeaturedChallenges = () => {
       difficulty: "beginner",
       icon: Sprout,
       color: "from-success to-info",
-      image: communityGardenImg,
+      image: "https://vvunxewylcifwphxgqab.supabase.co/storage/v1/object/public/program-images/kali-kozos-kert-1762875048140.jpg",
     },
     {
       id: "tudas-hid",
@@ -41,7 +38,7 @@ const FeaturedChallenges = () => {
       difficulty: "intermediate",
       icon: BookOpen,
       color: "from-accent to-warning",
-      image: communityCelebrationImg,
+      image: "https://vvunxewylcifwphxgqab.supabase.co/storage/v1/object/public/program-images/tudas-hid-1762875114052.jpg",
     },
   ];
 
