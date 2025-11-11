@@ -1,6 +1,14 @@
+import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { User, Edit3, Building2 } from "lucide-react";
 
 const Dashboard = () => {
+  const { user, profile } = useAuth();
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
@@ -12,6 +20,45 @@ const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Profile Card */}
+          <Card className="bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20 hover:shadow-glow transition-all duration-300">
+            <CardHeader>
+              <CardTitle className="text-lg">Profilom</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <Avatar className="w-16 h-16 border-2 border-primary/20">
+                  <AvatarImage src={profile?.avatar_url || undefined} />
+                  <AvatarFallback className="bg-gradient-to-br from-primary to-secondary text-white text-xl">
+                    {profile?.first_name?.[0]}{profile?.last_name?.[0]}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <h3 className="font-bold text-foreground">
+                    {profile?.first_name} {profile?.last_name}
+                  </h3>
+                  <p className="text-sm text-primary capitalize">
+                    {profile?.user_role === 'citizen' ? 'Lakos' : 
+                     profile?.user_role === 'business' ? 'Cég' :
+                     profile?.user_role === 'government' ? 'Önkormányzat' :
+                     profile?.user_role === 'ngo' ? 'Civil szervezet' : profile?.user_role}
+                  </p>
+                  {profile?.organization && (
+                    <div className="flex items-center text-xs text-muted-foreground mt-1">
+                      <Building2 className="w-3 h-3 mr-1" />
+                      {profile.organization}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <Link to="/profile" className="block">
+                <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90">
+                  <Edit3 className="w-4 h-4 mr-2" />
+                  Profil szerkesztése
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
           {/* Impact Overview */}
           <div className="lg:col-span-2 bg-card rounded-2xl shadow-sm border border-border p-6">
             <h2 className="text-xl font-bold text-card-foreground mb-4">Impact Overview</h2>

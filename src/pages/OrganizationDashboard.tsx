@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Navigation from "@/components/Navigation";
@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   Loader2, 
   Building2, 
@@ -29,7 +30,8 @@ import {
   Zap,
   BarChart3,
   Globe2,
-  CheckCircle2
+  CheckCircle2,
+  Edit3
 } from "lucide-react";
 
 interface Challenge {
@@ -332,7 +334,46 @@ const OrganizationDashboard = () => {
         </div>
 
         {/* Regional Impact Overview */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+        {/* Profile Card */}
+        <Card className="bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20 hover:shadow-glow transition-all duration-300">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base sm:text-lg">Profilom</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex items-center space-x-3">
+              <Avatar className="w-12 h-12 sm:w-14 sm:h-14 border-2 border-primary/20">
+                <AvatarImage src={profile?.avatar_url || undefined} />
+                <AvatarFallback className="bg-gradient-to-br from-primary to-secondary text-white text-base">
+                  {profile?.first_name?.[0]}{profile?.last_name?.[0]}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-foreground text-sm truncate">
+                  {profile?.first_name} {profile?.last_name}
+                </h3>
+                <p className="text-xs text-primary capitalize">
+                  {profile?.user_role === 'business' ? 'Cég' :
+                   profile?.user_role === 'government' ? 'Önkormányzat' :
+                   profile?.user_role === 'ngo' ? 'Civil szervezet' : profile?.user_role}
+                </p>
+                {profile?.organization && (
+                  <div className="flex items-center text-xs text-muted-foreground mt-0.5">
+                    <Building2 className="w-3 h-3 mr-1 flex-shrink-0" />
+                    <span className="truncate">{profile.organization}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+            <Link to="/profile" className="block">
+              <Button size="sm" className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-xs">
+                <Edit3 className="w-3 h-3 mr-1.5" />
+                Profil szerkesztése
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+        
         <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
           <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
