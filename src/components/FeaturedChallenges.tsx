@@ -5,6 +5,9 @@ import { motion } from "framer-motion";
 import { Users, Sprout, BookOpen, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import communityChallengesImg from "@/assets/community-challenges.jpg";
+import communityGardenImg from "@/assets/community-garden.jpg";
+import communityCelebrationImg from "@/assets/community-celebration.jpg";
 
 const FeaturedChallenges = () => {
   const { t } = useLanguage();
@@ -18,6 +21,7 @@ const FeaturedChallenges = () => {
       difficulty: "beginner",
       icon: Users,
       color: "from-primary to-secondary",
+      image: communityChallengesImg,
     },
     {
       id: "kali-kozos-kert",
@@ -27,6 +31,7 @@ const FeaturedChallenges = () => {
       difficulty: "beginner",
       icon: Sprout,
       color: "from-success to-info",
+      image: communityGardenImg,
     },
     {
       id: "tudas-hid",
@@ -36,6 +41,7 @@ const FeaturedChallenges = () => {
       difficulty: "intermediate",
       icon: BookOpen,
       color: "from-accent to-warning",
+      image: communityCelebrationImg,
     },
   ];
 
@@ -81,11 +87,19 @@ const FeaturedChallenges = () => {
                 transition={{ duration: 0.6, delay: index * 0.15 }}
                 viewport={{ once: true }}
               >
-                <Card className="h-full bg-card hover:shadow-glow transition-all duration-300 border-border/50 group">
-                  <CardHeader>
-                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${challenge.color} flex items-center justify-center mb-4`}>
-                      <Icon className="w-7 h-7 text-white" />
+                <Card className="h-full bg-card hover:shadow-glow transition-all duration-300 border-border/50 group overflow-hidden">
+                  <div className="relative h-48 w-full overflow-hidden">
+                    <img 
+                      src={challenge.image} 
+                      alt={challenge.title}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className={`absolute bottom-3 left-3 w-12 h-12 rounded-xl bg-gradient-to-br ${challenge.color} flex items-center justify-center shadow-lg`}>
+                      <Icon className="w-6 h-6 text-white" />
                     </div>
+                  </div>
+                  <CardHeader>
                     <div className="flex gap-2 mb-3">
                       <Badge variant="secondary" className="text-xs">
                         {challenge.category}
