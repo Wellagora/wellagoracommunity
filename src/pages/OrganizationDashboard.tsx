@@ -326,10 +326,6 @@ const OrganizationDashboard = () => {
             <Badge className={`bg-gradient-to-r ${roleInfo.gradient} text-white px-3 sm:px-4 py-1.5 sm:py-2`}>
               {profile?.organization || t('organization.organization')}
             </Badge>
-          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-            <MapPin className="w-4 h-4" />
-            <span>{t('organization.budapest_region')}</span>
-          </div>
           </div>
         </div>
 
