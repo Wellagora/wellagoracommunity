@@ -17,7 +17,7 @@ const FeaturedChallenges = () => {
       category: "Közösség",
       difficulty: "beginner",
       icon: Users,
-      color: "from-primary to-success",
+      color: "from-primary to-secondary",
     },
     {
       id: "kali-kozos-kert",
@@ -26,7 +26,7 @@ const FeaturedChallenges = () => {
       category: "Biodiverzitás",
       difficulty: "beginner",
       icon: Sprout,
-      color: "from-success to-accent",
+      color: "from-success to-info",
     },
     {
       id: "tudas-hid",
@@ -35,7 +35,7 @@ const FeaturedChallenges = () => {
       category: "Közösség",
       difficulty: "intermediate",
       icon: BookOpen,
-      color: "from-accent to-secondary",
+      color: "from-accent to-warning",
     },
   ];
 

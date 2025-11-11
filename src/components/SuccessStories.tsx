@@ -57,7 +57,7 @@ const SuccessStories = () => {
                 <Card className="h-full bg-card/80 backdrop-blur-sm hover:shadow-lg transition-all duration-300 border-border/50">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4 mb-4">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-success flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center flex-shrink-0">
                         <Icon className="w-6 h-6 text-white" />
                       </div>
                       <div>

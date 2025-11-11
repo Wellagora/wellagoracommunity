@@ -8,74 +8,74 @@ Természetes színpaletta és elegáns tipográfia a közösség építés támo
 
 @layer base {
   :root {
-    /* KÁLI MEDENCE - Közösség Építés Színséma */
+    /* Modern UI-friendly Színséma */
     --background: 0 0% 100%;
-    --foreground: 120 15% 15%;
+    --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 120 15% 15%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 120 15% 15%;
+    --popover-foreground: 222 47% 11%;
 
-    /* Természetes erdei zöld primary - #506B3C */
-    --primary: 100 30% 33%;
+    /* Modern kék-lila primary */
+    --primary: 240 78% 60%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 100 30% 45%;
-    --primary-dark: 100 35% 25%;
+    --primary-glow: 240 78% 70%;
+    --primary-dark: 240 78% 50%;
 
-    /* Meleg földszín secondary - #9B8F5C */
-    --secondary: 45 26% 49%;
+    /* Élénk kék secondary */
+    --secondary: 200 98% 39%;
     --secondary-foreground: 0 0% 100%;
 
     /* Muted tones */
-    --muted: 45 10% 90%;
-    --muted-foreground: 120 10% 40%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    /* Meleg narancs accent - #D4A574 */
-    --accent: 35 48% 64%;
-    --accent-foreground: 120 15% 15%;
-    --accent-light: 35 48% 75%;
+    /* Vibráns korall accent */
+    --accent: 14 100% 64%;
+    --accent-foreground: 0 0% 100%;
+    --accent-light: 14 100% 74%;
 
-    /* Success világos zöld - #66BB6A */
-    --success: 122 39% 57%;
+    /* Friss zöld success */
+    --success: 142 69% 58%;
     --success-foreground: 0 0% 100%;
-    --success-light: 122 39% 70%;
+    --success-light: 142 69% 70%;
 
     /* Napfény sárga warning */
-    --warning: 47.9 95.8% 53.1%;
-    --warning-foreground: 26 83.3% 14.1%;
+    --warning: 45 93% 58%;
+    --warning-foreground: 0 0% 100%;
 
     /* Info kék */
     --info: 204 94% 49%;
     --info-foreground: 0 0% 100%;
 
     /* Lágy piros destructive */
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 45 10% 85%;
-    --input: 45 10% 90%;
-    --ring: 100 30% 33%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 240 78% 60%;
 
     --radius: 0.75rem;
 
-    /* Természetes gradientek */
-    --gradient-primary: linear-gradient(135deg, hsl(100 30% 33%), hsl(100 30% 45%), hsl(122 39% 57%));
-    --gradient-earth: linear-gradient(135deg, hsl(35 48% 64%), hsl(45 26% 49%), hsl(100 30% 33%));
-    --gradient-nature: linear-gradient(180deg, hsl(122 39% 95%), hsl(100 30% 95%));
-    --gradient-hero: linear-gradient(135deg, hsl(122 39% 95%) 0%, hsl(100 30% 90%) 30%, hsl(35 48% 90%) 60%, hsl(0 0% 100%) 100%);
-    --gradient-wave: linear-gradient(135deg, hsl(100 30% 85%) 0%, hsl(122 39% 75%) 50%, hsl(35 48% 75%) 100%);
-    --gradient-light-transition: linear-gradient(180deg, hsl(122 39% 95%) 0%, hsl(100 30% 90%) 40%, hsl(0 0% 100%) 70%, hsl(45 10% 98%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(122 39% 98%), hsl(100 30% 97%));
-    --gradient-sunset: linear-gradient(135deg, hsl(35 48% 70%), hsl(45 26% 55%), hsl(100 30% 45%));
-    --gradient-ocean: linear-gradient(135deg, hsl(122 39% 70%), hsl(100 30% 50%), hsl(35 48% 65%));
+    /* Modern gradientek */
+    --gradient-primary: linear-gradient(135deg, hsl(240 78% 60%), hsl(240 78% 70%), hsl(200 98% 50%));
+    --gradient-vibrant: linear-gradient(135deg, hsl(14 100% 64%), hsl(240 78% 60%), hsl(142 69% 58%));
+    --gradient-nature: linear-gradient(180deg, hsl(142 69% 95%), hsl(200 98% 95%));
+    --gradient-hero: linear-gradient(135deg, hsl(240 78% 97%) 0%, hsl(200 98% 97%) 30%, hsl(142 69% 97%) 60%, hsl(0 0% 100%) 100%);
+    --gradient-wave: linear-gradient(135deg, hsl(240 78% 85%) 0%, hsl(200 98% 80%) 50%, hsl(142 69% 80%) 100%);
+    --gradient-light-transition: linear-gradient(180deg, hsl(240 78% 97%) 0%, hsl(200 98% 95%) 40%, hsl(0 0% 100%) 70%, hsl(210 40% 98%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(240 78% 98%), hsl(200 98% 98%));
+    --gradient-sunset: linear-gradient(135deg, hsl(14 100% 70%), hsl(45 93% 65%), hsl(240 78% 70%));
+    --gradient-ocean: linear-gradient(135deg, hsl(200 98% 60%), hsl(240 78% 65%), hsl(142 69% 65%));
 
-    /* Természetes árnyékok */
-    --shadow-eco: 0 8px 32px -4px hsl(100 30% 33% / 0.15);
-    --shadow-glow: 0 0 40px hsl(122 39% 57% / 0.25);
-    --shadow-card: 0 4px 24px -2px hsl(100 30% 33% / 0.12);
-    --shadow-premium: 0 12px 48px -8px hsl(100 30% 33% / 0.18);
+    /* Modern árnyékok */
+    --shadow-eco: 0 8px 32px -4px hsl(240 78% 60% / 0.15);
+    --shadow-glow: 0 0 40px hsl(240 78% 70% / 0.3);
+    --shadow-card: 0 4px 24px -2px hsl(240 78% 60% / 0.12);
+    --shadow-premium: 0 12px 48px -8px hsl(240 78% 60% / 0.18);
 
     /* Smooth animation system */
     --transition-smooth: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);

@@ -9,7 +9,9 @@ import {
   Users, 
   BarChart3,
   User,
-  Building
+  Building2,
+  Landmark,
+  Heart
 } from "lucide-react";
 
 import SuccessStories from "@/components/SuccessStories";
@@ -23,7 +25,7 @@ const Index = () => {
       <Navigation />
       
       {/* Hero Section with Gradient Background */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-success/10 to-accent/10">
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5">
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
         <div className="container mx-auto px-4 py-20 sm:py-28 relative z-10">
           <motion.div 
@@ -32,7 +34,7 @@ const Index = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <Badge variant="secondary" className="bg-primary/20 text-primary px-4 py-2 text-sm mb-6">
+            <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-4 py-2 text-sm mb-6">
               Káli medence közösségépítés
             </Badge>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground mb-6 leading-tight">
@@ -42,22 +44,22 @@ const Index = () => {
               Vegyél részt programokban, oszd meg tapasztalataidat és építsük együtt a régiót!
             </p>
             
-            {/* Role Selection */}
-            <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+            {/* Role Selection - 4 roles */}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
                 <Link to="/auth?role=citizen">
                   <Card className="h-full bg-card/80 backdrop-blur-sm hover:shadow-glow transition-all duration-300 border-2 border-transparent hover:border-primary cursor-pointer group">
-                    <CardContent className="p-8 text-center">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-success mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <User className="w-8 h-8 text-white" />
+                    <CardContent className="p-6 text-center">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-glow mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <User className="w-7 h-7 text-white" />
                       </div>
-                      <h3 className="text-xl font-bold mb-2 text-foreground">Állampolgár vagyok</h3>
+                      <h3 className="text-lg font-bold mb-2 text-foreground">Lakos</h3>
                       <p className="text-muted-foreground text-sm">
-                        Csatlakozz programokhoz, gyűjts pontokat és légy része a közösségnek
+                        Gyűjts pontokat és légy része a közösségnek
                       </p>
                     </CardContent>
                   </Card>
@@ -65,19 +67,59 @@ const Index = () => {
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
               >
-                <Link to="/auth?role=organization">
-                  <Card className="h-full bg-card/80 backdrop-blur-sm hover:shadow-glow transition-all duration-300 border-2 border-transparent hover:border-accent cursor-pointer group">
-                    <CardContent className="p-8 text-center">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-accent to-secondary mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Building className="w-8 h-8 text-white" />
+                <Link to="/auth?role=business">
+                  <Card className="h-full bg-card/80 backdrop-blur-sm hover:shadow-glow transition-all duration-300 border-2 border-transparent hover:border-secondary cursor-pointer group">
+                    <CardContent className="p-6 text-center">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-secondary to-info mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Building2 className="w-7 h-7 text-white" />
                       </div>
-                      <h3 className="text-xl font-bold mb-2 text-foreground">Szervezet vagyok</h3>
+                      <h3 className="text-lg font-bold mb-2 text-foreground">Cég</h3>
                       <p className="text-muted-foreground text-sm">
-                        Szponzoráld a programokat, építsd a márkádat és támogasd a közösséget
+                        Támogasd a közösséget és építsd a márkádat
+                      </p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
+                <Link to="/auth?role=government">
+                  <Card className="h-full bg-card/80 backdrop-blur-sm hover:shadow-glow transition-all duration-300 border-2 border-transparent hover:border-warning cursor-pointer group">
+                    <CardContent className="p-6 text-center">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-warning to-accent mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Landmark className="w-7 h-7 text-white" />
+                      </div>
+                      <h3 className="text-lg font-bold mb-2 text-foreground">Önkormányzat</h3>
+                      <p className="text-muted-foreground text-sm">
+                        Koordinálj regionális kezdeményezéseket
+                      </p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+              >
+                <Link to="/auth?role=ngo">
+                  <Card className="h-full bg-card/80 backdrop-blur-sm hover:shadow-glow transition-all duration-300 border-2 border-transparent hover:border-success cursor-pointer group">
+                    <CardContent className="p-6 text-center">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-success to-success-light mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Heart className="w-7 h-7 text-white" />
+                      </div>
+                      <h3 className="text-lg font-bold mb-2 text-foreground">Civil szervezet</h3>
+                      <p className="text-muted-foreground text-sm">
+                        Szervezz közösségi akciókat
                       </p>
                     </CardContent>
                   </Card>
@@ -85,7 +127,7 @@ const Index = () => {
               </motion.div>
             </div>
 
-            <p className="text-sm text-muted-foreground mt-6">
+            <p className="text-sm text-muted-foreground mt-8">
               Már van fiókod? <Link to="/auth" className="text-primary hover:underline font-semibold">Bejelentkezés</Link>
             </p>
           </motion.div>
@@ -102,9 +144,9 @@ const Index = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full bg-gradient-to-br from-primary/10 to-success/10 border-primary/20 hover:shadow-glow transition-all duration-300">
+              <Card className="h-full bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20 hover:shadow-glow transition-all duration-300">
                 <CardHeader>
-                  <div className="w-12 h-12 bg-gradient-to-r from-primary to-success rounded-2xl flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-primary to-secondary rounded-2xl flex items-center justify-center mb-4">
                     <BarChart3 className="w-6 h-6 text-white" />
                   </div>
                   <CardTitle className="text-xl mb-2">Személyes Dashboard</CardTitle>
@@ -112,7 +154,7 @@ const Index = () => {
                 </CardHeader>
                 <CardContent>
                   <Link to="/dashboard">
-                    <Button className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90">
+                    <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90">
                       Dashboard megnyitása
                     </Button>
                   </Link>
@@ -126,9 +168,9 @@ const Index = () => {
               transition={{ duration: 0.6, delay: 0.4 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full bg-gradient-to-br from-accent/10 to-secondary/10 border-accent/20 hover:shadow-glow transition-all duration-300">
+              <Card className="h-full bg-gradient-to-br from-accent/5 to-warning/5 border-accent/20 hover:shadow-glow transition-all duration-300">
                 <CardHeader>
-                  <div className="w-12 h-12 bg-gradient-to-r from-accent to-secondary rounded-2xl flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-accent to-warning rounded-2xl flex items-center justify-center mb-4">
                     <Users className="w-6 h-6 text-white" />
                   </div>
                   <CardTitle className="text-xl mb-2">Közösségi Programok</CardTitle>
@@ -136,7 +178,7 @@ const Index = () => {
                 </CardHeader>
                 <CardContent>
                   <Link to="/challenges">
-                    <Button className="w-full bg-gradient-to-r from-accent to-secondary hover:from-accent/90 hover:to-secondary/90">
+                    <Button className="w-full bg-gradient-to-r from-accent to-warning hover:from-accent/90 hover:to-warning/90">
                       Programok böngészése
                     </Button>
                   </Link>
@@ -150,9 +192,9 @@ const Index = () => {
               transition={{ duration: 0.6, delay: 0.6 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full bg-gradient-to-br from-warning/10 to-primary/10 border-warning/20 hover:shadow-glow transition-all duration-300">
+              <Card className="h-full bg-gradient-to-br from-success/5 to-info/5 border-success/20 hover:shadow-glow transition-all duration-300">
                 <CardHeader>
-                  <div className="w-12 h-12 bg-gradient-to-r from-warning to-primary rounded-2xl flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-success to-info rounded-2xl flex items-center justify-center mb-4">
                     <Users className="w-6 h-6 text-white" />
                   </div>
                   <CardTitle className="text-xl mb-2">Közösségi Tér</CardTitle>
@@ -160,7 +202,7 @@ const Index = () => {
                 </CardHeader>
                 <CardContent>
                   <Link to="/community">
-                    <Button className="w-full bg-gradient-to-r from-warning to-primary hover:from-warning/90 hover:to-primary/90">
+                    <Button className="w-full bg-gradient-to-r from-success to-info hover:from-success/90 hover:to-info/90">
                       Közösség felfedezése
                     </Button>
                   </Link>

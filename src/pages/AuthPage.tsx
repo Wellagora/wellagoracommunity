@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -14,11 +14,15 @@ import { z } from "zod";
 
 const AuthPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user, signIn, signUp, loading } = useAuth();
   const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  // Get role from URL parameters
+  const roleFromUrl = searchParams.get('role');
 
   // Validation schemas
   const loginSchema = z.object({
@@ -59,9 +63,16 @@ const AuthPage = () => {
     confirmPassword: "",
     firstName: "",
     lastName: "",
-    role: "",
+    role: roleFromUrl || "",
     organization: "",
   });
+
+  // Update role if URL parameter changes
+  useEffect(() => {
+    if (roleFromUrl) {
+      setSignupForm(prev => ({ ...prev, role: roleFromUrl }));
+    }
+  }, [roleFromUrl]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -373,10 +384,10 @@ const AuthPage = () => {
                               <SelectValue placeholder="Select your role" />
                             </SelectTrigger>
                             <SelectContent className="bg-card border-border/50">
-                              <SelectItem value="citizen">🧑‍🤝‍🧑 Magánszemély</SelectItem>
-                              <SelectItem value="business">🏢 Vállalkozás</SelectItem>
+                              <SelectItem value="citizen">🏠 Lakos</SelectItem>
+                              <SelectItem value="business">🏢 Cég</SelectItem>
                               <SelectItem value="government">🏛️ Önkormányzat</SelectItem>
-                              <SelectItem value="ngo">🌱 Civil Szervezet (NGO)</SelectItem>
+                              <SelectItem value="ngo">💚 Civil Szervezet</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
