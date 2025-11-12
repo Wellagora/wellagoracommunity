@@ -188,38 +188,37 @@ const Navigation = () => {
         </div>
 
           {/* Desktop Bottom Row - Navigation and Actions */}
-        <div className="hidden lg:flex justify-between items-center h-16">
+        <div className="hidden lg:flex flex-wrap justify-between items-center min-h-16 py-2 gap-2">
           {/* Navigation Links */}
-          <div className="flex items-center space-x-8">
-            <Link to="/" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
+          <div className="flex items-center gap-2 flex-wrap">
+            <Link to="/" className="group flex items-center px-2 py-1.5 text-muted-foreground hover:text-primary transition-all duration-300 font-medium text-sm">
               <span className="relative">
                 {t('nav.home')}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
               </span>
             </Link>
-            <Link to="/challenges" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
+            <Link to="/challenges" className="group flex items-center px-2 py-1.5 text-muted-foreground hover:text-primary transition-all duration-300 font-medium text-sm">
               <span className="relative">
                 {t('nav.challenges')}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
               </span>
             </Link>
-            <Link to="/community" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
+            <Link to="/community" className="group flex items-center gap-1 px-2 py-1.5 text-muted-foreground hover:text-primary transition-all duration-300 font-medium text-sm">
               <Users className="w-4 h-4" />
               <span className="relative">
                 {t('nav.community')}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
               </span>
             </Link>
-            <Link to="/regional-hub" className="group flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-success/10 to-warning/10 border border-success/30 rounded-lg hover:from-success/20 hover:to-warning/20 transition-all duration-300 font-medium">
+            <Link to="/regional-hub" className="group flex items-center gap-1 px-2 py-1.5 bg-gradient-to-r from-success/10 to-warning/10 border border-success/30 rounded-lg hover:from-success/20 hover:to-warning/20 transition-all duration-300 font-medium text-sm">
               <MapPin className="w-4 h-4 text-success" />
-              <span className="hidden xl:inline">{t('nav.regional_hub')}</span>
-              <span className="xl:hidden">{t('nav.regional_hub_short')}</span>
-              <Badge variant="secondary" className="ml-1 bg-gradient-to-r from-success to-warning text-white text-xs px-1.5 py-0.5">
+              <span>{t('nav.regional_hub_short')}</span>
+              <Badge variant="secondary" className="bg-gradient-to-r from-success to-warning text-white text-xs px-1 py-0">
                 {t('nav.regional_hub_badge')}
               </Badge>
             </Link>
             {user && profile?.user_role === "citizen" && (
-              <Link to="/dashboard" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
+              <Link to="/dashboard" className="group flex items-center px-2 py-1.5 text-muted-foreground hover:text-primary transition-all duration-300 font-medium text-sm">
                 <span className="relative">
                   {t('nav.dashboard')}
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
@@ -227,7 +226,7 @@ const Navigation = () => {
               </Link>
             )}
             {user && profile?.user_role !== "citizen" && (
-              <Link to="/organization" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
+              <Link to="/organization" className="group flex items-center gap-1 px-2 py-1.5 text-muted-foreground hover:text-primary transition-all duration-300 font-medium text-sm">
                 <Building2 className="w-4 h-4" />
                 <span className="relative">
                   {t('nav.organization_label')}
@@ -235,11 +234,11 @@ const Navigation = () => {
                 </span>
               </Link>
             )}
-            <Link to="/ai-assistant" className="group flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-xl hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent-foreground">
-              <span className="text-lg">🤖</span>
-              <span>{t('nav.ai_assistant')}</span>
+            <Link to="/ai-assistant" className="group flex items-center gap-1 px-2 py-1.5 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-lg hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent-foreground text-sm">
+              <span className="text-base">🤖</span>
+              <span>AI</span>
             </Link>
-            <Link to="/contact" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
+            <Link to="/contact" className="group flex items-center px-2 py-1.5 text-muted-foreground hover:text-primary transition-all duration-300 font-medium text-sm">
               <span className="relative">
                 Kapcsolat
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
@@ -248,19 +247,19 @@ const Navigation = () => {
           </div>
 
           {/* User Actions */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-2 flex-wrap">
             {user ? (
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center gap-2 flex-wrap">
                 {/* Super Admin Controls */}
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-1">
                   <RoleSwitcher />
                   {hasAdminAccess && (
                     <Link
                       to="/admin"
-                      className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl hover:from-purple-500/30 hover:to-pink-500/30 transition-all duration-300 font-medium text-purple-600"
+                      className="flex items-center gap-1 px-2 py-1.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-lg hover:from-purple-500/30 hover:to-pink-500/30 transition-all duration-300 font-medium text-purple-600 text-sm"
                     >
                       <Shield className="w-4 h-4" />
-                      <span className="text-sm">{t('nav.admin_dashboard')}</span>
+                      <span className="hidden xl:inline">Admin</span>
                     </Link>
                   )}
                 </div>
@@ -270,13 +269,13 @@ const Navigation = () => {
                 {/* Inbox with unread badge */}
                 <Link
                   to="/inbox"
-                  className="relative flex items-center space-x-2 px-3 py-2 text-muted-foreground hover:text-primary hover:bg-card/50 rounded-xl transition-all duration-300"
+                  className="relative flex items-center px-2 py-1.5 text-muted-foreground hover:text-primary hover:bg-card/50 rounded-lg transition-all duration-300"
                 >
                   <Inbox className="w-4 h-4" />
                   {unreadCount > 0 && (
                     <Badge 
                       variant="destructive" 
-                      className="absolute -top-1 -right-1 h-5 min-w-5 flex items-center justify-center p-0 text-xs"
+                      className="absolute -top-1 -right-1 h-4 min-w-4 flex items-center justify-center p-0 text-xs"
                     >
                       {unreadCount > 9 ? '9+' : unreadCount}
                     </Badge>
@@ -285,71 +284,71 @@ const Navigation = () => {
 
                 <Link
                   to="/profile"
-                  className="flex items-center space-x-3 px-4 py-2 bg-gradient-to-r from-card/80 to-background/80 backdrop-blur-sm rounded-xl border border-border hover:from-card hover:to-background/90 transition-all duration-300"
+                  className="flex items-center gap-2 px-2 py-1.5 bg-gradient-to-r from-card/80 to-background/80 backdrop-blur-sm rounded-lg border border-border hover:from-card hover:to-background/90 transition-all duration-300"
                 >
                   <div className="relative">
-                    <div className="w-8 h-8 bg-gradient-to-br from-primary to-success rounded-full flex items-center justify-center">
-                      <User className="w-4 h-4 text-primary-foreground" />
+                    <div className="w-7 h-7 bg-gradient-to-br from-primary to-success rounded-full flex items-center justify-center">
+                      <User className="w-3.5 h-3.5 text-primary-foreground" />
                     </div>
-                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-success rounded-full border-2 border-background"></div>
+                    <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-success rounded-full border-2 border-background"></div>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm font-semibold text-foreground">
-                      {profile?.first_name} {profile?.last_name}
+                    <span className="text-xs font-semibold text-foreground">
+                      {profile?.first_name}
                     </span>
                      {profile?.user_role && (
                        <span className="text-xs text-primary capitalize">
-                         {profile?.user_role} {t('common.champion')}
+                         {profile?.user_role}
                        </span>
                      )}
                   </div>
                 </Link>
                 
                 {/* Quick Action Buttons */}
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-1">
                   <Link
                     to="/profile"
-                    className="flex items-center space-x-2 px-3 py-2 text-muted-foreground hover:text-primary hover:bg-card/50 rounded-xl transition-all duration-300"
+                    className="flex items-center px-2 py-1.5 text-muted-foreground hover:text-primary hover:bg-card/50 rounded-lg transition-all duration-300"
+                    title={t('nav.edit_profile')}
                   >
                     <Edit3 className="w-4 h-4" />
-                  <span className="text-sm font-medium">{t('nav.edit_profile')}</span>
                   </Link>
                   
             {(profile?.user_role === 'business' || profile?.email === 'attila.kelemen@proself.org') && (
               <Link
                 to="/sponsor-dashboard"
-                className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-warning/20 to-accent/20 border border-warning/30 rounded-xl hover:from-warning/30 hover:to-accent/30 transition-all duration-300 font-medium text-warning"
+                className="flex items-center gap-1 px-2 py-1.5 bg-gradient-to-r from-warning/20 to-accent/20 border border-warning/30 rounded-lg hover:from-warning/30 hover:to-accent/30 transition-all duration-300 font-medium text-warning text-sm"
               >
                 <Coins className="w-4 h-4" />
-                <span className="text-sm">{t('nav.sponsor_dashboard')}</span>
+                <span className="hidden xl:inline">Sponsor</span>
               </Link>
             )}
             
             {user && currentProject && (
               <Link
                 to="/project-admin"
-                className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-xl hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent"
+                className="flex items-center gap-1 px-2 py-1.5 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-lg hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent text-sm"
               >
                 <Building2 className="w-4 h-4" />
-                <span className="text-sm">{t('nav.project_admin')}</span>
+                <span className="hidden xl:inline">Projekt</span>
               </Link>
             )}
                 </div>
                 
                 <button 
                   onClick={handleSignOut}
-                  className="flex items-center space-x-2 px-3 py-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all duration-300"
+                  className="flex items-center px-2 py-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-all duration-300"
+                  title={t('nav.sign_out')}
                 >
                   <LogOut className="w-4 h-4" />
-                  <span className="text-sm font-medium">{t('nav.sign_out')}</span>
                 </button>
               </div>
             ) : (
-              <div className="flex items-center space-x-3">
-                <Link to="/auth" className="px-6 py-2.5 bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground rounded-xl font-semibold transition-all duration-300 shadow-premium hover:shadow-glow hover:scale-105 transform">
+              <div className="flex items-center gap-2">
+                <Link to="/auth" className="px-3 py-1.5 bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg text-sm">
                   {t('nav.join_community')}
                 </Link>
-                <Link to="/auth" className="px-6 py-2.5 border-2 border-border hover:border-primary hover:bg-card/50 text-foreground rounded-xl font-medium transition-all duration-300">
+                <Link to="/auth" className="px-3 py-1.5 border-2 border-border hover:border-primary hover:bg-card/50 text-foreground rounded-lg font-medium transition-all duration-300 text-sm">
                   {t('nav.sign_in')}
                 </Link>
               </div>
