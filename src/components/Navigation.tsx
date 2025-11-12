@@ -17,7 +17,8 @@ import {
   Edit3,
   CreditCard,
   Shield,
-  Coins
+  Coins,
+  Mail
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -188,6 +189,12 @@ const Navigation = () => {
             <Link to="/ai-assistant" className="group flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-xl hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent-foreground">
               <span className="text-lg">🤖</span>
               <span>{t('nav.ai_assistant')}</span>
+            </Link>
+            <Link to="/contact" className="group flex items-center space-x-2 text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
+              <span className="relative">
+                Kapcsolat
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
+              </span>
             </Link>
           </div>
 
@@ -380,6 +387,15 @@ const Navigation = () => {
               >
                 <span className="text-lg">🤖</span>
                 <span className="font-medium">{t('nav.ai_assistant')}</span>
+              </Link>
+              
+              <Link 
+                to="/contact" 
+                className="flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Mail className="w-5 h-5" />
+                <span className="font-medium">Kapcsolat</span>
               </Link>
               
               {/* Language Selector - Mobile */}

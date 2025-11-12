@@ -25,6 +25,7 @@ import SponsorDashboardPage from "@/pages/SponsorDashboardPage";
 import ProjectAdminPage from "@/pages/ProjectAdminPage";
 import JoinProjectPage from "@/pages/JoinProjectPage";
 import ProjectsListPage from "@/pages/ProjectsListPage";
+import ContactPage from "@/pages/ContactPage";
 import "./index.css";
 
 function App() {
@@ -67,6 +68,7 @@ function App() {
                 <Route path="/project-admin" element={<ProjectAdminPage />} />
                 <Route path="/projects" element={<ProjectsListPage />} />
                 <Route path="/join/:projectSlug" element={<JoinProjectPage />} />
+                <Route path="/contact" element={<ContactPage />} />
               </Routes>
               <Toaster />
               <SonnerToaster />
