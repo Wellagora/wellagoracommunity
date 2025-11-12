@@ -57,7 +57,7 @@ const Index = () => {
                       <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-glow mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
                         <User className="w-7 h-7 text-white" />
                       </div>
-                      <h3 className="text-lg font-bold mb-2 text-foreground">Lakos</h3>
+                      <h3 className="text-lg font-bold mb-2 text-foreground">Magánszemély</h3>
                       <p className="text-muted-foreground text-sm">
                         Gyűjts pontokat és légy része a közösségnek
                       </p>

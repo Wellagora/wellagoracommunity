@@ -384,7 +384,7 @@ const AuthPage = () => {
                               <SelectValue placeholder="Select your role" />
                             </SelectTrigger>
                             <SelectContent className="bg-card border-border/50">
-                              <SelectItem value="citizen">🏠 Lakos</SelectItem>
+                              <SelectItem value="citizen">🏠 Magánszemély</SelectItem>
                               <SelectItem value="business">🏢 Cég</SelectItem>
                               <SelectItem value="government">🏛️ Önkormányzat</SelectItem>
                               <SelectItem value="ngo">💚 Civil Szervezet</SelectItem>

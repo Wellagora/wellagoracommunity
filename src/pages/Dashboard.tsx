@@ -38,7 +38,7 @@ const Dashboard = () => {
                     {profile?.first_name} {profile?.last_name}
                   </h3>
                   <p className="text-sm text-primary capitalize">
-                    {profile?.user_role === 'citizen' ? 'Lakos' : 
+                    {profile?.user_role === 'citizen' ? 'Magánszemély' : 
                      profile?.user_role === 'business' ? 'Cég' :
                      profile?.user_role === 'government' ? 'Önkormányzat' :
                      profile?.user_role === 'ngo' ? 'Civil szervezet' : profile?.user_role}
