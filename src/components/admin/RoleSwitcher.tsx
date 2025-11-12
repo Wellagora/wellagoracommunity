@@ -38,10 +38,7 @@ export const RoleSwitcher = () => {
   if (!isSuperAdmin || !profile) return null;
 
   const handleRoleChange = (newRole: string) => {
-    // Save the selected role to localStorage for persistence
-    localStorage.setItem(`superadmin_role_${user?.id}`, newRole);
-    
-    // Change the role in memory (not in database)
+    // Change the role in memory only (not in database or localStorage)
     setProfile({
       ...profile,
       user_role: newRole as any

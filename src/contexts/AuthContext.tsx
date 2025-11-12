@@ -93,27 +93,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       if (!profile) {
         console.warn('⚠️ No profile found for user:', userId);
-        return null;
-      }
-      
-      // Check if user is superadmin and has a stored role preference
-      const { data: roles } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
-        .eq('role', 'super_admin')
-        .maybeSingle();
-      
-      if (roles) {
-        // User is superadmin, check for stored role preference
-        const storedRole = localStorage.getItem(`superadmin_role_${userId}`);
-        if (storedRole) {
-          console.log('🎭 Applying superadmin role override:', storedRole);
-          return {
-            ...profile,
-            user_role: storedRole as any
-          } as Profile;
-        }
       }
       
       return profile as Profile;
