@@ -75,6 +75,8 @@ const RegionalHub = () => {
     id: string;
     title: string;
   } | null>(null);
+  const [stakeholders, setStakeholders] = useState<StakeholderProfile[]>([]);
+  const [loadingStakeholders, setLoadingStakeholders] = useState(true);
 
   const handleTypeToggle = (type: string) => {
     setSelectedTypes(prev => 
@@ -84,101 +86,107 @@ const RegionalHub = () => {
     );
   };
 
-  // Generate regional stakeholders (registered + potential) for current project
-  const getRegionalStakeholders = (): StakeholderProfile[] => {
-    if (!currentProject) return [];
-    
-    // Base coordinates for Káli-medence region (approximately)
-    const baseCoords = { lat: 46.9, lng: 17.6 };
-    
-    return [
-      // Registered stakeholders
-      {
-        id: "1",
-        name: t('regional.stakeholder.greentech.name'),
-        type: "business",
-        organization: t('regional.stakeholder.greentech.org'),
-        location: currentProject.region_name,
-        region: currentProject.region_name,
-        city: currentProject.villages[0] || currentProject.region_name,
-        latitude: baseCoords.lat + 0.01,
-        longitude: baseCoords.lng + 0.01,
-        description: t('regional.stakeholder.greentech.desc'),
-        sustainabilityGoals: [t('regional.stakeholder.greentech.goal1'), t('regional.stakeholder.greentech.goal2')],
-        avatar: "🏢",
-        verified: true,
-        impactScore: 2450,
-        isRegistered: true,
-      },
-      {
-        id: "2",
-        name: `${currentProject.region_name} ${t('regional.stakeholder.municipality.name')}`,
-        type: "government",
-        organization: `${currentProject.region_name} ${t('regional.stakeholder.municipality.name')}`,
-        location: currentProject.region_name,
-        region: currentProject.region_name,
-        city: currentProject.villages[0] || currentProject.region_name,
-        latitude: baseCoords.lat - 0.01,
-        longitude: baseCoords.lng - 0.01,
-        description: t('regional.stakeholder.municipality.desc'),
-        sustainabilityGoals: [t('regional.stakeholder.municipality.goal1'), t('regional.stakeholder.municipality.goal2')],
-        avatar: "🏛️",
-        verified: true,
-        impactScore: 3200,
-        isRegistered: true,
-      },
-      // Potential stakeholders (not yet registered)
-      {
-        id: "3",
-        name: t('regional.stakeholder.solar.name'),
-        type: "business",
-        location: currentProject.region_name,
-        region: currentProject.region_name,
-        city: currentProject.villages[1] || currentProject.region_name,
-        latitude: baseCoords.lat + 0.015,
-        longitude: baseCoords.lng - 0.015,
-        description: t('regional.stakeholder.solar.desc'),
-        sustainabilityGoals: [t('regional.stakeholder.solar.goal1'), t('regional.stakeholder.solar.goal2')],
-        avatar: "☀️",
-        verified: false,
-        impactScore: 0,
-        isRegistered: false,
-      },
-      {
-        id: "4",
-        name: t('regional.stakeholder.foundation.name'),
-        type: "ngo",
-        organization: t('regional.stakeholder.foundation.org'),
-        location: currentProject.region_name,
-        region: currentProject.region_name,
-        city: currentProject.villages[2] || currentProject.region_name,
-        latitude: baseCoords.lat + 0.02,
-        longitude: baseCoords.lng - 0.02,
-        description: t('regional.stakeholder.foundation.desc'),
-        sustainabilityGoals: [t('regional.stakeholder.foundation.goal1'), t('regional.stakeholder.foundation.goal2')],
-        avatar: "🌱",
-        verified: true,
-        impactScore: 1850,
-        isRegistered: true,
-      },
-      {
-        id: "5",
-        name: t('regional.stakeholder.circular.name'),
-        type: "business",
-        location: currentProject.region_name,
-        region: currentProject.region_name,
-        city: currentProject.villages[3] || currentProject.region_name,
-        latitude: baseCoords.lat - 0.02,
-        longitude: baseCoords.lng + 0.015,
-        description: t('regional.stakeholder.circular.desc'),
-        sustainabilityGoals: [t('regional.stakeholder.circular.goal1'), t('regional.stakeholder.circular.goal2')],
-        avatar: "♻️",
-        verified: false,
-        impactScore: 0,
-        isRegistered: false,
-      },
-    ];
-  };
+  // Fetch real stakeholders from database for current project
+  useEffect(() => {
+    if (!currentProject) {
+      setStakeholders([]);
+      setLoadingStakeholders(false);
+      return;
+    }
+
+    const fetchStakeholders = async () => {
+      setLoadingStakeholders(true);
+      try {
+        // Fetch profiles that are members of this project
+        const { data: members, error: membersError } = await supabase
+          .from('project_members')
+          .select('user_id')
+          .eq('project_id', currentProject.id);
+
+        if (membersError) throw membersError;
+
+        if (!members || members.length === 0) {
+          setStakeholders([]);
+          setLoadingStakeholders(false);
+          return;
+        }
+
+        const memberIds = members.map(m => m.user_id);
+
+        // Fetch profile details for these members
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('*')
+          .in('id', memberIds)
+          .eq('is_public_profile', true);
+
+        if (profilesError) throw profilesError;
+
+        // Get activity/impact scores
+        const { data: activities } = await supabase
+          .from('sustainability_activities')
+          .select('user_id, points_earned')
+          .in('user_id', memberIds)
+          .eq('project_id', currentProject.id);
+
+        // Calculate impact scores per user
+        const impactScores: Record<string, number> = {};
+        activities?.forEach(activity => {
+          impactScores[activity.user_id] = (impactScores[activity.user_id] || 0) + (activity.points_earned || 0);
+        });
+
+        // Base coordinates for the region
+        const baseCoords = { lat: 46.9, lng: 17.6 };
+
+        // Transform profiles to stakeholder format
+        const transformedStakeholders: StakeholderProfile[] = (profiles || []).map((profile, index) => {
+          // Determine user type based on user_role
+          const typeMap: Record<string, StakeholderProfile['type']> = {
+            'business': 'business',
+            'government': 'government',
+            'ngo': 'ngo',
+            'citizen': 'citizen'
+          };
+
+          // Use actual coordinates if available, otherwise use offset from base
+          const lat = profile.latitude ? Number(profile.latitude) : baseCoords.lat + (index * 0.01);
+          const lng = profile.longitude ? Number(profile.longitude) : baseCoords.lng + (index * 0.01);
+
+          return {
+            id: profile.id,
+            name: profile.public_display_name || `${profile.first_name} ${profile.last_name}`,
+            type: typeMap[profile.user_role] || 'citizen',
+            organization: profile.organization || undefined,
+            location: profile.location || currentProject.region_name,
+            region: currentProject.region_name,
+            city: profile.city || profile.location || currentProject.region_name,
+            latitude: lat,
+            longitude: lng,
+            description: profile.bio || t('regional.no_description'),
+            sustainabilityGoals: profile.sustainability_goals || [],
+            avatar: profile.avatar_url || "👤",
+            verified: profile.is_public_profile || false,
+            impactScore: impactScores[profile.id] || 0,
+            isRegistered: true,
+          };
+        });
+
+        setStakeholders(transformedStakeholders);
+      } catch (error) {
+        console.error('Error fetching stakeholders:', error);
+        toast({
+          title: t('common.error'),
+          description: t('regional.error_loading_stakeholders'),
+          variant: 'destructive',
+        });
+        setStakeholders([]);
+      } finally {
+        setLoadingStakeholders(false);
+      }
+    };
+
+    fetchStakeholders();
+  }, [currentProject, t, toast]);
 
   // Fetch sponsorships from database for current project
   useEffect(() => {
@@ -248,11 +256,10 @@ const RegionalHub = () => {
     });
   };
 
-  const allProfiles = getRegionalStakeholders();
   const regionalChallenges = getRegionalChallenges();
   
   // Filter profiles
-  let filteredProfiles = allProfiles.filter(p => selectedTypes.includes(p.type));
+  let filteredProfiles = stakeholders.filter(p => selectedTypes.includes(p.type));
   
   if (searchQuery) {
     filteredProfiles = filteredProfiles.filter(p => 
@@ -363,18 +370,32 @@ const RegionalHub = () => {
 
               {/* Stakeholders Tab */}
               <TabsContent value="stakeholders" className="space-y-6">
-                <StakeholderFilters
-                  selectedTypes={selectedTypes}
-                  onTypeToggle={handleTypeToggle}
-                  selectedRegion={currentProject.region_name}
-                  onRegionChange={() => {}}
-                  regions={[]}
-                  searchQuery={searchQuery}
-                  onSearchChange={setSearchQuery}
-                  totalCount={filteredProfiles.length}
-                />
+                {loadingStakeholders ? (
+                  <div className="text-center py-12">
+                    <p className="text-muted-foreground">{t('common.loading')}</p>
+                  </div>
+                ) : (
+                  <>
+                    <StakeholderFilters
+                      selectedTypes={selectedTypes}
+                      onTypeToggle={handleTypeToggle}
+                      selectedRegion={currentProject.region_name}
+                      onRegionChange={() => {}}
+                      regions={[]}
+                      searchQuery={searchQuery}
+                      onSearchChange={setSearchQuery}
+                      totalCount={filteredProfiles.length}
+                    />
 
-                <ModernRegionalVisualization
+                    {filteredProfiles.length === 0 ? (
+                      <Card className="p-8 text-center">
+                        <Users className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+                        <h3 className="text-xl font-semibold mb-2">{t('regional.no_stakeholders')}</h3>
+                        <p className="text-muted-foreground">{t('regional.no_stakeholders_desc')}</p>
+                      </Card>
+                    ) : (
+                      <>
+                        <ModernRegionalVisualization
                   stakeholders={filteredProfiles.map(p => ({
                     id: p.id,
                     name: p.name,
@@ -440,6 +461,10 @@ const RegionalHub = () => {
                     </Card>
                   ))}
                 </div>
+                      </>
+                    )}
+                  </>
+                )}
               </TabsContent>
 
               {/* Challenges Tab */}
