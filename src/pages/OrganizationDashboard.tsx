@@ -82,6 +82,14 @@ const OrganizationDashboard = () => {
 
   const [impactStories, setImpactStories] = useState<ImpactStory[]>([]);
   const [loadingStories, setLoadingStories] = useState(true);
+  
+  // Real metrics from database
+  const [metrics, setMetrics] = useState({
+    totalParticipants: 0,
+    activeSponsorships: 0,
+    totalCompletions: 0,
+    loading: true
+  });
 
   // Load real impact stories from sponsored challenges
   useEffect(() => {
@@ -175,6 +183,76 @@ const OrganizationDashboard = () => {
 
     loadImpactStories();
   }, [user, profile?.organization_id, challenges]);
+  
+  // Load real metrics from database
+  useEffect(() => {
+    const loadMetrics = async () => {
+      if (!user || !profile?.organization_id) {
+        setMetrics(prev => ({ ...prev, loading: false }));
+        return;
+      }
+
+      try {
+        // Get active sponsorships count
+        const { count: sponsorshipsCount, error: sponsorshipsError } = await supabase
+          .from('challenge_sponsorships')
+          .select('*', { count: 'exact', head: true })
+          .eq('sponsor_organization_id', profile.organization_id)
+          .eq('status', 'active');
+
+        if (sponsorshipsError) throw sponsorshipsError;
+
+        // Get challenge IDs sponsored by this org
+        const { data: sponsorships } = await supabase
+          .from('challenge_sponsorships')
+          .select('challenge_id')
+          .eq('sponsor_organization_id', profile.organization_id)
+          .eq('status', 'active');
+
+        const challengeIds = sponsorships?.map(s => s.challenge_id) || [];
+
+        let totalParticipants = 0;
+        let totalCompletions = 0;
+
+        if (challengeIds.length > 0) {
+          // Get unique participants in sponsored challenges
+          const { data: participants, error: participantsError } = await supabase
+            .from('challenge_completions')
+            .select('user_id')
+            .in('challenge_id', challengeIds)
+            .eq('validation_status', 'approved');
+
+          if (!participantsError && participants) {
+            const uniqueParticipants = new Set(participants.map(p => p.user_id));
+            totalParticipants = uniqueParticipants.size;
+          }
+
+          // Get total completions count
+          const { count: completionsCount, error: completionsError } = await supabase
+            .from('challenge_completions')
+            .select('*', { count: 'exact', head: true })
+            .in('challenge_id', challengeIds)
+            .eq('validation_status', 'approved');
+
+          if (!completionsError) {
+            totalCompletions = completionsCount || 0;
+          }
+        }
+
+        setMetrics({
+          totalParticipants,
+          activeSponsorships: sponsorshipsCount || 0,
+          totalCompletions,
+          loading: false
+        });
+      } catch (error) {
+        console.error('Error loading metrics:', error);
+        setMetrics(prev => ({ ...prev, loading: false }));
+      }
+    };
+
+    loadMetrics();
+  }, [user, profile?.organization_id]);
 
   // Redirect if not authenticated or not an organization
   useEffect(() => {
@@ -648,21 +726,40 @@ const OrganizationDashboard = () => {
 
             {/* ESG Metrics Overview */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-              <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-success/10 to-success/5">
-                <TrendingUp className="w-8 h-8 mx-auto mb-2 text-success" />
-                <p className="text-2xl sm:text-3xl font-bold text-success">+145%</p>
-                <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.brand_engagement')}</p>
-              </Card>
-              <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-primary/10 to-primary/5">
-                <Users className="w-8 h-8 mx-auto mb-2 text-primary" />
-                <p className="text-2xl sm:text-3xl font-bold text-primary">12.5K</p>
-                <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.media_reach')}</p>
-              </Card>
-              <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-warning/10 to-warning/5">
-                <Award className="w-8 h-8 mx-auto mb-2 text-warning" />
-                <p className="text-2xl sm:text-3xl font-bold text-warning">3</p>
-                <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.sustainability_awards')}</p>
-              </Card>
+              {metrics.loading ? (
+                <>
+                  <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-success/10 to-success/5">
+                    <Loader2 className="w-8 h-8 mx-auto mb-2 animate-spin text-success" />
+                    <p className="text-xs sm:text-sm text-muted-foreground">{t('common.loading')}</p>
+                  </Card>
+                  <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-primary/10 to-primary/5">
+                    <Loader2 className="w-8 h-8 mx-auto mb-2 animate-spin text-primary" />
+                    <p className="text-xs sm:text-sm text-muted-foreground">{t('common.loading')}</p>
+                  </Card>
+                  <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-warning/10 to-warning/5">
+                    <Loader2 className="w-8 h-8 mx-auto mb-2 animate-spin text-warning" />
+                    <p className="text-xs sm:text-sm text-muted-foreground">{t('common.loading')}</p>
+                  </Card>
+                </>
+              ) : (
+                <>
+                  <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-success/10 to-success/5">
+                    <TrendingUp className="w-8 h-8 mx-auto mb-2 text-success" />
+                    <p className="text-2xl sm:text-3xl font-bold text-success">{metrics.activeSponsorships}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.active_sponsorships')}</p>
+                  </Card>
+                  <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-primary/10 to-primary/5">
+                    <Users className="w-8 h-8 mx-auto mb-2 text-primary" />
+                    <p className="text-2xl sm:text-3xl font-bold text-primary">{metrics.totalParticipants}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.total_participants')}</p>
+                  </Card>
+                  <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-warning/10 to-warning/5">
+                    <Award className="w-8 h-8 mx-auto mb-2 text-warning" />
+                    <p className="text-2xl sm:text-3xl font-bold text-warning">{metrics.totalCompletions}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.total_completions')}</p>
+                  </Card>
+                </>
+              )}
             </div>
 
             {/* Impact Stories */}
