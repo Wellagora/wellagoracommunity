@@ -26,6 +26,7 @@ import ProjectAdminPage from "@/pages/ProjectAdminPage";
 import JoinProjectPage from "@/pages/JoinProjectPage";
 import ProjectsListPage from "@/pages/ProjectsListPage";
 import ContactPage from "@/pages/ContactPage";
+import InboxPage from "@/pages/InboxPage";
 import "./index.css";
 
 function App() {
@@ -69,6 +70,7 @@ function App() {
                 <Route path="/projects" element={<ProjectsListPage />} />
                 <Route path="/join/:projectSlug" element={<JoinProjectPage />} />
                 <Route path="/contact" element={<ContactPage />} />
+                <Route path="/inbox" element={<InboxPage />} />
               </Routes>
               <Toaster />
               <SonnerToaster />

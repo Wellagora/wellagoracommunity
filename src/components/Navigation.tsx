@@ -18,7 +18,8 @@ import {
   CreditCard,
   Shield,
   Coins,
-  Mail
+  Mail,
+  Inbox
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -36,6 +37,7 @@ const Navigation = () => {
   const { t } = useLanguage();
   const { currentProject } = useProject();
   const [hasAdminAccess, setHasAdminAccess] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   // Check if user has admin access - SECURITY: Server-side verification
   useEffect(() => {
@@ -66,6 +68,53 @@ const Navigation = () => {
 
     checkAdminAccess();
   }, [user, profile]);
+
+  // Load unread message count
+  useEffect(() => {
+    const loadUnreadCount = async () => {
+      if (!user) {
+        setUnreadCount(0);
+        return;
+      }
+
+      try {
+        const { count, error } = await supabase
+          .from('messages')
+          .select('*', { count: 'exact', head: true })
+          .eq('recipient_user_id', user.id)
+          .eq('status', 'unread');
+
+        if (!error && count !== null) {
+          setUnreadCount(count);
+        }
+      } catch (error) {
+        console.error('Error loading unread count:', error);
+      }
+    };
+
+    loadUnreadCount();
+
+    // Subscribe to changes
+    const channel = supabase
+      .channel('messages_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'messages',
+          filter: `recipient_user_id=eq.${user?.id}`
+        },
+        () => {
+          loadUnreadCount();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
 
   const userRoles = [
     { name: "Citizen", icon: User, gradient: "from-emerald-400 to-green-600", description: "Individual sustainability journey" },
@@ -217,6 +266,23 @@ const Navigation = () => {
                 </div>
                 
                 {currentProject && <ProjectSelector />}
+                
+                {/* Inbox with unread badge */}
+                <Link
+                  to="/inbox"
+                  className="relative flex items-center space-x-2 px-3 py-2 text-muted-foreground hover:text-primary hover:bg-card/50 rounded-xl transition-all duration-300"
+                >
+                  <Inbox className="w-4 h-4" />
+                  {unreadCount > 0 && (
+                    <Badge 
+                      variant="destructive" 
+                      className="absolute -top-1 -right-1 h-5 min-w-5 flex items-center justify-center p-0 text-xs"
+                    >
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </Badge>
+                  )}
+                </Link>
+
                 <Link
                   to="/profile"
                   className="flex items-center space-x-3 px-4 py-2 bg-gradient-to-r from-card/80 to-background/80 backdrop-blur-sm rounded-xl border border-border hover:from-card hover:to-background/90 transition-all duration-300"
@@ -388,6 +454,25 @@ const Navigation = () => {
                 <span className="text-lg">🤖</span>
                 <span className="font-medium">{t('nav.ai_assistant')}</span>
               </Link>
+
+              {user && (
+                <Link 
+                  to="/inbox" 
+                  className="relative flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Inbox className="w-5 h-5" />
+                  <span className="font-medium">Üzenetek</span>
+                  {unreadCount > 0 && (
+                    <Badge 
+                      variant="destructive" 
+                      className="ml-auto h-5 min-w-5 flex items-center justify-center p-0 text-xs"
+                    >
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </Badge>
+                  )}
+                </Link>
+              )}
               
               <Link 
                 to="/contact" 
