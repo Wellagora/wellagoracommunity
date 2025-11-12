@@ -118,6 +118,169 @@ const DashboardPage = () => {
     return null; // Will redirect to auth
   }
 
+  // If user is in a project, show project-specific dashboard
+  if (currentProject) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        
+        {/* Project Dashboard Header */}
+        <section className="relative py-8 sm:py-12 lg:py-16 bg-card/20 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10"></div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="text-center animate-fade-up-3d">
+              <Badge className="mb-4 bg-primary/20 text-primary border-primary/30">
+                {currentProject.region_name}
+              </Badge>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3 sm:mb-4">
+                {currentProject.name}
+              </h1>
+              <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+                {currentProject.description || t('dashboard.project_dashboard_subtitle')}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          {/* Project Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <Card className="bg-gradient-to-br from-success/10 to-primary/10 border-success/20">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.project_villages')}</p>
+                    <p className="text-2xl font-bold text-foreground">
+                      {currentProject.villages?.length || 0}
+                    </p>
+                  </div>
+                  <Target className="w-8 h-8 text-success" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.project_region')}</p>
+                    <p className="text-xl font-bold truncate">{currentProject.region_name}</p>
+                  </div>
+                  <Building2 className="w-8 h-8 text-primary" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.project_status')}</p>
+                    <Badge className="mt-1 bg-success text-white">
+                      {currentProject.is_active ? t('dashboard.active') : t('dashboard.inactive')}
+                    </Badge>
+                  </div>
+                  <Award className="w-8 h-8 text-warning" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Project Content Tabs */}
+          <Tabs defaultValue="overview" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-3 bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-2">
+              <TabsTrigger value="overview" className="flex items-center justify-center space-x-2 text-sm">
+                <BarChart3 className="w-4 h-4" />
+                <span>{t('dashboard.tabs.overview')}</span>
+              </TabsTrigger>
+              <TabsTrigger value="leaderboard" className="flex items-center justify-center space-x-2 text-sm">
+                <Trophy className="w-4 h-4" />
+                <span>{t('dashboard.tabs.leaderboard')}</span>
+              </TabsTrigger>
+              <TabsTrigger value="activities" className="flex items-center justify-center space-x-2 text-sm">
+                <Target className="w-4 h-4" />
+                <span>{t('dashboard.tabs.activities')}</span>
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="overview" className="animate-fade-in">
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                      <Target className="w-5 h-5 text-primary" />
+                      {t('dashboard.project_goals')}
+                    </h3>
+                    <div className="space-y-4">
+                      {currentProject.villages && currentProject.villages.length > 0 ? (
+                        currentProject.villages.map((village, idx) => (
+                          <div key={idx} className="p-3 bg-muted/20 rounded-lg">
+                            <div className="flex items-center justify-between">
+                              <span className="font-medium">{village}</span>
+                              <Badge variant="outline">{t('dashboard.village')}</Badge>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-sm text-muted-foreground text-center py-4">
+                          {t('dashboard.no_villages_defined')}
+                        </p>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                      <Users className="w-5 h-5 text-success" />
+                      {t('dashboard.quick_actions')}
+                    </h3>
+                    <div className="space-y-3">
+                      <Button 
+                        className="w-full justify-start" 
+                        variant="outline"
+                        onClick={() => navigate('/challenges')}
+                      >
+                        <Target className="w-4 h-4 mr-2" />
+                        {t('dashboard.browse_project_challenges')}
+                      </Button>
+                      <Button 
+                        className="w-full justify-start" 
+                        variant="outline"
+                        onClick={() => navigate(`/region/${currentProject.slug}`)}
+                      >
+                        <Building2 className="w-4 h-4 mr-2" />
+                        {t('dashboard.explore_region')}
+                      </Button>
+                      <Button 
+                        className="w-full justify-start" 
+                        variant="outline"
+                        onClick={() => navigate('/community')}
+                      >
+                        <Users className="w-4 h-4 mr-2" />
+                        {t('dashboard.connect_community')}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="leaderboard" className="animate-fade-in">
+              <ProjectLeaderboard />
+            </TabsContent>
+
+            <TabsContent value="activities" className="animate-fade-in">
+              <ProjectActivities />
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
+    );
+  }
+
+  // General sustainability dashboard (no project context)
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
