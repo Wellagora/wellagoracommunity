@@ -11,9 +11,8 @@ import {
   Heart,
   TrendingUp,
   MapPin,
-  Sparkles,
-  ArrowRight,
-  Target
+  Target,
+  ArrowRight
 } from "lucide-react";
 
 interface Stakeholder {
@@ -111,17 +110,6 @@ const ModernRegionalVisualization = ({
     ? stakeholders.filter(s => s.type === selectedType)
     : stakeholders;
 
-  // Get district distribution
-  const districtCounts = stakeholders.reduce((acc, s) => {
-    const district = s.district || s.city || 'Unknown';
-    acc[district] = (acc[district] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-  const topDistricts = Object.entries(districtCounts)
-    .sort(([, a], [, b]) => b - a)
-    .slice(0, 5);
-
   return (
     <div className="space-y-6">
       {/* Overview Stats */}
@@ -176,49 +164,6 @@ const ModernRegionalVisualization = ({
           );
         })}
       </div>
-
-      {/* District Heatmap */}
-      <Card className="overflow-hidden border-border/50">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Sparkles className="w-5 h-5 text-primary" />
-            <h3 className="text-lg font-semibold">{t('matching.top_districts')}</h3>
-          </div>
-          
-          <div className="space-y-3">
-            {topDistricts.map(([district, count], index) => {
-              const percentage = (count / stakeholders.length) * 100;
-              return (
-                <motion.div
-                  key={district}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="space-y-2"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-primary" />
-                      <span className="font-medium">{district}</span>
-                    </div>
-                    <span className="text-sm text-muted-foreground">
-                      {count} {t('matching.stakeholder')} ({percentage.toFixed(1)}%)
-                    </span>
-                  </div>
-                  <div className="relative h-2 bg-muted rounded-full overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${percentage}%` }}
-                      transition={{ duration: 0.8, delay: index * 0.1 }}
-                      className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-primary/60 rounded-full"
-                    />
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Stakeholder Grid */}
       <div className="space-y-4">
