@@ -109,7 +109,7 @@ const AdminDashboard = () => {
     totalChallenges: 0,
     activeChallenges: 0,
     pendingReview: 0,
-    totalImpact: 0
+    totalParticipants: 0
   });
 
   // Check admin access - SECURITY: Server-side verification via edge function
@@ -236,6 +236,11 @@ const AdminDashboard = () => {
         .select('*', { count: 'exact', head: true })
         .eq('is_active', true);
 
+      // Count total participants from profiles
+      const { count: participantsCount } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true });
+
       // Load active programs (challenge_definitions) filtered by selected project
       try {
         const projectToLoad = forceProjectId || selectedProject?.id || defaultProjectId;
@@ -281,7 +286,7 @@ const AdminDashboard = () => {
         totalChallenges: totalCount || 0,
         activeChallenges: activeCount || 0,
         pendingReview: pendingCount + draftsCount,
-        totalImpact: 0
+        totalParticipants: participantsCount || 0
       });
 
     } catch (error) {
@@ -753,7 +758,7 @@ const AdminDashboard = () => {
                     <Users className="w-4 h-4 text-primary" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">10,234</div>
+                    <div className="text-2xl font-bold">{stats.totalParticipants}</div>
                   </CardContent>
                 </Card>
               </div>
