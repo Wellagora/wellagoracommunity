@@ -56,22 +56,44 @@ serve(async (req) => {
   }
 
   try {
+    // Get environment variables
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const lovableApiKey = Deno.env.get('LOVABLE_API_KEY')!;
     
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    
-    // Autentikáció ellenőrzése
-    const authHeader = req.headers.get('authorization')?.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabase.auth.getUser(authHeader);
-    
-    if (authError || !user) {
+    // Get the authorization header with Bearer prefix
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      console.error('No authorization header provided');
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
+
+    // Create Supabase client with user's auth token
+    const supabaseClient = createClient(
+      supabaseUrl,
+      supabaseServiceKey,
+      {
+        global: {
+          headers: { Authorization: authHeader },
+        },
+      }
+    );
+    
+    // Get the authenticated user
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    
+    if (authError || !user) {
+      console.error('Error getting user:', authError);
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    console.log('Challenge validation request from user:', user.id);
 
     // Validate and parse request body
     const rawBody = await req.json();
@@ -87,7 +109,7 @@ serve(async (req) => {
       };
       
       // Challenge definition lekérése
-      const { data: challengeDef, error: challengeError } = await supabase
+      const { data: challengeDef, error: challengeError } = await supabaseClient
         .from('challenge_definitions')
         .select('*')
         .eq('id', completion.challengeId)
@@ -108,7 +130,7 @@ serve(async (req) => {
       );
 
       // Challenge completion létrehozása
-      const { data: challengeCompletion, error: insertError } = await supabase
+      const { data: challengeCompletion, error: insertError } = await supabaseClient
         .from('challenge_completions')
         .insert({
           user_id: user.id,
@@ -133,7 +155,7 @@ serve(async (req) => {
       }
 
       // Sustainability activity létrehozása
-      const { error: activityError } = await supabase
+      const { error: activityError } = await supabaseClient
         .from('sustainability_activities')
         .insert({
           user_id: user.id,
@@ -164,7 +186,7 @@ serve(async (req) => {
 
     if (validatedBody.action === 'get-user-handprint') {
       // Felhasználó összes aktivitásának összesítése
-      const { data: activities, error: activitiesError } = await supabase
+      const { data: activities, error: activitiesError } = await supabaseClient
         .from('sustainability_activities')
         .select('*')
         .eq('user_id', user.id)
