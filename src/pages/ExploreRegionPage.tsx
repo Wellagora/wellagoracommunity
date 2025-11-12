@@ -149,7 +149,7 @@ const ExploreRegionPage = () => {
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'citizen': return 'Állampolgár';
+      case 'citizen': return 'Magánszemély';
       case 'business': return 'Vállalkozás';
       case 'government': return 'Önkormányzat';
       case 'ngo': return 'Civil szervezet';
@@ -229,7 +229,7 @@ const ExploreRegionPage = () => {
               onClick={() => setSelectedType('citizen')}
             >
               <User className="w-4 h-4 mr-2" />
-              Állampolgárok
+              Magánszemélyek
             </Button>
             <Button
               variant={selectedType === 'business' ? 'default' : 'outline'}

@@ -63,7 +63,7 @@ export const RoleSwitcher = () => {
   const getRoleLabel = (role: string) => {
     switch (role) {
       case 'citizen':
-        return 'Állampolgár';
+        return 'Magánszemély';
       case 'business':
         return 'Vállalat';
       case 'ngo':
@@ -96,7 +96,7 @@ export const RoleSwitcher = () => {
             <SelectItem value="citizen">
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4" />
-                <span>Állampolgár</span>
+                <span>Magánszemély</span>
               </div>
             </SelectItem>
             <SelectItem value="business">
