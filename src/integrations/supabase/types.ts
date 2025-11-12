@@ -294,6 +294,48 @@ export type Database = {
           },
         ]
       }
+      messages: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          id: string
+          message: string
+          message_type: string
+          read_at: string | null
+          recipient_user_id: string | null
+          sender_email: string
+          sender_name: string
+          status: string
+          subject: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          message_type: string
+          read_at?: string | null
+          recipient_user_id?: string | null
+          sender_email: string
+          sender_name: string
+          status?: string
+          subject?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          message_type?: string
+          read_at?: string | null
+          recipient_user_id?: string | null
+          sender_email?: string
+          sender_name?: string
+          status?: string
+          subject?: string | null
+        }
+        Relationships: []
+      }
       organizations: {
         Row: {
           co2_reduction_total: number | null

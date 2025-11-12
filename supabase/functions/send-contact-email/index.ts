@@ -47,6 +47,23 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Sending contact email from ${senderName} to ${recipientName}`);
 
+    // Store message in database
+    const { error: messageError } = await supabase
+      .from('messages')
+      .insert({
+        sender_name: senderName,
+        sender_email: senderEmail,
+        recipient_user_id: recipientUserId,
+        message: message,
+        message_type: 'partner_contact',
+        status: 'unread'
+      });
+
+    if (messageError) {
+      console.error('Error storing message:', messageError);
+      // Continue with email sending even if DB storage fails
+    }
+
     const emailResponse = await resend.emails.send({
       from: "Platform <onboarding@resend.dev>",
       to: [recipientEmail],

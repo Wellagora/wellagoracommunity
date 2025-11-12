@@ -5,13 +5,14 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { CheckCircle, XCircle, Clock, Sparkles, TrendingUp, Users, ArrowLeft, Plus, Building2, X } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Sparkles, TrendingUp, Users, ArrowLeft, Plus, Building2, X, Mail } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import UserRoleManager from './UserRoleManager';
 import { ProgramCreator } from './ProgramCreator';
 import ProjectDetailView from './ProjectDetailView';
+import MessagesManager from './MessagesManager';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -81,6 +82,7 @@ const AdminDashboard = () => {
   const [showCreateChallenge, setShowCreateChallenge] = useState(false);
   const [defaultProjectId, setDefaultProjectId] = useState<string | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [activeTab, setActiveTab] = useState<'projects' | 'messages' | 'users'>('projects');
   const [newProject, setNewProject] = useState({
     name: '',
     slug: '',
@@ -695,57 +697,75 @@ const AdminDashboard = () => {
         />
       ) : (
         <>
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Összes Kihívás</CardTitle>
-                <TrendingUp className="w-4 h-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.totalChallenges}</div>
-              </CardContent>
-            </Card>
+          {/* Main tabs for different sections */}
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="space-y-6">
+            <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
+              <TabsTrigger value="projects">
+                <Building2 className="w-4 h-4 mr-2" />
+                Projektek
+              </TabsTrigger>
+              <TabsTrigger value="messages">
+                <Mail className="w-4 h-4 mr-2" />
+                Üzenetek
+              </TabsTrigger>
+              <TabsTrigger value="users">
+                <Users className="w-4 h-4 mr-2" />
+                Felhasználók
+              </TabsTrigger>
+            </TabsList>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Aktív Kihívások</CardTitle>
-                <CheckCircle className="w-4 h-4 text-green-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-green-600">{stats.activeChallenges}</div>
-              </CardContent>
-            </Card>
+            <TabsContent value="projects" className="space-y-6">
+              {/* Stats Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium">Összes Kihívás</CardTitle>
+                    <TrendingUp className="w-4 h-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{stats.totalChallenges}</div>
+                  </CardContent>
+                </Card>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Jóváhagyásra Vár</CardTitle>
-                <Clock className="w-4 h-4 text-orange-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-orange-600">{stats.pendingReview}</div>
-              </CardContent>
-            </Card>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium">Aktív Kihívások</CardTitle>
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-green-600">{stats.activeChallenges}</div>
+                  </CardContent>
+                </Card>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Résztvevők</CardTitle>
-                <Users className="w-4 h-4 text-primary" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">10,234</div>
-              </CardContent>
-            </Card>
-          </div>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium">Jóváhagyásra Vár</CardTitle>
+                    <Clock className="w-4 h-4 text-orange-600" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-orange-600">{stats.pendingReview}</div>
+                  </CardContent>
+                </Card>
 
-          {/* Projects List - Only show when no project is selected */}
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <div>
-                <h3 className="text-lg font-semibold">Projektek</h3>
-                <p className="text-sm text-muted-foreground">Platformon lévő projektek listája</p>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium">Résztvevők</CardTitle>
+                    <Users className="w-4 h-4 text-primary" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">10,234</div>
+                  </CardContent>
+                </Card>
               </div>
-              <Dialog open={showCreateProject} onOpenChange={setShowCreateProject}>
+
+              {/* Projects List */}
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="text-lg font-semibold">Projektek</h3>
+                    <p className="text-sm text-muted-foreground">Platformon lévő projektek listája</p>
+                  </div>
+                  <Dialog open={showCreateProject} onOpenChange={setShowCreateProject}>
               <DialogTrigger asChild>
                 <Button>
                   <Plus className="w-4 h-4 mr-2" />
@@ -877,6 +897,16 @@ const AdminDashboard = () => {
             )}
           </div>
           </div>
+            </TabsContent>
+
+            <TabsContent value="messages">
+              <MessagesManager />
+            </TabsContent>
+
+            <TabsContent value="users">
+              <UserRoleManager />
+            </TabsContent>
+          </Tabs>
         </>
       )}
     </div>
