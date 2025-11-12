@@ -426,7 +426,21 @@ const RegionalHub = () => {
                       <CardHeader>
                         <div className="flex items-start justify-between">
                           <div className="flex items-center gap-3">
-                            <div className="text-4xl">{profile.avatar}</div>
+                            {profile.avatar.startsWith('http') ? (
+                              <img 
+                                src={profile.avatar} 
+                                alt={profile.name}
+                                className="w-12 h-12 rounded-full object-cover"
+                                onError={(e) => {
+                                  const parent = e.currentTarget.parentElement;
+                                  if (parent) {
+                                    parent.innerHTML = '<div class="text-4xl">👤</div>';
+                                  }
+                                }}
+                              />
+                            ) : (
+                              <div className="text-4xl">{profile.avatar}</div>
+                            )}
                             <div>
                               <CardTitle className="text-base">{profile.name}</CardTitle>
                               {profile.organization && (
