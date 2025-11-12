@@ -12,6 +12,7 @@ import RegionalStakeholderMap from '@/components/matching/RegionalStakeholderMap
 import ModernRegionalVisualization from '@/components/matching/ModernRegionalVisualization';
 import StakeholderFilters from '@/components/matching/StakeholderFilters';
 import ChallengeSponsorshipModal from '@/components/challenges/ChallengeSponsorshipModal';
+import ContactModal from '@/components/regional/ContactModal';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -74,6 +75,11 @@ const RegionalHub = () => {
   const [selectedChallengeForSponsorship, setSelectedChallengeForSponsorship] = useState<{
     id: string;
     title: string;
+  } | null>(null);
+  const [contactModalOpen, setContactModalOpen] = useState(false);
+  const [selectedContact, setSelectedContact] = useState<{
+    name: string;
+    userId: string;
   } | null>(null);
   const [stakeholders, setStakeholders] = useState<StakeholderProfile[]>([]);
   const [loadingStakeholders, setLoadingStakeholders] = useState(true);
@@ -463,12 +469,24 @@ const RegionalHub = () => {
                             </Badge>
                           ))}
                         </div>
-                        <Button className="w-full" size="sm" onClick={() => {
-                          toast({
-                            title: profile.isRegistered ? t('regional.contact') : t('regional.send_invite'),
-                            description: `${profile.isRegistered ? t('regional.coming_soon') : t('regional.sending_invite')} - ${profile.name}`,
-                          });
-                        }}>
+                        <Button 
+                          className="w-full" 
+                          size="sm" 
+                          onClick={() => {
+                            if (profile.isRegistered) {
+                              setSelectedContact({
+                                name: profile.name,
+                                userId: profile.id,
+                              });
+                              setContactModalOpen(true);
+                            } else {
+                              toast({
+                                title: t('regional.send_invite'),
+                                description: t('regional.coming_soon'),
+                              });
+                            }
+                          }}
+                        >
                           {profile.isRegistered ? t('regional.contact') : t('regional.send_invite')}
                         </Button>
                       </CardContent>
@@ -717,6 +735,15 @@ const RegionalHub = () => {
           challengeId={selectedChallengeForSponsorship.id}
           challengeTitle={selectedChallengeForSponsorship.title}
           region={currentProject.region_name}
+        />
+      )}
+
+      {selectedContact && (
+        <ContactModal
+          open={contactModalOpen}
+          onOpenChange={setContactModalOpen}
+          recipientName={selectedContact.name}
+          recipientUserId={selectedContact.userId}
         />
       )}
     </div>
