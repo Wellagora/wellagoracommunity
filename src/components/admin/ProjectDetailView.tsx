@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { ArrowLeft, Plus, CheckCircle, XCircle, Clock, Sparkles } from "lucide-react";
 import { ProgramCreator } from "./ProgramCreator";
 import { ProgramEditor } from "./ProgramEditor";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Project {
   id: string;
@@ -27,16 +28,31 @@ interface ProjectDetailViewProps {
 }
 
 const getCategoryColor = (category: string) => {
-  const colors: Record<string, string> = {
-    'Energia': 'bg-amber-500',
-    'Közlekedés': 'bg-blue-500',
-    'Hulladék': 'bg-green-500',
-    'Víz': 'bg-cyan-500',
-    'Biodiverzitás': 'bg-emerald-500',
-    'Közösség': 'bg-purple-500',
-    'Oktatás': 'bg-pink-500',
+  // Translate category keys back to their base form for matching
+  const normalizedCategory = category.toLowerCase();
+  const colorMap: Record<string, string> = {
+    'energia': 'bg-amber-500',
+    'energy': 'bg-amber-500',
+    'közlekedés': 'bg-blue-500',
+    'transport': 'bg-blue-500',
+    'verkehr': 'bg-blue-500',
+    'hulladék': 'bg-green-500',
+    'waste': 'bg-green-500',
+    'abfall': 'bg-green-500',
+    'víz': 'bg-cyan-500',
+    'water': 'bg-cyan-500',
+    'wasser': 'bg-cyan-500',
+    'biodiverzitás': 'bg-emerald-500',
+    'biodiversity': 'bg-emerald-500',
+    'biodiversität': 'bg-emerald-500',
+    'közösség': 'bg-purple-500',
+    'community': 'bg-purple-500',
+    'gemeinschaft': 'bg-purple-500',
+    'oktatás': 'bg-pink-500',
+    'education': 'bg-pink-500',
+    'bildung': 'bg-pink-500',
   };
-  return colors[category] || 'bg-gray-500';
+  return colorMap[normalizedCategory] || 'bg-gray-500';
 };
 
 const getDifficultyColor = (difficulty: string) => {
@@ -57,6 +73,7 @@ export default function ProjectDetailView({
 }: ProjectDetailViewProps) {
   const [activeTab, setActiveTab] = useState("programs");
   const [editingProgramId, setEditingProgramId] = useState<string | null>(null);
+  const { t } = useLanguage();
 
   return (
     <div className="space-y-6">
@@ -64,7 +81,7 @@ export default function ProjectDetailView({
       <Dialog open={!!editingProgramId} onOpenChange={(open) => !open && setEditingProgramId(null)}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto mx-4 sm:mx-auto">
           <DialogHeader>
-            <DialogTitle className="text-lg sm:text-xl">Program szerkesztése</DialogTitle>
+            <DialogTitle className="text-lg sm:text-xl">{t('project.edit_program')}</DialogTitle>
           </DialogHeader>
           {editingProgramId && (
             <ProgramEditor
@@ -83,8 +100,8 @@ export default function ProjectDetailView({
       <div className="flex items-center gap-2 sm:gap-4">
         <Button variant="ghost" size="sm" onClick={onBack} className="text-xs sm:text-sm px-2 sm:px-4">
           <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-          <span className="hidden sm:inline">Vissza a projektekhez</span>
-          <span className="sm:hidden">Vissza</span>
+          <span className="hidden sm:inline">{t('project.back_to_projects')}</span>
+          <span className="sm:hidden">{t('project.back')}</span>
         </Button>
       </div>
 
@@ -96,7 +113,7 @@ export default function ProjectDetailView({
               <CardDescription className="text-sm sm:text-base mt-1 sm:mt-2">{project.region_name}</CardDescription>
             </div>
             <Badge variant={project.is_active ? "default" : "secondary"} className="text-sm sm:text-base px-2 sm:px-3 py-0.5 sm:py-1 self-start">
-              {project.is_active ? "Aktív" : "Inaktív"}
+              {project.is_active ? t('project.active') : t('project.inactive')}
             </Badge>
           </div>
         </CardHeader>
@@ -117,22 +134,22 @@ export default function ProjectDetailView({
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="w-full flex flex-col sm:flex-row h-auto sm:h-10 gap-1 sm:gap-0 p-1">
           <TabsTrigger value="programs" className="text-xs sm:text-sm w-full sm:w-auto whitespace-normal sm:whitespace-nowrap py-2 sm:py-1.5">
-            Új program létrehozása
+            {t('project.new_program_tab')}
           </TabsTrigger>
           <TabsTrigger value="draft" className="text-xs sm:text-sm w-full sm:w-auto py-2 sm:py-1.5">
-            Draft programok ({draftChallenges.length})
+            {t('project.draft_programs_tab')} ({draftChallenges.length})
           </TabsTrigger>
           <TabsTrigger value="active" className="text-xs sm:text-sm w-full sm:w-auto py-2 sm:py-1.5">
-            Aktív programok ({activePrograms.length})
+            {t('project.active_programs_tab')} ({activePrograms.length})
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="programs" className="space-y-4 mt-4">
           <Card>
             <CardHeader className="p-4 sm:p-6">
-              <CardTitle className="text-lg sm:text-xl">Új program létrehozása</CardTitle>
+              <CardTitle className="text-lg sm:text-xl">{t('project.new_program_title')}</CardTitle>
               <CardDescription className="text-sm">
-                Hozz létre új fenntarthatósági programot a közösség számára
+                {t('project.new_program_desc')}
               </CardDescription>
             </CardHeader>
             <CardContent className="p-4 sm:p-6 pt-0">
@@ -150,15 +167,15 @@ export default function ProjectDetailView({
         <TabsContent value="draft" className="space-y-4 mt-4">
           <Card>
             <CardHeader className="p-4 sm:p-6">
-              <CardTitle className="text-lg sm:text-xl">Draft programok</CardTitle>
+              <CardTitle className="text-lg sm:text-xl">{t('project.draft_programs_title')}</CardTitle>
               <CardDescription className="text-sm">
-                Ezeket a programokat létrehoztad, de még nem tetted közzé
+                {t('project.draft_programs_desc')}
               </CardDescription>
             </CardHeader>
             <CardContent className="p-4 sm:p-6 pt-0">
               {draftChallenges.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-8">
-                  Még nincsenek draft programok. Hozz létre egyet!
+                  {t('project.no_drafts')}
                 </p>
               ) : (
                 <div className="space-y-3 sm:space-y-4">
@@ -168,24 +185,24 @@ export default function ProjectDetailView({
                         <div className="flex-1 min-w-0">
                           <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-2">
                             <Badge className={`${getCategoryColor(challenge.category)} text-xs`}>
-                              {challenge.category}
+                              {t(`category.${challenge.category.toLowerCase()}`)}
                             </Badge>
                             <Badge className={`${getDifficultyColor(challenge.difficulty)} text-xs`} variant="secondary">
-                              {challenge.difficulty}
+                              {t(`difficulty.${challenge.difficulty}`)}
                             </Badge>
-                            <Badge variant="outline" className="text-xs">Draft</Badge>
+                            <Badge variant="outline" className="text-xs">{t('project.draft_badge')}</Badge>
                           </div>
                           <h3 className="font-semibold text-base sm:text-lg break-words">{challenge.title}</h3>
                           <p className="text-xs sm:text-sm text-muted-foreground mt-1 line-clamp-2">{challenge.description}</p>
                         </div>
                         <div className="text-left sm:text-right sm:ml-4 shrink-0">
                           <div className="text-lg sm:text-xl font-bold text-primary">{challenge.points_base}</div>
-                          <div className="text-xs text-muted-foreground">pont</div>
+                          <div className="text-xs text-muted-foreground">{t('project.points')}</div>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
                         <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-                        <span>{challenge.duration_days} nap</span>
+                        <span>{challenge.duration_days} {t('project.days')}</span>
                       </div>
                     </div>
                   ))}
@@ -198,13 +215,13 @@ export default function ProjectDetailView({
         <TabsContent value="active" className="space-y-4 mt-4">
           <Card>
             <CardHeader className="p-4 sm:p-6">
-              <CardTitle className="text-lg sm:text-xl">Aktív programok</CardTitle>
-              <CardDescription className="text-sm">A projekt alatt jelenleg futó programok</CardDescription>
+              <CardTitle className="text-lg sm:text-xl">{t('project.active_programs_title')}</CardTitle>
+              <CardDescription className="text-sm">{t('project.active_programs_desc')}</CardDescription>
             </CardHeader>
             <CardContent className="p-4 sm:p-6 pt-0">
               {activePrograms.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-8">
-                  Még nincsenek aktív programok. Hozz létre új programokat vagy tedd közzé a draft programokat.
+                  {t('project.no_active')}
                 </p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
@@ -215,16 +232,16 @@ export default function ProjectDetailView({
                           <div className="flex-1 min-w-0">
                             <CardTitle className="text-sm sm:text-base line-clamp-2 break-words">{program.title}</CardTitle>
                             <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2">
-                              <Badge className={`${getCategoryColor(program.category)} text-xs`}>
-                                {program.category}
-                              </Badge>
-                              <Badge variant="outline" className={`${getDifficultyColor(program.difficulty)} text-xs`}>
-                                {program.difficulty}
-                              </Badge>
+                            <Badge className={`${getCategoryColor(program.category)} text-xs`}>
+                              {t(`category.${program.category.toLowerCase()}`)}
+                            </Badge>
+                            <Badge variant="outline" className={`${getDifficultyColor(program.difficulty)} text-xs`}>
+                              {t(`difficulty.${program.difficulty}`)}
+                            </Badge>
                             </div>
                           </div>
                           <Badge variant="default" className="bg-green-500 shrink-0 text-xs sm:text-sm self-start">
-                            Aktív
+                            {t('project.active')}
                           </Badge>
                         </div>
                       </CardHeader>
@@ -236,17 +253,17 @@ export default function ProjectDetailView({
                         <div className="flex items-center justify-between text-xs sm:text-sm">
                           <div className="flex items-center gap-1">
                             <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-                            <span>{program.duration_days} nap</span>
+                            <span>{program.duration_days} {t('project.days')}</span>
                           </div>
                           <div className="flex items-center gap-1">
                             <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
-                            <span>{program.points_base} pont</span>
+                            <span>{program.points_base} {t('project.points')}</span>
                           </div>
                         </div>
 
                         {program.location && (
                           <div className="pt-2 border-t">
-                            <p className="text-xs font-medium mb-1">Helyszín:</p>
+                            <p className="text-xs font-medium mb-1">{t('project.location_label')}</p>
                             <p className="text-xs text-muted-foreground line-clamp-1">{program.location}</p>
                           </div>
                         )}
@@ -260,7 +277,7 @@ export default function ProjectDetailView({
                               setEditingProgramId(program.id);
                             }}
                           >
-                            Szerkesztés
+                            {t('project.edit_button')}
                           </Button>
                         </div>
                       </CardContent>
