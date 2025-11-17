@@ -99,6 +99,31 @@ export const ProgramCreator = ({
         imageUrl = publicUrl;
       }
 
+      // Translate title and description automatically
+      let translations = {};
+      try {
+        toast.info("Fordítás folyamatban...");
+        
+        const { data: translationData, error: translationError } = await supabase.functions
+          .invoke('translate-challenge', {
+            body: { 
+              title: data.title, 
+              description: data.description 
+            }
+          });
+        
+        if (translationError) {
+          console.error('Translation error:', translationError);
+          toast.warning("A fordítás sikertelen, de a program létrehozva magyarul");
+        } else if (translationData?.translations) {
+          translations = translationData.translations;
+          toast.success(`Lefordítva ${Object.keys(translations).length} nyelvre`);
+        }
+      } catch (error) {
+        console.error('Translation failed:', error);
+        toast.warning("A fordítás sikertelen, de folytatom a program létrehozását");
+      }
+
       // Combine date and time for scheduled events
       let startDateTime = null;
       let endDateTime = null;
@@ -133,11 +158,12 @@ export const ProgramCreator = ({
           is_active: true,
           base_impact: {},
           project_id: defaultProjectId,
+          translations: translations,
         });
 
       if (error) throw error;
 
-      toast.success(t('admin.program_created_success') || 'Program sikeresen létrehozva!');
+      toast.success(t('admin.program_created_success') || 'Program sikeresen létrehozva és lefordítva!');
       reset();
       setStartDate(undefined);
       setEndDate(undefined);

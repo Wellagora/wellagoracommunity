@@ -104,6 +104,7 @@ export type Database = {
           project_id: string | null
           start_date: string | null
           title: string
+          translations: Json | null
           validation_requirements: Json | null
         }
         Insert: {
@@ -126,6 +127,7 @@ export type Database = {
           project_id?: string | null
           start_date?: string | null
           title: string
+          translations?: Json | null
           validation_requirements?: Json | null
         }
         Update: {
@@ -148,6 +150,7 @@ export type Database = {
           project_id?: string | null
           start_date?: string | null
           title?: string
+          translations?: Json | null
           validation_requirements?: Json | null
         }
         Relationships: [

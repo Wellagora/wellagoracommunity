@@ -27,3 +27,6 @@ verify_jwt = false
 
 [functions.send-general-contact]
 verify_jwt = false
+
+[functions.translate-challenge]
+verify_jwt = true
