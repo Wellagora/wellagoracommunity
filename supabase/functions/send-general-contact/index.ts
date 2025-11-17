@@ -20,13 +20,81 @@ interface GeneralContactRequest {
   message: string;
 }
 
+// Input validation
+function validateContactInput(data: any): { valid: boolean; errors?: string[]; data?: GeneralContactRequest } {
+  const errors: string[] = [];
+  
+  if (!data.senderName || typeof data.senderName !== 'string') {
+    errors.push('Name is required');
+  } else if (data.senderName.length > 100) {
+    errors.push('Name must be less than 100 characters');
+  }
+  
+  if (!data.senderEmail || typeof data.senderEmail !== 'string') {
+    errors.push('Email is required');
+  } else if (data.senderEmail.length > 255) {
+    errors.push('Email must be less than 255 characters');
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.senderEmail)) {
+    errors.push('Invalid email format');
+  }
+  
+  if (!data.subject || typeof data.subject !== 'string') {
+    errors.push('Subject is required');
+  } else if (data.subject.length > 200) {
+    errors.push('Subject must be less than 200 characters');
+  }
+  
+  if (!data.message || typeof data.message !== 'string') {
+    errors.push('Message is required');
+  } else if (data.message.length > 2000) {
+    errors.push('Message must be less than 2000 characters');
+  }
+  
+  if (errors.length > 0) {
+    return { valid: false, errors };
+  }
+  
+  return { 
+    valid: true, 
+    data: {
+      senderName: data.senderName,
+      senderEmail: data.senderEmail,
+      subject: data.subject,
+      message: data.message
+    }
+  };
+}
+
+// HTML encode to prevent XSS
+function htmlEncode(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+}
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { senderName, senderEmail, subject, message }: GeneralContactRequest = await req.json();
+    const requestData = await req.json();
+    
+    // Validate input
+    const validation = validateContactInput(requestData);
+    if (!validation.valid) {
+      console.error('Validation failed:', validation.errors);
+      return new Response(
+        JSON.stringify({ error: 'Invalid input data' }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+    
+    const { senderName, senderEmail, subject, message } = validation.data!;
 
     // Admin email - ezt módosítsd a valódi admin email címre
     const adminEmail = "info@kalimedence.hu";
@@ -51,6 +119,12 @@ const handler = async (req: Request): Promise<Response> => {
       // Continue with email sending even if DB storage fails
     }
 
+    // HTML encode all user inputs to prevent XSS
+    const safeName = htmlEncode(senderName);
+    const safeEmail = htmlEncode(senderEmail);
+    const safeSubject = htmlEncode(subject);
+    const safeMessage = htmlEncode(message);
+
     const emailResponse = await resend.emails.send({
       from: "Platform <onboarding@resend.dev>",
       to: [adminEmail],
@@ -58,11 +132,11 @@ const handler = async (req: Request): Promise<Response> => {
       subject: `[Kapcsolatfelvétel] ${subject}`,
       html: `
         <h2>Új kapcsolatfelvételi üzenet</h2>
-        <p><strong>Feladó:</strong> ${senderName} (${senderEmail})</p>
-        <p><strong>Tárgy:</strong> ${subject}</p>
+        <p><strong>Feladó:</strong> ${safeName} (${safeEmail})</p>
+        <p><strong>Tárgy:</strong> ${safeSubject}</p>
         <hr>
         <p><strong>Üzenet:</strong></p>
-        <p>${message.replace(/\n/g, '<br>')}</p>
+        <p>${safeMessage.replace(/\n/g, '<br>')}</p>
         <hr>
         <p><small>Ez az üzenet a Káli medence fenntarthatósági platform kapcsolatfelvételi űrlapján keresztül érkezett.</small></p>
       `,
@@ -80,7 +154,7 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error: any) {
     console.error("Error sending general contact email:", error);
     return new Response(
-      JSON.stringify({ error: error.message || 'Hiba történt az üzenet küldésekor' }),
+      JSON.stringify({ error: 'Failed to send message. Please try again.' }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },

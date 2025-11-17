@@ -18,6 +18,60 @@ interface ContactRequest {
   message: string;
 }
 
+// Input validation
+function validateContactInput(data: any): { valid: boolean; errors?: string[]; data?: ContactRequest } {
+  const errors: string[] = [];
+  
+  if (!data.senderName || typeof data.senderName !== 'string') {
+    errors.push('Name is required');
+  } else if (data.senderName.length > 100) {
+    errors.push('Name must be less than 100 characters');
+  }
+  
+  if (!data.senderEmail || typeof data.senderEmail !== 'string') {
+    errors.push('Email is required');
+  } else if (data.senderEmail.length > 255) {
+    errors.push('Email must be less than 255 characters');
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.senderEmail)) {
+    errors.push('Invalid email format');
+  }
+  
+  if (!data.message || typeof data.message !== 'string') {
+    errors.push('Message is required');
+  } else if (data.message.length > 2000) {
+    errors.push('Message must be less than 2000 characters');
+  }
+  
+  if (!data.recipientUserId || typeof data.recipientUserId !== 'string') {
+    errors.push('Invalid recipient ID');
+  }
+  
+  if (errors.length > 0) {
+    return { valid: false, errors };
+  }
+  
+  return { 
+    valid: true, 
+    data: {
+      senderName: data.senderName,
+      senderEmail: data.senderEmail,
+      recipientUserId: data.recipientUserId,
+      message: data.message
+    }
+  };
+}
+
+// HTML encode to prevent XSS
+function htmlEncode(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+}
+
 const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
@@ -25,7 +79,19 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { senderName, senderEmail, recipientUserId, message }: ContactRequest = await req.json();
+    const requestData = await req.json();
+    
+    // Validate input
+    const validation = validateContactInput(requestData);
+    if (!validation.valid) {
+      console.error('Validation failed:', validation.errors);
+      return new Response(
+        JSON.stringify({ error: 'Invalid input data' }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+    
+    const { senderName, senderEmail, recipientUserId, message } = validation.data!;
 
     // Create Supabase client with service role to fetch user email
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -39,7 +105,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (profileError || !profile) {
       console.error('Error fetching recipient profile:', profileError);
-      throw new Error('Címzett nem található');
+      return new Response(
+        JSON.stringify({ error: 'Recipient not found' }),
+        { status: 404, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
     }
 
     const recipientName = profile.public_display_name || `${profile.first_name} ${profile.last_name}`;
@@ -64,6 +133,12 @@ const handler = async (req: Request): Promise<Response> => {
       // Continue with email sending even if DB storage fails
     }
 
+    // HTML encode all user inputs to prevent XSS
+    const safeName = htmlEncode(senderName);
+    const safeEmail = htmlEncode(senderEmail);
+    const safeRecipientName = htmlEncode(recipientName);
+    const safeMessage = htmlEncode(message);
+
     const emailResponse = await resend.emails.send({
       from: "Platform <onboarding@resend.dev>",
       to: [recipientEmail],
@@ -71,11 +146,11 @@ const handler = async (req: Request): Promise<Response> => {
       subject: `Kapcsolatfelvétel: ${senderName}`,
       html: `
         <h2>Új üzenet érkezett</h2>
-        <p><strong>Feladó:</strong> ${senderName} (${senderEmail})</p>
-        <p><strong>Címzett:</strong> ${recipientName}</p>
+        <p><strong>Feladó:</strong> ${safeName} (${safeEmail})</p>
+        <p><strong>Címzett:</strong> ${safeRecipientName}</p>
         <hr>
         <p><strong>Üzenet:</strong></p>
-        <p>${message.replace(/\n/g, '<br>')}</p>
+        <p>${safeMessage.replace(/\n/g, '<br>')}</p>
         <hr>
         <p><small>Ez az üzenet a fenntarthatósági platform regionális központján keresztül érkezett.</small></p>
       `,
@@ -93,7 +168,7 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error: any) {
     console.error("Error sending contact email:", error);
     return new Response(
-      JSON.stringify({ error: error.message || 'Hiba történt az üzenet küldésekor' }),
+      JSON.stringify({ error: 'Failed to send message. Please try again.' }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
