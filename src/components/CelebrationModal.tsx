@@ -153,13 +153,19 @@ const CelebrationModal = ({ isOpen, onClose, achievement }: CelebrationModalProp
               <Heart className="w-5 h-5 text-success" />
               <span className="font-medium text-foreground">{t('celebration.making_difference')}</span>
             </div>
-            <p className="text-sm text-muted-foreground"
-              dangerouslySetInnerHTML={{
-                __html: t('celebration.regional_impact')
-                  .replace('{count}', '<strong>18</strong>')
-                  .replace('{tons}', '<strong>2.4</strong>')
-              }}
-            />
+            <p className="text-sm text-muted-foreground">
+              {t('celebration.regional_impact')
+                .split(/(\{count\}|\{tons\})/)
+                .map((part, index) => {
+                  if (part === '{count}') {
+                    return <strong key={index}>18</strong>;
+                  }
+                  if (part === '{tons}') {
+                    return <strong key={index}>2.4</strong>;
+                  }
+                  return part;
+                })}
+            </p>
           </div>
 
           {/* Action Buttons */}
