@@ -99,13 +99,15 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const initializeLanguage = async () => {
       setIsLoading(true);
       
-      let initialLang: Language = 'hu'; // Káli medence projekt - mindig magyar
+      let initialLang: Language = 'hu';
       
       if (profile && (profile as any).preferred_language) {
         initialLang = (profile as any).preferred_language as Language;
-      } else {
-        // For Káli medence, always default to Hungarian
-        initialLang = 'hu';
+      } else if (!profile) {
+        // If not authenticated, try to detect from browser or default to Hungarian
+        const browserLang = navigator.language.split('-')[0] as Language;
+        const supportedLangs: Language[] = ['en', 'de', 'hu', 'cs', 'sk', 'hr', 'ro', 'pl'];
+        initialLang = supportedLangs.includes(browserLang) ? browserLang : 'hu';
       }
       
       setLanguageState(initialLang);
