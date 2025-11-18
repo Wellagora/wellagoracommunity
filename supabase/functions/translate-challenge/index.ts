@@ -5,20 +5,76 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Validation function with strict input limits
+function validateTranslationInput(data: any): { valid: boolean; error?: string; data?: { title: string; description: string } } {
+  if (!data.title || typeof data.title !== 'string') {
+    return { valid: false, error: 'Title is required' };
+  }
+  
+  if (!data.description || typeof data.description !== 'string') {
+    return { valid: false, error: 'Description is required' };
+  }
+
+  // Trim inputs
+  const title = data.title.trim();
+  const description = data.description.trim();
+
+  // Length validation
+  if (title.length < 3) {
+    return { valid: false, error: 'Title must be at least 3 characters' };
+  }
+  if (title.length > 200) {
+    return { valid: false, error: 'Title must be less than 200 characters' };
+  }
+  if (description.length < 10) {
+    return { valid: false, error: 'Description must be at least 10 characters' };
+  }
+  if (description.length > 2000) {
+    return { valid: false, error: 'Description must be less than 2000 characters' };
+  }
+
+  // Character validation - allow letters, numbers, punctuation, and whitespace
+  // Unicode property escapes for international characters
+  const validCharPattern = /^[\p{L}\p{N}\p{P}\p{Z}\s]+$/u;
+  if (!validCharPattern.test(title)) {
+    return { valid: false, error: 'Title contains invalid characters' };
+  }
+  if (!validCharPattern.test(description)) {
+    return { valid: false, error: 'Description contains invalid characters' };
+  }
+
+  // Remove control characters and zero-width characters
+  const sanitizedTitle = title.replace(/[\x00-\x1F\x7F-\x9F\u200B-\u200D\uFEFF]/g, '');
+  const sanitizedDescription = description.replace(/[\x00-\x1F\x7F-\x9F\u200B-\u200D\uFEFF]/g, '');
+
+  return {
+    valid: true,
+    data: {
+      title: sanitizedTitle,
+      description: sanitizedDescription
+    }
+  };
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { title, description } = await req.json();
+    const requestData = await req.json();
     
-    if (!title || !description) {
+    // Validate and sanitize input
+    const validation = validateTranslationInput(requestData);
+    if (!validation.valid) {
+      console.log('Validation failed:', validation.error);
       return new Response(
-        JSON.stringify({ error: 'Title and description are required' }),
+        JSON.stringify({ error: validation.error }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    const { title, description } = validation.data!;
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
