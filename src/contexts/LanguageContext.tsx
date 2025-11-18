@@ -139,9 +139,20 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setIsLoading(false);
   };
 
-  // Translation function
+  // Translation function with fallback to English
   const t = (key: string): string => {
-    return translations[key] || key;
+    // First try the current language
+    if (translations[key]) {
+      return translations[key];
+    }
+    
+    // Fallback to English if available
+    if (translationCache['en']?.[key]) {
+      return translationCache['en'][key];
+    }
+    
+    // Return key if no translation found
+    return key;
   };
 
   const value = { language, setLanguage, t, isLoading };
