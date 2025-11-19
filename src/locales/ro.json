@@ -95,5 +95,16 @@
   "common.champion": "Campion",
   "common.error": "Eroare",
   "common.trees": "Copaci",
-  "common.tons": "Tone"
+  "common.tons": "Tone",
+  "success.title": "Povești de succes",
+  "success.subtitle": "Citiți cum programele Káli Basin au transformat viețile altora",
+  "success.program_label": "Program",
+  "success.story1.name": "Anna Kovács",
+  "success.story1.role": "Rezidentă locală, Kövágóörs",
+  "success.story1.story": "Prin programul Káli Workshop, i-am cunoscut pe vecinii mei și am descoperit câte interese comune avem. Ne întâlnim acum lunar și lucrăm împreună la dezvoltarea comunității.",
+  "success.story1.challenge": "Káli Workshop",
+  "success.story2.name": "Balaton Highlands Nonprofit SRL",
+  "success.story2.role": "Afacere locală",
+  "success.story2.story": "Sponsorizăm programul Káli Grădina Comunitară și vedem ce impact pozitiv are asupra regiunii. Suntem mândri să contribuim la dezvoltarea durabilă a comunității locale.",
+  "success.story2.challenge": "Káli Grădina Comunitară"
 }

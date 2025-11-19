@@ -1371,5 +1371,16 @@
   "organization.encourage_employees": "Encourage your employees to participate in challenges!",
   "organization.completions_by_employees": "completions by employees",
   "organization.more_completions": "more completions",
-  "organization.sponsored_challenges": "Sponsored Challenges"
+  "organization.sponsored_challenges": "Sponsored Challenges",
+  "success.title": "Success Stories",
+  "success.subtitle": "Read how others' lives have been transformed by the Káli Basin programs",
+  "success.program_label": "Program",
+  "success.story1.name": "Anna Kovács",
+  "success.story1.role": "Local resident, Kövágóörs",
+  "success.story1.story": "Through the Káli Workshop program, I got to know my neighbors and discovered how many common interests we share. We now meet monthly and work together on community development.",
+  "success.story1.challenge": "Káli Workshop",
+  "success.story2.name": "Balaton Highlands Nonprofit Ltd.",
+  "success.story2.role": "Local business",
+  "success.story2.story": "We sponsor the Káli Community Garden program and see what a positive impact it has on the region. We are proud to contribute to the sustainable development of the local community.",
+  "success.story2.challenge": "Káli Community Garden"
 }

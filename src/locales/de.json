@@ -1435,5 +1435,16 @@
   "sponsor.credits": "Kredite",
   "sponsor.active_package": "Aktives Paket",
   "sponsor.challenge_sponsorship": "Herausforderungssponsoring",
-  "sponsor.package_purchase": "Paket-Kauf"
+  "sponsor.package_purchase": "Paket-Kauf",
+  "success.title": "Erfolgsgeschichten",
+  "success.subtitle": "Lesen Sie, wie die Programme des Káli-Beckens das Leben anderer verändert haben",
+  "success.program_label": "Programm",
+  "success.story1.name": "Anna Kovács",
+  "success.story1.role": "Einwohnerin, Kövágóörs",
+  "success.story1.story": "Durch das Káli-Workshop-Programm habe ich meine Nachbarn kennengelernt und festgestellt, wie viele gemeinsame Interessen wir haben. Wir treffen uns jetzt monatlich und arbeiten gemeinsam an der Gemeinschaftsentwicklung.",
+  "success.story1.challenge": "Káli-Workshop",
+  "success.story2.name": "Balaton-Hochland Nonprofit GmbH",
+  "success.story2.role": "Lokales Unternehmen",
+  "success.story2.story": "Wir sponsern das Káli-Gemeinschaftsgarten-Programm und sehen, welch positive Auswirkungen es auf die Region hat. Wir sind stolz darauf, zur nachhaltigen Entwicklung der lokalen Gemeinschaft beizutragen.",
+  "success.story2.challenge": "Káli-Gemeinschaftsgarten"
 }

@@ -203,5 +203,16 @@
   "common.champion": "Šampion",
   "common.error": "Greška",
   "common.trees": "Stabla",
-  "common.tons": "Tona"
+  "common.tons": "Tona",
+  "success.title": "Priče o uspjehu",
+  "success.subtitle": "Pročitajte kako su programi Káli Basin transformirali živote drugih",
+  "success.program_label": "Program",
+  "success.story1.name": "Anna Kovács",
+  "success.story1.role": "Lokalna stanovnica, Kövágóörs",
+  "success.story1.story": "Kroz program Káli Radionica upoznala sam svoje susjede i otkrila koliko zajedničkih interesa dijelimo. Sada se sastajemo mjesečno i zajedno radimo na razvoju zajednice.",
+  "success.story1.challenge": "Káli Radionica",
+  "success.story2.name": "Balaton Highlands Nonprofit d.o.o.",
+  "success.story2.role": "Lokalni posao",
+  "success.story2.story": "Sponzoriramo program Káli Zajednički Vrt i vidimo kakav pozitivan utjecaj ima na regiju. Ponosni smo što možemo doprinijeti održivom razvoju lokalne zajednice.",
+  "success.story2.challenge": "Káli Zajednički Vrt"
 }

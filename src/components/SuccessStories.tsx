@@ -9,18 +9,18 @@ const SuccessStories = () => {
   const stories = [
     {
       type: "citizen",
-      name: "Kovács Anna",
-      role: "Helyi lakos, Kövágóörs",
-      story: "A Káli Műhely programon keresztül megismertem a szomszédokat, és rájöttem, hogy milyen sok közös érdeklődési körünk van. Most már havonta találkozunk, és együtt dolgozunk a közösség fejlesztésén.",
-      challenge: "Káli Műhely",
+      nameKey: "success.story1.name",
+      roleKey: "success.story1.role",
+      storyKey: "success.story1.story",
+      challengeKey: "success.story1.challenge",
       icon: Users,
     },
     {
       type: "organization",
-      name: "Balaton-felvidéki Nonprofit Kft.",
-      role: "Helyi vállalkozás",
-      story: "A Káli közös kert programot szponzoráljuk, és látjuk, hogy milyen pozitív hatása van a régióra. Büszkék vagyunk, hogy hozzájárulhatunk a helyi közösség fenntartható fejlődéséhez.",
-      challenge: "Káli közös kert",
+      nameKey: "success.story2.name",
+      roleKey: "success.story2.role",
+      storyKey: "success.story2.story",
+      challengeKey: "success.story2.challenge",
       icon: Building2,
     },
   ];
@@ -36,10 +36,10 @@ const SuccessStories = () => {
           className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Sikertörténetek
+            {t("success.title")}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Olvasd el, hogyan változtatták meg mások életét a Káli medence programjai
+            {t("success.subtitle")}
           </p>
         </motion.div>
 
@@ -61,21 +61,21 @@ const SuccessStories = () => {
                         <Icon className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-lg text-foreground">{story.name}</h3>
-                        <p className="text-sm text-muted-foreground">{story.role}</p>
+                        <h3 className="font-bold text-lg text-foreground">{t(story.nameKey)}</h3>
+                        <p className="text-sm text-muted-foreground">{t(story.roleKey)}</p>
                       </div>
                     </div>
                     
                     <div className="relative pl-4 border-l-2 border-primary/30">
                       <Quote className="absolute -left-2 -top-1 w-6 h-6 text-primary/20" />
                       <p className="text-muted-foreground italic mb-4">
-                        "{story.story}"
+                        "{t(story.storyKey)}"
                       </p>
                     </div>
                     
                     <div className="mt-4 pt-4 border-t border-border/30">
                       <span className="text-sm font-semibold text-primary">
-                        Program: {story.challenge}
+                        {t("success.program_label")}: {t(story.challengeKey)}
                       </span>
                     </div>
                   </CardContent>
