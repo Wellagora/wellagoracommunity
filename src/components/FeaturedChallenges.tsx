@@ -12,9 +12,9 @@ const FeaturedChallenges = () => {
   const challenges = [
     {
       id: "kali-muhely",
-      title: "Káli Műhely - Havi közösségi találkozók",
-      description: "Havonta egyszer, rotálva a 4 településen (Kövágóörs, Kékkút, Mindszentkálla, Köveskál)",
-      category: "Közösség",
+      titleKey: "challenges.kaliMuhely.title",
+      descriptionKey: "challenges.kaliMuhely.description",
+      categoryKey: "challenges.category.community",
       difficulty: "beginner",
       icon: Users,
       color: "from-primary to-secondary",
@@ -22,9 +22,9 @@ const FeaturedChallenges = () => {
     },
     {
       id: "kali-kozos-kert",
-      title: "Káli közös kert - Közösségi termelés",
-      description: "Közös kertészkedés, helyi termékek a 4 településen",
-      category: "Biodiverzitás",
+      titleKey: "challenges.kaliKozosKert.title",
+      descriptionKey: "challenges.kaliKozosKert.description",
+      categoryKey: "challenges.category.biodiversity",
       difficulty: "beginner",
       icon: Sprout,
       color: "from-success to-info",
@@ -32,9 +32,9 @@ const FeaturedChallenges = () => {
     },
     {
       id: "tudas-hid",
-      title: "Tudás Híd - Generációk közötti program",
-      description: "Hagyományőrzők és új lakosok párosítása a 4 településen",
-      category: "Közösség",
+      titleKey: "challenges.tudasHid.title",
+      descriptionKey: "challenges.tudasHid.description",
+      categoryKey: "challenges.category.community",
       difficulty: "intermediate",
       icon: BookOpen,
       color: "from-accent to-warning",
@@ -43,16 +43,7 @@ const FeaturedChallenges = () => {
   ];
 
   const difficultyLabel = (difficulty: string) => {
-    switch (difficulty) {
-      case "beginner":
-        return "Kezdő";
-      case "intermediate":
-        return "Haladó";
-      case "advanced":
-        return "Tapasztalt";
-      default:
-        return difficulty;
-    }
+    return t(`challenges.difficulty.${difficulty}`);
   };
 
   return (
@@ -66,10 +57,10 @@ const FeaturedChallenges = () => {
           className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Kiemelt Programok
+            {t("challenges.featured.title")}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Csatlakozz valamelyik népszerű programunkhoz és légy részese a közösségnek
+            {t("challenges.section.subtitle")}
           </p>
         </motion.div>
 
@@ -88,7 +79,7 @@ const FeaturedChallenges = () => {
                   <div className="relative h-48 w-full overflow-hidden">
                     <img 
                       src={challenge.image} 
-                      alt={challenge.title}
+                      alt={t(challenge.titleKey)}
                       className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -99,23 +90,23 @@ const FeaturedChallenges = () => {
                   <CardHeader>
                     <div className="flex gap-2 mb-3">
                       <Badge variant="secondary" className="text-xs">
-                        {challenge.category}
+                        {t(challenge.categoryKey)}
                       </Badge>
                       <Badge variant="outline" className="text-xs">
                         {difficultyLabel(challenge.difficulty)}
                       </Badge>
                     </div>
-                    <CardTitle className="text-xl mb-2">{challenge.title}</CardTitle>
+                    <CardTitle className="text-xl mb-2">{t(challenge.titleKey)}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground mb-6">
-                      {challenge.description}
+                      {t(challenge.descriptionKey)}
                     </p>
                     <Link to={`/challenges/${challenge.id}`}>
                       <Button 
                         className={`w-full bg-gradient-to-r ${challenge.color} hover:opacity-90 transition-opacity`}
                       >
-                        Csatlakozás
+                        {t("challenges.join_challenge")}
                         <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </Button>
                     </Link>
@@ -134,10 +125,10 @@ const FeaturedChallenges = () => {
           className="text-center mt-12"
         >
           <Link to="/challenges">
-            <Button variant="outline" size="lg" className="border-2 border-primary hover:bg-primary hover:text-white">
-              Összes program megtekintése
-              <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
+              <Button variant="outline" size="lg" className="border-2 border-primary hover:bg-primary hover:text-white">
+                {t("challenges.view_all")}
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
           </Link>
         </motion.div>
       </div>
