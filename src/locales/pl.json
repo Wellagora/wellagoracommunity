@@ -95,5 +95,16 @@
   "common.champion": "Mistrz",
   "common.error": "Błąd",
   "common.trees": "Drzewa",
-  "common.tons": "Tona"
+  "common.tons": "Tona",
+  "success.title": "Historie sukcesu",
+  "success.subtitle": "Przeczytaj, jak programy Káli Basin zmieniły życie innych",
+  "success.program_label": "Program",
+  "success.story1.name": "Anna Kovács",
+  "success.story1.role": "Lokalna mieszkanka, Kövágóörs",
+  "success.story1.story": "Przez program Káli Warsztaty poznałam swoich sąsiadów i odkryłam, ile wspólnych zainteresowań dzielimy. Spotykamy się teraz co miesiąc i wspólnie pracujemy nad rozwojem społeczności.",
+  "success.story1.challenge": "Káli Warsztaty",
+  "success.story2.name": "Balaton Highlands Nonprofit Sp. z o.o.",
+  "success.story2.role": "Lokalny biznes",
+  "success.story2.story": "Sponsorujemy program Káli Ogród Społecznościowy i widzimy, jaki pozytywny wpływ ma na region. Jesteśmy dumni, że możemy przyczynić się do zrównoważonego rozwoju lokalnej społeczności.",
+  "success.story2.challenge": "Káli Ogród Społecznościowy"
 }

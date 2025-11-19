@@ -1768,5 +1768,16 @@
   "organization.encourage_employees": "Bátorítsd az alkalmazottakat a kihívásokban való részvételre!",
   "organization.completions_by_employees": "teljesítés alkalmazottaktól",
   "organization.more_completions": "további teljesítés",
-  "organization.sponsored_challenges": "Szponzorált programok"
+  "organization.sponsored_challenges": "Szponzorált programok",
+  "success.title": "Sikertörténetek",
+  "success.subtitle": "Olvasd el, hogyan változtatták meg mások életét a Káli medence programjai",
+  "success.program_label": "Program",
+  "success.story1.name": "Kovács Anna",
+  "success.story1.role": "Helyi lakos, Kövágóörs",
+  "success.story1.story": "A Káli Műhely programon keresztül megismertem a szomszédokat, és rájöttem, hogy milyen sok közös érdeklődési körünk van. Most már havonta találkozunk, és együtt dolgozunk a közösség fejlesztésén.",
+  "success.story1.challenge": "Káli Műhely",
+  "success.story2.name": "Balaton-felvidéki Nonprofit Kft.",
+  "success.story2.role": "Helyi vállalkozás",
+  "success.story2.story": "A Káli közös kert programot szponzoráljuk, és látjuk, hogy milyen pozitív hatása van a régióra. Büszkék vagyunk, hogy hozzájárulhatunk a helyi közösség fenntartható fejlődéséhez.",
+  "success.story2.challenge": "Káli közös kert"
 }

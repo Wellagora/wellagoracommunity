@@ -124,5 +124,16 @@
   "common.champion": "Šampión",
   "common.error": "Chyba",
   "common.trees": "Stromy",
-  "common.tons": "Tuna"
+  "common.tons": "Tuna",
+  "success.title": "Příběhy úspěchu",
+  "success.subtitle": "Přečtěte si, jak programy Káli Basin změnily životy ostatních",
+  "success.program_label": "Program",
+  "success.story1.name": "Anna Kovácsová",
+  "success.story1.role": "Místní obyvatelka, Kövágóörs",
+  "success.story1.story": "Prostřednictvím programu Káli Workshop jsem poznala své sousedy a zjistila, kolik společných zájmů sdílíme. Nyní se scházíme měsíčně a společně pracujeme na rozvoji komunity.",
+  "success.story1.challenge": "Káli Workshop",
+  "success.story2.name": "Balaton Highlands Nonprofit s.r.o.",
+  "success.story2.role": "Místní podnik",
+  "success.story2.story": "Sponzorujeme program Káli Komunitní Zahrada a vidíme, jaký pozitivní dopad má na region. Jsme hrdí, že můžeme přispět k udržitelnému rozvoji místní komunity.",
+  "success.story2.challenge": "Káli Komunitní Zahrada"
 }
