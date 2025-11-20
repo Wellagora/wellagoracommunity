@@ -44,7 +44,7 @@ import { loadChallengesFromDatabase } from "@/services/ChallengeSponsorshipServi
 const ChallengesPage = () => {
   const navigate = useNavigate();
   const { user, loading, profile } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { currentProject } = useProject();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -57,13 +57,13 @@ const ChallengesPage = () => {
   useEffect(() => {
     const loadChallenges = async () => {
       setSponsorsLoading(true);
-      const dbChallenges = await loadChallengesFromDatabase(currentProject?.id);
+      const dbChallenges = await loadChallengesFromDatabase(currentProject?.id, language);
       setAllChallenges(dbChallenges);
       setSponsorsLoading(false);
     };
     
     loadChallenges();
-  }, [currentProject]);
+  }, [currentProject, language]);
 
   // Temporarily disable auth check to debug challenges display
   // useEffect(() => {
