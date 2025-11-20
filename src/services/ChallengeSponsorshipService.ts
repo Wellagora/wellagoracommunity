@@ -138,9 +138,12 @@ export const enrichChallengesWithSponsors = async (
 
 /**
  * Loads challenges from database and enriches with sponsorship data
+ * @param projectId - Optional project ID to filter challenges
+ * @param language - Language code for translations (e.g., 'en', 'de', 'hu')
  */
 export const loadChallengesFromDatabase = async (
-  projectId?: string
+  projectId?: string,
+  language: string = 'hu'
 ): Promise<Challenge[]> => {
   try {
     // Build the query
@@ -172,14 +175,45 @@ export const loadChallengesFromDatabase = async (
     const challenges: Challenge[] = dbChallenges.map((dbChallenge) => {
       const sponsorInfo = sponsorships.get(dbChallenge.id);
       
+      // Get translated content if available
+      const translations = dbChallenge.translations || {};
+      const currentLangTranslation = translations[language] || {};
+      
+      // Use translated title/description or fall back to original
+      const title = currentLangTranslation.title || dbChallenge.title;
+      const description = currentLangTranslation.description || dbChallenge.description;
+      
+      // Translate duration text based on language
+      let durationText = '';
+      if (dbChallenge.is_continuous) {
+        durationText = language === 'de' ? 'Laufend' : 
+                       language === 'en' ? 'Ongoing' :
+                       language === 'cs' ? 'Průběžně' :
+                       language === 'sk' ? 'Priebežne' :
+                       language === 'hr' ? 'Trajno' :
+                       language === 'ro' ? 'Continuu' :
+                       language === 'pl' ? 'Ciągły' :
+                       'Folyamatos'; // Hungarian default
+      } else {
+        const dayWord = language === 'de' ? 'Tage' :
+                        language === 'en' ? 'days' :
+                        language === 'cs' ? 'dní' :
+                        language === 'sk' ? 'dní' :
+                        language === 'hr' ? 'dana' :
+                        language === 'ro' ? 'zile' :
+                        language === 'pl' ? 'dni' :
+                        'nap'; // Hungarian default
+        durationText = `${dbChallenge.duration_days} ${dayWord}`;
+      }
+      
       return {
         id: dbChallenge.id,
-        titleKey: dbChallenge.title, // Using title directly as key
-        descriptionKey: dbChallenge.description, // Using description directly
-        longDescriptionKey: dbChallenge.description,
+        titleKey: title,
+        descriptionKey: description,
+        longDescriptionKey: description,
         category: dbChallenge.category as Challenge['category'],
         difficulty: dbChallenge.difficulty as Challenge['difficulty'],
-        durationKey: dbChallenge.is_continuous ? 'Folyamatos' : `${dbChallenge.duration_days} nap`,
+        durationKey: durationText,
         pointsReward: dbChallenge.points_base,
         participants: 0, // Default value
         completionRate: 0, // Default value
