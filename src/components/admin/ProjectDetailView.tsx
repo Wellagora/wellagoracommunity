@@ -73,7 +73,90 @@ export default function ProjectDetailView({
 }: ProjectDetailViewProps) {
   const [activeTab, setActiveTab] = useState("programs");
   const [editingProgramId, setEditingProgramId] = useState<string | null>(null);
+  const [isTranslating, setIsTranslating] = useState(false);
   const { t } = useLanguage();
+
+  const translateAllPrograms = async () => {
+    const { supabase } = await import("@/integrations/supabase/client");
+    const { toast } = await import("sonner");
+    
+    setIsTranslating(true);
+    try {
+      // Get all programs without translations or with empty translations
+      const { data: programs, error: fetchError } = await supabase
+        .from('challenge_definitions')
+        .select('*')
+        .eq('project_id', project.id)
+        .or('translations.is.null,translations.eq.{}');
+
+      if (fetchError) throw fetchError;
+
+      if (!programs || programs.length === 0) {
+        toast.success("Nincs fordítandó program", {
+          description: "Minden program már le van fordítva.",
+        });
+        setIsTranslating(false);
+        return;
+      }
+
+      toast.info("Fordítás elkezdve", {
+        description: `${programs.length} program fordítása folyamatban...`,
+      });
+
+      let successCount = 0;
+      let errorCount = 0;
+
+      for (const program of programs) {
+        try {
+          const { data: translationData, error: translationError } = await supabase.functions
+            .invoke('translate-challenge', {
+              body: { 
+                title: program.title,
+                description: program.description
+              }
+            });
+
+          if (translationError) {
+            console.error(`Translation error for ${program.id}:`, translationError);
+            errorCount++;
+            continue;
+          }
+
+          const translations = translationData?.translations || {};
+
+          // Update program with translations
+          const { error: updateError } = await supabase
+            .from('challenge_definitions')
+            .update({ translations })
+            .eq('id', program.id);
+
+          if (updateError) {
+            console.error(`Update error for ${program.id}:`, updateError);
+            errorCount++;
+          } else {
+            successCount++;
+          }
+        } catch (err) {
+          console.error(`Error processing ${program.id}:`, err);
+          errorCount++;
+        }
+      }
+
+      toast.success("Fordítás befejezve", {
+        description: `${successCount} program sikeresen lefordítva${errorCount > 0 ? `, ${errorCount} hiba történt` : ''}.`,
+      });
+
+      // Refresh the programs list
+      onRefresh();
+    } catch (error) {
+      console.error('Translation error:', error);
+      toast.error("Hiba", {
+        description: "A fordítás során hiba történt.",
+      });
+    } finally {
+      setIsTranslating(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -147,10 +230,33 @@ export default function ProjectDetailView({
         <TabsContent value="programs" className="space-y-4 mt-4">
           <Card>
             <CardHeader className="p-4 sm:p-6">
-              <CardTitle className="text-lg sm:text-xl">{t('project.new_program_title')}</CardTitle>
-              <CardDescription className="text-sm">
-                {t('project.new_program_desc')}
-              </CardDescription>
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                <div>
+                  <CardTitle className="text-lg sm:text-xl">{t('project.new_program_title')}</CardTitle>
+                  <CardDescription className="text-sm">
+                    {t('project.new_program_desc')}
+                  </CardDescription>
+                </div>
+                <Button 
+                  onClick={translateAllPrograms}
+                  disabled={isTranslating}
+                  variant="outline"
+                  size="sm"
+                  className="whitespace-nowrap"
+                >
+                  {isTranslating ? (
+                    <>
+                      <Clock className="w-4 h-4 mr-2 animate-spin" />
+                      Fordítás...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Fordítás mindenhez
+                    </>
+                  )}
+                </Button>
+              </div>
             </CardHeader>
             <CardContent className="p-4 sm:p-6 pt-0">
               <ProgramCreator 
