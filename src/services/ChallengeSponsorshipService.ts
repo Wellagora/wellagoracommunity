@@ -146,13 +146,13 @@ export const loadChallengesFromDatabase = async (
   language: string = 'hu'
 ): Promise<Challenge[]> => {
   try {
-    // Build the query
+    // Build the query - always load challenges, optionally filter by project
     let query = supabase
       .from('challenge_definitions')
       .select('*')
       .eq('is_active', true);
     
-    // Filter by project if provided
+    // Filter by project if provided, otherwise load all challenges
     if (projectId) {
       query = query.eq('project_id', projectId);
     }
@@ -165,8 +165,11 @@ export const loadChallengesFromDatabase = async (
     }
 
     if (!dbChallenges || dbChallenges.length === 0) {
+      console.log('No challenges found in database');
       return [];
     }
+    
+    console.log(`Loaded ${dbChallenges.length} challenges from database`);
 
     // Get sponsorships
     const sponsorships = await getActiveSponsorships(projectId);
@@ -176,12 +179,12 @@ export const loadChallengesFromDatabase = async (
       const sponsorInfo = sponsorships.get(dbChallenge.id);
       
       // Get translated content if available
-      const translations = dbChallenge.translations || {};
+      const translations = (dbChallenge.translations as any) || {};
       const currentLangTranslation = translations[language] || {};
       
       // Use translated title/description or fall back to original
-      const title = currentLangTranslation.title || dbChallenge.title;
-      const description = currentLangTranslation.description || dbChallenge.description;
+      const title = currentLangTranslation.title || dbChallenge.title || 'Untitled Challenge';
+      const description = currentLangTranslation.description || dbChallenge.description || '';
       
       // Translate duration text based on language
       let durationText = '';
