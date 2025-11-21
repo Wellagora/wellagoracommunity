@@ -195,7 +195,7 @@ const AdminDashboard = () => {
           // @ts-ignore - Complex type inference issue with Supabase
           const draftResult = await supabase
             .from('challenge_definitions')
-            .select('id, title, description, category, difficulty, duration_days, points_base, base_impact, validation_requirements, created_at')
+            .select('id, title, description, category, difficulty, duration_days, points_base, base_impact, validation_requirements, created_at, translations')
             .eq('is_active', false)
             .eq('project_id', valueData.project_id)
             .order('created_at', { ascending: false });
@@ -214,7 +214,7 @@ const AdminDashboard = () => {
         // @ts-ignore - Complex type inference issue with Supabase
         const pendingResult = await supabase
           .from('challenge_definitions')
-          .select('id, title, description, category, difficulty, duration_days, points_base, base_impact, validation_requirements, created_at')
+          .select('id, title, description, category, difficulty, duration_days, points_base, base_impact, validation_requirements, created_at, translations')
           .eq('is_active', false)
           .is('project_id', null)
           .order('created_at', { ascending: false });
@@ -249,7 +249,7 @@ const AdminDashboard = () => {
           // @ts-ignore - Complex type inference issue with Supabase
           const activeProgramsResult = await supabase
             .from('challenge_definitions')
-            .select('id, title, description, category, difficulty, duration_days, points_base, base_impact, validation_requirements, created_at, location, project_id')
+            .select('id, title, description, category, difficulty, duration_days, points_base, base_impact, validation_requirements, created_at, location, project_id, translations')
             .eq('is_active', true)
             .eq('project_id', projectToLoad)
             .order('created_at', { ascending: false });
@@ -269,7 +269,7 @@ const AdminDashboard = () => {
           // @ts-ignore - Complex type inference issue with Supabase
           const draftsResult = await supabase
             .from('challenge_definitions')
-            .select('id, title, description, category, difficulty, duration_days, points_base, base_impact, validation_requirements, created_at')
+            .select('id, title, description, category, difficulty, duration_days, points_base, base_impact, validation_requirements, created_at, translations')
             .eq('is_active', false)
             .eq('project_id', projectToLoad)
             .order('created_at', { ascending: false });

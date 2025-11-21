@@ -74,8 +74,19 @@ export default function ProjectDetailView({
   const [activeTab, setActiveTab] = useState("programs");
   const [editingProgramId, setEditingProgramId] = useState<string | null>(null);
   const [isTranslating, setIsTranslating] = useState(false);
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
+  const getLocalizedTitle = (item: any) => {
+    const translations = item.translations as any;
+    const langData = translations?.[language];
+    return (langData?.title as string) || item.title;
+  };
+
+  const getLocalizedDescription = (item: any) => {
+    const translations = item.translations as any;
+    const langData = translations?.[language];
+    return (langData?.description as string) || item.description;
+  };
   const translateAllPrograms = async () => {
     const { supabase } = await import("@/integrations/supabase/client");
     const { toast } = await import("sonner");
@@ -298,8 +309,8 @@ export default function ProjectDetailView({
                             </Badge>
                             <Badge variant="outline" className="text-xs">{t('project.draft_badge')}</Badge>
                           </div>
-                          <h3 className="font-semibold text-base sm:text-lg break-words">{challenge.title}</h3>
-                          <p className="text-xs sm:text-sm text-muted-foreground mt-1 line-clamp-2">{challenge.description}</p>
+                          <h3 className="font-semibold text-base sm:text-lg break-words">{getLocalizedTitle(challenge)}</h3>
+                          <p className="text-xs sm:text-sm text-muted-foreground mt-1 line-clamp-2">{getLocalizedDescription(challenge)}</p>
                         </div>
                         <div className="text-left sm:text-right sm:ml-4 shrink-0">
                           <div className="text-lg sm:text-xl font-bold text-primary">{challenge.points_base}</div>
@@ -336,7 +347,7 @@ export default function ProjectDetailView({
                       <CardHeader className="p-3 sm:p-6">
                         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
                           <div className="flex-1 min-w-0">
-                            <CardTitle className="text-sm sm:text-base line-clamp-2 break-words">{program.title}</CardTitle>
+                            <CardTitle className="text-sm sm:text-base line-clamp-2 break-words">{getLocalizedTitle(program)}</CardTitle>
                             <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2">
                             <Badge className={`${getCategoryColor(program.category)} text-xs`}>
                               {t(`category.${program.category.toLowerCase()}`)}
@@ -353,7 +364,7 @@ export default function ProjectDetailView({
                       </CardHeader>
                       <CardContent className="space-y-2 sm:space-y-3 p-3 sm:p-6 pt-0">
                         <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
-                          {program.description}
+                          {getLocalizedDescription(program)}
                         </p>
                         
                         <div className="flex items-center justify-between text-xs sm:text-sm">
