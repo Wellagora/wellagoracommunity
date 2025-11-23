@@ -240,7 +240,7 @@ const Navigation = () => {
             </Link>
             <Link to="/contact" className="group flex items-center px-2 py-1.5 text-muted-foreground hover:text-primary transition-all duration-300 font-medium text-sm">
               <span className="relative">
-                Kapcsolat
+                {t('nav.contact')}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
               </span>
             </Link>
@@ -461,7 +461,7 @@ const Navigation = () => {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <Inbox className="w-5 h-5" />
-                  <span className="font-medium">Üzenetek</span>
+                  <span className="font-medium">{t('nav.messages')}</span>
                   {unreadCount > 0 && (
                     <Badge 
                       variant="destructive" 
@@ -479,7 +479,7 @@ const Navigation = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 <Mail className="w-5 h-5" />
-                <span className="font-medium">Kapcsolat</span>
+                <span className="font-medium">{t('nav.contact')}</span>
               </Link>
               
               {/* Language Selector - Mobile */}
