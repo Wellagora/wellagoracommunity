@@ -7,10 +7,11 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { Mail, MailOpen, Inbox, Send, User, Clock, ArrowLeft } from 'lucide-react';
 import { format } from 'date-fns';
-import { hu } from 'date-fns/locale';
+import { hu, de, enUS } from 'date-fns/locale';
 import Navigation from '@/components/Navigation';
 
 interface Message {
@@ -28,6 +29,7 @@ interface Message {
 const InboxPage = () => {
   const { toast } = useToast();
   const { user } = useAuth();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
@@ -60,8 +62,8 @@ const InboxPage = () => {
     } catch (error) {
       console.error('Error loading messages:', error);
       toast({
-        title: 'Hiba',
-        description: 'Nem sikerült betölteni az üzeneteket',
+        title: t('inbox.error'),
+        description: t('inbox.error_loading'),
         variant: 'destructive'
       });
     } finally {
@@ -89,8 +91,8 @@ const InboxPage = () => {
   const sendReply = async () => {
     if (!selectedMessage || !replyText.trim()) {
       toast({
-        title: 'Hiányzó adatok',
-        description: 'Kérlek írj egy üzenetet',
+        title: t('inbox.missing_data'),
+        description: t('inbox.please_write_message'),
         variant: 'destructive'
       });
       return;
@@ -102,18 +104,18 @@ const InboxPage = () => {
       // Send general contact email as reply
       const { error } = await supabase.functions.invoke('send-general-contact', {
         body: {
-          senderName: user?.email || 'Felhasználó',
+          senderName: user?.email || t('inbox.user'),
           senderEmail: user?.email || '',
-          subject: replySubject || `Re: ${selectedMessage.subject || 'Üzenet'}`,
-          message: `Válasz a következő üzenetre:\n\n"${selectedMessage.message}"\n\n---\n\n${replyText}`
+          subject: replySubject || `Re: ${selectedMessage.subject || t('inbox.message')}`,
+          message: `${t('inbox.reply_to')}:\n\n"${selectedMessage.message}"\n\n---\n\n${replyText}`
         }
       });
 
       if (error) throw error;
 
       toast({
-        title: 'Válasz elküldve',
-        description: 'Az üzeneted sikeresen elküldtük'
+        title: t('inbox.reply_sent'),
+        description: t('inbox.reply_sent_success')
       });
 
       setReplyText('');
@@ -121,8 +123,8 @@ const InboxPage = () => {
     } catch (error: any) {
       console.error('Error sending reply:', error);
       toast({
-        title: 'Hiba',
-        description: error.message || 'Nem sikerült elküldeni az üzenetet',
+        title: t('inbox.error'),
+        description: error.message || t('inbox.error_sending'),
         variant: 'destructive'
       });
     } finally {
@@ -131,6 +133,14 @@ const InboxPage = () => {
   };
 
   const unreadCount = messages.filter(m => m.status === 'unread').length;
+  
+  const getDateLocale = () => {
+    switch (language) {
+      case 'de': return de;
+      case 'hu': return hu;
+      default: return enUS;
+    }
+  };
 
   if (loading) {
     return (
@@ -140,7 +150,7 @@ const InboxPage = () => {
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-muted-foreground">Üzenetek betöltése...</p>
+              <p className="text-muted-foreground">{t('inbox.loading')}</p>
             </div>
           </div>
         </div>
@@ -159,17 +169,17 @@ const InboxPage = () => {
             className="gap-2 mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
-            Vissza a Dashboardra
+            {t('inbox.back_to_dashboard')}
           </Button>
           
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold flex items-center gap-3">
                 <Inbox className="w-8 h-8" />
-                Bejövő üzenetek
+                {t('inbox.title')}
               </h1>
               <p className="text-muted-foreground mt-2">
-                {unreadCount > 0 ? `${unreadCount} olvasatlan üzenet` : 'Nincs olvasatlan üzenet'}
+                {unreadCount > 0 ? `${unreadCount} ${t('inbox.unread_messages')}` : t('inbox.no_unread')}
               </p>
             </div>
           </div>
@@ -179,9 +189,9 @@ const InboxPage = () => {
           <Card>
             <CardContent className="py-12 text-center">
               <Mail className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-xl font-semibold mb-2">Nincs üzeneted</h3>
+              <h3 className="text-xl font-semibold mb-2">{t('inbox.no_messages')}</h3>
               <p className="text-muted-foreground">
-                Az ide érkező üzenetek itt fognak megjelenni
+                {t('inbox.no_messages_desc')}
               </p>
             </CardContent>
           </Card>
@@ -209,12 +219,12 @@ const InboxPage = () => {
                           {message.status === 'unread' ? (
                             <Badge variant="default">
                               <Mail className="w-3 h-3 mr-1" />
-                              Új
+                              {t('inbox.new')}
                             </Badge>
                           ) : (
                             <Badge variant="secondary">
                               <MailOpen className="w-3 h-3 mr-1" />
-                              Olvasott
+                              {t('inbox.read')}
                             </Badge>
                           )}
                         </div>
@@ -231,7 +241,7 @@ const InboxPage = () => {
                       </div>
                       <div className="flex items-center gap-1 text-xs text-muted-foreground">
                         <Clock className="w-3 h-3" />
-                        {format(new Date(message.created_at), 'MMM dd', { locale: hu })}
+                        {format(new Date(message.created_at), 'MMM dd', { locale: getDateLocale() })}
                       </div>
                     </div>
                   </CardHeader>
@@ -249,27 +259,27 @@ const InboxPage = () => {
               {selectedMessage ? (
                 <Card>
                   <CardHeader>
-                    <CardTitle>Üzenet részletei</CardTitle>
+                    <CardTitle>{t('inbox.message_details')}</CardTitle>
                     <CardDescription>
-                      {format(new Date(selectedMessage.created_at), 'yyyy. MMMM dd. HH:mm', { locale: hu })}
+                      {format(new Date(selectedMessage.created_at), 'yyyy. MMMM dd. HH:mm', { locale: getDateLocale() })}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <label className="text-sm font-medium">Feladó</label>
+                      <label className="text-sm font-medium">{t('inbox.sender')}</label>
                       <p className="text-sm mt-1">{selectedMessage.sender_name}</p>
                       <p className="text-sm text-muted-foreground">{selectedMessage.sender_email}</p>
                     </div>
 
                     {selectedMessage.subject && (
                       <div>
-                        <label className="text-sm font-medium">Tárgy</label>
+                        <label className="text-sm font-medium">{t('inbox.subject')}</label>
                         <p className="text-sm mt-1">{selectedMessage.subject}</p>
                       </div>
                     )}
 
                     <div>
-                      <label className="text-sm font-medium">Üzenet</label>
+                      <label className="text-sm font-medium">{t('inbox.message')}</label>
                       <p className="text-sm whitespace-pre-wrap mt-2 p-3 bg-muted rounded-md">
                         {selectedMessage.message}
                       </p>
@@ -278,11 +288,11 @@ const InboxPage = () => {
                     <div className="pt-4 border-t space-y-4">
                       <h4 className="text-sm font-medium flex items-center gap-2">
                         <Send className="w-4 h-4" />
-                        Válasz küldése
+                        {t('inbox.send_reply')}
                       </h4>
                       <div className="space-y-2">
                         <Input
-                          placeholder="Tárgy"
+                          placeholder={t('inbox.subject')}
                           value={replySubject}
                           onChange={(e) => setReplySubject(e.target.value)}
                         />
@@ -291,7 +301,7 @@ const InboxPage = () => {
                         <Textarea
                           value={replyText}
                           onChange={(e) => setReplyText(e.target.value)}
-                          placeholder="Írd meg a válaszodat..."
+                          placeholder={t('inbox.write_reply')}
                           rows={4}
                         />
                       </div>
@@ -303,12 +313,12 @@ const InboxPage = () => {
                         {sendingReply ? (
                           <>
                             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                            Küldés...
+                            {t('inbox.sending')}
                           </>
                         ) : (
                           <>
                             <Send className="w-4 h-4 mr-2" />
-                            Válasz küldése
+                            {t('inbox.send_reply')}
                           </>
                         )}
                       </Button>
@@ -316,7 +326,7 @@ const InboxPage = () => {
 
                     {selectedMessage.read_at && (
                       <div className="text-xs text-muted-foreground pt-2 border-t">
-                        Olvasva: {format(new Date(selectedMessage.read_at), 'yyyy. MMMM dd. HH:mm', { locale: hu })}
+                        {t('inbox.read_at')}: {format(new Date(selectedMessage.read_at), 'yyyy. MMMM dd. HH:mm', { locale: getDateLocale() })}
                       </div>
                     )}
                   </CardContent>
@@ -326,7 +336,7 @@ const InboxPage = () => {
                   <CardContent className="py-12 text-center">
                     <Mail className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                     <p className="text-muted-foreground">
-                      Válassz egy üzenetet a részletek megtekintéséhez
+                      {t('inbox.select_message')}
                     </p>
                   </CardContent>
                 </Card>
