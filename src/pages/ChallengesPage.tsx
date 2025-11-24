@@ -282,7 +282,7 @@ const ChallengesPage = () => {
                   />
                   <div className="absolute top-2 right-2">
                     <Badge className={`${getDifficultyColor(challenge.difficulty)} text-xs font-medium px-3 py-1 rounded-full backdrop-blur-sm`}>
-                      {challenge.difficulty}
+                      {t(`challenges.difficulty.${challenge.difficulty}`)}
                     </Badge>
                   </div>
                 </div>
@@ -294,7 +294,7 @@ const ChallengesPage = () => {
                       {getCategoryIcon(challenge.category)}
                     </div>
                     <Badge className={`${getDifficultyColor(challenge.difficulty)} text-xs font-medium px-3 py-1 rounded-full`}>
-                      {challenge.difficulty}
+                      {t(`challenges.difficulty.${challenge.difficulty}`)}
                     </Badge>
                   </div>
                 )}
