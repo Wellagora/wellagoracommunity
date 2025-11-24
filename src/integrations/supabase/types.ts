@@ -565,6 +565,7 @@ export type Database = {
           region_name: string
           settings: Json | null
           slug: string
+          translations: Json | null
           updated_at: string | null
           villages: string[] | null
         }
@@ -579,6 +580,7 @@ export type Database = {
           region_name: string
           settings?: Json | null
           slug: string
+          translations?: Json | null
           updated_at?: string | null
           villages?: string[] | null
         }
@@ -593,6 +595,7 @@ export type Database = {
           region_name?: string
           settings?: Json | null
           slug?: string
+          translations?: Json | null
           updated_at?: string | null
           villages?: string[] | null
         }
