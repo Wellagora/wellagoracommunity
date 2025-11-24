@@ -280,5 +280,19 @@
   "challenges.kaliMuhely.steps.participation": "Účast na workshopu",
   "challenges.kaliMuhely.steps.sharing": "Sdílejte své zkušenosti",
   "challenges.kaliMuhely.tips.bring_ideas": "Přineste své nápady",
-  "challenges.kaliMuhely.tips.connect": "Spojte se se sousedy"
+  "challenges.kaliMuhely.tips.connect": "Spojte se se sousedy",
+  "community.hero.subtitle": "Spojte se, sdílejte zkušenosti a spolupracujte s šampiony udržitelnosti po celém světě",
+  "community.tabs.discussions": "Diskuse",
+  "community.tabs.success_stories": "Příběhy úspěchu",
+  "community.tabs.stories_short": "Úspěchy",
+  "community.share_thoughts": "Sdílejte své myšlenky s komunitou...",
+  "community.image": "Obrázek",
+  "community.result": "Výsledek",
+  "community.send": "Odeslat",
+  "community.no_discussions": "Žádné diskuse",
+  "community.no_stories": "Žádné příběhy úspěchu",
+  "community.quick_actions": "Rychlé akce",
+  "community.start_discussion": "Začít diskusi",
+  "community.share_success": "Sdílet úspěch",
+  "community.find_groups": "Najít skupiny"
 }

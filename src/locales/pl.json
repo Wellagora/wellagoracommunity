@@ -223,5 +223,19 @@
   "challenges.kaliMuhely.steps.participation": "Udział w warsztacie",
   "challenges.kaliMuhely.steps.sharing": "Podziel się swoimi doświadczeniami",
   "challenges.kaliMuhely.tips.bring_ideas": "Przynieś swoje pomysły",
-  "challenges.kaliMuhely.tips.connect": "Poznaj sąsiadów"
+  "challenges.kaliMuhely.tips.connect": "Poznaj sąsiadów",
+  "community.hero.subtitle": "Łącz się, dziel doświadczeniami i współpracuj z mistrzami zrównoważonego rozwoju na całym świecie",
+  "community.tabs.discussions": "Dyskusje",
+  "community.tabs.success_stories": "Historie Sukcesu",
+  "community.tabs.stories_short": "Sukcesy",
+  "community.share_thoughts": "Podziel się swoimi myślami ze społecznością...",
+  "community.image": "Obraz",
+  "community.result": "Wynik",
+  "community.send": "Wyślij",
+  "community.no_discussions": "Brak dyskusji",
+  "community.no_stories": "Brak historii sukcesu",
+  "community.quick_actions": "Szybkie działania",
+  "community.start_discussion": "Rozpocznij dyskusję",
+  "community.share_success": "Udostępnij sukces",
+  "community.find_groups": "Znajdź grupy"
 }
