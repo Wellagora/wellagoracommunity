@@ -1,4 +1,8 @@
 // Challenge data for the sustainability platform
+import communityGarden from '@/assets/community-garden.jpg';
+import communityCelebration from '@/assets/community-celebration.jpg';
+import communityChallenges from '@/assets/community-challenges.jpg';
+
 export interface Challenge {
   id: string;
   titleKey: string;
@@ -44,6 +48,7 @@ export const challenges: Challenge[] = [
     pointsReward: 150,
     participants: 0,
     completionRate: 0,
+    imageUrl: communityChallenges,
     stepsKeys: [
       "challenges.kaliMuhely.steps.registration",
       "challenges.kaliMuhely.steps.participation",
@@ -66,6 +71,7 @@ export const challenges: Challenge[] = [
     pointsReward: 200,
     participants: 0,
     completionRate: 0,
+    imageUrl: communityChallenges,
     stepsKeys: [
       "challenges.tudasHid.steps.mentor",
       "challenges.tudasHid.steps.share_skills",
@@ -88,6 +94,7 @@ export const challenges: Challenge[] = [
     pointsReward: 180,
     participants: 0,
     completionRate: 0,
+    imageUrl: communityGarden,
     stepsKeys: [
       "challenges.kaliKozosKert.steps.join",
       "challenges.kaliKozosKert.steps.cultivate",
@@ -110,6 +117,7 @@ export const challenges: Challenge[] = [
     pointsReward: 120,
     participants: 0,
     completionRate: 0,
+    imageUrl: communityChallenges,
     stepsKeys: [
       "challenges.szomszedSegit.steps.register",
       "challenges.szomszedSegit.steps.offer_help",
@@ -132,6 +140,7 @@ export const challenges: Challenge[] = [
     pointsReward: 140,
     participants: 0,
     completionRate: 0,
+    imageUrl: communityCelebration,
     stepsKeys: [
       "challenges.kaliTortenetek.steps.gather",
       "challenges.kaliTortenetek.steps.share_stories",
@@ -155,6 +164,7 @@ export const challenges: Challenge[] = [
     pointsReward: 160,
     participants: 0,
     completionRate: 0,
+    imageUrl: communityCelebration,
     stepsKeys: [
       "challenges.kaliKonyhak.steps.attend",
       "challenges.kaliKonyhak.steps.cook_together",
@@ -177,6 +187,7 @@ export const challenges: Challenge[] = [
     pointsReward: 200,
     participants: 0,
     completionRate: 0,
+    imageUrl: communityChallenges,
     stepsKeys: [
       "challenges.mestersegekEjszakaja.steps.register",
       "challenges.mestersegekEjszakaja.steps.learn_craft",
@@ -199,6 +210,7 @@ export const challenges: Challenge[] = [
     pointsReward: 130,
     participants: 0,
     completionRate: 0,
+    imageUrl: communityCelebration,
     stepsKeys: [
       "challenges.kaliTortenetekTuz.steps.gather",
       "challenges.kaliTortenetekTuz.steps.share",
@@ -221,6 +233,7 @@ export const challenges: Challenge[] = [
     pointsReward: 170,
     participants: 0,
     completionRate: 0,
+    imageUrl: communityCelebration,
     stepsKeys: [
       "challenges.szezonalisUnnepek.steps.participate",
       "challenges.szezonalisUnnepek.steps.celebrate",
@@ -243,6 +256,7 @@ export const challenges: Challenge[] = [
     pointsReward: 140,
     participants: 0,
     completionRate: 0,
+    imageUrl: communityChallenges,
     stepsKeys: [
       "challenges.kaliCsereBere.steps.bring_items",
       "challenges.kaliCsereBere.steps.exchange",
@@ -265,6 +279,7 @@ export const challenges: Challenge[] = [
     pointsReward: 190,
     participants: 0,
     completionRate: 0,
+    imageUrl: communityChallenges,
     stepsKeys: [
       "challenges.idobank.steps.register",
       "challenges.idobank.steps.offer_service",
