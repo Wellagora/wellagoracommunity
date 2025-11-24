@@ -650,6 +650,8 @@
   "challenges.sponsor_challenge": "Programm sponsern",
   "challenges.event_type.continuous": "Laufendes Programm",
   "challenges.event_type.scheduled": "Geplantes Ereignis",
+  "challenges.event_starts": "Beginnt",
+  "challenges.event_ends": "Endet",
   "challenges.join_and_sponsor": "Teilnehmen und Sponsern",
   "challenges.join_and_support": "Teilnehmen und Unterstützen",
   "challenges.no_challenges_found": "Keine Herausforderungen gefunden",
