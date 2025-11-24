@@ -64,7 +64,7 @@ interface RegionalChallenge extends Omit<Challenge, 'sponsor'> {
 }
 
 const RegionalHub = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { toast } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -327,11 +327,17 @@ const RegionalHub = () => {
             <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
               <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
               <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-foreground">
-                {currentProject.name}
+                {(() => {
+                  const translations = (currentProject as any).translations;
+                  return translations?.[language]?.name || currentProject.name;
+                })()}
               </h1>
             </div>
             <p className="text-sm sm:text-base md:text-xl text-muted-foreground max-w-3xl mx-auto mb-4 sm:mb-6 px-4">
-              {currentProject.description || t('regional.subtitle_selected')}
+              {(() => {
+                const translations = (currentProject as any).translations;
+                return translations?.[language]?.description || currentProject.description || t('regional.subtitle_selected');
+              })()}
             </p>
           </div>
           
