@@ -158,7 +158,7 @@ export const OrganizationChallengeStats = () => {
               </div>
               <div>
                 <p className="text-2xl font-bold">{totalStats.totalEmployees}</p>
-                <p className="text-sm text-muted-foreground">{t('organization.active_employees')}</p>
+                <p className="text-sm text-muted-foreground">{t('organization.employee_participation')}</p>
               </div>
             </div>
           </CardContent>

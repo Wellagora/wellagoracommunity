@@ -412,7 +412,7 @@ const OrganizationDashboard = () => {
         {/* Profile Card */}
         <Card className="bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20 hover:shadow-glow transition-all duration-300">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base sm:text-lg">Profilom</CardTitle>
+            <CardTitle className="text-base sm:text-lg">{t('organization.my_profile')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center space-x-3">
@@ -427,9 +427,9 @@ const OrganizationDashboard = () => {
                   {profile?.first_name} {profile?.last_name}
                 </h3>
                 <p className="text-xs text-primary capitalize">
-                  {profile?.user_role === 'business' ? 'Cég' :
-                   profile?.user_role === 'government' ? 'Önkormányzat' :
-                   profile?.user_role === 'ngo' ? 'Civil szervezet' : profile?.user_role}
+                  {profile?.user_role === 'business' ? t('organization.role_business') :
+                   profile?.user_role === 'government' ? t('organization.role_government') :
+                   profile?.user_role === 'ngo' ? t('organization.role_ngo') : profile?.user_role}
                 </p>
                 {profile?.organization && (
                   <div className="flex items-center text-xs text-muted-foreground mt-0.5">
@@ -442,7 +442,7 @@ const OrganizationDashboard = () => {
             <Link to="/profile" className="block">
               <Button size="sm" className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-xs">
                 <Edit3 className="w-3 h-3 mr-1.5" />
-                Profil szerkesztése
+                {t('organization.edit_profile')}
               </Button>
             </Link>
           </CardContent>
