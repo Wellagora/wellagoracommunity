@@ -333,5 +333,6 @@
   "challenges.kaliCsereBere.title": "Káli Výmenný trh",
   "challenges.kaliCsereBere.description": "Mesačný trh pre výmenu tovaru",
   "challenges.idobank.title": "Časová banka",
-  "challenges.idobank.description": "Výmena služieb založená na čase namiesto peňazí"
+  "challenges.idobank.description": "Výmena služieb založená na čase namiesto peňazí",
+  "regional.no_description": "Žiadny popis nie je k dispozícii"
 }

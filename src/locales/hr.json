@@ -333,5 +333,6 @@
   "challenges.kaliCsereBere.title": "Káli Tržnica razmjene",
   "challenges.kaliCsereBere.description": "Mjesečna tržnica za razmjenu robe",
   "challenges.idobank.title": "Vremenska banka",
-  "challenges.idobank.description": "Razmjena usluga temeljena na vremenu umjesto novca"
+  "challenges.idobank.description": "Razmjena usluga temeljena na vremenu umjesto novca",
+  "regional.no_description": "Nema dostupnog opisa"
 }
