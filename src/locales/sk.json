@@ -334,5 +334,22 @@
   "challenges.kaliCsereBere.description": "Mesačný trh pre výmenu tovaru",
   "challenges.idobank.title": "Časová banka",
   "challenges.idobank.description": "Výmena služieb založená na čase namiesto peňazí",
-  "regional.no_description": "Žiadny popis nie je k dispozícii"
+  "regional.no_description": "Žiadny popis nie je k dispozícii",
+  "organization.feature_regional_visibility": "Regionálna viditeľnosť",
+  "organization.feature_logo_page": "Logo na stránke výzvy",
+  "organization.feature_monthly_report": "Mesačná správa",
+  "organization.feature_national_visibility": "Národná viditeľnosť",
+  "organization.feature_featured_sponsor": "Vybraný sponzor",
+  "organization.feature_weekly_analytics": "Týždenné analýzy",
+  "organization.feature_social_mentions": "Zmienky na sociálnych médiách",
+  "organization.feature_premium_visibility": "Prémiová viditeľnosť",
+  "organization.feature_top_placement": "Najvyššie umiestnenie",
+  "organization.feature_daily_insights": "Denné prehľady",
+  "organization.feature_press_release": "Tlačová správa",
+  "organization.feature_cobranding": "Príležitosti spoločného brandingu",
+  "organization.feature_exclusive_partnership": "Exkluzívne partnerstvo",
+  "organization.feature_campaign_custom": "Prispôsobenie kampane",
+  "organization.feature_realtime_analytics": "Analýzy v reálnom čase",
+  "organization.feature_dedicated_support": "Vyhradená podpora",
+  "organization.feature_impact_report": "Správa o dopade"
 }

@@ -332,5 +332,22 @@
   "challenges.kaliCsereBere.description": "Piață lunară pentru schimbul de bunuri",
   "challenges.idobank.title": "Banca de Timp",
   "challenges.idobank.description": "Schimbul de servicii bazat pe timp în loc de bani",
-  "regional.no_description": "Nicio descriere disponibilă"
+  "regional.no_description": "Nicio descriere disponibilă",
+  "organization.feature_regional_visibility": "Vizibilitate regională",
+  "organization.feature_logo_page": "Logo pe pagina provocării",
+  "organization.feature_monthly_report": "Raport lunar",
+  "organization.feature_national_visibility": "Vizibilitate națională",
+  "organization.feature_featured_sponsor": "Sponsor recomandat",
+  "organization.feature_weekly_analytics": "Analize săptămânale",
+  "organization.feature_social_mentions": "Mențiuni pe rețelele sociale",
+  "organization.feature_premium_visibility": "Vizibilitate premium",
+  "organization.feature_top_placement": "Plasare de top",
+  "organization.feature_daily_insights": "Perspective zilnice",
+  "organization.feature_press_release": "Comunicat de presă",
+  "organization.feature_cobranding": "Oportunități de co-branding",
+  "organization.feature_exclusive_partnership": "Parteneriat exclusiv",
+  "organization.feature_campaign_custom": "Personalizare campanie",
+  "organization.feature_realtime_analytics": "Analize în timp real",
+  "organization.feature_dedicated_support": "Suport dedicat",
+  "organization.feature_impact_report": "Raport de impact"
 }
