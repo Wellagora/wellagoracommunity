@@ -19,33 +19,6 @@ interface ChallengeSponsorshipModalProps {
   region: string;
 }
 
-const packageOptions = [
-  {
-    value: 'bronze',
-    name: 'Bronz',
-    credits: 10,
-    benefits: ['Logo megjelenítés', 'Cég neve a kihíváson', 'Egyszerű említés']
-  },
-  {
-    value: 'silver',
-    name: 'Ezüst',
-    credits: 20,
-    benefits: ['Logo megjelenítés', 'Kiemelt cég név', 'Profilra linkelt név', 'ESG beszámoló megemlítés']
-  },
-  {
-    value: 'gold',
-    name: 'Arany',
-    credits: 40,
-    benefits: ['Nagy logo', 'Kiemelt pozíció', 'Teljes profilra linkelt kártya', 'ESG jelentés részletes adat', 'Social media említés']
-  },
-  {
-    value: 'platinum',
-    name: 'Platinum',
-    credits: 100,
-    benefits: ['Premium logo', 'Exkluzív szponzor státusz', 'Dedikált landing page', 'Teljes ESG marketing csomag', 'Média megjelenések']
-  }
-];
-
 const ChallengeSponsorshipModal = ({
   open,
   onOpenChange,
@@ -59,6 +32,54 @@ const ChallengeSponsorshipModal = ({
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const { t } = useLanguage();
+
+  const packageOptions = [
+    {
+      value: 'bronze',
+      name: t('sponsorship.package_bronze'),
+      credits: 10,
+      benefits: [
+        t('sponsorship.benefit_bronze_1'),
+        t('sponsorship.benefit_bronze_2'),
+        t('sponsorship.benefit_bronze_3')
+      ]
+    },
+    {
+      value: 'silver',
+      name: t('sponsorship.package_silver'),
+      credits: 20,
+      benefits: [
+        t('sponsorship.benefit_silver_1'),
+        t('sponsorship.benefit_silver_2'),
+        t('sponsorship.benefit_silver_3'),
+        t('sponsorship.benefit_silver_4')
+      ]
+    },
+    {
+      value: 'gold',
+      name: t('sponsorship.package_gold'),
+      credits: 40,
+      benefits: [
+        t('sponsorship.benefit_gold_1'),
+        t('sponsorship.benefit_gold_2'),
+        t('sponsorship.benefit_gold_3'),
+        t('sponsorship.benefit_gold_4'),
+        t('sponsorship.benefit_gold_5')
+      ]
+    },
+    {
+      value: 'platinum',
+      name: t('sponsorship.package_platinum'),
+      credits: 100,
+      benefits: [
+        t('sponsorship.benefit_platinum_1'),
+        t('sponsorship.benefit_platinum_2'),
+        t('sponsorship.benefit_platinum_3'),
+        t('sponsorship.benefit_platinum_4'),
+        t('sponsorship.benefit_platinum_5')
+      ]
+    }
+  ];
 
   // Load available credits
   useEffect(() => {
