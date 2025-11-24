@@ -223,5 +223,19 @@
   "challenges.kaliMuhely.steps.participation": "Sudjelovanje u radionici",
   "challenges.kaliMuhely.steps.sharing": "Podijelite svoja iskustva",
   "challenges.kaliMuhely.tips.bring_ideas": "Donesite svoje ideje",
-  "challenges.kaliMuhely.tips.connect": "Povežite se sa susjedima"
+  "challenges.kaliMuhely.tips.connect": "Povežite se sa susjedima",
+  "community.hero.subtitle": "Povežite se, podijelite iskustva i surađujte s prvacima održivosti diljem svijeta",
+  "community.tabs.discussions": "Rasprave",
+  "community.tabs.success_stories": "Priče o uspjehu",
+  "community.tabs.stories_short": "Uspjesi",
+  "community.share_thoughts": "Podijelite svoje misli sa zajednicom...",
+  "community.image": "Slika",
+  "community.result": "Rezultat",
+  "community.send": "Pošalji",
+  "community.no_discussions": "Nema rasprava",
+  "community.no_stories": "Nema priča o uspjehu",
+  "community.quick_actions": "Brze akcije",
+  "community.start_discussion": "Pokreni raspravu",
+  "community.share_success": "Podijeli uspjeh",
+  "community.find_groups": "Pronađi grupe"
 }
