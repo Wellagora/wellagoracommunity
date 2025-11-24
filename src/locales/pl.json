@@ -333,5 +333,6 @@
   "challenges.kaliCsereBere.title": "Káli Targ Wymiany",
   "challenges.kaliCsereBere.description": "Miesięczny targ do wymiany towarów",
   "challenges.idobank.title": "Bank Czasu",
-  "challenges.idobank.description": "Wymiana usług oparta na czasie zamiast pieniędzy"
+  "challenges.idobank.description": "Wymiana usług oparta na czasie zamiast pieniędzy",
+  "regional.no_description": "Brak dostępnego opisu"
 }

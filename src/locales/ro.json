@@ -331,5 +331,6 @@
   "challenges.kaliCsereBere.title": "Piața de Schimb Káli",
   "challenges.kaliCsereBere.description": "Piață lunară pentru schimbul de bunuri",
   "challenges.idobank.title": "Banca de Timp",
-  "challenges.idobank.description": "Schimbul de servicii bazat pe timp în loc de bani"
+  "challenges.idobank.description": "Schimbul de servicii bazat pe timp în loc de bani",
+  "regional.no_description": "Nicio descriere disponibilă"
 }
