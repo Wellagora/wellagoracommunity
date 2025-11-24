@@ -13,6 +13,7 @@ import ModernRegionalVisualization from '@/components/matching/ModernRegionalVis
 import StakeholderFilters from '@/components/matching/StakeholderFilters';
 import ChallengeSponsorshipModal from '@/components/challenges/ChallengeSponsorshipModal';
 import ContactModal from '@/components/regional/ContactModal';
+import LanguageSelector from '@/components/LanguageSelector';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -324,6 +325,9 @@ const RegionalHub = () => {
             <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-foreground">
               {currentProject.name}
             </h1>
+            <div className="ml-auto">
+              <LanguageSelector />
+            </div>
           </div>
           <p className="text-sm sm:text-base md:text-xl text-muted-foreground max-w-3xl mx-auto mb-4 sm:mb-6 px-4">
             {currentProject.description || t('regional.subtitle_selected')}
