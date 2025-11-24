@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -39,7 +39,7 @@ const Community = () => {
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("discussions");
   const [newPost, setNewPost] = useState("");
-  const textareaRef = useState<HTMLTextAreaElement | null>(null)[0];
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Redirect to auth if not logged in
   useEffect(() => {
@@ -111,7 +111,7 @@ const Community = () => {
               {/* New Post Input */}
               <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-background/50 rounded-xl sm:rounded-2xl border border-border/50">
                 <Textarea
-                  ref={(el) => (textareaRef as any) = el}
+                  ref={textareaRef}
                   placeholder={t('community.share_thoughts')}
                   value={newPost}
                   onChange={(e) => setNewPost(e.target.value)}
@@ -161,7 +161,7 @@ const Community = () => {
                   onClick={() => {
                     setActiveTab("discussions");
                     setTimeout(() => {
-                      (textareaRef as any)?.focus();
+                      textareaRef.current?.focus();
                     }, 100);
                   }}
                   className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground shadow-premium hover:shadow-glow transition-all duration-300 text-xs sm:text-sm"
