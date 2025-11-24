@@ -517,12 +517,30 @@ const RegionalHub = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {regionalChallenges.map((challenge) => (
-                    <Card key={challenge.id} className="hover:shadow-lg transition-all border-2 hover:border-primary/50">
-                      <CardHeader>
-                        <div className="flex justify-between items-start mb-2">
-                          <Badge className="bg-primary/20 text-primary">{challenge.category}</Badge>
-                          <Badge variant="outline">{challenge.difficulty}</Badge>
+                    <Card key={challenge.id} className="hover:shadow-lg transition-all border-2 hover:border-primary/50 overflow-hidden">
+                      {challenge.imageUrl && (
+                        <div className="relative h-40 w-full overflow-hidden">
+                          <img 
+                            src={challenge.imageUrl} 
+                            alt={t(challenge.titleKey)}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                          <div className="absolute top-2 left-2 right-2 flex justify-between items-start">
+                            <Badge className="bg-primary/20 text-primary backdrop-blur-sm">{challenge.category}</Badge>
+                            <Badge variant="outline" className="backdrop-blur-sm bg-background/80">{challenge.difficulty}</Badge>
+                          </div>
                         </div>
+                      )}
+                      <CardHeader>
+                        {!challenge.imageUrl && (
+                          <div className="flex justify-between items-start mb-2">
+                            <Badge className="bg-primary/20 text-primary">{challenge.category}</Badge>
+                            <Badge variant="outline">{challenge.difficulty}</Badge>
+                          </div>
+                        )}
                         <CardTitle className="text-lg">{t(challenge.titleKey)}</CardTitle>
                       </CardHeader>
                       <CardContent>
