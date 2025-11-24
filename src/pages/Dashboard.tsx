@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -8,6 +9,7 @@ import { User, Edit3, Building2 } from "lucide-react";
 
 const Dashboard = () => {
   const { user, profile } = useAuth();
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -23,7 +25,7 @@ const Dashboard = () => {
           {/* Profile Card */}
           <Card className="bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20 hover:shadow-glow transition-all duration-300">
             <CardHeader>
-              <CardTitle className="text-lg">Profilom</CardTitle>
+              <CardTitle className="text-lg">{t('organization.my_profile')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-4">
@@ -38,10 +40,10 @@ const Dashboard = () => {
                     {profile?.first_name} {profile?.last_name}
                   </h3>
                   <p className="text-sm text-primary capitalize">
-                    {profile?.user_role === 'citizen' ? 'Magánszemély' : 
-                     profile?.user_role === 'business' ? 'Cég' :
-                     profile?.user_role === 'government' ? 'Önkormányzat' :
-                     profile?.user_role === 'ngo' ? 'Civil szervezet' : profile?.user_role}
+                    {profile?.user_role === 'citizen' ? t('organization.role_citizen') : 
+                     profile?.user_role === 'business' ? t('organization.role_business') :
+                     profile?.user_role === 'government' ? t('organization.role_government') :
+                     profile?.user_role === 'ngo' ? t('organization.role_ngo') : profile?.user_role}
                   </p>
                   {profile?.organization && (
                     <div className="flex items-center text-xs text-muted-foreground mt-1">
@@ -54,7 +56,7 @@ const Dashboard = () => {
               <Link to="/profile" className="block">
                 <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90">
                   <Edit3 className="w-4 h-4 mr-2" />
-                  Profil szerkesztése
+                  {t('organization.edit_profile')}
                 </Button>
               </Link>
             </CardContent>
