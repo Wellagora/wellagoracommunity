@@ -39,6 +39,7 @@ const Community = () => {
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("discussions");
   const [newPost, setNewPost] = useState("");
+  const textareaRef = useState<HTMLTextAreaElement | null>(null)[0];
 
   // Redirect to auth if not logged in
   useEffect(() => {
@@ -110,6 +111,7 @@ const Community = () => {
               {/* New Post Input */}
               <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-background/50 rounded-xl sm:rounded-2xl border border-border/50">
                 <Textarea
+                  ref={(el) => (textareaRef as any) = el}
                   placeholder={t('community.share_thoughts')}
                   value={newPost}
                   onChange={(e) => setNewPost(e.target.value)}
@@ -155,13 +157,29 @@ const Community = () => {
             <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-4 sm:p-5 lg:p-6">
               <h2 className="text-base sm:text-lg lg:text-xl font-bold text-foreground mb-4 sm:mb-5 lg:mb-6">{t('community.quick_actions')}</h2>
               <div className="space-y-2 sm:space-y-3">
-                <Button className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground shadow-premium hover:shadow-glow transition-all duration-300 text-xs sm:text-sm">
+                <Button 
+                  onClick={() => {
+                    setActiveTab("discussions");
+                    setTimeout(() => {
+                      (textareaRef as any)?.focus();
+                    }, 100);
+                  }}
+                  className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground shadow-premium hover:shadow-glow transition-all duration-300 text-xs sm:text-sm"
+                >
                   {t('community.start_discussion')}
                 </Button>
-                <Button variant="outline" className="w-full border-border/50 hover:bg-card/50 text-xs sm:text-sm">
+                <Button 
+                  onClick={() => setActiveTab("stories")}
+                  variant="outline" 
+                  className="w-full border-border/50 hover:bg-card/50 text-xs sm:text-sm"
+                >
                   {t('community.share_success')}
                 </Button>
-                <Button variant="outline" className="w-full border-border/50 hover:bg-card/50 text-xs sm:text-sm">
+                <Button 
+                  onClick={() => navigate("/explore-region")}
+                  variant="outline" 
+                  className="w-full border-border/50 hover:bg-card/50 text-xs sm:text-sm"
+                >
                   {t('community.find_groups')}
                 </Button>
               </div>
