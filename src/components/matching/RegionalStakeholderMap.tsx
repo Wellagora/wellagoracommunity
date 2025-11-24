@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Stakeholder {
   id: string;
@@ -41,6 +42,7 @@ const RegionalStakeholderMap = ({
   const markersRef = useRef<L.Marker[]>([]);
   const [selectedStakeholder, setSelectedStakeholder] = useState<Stakeholder | null>(null);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const getStakeholderColor = (type: string) => {
     switch (type) {
@@ -207,7 +209,7 @@ const RegionalStakeholderMap = ({
                   <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"/>
                 </svg>
               </div>
-              <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">Magánszemély</span>
+              <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">{t('explore.type_citizen')}</span>
             </div>
             <div className="flex items-center gap-3 group cursor-pointer hover:translate-x-1 transition-transform">
               <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'rgba(59, 130, 246, 1)' }}>
@@ -215,7 +217,7 @@ const RegionalStakeholderMap = ({
                   <path d="M12 7V3H2v18h20V7H12z"/>
                 </svg>
               </div>
-              <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">Cég</span>
+              <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">{t('explore.type_business')}</span>
             </div>
             <div className="flex items-center gap-3 group cursor-pointer hover:translate-x-1 transition-transform">
               <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'rgba(239, 68, 68, 1)' }}>
@@ -223,7 +225,7 @@ const RegionalStakeholderMap = ({
                   <path d="M12 1L2 6v2h20V6M10 10v9h4v-9"/>
                 </svg>
               </div>
-              <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">Önkormányzat</span>
+              <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">{t('explore.type_government')}</span>
             </div>
             <div className="flex items-center gap-3 group cursor-pointer hover:translate-x-1 transition-transform">
               <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'rgba(245, 158, 11, 1)' }}>
@@ -231,7 +233,7 @@ const RegionalStakeholderMap = ({
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10"/>
                 </svg>
               </div>
-              <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">Civil szervezet</span>
+              <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">{t('explore.type_ngo')}</span>
             </div>
           </div>
         </div>
@@ -285,13 +287,13 @@ const RegionalStakeholderMap = ({
                 className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
                 onClick={() => {
                   toast({
-                    title: "Kapcsolatfelvétel kezdeményezése",
-                    description: `Hamarosan felveheted a kapcsolatot ezzel: ${selectedStakeholder.name}`,
+                    title: t('explore.contact_initiated'),
+                    description: t('explore.contact_initiated_desc').replace('{{name}}', selectedStakeholder.name),
                   });
                   setSelectedStakeholder(null);
                 }}
               >
-                Kapcsolatfelvétel
+                {t('explore.contact')}
               </Button>
             </div>
           </div>

@@ -149,10 +149,10 @@ const ExploreRegionPage = () => {
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'citizen': return 'Magánszemély';
-      case 'business': return 'Vállalkozás';
-      case 'government': return 'Önkormányzat';
-      case 'ngo': return 'Civil szervezet';
+      case 'citizen': return t('explore.type_citizen');
+      case 'business': return t('explore.type_business');
+      case 'government': return t('explore.type_government');
+      case 'ngo': return t('explore.type_ngo');
       default: return type;
     }
   };
@@ -184,13 +184,13 @@ const ExploreRegionPage = () => {
           <div className="flex items-center justify-center gap-3 mb-4">
             <MapPin className="w-8 h-8 text-primary" />
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">
-              Fedezd Fel a Régiót
+              {t('explore.title')}
             </h1>
           </div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             {currentProject 
-              ? `Ismerd meg a ${currentProject.region_name} fenntarthatósági közösségének tagjait`
-              : 'Ismerd meg a fenntarthatósági közösség tagjait'}
+              ? t('explore.subtitle_with_region').replace('{{region}}', currentProject.region_name)
+              : t('explore.subtitle')}
           </p>
         </motion.div>
 
@@ -206,7 +206,7 @@ const ExploreRegionPage = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <Input
               type="text"
-              placeholder="Keresés név, szervezet vagy leírás alapján..."
+              placeholder={t('explore.search_placeholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -221,7 +221,7 @@ const ExploreRegionPage = () => {
               onClick={() => setSelectedType('all')}
             >
               <Users className="w-4 h-4 mr-2" />
-              Összes
+              {t('explore.all')}
             </Button>
             <Button
               variant={selectedType === 'citizen' ? 'default' : 'outline'}
@@ -229,7 +229,7 @@ const ExploreRegionPage = () => {
               onClick={() => setSelectedType('citizen')}
             >
               <User className="w-4 h-4 mr-2" />
-              Magánszemélyek
+              {t('explore.citizens')}
             </Button>
             <Button
               variant={selectedType === 'business' ? 'default' : 'outline'}
@@ -237,7 +237,7 @@ const ExploreRegionPage = () => {
               onClick={() => setSelectedType('business')}
             >
               <Building2 className="w-4 h-4 mr-2" />
-              Vállalkozások
+              {t('explore.businesses')}
             </Button>
             <Button
               variant={selectedType === 'government' ? 'default' : 'outline'}
@@ -245,7 +245,7 @@ const ExploreRegionPage = () => {
               onClick={() => setSelectedType('government')}
             >
               <Landmark className="w-4 h-4 mr-2" />
-              Önkormányzatok
+              {t('explore.governments')}
             </Button>
             <Button
               variant={selectedType === 'ngo' ? 'default' : 'outline'}
@@ -253,13 +253,13 @@ const ExploreRegionPage = () => {
               onClick={() => setSelectedType('ngo')}
             >
               <Heart className="w-4 h-4 mr-2" />
-              Civil szervezetek
+              {t('explore.ngos')}
             </Button>
           </div>
 
           {/* Results count */}
           <div className="text-center text-sm text-muted-foreground">
-            {filteredProfiles.length + filteredOrganizations.length} találat
+            {t('explore.results_count').replace('{{count}}', String(filteredProfiles.length + filteredOrganizations.length))}
           </div>
         </motion.div>
 
@@ -383,9 +383,9 @@ const ExploreRegionPage = () => {
             animate={{ opacity: 1 }}
           >
             <Users className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-            <h3 className="text-xl font-semibold mb-2">Nincs találat</h3>
+            <h3 className="text-xl font-semibold mb-2">{t('explore.no_results')}</h3>
             <p className="text-muted-foreground">
-              Próbálj meg más keresési feltételeket használni.
+              {t('explore.no_results_desc')}
             </p>
           </motion.div>
         )}

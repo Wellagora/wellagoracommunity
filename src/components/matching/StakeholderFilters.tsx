@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { User, Building2, Users, MapPin, Target, Search } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface StakeholderFiltersProps {
   selectedTypes: string[];
@@ -25,11 +26,13 @@ const StakeholderFilters = ({
   onSearchChange,
   totalCount,
 }: StakeholderFiltersProps) => {
+  const { t } = useLanguage();
+  
   const stakeholderTypes = [
-    { id: 'citizen', name: 'Magánszemély', icon: User, color: 'bg-success' },
-    { id: 'business', name: 'Cég', icon: Building2, color: 'bg-primary' },
-    { id: 'government', name: 'Önkormányzat', icon: MapPin, color: 'bg-destructive' },
-    { id: 'ngo', name: 'Civil szervezet', icon: Users, color: 'bg-warning' },
+    { id: 'citizen', name: t('explore.type_citizen'), icon: User, color: 'bg-success' },
+    { id: 'business', name: t('explore.type_business'), icon: Building2, color: 'bg-primary' },
+    { id: 'government', name: t('explore.type_government'), icon: MapPin, color: 'bg-destructive' },
+    { id: 'ngo', name: t('explore.type_ngo'), icon: Users, color: 'bg-warning' },
   ];
 
   return (
@@ -38,7 +41,7 @@ const StakeholderFilters = ({
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
-          placeholder="Keresés név vagy szervezet alapján..."
+          placeholder={t('explore.search_placeholder')}
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           className="pl-10"
@@ -49,7 +52,7 @@ const StakeholderFilters = ({
       <div>
         <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
           <Target className="w-4 h-4" />
-          Stakeholder típus
+          {t('explore.stakeholder_type')}
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {stakeholderTypes.map((type) => {
@@ -75,7 +78,7 @@ const StakeholderFilters = ({
       <div>
         <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
           <MapPin className="w-4 h-4" />
-          Régió
+          {t('explore.region')}
         </h3>
         <div className="flex flex-wrap gap-2">
           {regions.map((region) => (
@@ -99,7 +102,7 @@ const StakeholderFilters = ({
       {/* Results Count */}
       <div className="pt-4 border-t border-border">
         <p className="text-sm text-muted-foreground">
-          <span className="font-semibold text-foreground">{totalCount}</span> stakeholder található
+          <span className="font-semibold text-foreground">{totalCount}</span> {t('explore.stakeholders_found')}
         </p>
       </div>
     </Card>
