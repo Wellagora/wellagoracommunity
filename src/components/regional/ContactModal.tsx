@@ -17,10 +17,10 @@ interface ContactModalProps {
   recipientUserId: string;
 }
 
-const contactSchema = z.object({
-  name: z.string().trim().min(1, "A név megadása kötelező").max(100, "A név maximum 100 karakter lehet"),
-  email: z.string().trim().email("Érvénytelen email cím").max(255, "Az email maximum 255 karakter lehet"),
-  message: z.string().trim().min(10, "Az üzenet minimum 10 karakter hosszú kell legyen").max(1000, "Az üzenet maximum 1000 karakter lehet"),
+const getContactSchema = (t: (key: string) => string) => z.object({
+  name: z.string().trim().min(1, t("contact.error_name_required")).max(100, t("contact.error_name_max")),
+  email: z.string().trim().email(t("contact.error_email_invalid")).max(255, t("contact.error_email_max")),
+  message: z.string().trim().min(10, t("contact.error_message_min")).max(1000, t("contact.error_message_max")),
 });
 
 export default function ContactModal({ open, onOpenChange, recipientName, recipientUserId }: ContactModalProps) {
@@ -39,7 +39,7 @@ export default function ContactModal({ open, onOpenChange, recipientName, recipi
     
     // Validate form data
     try {
-      contactSchema.parse(formData);
+      getContactSchema(t).parse(formData);
       setErrors({});
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -69,8 +69,8 @@ export default function ContactModal({ open, onOpenChange, recipientName, recipi
       if (error) throw error;
 
       toast({
-        title: "Üzenet elküldve",
-        description: `Az üzeneted sikeresen elküldtük ${recipientName} részére.`,
+        title: t("contact.success_title"),
+        description: t("contact.success_description").replace("{name}", recipientName),
       });
 
       setFormData({ name: "", email: "", message: "" });
@@ -78,8 +78,8 @@ export default function ContactModal({ open, onOpenChange, recipientName, recipi
     } catch (error: any) {
       console.error("Error sending message:", error);
       toast({
-        title: "Hiba történt",
-        description: "Nem sikerült elküldeni az üzenetet. Kérjük, próbáld újra később.",
+        title: t("contact.error_title"),
+        description: t("contact.error_description"),
         variant: "destructive",
       });
     } finally {
@@ -93,21 +93,21 @@ export default function ContactModal({ open, onOpenChange, recipientName, recipi
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Mail className="w-5 h-5 text-primary" />
-            Kapcsolatfelvétel: {recipientName}
+            {t("contact.modal_title")}: {recipientName}
           </DialogTitle>
           <DialogDescription>
-            Küldjél üzenetet {recipientName} részére. Az email címed meg fog jelenni a válasz címként.
+            {t("contact.modal_description").replace("{name}", recipientName)}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Neved *</Label>
+            <Label htmlFor="name">{t("contact.label_name")} *</Label>
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="Teljes neved"
+              placeholder={t("contact.placeholder_name")}
               maxLength={100}
               disabled={loading}
             />
@@ -115,13 +115,13 @@ export default function ContactModal({ open, onOpenChange, recipientName, recipi
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email címed *</Label>
+            <Label htmlFor="email">{t("contact.label_email")} *</Label>
             <Input
               id="email"
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              placeholder="pelda@email.com"
+              placeholder={t("contact.placeholder_email")}
               maxLength={255}
               disabled={loading}
             />
@@ -129,12 +129,12 @@ export default function ContactModal({ open, onOpenChange, recipientName, recipi
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="message">Üzenet *</Label>
+            <Label htmlFor="message">{t("contact.label_message")} *</Label>
             <Textarea
               id="message"
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-              placeholder="Írd le az üzeneted..."
+              placeholder={t("contact.placeholder_message")}
               rows={6}
               maxLength={1000}
               disabled={loading}
@@ -152,11 +152,11 @@ export default function ContactModal({ open, onOpenChange, recipientName, recipi
               onClick={() => onOpenChange(false)}
               disabled={loading}
             >
-              Mégse
+              {t("contact.button_cancel")}
             </Button>
             <Button type="submit" disabled={loading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Üzenet küldése
+              {t("contact.button_send")}
             </Button>
           </div>
         </form>
