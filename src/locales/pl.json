@@ -334,5 +334,22 @@
   "challenges.kaliCsereBere.description": "Miesięczny targ do wymiany towarów",
   "challenges.idobank.title": "Bank Czasu",
   "challenges.idobank.description": "Wymiana usług oparta na czasie zamiast pieniędzy",
-  "regional.no_description": "Brak dostępnego opisu"
+  "regional.no_description": "Brak dostępnego opisu",
+  "organization.feature_regional_visibility": "Widoczność regionalna",
+  "organization.feature_logo_page": "Logo na stronie wyzwania",
+  "organization.feature_monthly_report": "Raport miesięczny",
+  "organization.feature_national_visibility": "Widoczność krajowa",
+  "organization.feature_featured_sponsor": "Wyróżniony sponsor",
+  "organization.feature_weekly_analytics": "Tygodniowe analizy",
+  "organization.feature_social_mentions": "Wzmianki w mediach społecznościowych",
+  "organization.feature_premium_visibility": "Widoczność premium",
+  "organization.feature_top_placement": "Najwyższa pozycja",
+  "organization.feature_daily_insights": "Codzienne spostrzeżenia",
+  "organization.feature_press_release": "Komunikat prasowy",
+  "organization.feature_cobranding": "Możliwości współbrandingu",
+  "organization.feature_exclusive_partnership": "Ekskluzywne partnerstwo",
+  "organization.feature_campaign_custom": "Dostosowanie kampanii",
+  "organization.feature_realtime_analytics": "Analizy w czasie rzeczywistym",
+  "organization.feature_dedicated_support": "Dedykowane wsparcie",
+  "organization.feature_impact_report": "Raport wpływu"
 }

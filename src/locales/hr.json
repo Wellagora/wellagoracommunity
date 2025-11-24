@@ -334,5 +334,22 @@
   "challenges.kaliCsereBere.description": "Mjesečna tržnica za razmjenu robe",
   "challenges.idobank.title": "Vremenska banka",
   "challenges.idobank.description": "Razmjena usluga temeljena na vremenu umjesto novca",
-  "regional.no_description": "Nema dostupnog opisa"
+  "regional.no_description": "Nema dostupnog opisa",
+  "organization.feature_regional_visibility": "Regionalna vidljivost",
+  "organization.feature_logo_page": "Logo na stranici izazova",
+  "organization.feature_monthly_report": "Mjesečno izvješće",
+  "organization.feature_national_visibility": "Nacionalna vidljivost",
+  "organization.feature_featured_sponsor": "Istaknuti sponzor",
+  "organization.feature_weekly_analytics": "Tjedne analize",
+  "organization.feature_social_mentions": "Spominjanja na društvenim mrežama",
+  "organization.feature_premium_visibility": "Premium vidljivost",
+  "organization.feature_top_placement": "Vrhunski položaj",
+  "organization.feature_daily_insights": "Dnevni uvidi",
+  "organization.feature_press_release": "Priopćenje za medije",
+  "organization.feature_cobranding": "Mogućnosti zajedničkog brendiranja",
+  "organization.feature_exclusive_partnership": "Ekskluzivno partnerstvo",
+  "organization.feature_campaign_custom": "Prilagodba kampanje",
+  "organization.feature_realtime_analytics": "Analize u stvarnom vremenu",
+  "organization.feature_dedicated_support": "Posvećena podrška",
+  "organization.feature_impact_report": "Izvješće o utjecaju"
 }

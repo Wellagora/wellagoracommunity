@@ -45,7 +45,7 @@ const SPONSOR_TIERS: SponsorTier[] = [
     id: 'bronze',
     name: 'Bronze',
     credits: 50,
-    features: ['Regional visibility', 'Logo on challenge page', 'Monthly report'],
+    features: [], // Will be populated with translations
     icon: Award,
     gradient: 'from-amber-600 to-orange-600'
   },
@@ -53,7 +53,7 @@ const SPONSOR_TIERS: SponsorTier[] = [
     id: 'silver',
     name: 'Silver',
     credits: 100,
-    features: ['National visibility', 'Featured sponsor', 'Weekly analytics', 'Social media mentions'],
+    features: [], // Will be populated with translations
     icon: Star,
     gradient: 'from-slate-400 to-gray-500'
   },
@@ -61,7 +61,7 @@ const SPONSOR_TIERS: SponsorTier[] = [
     id: 'gold',
     name: 'Gold',
     credits: 200,
-    features: ['Premium visibility', 'Top placement', 'Daily insights', 'Press release', 'Co-branding opportunities'],
+    features: [], // Will be populated with translations
     icon: Crown,
     gradient: 'from-yellow-400 to-amber-500'
   },
@@ -69,7 +69,7 @@ const SPONSOR_TIERS: SponsorTier[] = [
     id: 'diamond',
     name: 'Diamond',
     credits: 500,
-    features: ['Exclusive partnership', 'Campaign customization', 'Real-time analytics', 'Dedicated support', 'Impact report'],
+    features: [], // Will be populated with translations
     icon: Sparkles,
     gradient: 'from-purple-500 to-pink-500'
   }
@@ -78,7 +78,7 @@ const SPONSOR_TIERS: SponsorTier[] = [
 export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSponsorModalProps) => {
   const { toast } = useToast();
   const { profile } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { currentProject } = useProject();
   const navigate = useNavigate();
   
@@ -88,6 +88,53 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [credits, setCredits] = useState<number>(0);
+
+  // Get translated tier features
+  const getTierFeatures = (tierId: string): string[] => {
+    switch (tierId) {
+      case 'bronze':
+        return [
+          t('organization.feature_regional_visibility') || 'Regional visibility',
+          t('organization.feature_logo_page') || 'Logo on challenge page',
+          t('organization.feature_monthly_report') || 'Monthly report'
+        ];
+      case 'silver':
+        return [
+          t('organization.feature_national_visibility') || 'National visibility',
+          t('organization.feature_featured_sponsor') || 'Featured sponsor',
+          t('organization.feature_weekly_analytics') || 'Weekly analytics',
+          t('organization.feature_social_mentions') || 'Social media mentions'
+        ];
+      case 'gold':
+        return [
+          t('organization.feature_premium_visibility') || 'Premium visibility',
+          t('organization.feature_top_placement') || 'Top placement',
+          t('organization.feature_daily_insights') || 'Daily insights',
+          t('organization.feature_press_release') || 'Press release',
+          t('organization.feature_cobranding') || 'Co-branding opportunities'
+        ];
+      case 'diamond':
+        return [
+          t('organization.feature_exclusive_partnership') || 'Exclusive partnership',
+          t('organization.feature_campaign_custom') || 'Campaign customization',
+          t('organization.feature_realtime_analytics') || 'Real-time analytics',
+          t('organization.feature_dedicated_support') || 'Dedicated support',
+          t('organization.feature_impact_report') || 'Impact report'
+        ];
+      default:
+        return [];
+    }
+  };
+
+  // Get translated challenge title and description
+  const getChallengeTranslation = (challenge: any, field: 'title' | 'description'): string => {
+    if (challenge.translations && challenge.translations[language]) {
+      const translation = challenge.translations[language][field];
+      if (translation) return translation;
+    }
+    // Fallback to default field
+    return challenge[field] || '';
+  };
 
   // Load challenges
   useEffect(() => {
@@ -288,8 +335,10 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <h4 className="font-medium text-sm">{challenge.title}</h4>
-                        <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{challenge.description}</p>
+                        <h4 className="font-medium text-sm">{getChallengeTranslation(challenge, 'title')}</h4>
+                        <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
+                          {getChallengeTranslation(challenge, 'description')}
+                        </p>
                         <div className="flex gap-2 mt-2">
                           <Badge variant="secondary" className="text-xs">
                             {challenge.difficulty}
@@ -316,6 +365,7 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
               {SPONSOR_TIERS.map((tier) => {
                 const TierIcon = tier.icon;
                 const canAfford = credits >= tier.credits;
+                const features = getTierFeatures(tier.id);
                 
                 return (
                   <div
@@ -335,11 +385,11 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
                       </div>
                       <div className="flex-1">
                         <h4 className="font-semibold">{tier.name}</h4>
-                        <p className="text-sm font-bold text-primary">{tier.credits} kredit</p>
+                        <p className="text-sm font-bold text-primary">{tier.credits} {t('organization.credit')}</p>
                       </div>
                     </div>
                     <ul className="space-y-1">
-                      {tier.features.map((feature, idx) => (
+                      {features.map((feature, idx) => (
                         <li key={idx} className="text-xs text-muted-foreground flex items-start gap-1">
                           <span className="text-success mt-0.5">✓</span>
                           {feature}
