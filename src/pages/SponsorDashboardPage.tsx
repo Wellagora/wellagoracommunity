@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ShoppingCart, X } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Search } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import SponsorCreditsOverview from '@/components/sponsor/SponsorCreditsOverview';
@@ -68,13 +68,22 @@ const SponsorDashboardPage = () => {
               {t('sponsor.dashboard_subtitle')}
             </p>
           </div>
-          <Button
-            className="bg-gradient-primary hover:shadow-glow"
-            onClick={() => setShowPackages(true)}
-          >
-            <ShoppingCart className="w-4 h-4 mr-2" />
-            {t('sponsor.buy_credits')}
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={() => navigate('/browse-programs')}
+            >
+              <Search className="w-4 h-4 mr-2" />
+              {t('sponsor.browse_programs')}
+            </Button>
+            <Button
+              className="bg-gradient-primary hover:shadow-glow"
+              onClick={() => setShowPackages(true)}
+            >
+              <ShoppingCart className="w-4 h-4 mr-2" />
+              {t('sponsor.buy_credits')}
+            </Button>
+          </div>
         </div>
 
         {/* Credits Overview */}

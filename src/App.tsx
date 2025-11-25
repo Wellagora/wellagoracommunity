@@ -25,6 +25,7 @@ import SponsorDashboardPage from "@/pages/SponsorDashboardPage";
 import ProjectAdminPage from "@/pages/ProjectAdminPage";
 import JoinProjectPage from "@/pages/JoinProjectPage";
 import ProjectsListPage from "@/pages/ProjectsListPage";
+import BrowseProgramsPage from "@/pages/BrowseProgramsPage";
 import ContactPage from "@/pages/ContactPage";
 import InboxPage from "@/pages/InboxPage";
 import TranslationToolPage from "@/pages/TranslationToolPage";
@@ -67,6 +68,7 @@ function App() {
                 <Route path="/organization" element={<OrganizationDashboard />} />
                 <Route path="/organization/:organizationId" element={<PublicOrganizationPage />} />
                 <Route path="/sponsor-dashboard" element={<SponsorDashboardPage />} />
+                <Route path="/browse-programs" element={<BrowseProgramsPage />} />
                 <Route path="/project-admin" element={<ProjectAdminPage />} />
                 <Route path="/projects" element={<ProjectsListPage />} />
                 <Route path="/join/:projectSlug" element={<JoinProjectPage />} />
