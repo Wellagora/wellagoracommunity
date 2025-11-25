@@ -1,5 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +12,10 @@ import {
   User,
   Building2,
   Landmark,
-  Heart
+  Heart,
+  Award,
+  TrendingUp,
+  Calendar
 } from "lucide-react";
 
 import SuccessStories from "@/components/SuccessStories";
@@ -22,14 +24,6 @@ import FeaturedChallenges from "@/components/FeaturedChallenges";
 const Index = () => {
   const { t } = useLanguage();
   const { user, profile, loading } = useAuth();
-  const navigate = useNavigate();
-
-  // Redirect authenticated users to their dashboard
-  useEffect(() => {
-    if (!loading && user && profile) {
-      navigate('/dashboard');
-    }
-  }, [user, profile, loading, navigate]);
 
   // Show loading state while checking authentication
   if (loading) {
@@ -43,6 +37,121 @@ const Index = () => {
     );
   }
 
+  // Authenticated user view - Personalized home page
+  if (user && profile) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        
+        {/* Welcome Hero for Authenticated Users */}
+        <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5">
+          <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+          <div className="container mx-auto px-4 py-12 relative z-10">
+            <motion.div 
+              className="max-w-4xl"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
+                {t('index.welcome_back')}, {profile.first_name}! 👋
+              </h1>
+              <p className="text-lg text-muted-foreground">
+                {t('index.ready_to_make_impact')}
+              </p>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Quick Actions for Authenticated Users */}
+        <section className="py-12 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                <Link to="/dashboard">
+                  <Card className="h-full bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20 hover:shadow-glow transition-all duration-300 group cursor-pointer">
+                    <CardContent className="p-6 text-center">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-primary to-secondary mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <BarChart3 className="w-7 h-7 text-white" />
+                      </div>
+                      <h3 className="text-lg font-bold mb-2">{t('nav.dashboard')}</h3>
+                      <p className="text-muted-foreground text-sm">{t('index.dashboard_desc_auth')}</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <Link to="/challenges">
+                  <Card className="h-full bg-gradient-to-br from-accent/5 to-warning/5 border-accent/20 hover:shadow-glow transition-all duration-300 group cursor-pointer">
+                    <CardContent className="p-6 text-center">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-accent to-warning mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Award className="w-7 h-7 text-white" />
+                      </div>
+                      <h3 className="text-lg font-bold mb-2">{t('nav.challenges')}</h3>
+                      <p className="text-muted-foreground text-sm">{t('index.challenges_desc_auth')}</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
+                <Link to="/community">
+                  <Card className="h-full bg-gradient-to-br from-success/5 to-info/5 border-success/20 hover:shadow-glow transition-all duration-300 group cursor-pointer">
+                    <CardContent className="p-6 text-center">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-success to-info mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Users className="w-7 h-7 text-white" />
+                      </div>
+                      <h3 className="text-lg font-bold mb-2">{t('nav.community')}</h3>
+                      <p className="text-muted-foreground text-sm">{t('index.community_desc_auth')}</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <Link to="/profile">
+                  <Card className="h-full bg-gradient-to-br from-purple-500/5 to-pink-500/5 border-purple-500/20 hover:shadow-glow transition-all duration-300 group cursor-pointer">
+                    <CardContent className="p-6 text-center">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <User className="w-7 h-7 text-white" />
+                      </div>
+                      <h3 className="text-lg font-bold mb-2">{t('nav.profile')}</h3>
+                      <p className="text-muted-foreground text-sm">{t('index.profile_desc_auth')}</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* Featured Challenges */}
+        <FeaturedChallenges />
+        
+        {/* Success Stories */}
+        <SuccessStories />
+      </div>
+    );
+  }
+
+  // Non-authenticated user view - Original landing page
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
