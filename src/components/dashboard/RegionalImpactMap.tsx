@@ -189,25 +189,6 @@ export const RegionalImpactMap = () => {
                 </p>
               </div>
             )}
-
-            {/* Legend */}
-            <div className="bg-background/80 backdrop-blur-sm border border-border rounded-lg p-4">
-              <p className="text-xs font-semibold mb-3 text-muted-foreground">LEGEND</p>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-primary rounded-full"></div>
-                  <span className="text-xs">High Impact</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-success rounded-full"></div>
-                  <span className="text-xs">Growing</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-warning rounded-full"></div>
-                  <span className="text-xs">Moderate</span>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
