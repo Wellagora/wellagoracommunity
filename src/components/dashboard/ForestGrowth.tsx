@@ -86,7 +86,7 @@ const ForestGrowth = () => {
           }}
         >
           <TreePine 
-            className="text-green-700 dark:text-green-400 drop-shadow-lg" 
+            className="text-info drop-shadow-lg" 
             size={24 + Math.random() * 16}
             strokeWidth={2.5}
           />
@@ -114,7 +114,7 @@ const ForestGrowth = () => {
           }}
         >
           <Sprout 
-            className="text-green-600 dark:text-green-500 drop-shadow-md" 
+            className="text-accent drop-shadow-md" 
             size={16 + Math.random() * 8}
             strokeWidth={2}
           />
@@ -155,11 +155,11 @@ const ForestGrowth = () => {
 
   if (loading) {
     return (
-      <Card className="bg-gradient-to-br from-green-50/80 to-emerald-50/80 dark:from-green-950/30 dark:to-emerald-950/30 border-green-300 dark:border-green-700">
+      <Card className="bg-glass border-accent/20">
         <CardContent className="p-6">
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-green-200 dark:bg-green-800 rounded w-1/2"></div>
-            <div className="h-48 bg-green-200 dark:bg-green-800 rounded"></div>
+            <div className="h-4 bg-primary/30 rounded w-1/2"></div>
+            <div className="h-48 bg-primary/20 rounded"></div>
           </div>
         </CardContent>
       </Card>
@@ -167,14 +167,14 @@ const ForestGrowth = () => {
   }
 
   return (
-    <Card className="bg-gradient-to-br from-green-50/80 to-emerald-50/80 dark:from-green-950/30 dark:to-emerald-950/30 border-green-300 dark:border-green-700 hover:shadow-xl transition-all duration-300 overflow-hidden">
+    <Card className="bg-glass border-accent/20 hover:shadow-premium transition-all duration-300 overflow-hidden">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-xl font-bold text-green-800 dark:text-green-200 flex items-center gap-2">
-            <Leaf className="w-6 h-6 text-green-600 dark:text-green-400" />
+          <CardTitle className="text-xl font-heading text-foreground flex items-center gap-2">
+            <Leaf className="w-6 h-6 text-accent" />
             {t('dashboard.my_forest_growth')}
           </CardTitle>
-          <Badge className="bg-gradient-to-r from-green-600 to-emerald-600 text-white border-0 flex items-center gap-1">
+          <Badge className="bg-gradient-vibrant text-white border-0 flex items-center gap-1">
             <Sparkles className="w-3 h-3" />
             {t('dashboard.level')} {forestData.level}
           </Badge>
@@ -182,21 +182,21 @@ const ForestGrowth = () => {
       </CardHeader>
       
       <CardContent className="space-y-4">
-        {/* Forest Visualization */}
-        <div className="relative bg-gradient-to-b from-sky-200/50 via-green-100/30 to-green-200/50 dark:from-sky-900/30 dark:via-green-900/20 dark:to-green-800/30 rounded-2xl border-2 border-green-300/50 dark:border-green-700/50 overflow-hidden"
+        {/* Forest Visualization - Elegant Deep Blue Glass */}
+        <div className="relative bg-gradient-to-b from-primary/30 via-primary/20 to-primary/10 rounded-2xl border border-accent/20 overflow-hidden backdrop-blur-sm"
              style={{ height: '280px' }}>
-          {/* Égbolt háttér */}
-          <div className="absolute inset-0 bg-gradient-to-b from-sky-200/70 to-transparent dark:from-sky-900/50"></div>
+          {/* Elegant blue atmospheric background */}
+          <div className="absolute inset-0 bg-gradient-to-b from-accent/20 to-transparent"></div>
           
-          {/* Fű talaj */}
-          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-green-600/40 to-transparent dark:from-green-800/40"></div>
+          {/* Soft bottom glow */}
+          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-accent/30 to-transparent"></div>
           
           {/* Növények */}
           {forestData.treesEquivalent === 0 ? (
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center space-y-3 px-4">
-                <Sprout className="w-16 h-16 text-green-400/50 dark:text-green-600/50 mx-auto" />
-                <p className="text-sm text-green-700 dark:text-green-300 font-medium">
+                <Sprout className="w-16 h-16 text-accent/50 mx-auto" />
+                <p className="text-sm text-muted-foreground font-medium">
                   {t('dashboard.start_planting')}
                 </p>
               </div>
@@ -205,52 +205,52 @@ const ForestGrowth = () => {
             getPlantElements()
           )}
           
-          {/* Napsugarak */}
+          {/* Elegant blue sparkle */}
           {forestData.treesEquivalent > 5 && (
-            <div className="absolute top-4 right-4 text-yellow-400 animate-pulse">
+            <div className="absolute top-4 right-4 text-accent animate-pulse">
               <Sparkles size={32} strokeWidth={2} />
             </div>
           )}
         </div>
 
-        {/* Stats */}
+        {/* Stats - Elegant Deep Blue Glass Cards */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-white/60 dark:bg-green-950/30 rounded-xl p-3 border border-green-300/50 dark:border-green-700/50">
-            <div className="text-3xl font-bold text-green-700 dark:text-green-300 flex items-center justify-center gap-2">
+          <div className="bg-glass rounded-xl p-3 border border-accent/20">
+            <div className="text-3xl font-bold text-accent flex items-center justify-center gap-2">
               <TreePine className="w-7 h-7" />
               {forestData.treesEquivalent}
             </div>
-            <div className="text-xs text-green-600 dark:text-green-400 text-center mt-1">
+            <div className="text-xs text-muted-foreground text-center mt-1">
               {t('dashboard.trees_planted')}
             </div>
           </div>
           
-          <div className="bg-white/60 dark:bg-green-950/30 rounded-xl p-3 border border-green-300/50 dark:border-green-700/50">
-            <div className="text-2xl font-bold text-emerald-700 dark:text-emerald-300 text-center">
+          <div className="bg-glass rounded-xl p-3 border border-accent/20">
+            <div className="text-2xl font-bold text-accent text-center">
               {forestData.totalCo2Saved}
               <span className="text-sm ml-1">kg</span>
             </div>
-            <div className="text-xs text-emerald-600 dark:text-emerald-400 text-center mt-1">
+            <div className="text-xs text-muted-foreground text-center mt-1">
               CO₂ {t('handprint.saved')}
             </div>
           </div>
         </div>
 
-        {/* Progress to Next Level */}
+        {/* Progress to Next Level - Elegant Blue Styling */}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-green-700 dark:text-green-300 font-medium">
+            <span className="text-foreground font-medium">
               {t('dashboard.next_level_progress')}
             </span>
-            <span className="text-green-600 dark:text-green-400 font-bold">
+            <span className="text-accent font-bold">
               {Math.round(forestData.nextLevelProgress)}%
             </span>
           </div>
           <Progress 
             value={forestData.nextLevelProgress} 
-            className="h-3 bg-green-200/50 dark:bg-green-900/30"
+            className="h-3 bg-primary/30"
           />
-          <p className="text-xs text-green-600 dark:text-green-400 text-center">
+          <p className="text-xs text-muted-foreground text-center">
             {10 - (forestData.treesEquivalent % 10)} {t('dashboard.more_trees_next_level')}
           </p>
         </div>

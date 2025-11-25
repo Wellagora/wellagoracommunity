@@ -9,77 +9,77 @@ Természetes színpaletta és elegáns tipográfia a közösség építés támo
 @layer base {
   :root {
     /* Wellagora Elegant & Innovative Design System */
-    /* Deep Blue - Premium, Not Too Dark */
-    --background: 218 65% 12%;
-    --foreground: 220 30% 96%;
+    /* Deep Blue Premium - Apple-Level Quality */
+    --background: 218 70% 8%;
+    --foreground: 220 20% 98%;
 
-    --card: 218 60% 15%;
-    --card-foreground: 220 30% 96%;
+    --card: 220 60% 12%;
+    --card-foreground: 220 20% 98%;
 
-    --popover: 218 60% 14%;
-    --popover-foreground: 220 30% 96%;
+    --popover: 220 60% 12%;
+    --popover-foreground: 220 20% 98%;
 
-    /* Deep Blue Primary - Elegant Royal Navy */
-    --primary: 218 70% 45%;
+    /* Deep Royal Blue Primary */
+    --primary: 218 70% 28%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 215 80% 60%;
-    --primary-dark: 218 75% 18%;
+    --primary-glow: 218 75% 45%;
+    --primary-dark: 218 80% 15%;
 
-    /* Subtle Blue-Green Accent - Only for Highlights */
-    --secondary: 195 65% 50%;
-    --secondary-foreground: 220 30% 96%;
+    /* Ocean Blue Secondary */
+    --secondary: 210 65% 38%;
+    --secondary-foreground: 0 0% 100%;
 
-    /* Muted Blue-Gray */
-    --muted: 218 40% 22%;
-    --muted-foreground: 215 25% 70%;
+    /* Muted Bluish-Grey */
+    --muted: 220 40% 20%;
+    --muted-foreground: 218 25% 68%;
 
-    /* Refined Blue Accent - Not Neon */
-    --accent: 210 75% 55%;
+    /* Electric Blue Accent */
+    --accent: 214 75% 55%;
     --accent-foreground: 0 0% 100%;
-    --accent-light: 210 70% 65%;
+    --accent-light: 214 70% 68%;
 
-    /* Success - Subtle Blue-Green */
-    --success: 170 55% 48%;
+    /* Success - Subtle Blue-Teal */
+    --success: 180 50% 48%;
     --success-foreground: 0 0% 100%;
-    --success-light: 170 50% 60%;
+    --success-light: 180 45% 60%;
 
-    /* Warning - Refined */
-    --warning: 40 85% 55%;
-    --warning-foreground: 218 65% 12%;
+    /* Warning - Refined Amber */
+    --warning: 38 85% 55%;
+    --warning-foreground: 218 70% 8%;
 
-    /* Info - Clean Blue */
-    --info: 205 80% 55%;
-    --info-foreground: 0 0% 100%;
+    /* Info - Light Mist Blue */
+    --info: 210 70% 70%;
+    --info-foreground: 218 70% 8%;
 
     /* Destructive */
-    --destructive: 5 75% 55%;
+    --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 218 40% 25%;
-    --input: 218 45% 20%;
-    --ring: 210 75% 55%;
+    --border: 220 40% 22%;
+    --input: 220 50% 18%;
+    --ring: 214 75% 55%;
 
     --radius: 1.125rem;
 
-    /* Wellagora Elegant Gradients - Refined & Premium */
-    --gradient-primary: linear-gradient(135deg, hsl(218 75% 18%) 0%, hsl(218 70% 28%) 50%, hsl(215 65% 38%) 100%);
-    --gradient-vibrant: linear-gradient(135deg, hsl(210 75% 55%) 0%, hsl(205 80% 55%) 50%, hsl(195 70% 50%) 100%);
-    --gradient-nature: linear-gradient(180deg, hsl(218 65% 15%) 0%, hsl(218 65% 12%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(218 75% 15%) 0%, hsl(218 70% 22%) 40%, hsl(215 65% 32%) 75%, hsl(210 60% 42%) 100%);
-    --gradient-wave: linear-gradient(135deg, hsl(218 60% 20%) 0%, hsl(215 60% 28%) 50%, hsl(210 55% 35%) 100%);
-    --gradient-atmospheric: linear-gradient(180deg, hsl(218 75% 15%) 0%, hsl(218 70% 20%) 50%, hsl(215 65% 28%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(218 65% 12%) 0%, hsl(218 60% 14%) 100%);
-    --gradient-aqua: linear-gradient(135deg, hsl(210 75% 55%) 0%, hsl(195 70% 50%) 100%);
-    --gradient-depth: linear-gradient(135deg, hsl(218 75% 18%) 0%, hsl(215 70% 28%) 50%, hsl(210 65% 40%) 100%);
-    --gradient-tech: linear-gradient(135deg, hsl(218 70% 25%) 0%, hsl(210 75% 55%) 100%);
-    --gradient-glass: linear-gradient(135deg, hsl(218 55% 20% / 0.7) 0%, hsl(215 50% 22% / 0.5) 100%);
+    /* Wellagora Elegant Blue Gradients - Premium Quality */
+    --gradient-primary: linear-gradient(135deg, hsl(218 80% 15%) 0%, hsl(218 70% 28%) 50%, hsl(210 65% 38%) 100%);
+    --gradient-vibrant: linear-gradient(135deg, hsl(214 75% 55%) 0%, hsl(210 70% 60%) 50%, hsl(206 65% 65%) 100%);
+    --gradient-nature: linear-gradient(180deg, hsl(218 70% 12%) 0%, hsl(218 70% 8%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(218 80% 10%) 0%, hsl(218 70% 20%) 40%, hsl(210 65% 32%) 75%, hsl(206 60% 42%) 100%);
+    --gradient-wave: linear-gradient(135deg, hsl(220 60% 18%) 0%, hsl(215 60% 26%) 50%, hsl(210 55% 35%) 100%);
+    --gradient-atmospheric: linear-gradient(180deg, hsl(218 80% 12%) 0%, hsl(218 70% 18%) 50%, hsl(215 65% 26%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(218 70% 8%) 0%, hsl(220 60% 12%) 100%);
+    --gradient-aqua: linear-gradient(135deg, hsl(214 75% 55%) 0%, hsl(180 60% 55%) 100%);
+    --gradient-depth: linear-gradient(135deg, hsl(218 80% 15%) 0%, hsl(215 70% 26%) 50%, hsl(210 65% 38%) 100%);
+    --gradient-tech: linear-gradient(135deg, hsl(220 70% 22%) 0%, hsl(214 75% 55%) 100%);
+    --gradient-glass: linear-gradient(135deg, hsl(220 60% 18% / 0.7) 0%, hsl(218 55% 22% / 0.5) 100%);
 
-    /* Elegant Shadows - Refined Blue Glow */
-    --shadow-eco: 0 10px 40px -6px hsl(210 75% 55% / 0.25);
-    --shadow-glow: 0 0 40px hsl(210 75% 55% / 0.3), 0 0 20px hsl(215 70% 60% / 0.2);
-    --shadow-card: 0 8px 32px -6px hsl(218 70% 10% / 0.5);
-    --shadow-premium: 0 20px 60px -12px hsl(210 75% 55% / 0.3);
-    --shadow-float: 0 25px 60px -18px hsl(210 75% 55% / 0.35);
+    /* Elegant Blue Shadows - Refined Glow */
+    --shadow-eco: 0 10px 40px -6px hsl(214 70% 50% / 0.2);
+    --shadow-glow: 0 0 40px hsl(214 75% 55% / 0.25), 0 0 20px hsl(210 70% 60% / 0.15);
+    --shadow-card: 0 8px 32px -6px hsl(220 70% 8% / 0.6);
+    --shadow-premium: 0 20px 60px -12px hsl(214 75% 55% / 0.25);
+    --shadow-float: 0 25px 60px -18px hsl(214 75% 55% / 0.3);
 
     /* Smooth animation system */
     --transition-smooth: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -180,19 +180,19 @@ Természetes színpaletta és elegáns tipográfia a közösség építés támo
     @apply text-foreground font-medium tracking-wide drop-shadow-sm;
   }
 
-  /* Elegant Glass Morphism - Refined & Premium */
+  /* Elegant Deep-Blue Glass Morphism - Premium Quality */
   .bg-glass {
-    background: linear-gradient(135deg, hsl(218 55% 20% / 0.7), hsl(215 50% 22% / 0.5));
-    backdrop-filter: blur(24px) saturate(130%);
-    border: 1px solid hsl(210 70% 55% / 0.12);
-    box-shadow: 0 8px 32px 0 hsl(218 70% 10% / 0.4), inset 0 1px 0 hsl(210 75% 60% / 0.08);
+    background: linear-gradient(135deg, hsl(220 60% 18% / 0.7), hsl(218 55% 22% / 0.5));
+    backdrop-filter: blur(20px) saturate(120%);
+    border: 1px solid hsl(214 70% 55% / 0.12);
+    box-shadow: 0 8px 32px 0 hsl(220 70% 8% / 0.5), inset 0 1px 0 hsl(214 75% 60% / 0.08);
   }
 
   .bg-glass-strong {
-    background: linear-gradient(135deg, hsl(218 55% 20% / 0.85), hsl(215 50% 22% / 0.75));
-    backdrop-filter: blur(32px) saturate(150%);
-    border: 1px solid hsl(210 70% 55% / 0.18);
-    box-shadow: 0 16px 48px 0 hsl(218 70% 10% / 0.5), inset 0 1px 0 hsl(210 75% 60% / 0.12);
+    background: linear-gradient(135deg, hsl(220 60% 18% / 0.9), hsl(218 55% 22% / 0.8));
+    backdrop-filter: blur(24px) saturate(140%);
+    border: 1px solid hsl(214 70% 55% / 0.18);
+    box-shadow: 0 16px 48px 0 hsl(220 70% 8% / 0.6), inset 0 1px 0 hsl(214 75% 60% / 0.1);
   }
 
   /* Inspiring 3D hover effects */
