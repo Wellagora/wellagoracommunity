@@ -83,13 +83,17 @@ export default {
         'gradient-light-transition': 'var(--gradient-light-transition)',
         'gradient-sunset': 'var(--gradient-sunset)',
         'gradient-ocean': 'var(--gradient-ocean)',
-        'wave-pattern': 'radial-gradient(circle at 20% 50%, hsl(240 78% 70% / 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, hsl(200 98% 60% / 0.4) 0%, transparent 50%), radial-gradient(circle at 40% 80%, hsl(142 69% 65% / 0.2) 0%, transparent 50%)',
+        'gradient-depth': 'var(--gradient-depth)',
+        'gradient-tropical': 'var(--gradient-tropical)',
+        'wave-pattern': 'radial-gradient(circle at 20% 50%, hsl(190 80% 60% / 0.4) 0%, transparent 60%), radial-gradient(circle at 80% 20%, hsl(175 70% 65% / 0.35) 0%, transparent 60%), radial-gradient(circle at 40% 80%, hsl(165 75% 70% / 0.3) 0%, transparent 60%)',
+        'ocean-bubbles': 'radial-gradient(circle at 30% 30%, hsl(185 80% 60% / 0.15) 0%, transparent 40%), radial-gradient(circle at 70% 70%, hsl(175 70% 65% / 0.12) 0%, transparent 35%), radial-gradient(circle at 50% 50%, hsl(195 85% 55% / 0.1) 0%, transparent 45%)',
       },
       boxShadow: {
         'eco': 'var(--shadow-eco)',
         'glow': 'var(--shadow-glow)',
         'card': 'var(--shadow-card)',
         'premium': 'var(--shadow-premium)',
+        'float': 'var(--shadow-float)',
       },
       borderRadius: {
         lg: "var(--radius)",
