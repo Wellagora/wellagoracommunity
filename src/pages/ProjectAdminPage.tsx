@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -42,12 +43,23 @@ export default function ProjectAdminPage() {
   const [members, setMembers] = useState<ProjectMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [newMemberEmail, setNewMemberEmail] = useState("");
+  const [projectName, setProjectName] = useState("");
+  const [regionName, setRegionName] = useState("");
+  const [projectDescription, setProjectDescription] = useState("");
 
   useEffect(() => {
     if (user) {
       loadProjects();
     }
   }, [user]);
+
+  useEffect(() => {
+    if (selectedProject) {
+      setProjectName(selectedProject.name);
+      setRegionName(selectedProject.region_name);
+      setProjectDescription(selectedProject.description || "");
+    }
+  }, [selectedProject]);
 
   const loadProjects = async () => {
     try {
@@ -206,6 +218,48 @@ export default function ProjectAdminPage() {
       toast({
         title: t('project_admin.error'),
         description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const updateProjectSettings = async () => {
+    if (!selectedProject || !isCurrentUserAdmin) return;
+
+    try {
+      const { error } = await supabase
+        .from("projects")
+        .update({
+          name: projectName,
+          region_name: regionName,
+          description: projectDescription || null,
+        })
+        .eq("id", selectedProject.id);
+
+      if (error) throw error;
+
+      const updatedProject = {
+        ...selectedProject,
+        name: projectName,
+        region_name: regionName,
+        description: projectDescription || null,
+      };
+
+      setSelectedProject(updatedProject);
+      setProjects((prev) =>
+        prev.map((project) =>
+          project.id === selectedProject.id ? updatedProject : project
+        )
+      );
+
+      toast({
+        title: t('project_admin.success'),
+        description: t('project_admin.settings_updated'),
+      });
+    } catch (error: any) {
+      toast({
+        title: t('project_admin.error'),
+        description: t('project_admin.settings_update_error'),
         variant: "destructive",
       });
     }
@@ -404,20 +458,52 @@ export default function ProjectAdminPage() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-3 sm:space-y-4">
-                      <div>
+                      <div className="space-y-1">
                         <Label className="text-sm sm:text-base">{t('project_admin.project_name')}</Label>
-                        <p className="text-base sm:text-lg font-semibold">{selectedProject.name}</p>
+                        {isCurrentUserAdmin ? (
+                          <Input
+                            value={projectName}
+                            onChange={(e) => setProjectName(e.target.value)}
+                            className="text-sm sm:text-base"
+                          />
+                        ) : (
+                          <p className="text-base sm:text-lg font-semibold">{selectedProject.name}</p>
+                        )}
                       </div>
-                      <div>
+                      <div className="space-y-1">
                         <Label className="text-sm sm:text-base">{t('project_admin.region')}</Label>
-                        <p className="text-sm sm:text-base">{selectedProject.region_name}</p>
+                        {isCurrentUserAdmin ? (
+                          <Input
+                            value={regionName}
+                            onChange={(e) => setRegionName(e.target.value)}
+                            className="text-sm sm:text-base"
+                          />
+                        ) : (
+                          <p className="text-sm sm:text-base">{selectedProject.region_name}</p>
+                        )}
                       </div>
-                      <div>
+                      <div className="space-y-1">
                         <Label className="text-sm sm:text-base">{t('project_admin.description')}</Label>
-                        <p className="text-xs sm:text-sm text-muted-foreground">
-                          {selectedProject.description || t('project_admin.no_description')}
-                        </p>
+                        {isCurrentUserAdmin ? (
+                          <Textarea
+                            value={projectDescription}
+                            onChange={(e) => setProjectDescription(e.target.value)}
+                            className="text-xs sm:text-sm"
+                            rows={4}
+                          />
+                        ) : (
+                          <p className="text-xs sm:text-sm text-muted-foreground">
+                            {selectedProject.description || t('project_admin.no_description')}
+                          </p>
+                        )}
                       </div>
+                      {isCurrentUserAdmin && (
+                        <div className="pt-2">
+                          <Button onClick={updateProjectSettings} className="text-sm">
+                            {t('project_admin.save_settings')}
+                          </Button>
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 </TabsContent>
