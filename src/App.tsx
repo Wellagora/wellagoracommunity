@@ -27,6 +27,7 @@ import JoinProjectPage from "@/pages/JoinProjectPage";
 import ProjectsListPage from "@/pages/ProjectsListPage";
 import ContactPage from "@/pages/ContactPage";
 import InboxPage from "@/pages/InboxPage";
+import TranslationToolPage from "@/pages/TranslationToolPage";
 import "./index.css";
 
 function App() {
@@ -71,6 +72,7 @@ function App() {
                 <Route path="/join/:projectSlug" element={<JoinProjectPage />} />
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/inbox" element={<InboxPage />} />
+                <Route path="/translation-tool" element={<TranslationToolPage />} />
               </Routes>
               <Toaster />
               <SonnerToaster />

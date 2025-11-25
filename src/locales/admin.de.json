@@ -1,4 +1,8 @@
 {
+  "admin.translation_tool": "Übersetzungstool",
+  "admin.translation_tool_desc": "KI-gestützte Massenübersetzung in 8 Sprachen",
+  "admin.back_to_admin": "Zurück zum Admin",
+  "admin.back_to_platform": "Zurück zur Plattform",
   "admin.title": "Admin Dashboard",
   "admin.subtitle": "Programme moderieren und Plattformstatistiken",
   "admin.ai_powered": "KI-gestützt",

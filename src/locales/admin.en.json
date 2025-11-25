@@ -1,4 +1,8 @@
 {
+  "admin.translation_tool": "Translation Tool",
+  "admin.translation_tool_desc": "AI-powered bulk translation to 8 languages",
+  "admin.back_to_admin": "Back to Admin",
+  "admin.back_to_platform": "Back to Platform",
   "admin.title": "Admin Dashboard",
   "admin.subtitle": "Challenge moderation and platform statistics",
   "admin.ai_powered": "AI-powered",

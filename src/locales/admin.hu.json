@@ -1,4 +1,9 @@
 {
+  "admin.translation_tool": "Fordítóeszköz",
+  "admin.translation_tool_desc": "AI-alapú tömeges fordítás 8 nyelvre",
+  "admin.back_to_admin": "Vissza az Adminhoz",
+  "admin.back_to_platform": "Vissza a Platformra",
+  "admin.title": "Admin Dashboard",
   "admin.title": "Admin Dashboard",
   "admin.subtitle": "Programok moderálása és platform statisztikák",
   "admin.ai_powered": "AI-alapú",
