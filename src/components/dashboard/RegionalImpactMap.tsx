@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, Users, Leaf, TrendingUp } from "lucide-react";
+import { useProject } from "@/contexts/ProjectContext";
 
 interface RegionData {
   id: string;
@@ -15,17 +16,42 @@ interface RegionData {
   color: string;
 }
 
-const mockRegions: RegionData[] = [
-  { id: "1", name: "Downtown", x: 35, y: 40, participants: 847, co2Saved: 18.5, activeChallenges: 5, color: "bg-primary" },
-  { id: "2", name: "North District", x: 55, y: 25, participants: 623, co2Saved: 14.2, activeChallenges: 3, color: "bg-success" },
-  { id: "3", name: "East Side", x: 75, y: 45, participants: 521, co2Saved: 11.8, activeChallenges: 4, color: "bg-accent" },
-  { id: "4", name: "West End", x: 15, y: 60, participants: 412, co2Saved: 8.9, activeChallenges: 2, color: "bg-warning" },
-  { id: "5", name: "South Quarter", x: 45, y: 75, participants: 356, co2Saved: 6.7, activeChallenges: 3, color: "bg-secondary" }
-];
+const colors = ["bg-primary", "bg-success", "bg-accent", "bg-warning"];
 
 export const RegionalImpactMap = () => {
+  const { currentProject } = useProject();
   const [selectedRegion, setSelectedRegion] = useState<RegionData | null>(null);
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
+
+  // Generate regions from project villages
+  const regions = useMemo(() => {
+    if (!currentProject?.villages || currentProject.villages.length === 0) {
+      return [];
+    }
+
+    // Position villages in a circular pattern
+    const positions = [
+      { x: 35, y: 35 },
+      { x: 65, y: 35 },
+      { x: 35, y: 65 },
+      { x: 65, y: 65 },
+    ];
+
+    return currentProject.villages.slice(0, 4).map((village, index) => ({
+      id: `${index + 1}`,
+      name: village,
+      x: positions[index]?.x || 50,
+      y: positions[index]?.y || 50,
+      participants: Math.floor(Math.random() * 500) + 200,
+      co2Saved: Math.floor(Math.random() * 15) + 5,
+      activeChallenges: Math.floor(Math.random() * 5) + 1,
+      color: colors[index % colors.length],
+    }));
+  }, [currentProject]);
+
+  if (!currentProject || regions.length === 0) {
+    return null;
+  }
 
   return (
     <Card className="bg-gradient-to-br from-primary/5 via-card to-accent/5 overflow-hidden">
@@ -52,7 +78,7 @@ export const RegionalImpactMap = () => {
               </div>
 
               {/* Region Markers */}
-              {mockRegions.map((region) => (
+              {regions.map((region) => (
                 <div
                   key={region.id}
                   className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer"
@@ -92,9 +118,9 @@ export const RegionalImpactMap = () => {
 
               {/* Connection Lines */}
               <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20">
-                {mockRegions.map((region, i) => {
-                  if (i === mockRegions.length - 1) return null;
-                  const next = mockRegions[i + 1];
+                {regions.map((region, i) => {
+                  if (i === regions.length - 1) return null;
+                  const next = regions[i + 1];
                   return (
                     <line
                       key={`line-${i}`}
