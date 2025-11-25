@@ -3,49 +3,42 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TreePine, Sprout, Flower, MapPin, TrendingUp } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useProject } from "@/contexts/ProjectContext";
 import { motion } from "framer-motion";
+import { useMemo } from "react";
 
 export const RegionalImpactGarden = () => {
   const { t } = useLanguage();
+  const { currentProject } = useProject();
 
-  const regions = [
-    { 
-      id: 1, 
-      name: t('impact_garden.region_1'), 
-      growth: 85, 
-      participants: 847,
-      trees: 12,
-      flowers: 8,
-      sprouts: 5
-    },
-    { 
-      id: 2, 
-      name: t('impact_garden.region_2'), 
-      growth: 72, 
-      participants: 623,
-      trees: 9,
-      flowers: 6,
-      sprouts: 7
-    },
-    { 
-      id: 3, 
-      name: t('impact_garden.region_3'), 
-      growth: 68, 
-      participants: 521,
-      trees: 8,
-      flowers: 5,
-      sprouts: 6
-    },
-    { 
-      id: 4, 
-      name: t('impact_garden.region_4'), 
-      growth: 91, 
-      participants: 1024,
-      trees: 15,
-      flowers: 11,
-      sprouts: 4
-    },
-  ];
+  // Generate region data from actual project villages
+  const regions = useMemo(() => {
+    if (!currentProject?.villages || currentProject.villages.length === 0) {
+      return [];
+    }
+
+    // TODO: Replace with actual participant and impact data from database
+    // For now, generate representative data based on village index
+    return currentProject.villages.map((village, index) => {
+      const baseParticipants = 400 + index * 150;
+      const baseGrowth = 65 + (index * 7) % 30;
+      
+      return {
+        id: index + 1,
+        name: village,
+        growth: Math.min(95, baseGrowth + Math.floor(Math.random() * 10)),
+        participants: baseParticipants + Math.floor(Math.random() * 200),
+        trees: 8 + Math.floor(Math.random() * 8),
+        flowers: 5 + Math.floor(Math.random() * 7),
+        sprouts: 4 + Math.floor(Math.random() * 6)
+      };
+    });
+  }, [currentProject]);
+
+  // Don't render if no regions available
+  if (regions.length === 0) {
+    return null;
+  }
 
   const getGrowthColor = (growth: number) => {
     if (growth >= 80) return "text-success";
