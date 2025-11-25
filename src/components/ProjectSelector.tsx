@@ -11,7 +11,15 @@ import { Building2 } from "lucide-react";
 
 export function ProjectSelector() {
   const { currentProject, userProjects, setCurrentProject, isLoading } = useProject();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+
+  // Get translated project name
+  const getProjectName = (project: any) => {
+    if (project.translations && project.translations[language]) {
+      return project.translations[language].name || project.name;
+    }
+    return project.name;
+  };
 
   if (isLoading || userProjects.length === 0) {
     return null;
@@ -22,7 +30,7 @@ export function ProjectSelector() {
     return (
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <Building2 className="h-4 w-4" />
-        <span className="font-medium">{currentProject?.name}</span>
+        <span className="font-medium">{getProjectName(currentProject)}</span>
       </div>
     );
   }
@@ -44,7 +52,7 @@ export function ProjectSelector() {
       <SelectContent>
         {userProjects.map((project) => (
           <SelectItem key={project.id} value={project.id}>
-            {project.name}
+            {getProjectName(project)}
           </SelectItem>
         ))}
       </SelectContent>
