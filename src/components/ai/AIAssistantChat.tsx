@@ -17,6 +17,8 @@ import {
   Home
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface Message {
   id: string;
@@ -27,7 +29,8 @@ interface Message {
 }
 
 const AIAssistantChat = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const { toast } = useToast();
   
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -79,69 +82,63 @@ const AIAssistantChat = () => {
     setInputValue("");
     setIsTyping(true);
 
-    // Simulate AI response
-    setTimeout(() => {
-      const aiResponse = generateAIResponse(content);
+    try {
+      const conversationHistory = [...messages, userMessage].map(msg => ({
+        role: msg.sender === "user" ? "user" : "assistant",
+        content: msg.content
+      }));
+
+      const { data, error } = await supabase.functions.invoke('ai-chat', {
+        body: { 
+          messages: conversationHistory,
+          language: language 
+        }
+      });
+
+      if (error) {
+        console.error('AI chat error:', error);
+        throw error;
+      }
+
+      if (data.error) {
+        if (data.error.includes("Rate limit")) {
+          toast({
+            title: t('error'),
+            description: t('wellbot.rate_limit_error'),
+            variant: "destructive",
+          });
+        } else if (data.error.includes("Payment required")) {
+          toast({
+            title: t('error'),
+            description: t('wellbot.payment_error'),
+            variant: "destructive",
+          });
+        } else {
+          throw new Error(data.error);
+        }
+        setIsTyping(false);
+        return;
+      }
+
+      const aiResponse: Message = {
+        id: Date.now().toString(),
+        content: data.message,
+        sender: "ai",
+        timestamp: new Date(),
+        suggestions: data.suggestions || []
+      };
+
       setMessages(prev => [...prev, aiResponse]);
+    } catch (error) {
+      console.error('Error calling AI:', error);
+      toast({
+        title: t('error'),
+        description: t('wellbot.error_message'),
+        variant: "destructive",
+      });
+    } finally {
       setIsTyping(false);
-    }, 1500);
-  };
-
-  const generateAIResponse = (userInput: string): Message => {
-    const input = userInput.toLowerCase();
-    
-    let response = "";
-    let suggestions: string[] = [];
-
-    if (input.includes("carbon") || input.includes("footprint")) {
-      response = "Great question! To reduce your carbon footprint, focus on these key areas:\n\n🚗 **Transportation**: Use public transport, cycle, walk, or consider electric vehicles\n⚡ **Energy**: Switch to renewable energy, improve home insulation, use LED bulbs\n🍽️ **Diet**: Eat more plant-based meals, buy local and seasonal produce\n♻️ **Consumption**: Buy less, reuse more, choose sustainable products\n\nWould you like specific tips for any of these areas?";
-      suggestions = [
-        "Tell me about electric vehicles",
-        "How to switch to renewable energy?",
-        "Plant-based meal ideas",
-        "Start a home composting system"
-      ];
-    } else if (input.includes("transport") || input.includes("travel")) {
-      response = "Here are sustainable transport options to consider:\n\n🚲 **Cycling**: Great for short distances, zero emissions, improves health\n🚌 **Public Transport**: Reduces individual carbon footprint significantly\n⚡ **Electric Vehicles**: Zero direct emissions, increasingly affordable\n🚶 **Walking**: Perfect for short trips, completely emission-free\n🚗 **Carpooling**: Share rides to reduce overall vehicle usage\n\nWhat type of journeys are you looking to make more sustainable?";
-      suggestions = [
-        "Best electric bike options",
-        "Public transport apps in my area",
-        "Electric car charging stations",
-        "Safe cycling routes"
-      ];
-    } else if (input.includes("waste") || input.includes("recycling")) {
-      response = "Here's how to create an effective waste reduction plan:\n\n♻️ **Reduce**: Buy only what you need, choose products with minimal packaging\n🔄 **Reuse**: Repurpose items, donate instead of discarding\n📦 **Recycle**: Learn your local recycling guidelines\n🌱 **Compost**: Turn organic waste into nutrient-rich soil\n🛍️ **Zero Waste Shopping**: Bring your own bags, containers, and bottles\n\nWhich area would you like to start with?";
-      suggestions = [
-        "How to start composting at home",
-        "Zero waste shopping guide",
-        "Local recycling guidelines",
-        "DIY upcycling projects"
-      ];
-    } else if (input.includes("energy") || input.includes("electric")) {
-      response = "Here are ways to make your energy usage more sustainable:\n\n☀️ **Solar Power**: Install solar panels or switch to a renewable energy provider\n💡 **Efficient Lighting**: Replace bulbs with LEDs, use natural light when possible\n🏠 **Insulation**: Improve home insulation to reduce heating/cooling needs\n📱 **Smart Devices**: Use programmable thermostats and smart power strips\n🔌 **Unplug**: Turn off devices when not in use to eliminate phantom loads\n\nWhat's your biggest energy expense at home?";
-      suggestions = [
-        "Solar panel installation cost",
-        "Best smart thermostats",
-        "Home energy audit checklist",
-        "Renewable energy providers"
-      ];
-    } else {
-      response = "I'd be happy to help you with sustainability questions! I can provide advice on:\n\n🌱 Reducing your environmental impact\n⚡ Energy efficiency and renewable options\n🚗 Sustainable transportation\n♻️ Waste reduction and recycling\n🏠 Eco-friendly home improvements\n🍽️ Sustainable food choices\n\nWhat specific topic would you like to explore?";
-      suggestions = [
-        "Calculate my carbon footprint",
-        "Sustainable living tips for beginners",
-        "Eco-friendly product recommendations",
-        "Join local environmental initiatives"
-      ];
     }
-
-    return {
-      id: Date.now().toString(),
-      content: response,
-      sender: "ai",
-      timestamp: new Date(),
-      suggestions
-    };
   };
 
   const handleQuickAction = (action: typeof quickActions[0]) => {

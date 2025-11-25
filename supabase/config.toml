@@ -33,3 +33,6 @@ verify_jwt = true
 
 [functions.bulk-translate]
 verify_jwt = true
+
+[functions.ai-chat]
+verify_jwt = false
