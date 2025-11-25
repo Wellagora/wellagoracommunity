@@ -155,18 +155,18 @@ const Index = () => {
         {/* Story of the Week */}
         <StoryOfTheWeek />
 
+        {/* Featured Challenges */}
+        <FeaturedChallenges />
+        
+        {/* Success Stories */}
+        <SuccessStories />
+
         {/* Regional Map Preview */}
         <section className="py-12 bg-background">
           <div className="container mx-auto px-4">
             <RegionalImpactMap />
           </div>
         </section>
-
-        {/* Featured Challenges */}
-        <FeaturedChallenges />
-        
-        {/* Success Stories */}
-        <SuccessStories />
       </div>
     );
   }
