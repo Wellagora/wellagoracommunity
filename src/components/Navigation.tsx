@@ -175,7 +175,7 @@ const Navigation = () => {
               </span>
               <div className="flex items-center space-x-2">
                 <Users className="w-3 h-3 text-primary" />
-                <span className="text-xs text-primary font-medium">Közösség Építés</span>
+                <span className="text-xs text-primary font-medium">{t('nav.community_building')}</span>
                 <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
               </div>
             </Link>
