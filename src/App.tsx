@@ -53,12 +53,12 @@ function App() {
                 <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/admin" element={<AdminDashboardPage />} />
-                <Route path="/regional-hub" element={<RegionalHub />} />
+                <Route path="/regional-hub" element={<Navigate to="/community" replace />} />
                 <Route path="/explore-region" element={<ExploreRegionPage />} />
-                <Route path="/interactive-map" element={<Navigate to="/regional-hub" replace />} />
-                <Route path="/matching" element={<Navigate to="/regional-hub" replace />} />
-                <Route path="/dynamic-regional" element={<Navigate to="/regional-hub" replace />} />
-                <Route path="/revolutionary" element={<Navigate to="/regional-hub" replace />} />
+                <Route path="/interactive-map" element={<Navigate to="/community" replace />} />
+                <Route path="/matching" element={<Navigate to="/community" replace />} />
+                <Route path="/dynamic-regional" element={<Navigate to="/community" replace />} />
+                <Route path="/revolutionary" element={<Navigate to="/community" replace />} />
                 <Route path="/community" element={<Community />} />
                 <Route path="/ai-assistant" element={<AIAssistantPage />} />
                 <Route path="/challenges" element={<ChallengesPage />} />
