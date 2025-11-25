@@ -760,6 +760,7 @@
   "challenges.steps": "steps",
   "challenges.keep_going": "You're making great progress! Keep going to unlock your reward.",
   "common.loading": "Loading...",
+  "common.back": "Back",
   "common.back_to_dashboard": "Back to Dashboard",
   "common.trees": "Trees",
   "auth.login_required": "Login Required",
