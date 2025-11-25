@@ -71,14 +71,15 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
 
     try {
-      // Load main translations
+      // Load main translations - Vite imports JSON directly without .default
       const mainModule = await import(`@/locales/${lang}.json`);
-      let loadedTranslations = { ...mainModule.default };
+      let loadedTranslations = mainModule.default || mainModule;
       
       // Try to load admin translations if available
       try {
         const adminModule = await import(`@/locales/admin.${lang}.json`);
-        loadedTranslations = { ...loadedTranslations, ...adminModule.default };
+        const adminTranslations = adminModule.default || adminModule;
+        loadedTranslations = { ...loadedTranslations, ...adminTranslations };
       } catch {
         // Admin translations not available for this language, skip
       }
