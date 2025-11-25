@@ -6,33 +6,33 @@ import { Card, CardContent } from "@/components/ui/card";
 const HeroSection = () => {
   return (
     <section className="relative min-h-screen bg-gradient-hero overflow-hidden">
-      {/* Mountain Mist Layers - Apple Style */}
+      {/* Elegant Atmospheric Layers */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-mountain-mist"></div>
-        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-aqua-glow"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-aqua-glow"></div>
       </div>
 
-      {/* Organic Floating Shapes */}
-      <div className="absolute inset-0 bg-organic-shapes opacity-70"></div>
+      {/* Refined Organic Shapes */}
+      <div className="absolute inset-0 bg-organic-shapes opacity-50"></div>
       
-      {/* Floating Light Particles */}
-      <div className="absolute top-32 left-16 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-float"></div>
-      <div className="absolute bottom-32 right-16 w-[500px] h-[500px] bg-secondary/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '1.2s' }}></div>
-      <div className="absolute top-1/2 left-1/3 w-80 h-80 bg-info/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '0.6s' }}></div>
+      {/* Subtle Elegant Light Particles */}
+      <div className="absolute top-32 left-16 w-96 h-96 bg-primary/8 rounded-full blur-3xl animate-float"></div>
+      <div className="absolute bottom-32 right-16 w-[450px] h-[450px] bg-accent/6 rounded-full blur-3xl animate-float" style={{ animationDelay: '1.2s' }}></div>
+      <div className="absolute top-1/2 left-1/3 w-80 h-80 bg-info/7 rounded-full blur-3xl animate-float" style={{ animationDelay: '0.6s' }}></div>
 
       <div className="relative z-10 flex flex-col justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto text-center">
-          {/* Premium Badge */}
-          <div className="inline-flex items-center space-x-3 bg-glass backdrop-blur-xl px-8 py-4 rounded-full border border-accent/30 mb-8 animate-fade-up shadow-glow">
+          {/* Elegant Premium Badge */}
+          <div className="inline-flex items-center space-x-3 bg-glass backdrop-blur-xl px-8 py-4 rounded-full border border-primary/12 mb-8 animate-fade-up shadow-card">
             <Sparkles className="w-5 h-5 text-accent" />
-            <span className="text-white font-bold text-lg tracking-wide">Nature Meets Technology</span>
-            <div className="w-2 h-2 bg-accent rounded-full animate-pulse shadow-glow"></div>
+            <span className="text-white font-semibold text-lg tracking-wide">Nature Meets Technology</span>
+            <div className="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
           </div>
 
           {/* Achievement Badge */}
-          <div className="inline-flex items-center space-x-2 bg-glass/60 backdrop-blur-md px-6 py-3 rounded-full border border-accent/20 mb-10 animate-fade-up" style={{ animationDelay: '0.1s' }}>
+          <div className="inline-flex items-center space-x-2 bg-glass/50 backdrop-blur-md px-6 py-3 rounded-full border border-primary/10 mb-10 animate-fade-up" style={{ animationDelay: '0.1s' }}>
             <div className="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
-            <span className="text-white/90 text-sm font-medium">Join 12,500+ Sustainability Champions</span>
+            <span className="text-muted-foreground text-sm font-medium">Join 12,500+ Sustainability Champions</span>
           </div>
 
           {/* Main Headline - Elegant Serif */}
@@ -85,17 +85,17 @@ const HeroSection = () => {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-up" style={{ animationDelay: '0.5s' }}>
             {[
               { icon: Users, value: "12,500+", label: "Active Champions", gradient: "from-primary to-info" },
-              { icon: Target, value: "58,000+", label: "Programs Completed", gradient: "from-secondary to-accent" },
+              { icon: Target, value: "58,000+", label: "Programs Completed", gradient: "from-info to-accent" },
               { icon: TrendingUp, value: "3.2M kg", label: "CO₂ Reduced", gradient: "from-accent to-success" },
-              { icon: Globe, value: "65+", label: "Countries", gradient: "from-success to-info" }
+              { icon: Globe, value: "65+", label: "Countries", gradient: "from-primary to-accent" }
             ].map((stat, index) => (
-              <Card key={index} className="bg-glass backdrop-blur-xl border border-accent/20 hover:border-accent/40 transition-all hover:-translate-y-2 hover:shadow-glow group">
+              <Card key={index} className="bg-glass backdrop-blur-xl border border-primary/10 hover:border-primary/20 transition-all hover:-translate-y-2 hover:shadow-premium group">
                 <CardContent className="p-6 text-center">
                   <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${stat.gradient} mx-auto mb-4 flex items-center justify-center shadow-glow group-hover:scale-110 transition-transform`}>
                     <stat.icon className="w-7 h-7 text-white" />
                   </div>
-                  <div className="text-3xl font-bold bg-gradient-aqua bg-clip-text text-transparent mb-1">{stat.value}</div>
-                  <div className="text-white/80 text-sm font-medium">{stat.label}</div>
+                  <div className="text-3xl font-bold bg-gradient-vibrant bg-clip-text text-transparent mb-1">{stat.value}</div>
+                  <div className="text-muted-foreground text-sm font-medium">{stat.label}</div>
                 </CardContent>
               </Card>
             ))}
