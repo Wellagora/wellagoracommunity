@@ -266,7 +266,7 @@ const ChallengesPage = () => {
         </Card3D>
 
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
           {filteredChallenges.map((challenge, index) => (
             <Card3D 
               key={challenge.id} 
@@ -274,7 +274,7 @@ const ChallengesPage = () => {
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {challenge.imageUrl && (
-                <div className="relative w-full h-48 overflow-hidden">
+                <div className="relative w-full h-48 sm:h-56 lg:h-64 overflow-hidden">
                   <img 
                     src={challenge.imageUrl} 
                     alt={t(challenge.titleKey)}
@@ -306,28 +306,28 @@ const ChallengesPage = () => {
                   </div>
                 )}
                 
-                <CardTitle className="text-foreground text-lg leading-tight mb-2">
+                <CardTitle className="text-foreground text-base sm:text-lg lg:text-xl leading-tight mb-2 line-clamp-2">
                   {challenge.titleKey}
                 </CardTitle>
-                <CardDescription className="text-muted-foreground text-sm leading-relaxed">
+                <CardDescription className="text-muted-foreground text-sm leading-relaxed line-clamp-3">
                   {challenge.descriptionKey}
                 </CardDescription>
               </CardHeader>
 
               <CardContent className="space-y-4">
                 {/* Challenge Stats */}
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-3 gap-3 sm:gap-4 text-sm">
                   <div className="flex items-center space-x-2 text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    <span>{challenge.durationKey}</span>
+                    <Clock className="w-4 h-4 flex-shrink-0" />
+                    <span className="truncate">{challenge.durationKey}</span>
                   </div>
                   <div className="flex items-center space-x-2 text-muted-foreground">
-                    <Trophy className="w-4 h-4" />
-                    <span>{challenge.pointsReward} {t('challenges.points')}</span>
+                    <Trophy className="w-4 h-4 flex-shrink-0" />
+                    <span className="truncate">{challenge.pointsReward} {t('challenges.points')}</span>
                   </div>
                   <div className="flex items-center space-x-2 text-muted-foreground">
-                    <Users className="w-4 h-4" />
-                    <span>{challenge.participants.toLocaleString()}</span>
+                    <Users className="w-4 h-4 flex-shrink-0" />
+                    <span className="truncate">{challenge.participants.toLocaleString()}</span>
                   </div>
                 </div>
 
