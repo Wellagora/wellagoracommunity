@@ -4,16 +4,26 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useProject } from '@/contexts/ProjectContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Trophy, Calendar, MapPin, Award, Users, Leaf, TrendingUp } from 'lucide-react';
 import { format } from 'date-fns';
 import { hu, enUS, de } from 'date-fns/locale';
 import { getSponsorshipsWithImpact, type SponsorshipImpact } from '@/services/SponsorImpactService';
 
+interface ChallengeDefinition {
+  id: string;
+  title: string;
+  description: string;
+  translations: any;
+}
+
 const SponsorActiveSponsorships = () => {
   const { user } = useAuth();
   const { t, language } = useLanguage();
+  const { currentProject } = useProject();
   const [sponsorships, setSponsorships] = useState<SponsorshipImpact[]>([]);
+  const [challengeDefinitions, setChallengeDefinitions] = useState<Map<string, ChallengeDefinition>>(new Map());
   const [loading, setLoading] = useState(true);
 
   const localeMap = {
@@ -23,21 +33,62 @@ const SponsorActiveSponsorships = () => {
   };
 
   useEffect(() => {
-    if (user) {
+    if (user && currentProject) {
       loadSponsorships();
     }
-  }, [user]);
+  }, [user, currentProject]);
 
   const loadSponsorships = async () => {
     try {
-      // OPTIMIZED: Single call that gets everything
+      // Get sponsorships with impact data
       const data = await getSponsorshipsWithImpact(user?.id || '');
-      setSponsorships(data);
+      
+      // Filter by current project
+      const projectSponsorships = data.filter(s => s.project_id === currentProject?.id);
+      
+      // Get unique challenge IDs
+      const challengeIds = [...new Set(projectSponsorships.map(s => s.challenge_id))];
+      
+      // Fetch challenge definitions
+      if (challengeIds.length > 0) {
+        const { data: challenges, error } = await supabase
+          .from('challenge_definitions')
+          .select('id, title, description, translations')
+          .in('id', challengeIds);
+        
+        if (error) {
+          console.error('Error loading challenge definitions:', error);
+        } else {
+          const challengeMap = new Map<string, ChallengeDefinition>();
+          challenges?.forEach(challenge => {
+            challengeMap.set(challenge.id, challenge);
+          });
+          setChallengeDefinitions(challengeMap);
+        }
+      }
+      
+      setSponsorships(projectSponsorships);
     } catch (error) {
       console.error('Error loading sponsorships:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const getLocalizedTitle = (challengeId: string): string => {
+    const challenge = challengeDefinitions.get(challengeId);
+    if (!challenge) return challengeId;
+    
+    const translations = challenge.translations || {};
+    return translations[language]?.title || challenge.title || challengeId;
+  };
+
+  const getLocalizedDescription = (challengeId: string): string => {
+    const challenge = challengeDefinitions.get(challengeId);
+    if (!challenge) return '';
+    
+    const translations = challenge.translations || {};
+    return translations[language]?.description || challenge.description || '';
   };
 
   const getTierBadge = (tier: string) => {
@@ -93,10 +144,8 @@ const SponsorActiveSponsorships = () => {
                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                       <div className="flex-1">
                         <div className="flex flex-col gap-1 mb-2">
-                          <h4 className="font-semibold text-lg">{sponsorship.challenge_title}</h4>
-                          {sponsorship.challenge_description && (
-                            <p className="text-sm text-muted-foreground">{sponsorship.challenge_description}</p>
-                          )}
+                          <h4 className="font-semibold text-lg">{getLocalizedTitle(sponsorship.challenge_id)}</h4>
+                          <p className="text-sm text-muted-foreground">{getLocalizedDescription(sponsorship.challenge_id)}</p>
                           <div className="flex items-center gap-2 mt-1">
                             {getTierBadge(sponsorship.tier)}
                           </div>

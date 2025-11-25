@@ -11,6 +11,7 @@ export interface SponsorshipImpact {
   end_date: string | null;
   credit_cost: number;
   region: string;
+  project_id: string | null;
   
   // Real impact metrics from database (aggregated)
   total_participants: number;
@@ -49,7 +50,7 @@ export const getSponsorshipsWithImpact = async (
     // Step 1: Get all active sponsorships for this sponsor
     const { data: sponsorships, error: sponsorshipsError } = await supabase
       .from('challenge_sponsorships')
-      .select('id, challenge_id, tier, status, start_date, end_date, credit_cost, region')
+      .select('id, challenge_id, tier, status, start_date, end_date, credit_cost, region, project_id')
       .eq('sponsor_user_id', sponsorUserId)
       .eq('status', 'active')
       .order('start_date', { ascending: false });
@@ -179,6 +180,7 @@ export const getSponsorshipsWithImpact = async (
         end_date: sponsorship.end_date,
         credit_cost: sponsorship.credit_cost || 0,
         region: sponsorship.region || '',
+        project_id: sponsorship.project_id || null,
         total_participants: impact?.participants.size || 0,
         total_completions: impact?.completions || 0,
         total_co2_saved: totalCO2,
