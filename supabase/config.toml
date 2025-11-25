@@ -30,3 +30,6 @@ verify_jwt = false
 
 [functions.translate-challenge]
 verify_jwt = true
+
+[functions.bulk-translate]
+verify_jwt = true

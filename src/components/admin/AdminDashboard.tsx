@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { CheckCircle, XCircle, Clock, Sparkles, TrendingUp, Users, ArrowLeft, Plus, Building2, X, Mail } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Sparkles, TrendingUp, Users, ArrowLeft, Plus, Building2, X, Mail, Languages } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
@@ -755,12 +755,22 @@ const AdminDashboard = () => {
           className="gap-2"
         >
           <ArrowLeft className="w-4 h-4" />
-          Vissza a Platformra
+          {t('admin.back_to_platform')}
         </Button>
-        <Badge variant="outline" className="text-lg">
-          <Sparkles className="w-4 h-4 mr-2" />
-          AI-powered
-        </Badge>
+        <div className="flex items-center gap-3">
+          <Button
+            onClick={() => navigate('/translation-tool')}
+            variant="outline"
+            className="gap-2"
+          >
+            <Languages className="w-4 h-4" />
+            {t('admin.translation_tool')}
+          </Button>
+          <Badge variant="outline" className="text-lg">
+            <Sparkles className="w-4 h-4 mr-2" />
+            {t('admin.ai_powered')}
+          </Badge>
+        </div>
       </div>
       
       <div className="flex items-center justify-between">
