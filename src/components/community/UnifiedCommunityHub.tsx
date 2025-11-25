@@ -215,20 +215,22 @@ const UnifiedCommunityHub = () => {
   ];
 
   return (
-    <div className="min-h-screen">
-      {/* Inspiring Ocean Hero with Dynamic Background */}
+    <div className="min-h-screen bg-background">
+      {/* Premium Dark Hero with Atmospheric Glow */}
       <motion.div 
         className="relative overflow-hidden bg-gradient-hero text-white"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        {/* Layered animated organic shapes and waves */}
+        {/* Atmospheric Mountain Mist */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute inset-0 bg-organic-shapes opacity-50"></div>
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-float"></div>
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '1.5s' }}></div>
-          <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-primary/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '0.8s' }}></div>
+          <div className="absolute inset-0 bg-mountain-mist"></div>
+          <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-aqua-glow"></div>
+          <div className="absolute inset-0 bg-organic-shapes opacity-60"></div>
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-accent/15 rounded-full blur-3xl animate-float"></div>
+          <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-secondary/15 rounded-full blur-3xl animate-float" style={{ animationDelay: '1.5s' }}></div>
+          <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-info/12 rounded-full blur-3xl animate-float" style={{ animationDelay: '0.8s' }}></div>
         </div>
 
         <div className="relative container mx-auto px-4 py-16 sm:py-24">
@@ -243,20 +245,20 @@ const UnifiedCommunityHub = () => {
                 animate={{ rotate: [0, 15, 0], scale: [1, 1.1, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
-                <Sparkles className="w-8 h-8 text-yellow-300 drop-shadow-glow" />
+                <Sparkles className="w-8 h-8 text-accent drop-shadow-glow" />
               </motion.div>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold drop-shadow-lg">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading font-bold drop-shadow-lg">
                 {t('unified_hub.title')}
               </h1>
               <motion.div
                 animate={{ rotate: [0, -15, 0], scale: [1, 1.1, 1] }}
                 transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
               >
-                <Sparkles className="w-8 h-8 text-yellow-300 drop-shadow-glow" />
+                <Sparkles className="w-8 h-8 text-accent drop-shadow-glow" />
               </motion.div>
             </div>
             
-            <p className="text-xl sm:text-2xl text-white/90 mb-8 max-w-2xl mx-auto font-light leading-relaxed animate-fade-up" style={{ animationDelay: '0.2s' }}>
+            <p className="text-xl sm:text-2xl text-white/85 mb-8 max-w-2xl mx-auto font-light leading-relaxed animate-fade-up" style={{ animationDelay: '0.2s' }}>
               {t('unified_hub.subtitle')}
             </p>
 
@@ -281,12 +283,12 @@ const UnifiedCommunityHub = () => {
               transition={{ delay: 0.6, duration: 0.5 }}
             >
               <div className="relative group">
-                <Search className="absolute left-5 top-5 h-6 w-6 text-white/70 group-hover:text-white transition-colors duration-300" />
+                <Search className="absolute left-5 top-5 h-6 w-6 text-white/70 group-hover:text-accent transition-colors duration-300" />
                 <Input
                   placeholder={t('unified_hub.search_placeholder')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-14 h-16 bg-glass-strong border-white/30 text-white placeholder:text-white/60 text-lg rounded-2xl shadow-premium hover:shadow-float transition-all duration-300 focus:scale-[1.02]"
+                  className="pl-14 h-16 bg-glass-strong border-accent/30 text-white placeholder:text-white/60 text-lg rounded-2xl shadow-glow hover:shadow-premium hover:border-accent/50 transition-all duration-300"
                 />
               </div>
             </motion.div>

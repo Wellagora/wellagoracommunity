@@ -9,14 +9,14 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-gradient-to-r from-primary to-primary-dark text-primary-foreground hover:from-primary-dark hover:to-primary shadow-premium hover:shadow-glow border border-primary/10 hover:-translate-y-0.5 transition-all",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-card hover:shadow-premium border border-destructive/20",
-        outline: "border-2 border-primary/40 bg-transparent text-primary hover:bg-primary/5 hover:border-primary hover:shadow-card backdrop-blur-sm",
-        secondary: "bg-gradient-to-r from-secondary to-accent text-secondary-foreground hover:from-accent hover:to-secondary shadow-card hover:shadow-premium border border-secondary/10 hover:-translate-y-0.5 transition-all",
-        ghost: "text-foreground hover:bg-gradient-to-r hover:from-accent/10 hover:to-secondary/10 hover:text-primary border border-transparent",
-        link: "text-primary underline-offset-4 hover:underline hover:text-primary-glow",
-        premium: "bg-gradient-to-r from-primary via-secondary to-accent text-white font-semibold shadow-glow hover:shadow-premium border border-white/20 hover:-translate-y-1 hover:scale-[1.02] transition-all",
-        glass: "bg-glass backdrop-blur-xl border-2 border-white/30 text-foreground hover:bg-glass-strong hover:border-primary/40 shadow-card hover:shadow-premium",
+        default: "bg-gradient-to-r from-primary to-info text-white hover:from-info hover:to-primary shadow-glow hover:shadow-premium border border-accent/20 hover:-translate-y-0.5 transition-all",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-card hover:shadow-premium border border-destructive/30",
+        outline: "border-2 border-accent/40 bg-transparent text-accent hover:bg-accent/10 hover:border-accent hover:shadow-glow backdrop-blur-sm",
+        secondary: "bg-gradient-to-r from-secondary to-accent text-primary-dark hover:from-accent hover:to-secondary shadow-glow hover:shadow-premium border border-accent/20 hover:-translate-y-0.5 transition-all",
+        ghost: "text-foreground hover:bg-accent/10 hover:text-accent border border-transparent hover:border-accent/20",
+        link: "text-accent underline-offset-4 hover:underline hover:text-secondary",
+        premium: "bg-gradient-to-r from-accent via-secondary to-info text-primary-dark font-semibold shadow-glow hover:shadow-premium border border-accent/30 hover:-translate-y-1 hover:scale-[1.02] transition-all",
+        glass: "bg-glass backdrop-blur-xl border-2 border-accent/20 text-foreground hover:bg-glass-strong hover:border-accent/40 shadow-card hover:shadow-glow",
       },
       size: {
         default: "h-11 px-6 py-2",
