@@ -128,7 +128,7 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="bg-background/95 backdrop-blur-xl border-b border-border shadow-premium sticky top-0 z-50">
+    <nav className="bg-card/60 backdrop-blur-xl border-b border-accent/20 shadow-glow sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Mobile Compact Header */}
         <div className="lg:hidden flex justify-between items-center h-14">
@@ -141,7 +141,7 @@ const Navigation = () => {
                 className="w-8 h-8 object-contain"
               />
             </div>
-            <span className="text-lg font-bold text-foreground">Káli medence</span>
+            <span className="text-lg font-bold bg-gradient-aqua bg-clip-text text-transparent">Káli medence</span>
           </Link>
 
           {/* Mobile menu button */}
@@ -170,13 +170,13 @@ const Navigation = () => {
               </div>
             </Link>
             <Link to="/" className="flex flex-col group">
-              <span className="text-3xl font-bold text-foreground group-hover:text-primary transition-all duration-300">
+              <span className="text-3xl font-heading font-bold bg-gradient-aqua bg-clip-text text-transparent group-hover:opacity-80 transition-all duration-300">
                 Káli medence
               </span>
               <div className="flex items-center space-x-2">
                 <Users className="w-3 h-3 text-primary" />
-                <span className="text-xs text-primary font-medium">{t('nav.community_building')}</span>
-                <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+                <span className="text-xs text-accent font-medium">{t('nav.community_building')}</span>
+                <div className="w-2 h-2 bg-accent rounded-full animate-pulse shadow-glow"></div>
               </div>
             </Link>
           </div>
@@ -191,50 +191,50 @@ const Navigation = () => {
         <div className="hidden lg:flex flex-wrap justify-between items-center min-h-16 py-2 gap-2">
           {/* Navigation Links */}
           <div className="flex items-center gap-2 flex-wrap">
-            <Link to="/" className="group flex items-center px-2 py-1.5 text-muted-foreground hover:text-primary transition-all duration-300 font-medium text-sm">
+            <Link to="/" className="group flex items-center px-2 py-1.5 text-muted-foreground hover:text-accent transition-all duration-300 font-medium text-sm">
               <span className="relative">
                 {t('nav.home')}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-aqua group-hover:w-full transition-all duration-300 shadow-glow"></span>
               </span>
             </Link>
-            <Link to="/challenges" className="group flex items-center px-2 py-1.5 text-muted-foreground hover:text-primary transition-all duration-300 font-medium text-sm">
+            <Link to="/challenges" className="group flex items-center px-2 py-1.5 text-muted-foreground hover:text-accent transition-all duration-300 font-medium text-sm">
               <span className="relative">
                 {t('nav.challenges')}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-aqua group-hover:w-full transition-all duration-300 shadow-glow"></span>
               </span>
             </Link>
-            <Link to="/community" className="group flex items-center gap-1 px-2 py-1.5 text-muted-foreground hover:text-primary transition-all duration-300 font-medium text-sm">
+            <Link to="/community" className="group flex items-center gap-1 px-2 py-1.5 text-muted-foreground hover:text-accent transition-all duration-300 font-medium text-sm">
               <Users className="w-4 h-4" />
               <span className="relative">
                 {t('nav.community')}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-aqua group-hover:w-full transition-all duration-300 shadow-glow"></span>
               </span>
             </Link>
             {user && profile?.user_role === "citizen" && (
-              <Link to="/dashboard" className="group flex items-center px-2 py-1.5 text-muted-foreground hover:text-primary transition-all duration-300 font-medium text-sm">
+              <Link to="/dashboard" className="group flex items-center px-2 py-1.5 text-muted-foreground hover:text-accent transition-all duration-300 font-medium text-sm">
                 <span className="relative">
                   {t('nav.dashboard')}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-aqua group-hover:w-full transition-all duration-300 shadow-glow"></span>
                 </span>
               </Link>
             )}
             {user && profile?.user_role !== "citizen" && (
-              <Link to="/organization" className="group flex items-center gap-1 px-2 py-1.5 text-muted-foreground hover:text-primary transition-all duration-300 font-medium text-sm">
+              <Link to="/organization" className="group flex items-center gap-1 px-2 py-1.5 text-muted-foreground hover:text-accent transition-all duration-300 font-medium text-sm">
                 <Building2 className="w-4 h-4" />
                 <span className="relative">
                   {t('nav.organization_label')}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-aqua group-hover:w-full transition-all duration-300 shadow-glow"></span>
                 </span>
               </Link>
             )}
-            <Link to="/ai-assistant" className="group flex items-center gap-1 px-2 py-1.5 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-lg hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent-foreground text-sm">
+            <Link to="/ai-assistant" className="group flex items-center gap-1 px-2 py-1.5 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-lg hover:from-accent/30 hover:to-secondary/30 hover:shadow-glow transition-all duration-300 font-medium text-white text-sm">
               <span className="text-base">🤖</span>
               <span>AI</span>
             </Link>
-            <Link to="/contact" className="group flex items-center px-2 py-1.5 text-muted-foreground hover:text-primary transition-all duration-300 font-medium text-sm">
+            <Link to="/contact" className="group flex items-center px-2 py-1.5 text-muted-foreground hover:text-accent transition-all duration-300 font-medium text-sm">
               <span className="relative">
                 {t('nav.contact')}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-aqua group-hover:w-full transition-all duration-300 shadow-glow"></span>
               </span>
             </Link>
           </div>
