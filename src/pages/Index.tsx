@@ -20,6 +20,10 @@ import {
 
 import SuccessStories from "@/components/SuccessStories";
 import FeaturedChallenges from "@/components/FeaturedChallenges";
+import { CommunityImpactCounter } from "@/components/CommunityImpactCounter";
+import { StoryOfTheWeek } from "@/components/StoryOfTheWeek";
+import { RegionalImpactGarden } from "@/components/RegionalImpactGarden";
+import { RegionalImpactMap } from "@/components/dashboard/RegionalImpactMap";
 
 const Index = () => {
   const { t } = useLanguage();
@@ -139,6 +143,22 @@ const Index = () => {
                 </Link>
               </motion.div>
             </div>
+          </div>
+        </section>
+
+        {/* Community Impact Counter */}
+        <CommunityImpactCounter />
+
+        {/* Regional Impact Garden */}
+        <RegionalImpactGarden />
+        
+        {/* Story of the Week */}
+        <StoryOfTheWeek />
+
+        {/* Regional Map Preview */}
+        <section className="py-12 bg-background">
+          <div className="container mx-auto px-4">
+            <RegionalImpactMap />
           </div>
         </section>
 
@@ -342,6 +362,22 @@ const Index = () => {
               </Card>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* Community Impact Counter */}
+      <CommunityImpactCounter />
+
+      {/* Regional Impact Garden */}
+      <RegionalImpactGarden />
+      
+      {/* Story of the Week */}
+      <StoryOfTheWeek />
+
+      {/* Regional Map Preview */}
+      <section className="py-12 bg-background">
+        <div className="container mx-auto px-4">
+          <RegionalImpactMap />
         </div>
       </section>
 
