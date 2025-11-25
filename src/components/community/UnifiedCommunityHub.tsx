@@ -148,8 +148,8 @@ const UnifiedCommunityHub = () => {
     {
       id: "forums",
       icon: MessageCircle,
-      color: "from-orange-500 to-red-500",
-      iconBg: "bg-gradient-to-br from-orange-500 to-red-500",
+      color: "from-[hsl(190,70%,50%)] to-[hsl(180,65%,55%)]",
+      iconBg: "bg-gradient-to-br from-[hsl(190,70%,50%)] to-[hsl(180,65%,55%)]",
       title: t('unified_hub.forums_title'),
       description: t('unified_hub.forums_desc'),
       stats: "1,247 " + t('unified_hub.discussions'),
@@ -158,8 +158,8 @@ const UnifiedCommunityHub = () => {
     {
       id: "partners",
       icon: Handshake,
-      color: "from-purple-500 to-indigo-500",
-      iconBg: "bg-gradient-to-br from-purple-500 to-indigo-500",
+      color: "from-[hsl(210,80%,50%)] to-[hsl(200,75%,55%)]",
+      iconBg: "bg-gradient-to-br from-[hsl(210,80%,50%)] to-[hsl(200,75%,55%)]",
       title: t('unified_hub.partners_title'),
       description: t('unified_hub.partners_desc'),
       stats: `${stakeholders.length} ` + t('unified_hub.stakeholders'),
@@ -168,8 +168,8 @@ const UnifiedCommunityHub = () => {
     {
       id: "events",
       icon: Calendar,
-      color: "from-yellow-500 to-orange-500",
-      iconBg: "bg-gradient-to-br from-yellow-500 to-orange-500",
+      color: "from-[hsl(165,70%,55%)] to-[hsl(155,65%,60%)]",
+      iconBg: "bg-gradient-to-br from-[hsl(165,70%,55%)] to-[hsl(155,65%,60%)]",
       title: t('unified_hub.events_title'),
       description: t('unified_hub.events_desc'),
       stats: "23 " + t('unified_hub.upcoming'),
@@ -178,8 +178,8 @@ const UnifiedCommunityHub = () => {
     {
       id: "challenges",
       icon: Target,
-      color: "from-blue-500 to-cyan-500",
-      iconBg: "bg-gradient-to-br from-blue-500 to-cyan-500",
+      color: "from-[hsl(240,85%,30%)] to-[hsl(220,75%,40%)]",
+      iconBg: "bg-gradient-to-br from-[hsl(240,85%,30%)] to-[hsl(220,75%,40%)]",
       title: t('unified_hub.programs_title'),
       description: t('unified_hub.programs_desc'),
       stats: "15 " + t('unified_hub.active'),
@@ -216,17 +216,17 @@ const UnifiedCommunityHub = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section with Gradient */}
+      {/* Hero Section with Brand Blue Gradient */}
       <motion.div 
-        className="relative overflow-hidden bg-gradient-to-br from-violet-900 via-purple-900 to-indigo-900 text-white"
+        className="relative overflow-hidden bg-gradient-to-br from-[hsl(240,90%,20%)] via-[hsl(210,80%,40%)] to-[hsl(190,70%,50%)] text-white"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
         {/* Animated background patterns */}
         <div className="absolute inset-0 overflow-hidden opacity-20">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-pink-500 to-purple-500 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-[hsl(190,70%,60%)] to-[hsl(165,70%,65%)] rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-br from-[hsl(200,80%,50%)] to-[hsl(180,70%,60%)] rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
         </div>
 
         <div className="relative container mx-auto px-4 py-16 sm:py-24">
@@ -244,7 +244,7 @@ const UnifiedCommunityHub = () => {
               <Sparkles className="w-8 h-8 text-yellow-400" />
             </div>
             
-            <p className="text-xl sm:text-2xl text-purple-200 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl sm:text-2xl text-cyan-100 mb-8 max-w-2xl mx-auto">
               {t('unified_hub.subtitle')}
             </p>
 
@@ -263,7 +263,7 @@ const UnifiedCommunityHub = () => {
                   placeholder={t('unified_hub.search_placeholder')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-12 h-14 bg-white/10 backdrop-blur-md border-white/20 text-white placeholder:text-purple-200 text-lg"
+                  className="pl-12 h-14 bg-white/10 backdrop-blur-md border-white/20 text-white placeholder:text-cyan-100 text-lg"
                 />
               </div>
             </div>
@@ -359,11 +359,11 @@ const UnifiedCommunityHub = () => {
             </div>
 
             {/* Call to Action */}
-            <Card className="bg-gradient-to-br from-primary via-purple-600 to-indigo-600 text-white border-0">
+            <Card className="bg-gradient-to-br from-[hsl(210,80%,45%)] via-[hsl(200,75%,50%)] to-[hsl(180,70%,55%)] text-white border-0">
               <CardContent className="p-8 text-center">
                 <Globe className="w-16 h-16 mx-auto mb-4 opacity-80" />
                 <h2 className="text-2xl font-bold mb-3">{t('unified_hub.cta_title')}</h2>
-                <p className="text-purple-100 mb-6 max-w-2xl mx-auto">
+                <p className="text-cyan-50 mb-6 max-w-2xl mx-auto">
                   {t('unified_hub.cta_description')}
                 </p>
                 <div className="flex gap-4 justify-center flex-wrap">
