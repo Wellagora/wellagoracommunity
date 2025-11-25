@@ -1,4 +1,10 @@
 {
+  "roles.super_admin": "Super Admin",
+  "roles.role_label": "Role",
+  "roles.citizen": "Občan",
+  "roles.business": "Firma",
+  "roles.ngo": "NGO",
+  "roles.government": "Vláda",
   "nav.community_building": "Budování Komunity",
   "nav.home": "Domů",
   "nav.challenges": "Výzvy",
