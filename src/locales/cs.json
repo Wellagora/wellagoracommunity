@@ -569,6 +569,13 @@
   "sponsor.current_package": "Aktuální balíček",
   "sponsor.credits": "kredity",
   "sponsor.active_package": "Aktivní balíček",
+  "sponsor.browse_programs": "Procházet programy",
+  "sponsor.browse_programs_desc": "Prozkoumejte dostupné programy ve vašem projektu",
+  "sponsor.no_programs": "Žádné dostupné programy",
+  "sponsor.already_sponsored": "Již sponzorováno",
+  "sponsor.sponsor_program": "Sponzorovat program",
+  "sponsor.back_to_dashboard": "Zpět na Dashboard",
+  "sponsor.choose_package": "Vybrat balíček",
   "sponsor.challenge_sponsorship": "sponzorování výzvy",
   "sponsor.package_purchase": "nákup balíčku"
 }
