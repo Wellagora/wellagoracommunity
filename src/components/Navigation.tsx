@@ -29,7 +29,7 @@ import { ProjectSelector } from "./ProjectSelector";
 import { RoleSwitcher } from "./admin/RoleSwitcher";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import kaliLogo from "@/assets/kali-medence-logo.png";
+import kaliLogo from "@/assets/wellagora-logo.png";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
