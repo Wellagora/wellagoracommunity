@@ -1304,6 +1304,7 @@
   "index.stats_partnerships": "Partnerségek",
   "index.stats_goal_progress": "Cél Haladás",
   "common.loading": "Betöltés...",
+  "common.back": "Vissza",
   "common.back_to_dashboard": "Vissza a Dashboard-hoz",
   "common.trees": "Fák",
   "auth.login_required": "Bejelentkezés szükséges",
