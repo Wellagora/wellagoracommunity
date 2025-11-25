@@ -15,7 +15,7 @@ import { z } from "zod";
 const AuthPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user, signIn, signUp, loading } = useAuth();
+  const { user, profile, signIn, signUp, loading } = useAuth();
   const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,10 +47,10 @@ const AuthPage = () => {
 
   // Redirect if already authenticated
   useEffect(() => {
-    if (user) {
+    if (!loading && user && profile) {
       navigate("/dashboard");
     }
-  }, [user, navigate]);
+  }, [user, profile, loading, navigate]);
 
   const [loginForm, setLoginForm] = useState({
     email: "",
