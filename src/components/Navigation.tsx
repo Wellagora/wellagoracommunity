@@ -210,13 +210,6 @@ const Navigation = () => {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-success group-hover:w-full transition-all duration-300"></span>
               </span>
             </Link>
-            <Link to="/regional-hub" className="group flex items-center gap-1 px-2 py-1.5 bg-gradient-to-r from-success/10 to-warning/10 border border-success/30 rounded-lg hover:from-success/20 hover:to-warning/20 transition-all duration-300 font-medium text-sm">
-              <MapPin className="w-4 h-4 text-success" />
-              <span>{t('nav.regional_hub_short')}</span>
-              <Badge variant="secondary" className="bg-gradient-to-r from-success to-warning text-white text-xs px-1 py-0">
-                {t('nav.regional_hub_badge')}
-              </Badge>
-            </Link>
             {user && profile?.user_role === "citizen" && (
               <Link to="/dashboard" className="group flex items-center px-2 py-1.5 text-muted-foreground hover:text-primary transition-all duration-300 font-medium text-sm">
                 <span className="relative">
@@ -411,16 +404,6 @@ const Navigation = () => {
               >
                 <Users className="w-5 h-5" />
                 <span className="font-medium">{t('nav.community')}</span>
-              </Link>
-              
-              <Link 
-                to="/regional-hub" 
-                className="flex items-center space-x-3 px-3 py-2.5 bg-gradient-to-r from-success/20 to-warning/20 border border-success/30 text-success-foreground rounded-xl transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <MapPin className="w-5 h-5" />
-                <span className="font-medium">{t('nav.regional_hub')}</span>
-                <Badge variant="secondary" className="ml-auto bg-gradient-to-r from-success to-warning text-white text-xs">{t('nav.regional_hub_badge')}</Badge>
               </Link>
               
               {profile?.user_role === "citizen" && (
