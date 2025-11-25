@@ -11,7 +11,7 @@ import ExploreRegionPage from './pages/ExploreRegionPage';
 import Index from "@/pages/Index";
 import AuthPage from "@/pages/AuthPage";
 import DashboardPage from "@/pages/DashboardPage";
-import Community from "@/pages/Community";
+import CommunityPage from "@/pages/CommunityPage";
 import AIAssistantPage from "@/pages/AIAssistantPage";
 import ChallengesPage from "@/pages/ChallengesPage";
 import ChallengeDetailPage from "@/pages/ChallengeDetailPage";
@@ -59,7 +59,7 @@ function App() {
                 <Route path="/matching" element={<Navigate to="/community" replace />} />
                 <Route path="/dynamic-regional" element={<Navigate to="/community" replace />} />
                 <Route path="/revolutionary" element={<Navigate to="/community" replace />} />
-                <Route path="/community" element={<Community />} />
+                <Route path="/community" element={<CommunityPage />} />
                 <Route path="/ai-assistant" element={<AIAssistantPage />} />
                 <Route path="/challenges" element={<ChallengesPage />} />
                 <Route path="/challenges/:challengeId" element={<ChallengeDetailPage />} />
