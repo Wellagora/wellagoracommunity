@@ -9,13 +9,14 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md hover:shadow-lg border border-primary/20 hover:border-primary/40",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-md hover:shadow-lg border border-destructive/20",
-        outline: "border-2 border-primary/30 bg-transparent text-primary hover:bg-primary/5 hover:border-primary/50 hover:shadow-md",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-md hover:shadow-lg border border-secondary/20",
-        ghost: "text-foreground hover:bg-accent/10 hover:text-accent border border-transparent hover:border-accent/20",
+        default: "bg-gradient-to-r from-primary to-primary-dark text-primary-foreground hover:from-primary-dark hover:to-primary shadow-premium hover:shadow-glow border border-primary/10 hover:-translate-y-0.5 transition-all",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-card hover:shadow-premium border border-destructive/20",
+        outline: "border-2 border-primary/40 bg-transparent text-primary hover:bg-primary/5 hover:border-primary hover:shadow-card backdrop-blur-sm",
+        secondary: "bg-gradient-to-r from-secondary to-accent text-secondary-foreground hover:from-accent hover:to-secondary shadow-card hover:shadow-premium border border-secondary/10 hover:-translate-y-0.5 transition-all",
+        ghost: "text-foreground hover:bg-gradient-to-r hover:from-accent/10 hover:to-secondary/10 hover:text-primary border border-transparent",
         link: "text-primary underline-offset-4 hover:underline hover:text-primary-glow",
-        eco: "bg-gradient-to-r from-success to-accent text-white font-medium shadow-lg hover:shadow-xl border border-success/30 hover:border-success/50 transform hover:scale-[1.02]",
+        premium: "bg-gradient-to-r from-primary via-secondary to-accent text-white font-semibold shadow-glow hover:shadow-premium border border-white/20 hover:-translate-y-1 hover:scale-[1.02] transition-all",
+        glass: "bg-glass backdrop-blur-xl border-2 border-white/30 text-foreground hover:bg-glass-strong hover:border-primary/40 shadow-card hover:shadow-premium",
       },
       size: {
         default: "h-11 px-6 py-2",

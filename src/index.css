@@ -8,86 +8,86 @@ Természetes színpaletta és elegáns tipográfia a közösség építés támo
 
 @layer base {
   :root {
-    /* Modern UI-friendly Színséma */
+    /* Wellagora Brand Colors - Nature-Tech Inspired */
     --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    --foreground: 220 40% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 220 40% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 220 40% 15%;
 
-    /* Beautiful Ocean Blues - Inspired by Nature & Sustainability */
-    --primary: 190 85% 45%;
+    /* Deep Navy & Midnight Blue - Primary Brand */
+    --primary: 210 100% 25%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 185 80% 55%;
-    --primary-dark: 195 90% 35%;
+    --primary-glow: 195 90% 55%;
+    --primary-dark: 220 100% 15%;
 
-    /* Vibrant Aqua Secondary */
-    --secondary: 175 70% 50%;
+    /* Aqua Green Gradients - Secondary Brand */
+    --secondary: 175 75% 50%;
     --secondary-foreground: 0 0% 100%;
 
-    /* Soft Cloud Muted */
-    --muted: 200 30% 96%;
-    --muted-foreground: 200 20% 50%;
+    /* Soft Muted for Backgrounds */
+    --muted: 210 20% 96%;
+    --muted-foreground: 210 15% 45%;
 
-    /* Fresh Mint Accent */
-    --accent: 165 65% 55%;
-    --accent-foreground: 0 0% 100%;
+    /* Neon Mint Highlight - Accent */
+    --accent: 165 80% 55%;
+    --accent-foreground: 220 40% 15%;
     --accent-light: 165 70% 70%;
 
-    /* Lush Green Success */
-    --success: 142 69% 58%;
+    /* Nature Green Success */
+    --success: 155 70% 48%;
     --success-foreground: 0 0% 100%;
-    --success-light: 142 69% 70%;
+    --success-light: 155 65% 65%;
 
-    /* Sunshine Warning */
-    --warning: 45 93% 58%;
-    --warning-foreground: 0 0% 100%;
+    /* Warm Warning */
+    --warning: 45 95% 60%;
+    --warning-foreground: 220 40% 15%;
 
-    /* Sky Blue Info */
-    --info: 200 90% 50%;
+    /* Blue-Green Info */
+    --info: 185 85% 50%;
     --info-foreground: 0 0% 100%;
 
-    /* Coral Destructive */
-    --destructive: 10 85% 62%;
+    /* Subtle Destructive */
+    --destructive: 5 80% 58%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 200 25% 90%;
-    --input: 200 25% 92%;
-    --ring: 190 85% 45%;
+    --border: 210 20% 88%;
+    --input: 210 20% 90%;
+    --ring: 175 75% 50%;
 
     --radius: 1rem;
 
-    /* Inspiring Ocean Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(195 90% 40%) 0%, hsl(185 85% 50%) 50%, hsl(175 80% 60%) 100%);
-    --gradient-vibrant: linear-gradient(135deg, hsl(165 70% 60%) 0%, hsl(190 85% 50%) 50%, hsl(200 90% 55%) 100%);
-    --gradient-nature: linear-gradient(180deg, hsl(165 65% 95%) 0%, hsl(185 70% 95%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(195 90% 97%) 0%, hsl(185 80% 96%) 30%, hsl(165 70% 95%) 60%, hsl(0 0% 100%) 100%);
-    --gradient-wave: linear-gradient(135deg, hsl(200 85% 85%) 0%, hsl(185 80% 80%) 50%, hsl(165 70% 85%) 100%);
-    --gradient-light-transition: linear-gradient(180deg, hsl(195 85% 97%) 0%, hsl(185 75% 95%) 40%, hsl(0 0% 100%) 70%, hsl(200 30% 98%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(190 60% 98%) 50%, hsl(175 50% 98%) 100%);
-    --gradient-sunset: linear-gradient(135deg, hsl(165 70% 65%) 0%, hsl(185 80% 60%) 50%, hsl(195 85% 60%) 100%);
-    --gradient-ocean: linear-gradient(135deg, hsl(200 90% 60%) 0%, hsl(185 85% 55%) 50%, hsl(165 75% 60%) 100%);
-    --gradient-depth: linear-gradient(135deg, hsl(195 90% 35%) 0%, hsl(185 85% 45%) 50%, hsl(175 80% 55%) 100%);
-    --gradient-tropical: linear-gradient(135deg, hsl(175 75% 60%) 0%, hsl(165 70% 65%) 100%);
+    /* Wellagora Gradients - Organic & Flowing */
+    --gradient-primary: linear-gradient(135deg, hsl(210 100% 25%) 0%, hsl(195 90% 35%) 50%, hsl(175 75% 50%) 100%);
+    --gradient-vibrant: linear-gradient(135deg, hsl(165 80% 55%) 0%, hsl(175 75% 50%) 50%, hsl(185 85% 50%) 100%);
+    --gradient-nature: linear-gradient(180deg, hsl(165 70% 96%) 0%, hsl(0 0% 100%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(210 100% 15%) 0%, hsl(210 100% 25%) 40%, hsl(195 85% 40%) 70%, hsl(175 75% 50%) 100%);
+    --gradient-wave: linear-gradient(135deg, hsl(195 90% 85%) 0%, hsl(175 75% 75%) 50%, hsl(165 80% 85%) 100%);
+    --gradient-light-transition: linear-gradient(180deg, hsl(210 30% 98%) 0%, hsl(0 0% 100%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 20% 98%) 100%);
+    --gradient-aqua: linear-gradient(135deg, hsl(175 75% 50%) 0%, hsl(165 80% 55%) 100%);
+    --gradient-depth: linear-gradient(135deg, hsl(220 100% 15%) 0%, hsl(210 100% 25%) 50%, hsl(195 90% 35%) 100%);
+    --gradient-tech: linear-gradient(135deg, hsl(210 100% 25%) 0%, hsl(165 80% 55%) 100%);
+    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.8) 0%, hsl(210 30% 98% / 0.6) 100%);
 
-    /* Beautiful Shadows with Ocean Glow */
-    --shadow-eco: 0 10px 40px -6px hsl(190 85% 45% / 0.25);
-    --shadow-glow: 0 0 50px hsl(185 80% 55% / 0.4);
-    --shadow-card: 0 6px 30px -4px hsl(190 80% 50% / 0.15);
-    --shadow-premium: 0 16px 60px -10px hsl(190 85% 45% / 0.25);
-    --shadow-float: 0 20px 60px -15px hsl(185 80% 50% / 0.3);
+    /* Elegant Shadows with Brand Glow */
+    --shadow-eco: 0 10px 40px -6px hsl(175 75% 50% / 0.3);
+    --shadow-glow: 0 0 50px hsl(165 80% 55% / 0.5);
+    --shadow-card: 0 8px 32px -6px hsl(210 100% 25% / 0.12);
+    --shadow-premium: 0 20px 70px -12px hsl(175 75% 50% / 0.35);
+    --shadow-float: 0 25px 70px -18px hsl(165 80% 55% / 0.4);
 
     /* Smooth animation system */
     --transition-smooth: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.45s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-    /* Typography scale */
-    --font-heading: 'Playfair Display', serif;
-    --font-body: 'Inter', sans-serif;
+    /* Premium Typography */
+    --font-heading: 'Playfair Display', 'Georgia', serif;
+    --font-body: 'Inter', 'system-ui', sans-serif;
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 120 15% 15%;
@@ -179,19 +179,19 @@ Természetes színpaletta és elegáns tipográfia a közösség építés támo
     @apply text-foreground font-medium tracking-wide drop-shadow-sm;
   }
 
-  /* Advanced glass morphism with ocean vibes */
+  /* Premium Glass Morphism - Wellagora Style */
   .bg-glass {
-    background: linear-gradient(135deg, hsl(var(--background) / 0.85), hsl(190 85% 98% / 0.7));
-    backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid hsl(190 70% 80% / 0.4);
-    box-shadow: 0 8px 32px 0 hsl(190 80% 50% / 0.1);
+    background: linear-gradient(135deg, hsl(0 0% 100% / 0.7), hsl(210 30% 98% / 0.5));
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid hsl(210 20% 88% / 0.5);
+    box-shadow: 0 8px 32px 0 hsl(210 100% 25% / 0.08), inset 0 1px 0 hsl(0 0% 100% / 0.6);
   }
 
   .bg-glass-strong {
-    background: linear-gradient(135deg, hsl(var(--background) / 0.95), hsl(185 75% 97% / 0.9));
-    backdrop-filter: blur(24px) saturate(200%);
-    border: 1px solid hsl(185 70% 85% / 0.5);
-    box-shadow: 0 12px 40px 0 hsl(185 80% 50% / 0.15);
+    background: linear-gradient(135deg, hsl(0 0% 100% / 0.9), hsl(210 30% 98% / 0.85));
+    backdrop-filter: blur(32px) saturate(200%);
+    border: 1px solid hsl(210 20% 88% / 0.6);
+    box-shadow: 0 16px 48px 0 hsl(210 100% 25% / 0.12), inset 0 1px 0 hsl(0 0% 100% / 0.8);
   }
 
   /* Inspiring 3D hover effects */

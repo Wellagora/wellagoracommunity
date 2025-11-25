@@ -148,8 +148,8 @@ const UnifiedCommunityHub = () => {
     {
       id: "forums",
       icon: MessageCircle,
-      color: "from-[hsl(190,70%,50%)] to-[hsl(180,65%,55%)]",
-      iconBg: "bg-gradient-to-br from-[hsl(190,70%,50%)] to-[hsl(180,65%,55%)]",
+      color: "from-primary to-secondary",
+      iconBg: "bg-gradient-to-br from-primary to-secondary",
       title: t('unified_hub.forums_title'),
       description: t('unified_hub.forums_desc'),
       stats: "1,247 " + t('unified_hub.discussions'),
@@ -158,8 +158,8 @@ const UnifiedCommunityHub = () => {
     {
       id: "partners",
       icon: Handshake,
-      color: "from-[hsl(210,80%,50%)] to-[hsl(200,75%,55%)]",
-      iconBg: "bg-gradient-to-br from-[hsl(210,80%,50%)] to-[hsl(200,75%,55%)]",
+      color: "from-secondary to-accent",
+      iconBg: "bg-gradient-to-br from-secondary to-accent",
       title: t('unified_hub.partners_title'),
       description: t('unified_hub.partners_desc'),
       stats: `${stakeholders.length} ` + t('unified_hub.stakeholders'),
@@ -168,8 +168,8 @@ const UnifiedCommunityHub = () => {
     {
       id: "events",
       icon: Calendar,
-      color: "from-[hsl(165,70%,55%)] to-[hsl(155,65%,60%)]",
-      iconBg: "bg-gradient-to-br from-[hsl(165,70%,55%)] to-[hsl(155,65%,60%)]",
+      color: "from-accent to-success",
+      iconBg: "bg-gradient-to-br from-accent to-success",
       title: t('unified_hub.events_title'),
       description: t('unified_hub.events_desc'),
       stats: "23 " + t('unified_hub.upcoming'),
@@ -178,8 +178,8 @@ const UnifiedCommunityHub = () => {
     {
       id: "challenges",
       icon: Target,
-      color: "from-[hsl(240,85%,30%)] to-[hsl(220,75%,40%)]",
-      iconBg: "bg-gradient-to-br from-[hsl(240,85%,30%)] to-[hsl(220,75%,40%)]",
+      color: "from-primary-dark to-primary",
+      iconBg: "bg-gradient-to-br from-primary-dark to-primary",
       title: t('unified_hub.programs_title'),
       description: t('unified_hub.programs_desc'),
       stats: "15 " + t('unified_hub.active'),
@@ -218,17 +218,17 @@ const UnifiedCommunityHub = () => {
     <div className="min-h-screen">
       {/* Inspiring Ocean Hero with Dynamic Background */}
       <motion.div 
-        className="relative overflow-hidden bg-gradient-depth text-white"
+        className="relative overflow-hidden bg-gradient-hero text-white"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        {/* Layered animated ocean bubbles and waves */}
+        {/* Layered animated organic shapes and waves */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute inset-0 bg-ocean-bubbles opacity-40"></div>
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-[hsl(185,80%,60%)] to-[hsl(175,75%,65%)] rounded-full blur-3xl opacity-30 animate-float"></div>
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-br from-[hsl(195,85%,55%)] to-[hsl(165,70%,70%)] rounded-full blur-3xl opacity-25 animate-float" style={{ animationDelay: '1.5s' }}></div>
-          <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-gradient-to-br from-[hsl(175,75%,65%)] to-[hsl(185,80%,60%)] rounded-full blur-3xl opacity-20 animate-float" style={{ animationDelay: '0.8s' }}></div>
+          <div className="absolute inset-0 bg-organic-shapes opacity-50"></div>
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-float"></div>
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '1.5s' }}></div>
+          <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-primary/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '0.8s' }}></div>
         </div>
 
         <div className="relative container mx-auto px-4 py-16 sm:py-24">
