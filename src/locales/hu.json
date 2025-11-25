@@ -1,4 +1,10 @@
 {
+  "roles.super_admin": "Szuper Admin",
+  "roles.role_label": "Szerepkör",
+  "roles.citizen": "Magánszemély",
+  "roles.business": "Vállalat",
+  "roles.ngo": "NGO",
+  "roles.government": "Önkormányzat",
   "nav.community_building": "Közösség Építés",
   "nav.home": "Főoldal",
   "nav.challenges": "Programok",

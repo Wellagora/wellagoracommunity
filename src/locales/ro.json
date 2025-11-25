@@ -1,4 +1,10 @@
 {
+  "roles.super_admin": "Super Admin",
+  "roles.role_label": "Rol",
+  "roles.citizen": "Cetățean",
+  "roles.business": "Companie",
+  "roles.ngo": "ONG",
+  "roles.government": "Guvern",
   "nav.community_building": "Construirea Comunității",
   "nav.home": "Acasă",
   "nav.challenges": "Provocări",

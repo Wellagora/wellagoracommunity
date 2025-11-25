@@ -1,4 +1,10 @@
 {
+  "roles.super_admin": "Super Admin",
+  "roles.role_label": "Uloga",
+  "roles.citizen": "Građanin",
+  "roles.business": "Tvrtka",
+  "roles.ngo": "NGO",
+  "roles.government": "Vlada",
   "nav.community_building": "Izgradnja Zajednice",
   "nav.home": "Početna",
   "nav.challenges": "Izazovi", 

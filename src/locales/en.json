@@ -1,4 +1,10 @@
 {
+  "roles.super_admin": "Super Admin",
+  "roles.role_label": "Role",
+  "roles.citizen": "Citizen",
+  "roles.business": "Business",
+  "roles.ngo": "NGO",
+  "roles.government": "Government",
   "nav.community_building": "Community Building",
   "nav.home": "Home",
   "nav.challenges": "Programs",
