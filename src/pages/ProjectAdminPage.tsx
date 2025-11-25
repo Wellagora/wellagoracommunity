@@ -65,7 +65,7 @@ export default function ProjectAdminPage() {
       }
     } catch (error: any) {
       toast({
-        title: "Hiba",
+        title: t('project_admin.error'),
         description: error.message,
         variant: "destructive",
       });
@@ -109,7 +109,7 @@ export default function ProjectAdminPage() {
       setMembers(combined as any);
     } catch (error: any) {
       toast({
-        title: "Hiba",
+        title: t('project_admin.error'),
         description: error.message,
         variant: "destructive",
       });
@@ -131,14 +131,14 @@ export default function ProjectAdminPage() {
       if (error) throw error;
 
       toast({
-        title: "Sikeres",
-        description: "Sikeresen csatlakoztál projekt adminként!",
+        title: t('project_admin.success'),
+        description: t('project_admin.join_success'),
       });
 
       loadMembers(selectedProject.id);
     } catch (error: any) {
       toast({
-        title: "Hiba",
+        title: t('project_admin.error'),
         description: error.message,
         variant: "destructive",
       });
@@ -156,7 +156,7 @@ export default function ProjectAdminPage() {
         .eq("email", newMemberEmail)
         .maybeSingle();
 
-      if (profileError || !profileData) throw new Error("Felhasználó nem található ezzel az email címmel");
+      if (profileError || !profileData) throw new Error(t('project_admin.user_not_found'));
 
       // Add as member
       const { error } = await supabase
@@ -170,15 +170,15 @@ export default function ProjectAdminPage() {
       if (error) throw error;
 
       toast({
-        title: "Sikeres",
-        description: "Tag sikeresen hozzáadva!",
+        title: t('project_admin.success'),
+        description: t('project_admin.member_added'),
       });
 
       setNewMemberEmail("");
       loadMembers(selectedProject.id);
     } catch (error: any) {
       toast({
-        title: "Hiba",
+        title: t('project_admin.error'),
         description: error.message,
         variant: "destructive",
       });
@@ -197,14 +197,14 @@ export default function ProjectAdminPage() {
       if (error) throw error;
 
       toast({
-        title: "Sikeres",
-        description: "Tag eltávolítva!",
+        title: t('project_admin.success'),
+        description: t('project_admin.member_removed'),
       });
 
       loadMembers(selectedProject.id);
     } catch (error: any) {
       toast({
-        title: "Hiba",
+        title: t('project_admin.error'),
         description: error.message,
         variant: "destructive",
       });
@@ -222,7 +222,7 @@ export default function ProjectAdminPage() {
       <div className="min-h-screen bg-background">
         <Navigation />
         <div className="container mx-auto px-4 py-8">
-          <p>Betöltés...</p>
+          <p>{t('project_admin.loading')}</p>
         </div>
       </div>
     );
@@ -233,18 +233,18 @@ export default function ProjectAdminPage() {
       <Navigation />
       <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 mt-14 sm:mt-16">
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">Projekt Adminisztráció</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">{t('project_admin.title')}</h1>
           <p className="text-sm sm:text-base text-muted-foreground">
-            Kezeld a projekteket és a tagokat
+            {t('project_admin.subtitle')}
           </p>
         </div>
 
         {projects.length === 0 ? (
           <Card>
             <CardHeader>
-              <CardTitle>Nincs elérhető projekt</CardTitle>
+              <CardTitle>{t('project_admin.no_projects_title')}</CardTitle>
               <CardDescription>
-                Jelenleg nincsenek aktív projektek a rendszerben.
+                {t('project_admin.no_projects_desc')}
               </CardDescription>
             </CardHeader>
           </Card>
@@ -255,7 +255,7 @@ export default function ProjectAdminPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
                   <Building2 className="h-4 w-4 sm:h-5 sm:w-5" />
-                  Projektek
+                  {t('project_admin.projects_section')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3 sm:space-y-4">
@@ -289,7 +289,7 @@ export default function ProjectAdminPage() {
                         )}
                       </div>
                       <Badge variant={project.is_active ? "default" : "secondary"} className="text-xs">
-                        {project.is_active ? "Aktív" : "Inaktív"}
+                        {project.is_active ? t('project_admin.active') : t('project_admin.inactive')}
                       </Badge>
                     </div>
                   </div>
@@ -303,11 +303,11 @@ export default function ProjectAdminPage() {
                 <TabsList className="grid w-full grid-cols-2 h-auto">
                   <TabsTrigger value="members" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
                     <Users className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span>Tagok</span>
+                    <span>{t('project_admin.members_tab')}</span>
                   </TabsTrigger>
                   <TabsTrigger value="settings" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
                     <Settings className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span>Beállítások</span>
+                    <span>{t('project_admin.settings_tab')}</span>
                   </TabsTrigger>
                 </TabsList>
 
@@ -315,15 +315,15 @@ export default function ProjectAdminPage() {
                   {!isCurrentUserMember && (
                     <Card>
                       <CardHeader>
-                        <CardTitle>Csatlakozás a projekthez</CardTitle>
+                        <CardTitle>{t('project_admin.join_project_title')}</CardTitle>
                         <CardDescription>
-                          Csatlakozz a projekthez projekt adminként
+                          {t('project_admin.join_project_desc')}
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
                         <Button onClick={joinAsAdmin}>
                           <Plus className="h-4 w-4 mr-2" />
-                          Csatlakozás adminként
+                          {t('project_admin.join_as_admin')}
                         </Button>
                       </CardContent>
                     </Card>
@@ -331,14 +331,14 @@ export default function ProjectAdminPage() {
 
                   <Card>
                     <CardHeader>
-                      <CardTitle>Projekt tagok</CardTitle>
+                      <CardTitle>{t('project_admin.project_members_title')}</CardTitle>
                       <CardDescription>
-                        A projekthez tartozó felhasználók
+                        {t('project_admin.project_members_desc')}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       {members.length === 0 ? (
-                        <p className="text-sm sm:text-base text-muted-foreground">Még nincsenek tagok</p>
+                        <p className="text-sm sm:text-base text-muted-foreground">{t('project_admin.no_members')}</p>
                       ) : (
                         <div className="space-y-2">
                           {members.map((member) => (
@@ -356,7 +356,7 @@ export default function ProjectAdminPage() {
                               </div>
                               <div className="flex items-center gap-2 w-full sm:w-auto">
                                 <Badge variant={member.role === "admin" ? "default" : "secondary"} className="text-xs">
-                                  {member.role === "admin" ? "Admin" : "Tag"}
+                                  {member.role === "admin" ? t('project_admin.role_admin') : t('project_admin.role_member')}
                                 </Badge>
                                 {isCurrentUserAdmin && member.user_id !== user?.id && (
                                   <Button
@@ -365,7 +365,7 @@ export default function ProjectAdminPage() {
                                     onClick={() => removeMember(member.id)}
                                     className="text-xs"
                                   >
-                                    Eltávolítás
+                                    {t('project_admin.remove_member')}
                                   </Button>
                                 )}
                               </div>
@@ -376,17 +376,17 @@ export default function ProjectAdminPage() {
 
                       {isCurrentUserAdmin && (
                         <div className="pt-4 border-t space-y-3 sm:space-y-4">
-                          <Label className="text-sm sm:text-base">Új tag hozzáadása</Label>
+                          <Label className="text-sm sm:text-base">{t('project_admin.add_member_label')}</Label>
                           <div className="flex flex-col sm:flex-row gap-2">
                             <Input
-                              placeholder="Email cím"
+                              placeholder={t('project_admin.email_placeholder')}
                               value={newMemberEmail}
                               onChange={(e) => setNewMemberEmail(e.target.value)}
                               className="text-sm sm:text-base"
                             />
                             <Button onClick={addMember} className="w-full sm:w-auto text-sm">
                               <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-                              Hozzáadás
+                              {t('project_admin.add_button')}
                             </Button>
                           </div>
                         </div>
@@ -398,24 +398,24 @@ export default function ProjectAdminPage() {
                 <TabsContent value="settings">
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-lg sm:text-xl">Projekt beállítások</CardTitle>
+                      <CardTitle className="text-lg sm:text-xl">{t('project_admin.settings_title')}</CardTitle>
                       <CardDescription className="text-xs sm:text-sm">
-                        A projekt alapvető információi
+                        {t('project_admin.settings_desc')}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-3 sm:space-y-4">
                       <div>
-                        <Label className="text-sm sm:text-base">Projekt név</Label>
+                        <Label className="text-sm sm:text-base">{t('project_admin.project_name')}</Label>
                         <p className="text-base sm:text-lg font-semibold">{selectedProject.name}</p>
                       </div>
                       <div>
-                        <Label className="text-sm sm:text-base">Régió</Label>
+                        <Label className="text-sm sm:text-base">{t('project_admin.region')}</Label>
                         <p className="text-sm sm:text-base">{selectedProject.region_name}</p>
                       </div>
                       <div>
-                        <Label className="text-sm sm:text-base">Leírás</Label>
+                        <Label className="text-sm sm:text-base">{t('project_admin.description')}</Label>
                         <p className="text-xs sm:text-sm text-muted-foreground">
-                          {selectedProject.description || "Nincs leírás"}
+                          {selectedProject.description || t('project_admin.no_description')}
                         </p>
                       </div>
                     </CardContent>
