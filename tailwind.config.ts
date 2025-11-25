@@ -85,9 +85,9 @@ export default {
         'gradient-depth': 'var(--gradient-depth)',
         'gradient-tech': 'var(--gradient-tech)',
         'gradient-glass': 'var(--gradient-glass)',
-        'mountain-mist': 'linear-gradient(180deg, transparent 0%, hsl(220 60% 10% / 0.4) 30%, hsl(210 50% 15% / 0.6) 60%, hsl(195 40% 20% / 0.8) 100%)',
-        'aqua-glow': 'radial-gradient(circle at center, hsl(170 95% 60% / 0.3) 0%, transparent 70%)',
-        'organic-shapes': 'radial-gradient(ellipse at 30% 30%, hsl(170 95% 60% / 0.08) 0%, transparent 50%), radial-gradient(ellipse at 70% 70%, hsl(190 95% 55% / 0.06) 0%, transparent 50%), radial-gradient(circle at 50% 50%, hsl(210 100% 15% / 0.1) 0%, transparent 60%)',
+        'mountain-mist': 'linear-gradient(180deg, transparent 0%, hsl(218 65% 15% / 0.3) 30%, hsl(215 60% 20% / 0.5) 60%, hsl(210 55% 25% / 0.7) 100%)',
+        'aqua-glow': 'radial-gradient(circle at center, hsl(210 75% 55% / 0.2) 0%, transparent 70%)',
+        'organic-shapes': 'radial-gradient(ellipse at 30% 30%, hsl(210 75% 55% / 0.06) 0%, transparent 50%), radial-gradient(ellipse at 70% 70%, hsl(205 70% 50% / 0.04) 0%, transparent 50%), radial-gradient(circle at 50% 50%, hsl(218 70% 20% / 0.08) 0%, transparent 60%)',
       },
       boxShadow: {
         'eco': 'var(--shadow-eco)',
