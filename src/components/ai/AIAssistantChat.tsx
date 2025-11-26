@@ -31,6 +31,7 @@ interface Message {
 const AIAssistantChat = () => {
   const { t, language } = useLanguage();
   const { toast } = useToast();
+  const [conversationId, setConversationId] = useState<string | null>(null);
   
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -91,7 +92,9 @@ const AIAssistantChat = () => {
       const { data, error } = await supabase.functions.invoke('ai-chat', {
         body: { 
           messages: conversationHistory,
-          language: language 
+          language: language,
+          conversationId: conversationId,
+          projectId: null // Could be set from ProjectContext if needed
         }
       });
 
@@ -118,6 +121,11 @@ const AIAssistantChat = () => {
         }
         setIsTyping(false);
         return;
+      }
+
+      // Store conversation ID for future messages
+      if (data.conversationId && !conversationId) {
+        setConversationId(data.conversationId);
       }
 
       const aiResponse: Message = {

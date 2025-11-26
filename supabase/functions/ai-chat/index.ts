@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,7 +12,26 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, language = 'en' } = await req.json();
+    const { messages, language = 'en', conversationId = null, projectId = null } = await req.json();
+    
+    // Get authorization header to authenticate user
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      throw new Error("No authorization header");
+    }
+    
+    // Initialize Supabase client
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      { global: { headers: { Authorization: authHeader } } }
+    );
+    
+    // Get current user
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) {
+      throw new Error("Authentication failed");
+    }
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
@@ -66,10 +86,55 @@ serve(async (req) => {
     const aiMessage = data.choices[0].message.content;
     const suggestions = generateSuggestions(messages[messages.length - 1].content, language);
 
+    // Store conversation and messages in database
+    let finalConversationId = conversationId;
+    
+    // Create new conversation if none exists
+    if (!finalConversationId) {
+      const { data: newConv, error: convError } = await supabase
+        .from('ai_conversations')
+        .insert({
+          user_id: user.id,
+          project_id: projectId,
+          language: language,
+          user_agent: req.headers.get('user-agent')
+        })
+        .select()
+        .single();
+      
+      if (convError) {
+        console.error('Error creating conversation:', convError);
+      } else {
+        finalConversationId = newConv.id;
+      }
+    }
+    
+    // Store messages if we have a conversation ID
+    if (finalConversationId) {
+      const lastUserMessage = messages[messages.length - 1];
+      
+      // Store user message
+      await supabase.from('ai_messages').insert({
+        conversation_id: finalConversationId,
+        role: lastUserMessage.role,
+        content: lastUserMessage.content,
+        model: 'google/gemini-3-pro-preview'
+      });
+      
+      // Store assistant message
+      await supabase.from('ai_messages').insert({
+        conversation_id: finalConversationId,
+        role: 'assistant',
+        content: aiMessage,
+        model: 'google/gemini-3-pro-preview'
+      });
+    }
+
     return new Response(
       JSON.stringify({ 
         message: aiMessage,
-        suggestions 
+        suggestions,
+        conversationId: finalConversationId
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
