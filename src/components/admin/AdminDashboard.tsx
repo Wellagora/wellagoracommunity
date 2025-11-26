@@ -13,6 +13,7 @@ import UserRoleManager from './UserRoleManager';
 import { ProgramCreator } from './ProgramCreator';
 import ProjectDetailView from './ProjectDetailView';
 import MessagesManager from './MessagesManager';
+import AIAnalyticsDashboard from './AIAnalyticsDashboard';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -798,7 +799,7 @@ const AdminDashboard = () => {
         <>
           {/* Main tabs for different sections */}
           <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
+            <TabsList className="grid w-full grid-cols-4 lg:w-[500px]">
               <TabsTrigger value="projects">
                 <Building2 className="w-4 h-4 mr-2" />
                 Projektek
@@ -810,6 +811,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="users">
                 <Users className="w-4 h-4 mr-2" />
                 Felhasználók
+              </TabsTrigger>
+              <TabsTrigger value="ai_analytics">
+                <Sparkles className="w-4 h-4 mr-2" />
+                AI Analytics
               </TabsTrigger>
             </TabsList>
 
@@ -1004,6 +1009,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="users">
               <UserRoleManager />
+            </TabsContent>
+
+            <TabsContent value="ai_analytics">
+              <AIAnalyticsDashboard />
             </TabsContent>
           </Tabs>
         </>
