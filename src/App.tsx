@@ -29,6 +29,8 @@ import BrowseProgramsPage from "@/pages/BrowseProgramsPage";
 import ContactPage from "@/pages/ContactPage";
 import InboxPage from "@/pages/InboxPage";
 import TranslationToolPage from "@/pages/TranslationToolPage";
+import PrivacyPolicyPage from "@/pages/PrivacyPolicyPage";
+import ImpressumPage from "@/pages/ImpressumPage";
 import "./index.css";
 
 function App() {
@@ -75,6 +77,8 @@ function App() {
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/inbox" element={<InboxPage />} />
                 <Route path="/translation-tool" element={<TranslationToolPage />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                <Route path="/impressum" element={<ImpressumPage />} />
               </Routes>
               <Toaster />
               <SonnerToaster />

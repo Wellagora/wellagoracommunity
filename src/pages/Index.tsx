@@ -24,6 +24,7 @@ import { CommunityImpactCounter } from "@/components/CommunityImpactCounter";
 import { StoryOfTheWeek } from "@/components/StoryOfTheWeek";
 import { RegionalImpactGarden } from "@/components/RegionalImpactGarden";
 import { RegionalImpactMap } from "@/components/dashboard/RegionalImpactMap";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   const { t } = useLanguage();
@@ -44,8 +45,9 @@ const Index = () => {
   // Authenticated user view - Personalized home page
   if (user && profile) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navigation />
+      <>
+        <div className="min-h-screen bg-background flex flex-col">
+          <Navigation />
         
         {/* Welcome Hero for Authenticated Users */}
         <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5">
@@ -161,20 +163,24 @@ const Index = () => {
         {/* Success Stories */}
         <SuccessStories />
 
-        {/* Regional Map Preview */}
-        <section className="py-12 bg-background">
-          <div className="container mx-auto px-4">
-            <RegionalImpactMap />
-          </div>
-        </section>
-      </div>
+          {/* Regional Map Preview */}
+          <section className="py-12 bg-background">
+            <div className="container mx-auto px-4">
+              <RegionalImpactMap />
+            </div>
+          </section>
+        </div>
+        
+        <Footer />
+      </>
     );
   }
 
   // Non-authenticated user view - Original landing page
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
+    <>
+      <div className="min-h-screen bg-background flex flex-col">
+        <Navigation />
       
       {/* Hero Section with Gradient Background */}
       <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5">
@@ -379,14 +385,17 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <RegionalImpactMap />
         </div>
-      </section>
-
-      {/* Featured Challenges */}
-      <FeaturedChallenges />
+        </section>
+        
+        {/* Featured Challenges */}
+        <FeaturedChallenges />
+        
+        {/* Success Stories */}
+        <SuccessStories />
+      </div>
       
-      {/* Success Stories */}
-      <SuccessStories />
-    </div>
+      <Footer />
+    </>
   );
 };
 
