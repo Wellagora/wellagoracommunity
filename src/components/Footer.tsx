@@ -1,0 +1,103 @@
+import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { Separator } from "@/components/ui/separator";
+
+const Footer = () => {
+  const { t } = useLanguage();
+  const currentYear = new Date().getFullYear();
+
+  return (
+    <footer className="bg-card/50 backdrop-blur-sm border-t border-border mt-auto">
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-6">
+          {/* About Section */}
+          <div>
+            <h3 className="font-bold text-foreground mb-3">{t('footer.about_title')}</h3>
+            <p className="text-sm text-muted-foreground">
+              {t('footer.about_text')}
+            </p>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h3 className="font-bold text-foreground mb-3">{t('footer.quick_links')}</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/challenges" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  {t('footer.link_programs')}
+                </Link>
+              </li>
+              <li>
+                <Link to="/community" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  {t('footer.link_community')}
+                </Link>
+              </li>
+              <li>
+                <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  {t('footer.link_dashboard')}
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  {t('footer.link_contact')}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Support */}
+          <div>
+            <h3 className="font-bold text-foreground mb-3">{t('footer.support_title')}</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/ai-assistant" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  {t('footer.link_ai_assistant')}
+                </Link>
+              </li>
+              <li>
+                <a href="mailto:info@wellagora.com" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  {t('footer.link_email')}
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h3 className="font-bold text-foreground mb-3">{t('footer.legal_title')}</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  {t('footer.link_privacy')}
+                </Link>
+              </li>
+              <li>
+                <Link to="/impressum" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  {t('footer.link_impressum')}
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <Separator className="my-6" />
+
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+          <p>
+            © {currentYear} {t('footer.copyright')}
+          </p>
+          <div className="flex gap-4">
+            <Link to="/privacy-policy" className="hover:text-primary transition-colors">
+              {t('footer.privacy_short')}
+            </Link>
+            <Link to="/impressum" className="hover:text-primary transition-colors">
+              {t('footer.impressum_short')}
+            </Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;
