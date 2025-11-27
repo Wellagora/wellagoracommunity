@@ -24,6 +24,60 @@ const LanguageContext = createContext<LanguageContextType>(defaultContextValue);
 // Translation cache
 const translationCache: Record<Language, Record<string, string>> = {} as any;
 
+// Supported languages for easy reference
+const SUPPORTED_LANGUAGES: Language[] = ['en', 'de', 'hu', 'cs', 'sk', 'hr', 'ro', 'pl'];
+
+// Language mapping for browser language detection
+const LANGUAGE_MAP: Record<string, Language> = {
+  'en': 'en', 'en-US': 'en', 'en-GB': 'en', 'en-CA': 'en', 'en-AU': 'en',
+  'de': 'de', 'de-DE': 'de', 'de-AT': 'de', 'de-CH': 'de',
+  'hu': 'hu', 'hu-HU': 'hu',
+  'cs': 'cs', 'cs-CZ': 'cs',
+  'sk': 'sk', 'sk-SK': 'sk',
+  'hr': 'hr', 'hr-HR': 'hr',
+  'ro': 'ro', 'ro-RO': 'ro',
+  'pl': 'pl', 'pl-PL': 'pl',
+};
+
+// Detect browser language with fallback
+const detectBrowserLanguage = (): Language => {
+  try {
+    // Try navigator.languages first (more accurate)
+    if (navigator.languages && navigator.languages.length > 0) {
+      for (const lang of navigator.languages) {
+        // Try exact match first
+        if (LANGUAGE_MAP[lang]) {
+          return LANGUAGE_MAP[lang];
+        }
+        // Try base language (e.g., 'en' from 'en-US')
+        const baseLang = lang.split('-')[0];
+        if (SUPPORTED_LANGUAGES.includes(baseLang as Language)) {
+          return baseLang as Language;
+        }
+      }
+    }
+    
+    // Fallback to navigator.language
+    const browserLang = navigator.language;
+    if (LANGUAGE_MAP[browserLang]) {
+      return LANGUAGE_MAP[browserLang];
+    }
+    
+    const baseLang = browserLang.split('-')[0];
+    if (SUPPORTED_LANGUAGES.includes(baseLang as Language)) {
+      return baseLang as Language;
+    }
+  } catch (error) {
+    console.warn('Failed to detect browser language:', error);
+  }
+  
+  // Default to English
+  return 'en';
+};
+
+// LocalStorage key for language preference
+const LANGUAGE_STORAGE_KEY = 'wellagora_language';
+
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
   return context;
@@ -95,20 +149,41 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  // Initialize language from user profile or browser
+  // Initialize language with priority chain
   useEffect(() => {
     const initializeLanguage = async () => {
       setIsLoading(true);
       
-      let initialLang: Language = 'hu';
+      let initialLang: Language;
       
+      // Priority chain: User Profile → LocalStorage → Browser → Default (en)
       if (profile && (profile as any).preferred_language) {
+        // 1. User has set a preferred language in their profile (highest priority)
         initialLang = (profile as any).preferred_language as Language;
-      } else if (!profile) {
-        // If not authenticated, try to detect from browser or default to Hungarian
-        const browserLang = navigator.language.split('-')[0] as Language;
-        const supportedLangs: Language[] = ['en', 'de', 'hu', 'cs', 'sk', 'hr', 'ro', 'pl'];
-        initialLang = supportedLangs.includes(browserLang) ? browserLang : 'hu';
+        // Update localStorage to match profile
+        localStorage.setItem(LANGUAGE_STORAGE_KEY, initialLang);
+      } else if (!user) {
+        // 2. Not authenticated - check localStorage first, then browser
+        const storedLang = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+        if (storedLang && SUPPORTED_LANGUAGES.includes(storedLang as Language)) {
+          initialLang = storedLang as Language;
+        } else {
+          // 3. Detect from browser
+          initialLang = detectBrowserLanguage();
+          localStorage.setItem(LANGUAGE_STORAGE_KEY, initialLang);
+        }
+      } else {
+        // 4. Authenticated but no preferred_language set - use browser detection
+        initialLang = detectBrowserLanguage();
+        // Save detected language to user profile
+        try {
+          await supabase
+            .from('profiles')
+            .update({ preferred_language: initialLang })
+            .eq('id', user.id);
+        } catch (error) {
+          console.error('Failed to save auto-detected language:', error);
+        }
       }
       
       setLanguageState(initialLang);
@@ -117,13 +192,16 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     };
 
     initializeLanguage();
-  }, [profile]);
+  }, [profile, user]);
 
-  // Update language and save to database
+  // Update language and save to profile/localStorage
   const setLanguage = async (lang: Language) => {
     setIsLoading(true);
     setLanguageState(lang);
     await loadTranslations(lang);
+    
+    // Save to localStorage for non-authenticated users
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
     
     // Save to user profile if authenticated
     if (user) {
