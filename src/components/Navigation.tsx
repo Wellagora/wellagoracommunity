@@ -30,6 +30,7 @@ import { RoleSwitcher } from "./admin/RoleSwitcher";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import kaliLogo from "@/assets/wellagora-logo.png";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -258,6 +259,9 @@ const Navigation = () => {
                 </div>
                 
                 {currentProject && <ProjectSelector />}
+                
+                {/* Notification Bell */}
+                <NotificationBell />
                 
                 {/* Inbox with unread badge */}
                 <Link
