@@ -283,12 +283,12 @@ const UnifiedCommunityHub = () => {
               transition={{ delay: 0.6, duration: 0.5 }}
             >
               <div className="relative group">
-                <Search className="absolute left-5 top-5 h-6 w-6 text-white/70 group-hover:text-accent transition-colors duration-300" />
+                <Search className="absolute left-3 sm:left-5 top-3 sm:top-5 h-5 w-5 sm:h-6 sm:w-6 text-white/70 group-hover:text-accent transition-colors duration-300" />
                 <Input
                   placeholder={t('unified_hub.search_placeholder')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-14 h-16 bg-glass-strong border-accent/30 text-white placeholder:text-white/60 text-lg rounded-2xl shadow-glow hover:shadow-premium hover:border-accent/50 transition-all duration-300"
+                  className="pl-10 sm:pl-14 h-12 sm:h-16 bg-glass-strong border-accent/30 text-white placeholder:text-white/60 text-sm sm:text-lg rounded-2xl shadow-glow hover:shadow-premium hover:border-accent/50 transition-all duration-300 w-full"
                 />
               </div>
             </motion.div>
