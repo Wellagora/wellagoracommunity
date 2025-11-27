@@ -18,7 +18,6 @@ import {
   Calendar
 } from "lucide-react";
 
-import SuccessStories from "@/components/SuccessStories";
 import FeaturedChallenges from "@/components/FeaturedChallenges";
 import { CommunityImpactCounter } from "@/components/CommunityImpactCounter";
 import { StoryOfTheWeek } from "@/components/StoryOfTheWeek";
@@ -159,9 +158,6 @@ const Index = () => {
 
         {/* Featured Challenges */}
         <FeaturedChallenges />
-        
-        {/* Success Stories */}
-        <SuccessStories />
 
           {/* Regional Map Preview */}
           <section className="py-12 bg-background">
@@ -389,9 +385,6 @@ const Index = () => {
         
         {/* Featured Challenges */}
         <FeaturedChallenges />
-        
-        {/* Success Stories */}
-        <SuccessStories />
       </div>
       
       <Footer />

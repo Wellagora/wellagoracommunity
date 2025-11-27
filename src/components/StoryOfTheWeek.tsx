@@ -3,13 +3,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Quote, Star, ArrowRight, X } from "lucide-react";
+import { Quote, Star, ArrowRight, BookOpen, User } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
 
 export const StoryOfTheWeek = () => {
   const { t } = useLanguage();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isStoryBookOpen, setIsStoryBookOpen] = useState(false);
 
   return (
     <>
@@ -70,6 +71,18 @@ export const StoryOfTheWeek = () => {
                 </div>
               </CardContent>
             </Card>
+            
+            {/* View Story Book Button */}
+            <div className="text-center mt-6">
+              <Button 
+                variant="outline" 
+                className="gap-2"
+                onClick={() => setIsStoryBookOpen(true)}
+              >
+                <BookOpen className="w-4 h-4" />
+                {t('story_week.view_story_book')}
+              </Button>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -116,6 +129,92 @@ export const StoryOfTheWeek = () => {
                 <p className="text-sm text-muted-foreground">{t('story_week.author_role')}</p>
               </div>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Story Book Modal - Archive of Past Stories */}
+      <Dialog open={isStoryBookOpen} onOpenChange={setIsStoryBookOpen}>
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl md:text-3xl font-bold flex items-center gap-3">
+              <BookOpen className="w-8 h-8 text-primary" />
+              {t('story_week.story_book_title')}
+            </DialogTitle>
+            <p className="text-muted-foreground mt-2">
+              {t('story_week.story_book_subtitle')}
+            </p>
+          </DialogHeader>
+          
+          <div className="space-y-6 py-4">
+            {/* Past Story 1 */}
+            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-success to-info rounded-full flex items-center justify-center flex-shrink-0">
+                    <User className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge variant="secondary" className="text-xs">
+                        {t('story_week.past_story_date_1')}
+                      </Badge>
+                    </div>
+                    <h3 className="text-lg font-bold mb-2">{t('story_week.past_story_title_1')}</h3>
+                    <p className="text-sm text-muted-foreground mb-3">{t('story_week.past_story_author_1')}</p>
+                  </div>
+                </div>
+                <blockquote className="border-l-4 border-success pl-4 italic text-foreground mb-4">
+                  {t('story_week.past_story_quote_1')}
+                </blockquote>
+              </CardContent>
+            </Card>
+
+            {/* Past Story 2 */}
+            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-warning to-accent rounded-full flex items-center justify-center flex-shrink-0">
+                    <User className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge variant="secondary" className="text-xs">
+                        {t('story_week.past_story_date_2')}
+                      </Badge>
+                    </div>
+                    <h3 className="text-lg font-bold mb-2">{t('story_week.past_story_title_2')}</h3>
+                    <p className="text-sm text-muted-foreground mb-3">{t('story_week.past_story_author_2')}</p>
+                  </div>
+                </div>
+                <blockquote className="border-l-4 border-warning pl-4 italic text-foreground mb-4">
+                  {t('story_week.past_story_quote_2')}
+                </blockquote>
+              </CardContent>
+            </Card>
+
+            {/* Past Story 3 */}
+            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <User className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge variant="secondary" className="text-xs">
+                        {t('story_week.past_story_date_3')}
+                      </Badge>
+                    </div>
+                    <h3 className="text-lg font-bold mb-2">{t('story_week.past_story_title_3')}</h3>
+                    <p className="text-sm text-muted-foreground mb-3">{t('story_week.past_story_author_3')}</p>
+                  </div>
+                </div>
+                <blockquote className="border-l-4 border-purple-500 pl-4 italic text-foreground mb-4">
+                  {t('story_week.past_story_quote_3')}
+                </blockquote>
+              </CardContent>
+            </Card>
           </div>
         </DialogContent>
       </Dialog>
