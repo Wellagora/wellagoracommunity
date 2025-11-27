@@ -1,8 +1,16 @@
 import * as Sentry from "@sentry/react";
 
 export const initSentry = () => {
-  // Only initialize in production or if explicitly enabled
-  if (import.meta.env.PROD || import.meta.env.VITE_ENABLE_SENTRY === 'true') {
+  // Only initialize if DSN is provided and explicitly enabled
+  const sentryDsn = import.meta.env.VITE_SENTRY_DSN;
+  const sentryEnabled = import.meta.env.VITE_ENABLE_SENTRY === 'true';
+  
+  if (!sentryDsn || !sentryEnabled) {
+    console.log('Sentry monitoring disabled');
+    return;
+  }
+
+  try {
     Sentry.init({
       dsn: import.meta.env.VITE_SENTRY_DSN,
       integrations: [
@@ -30,6 +38,9 @@ export const initSentry = () => {
         return event;
       },
     });
+    console.log('Sentry monitoring initialized');
+  } catch (error) {
+    console.error('Failed to initialize Sentry:', error);
   }
 };
 
