@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { TreePine, Sprout, Flower, MapPin, TrendingUp } from "lucide-react";
+import { TreePine, Sprout, Flower, MapPin } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useProject } from "@/contexts/ProjectContext";
 import { motion } from "framer-motion";
@@ -268,18 +268,6 @@ export const RegionalImpactGarden = () => {
           </Card>
         </div>
 
-        <motion.div 
-          className="text-center mt-6 md:mt-8 px-4"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          viewport={{ once: true }}
-        >
-          <Button size="default" className="gap-2 w-full sm:w-auto">
-            {t('impact_garden.explore_button')}
-            <TrendingUp className="w-4 h-4" />
-          </Button>
-        </motion.div>
       </div>
     </section>
   );
