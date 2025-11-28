@@ -184,6 +184,25 @@ const LegalContentManager = () => {
   const importExistingContent = async () => {
     setImporting(true);
     try {
+      // Warn admin that this will overwrite existing content
+      if (sections.length > 0) {
+        const confirmed = confirm(
+          'This will replace all existing Impressum and Privacy Policy sections with the imported text. Continue?'
+        );
+        if (!confirmed) {
+          setImporting(false);
+          return;
+        }
+
+        // Clear existing legal content for these types so we don't get duplicates
+        const { error: deleteError } = await supabase
+          .from('legal_content')
+          .delete()
+          .in('content_type', ['impressum', 'privacy_policy']);
+
+        if (deleteError) throw deleteError;
+      }
+
       // Import all locale files
       const locales: Record<string, any> = {
         en: await import('@/locales/en.json'),
@@ -452,12 +471,14 @@ const LegalContentManager = () => {
           <p className="text-muted-foreground">Manage Impressum and Privacy Policy content</p>
         </div>
         <div className="flex gap-2">
-          {sections.length === 0 && (
-            <Button onClick={importExistingContent} disabled={importing} variant="outline">
-              <Download className="w-4 h-4 mr-2" />
-              {importing ? 'Importing...' : 'Import Existing Content'}
-            </Button>
-          )}
+          <Button onClick={importExistingContent} disabled={importing} variant="outline">
+            <Download className="w-4 h-4 mr-2" />
+            {importing
+              ? 'Importing...'
+              : sections.length === 0
+                ? 'Import Existing Content'
+                : 'Re-import from translations'}
+          </Button>
           <Button onClick={createNewSection}>
             <Plus className="w-4 h-4 mr-2" />
             Add Section
