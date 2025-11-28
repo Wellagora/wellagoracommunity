@@ -12,8 +12,7 @@ import {
   Lightbulb, 
   Leaf, 
   Zap, 
-  Recycle,
-  Car,
+  Users,
   Home
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -36,14 +35,14 @@ const AIAssistantChat = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: t('wellbot.greeting'),
+      content: t('wellbot.community_greeting'),
       sender: "ai",
       timestamp: new Date(),
       suggestions: [
-        t('wellbot.suggestion_carbon'),
-        t('wellbot.suggestion_transport'),
-        t('wellbot.suggestion_waste'),
-        t('wellbot.suggestion_energy')
+        t('wellbot.suggestion_programs'),
+        t('wellbot.suggestion_community'),
+        t('wellbot.suggestion_howto'),
+        t('wellbot.suggestion_impact')
       ]
     }
   ]);
@@ -54,11 +53,10 @@ const AIAssistantChat = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const quickActions = [
-    { icon: Leaf, label: t('wellbot.action_carbon'), description: t('wellbot.action_carbon_desc') },
-    { icon: Zap, label: t('wellbot.action_energy'), description: t('wellbot.action_energy_desc') },
-    { icon: Recycle, label: t('wellbot.action_waste'), description: t('wellbot.action_waste_desc') },
-    { icon: Car, label: t('wellbot.action_transport'), description: t('wellbot.action_transport_desc') },
-    { icon: Home, label: t('wellbot.action_home'), description: t('wellbot.action_home_desc') }
+    { icon: Leaf, label: t('wellbot.action_programs'), description: t('wellbot.action_programs_desc') },
+    { icon: Users, label: t('wellbot.action_community'), description: t('wellbot.action_community_desc') },
+    { icon: Zap, label: t('wellbot.action_getstarted'), description: t('wellbot.action_getstarted_desc') },
+    { icon: Home, label: t('wellbot.action_impact'), description: t('wellbot.action_impact_desc') }
   ];
 
   const scrollToBottom = () => {
@@ -94,7 +92,7 @@ const AIAssistantChat = () => {
           messages: conversationHistory,
           language: language,
           conversationId: conversationId,
-          projectId: null // Could be set from ProjectContext if needed
+          projectId: null // Will use user's default project from profile
         }
       });
 
@@ -150,15 +148,14 @@ const AIAssistantChat = () => {
   };
 
   const handleQuickAction = (action: typeof quickActions[0]) => {
-    const queries = {
-      "Carbon Calculator": "Help me calculate my carbon footprint",
-      "Energy Tips": "Give me energy saving tips for my home",
-      "Waste Reduction": "How can I reduce waste in my daily life?",
-      "Green Transport": "What are sustainable transportation options?",
-      "Eco Home": "How can I make my home more sustainable?"
+    const queries: Record<string, string> = {
+      [t('wellbot.action_programs')]: t('wellbot.query_programs'),
+      [t('wellbot.action_community')]: t('wellbot.query_community'),
+      [t('wellbot.action_getstarted')]: t('wellbot.query_getstarted'),
+      [t('wellbot.action_impact')]: t('wellbot.query_impact')
     };
     
-    handleSendMessage(queries[action.label as keyof typeof queries] || action.label);
+    handleSendMessage(queries[action.label] || action.label);
   };
 
   const handleSuggestionClick = (suggestion: string) => {
