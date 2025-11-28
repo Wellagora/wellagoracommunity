@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { CheckCircle, XCircle, Clock, Sparkles, TrendingUp, Users, ArrowLeft, Plus, Building2, X, Mail, Languages } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Sparkles, TrendingUp, Users, ArrowLeft, Plus, Building2, X, Mail, Languages, Shield } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +14,7 @@ import { ProgramCreator } from './ProgramCreator';
 import ProjectDetailView from './ProjectDetailView';
 import MessagesManager from './MessagesManager';
 import AIAnalyticsDashboard from './AIAnalyticsDashboard';
+import LegalContentManager from './LegalContentManager';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -83,7 +84,7 @@ const AdminDashboard = () => {
   const [showCreateChallenge, setShowCreateChallenge] = useState(false);
   const [defaultProjectId, setDefaultProjectId] = useState<string | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [activeTab, setActiveTab] = useState<'projects' | 'messages' | 'users'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'messages' | 'users' | 'legal'>('projects');
   const [newProject, setNewProject] = useState({
     name: '',
     slug: '',
@@ -799,7 +800,7 @@ const AdminDashboard = () => {
         <>
           {/* Main tabs for different sections */}
           <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 lg:w-[500px]">
+            <TabsList className="grid w-full grid-cols-5 lg:w-[600px]">
               <TabsTrigger value="projects">
                 <Building2 className="w-4 h-4 mr-2" />
                 Projektek
@@ -811,6 +812,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="users">
                 <Users className="w-4 h-4 mr-2" />
                 Felhasználók
+              </TabsTrigger>
+              <TabsTrigger value="legal">
+                <Shield className="w-4 h-4 mr-2" />
+                Legal
               </TabsTrigger>
               <TabsTrigger value="ai_analytics">
                 <Sparkles className="w-4 h-4 mr-2" />
@@ -1009,6 +1014,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="users">
               <UserRoleManager />
+            </TabsContent>
+
+            <TabsContent value="legal">
+              <LegalContentManager />
             </TabsContent>
 
             <TabsContent value="ai_analytics">
