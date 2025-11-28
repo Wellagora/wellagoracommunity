@@ -143,6 +143,22 @@ serve(async (req) => {
     const data = await response.json();
     console.log('AI response received successfully');
 
+    // Initialize or retrieve conversation ID
+    let finalConversationId = conversationId;
+    if (!finalConversationId) {
+      const { data: newConv } = await supabase
+        .from('ai_conversations')
+        .insert({
+          user_id: user.id,
+          project_id: projectId,
+          language: language,
+          user_agent: req.headers.get('user-agent')
+        })
+        .select()
+        .single();
+      finalConversationId = newConv?.id;
+    }
+
     // Check if AI wants to use tools
     const aiMessage = data.choices[0].message;
     
@@ -215,21 +231,6 @@ serve(async (req) => {
     const suggestions = generateSuggestions(messages[messages.length - 1].content, language);
 
     // Store conversation
-    let finalConversationId = conversationId;
-    if (!finalConversationId) {
-      const { data: newConv } = await supabase
-        .from('ai_conversations')
-        .insert({
-          user_id: user.id,
-          project_id: projectId,
-          language: language,
-          user_agent: req.headers.get('user-agent')
-        })
-        .select()
-        .single();
-      finalConversationId = newConv?.id;
-    }
-    
     await storeConversation(supabase, user.id, projectId, finalConversationId, language, messages[messages.length - 1], finalMessage);
 
     return new Response(
