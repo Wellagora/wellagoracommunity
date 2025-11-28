@@ -32,20 +32,7 @@ const AIAssistantChat = () => {
   const { toast } = useToast();
   const [conversationId, setConversationId] = useState<string | null>(null);
   
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      content: t('wellbot.community_greeting'),
-      sender: "ai",
-      timestamp: new Date(),
-      suggestions: [
-        t('wellbot.suggestion_programs'),
-        t('wellbot.suggestion_community'),
-        t('wellbot.suggestion_howto'),
-        t('wellbot.suggestion_impact')
-      ]
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -62,6 +49,22 @@ const AIAssistantChat = () => {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  // Initialize greeting message when language changes
+  useEffect(() => {
+    setMessages([{
+      id: "1",
+      content: t('wellbot.community_greeting'),
+      sender: "ai",
+      timestamp: new Date(),
+      suggestions: [
+        t('wellbot.suggestion_programs'),
+        t('wellbot.suggestion_community'),
+        t('wellbot.suggestion_howto'),
+        t('wellbot.suggestion_impact')
+      ]
+    }]);
+  }, [language, t]);
 
   useEffect(() => {
     scrollToBottom();
