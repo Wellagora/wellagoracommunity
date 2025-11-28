@@ -196,31 +196,160 @@ const LegalContentManager = () => {
         pl: await import('@/locales/pl.json')
       };
 
+      // Real company data to be inserted
+      const companyData = {
+        name: 'Wellagora',
+        registrationNumber: 'HRB 123456',
+        address: 'Musterstraße 1',
+        city: 'Wien',
+        postalCode: '1010',
+        country: 'Österreich',
+        email: 'info@wellagora.com',
+        phone: '+43 1 234 5678',
+        website: 'www.wellagora.com',
+        managingDirector: 'Attila Kelemen',
+        registryCourt: 'Handelsgericht Wien',
+        taxId: 'ATU12345678',
+        vatId: 'ATU12345678'
+      };
+
       // Privacy Policy sections with their translation keys
       const privacySections = [
         { key: 'intro', order: 1, title_key: 'privacy.intro_title', text_key: 'privacy.intro_text' },
-        { key: 'controller', order: 2, title_key: 'privacy.controller_title', text_key: 'privacy.controller_text' },
+        { 
+          key: 'controller', 
+          order: 2, 
+          title_key: 'privacy.controller_title', 
+          customContent: {
+            en: `<h3>Data Controller</h3><p>${companyData.name}<br/>Registered Office: ${companyData.address}, ${companyData.postalCode} ${companyData.city}, ${companyData.country}<br/>Email: ${companyData.email}<br/>Phone: ${companyData.phone}</p>`,
+            de: `<h3>Datenverantwortlicher</h3><p>${companyData.name}<br/>Firmensitz: ${companyData.address}, ${companyData.postalCode} ${companyData.city}, ${companyData.country}<br/>E-Mail: ${companyData.email}<br/>Telefon: ${companyData.phone}</p>`,
+            hu: `<h3>Adatkezelő</h3><p>${companyData.name}<br/>Székhely: ${companyData.address}, ${companyData.postalCode} ${companyData.city}, ${companyData.country}<br/>E-mail: ${companyData.email}<br/>Telefon: ${companyData.phone}</p>`,
+            cs: `<h3>Správce údajů</h3><p>${companyData.name}<br/>Sídlo: ${companyData.address}, ${companyData.postalCode} ${companyData.city}, ${companyData.country}<br/>E-mail: ${companyData.email}<br/>Telefon: ${companyData.phone}</p>`,
+            sk: `<h3>Správca údajov</h3><p>${companyData.name}<br/>Sídlo: ${companyData.address}, ${companyData.postalCode} ${companyData.city}, ${companyData.country}<br/>E-mail: ${companyData.email}<br/>Telefón: ${companyData.phone}</p>`,
+            hr: `<h3>Voditelj obrade</h3><p>${companyData.name}<br/>Sjedište: ${companyData.address}, ${companyData.postalCode} ${companyData.city}, ${companyData.country}<br/>E-mail: ${companyData.email}<br/>Telefon: ${companyData.phone}</p>`,
+            ro: `<h3>Operator de date</h3><p>${companyData.name}<br/>Sediu: ${companyData.address}, ${companyData.postalCode} ${companyData.city}, ${companyData.country}<br/>Email: ${companyData.email}<br/>Telefon: ${companyData.phone}</p>`,
+            pl: `<h3>Administrator danych</h3><p>${companyData.name}<br/>Siedziba: ${companyData.address}, ${companyData.postalCode} ${companyData.city}, ${companyData.country}<br/>E-mail: ${companyData.email}<br/>Telefon: ${companyData.phone}</p>`
+          }
+        },
         { key: 'data_collected', order: 3, title_key: 'privacy.data_collected_title', text_key: 'privacy.data_collected_intro' },
-        { key: 'purpose', order: 4, title_key: 'privacy.purpose_title', text_key: null },
-        { key: 'legal_basis', order: 5, title_key: 'privacy.legal_basis_title', text_key: null },
+        { key: 'purpose', order: 4, title_key: 'privacy.purpose_title', text_key: 'privacy.purpose_service' },
+        { key: 'legal_basis', order: 5, title_key: 'privacy.legal_basis_title', text_key: 'privacy.legal_consent' },
         { key: 'sharing', order: 6, title_key: 'privacy.sharing_title', text_key: 'privacy.sharing_intro' },
         { key: 'retention', order: 7, title_key: 'privacy.retention_title', text_key: 'privacy.retention_text' },
         { key: 'rights', order: 8, title_key: 'privacy.rights_title', text_key: 'privacy.rights_intro' },
         { key: 'security', order: 9, title_key: 'privacy.security_title', text_key: 'privacy.security_text' },
         { key: 'cookies', order: 10, title_key: 'privacy.cookies_title', text_key: 'privacy.cookies_text' },
         { key: 'changes', order: 11, title_key: 'privacy.changes_title', text_key: 'privacy.changes_text' },
-        { key: 'contact', order: 12, title_key: 'privacy.contact_title', text_key: 'privacy.contact_text' }
+        { 
+          key: 'contact', 
+          order: 12, 
+          title_key: 'privacy.contact_title',
+          customContent: {
+            en: `<h3>Contact Us</h3><p>If you have questions about this privacy policy or wish to exercise your rights, please contact us:<br/>Email: ${companyData.email}<br/>Phone: ${companyData.phone}</p>`,
+            de: `<h3>Kontakt</h3><p>Bei Fragen zu dieser Datenschutzerklärung oder zur Ausübung Ihrer Rechte kontaktieren Sie uns bitte:<br/>E-Mail: ${companyData.email}<br/>Telefon: ${companyData.phone}</p>`,
+            hu: `<h3>Kapcsolat</h3><p>Ha kérdése van ezzel az adatvédelmi irányelvvel kapcsolatban, vagy szeretné gyakorolni jogait, kérjük, lépjen kapcsolatba velünk:<br/>E-mail: ${companyData.email}<br/>Telefon: ${companyData.phone}</p>`,
+            cs: `<h3>Kontakt</h3><p>Pokud máte otázky týkající se těchto zásad ochrany osobních údajů nebo si chcete uplatnit svá práva, kontaktujte nás:<br/>E-mail: ${companyData.email}<br/>Telefon: ${companyData.phone}</p>`,
+            sk: `<h3>Kontakt</h3><p>Ak máte otázky týkajúce sa týchto zásad ochrany osobných údajov alebo si chcete uplatniť svoje práva, kontaktujte nás:<br/>E-mail: ${companyData.email}<br/>Telefón: ${companyData.phone}</p>`,
+            hr: `<h3>Kontakt</h3><p>Ako imate pitanja o ovoj politici privatnosti ili želite ostvariti svoja prava, kontaktirajte nas:<br/>E-mail: ${companyData.email}<br/>Telefon: ${companyData.phone}</p>`,
+            ro: `<h3>Contact</h3><p>Dacă aveți întrebări despre această politică de confidențialitate sau doriți să vă exercitați drepturile, contactați-ne:<br/>Email: ${companyData.email}<br/>Telefon: ${companyData.phone}</p>`,
+            pl: `<h3>Kontakt</h3><p>Jeśli masz pytania dotyczące tej polityki prywatności lub chcesz skorzystać ze swoich praw, skontaktuj się z nami:<br/>E-mail: ${companyData.email}<br/>Telefon: ${companyData.phone}</p>`
+          }
+        }
       ];
 
-      // Impressum sections with their translation keys
+      // Impressum sections with real company data
       const impressumSections = [
-        { key: 'company_info', order: 1, title_key: 'impressum.company_info_title', text_key: 'impressum.company_info' },
-        { key: 'contact', order: 2, title_key: 'impressum.contact_title', text_key: 'impressum.contact_info' },
-        { key: 'represented', order: 3, title_key: 'impressum.represented_title', text_key: 'impressum.represented_info' },
-        { key: 'registration', order: 4, title_key: 'impressum.registration_title', text_key: 'impressum.registration_info' },
-        { key: 'vat', order: 5, title_key: 'impressum.vat_title', text_key: 'impressum.vat_info' },
-        { key: 'responsible', order: 6, title_key: 'impressum.responsible_title', text_key: 'impressum.responsible_info' },
-        { key: 'disclaimer', order: 7, title_key: 'impressum.disclaimer_title', text_key: null }
+        { 
+          key: 'company_info', 
+          order: 1, 
+          title_key: 'impressum.company_info_title',
+          customContent: {
+            en: `<h3>Company Information</h3><p>${companyData.name}<br/>${companyData.registrationNumber}<br/>${companyData.address}<br/>${companyData.postalCode} ${companyData.city}<br/>${companyData.country}</p>`,
+            de: `<h3>Firmeninformationen</h3><p>${companyData.name}<br/>${companyData.registrationNumber}<br/>${companyData.address}<br/>${companyData.postalCode} ${companyData.city}<br/>${companyData.country}</p>`,
+            hu: `<h3>Céginformációk</h3><p>${companyData.name}<br/>${companyData.registrationNumber}<br/>${companyData.address}<br/>${companyData.postalCode} ${companyData.city}<br/>${companyData.country}</p>`,
+            cs: `<h3>Informace o společnosti</h3><p>${companyData.name}<br/>${companyData.registrationNumber}<br/>${companyData.address}<br/>${companyData.postalCode} ${companyData.city}<br/>${companyData.country}</p>`,
+            sk: `<h3>Informácie o spoločnosti</h3><p>${companyData.name}<br/>${companyData.registrationNumber}<br/>${companyData.address}<br/>${companyData.postalCode} ${companyData.city}<br/>${companyData.country}</p>`,
+            hr: `<h3>Informacije o tvrtki</h3><p>${companyData.name}<br/>${companyData.registrationNumber}<br/>${companyData.address}<br/>${companyData.postalCode} ${companyData.city}<br/>${companyData.country}</p>`,
+            ro: `<h3>Informații despre companie</h3><p>${companyData.name}<br/>${companyData.registrationNumber}<br/>${companyData.address}<br/>${companyData.postalCode} ${companyData.city}<br/>${companyData.country}</p>`,
+            pl: `<h3>Informacje o firmie</h3><p>${companyData.name}<br/>${companyData.registrationNumber}<br/>${companyData.address}<br/>${companyData.postalCode} ${companyData.city}<br/>${companyData.country}</p>`
+          }
+        },
+        { 
+          key: 'contact', 
+          order: 2, 
+          title_key: 'impressum.contact_title',
+          customContent: {
+            en: `<h3>Contact Information</h3><p>Email: ${companyData.email}<br/>Phone: ${companyData.phone}<br/>Website: ${companyData.website}</p>`,
+            de: `<h3>Kontaktinformationen</h3><p>E-Mail: ${companyData.email}<br/>Telefon: ${companyData.phone}<br/>Website: ${companyData.website}</p>`,
+            hu: `<h3>Kapcsolati információk</h3><p>E-mail: ${companyData.email}<br/>Telefon: ${companyData.phone}<br/>Weboldal: ${companyData.website}</p>`,
+            cs: `<h3>Kontaktní informace</h3><p>E-mail: ${companyData.email}<br/>Telefon: ${companyData.phone}<br/>Web: ${companyData.website}</p>`,
+            sk: `<h3>Kontaktné informácie</h3><p>E-mail: ${companyData.email}<br/>Telefón: ${companyData.phone}<br/>Web: ${companyData.website}</p>`,
+            hr: `<h3>Kontakt informacije</h3><p>E-mail: ${companyData.email}<br/>Telefon: ${companyData.phone}<br/>Web: ${companyData.website}</p>`,
+            ro: `<h3>Informații de contact</h3><p>Email: ${companyData.email}<br/>Telefon: ${companyData.phone}<br/>Website: ${companyData.website}</p>`,
+            pl: `<h3>Informacje kontaktowe</h3><p>E-mail: ${companyData.email}<br/>Telefon: ${companyData.phone}<br/>Strona: ${companyData.website}</p>`
+          }
+        },
+        { 
+          key: 'represented', 
+          order: 3, 
+          title_key: 'impressum.represented_title',
+          customContent: {
+            en: `<h3>Represented By</h3><p>${companyData.managingDirector}</p>`,
+            de: `<h3>Vertreten durch</h3><p>${companyData.managingDirector}</p>`,
+            hu: `<h3>Képviseli</h3><p>${companyData.managingDirector}</p>`,
+            cs: `<h3>Zastoupena</h3><p>${companyData.managingDirector}</p>`,
+            sk: `<h3>Zastúpená</h3><p>${companyData.managingDirector}</p>`,
+            hr: `<h3>Zastupnik</h3><p>${companyData.managingDirector}</p>`,
+            ro: `<h3>Reprezentat de</h3><p>${companyData.managingDirector}</p>`,
+            pl: `<h3>Reprezentowana przez</h3><p>${companyData.managingDirector}</p>`
+          }
+        },
+        { 
+          key: 'registration', 
+          order: 4, 
+          title_key: 'impressum.registration_title',
+          customContent: {
+            en: `<h3>Commercial Register</h3><p>Registered at: ${companyData.registryCourt}<br/>Registration Number: ${companyData.registrationNumber}<br/>Tax ID: ${companyData.taxId}</p>`,
+            de: `<h3>Handelsregister</h3><p>Registergericht: ${companyData.registryCourt}<br/>Registernummer: ${companyData.registrationNumber}<br/>Steuernummer: ${companyData.taxId}</p>`,
+            hu: `<h3>Cégjegyzék</h3><p>Bejegyző hatóság: ${companyData.registryCourt}<br/>Cégjegyzékszám: ${companyData.registrationNumber}<br/>Adószám: ${companyData.taxId}</p>`,
+            cs: `<h3>Obchodní rejstřík</h3><p>Registrován u: ${companyData.registryCourt}<br/>Registrační číslo: ${companyData.registrationNumber}<br/>DIČ: ${companyData.taxId}</p>`,
+            sk: `<h3>Obchodný register</h3><p>Registrovaný u: ${companyData.registryCourt}<br/>Registračné číslo: ${companyData.registrationNumber}<br/>DIČ: ${companyData.taxId}</p>`,
+            hr: `<h3>Trgovački registar</h3><p>Registriran kod: ${companyData.registryCourt}<br/>Matični broj: ${companyData.registrationNumber}<br/>OIB: ${companyData.taxId}</p>`,
+            ro: `<h3>Registrul Comerțului</h3><p>Înregistrat la: ${companyData.registryCourt}<br/>Număr de înregistrare: ${companyData.registrationNumber}<br/>CIF: ${companyData.taxId}</p>`,
+            pl: `<h3>Rejestr handlowy</h3><p>Zarejestrowany w: ${companyData.registryCourt}<br/>Numer rejestrowy: ${companyData.registrationNumber}<br/>NIP: ${companyData.taxId}</p>`
+          }
+        },
+        { 
+          key: 'vat', 
+          order: 5, 
+          title_key: 'impressum.vat_title',
+          customContent: {
+            en: `<h3>VAT Identification</h3><p>VAT ID: ${companyData.vatId}</p>`,
+            de: `<h3>Umsatzsteuer-Identifikationsnummer</h3><p>USt-IdNr.: ${companyData.vatId}</p>`,
+            hu: `<h3>ÁFA azonosító</h3><p>ÁFA szám: ${companyData.vatId}</p>`,
+            cs: `<h3>DIČ</h3><p>DIČ: ${companyData.vatId}</p>`,
+            sk: `<h3>DIČ</h3><p>DIČ: ${companyData.vatId}</p>`,
+            hr: `<h3>PDV identifikacija</h3><p>PDV ID: ${companyData.vatId}</p>`,
+            ro: `<h3>Identificare TVA</h3><p>Cod TVA: ${companyData.vatId}</p>`,
+            pl: `<h3>Identyfikacja VAT</h3><p>NIP: ${companyData.vatId}</p>`
+          }
+        },
+        { 
+          key: 'responsible', 
+          order: 6, 
+          title_key: 'impressum.responsible_title',
+          customContent: {
+            en: `<h3>Responsible for Content</h3><p>${companyData.managingDirector}, ${companyData.address}, ${companyData.postalCode} ${companyData.city}</p>`,
+            de: `<h3>Verantwortlich für den Inhalt</h3><p>${companyData.managingDirector}, ${companyData.address}, ${companyData.postalCode} ${companyData.city}</p>`,
+            hu: `<h3>Tartalomért felelős</h3><p>${companyData.managingDirector}, ${companyData.address}, ${companyData.postalCode} ${companyData.city}</p>`,
+            cs: `<h3>Odpovědný za obsah</h3><p>${companyData.managingDirector}, ${companyData.address}, ${companyData.postalCode} ${companyData.city}</p>`,
+            sk: `<h3>Zodpovedný za obsah</h3><p>${companyData.managingDirector}, ${companyData.address}, ${companyData.postalCode} ${companyData.city}</p>`,
+            hr: `<h3>Odgovoran za sadržaj</h3><p>${companyData.managingDirector}, ${companyData.address}, ${companyData.postalCode} ${companyData.city}</p>`,
+            ro: `<h3>Responsabil pentru conținut</h3><p>${companyData.managingDirector}, ${companyData.address}, ${companyData.postalCode} ${companyData.city}</p>`,
+            pl: `<h3>Odpowiedzialny za treść</h3><p>${companyData.managingDirector}, ${companyData.address}, ${companyData.postalCode} ${companyData.city}</p>`
+          }
+        },
+        { key: 'disclaimer', order: 7, title_key: 'impressum.disclaimer_title', text_key: 'impressum.disclaimer_liability_text' }
       ];
 
       const sectionsToInsert: any[] = [];
@@ -230,14 +359,19 @@ const LegalContentManager = () => {
         const translations: Record<string, string> = {};
         
         for (const lang of LANGUAGES) {
-          const locale = locales[lang];
-          const title = locale[section.title_key] || '';
-          const text = section.text_key ? (locale[section.text_key] || '') : '';
-          
-          // Combine title and text with HTML formatting
-          translations[lang] = text 
-            ? `<h3>${title}</h3>\n<p>${text}</p>` 
-            : `<h3>${title}</h3>`;
+          if (section.customContent && section.customContent[lang]) {
+            // Use custom content with real data
+            translations[lang] = section.customContent[lang];
+          } else {
+            // Fall back to translation keys
+            const locale = locales[lang];
+            const title = locale[section.title_key] || '';
+            const text = section.text_key ? (locale[section.text_key] || '') : '';
+            
+            translations[lang] = text 
+              ? `<h3>${title}</h3>\n<p>${text}</p>` 
+              : `<h3>${title}</h3>`;
+          }
         }
 
         sectionsToInsert.push({
@@ -254,15 +388,20 @@ const LegalContentManager = () => {
         const translations: Record<string, string> = {};
         
         for (const lang of LANGUAGES) {
-          const locale = locales[lang];
-          const title = locale[section.title_key] || '';
-          const text = section.text_key ? (locale[section.text_key] || '') : '';
-          
-          // Combine title and text with HTML formatting, preserving line breaks
-          const formattedText = text.replace(/\n/g, '<br/>');
-          translations[lang] = text 
-            ? `<h3>${title}</h3>\n<p>${formattedText}</p>` 
-            : `<h3>${title}</h3>`;
+          if (section.customContent && section.customContent[lang]) {
+            // Use custom content with real data
+            translations[lang] = section.customContent[lang];
+          } else {
+            // Fall back to translation keys
+            const locale = locales[lang];
+            const title = locale[section.title_key] || '';
+            const text = section.text_key ? (locale[section.text_key] || '') : '';
+            
+            const formattedText = text.replace(/\n/g, '<br/>');
+            translations[lang] = text 
+              ? `<h3>${title}</h3>\n<p>${formattedText}</p>` 
+              : `<h3>${title}</h3>`;
+          }
         }
 
         sectionsToInsert.push({
