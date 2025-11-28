@@ -7,8 +7,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Building2, Shield, Plus, Save, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Building2, Shield, Plus, Save, Trash2, Eye, EyeOff, Download } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface LegalSection {
   id: string;
@@ -28,6 +29,7 @@ const LegalContentManager = () => {
   const [loading, setLoading] = useState(true);
   const [editingSection, setEditingSection] = useState<LegalSection | null>(null);
   const [activeContentType, setActiveContentType] = useState<'impressum' | 'privacy_policy'>('impressum');
+  const [importing, setImporting] = useState(false);
 
   useEffect(() => {
     loadSections();
@@ -179,6 +181,117 @@ const LegalContentManager = () => {
     }
   };
 
+  const importExistingContent = async () => {
+    setImporting(true);
+    try {
+      // Import all locale files
+      const locales: Record<string, any> = {
+        en: await import('@/locales/en.json'),
+        de: await import('@/locales/de.json'),
+        hu: await import('@/locales/hu.json'),
+        cs: await import('@/locales/cs.json'),
+        sk: await import('@/locales/sk.json'),
+        hr: await import('@/locales/hr.json'),
+        ro: await import('@/locales/ro.json'),
+        pl: await import('@/locales/pl.json')
+      };
+
+      // Privacy Policy sections
+      const privacySections = [
+        { key: 'intro', order: 1, title_key: 'intro_title', text_key: 'intro_text' },
+        { key: 'controller', order: 2, title_key: 'controller_title', text_key: 'controller_text' },
+        { key: 'data_collected', order: 3, title_key: 'data_collected_title', text_key: 'data_collected_intro' },
+        { key: 'purpose', order: 4, title_key: 'purpose_title', text_key: null },
+        { key: 'legal_basis', order: 5, title_key: 'legal_basis_title', text_key: null },
+        { key: 'sharing', order: 6, title_key: 'sharing_title', text_key: 'sharing_intro' },
+        { key: 'retention', order: 7, title_key: 'retention_title', text_key: 'retention_text' },
+        { key: 'rights', order: 8, title_key: 'rights_title', text_key: 'rights_intro' },
+        { key: 'security', order: 9, title_key: 'security_title', text_key: 'security_text' },
+        { key: 'cookies', order: 10, title_key: 'cookies_title', text_key: 'cookies_text' },
+        { key: 'changes', order: 11, title_key: 'changes_title', text_key: 'changes_text' },
+        { key: 'contact', order: 12, title_key: 'contact_title', text_key: 'contact_text' }
+      ];
+
+      // Impressum sections
+      const impressumSections = [
+        { key: 'company_info', order: 1, title_key: 'company_info', text_key: 'company_details' },
+        { key: 'contact', order: 2, title_key: 'contact_title', text_key: 'contact_info' },
+        { key: 'registry', order: 3, title_key: 'registry_title', text_key: 'registry_info' },
+        { key: 'tax', order: 4, title_key: 'tax_title', text_key: 'tax_number' },
+        { key: 'responsible', order: 5, title_key: 'responsible_title', text_key: 'responsible_person' },
+        { key: 'disclaimer', order: 6, title_key: 'disclaimer_title', text_key: 'disclaimer_text' }
+      ];
+
+      const sectionsToInsert: any[] = [];
+
+      // Process Privacy Policy sections
+      for (const section of privacySections) {
+        const translations: Record<string, string> = {};
+        
+        for (const lang of LANGUAGES) {
+          const locale = locales[lang];
+          const title = locale.privacy?.[section.title_key] || '';
+          const text = section.text_key ? locale.privacy?.[section.text_key] || '' : '';
+          
+          // Combine title and text with HTML formatting
+          translations[lang] = `<h3>${title}</h3>\n${text}`;
+        }
+
+        sectionsToInsert.push({
+          content_type: 'privacy_policy',
+          section_key: section.key,
+          translations,
+          display_order: section.order,
+          is_active: true
+        });
+      }
+
+      // Process Impressum sections
+      for (const section of impressumSections) {
+        const translations: Record<string, string> = {};
+        
+        for (const lang of LANGUAGES) {
+          const locale = locales[lang];
+          const title = locale.impressum?.[section.title_key] || '';
+          const text = locale.impressum?.[section.text_key] || '';
+          
+          translations[lang] = `<h3>${title}</h3>\n${text}`;
+        }
+
+        sectionsToInsert.push({
+          content_type: 'impressum',
+          section_key: section.key,
+          translations,
+          display_order: section.order,
+          is_active: true
+        });
+      }
+
+      // Insert all sections
+      const { error } = await supabase
+        .from('legal_content')
+        .insert(sectionsToInsert);
+
+      if (error) throw error;
+
+      toast({
+        title: t('admin.success'),
+        description: `Imported ${sectionsToInsert.length} sections successfully`
+      });
+
+      loadSections();
+    } catch (error: any) {
+      console.error('Error importing content:', error);
+      toast({
+        title: t('admin.error'),
+        description: error.message,
+        variant: 'destructive'
+      });
+    } finally {
+      setImporting(false);
+    }
+  };
+
   const filteredSections = sections.filter(s => s.content_type === activeContentType);
 
   if (loading) {
@@ -192,11 +305,27 @@ const LegalContentManager = () => {
           <h2 className="text-2xl font-bold text-foreground">Legal Content Management</h2>
           <p className="text-muted-foreground">Manage Impressum and Privacy Policy content</p>
         </div>
-        <Button onClick={createNewSection}>
-          <Plus className="w-4 h-4 mr-2" />
-          Add Section
-        </Button>
+        <div className="flex gap-2">
+          {sections.length === 0 && (
+            <Button onClick={importExistingContent} disabled={importing} variant="outline">
+              <Download className="w-4 h-4 mr-2" />
+              {importing ? 'Importing...' : 'Import Existing Content'}
+            </Button>
+          )}
+          <Button onClick={createNewSection}>
+            <Plus className="w-4 h-4 mr-2" />
+            Add Section
+          </Button>
+        </div>
       </div>
+
+      {sections.length === 0 && !importing && (
+        <Alert>
+          <AlertDescription>
+            The database is empty. Click "Import Existing Content" to load the current Privacy Policy and Impressum translations from your locale files, then you can edit them here.
+          </AlertDescription>
+        </Alert>
+      )}
 
       <Tabs value={activeContentType} onValueChange={(v) => setActiveContentType(v as any)}>
         <TabsList>
