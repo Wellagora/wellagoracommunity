@@ -134,7 +134,8 @@ const AIAssistantChat = () => {
         content: data.message,
         sender: "ai",
         timestamp: new Date(),
-        suggestions: data.suggestions || []
+        // Only show suggestions if this is the first exchange (no conversation ID yet)
+        suggestions: (!conversationId && data.suggestions) ? data.suggestions : undefined
       };
 
       setMessages(prev => [...prev, aiResponse]);
