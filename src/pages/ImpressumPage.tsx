@@ -11,8 +11,15 @@ const ImpressumPage = () => {
   const { t, language } = useLanguage();
   const { sections, loading, getTranslation } = useLegalContent('impressum', language);
 
-  // Fallback to translation keys if database is empty
-  const useFallback = !loading && sections.length === 0;
+  // Fallback to translation keys if database is empty or only contains placeholder HTML
+  const useFallback = !loading && (
+    sections.length === 0 ||
+    sections.every((section) => {
+      const html = getTranslation(section);
+      const plainText = html.replace(/<[^>]*>/g, '').trim();
+      return plainText.length === 0;
+    })
+  );
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
