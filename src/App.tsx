@@ -63,6 +63,7 @@ function App() {
                 <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/admin" element={<AdminDashboardPage />} />
+                <Route path="/admin-dashboard" element={<AdminDashboardPage />} />
                 <Route path="/regional-hub" element={<Navigate to="/community" replace />} />
                 <Route path="/explore-region" element={<ExploreRegionPage />} />
                 <Route path="/interactive-map" element={<Navigate to="/community" replace />} />
