@@ -42,6 +42,7 @@ serve(async (req) => {
 
     // Fetch user context for personalized responses
     const userContext = await fetchUserContext(supabase, user.id, projectId);
+    const activeProjectId = userContext.activeProjectId;
     const systemPrompt = getSystemPrompt(language, userContext);
 
     // Define tools for AI to use
@@ -385,7 +386,7 @@ async function fetchUserContext(supabase: any, userId: string, projectId: string
     .eq('id', activeProjectId)
     .single() : { data: null };
 
-  return { profile, programs, project };
+  return { profile, programs, project, activeProjectId };
 }
 
 function getSystemPrompt(language: string, context: any): string {
