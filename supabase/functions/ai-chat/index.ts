@@ -44,6 +44,63 @@ serve(async (req) => {
     const userContext = await fetchUserContext(supabase, user.id, projectId);
     const systemPrompt = getSystemPrompt(language, userContext);
 
+    // Define tools for AI to use
+    const tools = [
+      {
+        type: "function",
+        function: {
+          name: "search_programs",
+          description: "Search for available programs based on category, difficulty, or keywords. Use this when users ask about specific types of programs.",
+          parameters: {
+            type: "object",
+            properties: {
+              category: {
+                type: "string",
+                description: "Program category (e.g., 'health', 'mental-health', 'nutrition', 'community', 'environment')"
+              },
+              difficulty: {
+                type: "string",
+                enum: ["beginner", "intermediate", "advanced"],
+                description: "Difficulty level filter"
+              },
+              keyword: {
+                type: "string",
+                description: "Search keyword in title or description"
+              }
+            }
+          }
+        }
+      },
+      {
+        type: "function",
+        function: {
+          name: "get_program_details",
+          description: "Get detailed information about a specific program including how to join, requirements, and current participants.",
+          parameters: {
+            type: "object",
+            properties: {
+              program_id: {
+                type: "string",
+                description: "The ID of the program to get details for"
+              }
+            },
+            required: ["program_id"]
+          }
+        }
+      },
+      {
+        type: "function",
+        function: {
+          name: "get_user_programs",
+          description: "Get programs the user is currently participating in or has completed.",
+          parameters: {
+            type: "object",
+            properties: {}
+          }
+        }
+      }
+    ];
+
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -56,7 +113,8 @@ serve(async (req) => {
           { role: "system", content: systemPrompt },
           ...messages
         ],
-        max_tokens: 1000,
+        tools: tools,
+        max_tokens: 2000,
       }),
     });
 
@@ -84,15 +142,81 @@ serve(async (req) => {
     const data = await response.json();
     console.log('AI response received successfully');
 
-    const aiMessage = data.choices[0].message.content;
+    // Check if AI wants to use tools
+    const aiMessage = data.choices[0].message;
+    
+    if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
+      console.log('AI requested tool calls:', aiMessage.tool_calls.length);
+      
+      // Execute tool calls
+      const toolResults = [];
+      for (const toolCall of aiMessage.tool_calls) {
+        const functionName = toolCall.function.name;
+        const functionArgs = JSON.parse(toolCall.function.arguments);
+        
+        console.log(`Executing tool: ${functionName}`, functionArgs);
+        
+        let result;
+        if (functionName === "search_programs") {
+          result = await searchPrograms(supabase, functionArgs, activeProjectId, language);
+        } else if (functionName === "get_program_details") {
+          result = await getProgramDetails(supabase, functionArgs.program_id, language);
+        } else if (functionName === "get_user_programs") {
+          result = await getUserPrograms(supabase, user.id, language);
+        }
+        
+        toolResults.push({
+          tool_call_id: toolCall.id,
+          role: "tool",
+          name: functionName,
+          content: JSON.stringify(result)
+        });
+      }
+      
+      // Send tool results back to AI for final response
+      const finalResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-3-pro-preview",
+          messages: [
+            { role: "system", content: systemPrompt },
+            ...messages,
+            aiMessage,
+            ...toolResults
+          ],
+          max_tokens: 2000,
+        }),
+      });
+      
+      const finalData = await finalResponse.json();
+      const finalMessage = finalData.choices[0].message.content;
+      const suggestions = generateSuggestions(messages[messages.length - 1].content, language);
+      
+      // Store conversation
+      await storeConversation(supabase, user.id, projectId, finalConversationId, language, messages[messages.length - 1], finalMessage);
+      
+      return new Response(
+        JSON.stringify({ 
+          message: finalMessage,
+          suggestions,
+          conversationId: finalConversationId
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    
+    // No tool calls - direct response
+    const finalMessage = aiMessage.content;
     const suggestions = generateSuggestions(messages[messages.length - 1].content, language);
 
-    // Store conversation and messages in database
+    // Store conversation
     let finalConversationId = conversationId;
-    
-    // Create new conversation if none exists
     if (!finalConversationId) {
-      const { data: newConv, error: convError } = await supabase
+      const { data: newConv } = await supabase
         .from('ai_conversations')
         .insert({
           user_id: user.id,
@@ -102,38 +226,14 @@ serve(async (req) => {
         })
         .select()
         .single();
-      
-      if (convError) {
-        console.error('Error creating conversation:', convError);
-      } else {
-        finalConversationId = newConv.id;
-      }
+      finalConversationId = newConv?.id;
     }
     
-    // Store messages if we have a conversation ID
-    if (finalConversationId) {
-      const lastUserMessage = messages[messages.length - 1];
-      
-      // Store user message
-      await supabase.from('ai_messages').insert({
-        conversation_id: finalConversationId,
-        role: lastUserMessage.role,
-        content: lastUserMessage.content,
-        model: 'google/gemini-3-pro-preview'
-      });
-      
-      // Store assistant message
-      await supabase.from('ai_messages').insert({
-        conversation_id: finalConversationId,
-        role: 'assistant',
-        content: aiMessage,
-        model: 'google/gemini-3-pro-preview'
-      });
-    }
+    await storeConversation(supabase, user.id, projectId, finalConversationId, language, messages[messages.length - 1], finalMessage);
 
     return new Response(
       JSON.stringify({ 
-        message: aiMessage,
+        message: finalMessage,
         suggestions,
         conversationId: finalConversationId
       }),
@@ -148,6 +248,117 @@ serve(async (req) => {
     );
   }
 });
+
+// Tool execution functions
+async function searchPrograms(supabase: any, args: any, projectId: string | null, language: string) {
+  let query = supabase
+    .from('challenge_definitions')
+    .select('id, title, description, category, difficulty, translations, points_base, is_team_challenge')
+    .eq('is_active', true)
+    .eq('project_id', projectId);
+  
+  if (args.category) {
+    query = query.ilike('category', `%${args.category}%`);
+  }
+  
+  if (args.difficulty) {
+    query = query.eq('difficulty', args.difficulty);
+  }
+  
+  if (args.keyword) {
+    query = query.or(`title.ilike.%${args.keyword}%,description.ilike.%${args.keyword}%`);
+  }
+  
+  const { data: programs } = await query.limit(10);
+  
+  return programs?.map((p: any) => ({
+    id: p.id,
+    title: p.translations?.[language]?.title || p.title,
+    description: p.translations?.[language]?.description || p.description,
+    category: p.category,
+    difficulty: p.difficulty,
+    points: p.points_base,
+    isTeam: p.is_team_challenge
+  })) || [];
+}
+
+async function getProgramDetails(supabase: any, programId: string, language: string) {
+  const { data: program } = await supabase
+    .from('challenge_definitions')
+    .select('*')
+    .eq('id', programId)
+    .single();
+  
+  if (!program) return { error: "Program not found" };
+  
+  // Get participant count
+  const { count } = await supabase
+    .from('challenge_completions')
+    .select('*', { count: 'exact', head: true })
+    .eq('challenge_id', programId);
+  
+  return {
+    id: program.id,
+    title: program.translations?.[language]?.title || program.title,
+    description: program.translations?.[language]?.description || program.description,
+    category: program.category,
+    difficulty: program.difficulty,
+    points: program.points_base,
+    duration_days: program.duration_days,
+    isTeam: program.is_team_challenge,
+    minTeamSize: program.min_team_size,
+    maxTeamSize: program.max_team_size,
+    participants: count || 0,
+    requirements: program.validation_requirements
+  };
+}
+
+async function getUserPrograms(supabase: any, userId: string, language: string) {
+  const { data: completions } = await supabase
+    .from('challenge_completions')
+    .select('challenge_id, completion_date, validation_status')
+    .eq('user_id', userId)
+    .order('completion_date', { ascending: false })
+    .limit(10);
+  
+  if (!completions || completions.length === 0) {
+    return [];
+  }
+  
+  const programIds = completions.map((c: any) => c.challenge_id);
+  const { data: programs } = await supabase
+    .from('challenge_definitions')
+    .select('id, title, category, translations')
+    .in('id', programIds);
+  
+  return completions.map((c: any) => {
+    const program = programs?.find((p: any) => p.id === c.challenge_id);
+    return {
+      title: program?.translations?.[language]?.title || program?.title,
+      category: program?.category,
+      completedDate: c.completion_date,
+      status: c.validation_status
+    };
+  });
+}
+
+async function storeConversation(supabase: any, userId: string, projectId: string | null, conversationId: string | null, language: string, userMessage: any, aiMessage: string) {
+  if (!conversationId) return;
+  
+  await supabase.from('ai_messages').insert({
+    conversation_id: conversationId,
+    role: userMessage.role,
+    content: userMessage.content,
+    model: 'google/gemini-3-pro-preview'
+  });
+  
+  await supabase.from('ai_messages').insert({
+    conversation_id: conversationId,
+    role: 'assistant',
+    content: aiMessage,
+    model: 'google/gemini-3-pro-preview'
+  });
+}
 
 async function fetchUserContext(supabase: any, userId: string, projectId: string | null) {
   // Fetch user profile
@@ -206,13 +417,20 @@ Help ${userName} engage with the community, discover programs, and take meaningf
 AVAILABLE PROGRAMS IN ${regionName}:
 ${programList}
 
-YOUR CAPABILITIES:
-- Recommend relevant programs based on user interests and location
-- Help users understand how to join and participate in programs
-- Connect users with others in their region
-- Share information about local impact and community achievements
-- Guide users through platform features (creating teams, tracking progress, etc.)
-- Answer questions about sustainability in the context of our community
+YOUR CAPABILITIES & TOOLS:
+You have access to real-time database functions:
+- search_programs: Search programs by category (health, mental-health, nutrition, community, environment), difficulty, or keywords
+- get_program_details: Get full details about any specific program including participants and requirements
+- get_user_programs: Check what programs the user is currently in or has completed
+
+Use these tools actively to give accurate, personalized recommendations!
+
+When users ask about programs:
+1. Use search_programs to find relevant options
+2. Use get_program_details to give complete information
+3. Use get_user_programs to understand their history
+
+IMPORTANT: Always search the database when users ask about programs! Don't just list what you saw in context.
 
 RESPONSE GUIDELINES:
 - Be warm, encouraging, and community-focused
@@ -238,13 +456,20 @@ Hilf ${userName}, sich mit der Community zu engagieren, Programme zu entdecken u
 VERFÜGBARE PROGRAMME IN ${regionName}:
 ${programList}
 
-DEINE FÄHIGKEITEN:
-- Empfehle relevante Programme basierend auf Benutzerinteressen und Standort
-- Hilf Benutzern zu verstehen, wie sie an Programmen teilnehmen können
-- Verbinde Benutzer mit anderen in ihrer Region
-- Teile Informationen über lokale Auswirkungen und Community-Erfolge
-- Führe Benutzer durch Plattformfunktionen (Teams erstellen, Fortschritt verfolgen, etc.)
-- Beantworte Fragen zur Nachhaltigkeit im Kontext unserer Community
+DEINE FÄHIGKEITEN & WERKZEUGE:
+Du hast Zugriff auf Echtzeit-Datenbankfunktionen:
+- search_programs: Programme nach Kategorie (Gesundheit, mentale Gesundheit, Ernährung, Gemeinschaft, Umwelt), Schwierigkeit oder Stichwörtern suchen
+- get_program_details: Vollständige Details zu jedem spezifischen Programm inkl. Teilnehmer und Anforderungen abrufen
+- get_user_programs: Prüfen, an welchen Programmen der Benutzer teilnimmt oder teilgenommen hat
+
+Nutze diese Werkzeuge aktiv für genaue, personalisierte Empfehlungen!
+
+Wenn Benutzer nach Programmen fragen:
+1. Verwende search_programs um relevante Optionen zu finden
+2. Verwende get_program_details für vollständige Informationen
+3. Verwende get_user_programs um ihre Historie zu verstehen
+
+WICHTIG: Suche immer in der Datenbank, wenn Benutzer nach Programmen fragen! Liste nicht nur auf, was du im Kontext gesehen hast.
 
 ANTWORTRICHTLINIEN:
 - Sei herzlich, ermutigend und community-fokussiert
@@ -270,13 +495,20 @@ Segíts ${userName}-nek részt venni a közösségben, programokat felfedezni é
 ELÉRHETŐ PROGRAMOK ${regionName}-ban/-ben:
 ${programList}
 
-A KÉPESSÉGEID:
-- Ajánlj releváns programokat a felhasználó érdeklődése és helyszíne alapján
-- Segíts a felhasználóknak megérteni, hogyan csatlakozzanak és vegyenek részt programokban
-- Kösd össze a felhasználókat másokkal a régióban
-- Ossz meg információkat a helyi hatásokról és közösségi eredményekről
-- Vezesd végig a felhasználókat a platform funkcióin (csapatok létrehozása, előrehaladás követése, stb.)
-- Válaszolj fenntarthatósági kérdésekre a közösségünk kontextusában
+A KÉPESSÉGEID ÉS ESZKÖZEID:
+Valós idejű adatbázis funkciókhoz férsz hozzá:
+- search_programs: Programok keresése kategória (egészség, mentális egészség, táplálkozás, közösség, környezet), nehézség vagy kulcsszavak alapján
+- get_program_details: Részletes információk lekérése bármely programról, beleértve a résztvevőket és követelményeket
+- get_user_programs: Ellenőrzés, hogy a felhasználó milyen programokban vesz részt vagy vett részt
+
+Használd ezeket az eszközöket aktívan pontos, személyre szabott ajánlásokhoz!
+
+Amikor a felhasználók programokról kérdeznek:
+1. Használd a search_programs-ot releváns lehetőségek kereséséhez
+2. Használd a get_program_details-t teljes információkért
+3. Használd a get_user_programs-ot az előzményeik megértéséhez
+
+FONTOS: Mindig keress az adatbázisban, amikor a felhasználók programokról kérdeznek! Ne csak sorold fel, amit a kontextusban láttál.
 
 VÁLASZIRÁNYELVEK:
 - Légy meleg, bátorító és közösségközpontú
