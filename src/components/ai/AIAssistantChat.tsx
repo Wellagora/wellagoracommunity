@@ -104,38 +104,57 @@ const AIAssistantChat = () => {
         throw error;
       }
 
-      if (data.error) {
-        if (data.error.includes("Rate limit")) {
+      // Validate AI response payload
+      if (!data || typeof (data as any).message !== 'string') {
+        console.error('AI chat returned invalid response:', data);
+        toast({
+          title: t('error'),
+          description: t('wellbot.error_message'),
+          variant: 'destructive',
+        });
+        setIsTyping(false);
+        return;
+      }
+
+      const payload = data as {
+        message: string;
+        suggestions?: string[];
+        conversationId?: string;
+        error?: string;
+      };
+
+      if (payload.error) {
+        if (payload.error.includes('Rate limit')) {
           toast({
             title: t('error'),
             description: t('wellbot.rate_limit_error'),
-            variant: "destructive",
+            variant: 'destructive',
           });
-        } else if (data.error.includes("Payment required")) {
+        } else if (payload.error.includes('Payment required')) {
           toast({
             title: t('error'),
             description: t('wellbot.payment_error'),
-            variant: "destructive",
+            variant: 'destructive',
           });
         } else {
-          throw new Error(data.error);
+          throw new Error(payload.error);
         }
         setIsTyping(false);
         return;
       }
 
       // Store conversation ID for future messages
-      if (data.conversationId && !conversationId) {
-        setConversationId(data.conversationId);
+      if (payload.conversationId && !conversationId) {
+        setConversationId(payload.conversationId);
       }
 
       const aiResponse: Message = {
         id: Date.now().toString(),
-        content: data.message,
-        sender: "ai",
+        content: payload.message,
+        sender: 'ai',
         timestamp: new Date(),
         // Only show suggestions if this is the first exchange (no conversation ID yet)
-        suggestions: (!conversationId && data.suggestions) ? data.suggestions : undefined
+        suggestions: (!conversationId && payload.suggestions) ? payload.suggestions : undefined
       };
 
       setMessages(prev => [...prev, aiResponse]);
