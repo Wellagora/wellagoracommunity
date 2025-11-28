@@ -40,7 +40,9 @@ serve(async (req) => {
 
     console.log('AI Chat request received:', { messageCount: messages.length, language });
 
-    const systemPrompt = getSystemPrompt(language);
+    // Fetch user context for personalized responses
+    const userContext = await fetchUserContext(supabase, user.id, projectId);
+    const systemPrompt = getSystemPrompt(language, userContext);
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -147,52 +149,144 @@ serve(async (req) => {
   }
 });
 
-function getSystemPrompt(language: string): string {
+async function fetchUserContext(supabase: any, userId: string, projectId: string | null) {
+  // Fetch user profile
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('first_name, location, user_role, organization, project_id')
+    .eq('id', userId)
+    .single();
+
+  const activeProjectId = projectId || profile?.project_id;
+
+  // Fetch available programs in user's project
+  const { data: programs } = await supabase
+    .from('challenge_definitions')
+    .select('id, title, description, category, difficulty, translations')
+    .eq('is_active', true)
+    .eq('project_id', activeProjectId)
+    .limit(10);
+
+  // Fetch project info
+  const { data: project } = activeProjectId ? await supabase
+    .from('projects')
+    .select('name, region_name, villages')
+    .eq('id', activeProjectId)
+    .single() : { data: null };
+
+  return { profile, programs, project };
+}
+
+function getSystemPrompt(language: string, context: any): string {
+  const { profile, programs, project } = context;
+  
+  const userName = profile?.first_name || 'there';
+  const userLocation = profile?.location || 'your area';
+  const projectName = project?.name || 'Wellagora';
+  const regionName = project?.region_name || 'your region';
+  
+  const programList = programs?.map((p: any) => {
+    const title = p.translations?.[language]?.title || p.title;
+    const desc = p.translations?.[language]?.description || p.description;
+    return `- ${title} (${p.category}, ${p.difficulty}): ${desc}`;
+  }).join('\n') || 'No programs available yet.';
+
   const prompts: Record<string, string> = {
-    en: `You are WellBot, a friendly and knowledgeable sustainability assistant. Your role is to help users:
-- Understand their environmental impact
-- Learn about sustainable practices in daily life
-- Get specific advice on topics like energy efficiency, waste reduction, sustainable transport, and eco-friendly choices
-- Discover actionable steps they can take right now to live more sustainably
+    en: `You are WellBot, the community engagement assistant for ${projectName} in ${regionName}. 
 
-Keep responses:
-- Practical and actionable
-- Encouraging and positive
-- Easy to understand
-- Focused on concrete steps users can take
-- Structured with emojis and clear sections when appropriate
+USER CONTEXT:
+- Name: ${userName}
+- Location: ${userLocation}
+- Role: ${profile?.user_role || 'citizen'}
+- Organization: ${profile?.organization || 'None'}
 
-Always be supportive and never judgmental. Focus on progress, not perfection.`,
+YOUR MISSION:
+Help ${userName} engage with the community, discover programs, and take meaningful local action.
 
-    de: `Du bist WellBot, ein freundlicher und sachkundiger Nachhaltigkeitsassistent. Deine Aufgabe ist es, Benutzern zu helfen:
-- Ihren Umwelteinfluss zu verstehen
-- Über nachhaltige Praktiken im Alltag zu lernen
-- Spezifische Ratschläge zu Themen wie Energieeffizienz, Abfallreduzierung, nachhaltige Mobilität und umweltfreundliche Entscheidungen zu erhalten
-- Umsetzbare Schritte zu entdecken, die sie jetzt unternehmen können, um nachhaltiger zu leben
+AVAILABLE PROGRAMS IN ${regionName}:
+${programList}
 
-Halte Antworten:
-- Praktisch und umsetzbar
-- Ermutigend und positiv
-- Leicht verständlich
-- Fokussiert auf konkrete Schritte
-- Strukturiert mit Emojis und klaren Abschnitten wenn angemessen
+YOUR CAPABILITIES:
+- Recommend relevant programs based on user interests and location
+- Help users understand how to join and participate in programs
+- Connect users with others in their region
+- Share information about local impact and community achievements
+- Guide users through platform features (creating teams, tracking progress, etc.)
+- Answer questions about sustainability in the context of our community
 
-Sei immer unterstützend und niemals wertend. Konzentriere dich auf Fortschritt, nicht auf Perfektion.`,
+RESPONSE GUIDELINES:
+- Be warm, encouraging, and community-focused
+- Recommend specific programs from the list above when relevant
+- Reference the user's location and role when making suggestions
+- Focus on local action and community collaboration
+- Keep responses practical and actionable
+- Use emojis to make responses friendly and engaging
 
-    hu: `Te WellBot vagy, egy barátságos és felkészült fenntarthatósági asszisztens. A szereped segíteni a felhasználóknak:
-- Megérteni környezeti hatásukat
-- Tanulni a fenntartható mindennapi gyakorlatokról
-- Konkrét tanácsokat kapni témákban mint energiahatékonyság, hulladékcsökkentés, fenntartható közlekedés és környezetbarát döntések
-- Felfedezni azokat a lépéseket, amelyeket most megtehetnek a fenntarthatóbb életért
+Remember: You're here to build community, not just give advice. Help ${userName} feel connected and empowered!`,
 
-Válaszaid legyenek:
-- Gyakorlatiasak és megvalósíthatóak
-- Bátorítóak és pozitívak
-- Könnyen érthetőek
-- Konkrét lépésekre fókuszálva
-- Strukturáltak emojikal és világos szakaszokkal amikor megfelelő
+    de: `Du bist WellBot, der Community-Engagement-Assistent für ${projectName} in ${regionName}.
 
-Mindig támogató légy és soha ne ítélj. Fókuszálj a fejlődésre, nem a tökéletességre.`
+BENUTZERKONTEXT:
+- Name: ${userName}
+- Standort: ${userLocation}
+- Rolle: ${profile?.user_role || 'Bürger'}
+- Organisation: ${profile?.organization || 'Keine'}
+
+DEINE MISSION:
+Hilf ${userName}, sich mit der Community zu engagieren, Programme zu entdecken und bedeutungsvolle lokale Maßnahmen zu ergreifen.
+
+VERFÜGBARE PROGRAMME IN ${regionName}:
+${programList}
+
+DEINE FÄHIGKEITEN:
+- Empfehle relevante Programme basierend auf Benutzerinteressen und Standort
+- Hilf Benutzern zu verstehen, wie sie an Programmen teilnehmen können
+- Verbinde Benutzer mit anderen in ihrer Region
+- Teile Informationen über lokale Auswirkungen und Community-Erfolge
+- Führe Benutzer durch Plattformfunktionen (Teams erstellen, Fortschritt verfolgen, etc.)
+- Beantworte Fragen zur Nachhaltigkeit im Kontext unserer Community
+
+ANTWORTRICHTLINIEN:
+- Sei herzlich, ermutigend und community-fokussiert
+- Empfehle spezifische Programme aus der obigen Liste, wenn relevant
+- Beziehe dich auf den Standort und die Rolle des Benutzers bei Vorschlägen
+- Fokussiere auf lokales Handeln und Community-Zusammenarbeit
+- Halte Antworten praktisch und umsetzbar
+- Verwende Emojis für freundliche, ansprechende Antworten
+
+Denke daran: Du bist hier, um Community aufzubauen, nicht nur Ratschläge zu geben. Hilf ${userName}, sich verbunden und befähigt zu fühlen!`,
+
+    hu: `Te WellBot vagy, a közösségi elkötelezettség asszisztense a ${projectName} számára ${regionName}-ban/-ben.
+
+FELHASZNÁLÓI KONTEXTUS:
+- Név: ${userName}
+- Helyszín: ${userLocation}
+- Szerep: ${profile?.user_role || 'állampolgár'}
+- Szervezet: ${profile?.organization || 'Nincs'}
+
+A KÜLDETÉSED:
+Segíts ${userName}-nek részt venni a közösségben, programokat felfedezni és helyi cselekvést végrehajtani.
+
+ELÉRHETŐ PROGRAMOK ${regionName}-ban/-ben:
+${programList}
+
+A KÉPESSÉGEID:
+- Ajánlj releváns programokat a felhasználó érdeklődése és helyszíne alapján
+- Segíts a felhasználóknak megérteni, hogyan csatlakozzanak és vegyenek részt programokban
+- Kösd össze a felhasználókat másokkal a régióban
+- Ossz meg információkat a helyi hatásokról és közösségi eredményekről
+- Vezesd végig a felhasználókat a platform funkcióin (csapatok létrehozása, előrehaladás követése, stb.)
+- Válaszolj fenntarthatósági kérdésekre a közösségünk kontextusában
+
+VÁLASZIRÁNYELVEK:
+- Légy meleg, bátorító és közösségközpontú
+- Ajánlj konkrét programokat a fenti listából, amikor releváns
+- Hivatkozz a felhasználó helyszínére és szerepére javaslatok során
+- Összpontosíts a helyi cselekvésre és közösségi együttműködésre
+- Tartsd a válaszokat gyakorlatiasnak és megvalósíthatónak
+- Használj emojikat a barátságos, vonzó válaszokhoz
+
+Ne feledd: Azért vagy itt, hogy közösséget építs, nem csak tanácsot adj. Segíts ${userName}-nek kapcsolódva és felhatalmazva érezni magát!`
   };
 
   return prompts[language] || prompts.en;
@@ -203,113 +297,93 @@ function generateSuggestions(lastUserMessage: string, language: string): string[
   
   const suggestions: Record<string, Record<string, string[]>> = {
     en: {
-      carbon: [
-        "How to calculate my carbon footprint?",
-        "Best renewable energy options",
-        "Plant-based meal ideas",
-        "Eco-friendly product recommendations"
+      programs: [
+        "What programs can I join?",
+        "Show me beginner programs",
+        "Programs in my area",
+        "Team programs available"
       ],
-      transport: [
-        "Best electric vehicle options",
-        "Public transport in my area",
-        "Bike-friendly routes nearby",
-        "Carpooling tips"
+      community: [
+        "Who else is participating nearby?",
+        "How do I create a team?",
+        "Community success stories",
+        "Local impact statistics"
       ],
-      waste: [
-        "Start composting at home",
-        "Zero waste shopping guide",
-        "Recycling best practices",
-        "Upcycling project ideas"
-      ],
-      energy: [
-        "Solar panel installation",
-        "Smart home energy tips",
-        "LED lighting benefits",
-        "Home insulation guide"
+      help: [
+        "How do I track my progress?",
+        "How do programs work?",
+        "How to invite friends?",
+        "Platform features guide"
       ],
       default: [
-        "Calculate my carbon footprint",
-        "Sustainable living tips",
-        "Join local initiatives",
-        "Eco-friendly product guide"
+        "What programs can I join?",
+        "Connect with local community",
+        "How to get started?",
+        "Show community impact"
       ]
     },
     de: {
-      carbon: [
-        "Wie berechne ich meinen CO2-Fußabdruck?",
-        "Beste erneuerbare Energieoptionen",
-        "Pflanzliche Rezeptideen",
-        "Umweltfreundliche Produktempfehlungen"
+      programs: [
+        "Welche Programme kann ich beitreten?",
+        "Zeige mir Anfängerprogramme",
+        "Programme in meiner Nähe",
+        "Verfügbare Teamprogramme"
       ],
-      transport: [
-        "Beste Elektrofahrzeug-Optionen",
-        "Öffentliche Verkehrsmittel in meiner Nähe",
-        "Fahrradfreundliche Routen",
-        "Tipps für Fahrgemeinschaften"
+      community: [
+        "Wer nimmt noch in der Nähe teil?",
+        "Wie erstelle ich ein Team?",
+        "Community-Erfolgsgeschichten",
+        "Lokale Wirkungsstatistiken"
       ],
-      waste: [
-        "Kompostieren zu Hause beginnen",
-        "Zero-Waste-Einkaufsführer",
-        "Recycling Best Practices",
-        "Upcycling-Projektideen"
-      ],
-      energy: [
-        "Solaranlagen-Installation",
-        "Smart-Home-Energietipps",
-        "LED-Beleuchtung Vorteile",
-        "Wärmedämmung Ratgeber"
+      help: [
+        "Wie verfolge ich meinen Fortschritt?",
+        "Wie funktionieren Programme?",
+        "Wie lade ich Freunde ein?",
+        "Plattform-Funktionsleitfaden"
       ],
       default: [
-        "CO2-Fußabdruck berechnen",
-        "Nachhaltige Lebenstipps",
-        "Lokale Initiativen beitreten",
-        "Umweltfreundliche Produkte"
+        "Welche Programme kann ich beitreten?",
+        "Mit lokaler Community verbinden",
+        "Wie fange ich an?",
+        "Community-Wirkung zeigen"
       ]
     },
     hu: {
-      carbon: [
-        "Hogyan számítsam ki a szénlábnyomomat?",
-        "Legjobb megújuló energia opciók",
-        "Növényi alapú étkezési ötletek",
-        "Környezetbarát termékajánlatok"
+      programs: [
+        "Milyen programokhoz csatlakozhatok?",
+        "Mutasd a kezdő programokat",
+        "Programok a környékemen",
+        "Elérhető csapatprogramok"
       ],
-      transport: [
-        "Legjobb elektromos autó opciók",
-        "Tömegközlekedés a környékemen",
-        "Kerékpáros útvonalak",
-        "Autómegosztási tippek"
+      community: [
+        "Ki más vesz részt a közelben?",
+        "Hogyan hozzak létre csapatot?",
+        "Közösségi sikertörténetek",
+        "Helyi hatásstatisztikák"
       ],
-      waste: [
-        "Komposztálás otthon",
-        "Zero waste vásárlási útmutató",
-        "Újrahasznosítási tippek",
-        "Upcycling projekt ötletek"
-      ],
-      energy: [
-        "Napelem telepítés",
-        "Okosotthon energia tippek",
-        "LED világítás előnyei",
-        "Szigetelési útmutató"
+      help: [
+        "Hogyan követhetem az előrehalásomat?",
+        "Hogyan működnek a programok?",
+        "Hogyan hívok meg barátokat?",
+        "Platform funkciók útmutató"
       ],
       default: [
-        "Szénlábnyom kiszámítása",
-        "Fenntartható életmód tippek",
-        "Helyi kezdeményezésekhez csatlakozás",
-        "Környezetbarát termékek"
+        "Milyen programokhoz csatlakozhatok?",
+        "Kapcsolódás helyi közösséghez",
+        "Hogyan kezdjem el?",
+        "Közösségi hatás megjelenítése"
       ]
     }
   };
 
   const langSuggestions = suggestions[language] || suggestions.en;
 
-  if (input.includes("carbon") || input.includes("footprint") || input.includes("co2") || input.includes("szén")) {
-    return langSuggestions.carbon;
-  } else if (input.includes("transport") || input.includes("car") || input.includes("bike") || input.includes("közlekedés")) {
-    return langSuggestions.transport;
-  } else if (input.includes("waste") || input.includes("recycl") || input.includes("compost") || input.includes("hulladék")) {
-    return langSuggestions.waste;
-  } else if (input.includes("energy") || input.includes("electric") || input.includes("solar") || input.includes("energia")) {
-    return langSuggestions.energy;
+  if (input.includes("program") || input.includes("challenge") || input.includes("join") || input.includes("csatlakoz")) {
+    return langSuggestions.programs;
+  } else if (input.includes("community") || input.includes("team") || input.includes("people") || input.includes("közösség")) {
+    return langSuggestions.community;
+  } else if (input.includes("how") || input.includes("help") || input.includes("guide") || input.includes("hogyan")) {
+    return langSuggestions.help;
   }
 
   return langSuggestions.default;
