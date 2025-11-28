@@ -210,8 +210,15 @@ serve(async (req) => {
       });
       
       const finalData = await finalResponse.json();
-      const finalMessage = finalData.choices[0].message.content;
-      const suggestions = generateSuggestions(messages[messages.length - 1].content, language);
+      const lastUserMessage = messages[messages.length - 1]?.content || '';
+      let finalMessage = finalData?.choices?.[0]?.message?.content || '';
+
+      if (!finalMessage || !finalMessage.trim()) {
+        console.warn('AI returned empty message after tool calls, using fallback message');
+        finalMessage = getFallbackMessage(language, lastUserMessage);
+      }
+
+      const suggestions = generateSuggestions(lastUserMessage, language);
       
       // Store conversation
       await storeConversation(supabase, user.id, projectId, finalConversationId, language, messages[messages.length - 1], finalMessage);
@@ -227,8 +234,15 @@ serve(async (req) => {
     }
     
     // No tool calls - direct response
-    const finalMessage = aiMessage.content;
-    const suggestions = generateSuggestions(messages[messages.length - 1].content, language);
+    const lastUserMessage = messages[messages.length - 1]?.content || '';
+    let finalMessage = aiMessage?.content || '';
+
+    if (!finalMessage || !finalMessage.trim()) {
+      console.warn('AI returned empty direct response, using fallback message');
+      finalMessage = getFallbackMessage(language, lastUserMessage);
+    }
+
+    const suggestions = generateSuggestions(lastUserMessage, language);
 
     // Store conversation
     await storeConversation(supabase, user.id, projectId, finalConversationId, language, messages[messages.length - 1], finalMessage);
@@ -524,6 +538,17 @@ Ne feledd: Azért vagy itt, hogy közösséget építs, nem csak tanácsot adj. 
   };
 
   return prompts[language] || prompts.en;
+}
+
+function getFallbackMessage(language: string, lastUserMessage: string): string {
+  const templates: Record<string, string> = {
+    en: "I couldn't generate a clear answer to your last question: \"{question}\". Please try to rephrase it or choose one of the suggestions below.",
+    de: "Ich konnte gerade keine klare Antwort auf deine letzte Frage erzeugen: \"{question}\". Bitte formuliere sie neu oder wähle eine der untenstehenden Vorschläge.",
+    hu: "Most nem sikerült egyértelmű választ adnom erre a kérdésre: \"{question}\". Próbáld meg kicsit máshogy megfogalmazni, vagy válassz az alábbi javaslatok közül."
+  };
+
+  const template = templates[language] || templates.en;
+  return template.replace('{question}', lastUserMessage || '');
 }
 
 function generateSuggestions(lastUserMessage: string, language: string): string[] {
