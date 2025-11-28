@@ -196,30 +196,31 @@ const LegalContentManager = () => {
         pl: await import('@/locales/pl.json')
       };
 
-      // Privacy Policy sections
+      // Privacy Policy sections with their translation keys
       const privacySections = [
-        { key: 'intro', order: 1, title_key: 'intro_title', text_key: 'intro_text' },
-        { key: 'controller', order: 2, title_key: 'controller_title', text_key: 'controller_text' },
-        { key: 'data_collected', order: 3, title_key: 'data_collected_title', text_key: 'data_collected_intro' },
-        { key: 'purpose', order: 4, title_key: 'purpose_title', text_key: null },
-        { key: 'legal_basis', order: 5, title_key: 'legal_basis_title', text_key: null },
-        { key: 'sharing', order: 6, title_key: 'sharing_title', text_key: 'sharing_intro' },
-        { key: 'retention', order: 7, title_key: 'retention_title', text_key: 'retention_text' },
-        { key: 'rights', order: 8, title_key: 'rights_title', text_key: 'rights_intro' },
-        { key: 'security', order: 9, title_key: 'security_title', text_key: 'security_text' },
-        { key: 'cookies', order: 10, title_key: 'cookies_title', text_key: 'cookies_text' },
-        { key: 'changes', order: 11, title_key: 'changes_title', text_key: 'changes_text' },
-        { key: 'contact', order: 12, title_key: 'contact_title', text_key: 'contact_text' }
+        { key: 'intro', order: 1, title_key: 'privacy.intro_title', text_key: 'privacy.intro_text' },
+        { key: 'controller', order: 2, title_key: 'privacy.controller_title', text_key: 'privacy.controller_text' },
+        { key: 'data_collected', order: 3, title_key: 'privacy.data_collected_title', text_key: 'privacy.data_collected_intro' },
+        { key: 'purpose', order: 4, title_key: 'privacy.purpose_title', text_key: null },
+        { key: 'legal_basis', order: 5, title_key: 'privacy.legal_basis_title', text_key: null },
+        { key: 'sharing', order: 6, title_key: 'privacy.sharing_title', text_key: 'privacy.sharing_intro' },
+        { key: 'retention', order: 7, title_key: 'privacy.retention_title', text_key: 'privacy.retention_text' },
+        { key: 'rights', order: 8, title_key: 'privacy.rights_title', text_key: 'privacy.rights_intro' },
+        { key: 'security', order: 9, title_key: 'privacy.security_title', text_key: 'privacy.security_text' },
+        { key: 'cookies', order: 10, title_key: 'privacy.cookies_title', text_key: 'privacy.cookies_text' },
+        { key: 'changes', order: 11, title_key: 'privacy.changes_title', text_key: 'privacy.changes_text' },
+        { key: 'contact', order: 12, title_key: 'privacy.contact_title', text_key: 'privacy.contact_text' }
       ];
 
-      // Impressum sections
+      // Impressum sections with their translation keys
       const impressumSections = [
-        { key: 'company_info', order: 1, title_key: 'company_info', text_key: 'company_details' },
-        { key: 'contact', order: 2, title_key: 'contact_title', text_key: 'contact_info' },
-        { key: 'registry', order: 3, title_key: 'registry_title', text_key: 'registry_info' },
-        { key: 'tax', order: 4, title_key: 'tax_title', text_key: 'tax_number' },
-        { key: 'responsible', order: 5, title_key: 'responsible_title', text_key: 'responsible_person' },
-        { key: 'disclaimer', order: 6, title_key: 'disclaimer_title', text_key: 'disclaimer_text' }
+        { key: 'company_info', order: 1, title_key: 'impressum.company_info_title', text_key: 'impressum.company_info' },
+        { key: 'contact', order: 2, title_key: 'impressum.contact_title', text_key: 'impressum.contact_info' },
+        { key: 'represented', order: 3, title_key: 'impressum.represented_title', text_key: 'impressum.represented_info' },
+        { key: 'registration', order: 4, title_key: 'impressum.registration_title', text_key: 'impressum.registration_info' },
+        { key: 'vat', order: 5, title_key: 'impressum.vat_title', text_key: 'impressum.vat_info' },
+        { key: 'responsible', order: 6, title_key: 'impressum.responsible_title', text_key: 'impressum.responsible_info' },
+        { key: 'disclaimer', order: 7, title_key: 'impressum.disclaimer_title', text_key: null }
       ];
 
       const sectionsToInsert: any[] = [];
@@ -230,11 +231,13 @@ const LegalContentManager = () => {
         
         for (const lang of LANGUAGES) {
           const locale = locales[lang];
-          const title = locale.privacy?.[section.title_key] || '';
-          const text = section.text_key ? locale.privacy?.[section.text_key] || '' : '';
+          const title = locale[section.title_key] || '';
+          const text = section.text_key ? (locale[section.text_key] || '') : '';
           
           // Combine title and text with HTML formatting
-          translations[lang] = `<h3>${title}</h3>\n${text}`;
+          translations[lang] = text 
+            ? `<h3>${title}</h3>\n<p>${text}</p>` 
+            : `<h3>${title}</h3>`;
         }
 
         sectionsToInsert.push({
@@ -252,10 +255,14 @@ const LegalContentManager = () => {
         
         for (const lang of LANGUAGES) {
           const locale = locales[lang];
-          const title = locale.impressum?.[section.title_key] || '';
-          const text = locale.impressum?.[section.text_key] || '';
+          const title = locale[section.title_key] || '';
+          const text = section.text_key ? (locale[section.text_key] || '') : '';
           
-          translations[lang] = `<h3>${title}</h3>\n${text}`;
+          // Combine title and text with HTML formatting, preserving line breaks
+          const formattedText = text.replace(/\n/g, '<br/>');
+          translations[lang] = text 
+            ? `<h3>${title}</h3>\n<p>${formattedText}</p>` 
+            : `<h3>${title}</h3>`;
         }
 
         sectionsToInsert.push({
