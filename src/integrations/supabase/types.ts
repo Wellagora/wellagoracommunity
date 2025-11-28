@@ -385,6 +385,42 @@ export type Database = {
           },
         ]
       }
+      legal_content: {
+        Row: {
+          content_type: string
+          created_at: string
+          display_order: number
+          id: string
+          is_active: boolean
+          section_key: string
+          translations: Json
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          content_type: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          section_key: string
+          translations?: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          content_type?: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          section_key?: string
+          translations?: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           admin_notes: string | null

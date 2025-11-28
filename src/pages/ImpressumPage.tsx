@@ -2,12 +2,17 @@ import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useLegalContent } from "@/hooks/useLegalContent";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Building2 } from "lucide-react";
 
 const ImpressumPage = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const { sections, loading, getTranslation } = useLegalContent('impressum', language);
+
+  // Fallback to translation keys if database is empty
+  const useFallback = !loading && sections.length === 0;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -32,93 +37,112 @@ const ImpressumPage = () => {
             </div>
           </div>
 
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>{t('impressum.company_info_title')}</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-sm max-w-none dark:prose-invert">
-              <p className="text-muted-foreground whitespace-pre-line">{t('impressum.company_info')}</p>
-            </CardContent>
-          </Card>
+          {loading ? (
+            <div className="text-center py-8">Loading...</div>
+          ) : useFallback ? (
+            // Fallback to translation keys
+            <>
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle>{t('impressum.company_info_title')}</CardTitle>
+                </CardHeader>
+                <CardContent className="prose prose-sm max-w-none dark:prose-invert">
+                  <p className="text-muted-foreground whitespace-pre-line">{t('impressum.company_info')}</p>
+                </CardContent>
+              </Card>
 
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>{t('impressum.contact_title')}</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-sm max-w-none dark:prose-invert">
-              <p className="text-muted-foreground whitespace-pre-line">{t('impressum.contact_info')}</p>
-            </CardContent>
-          </Card>
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle>{t('impressum.contact_title')}</CardTitle>
+                </CardHeader>
+                <CardContent className="prose prose-sm max-w-none dark:prose-invert">
+                  <p className="text-muted-foreground whitespace-pre-line">{t('impressum.contact_info')}</p>
+                </CardContent>
+              </Card>
 
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>{t('impressum.represented_title')}</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-sm max-w-none dark:prose-invert">
-              <p className="text-muted-foreground">{t('impressum.represented_info')}</p>
-            </CardContent>
-          </Card>
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle>{t('impressum.represented_title')}</CardTitle>
+                </CardHeader>
+                <CardContent className="prose prose-sm max-w-none dark:prose-invert">
+                  <p className="text-muted-foreground">{t('impressum.represented_info')}</p>
+                </CardContent>
+              </Card>
 
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>{t('impressum.registration_title')}</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-sm max-w-none dark:prose-invert">
-              <p className="text-muted-foreground whitespace-pre-line">{t('impressum.registration_info')}</p>
-            </CardContent>
-          </Card>
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle>{t('impressum.registration_title')}</CardTitle>
+                </CardHeader>
+                <CardContent className="prose prose-sm max-w-none dark:prose-invert">
+                  <p className="text-muted-foreground whitespace-pre-line">{t('impressum.registration_info')}</p>
+                </CardContent>
+              </Card>
 
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>{t('impressum.vat_title')}</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-sm max-w-none dark:prose-invert">
-              <p className="text-muted-foreground">{t('impressum.vat_info')}</p>
-            </CardContent>
-          </Card>
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle>{t('impressum.vat_title')}</CardTitle>
+                </CardHeader>
+                <CardContent className="prose prose-sm max-w-none dark:prose-invert">
+                  <p className="text-muted-foreground">{t('impressum.vat_info')}</p>
+                </CardContent>
+              </Card>
 
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>{t('impressum.responsible_title')}</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-sm max-w-none dark:prose-invert">
-              <p className="text-muted-foreground">{t('impressum.responsible_info')}</p>
-            </CardContent>
-          </Card>
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle>{t('impressum.responsible_title')}</CardTitle>
+                </CardHeader>
+                <CardContent className="prose prose-sm max-w-none dark:prose-invert">
+                  <p className="text-muted-foreground">{t('impressum.responsible_info')}</p>
+                </CardContent>
+              </Card>
 
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>{t('impressum.disclaimer_title')}</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-sm max-w-none dark:prose-invert">
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">{t('impressum.disclaimer_liability_title')}</h3>
-                  <p className="text-muted-foreground">{t('impressum.disclaimer_liability_text')}</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">{t('impressum.disclaimer_links_title')}</h3>
-                  <p className="text-muted-foreground">{t('impressum.disclaimer_links_text')}</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">{t('impressum.disclaimer_copyright_title')}</h3>
-                  <p className="text-muted-foreground">{t('impressum.disclaimer_copyright_text')}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle>{t('impressum.disclaimer_title')}</CardTitle>
+                </CardHeader>
+                <CardContent className="prose prose-sm max-w-none dark:prose-invert">
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-2">{t('impressum.disclaimer_liability_title')}</h3>
+                      <p className="text-muted-foreground">{t('impressum.disclaimer_liability_text')}</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-2">{t('impressum.disclaimer_links_title')}</h3>
+                      <p className="text-muted-foreground">{t('impressum.disclaimer_links_text')}</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-2">{t('impressum.disclaimer_copyright_title')}</h3>
+                      <p className="text-muted-foreground">{t('impressum.disclaimer_copyright_text')}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('impressum.dispute_title')}</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-sm max-w-none dark:prose-invert">
-              <p className="text-muted-foreground">{t('impressum.dispute_text')}</p>
-              <p className="text-muted-foreground mt-2">
-                <strong>{t('impressum.dispute_link')}</strong>: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">https://ec.europa.eu/consumers/odr</a>
-              </p>
-            </CardContent>
-          </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('impressum.dispute_title')}</CardTitle>
+                </CardHeader>
+                <CardContent className="prose prose-sm max-w-none dark:prose-invert">
+                  <p className="text-muted-foreground">{t('impressum.dispute_text')}</p>
+                  <p className="text-muted-foreground mt-2">
+                    <strong>{t('impressum.dispute_link')}</strong>: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">https://ec.europa.eu/consumers/odr</a>
+                  </p>
+                </CardContent>
+              </Card>
+            </>
+          ) : (
+            // Render from database
+            sections.map((section) => (
+              <Card key={section.id} className="mb-6">
+                <CardContent className="prose prose-sm max-w-none dark:prose-invert pt-6">
+                  <div 
+                    className="text-muted-foreground whitespace-pre-line"
+                    dangerouslySetInnerHTML={{ __html: getTranslation(section) }}
+                  />
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
       </div>
 
