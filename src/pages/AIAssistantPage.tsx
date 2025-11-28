@@ -26,7 +26,7 @@ const AIAssistantPage = () => {
             </div>
             
             {/* WellBot Name */}
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2 text-white">
               WellBot
             </h2>
             
