@@ -18,6 +18,7 @@ import {
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Message {
   id: string;
@@ -30,12 +31,12 @@ interface Message {
 const AIAssistantChat = () => {
   const { t, language } = useLanguage();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [conversationId, setConversationId] = useState<string | null>(null);
-  
   const [messages, setMessages] = useState<Message[]>([]);
-  
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -50,21 +51,85 @@ const AIAssistantChat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Initialize greeting message when language changes
+  // Load conversation history on mount
   useEffect(() => {
-    setMessages([{
-      id: "1",
-      content: t('wellbot.community_greeting'),
-      sender: "ai",
-      timestamp: new Date(),
-      suggestions: [
-        t('wellbot.suggestion_programs'),
-        t('wellbot.suggestion_community'),
-        t('wellbot.suggestion_howto'),
-        t('wellbot.suggestion_impact')
-      ]
-    }]);
-  }, [language, t]);
+    const loadConversationHistory = async () => {
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        // Fetch the most recent conversation for this user
+        const { data: conversations, error: convError } = await supabase
+          .from('ai_conversations')
+          .select('id')
+          .eq('user_id', user.id)
+          .order('last_message_at', { ascending: false })
+          .limit(1);
+
+        if (convError) throw convError;
+
+        if (conversations && conversations.length > 0) {
+          const convId = conversations[0].id;
+          setConversationId(convId);
+
+          // Fetch messages for this conversation
+          const { data: messagesData, error: msgError } = await supabase
+            .from('ai_messages')
+            .select('*')
+            .eq('conversation_id', convId)
+            .order('timestamp', { ascending: true });
+
+          if (msgError) throw msgError;
+
+          if (messagesData && messagesData.length > 0) {
+            const loadedMessages: Message[] = messagesData.map(msg => ({
+              id: msg.id,
+              content: msg.content,
+              sender: msg.role === 'user' ? 'user' : 'ai',
+              timestamp: new Date(msg.timestamp)
+            }));
+
+            setMessages(loadedMessages);
+          }
+        } else {
+          // No previous conversation, show greeting
+          setMessages([{
+            id: "1",
+            content: t('wellbot.community_greeting'),
+            sender: "ai",
+            timestamp: new Date(),
+            suggestions: [
+              t('wellbot.suggestion_programs'),
+              t('wellbot.suggestion_community'),
+              t('wellbot.suggestion_howto'),
+              t('wellbot.suggestion_impact')
+            ]
+          }]);
+        }
+      } catch (error) {
+        console.error('Error loading conversation history:', error);
+        // Show greeting on error
+        setMessages([{
+          id: "1",
+          content: t('wellbot.community_greeting'),
+          sender: "ai",
+          timestamp: new Date(),
+          suggestions: [
+            t('wellbot.suggestion_programs'),
+            t('wellbot.suggestion_community'),
+            t('wellbot.suggestion_howto'),
+            t('wellbot.suggestion_impact')
+          ]
+        }]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadConversationHistory();
+  }, [user, t]);
 
   useEffect(() => {
     scrollToBottom();
@@ -223,7 +288,15 @@ const AIAssistantChat = () => {
           {/* Messages */}
           <ScrollArea className="flex-1 p-4">
             <div className="space-y-4">
-              {messages.map((message) => (
+              {isLoading ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="flex space-x-1">
+                    <div className="w-2 h-2 bg-muted-foreground rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-muted-foreground rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 bg-muted-foreground rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                  </div>
+                </div>
+              ) : messages.map((message) => (
                 <div
                   key={message.id}
                   className={`flex items-start space-x-3 ${
