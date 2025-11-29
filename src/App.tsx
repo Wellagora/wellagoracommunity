@@ -33,6 +33,7 @@ import InboxPage from "@/pages/InboxPage";
 import TranslationToolPage from "@/pages/TranslationToolPage";
 import PrivacyPolicyPage from "@/pages/PrivacyPolicyPage";
 import ImpressumPage from "@/pages/ImpressumPage";
+import NotFound from "@/pages/NotFound";
 import "./index.css";
 
 function App() {
@@ -87,6 +88,7 @@ function App() {
                 <Route path="/translation-tool" element={<TranslationToolPage />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
                 <Route path="/impressum" element={<ImpressumPage />} />
+                <Route path="*" element={<NotFound />} />
               </Routes>
               <Toaster />
               <SonnerToaster />
