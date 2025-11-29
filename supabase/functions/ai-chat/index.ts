@@ -14,24 +14,31 @@ serve(async (req) => {
   try {
     const { messages, language = 'en', conversationId = null, projectId = null } = await req.json();
     
-    // Get authorization header to authenticate user
+    // Try to use the authenticated user when available, but allow anonymous access too
     const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      throw new Error("No authorization header");
-    }
-    
-    // Initialize Supabase client
+
+    // Initialize Supabase client (attach Authorization header if present)
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      { global: { headers: { Authorization: authHeader } } }
+      authHeader
+        ? { global: { headers: { Authorization: authHeader } } }
+        : {}
     );
-    
-    // Get current user
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-    if (userError || !user) {
-      throw new Error("Authentication failed");
+
+    let userId: string | null = null;
+
+    if (authHeader) {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) {
+        console.warn('AI chat: authentication failed, continuing as anonymous', userError);
+      } else {
+        userId = user.id;
+      }
+    } else {
+      console.log('AI chat: no auth header, treating request as anonymous');
     }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
@@ -40,8 +47,10 @@ serve(async (req) => {
 
     console.log('AI Chat request received:', { messageCount: messages.length, language });
 
-    // Fetch user context for personalized responses
-    const userContext = await fetchUserContext(supabase, user.id, projectId);
+    // Fetch user context for personalized responses when user is logged in
+    const userContext = userId
+      ? await fetchUserContext(supabase, userId, projectId)
+      : { profile: null, programs: [], project: null, activeProjectId: projectId };
     const activeProjectId = userContext.activeProjectId;
     const systemPrompt = getSystemPrompt(language, userContext);
 
@@ -143,13 +152,13 @@ serve(async (req) => {
     const data = await response.json();
     console.log('AI response received successfully');
 
-    // Initialize or retrieve conversation ID
+    // Initialize or retrieve conversation ID (only when user is logged in)
     let finalConversationId = conversationId;
-    if (!finalConversationId) {
+    if (!finalConversationId && userId) {
       const { data: newConv } = await supabase
         .from('ai_conversations')
         .insert({
-          user_id: user.id,
+          user_id: userId,
           project_id: projectId,
           language: language,
           user_agent: req.headers.get('user-agent')
@@ -179,7 +188,7 @@ serve(async (req) => {
         } else if (functionName === "get_program_details") {
           result = await getProgramDetails(supabase, functionArgs.program_id, language);
         } else if (functionName === "get_user_programs") {
-          result = await getUserPrograms(supabase, user.id, language);
+          result = userId ? await getUserPrograms(supabase, userId, language) : [];
         }
         
         toolResults.push({
@@ -220,8 +229,8 @@ serve(async (req) => {
 
       const suggestions = generateSuggestions(lastUserMessage, language);
       
-      // Store conversation
-      await storeConversation(supabase, user.id, projectId, finalConversationId, language, messages[messages.length - 1], finalMessage);
+      // Store conversation (only when we have a persisted conversation id)
+      await storeConversation(supabase, userId || '', projectId, finalConversationId, language, messages[messages.length - 1], finalMessage);
       
       return new Response(
         JSON.stringify({ 
@@ -244,8 +253,8 @@ serve(async (req) => {
 
     const suggestions = generateSuggestions(lastUserMessage, language);
 
-    // Store conversation
-    await storeConversation(supabase, user.id, projectId, finalConversationId, language, messages[messages.length - 1], finalMessage);
+    // Store conversation (only when we have a persisted conversation id)
+    await storeConversation(supabase, userId || '', projectId, finalConversationId, language, messages[messages.length - 1], finalMessage);
 
     return new Response(
       JSON.stringify({ 
