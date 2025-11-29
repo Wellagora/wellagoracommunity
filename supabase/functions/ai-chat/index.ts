@@ -284,7 +284,10 @@ serve(async (req) => {
         });
       }
       
-      // Send tool results back to AI for final response
+      // Log tool results for debugging
+      console.log('Tool results:', JSON.stringify(toolResults, null, 2));
+      
+      // Send tool results back to AI for final response with explicit instruction
       const finalResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -294,7 +297,7 @@ serve(async (req) => {
         body: JSON.stringify({
           model: "google/gemini-3-pro-preview",
           messages: [
-            { role: "system", content: systemPrompt },
+            { role: "system", content: systemPrompt + "\n\nIMPORTANT: When you receive tool results, you MUST provide a complete, helpful answer based on those results. NEVER return an empty response." },
             ...messages,
             aiMessage,
             ...toolResults
@@ -303,13 +306,41 @@ serve(async (req) => {
         }),
       });
       
+      if (!finalResponse.ok) {
+        console.error('Final AI response error:', finalResponse.status);
+        const errorText = await finalResponse.text();
+        console.error('Error details:', errorText);
+      }
+      
       const finalData = await finalResponse.json();
+      console.log('Final AI response:', JSON.stringify(finalData, null, 2));
+      
       const lastUserMessage = messages[messages.length - 1]?.content || '';
       let finalMessage = finalData?.choices?.[0]?.message?.content || '';
 
       if (!finalMessage || !finalMessage.trim()) {
-        console.warn('AI returned empty message after tool calls, using fallback message');
-        finalMessage = getFallbackMessage(language, lastUserMessage);
+        console.error('AI returned empty message after tool calls');
+        console.error('Tool results were:', JSON.stringify(toolResults, null, 2));
+        console.error('AI message was:', JSON.stringify(aiMessage, null, 2));
+        
+        // Create a better fallback that uses the tool results
+        const toolResultsData = toolResults.map(tr => {
+          try {
+            return JSON.parse(tr.content);
+          } catch {
+            return tr.content;
+          }
+        });
+        
+        if (toolResultsData.length > 0 && Array.isArray(toolResultsData[0]) && toolResultsData[0].length > 0) {
+          // We have program results, format them nicely
+          const programs = toolResultsData[0];
+          finalMessage = language === 'hu' 
+            ? `Találtam ${programs.length} programot:\n\n${programs.map((p: any) => `🌟 **${p.title}**\n${p.description}\n`).join('\n')}`
+            : `Found ${programs.length} programs:\n\n${programs.map((p: any) => `🌟 **${p.title}**\n${p.description}\n`).join('\n')}`;
+        } else {
+          finalMessage = getFallbackMessage(language, lastUserMessage);
+        }
       }
 
       const suggestions = generateSuggestions(lastUserMessage, language);
@@ -615,14 +646,18 @@ Segíts ${userName}-nek részt venni a közösségben, programokat felfedezni é
 ELÉRHETŐ PROGRAMOK ${regionName}-ban/-ben:
 ${programList}
 
-**KRITIKUS**: A fenti lista már tartalmazza az ÖSSZES aktív programot ebben a régióban! Ezek NEM csak példák - ez a teljes lista! Ha programokról kérdeznek, MINDIG hivatkozz erre a listára, ne mondd hogy nincsenek programok!
+**KRITIKUS INSTRUKCIÓK**:
+1. A fenti lista MINDEN aktív programot tartalmaz! NEM csak példák!
+2. Ha programokról kérdeznek, MINDIG használd ezt a listát és adj részletes, hasznos választ!
+3. SOHA ne adj üres választ! Ha tool-t használsz, MINDIG adj értelmes választ az eredmények alapján!
+4. Amikor a felhasználó egy konkrét programról kérdez (pl. "Káli konyha"), nézd meg a fenti listában és adj róla részletes információt!
 
 A KÉPESSÉGEID ÉS ESZKÖZEID:
 Valós idejű adatbázis funkciókhoz férsz hozzá:
 
 PROGRAMOKHOZ:
-- search_programs: Szűrd a fenti programokat kategória, nehézség vagy kulcsszavak alapján
-- get_program_details: Részletes információk lekérése egy konkrét programról (pl. résztvevők száma, követelmények)
+- search_programs: Szűrd programokat kategória, nehézség vagy kulcsszavak alapján (NE használd programnév keresésre, ahhoz használd a fenti listát!)
+- get_program_details: Részletes információk lekérése - csak akkor használd, ha ismered a program pontos UUID-ját a fenti listából
 - get_user_programs: Ellenőrizd hogy ${userName} milyen programokban vesz részt
 
 KÖZÖSSÉGHEZ:
@@ -630,12 +665,12 @@ KÖZÖSSÉGHEZ:
 - get_organization_details: Részletes információk egy szervezetről, beleértve a tagjaikat
 - get_user_profile: Felhasználói profil és fenntarthatósági célok megtekintése
 
-FONTOS ÚTMUTATÓ:
-- Ha programokról kérdeznek általánosan, HASZNÁLD a fenti ELÉRHETŐ PROGRAMOK listát közvetlenül!
-- NE mondd hogy "nincsenek programok" ha a fenti lista tartalmaz programokat!
-- Az eszközöket (tools) csak akkor használd ha valami speciális szűrés vagy extra részlet kell
-- Ha szervezetekről, cégekről, önkormányzatokról vagy NGO-kről kérdeznek, használd a search_organizations eszközt
-- Mindig légy pozitív és mutasd meg a konkrét lehetőségeket!
+**FONTOS HASZNÁLATI SZABÁLYOK**:
+- Ha valaki egy program nevét említi (pl. "Káli konyha", "Közös asztal"), NÉZD MEG a fenti ELÉRHETŐ PROGRAMOK listát és adj választ közvetlenül onnan!
+- NE használj tool-okat program névhez ha már megvan a fenti listában!
+- Tool-okat csak extra részletekhez használd (pl. résztvevők száma)
+- Amikor tool eredményt kapsz, MINDIG adj értelmes, részletes választ a felhasználónak!
+- SOHA ne hagyd üresen a választ! Ha bizonytalan vagy, használd a fenti program listát!
 
 VÁLASZIRÁNYELVEK:
 - Légy meleg, bátorító és közösségközpontú
