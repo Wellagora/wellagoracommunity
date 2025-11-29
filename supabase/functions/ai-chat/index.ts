@@ -108,45 +108,124 @@ serve(async (req) => {
             properties: {}
           }
         }
+      },
+      {
+        type: "function",
+        function: {
+          name: "search_organizations",
+          description: "Search for registered organizations (businesses, governments, NGOs) in the user's region. Use when users ask about local companies, organizations, or stakeholders.",
+          parameters: {
+            type: "object",
+            properties: {
+              type: {
+                type: "string",
+                enum: ["business", "government", "ngo"],
+                description: "Type of organization to filter by"
+              },
+              keyword: {
+                type: "string",
+                description: "Search keyword in organization name or description"
+              }
+            }
+          }
+        }
+      },
+      {
+        type: "function",
+        function: {
+          name: "get_organization_details",
+          description: "Get detailed information about a specific organization including their members and sustainability goals.",
+          parameters: {
+            type: "object",
+            properties: {
+              organization_id: {
+                type: "string",
+                description: "The ID of the organization"
+              }
+            },
+            required: ["organization_id"]
+          }
+        }
+      },
+      {
+        type: "function",
+        function: {
+          name: "get_user_profile",
+          description: "Get detailed user profile information including sustainability goals and interests.",
+          parameters: {
+            type: "object",
+            properties: {}
+          }
+        }
       }
     ];
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-3-pro-preview",
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...messages
-        ],
-        tools: tools,
-        max_tokens: 2000,
-      }),
-    });
+    let response;
+    try {
+      response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-3-pro-preview",
+          messages: [
+            { role: "system", content: systemPrompt },
+            ...messages
+          ],
+          tools: tools,
+          max_tokens: 2000,
+        }),
+      });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('AI API error:', response.status, errorText);
-      
-      if (response.status === 429) {
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('AI API error:', response.status, errorText);
+        
+        const errorMessages: Record<string, Record<number, string>> = {
+          hu: {
+            429: 'Túl sok kérés. Kérlek, próbáld újra néhány másodperc múlva.',
+            402: 'A szolgáltatás jelenleg nem elérhető. Kérlek, próbáld újra később.',
+            default: 'Az AI asszisztens jelenleg nem elérhető. Kérlek, próbáld újra később.'
+          },
+          en: {
+            429: 'Too many requests. Please try again in a few seconds.',
+            402: 'Service temporarily unavailable. Please try again later.',
+            default: 'AI assistant is currently unavailable. Please try again later.'
+          },
+          de: {
+            429: 'Zu viele Anfragen. Bitte versuche es in ein paar Sekunden erneut.',
+            402: 'Dienst vorübergehend nicht verfügbar. Bitte versuche es später erneut.',
+            default: 'KI-Assistent ist derzeit nicht verfügbar. Bitte versuche es später erneut.'
+          }
+        };
+        
+        const langMessages = errorMessages[language] || errorMessages.en;
+        const errorMessage = langMessages[response.status] || langMessages.default;
+        
         return new Response(
-          JSON.stringify({ error: "Rate limit exceeded. Please try again later." }), 
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          JSON.stringify({ 
+            error: response.status === 429 ? 'rate_limit' : response.status === 402 ? 'payment_required' : 'ai_unavailable',
+            message: errorMessage
+          }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: response.status }
         );
       }
-      
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "Payment required. Please add credits to your Lovable AI workspace." }), 
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      
-      throw new Error(`AI API error: ${response.status}`);
+    } catch (error) {
+      console.error('AI API request failed:', error);
+      const errorMessages: Record<string, string> = {
+        hu: 'Az AI asszisztens jelenleg nem elérhető. Kérlek, próbáld újra később.',
+        en: 'AI assistant is currently unavailable. Please try again later.',
+        de: 'KI-Assistent ist derzeit nicht verfügbar. Bitte versuche es später erneut.'
+      };
+      return new Response(
+        JSON.stringify({ 
+          error: 'ai_unavailable',
+          message: errorMessages[language] || errorMessages.en
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 503 }
+      );
     }
 
     const data = await response.json();
@@ -189,6 +268,12 @@ serve(async (req) => {
           result = await getProgramDetails(supabase, functionArgs.program_id, language);
         } else if (functionName === "get_user_programs") {
           result = userId ? await getUserPrograms(supabase, userId, language) : [];
+        } else if (functionName === "search_organizations") {
+          result = await searchOrganizations(supabase, functionArgs, activeProjectId, language);
+        } else if (functionName === "get_organization_details") {
+          result = await getOrganizationDetails(supabase, functionArgs.organization_id, language);
+        } else if (functionName === "get_user_profile") {
+          result = userId ? await getUserProfile(supabase, userId) : null;
         }
         
         toolResults.push({
@@ -444,18 +529,23 @@ ${programList}
 
 YOUR CAPABILITIES & TOOLS:
 You have access to real-time database functions:
-- search_programs: Search programs by category (health, mental-health, nutrition, community, environment), difficulty, or keywords
+
+FOR PROGRAMS:
+- search_programs: Search programs by category, difficulty, or keywords
 - get_program_details: Get full details about any specific program including participants and requirements
-- get_user_programs: Check what programs the user is currently in or has completed
+- get_user_programs: Check what programs ${userName} is participating in or has completed
 
-Use these tools actively to give accurate, personalized recommendations!
+FOR COMMUNITY:
+- search_organizations: Search for registered organizations (businesses, governments, NGOs) by type or keywords
+- get_organization_details: Get detailed information about an organization, including their members
+- get_user_profile: View user profile and sustainability goals
 
-When users ask about programs:
-1. Use search_programs to find relevant options
-2. Use get_program_details to give complete information
-3. Use get_user_programs to understand their history
-
-IMPORTANT: Always search the database when users ask about programs! Don't just list what you saw in context.
+IMPORTANT GUIDELINES:
+- When users ask about programs generally, refer to the AVAILABLE PROGRAMS list above directly!
+- DON'T say "no programs available" if the list above contains programs!
+- Use tools when you need specific filtering or extra details
+- When users ask about organizations, companies, governments or NGOs, use the search_organizations tool
+- Always be positive and show concrete opportunities!
 
 RESPONSE GUIDELINES:
 - Be warm, encouraging, and community-focused
@@ -483,18 +573,23 @@ ${programList}
 
 DEINE FÄHIGKEITEN & WERKZEUGE:
 Du hast Zugriff auf Echtzeit-Datenbankfunktionen:
-- search_programs: Programme nach Kategorie (Gesundheit, mentale Gesundheit, Ernährung, Gemeinschaft, Umwelt), Schwierigkeit oder Stichwörtern suchen
-- get_program_details: Vollständige Details zu jedem spezifischen Programm inkl. Teilnehmer und Anforderungen abrufen
-- get_user_programs: Prüfen, an welchen Programmen der Benutzer teilnimmt oder teilgenommen hat
 
-Nutze diese Werkzeuge aktiv für genaue, personalisierte Empfehlungen!
+FÜR PROGRAMME:
+- search_programs: Programme nach Kategorie, Schwierigkeit oder Stichwörtern filtern
+- get_program_details: Vollständige Details zu einem Programm (z.B. Teilnehmerzahl, Anforderungen)
+- get_user_programs: Prüfen, an welchen Programmen ${userName} teilnimmt
 
-Wenn Benutzer nach Programmen fragen:
-1. Verwende search_programs um relevante Optionen zu finden
-2. Verwende get_program_details für vollständige Informationen
-3. Verwende get_user_programs um ihre Historie zu verstehen
+FÜR DIE COMMUNITY:
+- search_organizations: Registrierte Organisationen (Unternehmen, Behörden, NGOs) nach Typ oder Stichwörtern suchen
+- get_organization_details: Detaillierte Informationen über eine Organisation, einschließlich ihrer Mitglieder
+- get_user_profile: Benutzerprofil und Nachhaltigkeitsziele anzeigen
 
-WICHTIG: Suche immer in der Datenbank, wenn Benutzer nach Programmen fragen! Liste nicht nur auf, was du im Kontext gesehen hast.
+WICHTIGE RICHTLINIEN:
+- Wenn Benutzer allgemein nach Programmen fragen, nutze die obige VERFÜGBARE PROGRAMME Liste direkt!
+- Sage NICHT "keine Programme verfügbar" wenn die obige Liste Programme enthält!
+- Nutze Tools nur für spezifische Filter oder zusätzliche Details
+- Wenn Benutzer nach Organisationen, Unternehmen, Behörden oder NGOs fragen, nutze das search_organizations Tool
+- Sei immer positiv und zeige konkrete Möglichkeiten!
 
 ANTWORTRICHTLINIEN:
 - Sei herzlich, ermutigend und community-fokussiert
@@ -523,15 +618,23 @@ ${programList}
 **KRITIKUS**: A fenti lista már tartalmazza az ÖSSZES aktív programot ebben a régióban! Ezek NEM csak példák - ez a teljes lista! Ha programokról kérdeznek, MINDIG hivatkozz erre a listára, ne mondd hogy nincsenek programok!
 
 A KÉPESSÉGEID ÉS ESZKÖZEID:
-Valós idejű adatbázis funkciókhoz férsz hozzá amikor extra részletekre van szükség:
+Valós idejű adatbázis funkciókhoz férsz hozzá:
+
+PROGRAMOKHOZ:
 - search_programs: Szűrd a fenti programokat kategória, nehézség vagy kulcsszavak alapján
 - get_program_details: Részletes információk lekérése egy konkrét programról (pl. résztvevők száma, követelmények)
 - get_user_programs: Ellenőrizd hogy ${userName} milyen programokban vesz részt
+
+KÖZÖSSÉGHEZ:
+- search_organizations: Keress regisztrált szervezeteket (cégek, önkormányzatok, NGO-k) típus vagy kulcsszavak alapján
+- get_organization_details: Részletes információk egy szervezetről, beleértve a tagjaikat
+- get_user_profile: Felhasználói profil és fenntarthatósági célok megtekintése
 
 FONTOS ÚTMUTATÓ:
 - Ha programokról kérdeznek általánosan, HASZNÁLD a fenti ELÉRHETŐ PROGRAMOK listát közvetlenül!
 - NE mondd hogy "nincsenek programok" ha a fenti lista tartalmaz programokat!
 - Az eszközöket (tools) csak akkor használd ha valami speciális szűrés vagy extra részlet kell
+- Ha szervezetekről, cégekről, önkormányzatokról vagy NGO-kről kérdeznek, használd a search_organizations eszközt
 - Mindig légy pozitív és mutasd meg a konkrét lehetőségeket!
 
 VÁLASZIRÁNYELVEK:
@@ -654,4 +757,98 @@ function generateSuggestions(lastUserMessage: string, language: string): string[
   }
 
   return langSuggestions.default;
+}
+
+// Organization and community functions
+async function searchOrganizations(supabase: any, args: any, projectId: string | null, language: string) {
+  let query = supabase
+    .from('organizations')
+    .select('id, name, description, type, industry, location, website_url, sustainability_score, employee_count')
+    .eq('is_public', true);
+  
+  if (projectId) {
+    query = query.eq('project_id', projectId);
+  }
+  
+  if (args.type) {
+    query = query.eq('type', args.type);
+  }
+  
+  if (args.keyword) {
+    query = query.or(`name.ilike.%${args.keyword}%,description.ilike.%${args.keyword}%`);
+  }
+  
+  const { data: organizations } = await query.limit(15);
+  
+  return organizations?.map((org: any) => ({
+    id: org.id,
+    name: org.name,
+    description: org.description,
+    type: org.type,
+    industry: org.industry,
+    location: org.location,
+    website: org.website_url,
+    sustainabilityScore: org.sustainability_score,
+    employees: org.employee_count
+  })) || [];
+}
+
+async function getOrganizationDetails(supabase: any, organizationId: string, language: string) {
+  const { data: organization } = await supabase
+    .from('organizations')
+    .select('*')
+    .eq('id', organizationId)
+    .eq('is_public', true)
+    .single();
+  
+  if (!organization) return { error: "Organization not found or not public" };
+  
+  // Get member count
+  const { count: memberCount } = await supabase
+    .from('profiles')
+    .select('*', { count: 'exact', head: true })
+    .eq('organization_id', organizationId);
+  
+  // Get recent activities
+  const { data: activities } = await supabase
+    .from('sustainability_activities')
+    .select('activity_type, impact_amount, date')
+    .eq('organization_id', organizationId)
+    .order('date', { ascending: false })
+    .limit(5);
+  
+  return {
+    id: organization.id,
+    name: organization.name,
+    description: organization.description,
+    type: organization.type,
+    industry: organization.industry,
+    location: organization.location,
+    website: organization.website_url,
+    sustainabilityScore: organization.sustainability_score,
+    employees: organization.employee_count,
+    memberCount: memberCount || 0,
+    recentActivities: activities || []
+  };
+}
+
+async function getUserProfile(supabase: any, userId: string) {
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('id, first_name, last_name, public_display_name, user_role, bio, location, organization, sustainability_goals, seeking_partnerships, preferred_stakeholder_types')
+    .eq('id', userId)
+    .single();
+  
+  if (!profile) return { error: "Profile not found" };
+  
+  return {
+    name: profile.public_display_name || `${profile.first_name} ${profile.last_name}`,
+    role: profile.user_role,
+    bio: profile.bio,
+    location: profile.location,
+    organization: profile.organization,
+    sustainabilityGoals: profile.sustainability_goals || [],
+    seekingPartnerships: profile.seeking_partnerships,
+    preferredStakeholders: profile.preferred_stakeholder_types || []
+  };
 }
