@@ -893,6 +893,68 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          auto_renew: boolean | null
+          created_at: string | null
+          currency: string | null
+          end_date: string | null
+          id: string
+          included_credits: number | null
+          notes: string | null
+          organization_id: string | null
+          payment_reference: string | null
+          plan_type: string
+          price_paid: number | null
+          start_date: string | null
+          status: string | null
+          stripe_subscription_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          auto_renew?: boolean | null
+          created_at?: string | null
+          currency?: string | null
+          end_date?: string | null
+          id?: string
+          included_credits?: number | null
+          notes?: string | null
+          organization_id?: string | null
+          payment_reference?: string | null
+          plan_type: string
+          price_paid?: number | null
+          start_date?: string | null
+          status?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          auto_renew?: boolean | null
+          created_at?: string | null
+          currency?: string | null
+          end_date?: string | null
+          id?: string
+          included_credits?: number | null
+          notes?: string | null
+          organization_id?: string | null
+          payment_reference?: string | null
+          plan_type?: string
+          price_paid?: number | null
+          start_date?: string | null
+          status?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sustainability_activities: {
         Row: {
           activity_type: string
