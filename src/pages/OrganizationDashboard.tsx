@@ -10,6 +10,7 @@ import OrganizationProfileEditor from "@/components/organization/OrganizationPro
 import OrganizationSubscription from "@/components/organization/OrganizationSubscription";
 import OrganizationInvoices from "@/components/organization/OrganizationInvoices";
 import OrganizationCredits from "@/components/organization/OrganizationCredits";
+import OrganizationTeam from "@/components/organization/OrganizationTeam";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -492,7 +493,7 @@ const OrganizationDashboard = () => {
 
         {/* Main Content Tabs */}
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6 sm:space-y-8">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-8 bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-2 gap-2">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-9 bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-2 gap-2">
             <TabsTrigger value="overview" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
               <Globe2 className="w-4 h-4" />
               <span className="hidden sm:inline">{t('organization.overview')}</span>
@@ -517,6 +518,11 @@ const OrganizationDashboard = () => {
               <CreditCard className="w-4 h-4" />
               <span className="hidden sm:inline">Előfizetés</span>
               <span className="sm:hidden">Előfizetés</span>
+            </TabsTrigger>
+            <TabsTrigger value="team" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
+              <Users className="w-4 h-4" />
+              <span className="hidden sm:inline">Csapat</span>
+              <span className="sm:hidden">Csapat</span>
             </TabsTrigger>
             <TabsTrigger value="credits" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
               <Coins className="w-4 h-4" />
@@ -879,6 +885,11 @@ const OrganizationDashboard = () => {
           {/* Subscription Tab */}
           <TabsContent value="subscription" className="space-y-6">
             <OrganizationSubscription />
+          </TabsContent>
+
+          {/* Team Tab */}
+          <TabsContent value="team" className="space-y-6">
+            <OrganizationTeam />
           </TabsContent>
 
           {/* Credits Tab */}
