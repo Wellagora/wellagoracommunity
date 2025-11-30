@@ -38,6 +38,7 @@ const InboxPage = lazy(() => import("@/pages/InboxPage"));
 const TranslationToolPage = lazy(() => import("@/pages/TranslationToolPage"));
 const PrivacyPolicyPage = lazy(() => import("@/pages/PrivacyPolicyPage"));
 const ImpressumPage = lazy(() => import("@/pages/ImpressumPage"));
+const SuperAdminPage = lazy(() => import("@/pages/SuperAdminPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function App() {
@@ -94,6 +95,7 @@ function App() {
                       <Route path="/translation-tool" element={<TranslationToolPage />} />
                       <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
                       <Route path="/impressum" element={<ImpressumPage />} />
+                      <Route path="/super-admin" element={<SuperAdminPage />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>
