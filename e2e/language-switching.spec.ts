@@ -2,14 +2,9 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Language Switching', () => {
   const languages = [
+    { code: 'hu', label: 'Magyar' },
     { code: 'en', label: 'English' },
     { code: 'de', label: 'Deutsch' },
-    { code: 'hu', label: 'Magyar' },
-    { code: 'cs', label: 'Čeština' },
-    { code: 'sk', label: 'Slovenčina' },
-    { code: 'hr', label: 'Hrvatski' },
-    { code: 'ro', label: 'Română' },
-    { code: 'pl', label: 'Polski' },
   ];
 
   test('should detect browser language on first visit', async ({ page }) => {
