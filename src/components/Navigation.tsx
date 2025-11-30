@@ -11,7 +11,8 @@ import {
   Settings,
   Mail,
   Inbox,
-  ChevronDown
+  ChevronDown,
+  ShieldCheck
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -39,10 +40,34 @@ import LanguageSelector from "./LanguageSelector";
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const { user, profile, signOut } = useAuth();
   const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Check super admin role
+  useEffect(() => {
+    const checkSuperAdminRole = async () => {
+      if (!user) {
+        setIsSuperAdmin(false);
+        return;
+      }
+
+      try {
+        const { data } = await supabase.rpc('has_role', {
+          _user_id: user.id,
+          _role: 'super_admin'
+        });
+        setIsSuperAdmin(data || false);
+      } catch (error) {
+        console.error('Error checking super_admin role:', error);
+        setIsSuperAdmin(false);
+      }
+    };
+
+    checkSuperAdminRole();
+  }, [user]);
 
   // Load unread message count
   useEffect(() => {
@@ -214,6 +239,17 @@ const Navigation = () => {
                         )}
                       </Link>
                     </DropdownMenuItem>
+                    {isSuperAdmin && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                          <Link to="/super-admin" className="flex items-center gap-2 cursor-pointer text-purple-600 dark:text-purple-400">
+                            <ShieldCheck className="h-4 w-4" />
+                            Super Admin
+                          </Link>
+                        </DropdownMenuItem>
+                      </>
+                    )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={handleSignOut}
@@ -331,6 +367,20 @@ const Navigation = () => {
                           <Settings className="h-5 w-5 shrink-0" />
                           <span className="text-sm font-medium">{t('nav.settings')}</span>
                         </Link>
+                        {isSuperAdmin && (
+                          <Link
+                            to="/super-admin"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors ${
+                              isActive('/super-admin')
+                                ? 'text-primary bg-accent font-medium'
+                                : 'text-purple-600 dark:text-purple-400 hover:bg-accent/50'
+                            }`}
+                          >
+                            <ShieldCheck className="h-5 w-5 shrink-0" />
+                            <span className="text-sm font-medium">Super Admin</span>
+                          </Link>
+                        )}
                       </>
                     )}
                   </div>
