@@ -33,6 +33,7 @@ import { Building2, Plus, Eye, CreditCard, Edit, User } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import OrganizationDetailView from "./OrganizationDetailView";
 
 type OrganizationWithSubscription = {
   id: string;
@@ -64,6 +65,9 @@ const OrganizationsManager = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  
+  // Navigation state
+  const [selectedOrganizationId, setSelectedOrganizationId] = useState<string | null>(null);
   
   // Dialog states
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
@@ -167,10 +171,8 @@ const OrganizationsManager = () => {
     }
   };
 
-  const handleViewDetails = async (org: OrganizationWithSubscription) => {
-    setSelectedOrg(org);
-    await loadOrgMembers(org.id);
-    setViewDialogOpen(true);
+  const handleViewDetails = (org: OrganizationWithSubscription) => {
+    setSelectedOrganizationId(org.id);
   };
 
   const handleManageSubscription = (org: OrganizationWithSubscription) => {
@@ -314,6 +316,16 @@ const OrganizationsManager = () => {
     );
   }
 
+  // If an organization is selected, show detail view
+  if (selectedOrganizationId) {
+    return (
+      <OrganizationDetailView
+        organizationId={selectedOrganizationId}
+        onBack={() => setSelectedOrganizationId(null)}
+      />
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -394,7 +406,14 @@ const OrganizationsManager = () => {
                       </AvatarFallback>
                     </Avatar>
                   </TableCell>
-                  <TableCell className="font-medium">{org.name}</TableCell>
+                  <TableCell>
+                    <button
+                      onClick={() => setSelectedOrganizationId(org.id)}
+                      className="font-medium hover:text-primary hover:underline text-left"
+                    >
+                      {org.name}
+                    </button>
+                  </TableCell>
                   <TableCell>
                     <Badge variant={getTypeColor(org.type)}>
                       {getTypeLabel(org.type)}
