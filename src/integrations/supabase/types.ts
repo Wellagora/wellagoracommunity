@@ -385,6 +385,97 @@ export type Database = {
           },
         ]
       }
+      invoices: {
+        Row: {
+          amount: number
+          billing_address: string | null
+          billing_name: string | null
+          billing_tax_number: string | null
+          created_at: string | null
+          credit_transaction_id: string | null
+          currency: string | null
+          description: string | null
+          due_date: string | null
+          id: string
+          invoice_number: string
+          organization_id: string | null
+          paid_at: string | null
+          pdf_url: string | null
+          status: string | null
+          stripe_invoice_id: string | null
+          subscription_id: string | null
+          tax_amount: number | null
+          total_amount: number
+          type: string
+        }
+        Insert: {
+          amount: number
+          billing_address?: string | null
+          billing_name?: string | null
+          billing_tax_number?: string | null
+          created_at?: string | null
+          credit_transaction_id?: string | null
+          currency?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          invoice_number: string
+          organization_id?: string | null
+          paid_at?: string | null
+          pdf_url?: string | null
+          status?: string | null
+          stripe_invoice_id?: string | null
+          subscription_id?: string | null
+          tax_amount?: number | null
+          total_amount: number
+          type: string
+        }
+        Update: {
+          amount?: number
+          billing_address?: string | null
+          billing_name?: string | null
+          billing_tax_number?: string | null
+          created_at?: string | null
+          credit_transaction_id?: string | null
+          currency?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          invoice_number?: string
+          organization_id?: string | null
+          paid_at?: string | null
+          pdf_url?: string | null
+          status?: string | null
+          stripe_invoice_id?: string | null
+          subscription_id?: string | null
+          tax_amount?: number | null
+          total_amount?: number
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_credit_transaction_id_fkey"
+            columns: ["credit_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "credit_transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       legal_content: {
         Row: {
           content_type: string
