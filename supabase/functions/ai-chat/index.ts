@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai@0.21.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -40,9 +41,10 @@ serve(async (req) => {
     }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
     
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+    if (!GEMINI_API_KEY) {
+      throw new Error("GEMINI_API_KEY is not configured");
     }
 
     console.log('AI Chat request received:', { messageCount: messages.length, language });
@@ -54,166 +56,32 @@ serve(async (req) => {
     const activeProjectId = userContext.activeProjectId;
     const systemPrompt = getSystemPrompt(language, userContext);
 
-    // Define tools for AI to use
-    const tools = [
-      {
-        type: "function",
-        function: {
-          name: "search_programs",
-          description: "Search for available programs based on category, difficulty, or keywords. Use this when users ask about specific types of programs.",
-          parameters: {
-            type: "object",
-            properties: {
-              category: {
-                type: "string",
-                description: "Program category (e.g., 'health', 'mental-health', 'nutrition', 'community', 'environment')"
-              },
-              difficulty: {
-                type: "string",
-                enum: ["beginner", "intermediate", "advanced"],
-                description: "Difficulty level filter"
-              },
-              keyword: {
-                type: "string",
-                description: "Search keyword in title or description"
-              }
-            }
-          }
-        }
-      },
-      {
-        type: "function",
-        function: {
-          name: "get_program_details",
-          description: "Get detailed information about a specific program including how to join, requirements, and current participants.",
-          parameters: {
-            type: "object",
-            properties: {
-              program_id: {
-                type: "string",
-                description: "The ID of the program to get details for"
-              }
-            },
-            required: ["program_id"]
-          }
-        }
-      },
-      {
-        type: "function",
-        function: {
-          name: "get_user_programs",
-          description: "Get programs the user is currently participating in or has completed.",
-          parameters: {
-            type: "object",
-            properties: {}
-          }
-        }
-      },
-      {
-        type: "function",
-        function: {
-          name: "search_organizations",
-          description: "Search for registered organizations (businesses, governments, NGOs) in the user's region. Use when users ask about local companies, organizations, or stakeholders.",
-          parameters: {
-            type: "object",
-            properties: {
-              type: {
-                type: "string",
-                enum: ["business", "government", "ngo"],
-                description: "Type of organization to filter by"
-              },
-              keyword: {
-                type: "string",
-                description: "Search keyword in organization name or description"
-              }
-            }
-          }
-        }
-      },
-      {
-        type: "function",
-        function: {
-          name: "get_organization_details",
-          description: "Get detailed information about a specific organization including their members and sustainability goals.",
-          parameters: {
-            type: "object",
-            properties: {
-              organization_id: {
-                type: "string",
-                description: "The ID of the organization"
-              }
-            },
-            required: ["organization_id"]
-          }
-        }
-      },
-      {
-        type: "function",
-        function: {
-          name: "get_user_profile",
-          description: "Get detailed user profile information including sustainability goals and interests.",
-          parameters: {
-            type: "object",
-            properties: {}
-          }
-        }
-      }
-    ];
+    // Initialize Gemini AI
+    const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-flash",
+      systemInstruction: systemPrompt
+    });
+
+    // Convert messages to Gemini format
+    const history = messages.slice(0, -1).map((msg: any) => ({
+      role: msg.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: msg.content }]
+    }));
+
+    const chat = model.startChat({
+      history: history
+    });
 
     let response;
+    let finalMessage = '';
     try {
-      response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemini-3-pro-preview",
-          messages: [
-            { role: "system", content: systemPrompt },
-            ...messages
-          ],
-          tools: tools,
-          max_tokens: 2000,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('AI API error:', response.status, errorText);
-        
-        const errorMessages: Record<string, Record<number, string>> = {
-          hu: {
-            429: 'Túl sok kérés. Kérlek, próbáld újra néhány másodperc múlva.',
-            402: 'A szolgáltatás jelenleg nem elérhető. Kérlek, próbáld újra később.',
-            default: 'Az AI asszisztens jelenleg nem elérhető. Kérlek, próbáld újra később.'
-          },
-          en: {
-            429: 'Too many requests. Please try again in a few seconds.',
-            402: 'Service temporarily unavailable. Please try again later.',
-            default: 'AI assistant is currently unavailable. Please try again later.'
-          },
-          de: {
-            429: 'Zu viele Anfragen. Bitte versuche es in ein paar Sekunden erneut.',
-            402: 'Dienst vorübergehend nicht verfügbar. Bitte versuche es später erneut.',
-            default: 'KI-Assistent ist derzeit nicht verfügbar. Bitte versuche es später erneut.'
-          }
-        };
-        
-        const langMessages = errorMessages[language] || errorMessages.en;
-        const errorMessage = langMessages[response.status] || langMessages.default;
-        
-        return new Response(
-          JSON.stringify({ 
-            error: response.status === 429 ? 'rate_limit' : response.status === 402 ? 'payment_required' : 'ai_unavailable',
-            message: errorMessage
-          }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: response.status }
-        );
-      }
+      const result = await chat.sendMessage(messages[messages.length - 1].content);
+      response = result.response;
+      finalMessage = response.text();
+      console.log('Gemini response received successfully');
     } catch (error) {
-      console.error('AI API request failed:', error);
+      console.error('Gemini API request failed:', error);
       const errorMessages: Record<string, string> = {
         hu: 'Az AI asszisztens jelenleg nem elérhető. Kérlek, próbáld újra később.',
         en: 'AI assistant is currently unavailable. Please try again later.',
@@ -227,9 +95,6 @@ serve(async (req) => {
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 503 }
       );
     }
-
-    const data = await response.json();
-    console.log('AI response received successfully');
 
     // Initialize or retrieve conversation ID (only when user is logged in)
     let finalConversationId = conversationId;
@@ -247,123 +112,10 @@ serve(async (req) => {
       finalConversationId = newConv?.id;
     }
 
-    // Check if AI wants to use tools
-    const aiMessage = data.choices[0].message;
-    
-    if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
-      console.log('AI requested tool calls:', aiMessage.tool_calls.length);
-      
-      // Execute tool calls
-      const toolResults = [];
-      for (const toolCall of aiMessage.tool_calls) {
-        const functionName = toolCall.function.name;
-        const functionArgs = JSON.parse(toolCall.function.arguments);
-        
-        console.log(`Executing tool: ${functionName}`, functionArgs);
-        
-        let result;
-        if (functionName === "search_programs") {
-          result = await searchPrograms(supabase, functionArgs, activeProjectId, language);
-        } else if (functionName === "get_program_details") {
-          result = await getProgramDetails(supabase, functionArgs.program_id, language);
-        } else if (functionName === "get_user_programs") {
-          result = userId ? await getUserPrograms(supabase, userId, language) : [];
-        } else if (functionName === "search_organizations") {
-          result = await searchOrganizations(supabase, functionArgs, activeProjectId, language);
-        } else if (functionName === "get_organization_details") {
-          result = await getOrganizationDetails(supabase, functionArgs.organization_id, language);
-        } else if (functionName === "get_user_profile") {
-          result = userId ? await getUserProfile(supabase, userId) : null;
-        }
-        
-        toolResults.push({
-          tool_call_id: toolCall.id,
-          role: "tool",
-          name: functionName,
-          content: JSON.stringify(result)
-        });
-      }
-      
-      // Log tool results for debugging
-      console.log('Tool results:', JSON.stringify(toolResults, null, 2));
-      
-      // Send tool results back to AI for final response with explicit instruction
-      const finalResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemini-3-pro-preview",
-          messages: [
-            { role: "system", content: systemPrompt + "\n\nIMPORTANT: When you receive tool results, you MUST provide a complete, helpful answer based on those results. NEVER return an empty response." },
-            ...messages,
-            aiMessage,
-            ...toolResults
-          ],
-          max_tokens: 2000,
-        }),
-      });
-      
-      if (!finalResponse.ok) {
-        console.error('Final AI response error:', finalResponse.status);
-        const errorText = await finalResponse.text();
-        console.error('Error details:', errorText);
-      }
-      
-      const finalData = await finalResponse.json();
-      console.log('Final AI response:', JSON.stringify(finalData, null, 2));
-      
-      const lastUserMessage = messages[messages.length - 1]?.content || '';
-      let finalMessage = finalData?.choices?.[0]?.message?.content || '';
-
-      if (!finalMessage || !finalMessage.trim()) {
-        console.error('AI returned empty message after tool calls');
-        console.error('Tool results were:', JSON.stringify(toolResults, null, 2));
-        console.error('AI message was:', JSON.stringify(aiMessage, null, 2));
-        
-        // Create a better fallback that uses the tool results
-        const toolResultsData = toolResults.map(tr => {
-          try {
-            return JSON.parse(tr.content);
-          } catch {
-            return tr.content;
-          }
-        });
-        
-        if (toolResultsData.length > 0 && Array.isArray(toolResultsData[0]) && toolResultsData[0].length > 0) {
-          // We have program results, format them nicely
-          const programs = toolResultsData[0];
-          finalMessage = language === 'hu' 
-            ? `Találtam ${programs.length} programot:\n\n${programs.map((p: any) => `🌟 **${p.title}**\n${p.description}\n`).join('\n')}`
-            : `Found ${programs.length} programs:\n\n${programs.map((p: any) => `🌟 **${p.title}**\n${p.description}\n`).join('\n')}`;
-        } else {
-          finalMessage = getFallbackMessage(language, lastUserMessage);
-        }
-      }
-
-      const suggestions = generateSuggestions(lastUserMessage, language);
-      
-      // Store conversation (only when we have a persisted conversation id)
-      await storeConversation(supabase, userId || '', projectId, finalConversationId, language, messages[messages.length - 1], finalMessage);
-      
-      return new Response(
-        JSON.stringify({ 
-          message: finalMessage,
-          suggestions,
-          conversationId: finalConversationId
-        }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-    
-    // No tool calls - direct response
     const lastUserMessage = messages[messages.length - 1]?.content || '';
-    let finalMessage = aiMessage?.content || '';
 
     if (!finalMessage || !finalMessage.trim()) {
-      console.warn('AI returned empty direct response, using fallback message');
+      console.warn('AI returned empty response, using fallback message');
       finalMessage = getFallbackMessage(language, lastUserMessage);
     }
 
@@ -490,14 +242,14 @@ async function storeConversation(supabase: any, userId: string, projectId: strin
     conversation_id: conversationId,
     role: userMessage.role,
     content: userMessage.content,
-    model: 'google/gemini-3-pro-preview'
+    model: 'google/gemini-1.5-flash'
   });
   
   await supabase.from('ai_messages').insert({
     conversation_id: conversationId,
     role: 'assistant',
     content: aiMessage,
-    model: 'google/gemini-3-pro-preview'
+    model: 'google/gemini-1.5-flash'
   });
 }
 
@@ -632,7 +384,10 @@ ANTWORTRICHTLINIEN:
 
 Denke daran: Du bist hier, um Community aufzubauen, nicht nur Ratschläge zu geben. Hilf ${userName}, sich verbunden und befähigt zu fühlen!`,
 
-    hu: `Te WellBot vagy, a közösségi elkötelezettség asszisztense a ${projectName} számára ${regionName}-ban/-ben.
+    hu: `Te WellBot vagy, a Káli-medence közösségi platform asszisztense.
+
+KÜLDETÉSED:
+A Káli-medence 4 településének (Kővágóörs, Kékkút, Mindszentkálla, Köveskál) közösségépítése, az emberek összekötése, programokba bevonása.
 
 FELHASZNÁLÓI KONTEXTUS:
 - Név: ${userName}
@@ -640,47 +395,45 @@ FELHASZNÁLÓI KONTEXTUS:
 - Szerep: ${profile?.user_role || 'állampolgár'}
 - Szervezet: ${profile?.organization || 'Nincs'}
 
-A KÜLDETÉSED:
-Segíts ${userName}-nek részt venni a közösségben, programokat felfedezni és helyi cselekvést végrehajtani.
+SZEMÉLYISÉGED:
+- Barátságos, közvetlen, segítőkész
+- Tegező stílus, de tiszteletteljes
+- Helyismerettel rendelkezel a Káli-medencéről (Kővágóörs, Kékkút, Mindszentkálla, Köveskál)
+- Használj emoji-kat mértékkel 👋 🏘️ 🤝 🎉
 
-ELÉRHETŐ PROGRAMOK ${regionName}-ban/-ben:
+ELÉRHETŐ PROGRAMOK A KÁLI-MEDENCÉBEN:
 ${programList}
-
-**KRITIKUS INSTRUKCIÓK**:
-1. A fenti lista MINDEN aktív programot tartalmaz! NEM csak példák!
-2. Ha programokról kérdeznek, MINDIG használd ezt a listát és adj részletes, hasznos választ!
-3. SOHA ne adj üres választ! Ha tool-t használsz, MINDIG adj értelmes választ az eredmények alapján!
-4. Amikor a felhasználó egy konkrét programról kérdez (pl. "Káli konyha"), nézd meg a fenti listában és adj róla részletes információt!
 
 A KÉPESSÉGEID ÉS ESZKÖZEID:
 Valós idejű adatbázis funkciókhoz férsz hozzá:
 
 PROGRAMOKHOZ:
-- search_programs: Szűrd programokat kategória, nehézség vagy kulcsszavak alapján (NE használd programnév keresésre, ahhoz használd a fenti listát!)
-- get_program_details: Részletes információk lekérése - csak akkor használd, ha ismered a program pontos UUID-ját a fenti listából
+- search_programs: Szűrd programokat kategória, nehézség vagy kulcsszavak alapján
+- get_program_details: Részletes információk egy programról (résztvevők, követelmények)
 - get_user_programs: Ellenőrizd hogy ${userName} milyen programokban vesz részt
 
 KÖZÖSSÉGHEZ:
-- search_organizations: Keress regisztrált szervezeteket (cégek, önkormányzatok, NGO-k) típus vagy kulcsszavak alapján
+- search_organizations: Keress helyi szervezeteket (cégek, önkormányzatok, NGO-k)
 - get_organization_details: Részletes információk egy szervezetről, beleértve a tagjaikat
 - get_user_profile: Felhasználói profil és fenntarthatósági célok megtekintése
 
-**FONTOS HASZNÁLATI SZABÁLYOK**:
-- Ha valaki egy program nevét említi (pl. "Káli konyha", "Közös asztal"), NÉZD MEG a fenti ELÉRHETŐ PROGRAMOK listát és adj választ közvetlenül onnan!
-- NE használj tool-okat program névhez ha már megvan a fenti listában!
-- Tool-okat csak extra részletekhez használd (pl. résztvevők száma)
-- Amikor tool eredményt kapsz, MINDIG adj értelmes, részletes választ a felhasználónak!
-- SOHA ne hagyd üresen a választ! Ha bizonytalan vagy, használd a fenti program listát!
+FONTOS HASZNÁLATI SZABÁLYOK:
+- Ha programokról kérdeznek általában, HASZNÁLD a fenti ELÉRHETŐ PROGRAMOK listát közvetlenül!
+- NE mondd hogy "nincsenek programok" ha a fenti lista tartalmaz programokat!
+- Tool-okat akkor használj, ha extra részletekre vagy szűrésre van szükség
+- Amikor szervezetekről, cégekről, önkormányzatokról kérdeznek, használd a search_organizations tool-t
+- Mindig légy pozitív és mutass konkrét lehetőségeket!
 
 VÁLASZIRÁNYELVEK:
-- Légy meleg, bátorító és közösségközpontú
-- Ajánlj konkrét programokat a fenti listából, amikor releváns
-- Hivatkozz a felhasználó helyszínére és szerepére javaslatok során
+- Rövid, lényegre törő (max 3-4 bekezdés)
+- Konkrét, hasznos információk
+- Cselekvésre ösztönző zárlat
+- Ajánlj konkrét programokat a fenti listából amikor releváns
+- Hivatkozz a felhasználó helyszínére és szerepére
 - Összpontosíts a helyi cselekvésre és közösségi együttműködésre
-- Tartsd a válaszokat gyakorlatiasnak és megvalósíthatónak
-- Használj emojikat a barátságos, vonzó válaszokhoz
+- Használj emojikat barátságos, vonzó válaszokhoz
 
-Ne feledd: Azért vagy itt, hogy közösséget építs, nem csak tanácsot adj. Segíts ${userName}-nek kapcsolódva és felhatalmazva érezni magát!`
+FONTOS: Minden válasz a KÖZÖSSÉGRŐL szóljon, az emberek összehozásáról! Segíts ${userName}-nek kapcsolódva és felhatalmazva érezni magát!`
   };
 
   return prompts[language] || prompts.en;
