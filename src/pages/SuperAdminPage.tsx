@@ -308,7 +308,7 @@ const SuperAdminPage = () => {
         <div className="flex flex-1 w-full">
           <SuperAdminSidebar activeTab={activeTab} onTabChange={handleTabChange} />
           
-          <main className="flex-1 overflow-auto">
+          <main className="flex-1 overflow-auto bg-background">
             <div className="container mx-auto p-6 lg:p-8">
               <div className="mb-6 flex items-center gap-2">
                 <SidebarTrigger />
