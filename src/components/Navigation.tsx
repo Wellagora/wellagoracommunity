@@ -8,7 +8,6 @@ import {
   Target,
   Users as UsersIcon,
   Bot,
-  Settings,
   Mail,
   Inbox,
   ChevronDown,
@@ -223,12 +222,6 @@ const Navigation = () => {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/settings" className="flex items-center gap-2 cursor-pointer">
-                        <Settings className="h-4 w-4" />
-                        {t('nav.settings')}
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
                       <Link to="/inbox" className="flex items-center gap-2 cursor-pointer">
                         <Inbox className="h-4 w-4" />
                         {t('nav.messages')}
@@ -352,20 +345,8 @@ const Navigation = () => {
                           {unreadCount > 0 && (
                             <Badge variant="destructive" className="h-5 min-w-5 text-xs">
                               {unreadCount > 9 ? '9+' : unreadCount}
-                            </Badge>
+                          </Badge>
                           )}
-                        </Link>
-                        <Link
-                          to="/settings"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors ${
-                            isActive('/settings')
-                              ? 'text-primary bg-accent font-medium'
-                              : 'text-muted-foreground hover:text-primary hover:bg-accent/50'
-                          }`}
-                        >
-                          <Settings className="h-5 w-5 shrink-0" />
-                          <span className="text-sm font-medium">{t('nav.settings')}</span>
                         </Link>
                         {isSuperAdmin && (
                           <Link
