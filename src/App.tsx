@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { initSentry } from "@/lib/sentry";
 import { LoadingFallback } from "@/components/LoadingFallback";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import "./index.css";
 
 // Lazy load all pages for better performance
@@ -54,14 +55,15 @@ function App() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <SubscriptionProvider>
-          <LanguageProvider>
-            <ProjectProvider>
-              <BrowserRouter>
-              <Suspense fallback={<LoadingFallback />}>
-                <Routes>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <SubscriptionProvider>
+            <LanguageProvider>
+              <ProjectProvider>
+                <BrowserRouter>
+                <Suspense fallback={<LoadingFallback />}>
+                  <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<AuthPage />} />
                   <Route path="/dashboard/handprint" element={<HandprintPage />} />
@@ -97,12 +99,13 @@ function App() {
               </Suspense>
               <Toaster />
               <SonnerToaster />
-              </BrowserRouter>
-            </ProjectProvider>
-          </LanguageProvider>
-        </SubscriptionProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+                </BrowserRouter>
+              </ProjectProvider>
+            </LanguageProvider>
+          </SubscriptionProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 
