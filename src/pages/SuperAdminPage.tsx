@@ -247,6 +247,11 @@ const SuperAdminPage = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [isSuperAdmin, setIsSuperAdmin] = useState<boolean | null>(null);
 
+  const handleTabChange = (tab: string) => {
+    console.log('[SuperAdmin] Changing activeTab to:', tab);
+    setActiveTab(tab);
+  };
+
   useEffect(() => {
     const checkSuperAdminRole = async () => {
       if (!user || authLoading) return;
@@ -301,7 +306,7 @@ const SuperAdminPage = () => {
       
       <SidebarProvider>
         <div className="flex flex-1 w-full">
-          <SuperAdminSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+          <SuperAdminSidebar activeTab={activeTab} onTabChange={handleTabChange} />
           
           <main className="flex-1 overflow-auto">
             <div className="container mx-auto p-6 lg:p-8">
