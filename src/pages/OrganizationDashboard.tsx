@@ -119,22 +119,10 @@ const OrganizationDashboard = () => {
 
         const challengeIds = sponsorships.map(s => s.challenge_id);
 
-        // Get completions for sponsored challenges with user profiles
+        // Get completions for sponsored challenges
         const { data: completions, error: completionsError } = await supabase
           .from('challenge_completions')
-          .select(`
-            id,
-            challenge_id,
-            user_id,
-            completion_date,
-            notes,
-            impact_data,
-            profiles:user_id (
-              first_name,
-              last_name,
-              avatar_url
-            )
-          `)
+          .select('id, challenge_id, user_id, completion_date, notes, impact_data')
           .in('challenge_id', challengeIds)
           .eq('validation_status', 'approved')
           .order('completion_date', { ascending: false })
@@ -142,11 +130,21 @@ const OrganizationDashboard = () => {
 
         if (completionsError) throw completionsError;
 
+        // Get user profiles separately
+        const userIds = [...new Set(completions?.map(c => c.user_id) || [])];
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, first_name, last_name, avatar_url')
+          .in('id', userIds);
+
+        if (profilesError) throw profilesError;
+
+        // Create profile map
+        const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+
         // Transform completions to impact stories
         const stories: ImpactStory[] = (completions || []).map(completion => {
-          const profile = Array.isArray(completion.profiles) 
-            ? completion.profiles[0] 
-            : completion.profiles;
+          const profile = profileMap.get(completion.user_id);
           
           const impactData = completion.impact_data as any || {};
           const userName = profile 

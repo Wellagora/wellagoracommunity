@@ -59,19 +59,21 @@ export const OrganizationChallengeStats = () => {
       // Get all challenge completions by employees of this organization
       const { data: completions, error } = await supabase
         .from('challenge_completions')
-        .select(`
-          *,
-          profiles:user_id (
-            first_name,
-            last_name,
-            avatar_url,
-            public_display_name
-          )
-        `)
+        .select('*')
         .eq('organization_id', profile.organization_id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
+
+      // Get unique user IDs and fetch profiles separately
+      const userIds = [...new Set(completions?.map(c => c.user_id) || [])];
+      const { data: userProfiles } = await supabase
+        .from('profiles')
+        .select('id, first_name, last_name, avatar_url, public_display_name')
+        .in('id', userIds);
+
+      // Create profile map
+      const profileMap = new Map(userProfiles?.map(p => [p.id, p]) || []);
 
       // Group by challenge
       const challengeMap = new Map<string, ChallengeStats>();
@@ -95,7 +97,7 @@ export const OrganizationChallengeStats = () => {
         const stats = challengeMap.get(challengeId)!;
         stats.total_completions++;
         
-        const profileData = completion.profiles;
+        const profileData = profileMap.get(completion.user_id);
         stats.employees.push({
           user_id: completion.user_id,
           challenge_id: challengeId,

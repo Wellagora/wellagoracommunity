@@ -1,6 +1,5 @@
 import { memo } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useProject } from "@/contexts/ProjectContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { UserProgramsList } from "./UserProgramsList";
@@ -16,7 +15,6 @@ interface DashboardCitizenViewProps {
 
 export const DashboardCitizenView = memo(({ currentRole }: DashboardCitizenViewProps) => {
   const { t } = useLanguage();
-  const { currentProject } = useProject();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
