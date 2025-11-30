@@ -1,74 +1,48 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useCallback } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
   Menu, 
-  X, 
   User, 
-  Building2, 
-  MapPin, 
-  Heart,
-  ChevronDown,
   LogOut,
-  Sparkles,
-  Users,
-  Leaf,
-  Globe,
-  Zap,
-  Edit3,
-  CreditCard,
-  Shield,
-  Coins,
+  Home,
+  Target,
+  Users as UsersIcon,
+  Bot,
+  Settings,
   Mail,
-  Inbox
+  Inbox,
+  ChevronDown
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useProject } from "@/contexts/ProjectContext";
-import LanguageSelector from "./LanguageSelector";
-import { ProjectSelector } from "./ProjectSelector";
-import { RoleSwitcher } from "./admin/RoleSwitcher";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import kaliLogo from "@/assets/wellagora-logo.png";
-import { NotificationBell } from "@/components/notifications/NotificationBell";
+import wellagoraLogo from "@/assets/wellagora-logo.png";
+import LanguageSelector from "./LanguageSelector";
 
 const Navigation = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const { user, profile, signOut } = useAuth();
   const { t } = useLanguage();
-  const { currentProject } = useProject();
-  const [hasAdminAccess, setHasAdminAccess] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
-
-  // Check if user has admin access - SECURITY: Server-side verification
-  useEffect(() => {
-    const checkAdminAccess = async () => {
-      if (!user) {
-        console.log('🔐 No user, setting hasAdminAccess to false');
-        setHasAdminAccess(false);
-        return;
-      }
-
-      try {
-        console.log('🔐 Checking admin access for user:', user.id);
-        // Server-side admin verification via edge function
-        const { data, error } = await supabase.functions.invoke('verify-admin-access');
-        console.log('🔐 Admin access result:', { 
-          hasAccess: data?.hasAccess, 
-          roles: data?.roles, 
-          error: error?.message 
-        });
-        const hasAccess = !error && data?.hasAccess === true;
-        setHasAdminAccess(hasAccess);
-        console.log('🔐 hasAdminAccess state set to:', hasAccess);
-      } catch (error) {
-        console.error('❌ Error verifying admin access:', error);
-        setHasAdminAccess(false);
-      }
-    };
-
-    checkAdminAccess();
-  }, [user, profile]);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // Load unread message count
   useEffect(() => {
@@ -117,422 +91,297 @@ const Navigation = () => {
     };
   }, [user]);
 
-  const userRoles = [
-    { name: "Citizen", icon: User, gradient: "from-emerald-400 to-green-600", description: "Individual sustainability journey" },
-    { name: "Business", icon: Building2, gradient: "from-blue-400 to-indigo-600", description: "Corporate sustainability goals" },
-    { name: "Municipal", icon: MapPin, gradient: "from-orange-400 to-red-500", description: "City-wide initiatives" },
-    { name: "NGO", icon: Heart, gradient: "from-purple-400 to-pink-600", description: "Community organization" },
-  ];
-
-  const handleSignOut = async () => {
+  const handleSignOut = useCallback(async () => {
     await signOut();
+    navigate('/');
+  }, [signOut, navigate]);
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
   };
 
+  const navItems = [
+    { path: '/', label: t('nav.home'), icon: Home },
+    { path: '/challenges', label: t('nav.challenges'), icon: Target },
+    { path: '/community', label: t('nav.community'), icon: UsersIcon },
+    { path: '/ai-assistant', label: 'WellBot AI', icon: Bot },
+  ];
+
+  // Add dashboard based on user type
+  if (user && profile) {
+    navItems.splice(3, 0, {
+      path: '/dashboard',
+      label: t('nav.dashboard'),
+      icon: Home
+    });
+  }
+
   return (
-    <nav className="bg-card/60 backdrop-blur-xl border-b border-accent/20 shadow-glow sticky top-0 z-50">
+    <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Mobile Compact Header */}
-        <div className="lg:hidden flex justify-between items-center h-14">
-          {/* Logo - Compact */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 flex items-center justify-center bg-white rounded-xl shadow-md">
-              <img 
-                src={kaliLogo} 
-                alt="Káli medence Logo" 
-                className="w-8 h-8 object-contain"
-              />
-            </div>
-            <span className="text-lg font-bold bg-gradient-aqua bg-clip-text text-transparent">Káli medence</span>
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-2 shrink-0">
+            <img 
+              src={wellagoraLogo} 
+              alt="WellAgora" 
+              className="h-10 w-auto object-contain"
+            />
           </Link>
 
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="p-2 rounded-xl hover:bg-card/50 transition-colors"
-          >
-            {isMenuOpen ? <X className="w-6 h-6 text-foreground" /> : <Menu className="w-6 h-6 text-foreground" />}
-          </button>
-        </div>
-
-        {/* Desktop Header - Top Row - Logo and Community Info */}
-        <div className="hidden lg:flex justify-between items-center h-16 border-b border-border">
-          {/* Logo */}
-          <div className="flex items-center space-x-4">
-            <Link to="/" className="relative group">
-              <div className="w-20 h-20 flex items-center justify-center bg-white rounded-2xl shadow-premium group-hover:scale-105 transition-transform duration-300">
-                <img 
-                  src={kaliLogo} 
-                  alt="Káli medence Logo" 
-                  className="w-16 h-16 object-contain logo-enhanced"
-                />
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-warning rounded-full flex items-center justify-center animate-pulse">
-                  <Sparkles className="w-2 h-2 text-warning-foreground" />
-                </div>
-              </div>
-            </Link>
-            <Link to="/" className="flex flex-col group">
-              <span className="text-3xl font-heading font-bold bg-gradient-aqua bg-clip-text text-transparent group-hover:opacity-80 transition-all duration-300">
-                Káli medence
-              </span>
-              <div className="flex items-center space-x-2">
-                <Users className="w-3 h-3 text-primary" />
-                <span className="text-xs text-accent font-medium">{t('nav.community_building')}</span>
-                <div className="w-2 h-2 bg-accent rounded-full animate-pulse shadow-glow"></div>
-              </div>
-            </Link>
+          {/* Desktop Navigation - Center */}
+          <div className="hidden lg:flex items-center space-x-1 flex-1 justify-center">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const active = isActive(item.path);
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    active
+                      ? 'text-primary bg-accent'
+                      : 'text-muted-foreground hover:text-primary hover:bg-accent/50'
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  {item.label}
+                </Link>
+              );
+            })}
           </div>
 
-          {/* Language Selector */}
-          <div className="flex items-center space-x-4 text-sm">
+          {/* Desktop Actions - Right */}
+          <div className="hidden lg:flex items-center space-x-4">
+            {/* Language Selector */}
             <LanguageSelector />
-          </div>
-        </div>
 
-          {/* Desktop Bottom Row - Navigation and Actions */}
-        <div className="hidden lg:flex flex-wrap justify-between items-center min-h-16 py-2 gap-2">
-          {/* Navigation Links */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <Link to="/" className="group flex items-center px-2 py-1.5 text-muted-foreground hover:text-accent transition-all duration-300 font-medium text-sm">
-              <span className="relative">
-                {t('nav.home')}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-aqua group-hover:w-full transition-all duration-300 shadow-glow"></span>
-              </span>
-            </Link>
-            <Link to="/challenges" className="group flex items-center px-2 py-1.5 text-muted-foreground hover:text-accent transition-all duration-300 font-medium text-sm">
-              <span className="relative">
-                {t('nav.challenges')}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-aqua group-hover:w-full transition-all duration-300 shadow-glow"></span>
-              </span>
-            </Link>
-            <Link to="/community" className="group flex items-center gap-1 px-2 py-1.5 text-muted-foreground hover:text-accent transition-all duration-300 font-medium text-sm">
-              <Users className="w-4 h-4" />
-              <span className="relative">
-                {t('nav.community')}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-aqua group-hover:w-full transition-all duration-300 shadow-glow"></span>
-              </span>
-            </Link>
-            {user && profile?.user_role === "citizen" && (
-              <Link to="/dashboard" className="group flex items-center px-2 py-1.5 text-muted-foreground hover:text-accent transition-all duration-300 font-medium text-sm">
-                <span className="relative">
-                  {t('nav.dashboard')}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-aqua group-hover:w-full transition-all duration-300 shadow-glow"></span>
-                </span>
-              </Link>
-            )}
-            {user && profile?.user_role !== "citizen" && (
-              <Link to="/organization" className="group flex items-center gap-1 px-2 py-1.5 text-muted-foreground hover:text-accent transition-all duration-300 font-medium text-sm">
-                <Building2 className="w-4 h-4" />
-                <span className="relative">
-                  {t('nav.organization_label')}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-aqua group-hover:w-full transition-all duration-300 shadow-glow"></span>
-                </span>
-              </Link>
-            )}
-            <Link to="/ai-assistant" className="group flex items-center gap-1 px-2 py-1.5 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-lg hover:from-accent/30 hover:to-secondary/30 hover:shadow-glow transition-all duration-300 font-medium text-white text-sm">
-              <span className="text-base">🤖</span>
-              <span>AI</span>
-            </Link>
-            <Link to="/contact" className="group flex items-center px-2 py-1.5 text-muted-foreground hover:text-accent transition-all duration-300 font-medium text-sm">
-              <span className="relative">
-                {t('nav.contact')}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-aqua group-hover:w-full transition-all duration-300 shadow-glow"></span>
-              </span>
-            </Link>
-          </div>
-
-          {/* User Actions */}
-          <div className="flex items-center gap-2 flex-wrap">
             {user ? (
-              <div className="flex items-center gap-2 flex-wrap">
-                {/* Super Admin Controls */}
-                <div className="flex items-center gap-1">
-                  <RoleSwitcher />
-                  {hasAdminAccess && (
-                    <Link
-                      to="/admin"
-                      className="flex items-center gap-1 px-2 py-1.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-lg hover:from-purple-500/30 hover:to-pink-500/30 transition-all duration-300 font-medium text-purple-600 text-sm"
-                    >
-                      <Shield className="w-4 h-4" />
-                      <span className="hidden xl:inline">Admin</span>
-                    </Link>
-                  )}
-                </div>
-                
-                {currentProject && <ProjectSelector />}
-                
-                {/* Notification Bell */}
-                <NotificationBell />
-                
-                {/* Inbox with unread badge */}
+              <>
+                {/* Inbox with Badge */}
                 <Link
                   to="/inbox"
-                  className="relative flex items-center px-2 py-1.5 text-muted-foreground hover:text-primary hover:bg-card/50 rounded-lg transition-all duration-300"
+                  className="relative p-2 text-muted-foreground hover:text-primary transition-colors"
                 >
-                  <Inbox className="w-4 h-4" />
+                  <Inbox className="h-5 w-5" />
                   {unreadCount > 0 && (
                     <Badge 
                       variant="destructive" 
-                      className="absolute -top-1 -right-1 h-4 min-w-4 flex items-center justify-center p-0 text-xs"
+                      className="absolute -top-1 -right-1 h-5 min-w-5 flex items-center justify-center p-0 text-xs"
                     >
                       {unreadCount > 9 ? '9+' : unreadCount}
                     </Badge>
                   )}
                 </Link>
 
-                <Link
-                  to="/profile"
-                  className="flex items-center gap-2 px-2 py-1.5 bg-gradient-to-r from-card/80 to-background/80 backdrop-blur-sm rounded-lg border border-border hover:from-card hover:to-background/90 transition-all duration-300"
-                >
-                  <div className="relative">
-                    <div className="w-7 h-7 bg-gradient-to-br from-primary to-success rounded-full flex items-center justify-center">
-                      <User className="w-3.5 h-3.5 text-primary-foreground" />
-                    </div>
-                    <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-success rounded-full border-2 border-background"></div>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-xs font-semibold text-foreground">
-                      {profile?.first_name}
-                    </span>
-                     {profile?.user_role && (
-                       <span className="text-xs text-primary capitalize">
-                         {profile?.user_role}
-                       </span>
-                     )}
-                  </div>
-                </Link>
-                
-                {/* Quick Action Buttons */}
-                <div className="flex items-center gap-1">
-                  <Link
-                    to="/profile"
-                    className="flex items-center px-2 py-1.5 text-muted-foreground hover:text-primary hover:bg-card/50 rounded-lg transition-all duration-300"
-                    title={t('nav.edit_profile')}
-                  >
-                    <Edit3 className="w-4 h-4" />
-                  </Link>
-                  
-            {(profile?.user_role === 'business' || profile?.email === 'attila.kelemen@proself.org') && (
-              <Link
-                to="/sponsor-dashboard"
-                className="flex items-center gap-1 px-2 py-1.5 bg-gradient-to-r from-warning/20 to-accent/20 border border-warning/30 rounded-lg hover:from-warning/30 hover:to-accent/30 transition-all duration-300 font-medium text-warning text-sm"
-              >
-                <Coins className="w-4 h-4" />
-                <span className="hidden xl:inline">Sponsor</span>
-              </Link>
-            )}
-            
-            {user && currentProject && (
-              <Link
-                to="/project-admin"
-                className="flex items-center gap-1 px-2 py-1.5 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 rounded-lg hover:from-accent/30 hover:to-secondary/30 transition-all duration-300 font-medium text-accent text-sm"
-              >
-                <Building2 className="w-4 h-4" />
-                <span className="hidden xl:inline">Projekt</span>
-              </Link>
-            )}
-                </div>
-                
-                <button 
-                  onClick={handleSignOut}
-                  className="flex items-center px-2 py-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-all duration-300"
-                  title={t('nav.sign_out')}
-                >
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </div>
+                {/* User Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="flex items-center gap-2 h-auto p-2">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={profile?.avatar_url || undefined} />
+                        <AvatarFallback className="bg-primary text-primary-foreground">
+                          {profile?.first_name?.[0]}{profile?.last_name?.[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="text-sm font-medium hidden xl:inline">
+                        {profile?.first_name}
+                      </span>
+                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuItem asChild>
+                      <Link to="/profile" className="flex items-center gap-2 cursor-pointer">
+                        <User className="h-4 w-4" />
+                        {t('nav.profile')}
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/settings" className="flex items-center gap-2 cursor-pointer">
+                        <Settings className="h-4 w-4" />
+                        {t('nav.settings')}
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/inbox" className="flex items-center gap-2 cursor-pointer">
+                        <Inbox className="h-4 w-4" />
+                        {t('nav.messages')}
+                        {unreadCount > 0 && (
+                          <Badge variant="destructive" className="ml-auto h-5 min-w-5 text-xs">
+                            {unreadCount > 9 ? '9+' : unreadCount}
+                          </Badge>
+                        )}
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={handleSignOut}
+                      className="flex items-center gap-2 text-destructive focus:text-destructive cursor-pointer"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      {t('nav.sign_out')}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
             ) : (
               <div className="flex items-center gap-2">
-                <Link to="/auth" className="px-3 py-1.5 bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg text-sm">
-                  {t('nav.join_community')}
-                </Link>
-                <Link to="/auth" className="px-3 py-1.5 border-2 border-border hover:border-primary hover:bg-card/50 text-foreground rounded-lg font-medium transition-all duration-300 text-sm">
-                  {t('nav.sign_in')}
-                </Link>
+                <Button variant="outline" asChild>
+                  <Link to="/auth">{t('nav.sign_in')}</Link>
+                </Button>
+                <Button asChild>
+                  <Link to="/auth">{t('nav.join_community')}</Link>
+                </Button>
               </div>
             )}
           </div>
-        </div>
 
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="lg:hidden bg-background/95 backdrop-blur-sm border-t border-border py-3 rounded-b-2xl shadow-premium">
-            <div className="space-y-2 px-2">
-              {/* User Profile Section - Mobile */}
-              {user && (
-                <div className="pb-3 mb-3 border-b border-border">
-                  <Link 
-                    to="/profile" 
-                    className="flex items-center space-x-3 px-3 py-2.5 bg-card/50 backdrop-blur-sm rounded-xl hover:bg-card/70 transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <div className="w-10 h-10 bg-gradient-to-br from-primary to-success rounded-full flex items-center justify-center">
-                      <User className="w-5 h-5 text-primary-foreground" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-sm font-semibold text-foreground">
-                        {profile?.first_name} {profile?.last_name}
+          {/* Mobile Menu Button */}
+          <div className="lg:hidden">
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-10 w-10">
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Toggle menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-80 bg-background/95 backdrop-blur-md">
+                <SheetHeader>
+                  <SheetTitle className="flex items-center gap-2">
+                    <img src={wellagoraLogo} alt="WellAgora" className="h-8 w-auto" />
+                  </SheetTitle>
+                </SheetHeader>
+                
+                <div className="flex flex-col gap-4 mt-8">
+                  {/* User Profile - Mobile */}
+                  {user && profile && (
+                    <Link
+                      to="/profile"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-3 p-3 rounded-lg bg-accent/50 hover:bg-accent transition-colors"
+                    >
+                      <Avatar className="h-12 w-12">
+                        <AvatarImage src={profile.avatar_url || undefined} />
+                        <AvatarFallback className="bg-primary text-primary-foreground">
+                          {profile.first_name?.[0]}{profile.last_name?.[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold truncate">
+                          {profile.first_name} {profile.last_name}
+                        </p>
+                        <p className="text-xs text-muted-foreground capitalize truncate">
+                          {profile.user_role}
+                        </p>
                       </div>
-                      {profile?.user_role && (
-                        <div className="text-xs text-primary capitalize">
-                          {profile?.user_role} Champion
-                        </div>
-                      )}
-                    </div>
-                  </Link>
-                </div>
-              )}
-
-              {/* Navigation Links */}
-              <Link 
-                to="/" 
-                className="flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <span className="text-lg">🏠</span>
-                <span className="font-medium">{t('nav.home')}</span>
-              </Link>
-              
-              <Link 
-                to="/challenges" 
-                className="flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <span className="text-lg">🎯</span>
-                <span className="font-medium">{t('nav.challenges')}</span>
-              </Link>
-              
-              <Link 
-                to="/community" 
-                className="flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Users className="w-5 h-5" />
-                <span className="font-medium">{t('nav.community')}</span>
-              </Link>
-              
-              {profile?.user_role === "citizen" && (
-                <Link 
-                  to="/dashboard" 
-                  className="flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <span className="text-lg">📊</span>
-                  <span className="font-medium">{t('nav.dashboard')}</span>
-                </Link>
-              )}
-              
-              {profile?.user_role !== "citizen" && (
-                <Link 
-                  to="/organization" 
-                  className="flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <Building2 className="w-5 h-5" />
-                  <span className="font-medium">{t('nav.organization_label')}</span>
-                </Link>
-              )}
-              
-              <Link 
-                to="/ai-assistant" 
-                className="flex items-center space-x-3 px-3 py-2.5 bg-gradient-to-r from-accent/20 to-secondary/20 border border-accent/30 text-accent-foreground rounded-xl"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <span className="text-lg">🤖</span>
-                <span className="font-medium">{t('nav.ai_assistant')}</span>
-              </Link>
-
-              {user && (
-                <Link 
-                  to="/inbox" 
-                  className="relative flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <Inbox className="w-5 h-5" />
-                  <span className="font-medium">{t('nav.messages')}</span>
-                  {unreadCount > 0 && (
-                    <Badge 
-                      variant="destructive" 
-                      className="ml-auto h-5 min-w-5 flex items-center justify-center p-0 text-xs"
-                    >
-                      {unreadCount > 9 ? '9+' : unreadCount}
-                    </Badge>
-                  )}
-                </Link>
-              )}
-              
-              <Link 
-                to="/contact" 
-                className="flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:bg-card/50 hover:text-primary rounded-xl transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Mail className="w-5 h-5" />
-                <span className="font-medium">{t('nav.contact')}</span>
-              </Link>
-              
-              {/* Language Selector - Mobile */}
-              <div className="pt-3 mt-3 border-t border-border">
-                <div className="px-3 py-2">
-                  <div className="text-xs text-muted-foreground mb-2 font-medium">Nyelv / Language</div>
-                  <LanguageSelector />
-                </div>
-              </div>
-
-              {/* Additional Actions for Logged in Users */}
-              {user && (
-                <div className="pt-3 mt-3 border-t border-border space-y-2">
-                  
-                  {hasAdminAccess && (
-                    <Link 
-                      to="/admin"
-                      className="flex items-center space-x-3 px-3 py-2.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <Shield className="w-5 h-5" />
-                      <span className="font-medium">{t('nav.admin_dashboard')}</span>
                     </Link>
                   )}
-                  
-                  <button 
-                    onClick={() => {
-                      handleSignOut();
-                      setIsMenuOpen(false);
-                    }}
-                    className="w-full flex items-center space-x-3 px-3 py-2.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-colors"
-                  >
-                    <LogOut className="w-5 h-5" />
-                    <span className="font-medium">{t('nav.sign_out')}</span>
-                  </button>
-                </div>
-              )}
 
-              {/* Auth Buttons for Non-Logged in Users */}
-              {!user && (
-                <div className="pt-3 mt-3 border-t border-border space-y-2">
-                  <Link 
-                    to="/auth" 
-                    className="w-full flex items-center justify-center space-x-2 px-3 py-2.5 bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground rounded-xl font-semibold transition-all duration-300 shadow-md"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <User className="w-5 h-5" />
-                    <span>{t('nav.join_community')}</span>
-                  </Link>
-                  <Link 
-                    to="/auth" 
-                    className="w-full flex items-center justify-center space-x-2 px-3 py-2.5 border-2 border-border hover:border-primary hover:bg-card/50 text-foreground rounded-xl font-medium transition-all duration-300"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <span>{t('nav.sign_in')}</span>
-                  </Link>
+                  {/* Navigation Links - Mobile */}
+                  <div className="space-y-1">
+                    {navItems.map((item) => {
+                      const Icon = item.icon;
+                      const active = isActive(item.path);
+                      return (
+                        <Link
+                          key={item.path}
+                          to={item.path}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors ${
+                            active
+                              ? 'text-primary bg-accent font-medium'
+                              : 'text-muted-foreground hover:text-primary hover:bg-accent/50'
+                          }`}
+                        >
+                          <Icon className="h-5 w-5 shrink-0" />
+                          <span className="text-sm font-medium">{item.label}</span>
+                        </Link>
+                      );
+                    })}
+
+                    {user && (
+                      <>
+                        <Link
+                          to="/inbox"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors ${
+                            isActive('/inbox')
+                              ? 'text-primary bg-accent font-medium'
+                              : 'text-muted-foreground hover:text-primary hover:bg-accent/50'
+                          }`}
+                        >
+                          <Inbox className="h-5 w-5 shrink-0" />
+                          <span className="text-sm font-medium flex-1">{t('nav.messages')}</span>
+                          {unreadCount > 0 && (
+                            <Badge variant="destructive" className="h-5 min-w-5 text-xs">
+                              {unreadCount > 9 ? '9+' : unreadCount}
+                            </Badge>
+                          )}
+                        </Link>
+                        <Link
+                          to="/settings"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors ${
+                            isActive('/settings')
+                              ? 'text-primary bg-accent font-medium'
+                              : 'text-muted-foreground hover:text-primary hover:bg-accent/50'
+                          }`}
+                        >
+                          <Settings className="h-5 w-5 shrink-0" />
+                          <span className="text-sm font-medium">{t('nav.settings')}</span>
+                        </Link>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Language Selector - Mobile */}
+                  <div className="pt-4 border-t border-border">
+                    <p className="text-xs text-muted-foreground mb-2 px-3">
+                      {t('nav.language') || 'Language'}
+                    </p>
+                    <LanguageSelector />
+                  </div>
+
+                  {/* Auth Actions - Mobile */}
+                  {user ? (
+                    <div className="pt-4 border-t border-border">
+                      <Button
+                        variant="ghost"
+                        onClick={() => {
+                          handleSignOut();
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
+                      >
+                        <LogOut className="h-5 w-5 mr-3" />
+                        {t('nav.sign_out')}
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="pt-4 border-t border-border space-y-2">
+                      <Button
+                        asChild
+                        className="w-full"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <Link to="/auth">{t('nav.join_community')}</Link>
+                      </Button>
+                      <Button
+                        asChild
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <Link to="/auth">{t('nav.sign_in')}</Link>
+                      </Button>
+                    </div>
+                  )}
                 </div>
-              )}
-              
-              {/* Language Selector - Mobile */}
-              <div className="px-3 py-3 border-t border-border mt-3 pt-3">
-                <LanguageSelector />
-              </div>
-            </div>
+              </SheetContent>
+            </Sheet>
           </div>
-        )}
+        </div>
       </div>
     </nav>
   );
