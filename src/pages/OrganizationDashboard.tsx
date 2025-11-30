@@ -8,6 +8,7 @@ import { OrganizationSponsorModal } from "@/components/dashboard/OrganizationSpo
 import { OrganizationChallengeStats } from "@/components/dashboard/OrganizationChallengeStats";
 import OrganizationProfileEditor from "@/components/organization/OrganizationProfileEditor";
 import OrganizationSubscription from "@/components/organization/OrganizationSubscription";
+import OrganizationInvoices from "@/components/organization/OrganizationInvoices";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,7 +35,8 @@ import {
   Globe2,
   CheckCircle2,
   Edit3,
-  CreditCard
+  CreditCard,
+  FileText
 } from "lucide-react";
 
 interface Challenge {
@@ -488,7 +490,7 @@ const OrganizationDashboard = () => {
 
         {/* Main Content Tabs */}
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6 sm:space-y-8">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-2 gap-2">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7 bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-2 gap-2">
             <TabsTrigger value="overview" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
               <Globe2 className="w-4 h-4" />
               <span className="hidden sm:inline">{t('organization.overview')}</span>
@@ -513,6 +515,11 @@ const OrganizationDashboard = () => {
               <CreditCard className="w-4 h-4" />
               <span className="hidden sm:inline">Előfizetés</span>
               <span className="sm:hidden">Előfizetés</span>
+            </TabsTrigger>
+            <TabsTrigger value="invoices" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
+              <FileText className="w-4 h-4" />
+              <span className="hidden sm:inline">Számlák</span>
+              <span className="sm:hidden">Számlák</span>
             </TabsTrigger>
             <TabsTrigger value="profile" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
               <Edit3 className="w-4 h-4" />
@@ -865,6 +872,11 @@ const OrganizationDashboard = () => {
           {/* Subscription Tab */}
           <TabsContent value="subscription" className="space-y-6">
             <OrganizationSubscription />
+          </TabsContent>
+
+          {/* Invoices Tab */}
+          <TabsContent value="invoices" className="space-y-6">
+            <OrganizationInvoices />
           </TabsContent>
 
           {/* Profile Tab */}
