@@ -34,12 +34,12 @@ import {
   Handshake,
   Zap,
   BarChart3,
-  Globe2,
   CheckCircle2,
-  Edit3,
   CreditCard,
-  FileText,
-  Coins
+  Coins,
+  Receipt,
+  LayoutDashboard,
+  Edit3
 } from "lucide-react";
 
 interface Challenge {
@@ -493,88 +493,82 @@ const OrganizationDashboard = () => {
 
         {/* Main Content Tabs */}
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6 sm:space-y-8">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-9 bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-2 gap-2">
-            <TabsTrigger value="overview" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
-              <Globe2 className="w-4 h-4" />
-              <span className="hidden sm:inline">{t('organization.overview')}</span>
-              <span className="sm:hidden">{t('organization.overview')}</span>
+          <TabsList className="inline-flex w-full overflow-x-auto bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-2 gap-2">
+            <TabsTrigger value="overview" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm whitespace-nowrap">
+              <LayoutDashboard className="w-4 h-4" />
+              <span>Áttekintés</span>
             </TabsTrigger>
-            <TabsTrigger value="challenges" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
-              <Target className="w-4 h-4" />
-              <span className="hidden sm:inline">{t('organization.challenges')}</span>
-              <span className="sm:hidden">{t('organization.challenges')}</span>
+            <TabsTrigger value="sponsorships" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm whitespace-nowrap">
+              <Heart className="w-4 h-4" />
+              <span>Szponzorálások</span>
             </TabsTrigger>
-            <TabsTrigger value="partnerships" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
-              <Handshake className="w-4 h-4" />
-              <span className="hidden sm:inline">{t('organization.partnerships')}</span>
-              <span className="sm:hidden">{t('organization.partners')}</span>
+            <TabsTrigger value="profile" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm whitespace-nowrap">
+              <Building2 className="w-4 h-4" />
+              <span>Profil</span>
             </TabsTrigger>
-            <TabsTrigger value="stories" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
-              <Sparkles className="w-4 h-4" />
-              <span className="hidden sm:inline">{t('organization.impact_stories')}</span>
-              <span className="sm:hidden">{t('organization.stories')}</span>
-            </TabsTrigger>
-            <TabsTrigger value="subscription" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
+            <TabsTrigger value="subscription" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm whitespace-nowrap">
               <CreditCard className="w-4 h-4" />
-              <span className="hidden sm:inline">Előfizetés</span>
-              <span className="sm:hidden">Előfizetés</span>
+              <span>Előfizetés</span>
             </TabsTrigger>
-            <TabsTrigger value="team" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
-              <Users className="w-4 h-4" />
-              <span className="hidden sm:inline">Csapat</span>
-              <span className="sm:hidden">Csapat</span>
-            </TabsTrigger>
-            <TabsTrigger value="credits" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
+            <TabsTrigger value="credits" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm whitespace-nowrap">
               <Coins className="w-4 h-4" />
-              <span className="hidden sm:inline">Kreditek</span>
-              <span className="sm:hidden">Kreditek</span>
+              <span>Kreditek</span>
             </TabsTrigger>
-            <TabsTrigger value="invoices" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
-              <FileText className="w-4 h-4" />
-              <span className="hidden sm:inline">Számlák</span>
-              <span className="sm:hidden">Számlák</span>
+            <TabsTrigger value="invoices" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm whitespace-nowrap">
+              <Receipt className="w-4 h-4" />
+              <span>Számlák</span>
             </TabsTrigger>
-            <TabsTrigger value="profile" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm">
-              <Edit3 className="w-4 h-4" />
-              <span className="hidden sm:inline">Profil</span>
-              <span className="sm:hidden">Profil</span>
+            <TabsTrigger value="team" className="flex items-center justify-center space-x-2 data-[state=active]:bg-gradient-primary data-[state=active]:text-white rounded-xl transition-smooth text-xs sm:text-sm whitespace-nowrap">
+              <Users className="w-4 h-4" />
+              <span>Csapat</span>
             </TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
-            {/* Regional Map Placeholder */}
-            <Card className="bg-gradient-to-br from-primary/5 via-success/5 to-warning/5 border-border/50">
-              <CardContent className="p-6 sm:p-8">
-                <div className="text-center py-12 sm:py-16">
-                  <Globe2 className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 text-primary/40" />
-                  <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">{t('organization.regional_impact_map')}</h3>
-                  <p className="text-muted-foreground mb-6 px-4">
-                    {t('organization.interactive_map_desc')}
-                  </p>
-                  <div className="flex flex-wrap justify-center gap-4 text-sm">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-3 h-3 rounded-full bg-warning"></div>
-                      <span>{t('organization.sponsored')}</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-3 h-3 rounded-full bg-success"></div>
-                      <span>{t('organization.created')}</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-3 h-3 rounded-full bg-primary"></div>
-                      <span>{t('organization.team_participation')}</span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            {/* ESG Metrics Overview */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {metrics.loading ? (
+                <>
+                  <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-success/10 to-success/5">
+                    <Loader2 className="w-8 h-8 mx-auto mb-2 animate-spin text-success" />
+                    <p className="text-xs sm:text-sm text-muted-foreground">{t('common.loading')}</p>
+                  </Card>
+                  <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-primary/10 to-primary/5">
+                    <Loader2 className="w-8 h-8 mx-auto mb-2 animate-spin text-primary" />
+                    <p className="text-xs sm:text-sm text-muted-foreground">{t('common.loading')}</p>
+                  </Card>
+                  <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-warning/10 to-warning/5">
+                    <Loader2 className="w-8 h-8 mx-auto mb-2 animate-spin text-warning" />
+                    <p className="text-xs sm:text-sm text-muted-foreground">{t('common.loading')}</p>
+                  </Card>
+                </>
+              ) : (
+                <>
+                  <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-success/10 to-success/5">
+                    <TrendingUp className="w-8 h-8 mx-auto mb-2 text-success" />
+                    <p className="text-2xl sm:text-3xl font-bold text-success">{metrics.activeSponsorships}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.active_sponsorships')}</p>
+                  </Card>
+                  <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-primary/10 to-primary/5">
+                    <Users className="w-8 h-8 mx-auto mb-2 text-primary" />
+                    <p className="text-2xl sm:text-3xl font-bold text-primary">{metrics.totalParticipants}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.total_participants')}</p>
+                  </Card>
+                  <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-warning/10 to-warning/5">
+                    <Award className="w-8 h-8 mx-auto mb-2 text-warning" />
+                    <p className="text-2xl sm:text-3xl font-bold text-warning">{metrics.totalCompletions}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.total_completions')}</p>
+                  </Card>
+                </>
+              )}
+            </div>
 
             {/* Quick Actions */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Button 
                 className="bg-gradient-primary hover:shadow-glow transition-smooth py-6 text-base"
-                onClick={() => setSelectedTab("challenges")}
+                onClick={() => setSelectedTab("sponsorships")}
               >
                 <Plus className="w-5 h-5 mr-2" />
                 {t('organization.create_new_challenge')}
@@ -599,8 +593,8 @@ const OrganizationDashboard = () => {
             </div>
           </TabsContent>
 
-          {/* Challenges Tab */}
-          <TabsContent value="challenges" className="space-y-6">
+          {/* Sponsorships Tab */}
+          <TabsContent value="sponsorships" className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <h3 className="text-xl sm:text-2xl font-bold text-foreground">{t('organization.challenge_ecosystem')}</h3>
               <Button 
@@ -690,64 +684,62 @@ const OrganizationDashboard = () => {
                 );
               })}
             </div>
-          </TabsContent>
 
-          {/* Partnerships Tab */}
-          <TabsContent value="partnerships" className="space-y-6">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-              <h3 className="text-xl sm:text-2xl font-bold text-foreground">{t('organization.community_connections')}</h3>
-              <Button className="bg-gradient-primary hover:shadow-glow transition-smooth w-full sm:w-auto">
-                <Plus className="w-4 h-4 mr-2" />
-                {t('organization.find_partner')}
-              </Button>
-            </div>
+            {/* Partnerships Section */}
+            <div className="mb-8">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <h3 className="text-xl sm:text-2xl font-bold text-foreground">{t('organization.community_connections')}</h3>
+                <Button className="bg-gradient-primary hover:shadow-glow transition-smooth w-full sm:w-auto">
+                  <Plus className="w-4 h-4 mr-2" />
+                  {t('organization.find_partner')}
+                </Button>
+              </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {partnerships.map((partner) => {
-                const PartnerIcon = getPartnershipTypeIcon(partner.type);
-                return (
-                  <Card key={partner.id} className="bg-card/50 backdrop-blur-sm border-border/50 hover:shadow-md transition-shadow">
-                    <CardContent className="p-4 sm:p-6">
-                      <div className="flex items-start space-x-3 mb-4">
-                        <div className="p-3 rounded-lg bg-primary/10">
-                          <PartnerIcon className="w-6 h-6 text-primary" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-base font-semibold text-foreground mb-1 truncate">{partner.name}</h4>
-                          <Badge variant="outline" className="text-xs">
-                            {partner.type === 'ngo' ? t('organization.ngo_badge') : 
-                             partner.type === 'government' ? t('organization.government_badge') : t('organization.business_badge')}
-                          </Badge>
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-3">
-                        <div className="flex justify-between items-center text-sm">
-                          <span className="text-muted-foreground">{t('organization.joint_projects')}</span>
-                          <span className="font-semibold">{partner.projects}</span>
-                        </div>
-                        <div className="space-y-1">
-                          <div className="flex justify-between text-xs sm:text-sm">
-                            <span className="text-muted-foreground">{t('organization.impact_score')}</span>
-                            <span className="font-medium">{partner.impact_score}</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {partnerships.map((partner) => {
+                  const PartnerIcon = getPartnershipTypeIcon(partner.type);
+                  return (
+                    <Card key={partner.id} className="bg-card/50 backdrop-blur-sm border-border/50 hover:shadow-md transition-shadow">
+                      <CardContent className="p-4 sm:p-6">
+                        <div className="flex items-start space-x-3 mb-4">
+                          <div className="p-3 rounded-lg bg-primary/10">
+                            <PartnerIcon className="w-6 h-6 text-primary" />
                           </div>
-                          <Progress value={partner.impact_score} className="h-2" />
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-base font-semibold text-foreground mb-1 truncate">{partner.name}</h4>
+                            <Badge variant="outline" className="text-xs">
+                              {partner.type === 'ngo' ? t('organization.ngo_badge') : 
+                               partner.type === 'government' ? t('organization.government_badge') : t('organization.business_badge')}
+                            </Badge>
+                          </div>
                         </div>
-                      </div>
-                      
-                      <Button variant="outline" className="w-full mt-4" size="sm">
-                        <Zap className="w-4 h-4 mr-2" />
-                        {t('organization.contact')}
-                      </Button>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+                        
+                        <div className="space-y-3">
+                          <div className="flex justify-between items-center text-sm">
+                            <span className="text-muted-foreground">{t('organization.joint_projects')}</span>
+                            <span className="font-semibold">{partner.projects}</span>
+                          </div>
+                          <div className="space-y-1">
+                            <div className="flex justify-between text-xs sm:text-sm">
+                              <span className="text-muted-foreground">{t('organization.impact_score')}</span>
+                              <span className="font-medium">{partner.impact_score}</span>
+                            </div>
+                            <Progress value={partner.impact_score} className="h-2" />
+                          </div>
+                        </div>
+                        
+                        <Button variant="outline" className="w-full mt-4" size="sm">
+                          <Zap className="w-4 h-4 mr-2" />
+                          {t('organization.contact')}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
             </div>
-          </TabsContent>
 
-          {/* Impact Stories Tab */}
-          <TabsContent value="stories" className="space-y-6">
+            {/* Impact Stories */}
             <div className="mb-6">
               <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">{t('organization.impact_stories')}</h3>
               <p className="text-muted-foreground">
@@ -755,45 +747,6 @@ const OrganizationDashboard = () => {
               </p>
             </div>
 
-            {/* ESG Metrics Overview */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-              {metrics.loading ? (
-                <>
-                  <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-success/10 to-success/5">
-                    <Loader2 className="w-8 h-8 mx-auto mb-2 animate-spin text-success" />
-                    <p className="text-xs sm:text-sm text-muted-foreground">{t('common.loading')}</p>
-                  </Card>
-                  <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-primary/10 to-primary/5">
-                    <Loader2 className="w-8 h-8 mx-auto mb-2 animate-spin text-primary" />
-                    <p className="text-xs sm:text-sm text-muted-foreground">{t('common.loading')}</p>
-                  </Card>
-                  <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-warning/10 to-warning/5">
-                    <Loader2 className="w-8 h-8 mx-auto mb-2 animate-spin text-warning" />
-                    <p className="text-xs sm:text-sm text-muted-foreground">{t('common.loading')}</p>
-                  </Card>
-                </>
-              ) : (
-                <>
-                  <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-success/10 to-success/5">
-                    <TrendingUp className="w-8 h-8 mx-auto mb-2 text-success" />
-                    <p className="text-2xl sm:text-3xl font-bold text-success">{metrics.activeSponsorships}</p>
-                    <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.active_sponsorships')}</p>
-                  </Card>
-                  <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-primary/10 to-primary/5">
-                    <Users className="w-8 h-8 mx-auto mb-2 text-primary" />
-                    <p className="text-2xl sm:text-3xl font-bold text-primary">{metrics.totalParticipants}</p>
-                    <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.total_participants')}</p>
-                  </Card>
-                  <Card className="p-4 sm:p-6 text-center bg-gradient-to-br from-warning/10 to-warning/5">
-                    <Award className="w-8 h-8 mx-auto mb-2 text-warning" />
-                    <p className="text-2xl sm:text-3xl font-bold text-warning">{metrics.totalCompletions}</p>
-                    <p className="text-xs sm:text-sm text-muted-foreground">{t('organization.total_completions')}</p>
-                  </Card>
-                </>
-              )}
-            </div>
-
-            {/* Impact Stories */}
             <div className="space-y-4">
               {loadingStories ? (
                 <div className="flex justify-center items-center py-12">
@@ -882,14 +835,14 @@ const OrganizationDashboard = () => {
             </div>
           </TabsContent>
 
+          {/* Profile Tab */}
+          <TabsContent value="profile" className="space-y-6">
+            <OrganizationProfileEditor />
+          </TabsContent>
+
           {/* Subscription Tab */}
           <TabsContent value="subscription" className="space-y-6">
             <OrganizationSubscription />
-          </TabsContent>
-
-          {/* Team Tab */}
-          <TabsContent value="team" className="space-y-6">
-            <OrganizationTeam />
           </TabsContent>
 
           {/* Credits Tab */}
@@ -902,9 +855,9 @@ const OrganizationDashboard = () => {
             <OrganizationInvoices />
           </TabsContent>
 
-          {/* Profile Tab */}
-          <TabsContent value="profile" className="space-y-6">
-            <OrganizationProfileEditor />
+          {/* Team Tab */}
+          <TabsContent value="team" className="space-y-6">
+            <OrganizationTeam />
           </TabsContent>
         </Tabs>
       </div>
