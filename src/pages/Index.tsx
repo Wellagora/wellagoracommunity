@@ -15,7 +15,11 @@ import {
   Heart,
   Award,
   TrendingUp,
-  Calendar
+  Calendar,
+  Trophy,
+  Sparkles,
+  ArrowDown,
+  ChevronRight
 } from "lucide-react";
 
 import FeaturedChallenges from "@/components/FeaturedChallenges";
@@ -172,219 +176,300 @@ const Index = () => {
     );
   }
 
-  // Non-authenticated user view - Original landing page
+  // Non-authenticated user view - Modern landing page
   return (
     <>
       <div className="min-h-screen bg-background flex flex-col">
         <Navigation />
       
-      {/* Hero Section with Gradient Background */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-        <div className="container mx-auto px-4 py-20 sm:py-28 relative z-10">
-          <motion.div 
-            className="text-center max-w-4xl mx-auto"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-4 py-2 text-sm mb-6">
-              {t('index.hero_badge')}
-            </Badge>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground mb-6 leading-tight">
-              {t('index.hero_title')}
-            </h1>
-            <p className="text-lg sm:text-xl xl:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto">
-              {t('index.hero_subtitle')}
-            </p>
-            
-            {/* Role Selection - 4 roles */}
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                <Link to="/auth?role=citizen">
-                  <Card className="h-full bg-card/80 backdrop-blur-sm hover:shadow-glow transition-all duration-300 border-2 border-transparent hover:border-primary cursor-pointer group">
-                    <CardContent className="p-6 text-center">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-glow mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <User className="w-7 h-7 text-white" />
-                      </div>
-                      <h3 className="text-lg font-bold mb-2 text-foreground">{t('index.role_citizen')}</h3>
-                      <p className="text-muted-foreground text-sm">
-                        {t('index.role_citizen_desc')}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
+        {/* 1. HERO SECTION - Full viewport with hero image */}
+        <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+          {/* Hero Background Image */}
+          <div className="absolute inset-0 z-0">
+            <img 
+              src="/lovable-uploads/89cff010-b0aa-4aa1-b97e-999c469cae09.png" 
+              alt="Hero background"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/40"></div>
+          </div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-              >
-                <Link to="/auth?role=business">
-                  <Card className="h-full bg-card/80 backdrop-blur-sm hover:shadow-glow transition-all duration-300 border-2 border-transparent hover:border-secondary cursor-pointer group">
-                    <CardContent className="p-6 text-center">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-secondary to-info mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Building2 className="w-7 h-7 text-white" />
-                      </div>
-                      <h3 className="text-lg font-bold mb-2 text-foreground">{t('index.role_business')}</h3>
-                      <p className="text-muted-foreground text-sm">
-                        {t('index.role_business_desc')}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
-                <Link to="/auth?role=government">
-                  <Card className="h-full bg-card/80 backdrop-blur-sm hover:shadow-glow transition-all duration-300 border-2 border-transparent hover:border-warning cursor-pointer group">
-                    <CardContent className="p-6 text-center">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-warning to-accent mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Landmark className="w-7 h-7 text-white" />
-                      </div>
-                      <h3 className="text-lg font-bold mb-2 text-foreground">{t('index.role_government')}</h3>
-                      <p className="text-muted-foreground text-sm">
-                        {t('index.role_government_desc')}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-              >
-                <Link to="/auth?role=ngo">
-                  <Card className="h-full bg-card/80 backdrop-blur-sm hover:shadow-glow transition-all duration-300 border-2 border-transparent hover:border-success cursor-pointer group">
-                    <CardContent className="p-6 text-center">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-success to-success-light mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Heart className="w-7 h-7 text-white" />
-                      </div>
-                      <h3 className="text-lg font-bold mb-2 text-foreground">{t('index.role_ngo')}</h3>
-                      <p className="text-muted-foreground text-sm">
-                        {t('index.role_ngo_desc')}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-            </div>
-
-            <p className="text-sm text-muted-foreground mt-8">
-              {t('index.already_have_account')} <Link to="/auth" className="text-primary hover:underline font-semibold">{t('index.sign_in_link')}</Link>
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Quick Access Cards */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
+          {/* Hero Content */}
+          <div className="container mx-auto px-4 py-20 relative z-10">
+            <motion.div 
+              className="text-center max-w-4xl mx-auto"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
             >
-              <Card className="h-full bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20 hover:shadow-glow transition-all duration-300">
-                <CardHeader>
-                  <div className="w-12 h-12 bg-gradient-to-r from-primary to-secondary rounded-2xl flex items-center justify-center mb-4">
-                    <BarChart3 className="w-6 h-6 text-white" />
-                  </div>
-                  <CardTitle className="text-xl mb-2">{t('index.quick_card_dashboard_title')}</CardTitle>
-                  <p className="text-muted-foreground">{t('index.quick_card_dashboard_desc')}</p>
-                </CardHeader>
-                <CardContent>
-                  <Link to="/dashboard">
-                    <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90">
-                      {t('index.dashboard_open')}
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            </motion.div>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
+                {t('index.hero_main_title')}
+              </h1>
+              <p className="text-xl md:text-2xl text-muted-foreground mb-8">
+                {t('index.hero_main_subtitle')}
+              </p>
+              <p className="text-lg text-muted-foreground/80 mb-12 max-w-2xl mx-auto">
+                {t('index.hero_description')}
+              </p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              viewport={{ once: true }}
-            >
-              <Card className="h-full bg-gradient-to-br from-accent/5 to-warning/5 border-accent/20 hover:shadow-glow transition-all duration-300">
-                <CardHeader>
-                  <div className="w-12 h-12 bg-gradient-to-r from-accent to-warning rounded-2xl flex items-center justify-center mb-4">
-                    <Users className="w-6 h-6 text-white" />
-                  </div>
-                  <CardTitle className="text-xl mb-2">{t('index.quick_card_programs_title')}</CardTitle>
-                  <p className="text-muted-foreground">{t('index.quick_card_programs_desc')}</p>
-                </CardHeader>
-                <CardContent>
-                  <Link to="/challenges">
-                    <Button className="w-full bg-gradient-to-r from-accent to-warning hover:from-accent/90 hover:to-warning/90">
-                      {t('index.quick_card_programs_btn')}
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <Card className="h-full bg-gradient-to-br from-success/5 to-info/5 border-success/20 hover:shadow-glow transition-all duration-300">
-                <CardHeader>
-                  <div className="w-12 h-12 bg-gradient-to-r from-success to-info rounded-2xl flex items-center justify-center mb-4">
-                    <Users className="w-6 h-6 text-white" />
-                  </div>
-                  <CardTitle className="text-xl mb-2">{t('index.quick_card_community_title')}</CardTitle>
-                  <p className="text-muted-foreground">{t('index.quick_card_community_desc')}</p>
-                </CardHeader>
-                <CardContent>
-                  <Link to="/community">
-                    <Button className="w-full bg-gradient-to-r from-success to-info hover:from-success/90 hover:to-info/90">
-                      {t('index.quick_card_community_btn')}
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+                <Link to="/auth">
+                  <Button size="lg" className="w-full sm:w-auto min-w-[200px]">
+                    {t('index.cta_join_now')}
+                    <ChevronRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="w-full sm:w-auto min-w-[200px]"
+                  onClick={() => {
+                    document.getElementById('features-section')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                >
+                  {t('index.cta_learn_more')}
+                </Button>
+              </div>
             </motion.div>
           </div>
-        </div>
-      </section>
 
-      {/* Community Impact Counter */}
-      <CommunityImpactCounter />
-
-      {/* Regional Impact Garden */}
-      <RegionalImpactGarden />
-      
-      {/* Story of the Week */}
-      <StoryOfTheWeek />
-
-      {/* Regional Map Preview */}
-      <section className="py-12 bg-background">
-        <div className="container mx-auto px-4">
-          <RegionalImpactMap />
-        </div>
+          {/* Scroll Indicator */}
+          <motion.div 
+            className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <ArrowDown className="h-8 w-8 text-muted-foreground/60" />
+          </motion.div>
         </section>
-        
+
+        {/* 2. FEATURES SECTION */}
+        <section id="features-section" className="py-16 md:py-24 bg-background">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                {t('index.features_title')}
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                {t('index.features_subtitle')}
+              </p>
+            </motion.div>
+
+            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              {/* Feature 1: Challenges */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                viewport={{ once: true }}
+              >
+                <Card className="h-full hover:shadow-lg transition-all duration-300">
+                  <CardContent className="p-6">
+                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 mx-auto">
+                      <Trophy className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-3 text-center">
+                      {t('index.feature_challenges_title')}
+                    </h3>
+                    <p className="text-muted-foreground mb-6 text-center">
+                      {t('index.feature_challenges_desc')}
+                    </p>
+                    <Link to="/challenges" className="block">
+                      <Button variant="outline" className="w-full">
+                        {t('index.feature_challenges_btn')}
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* Feature 2: Community */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                viewport={{ once: true }}
+              >
+                <Card className="h-full hover:shadow-lg transition-all duration-300">
+                  <CardContent className="p-6">
+                    <div className="w-16 h-16 rounded-full bg-secondary/10 flex items-center justify-center mb-6 mx-auto">
+                      <Users className="h-8 w-8 text-secondary" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-3 text-center">
+                      {t('index.feature_community_title')}
+                    </h3>
+                    <p className="text-muted-foreground mb-6 text-center">
+                      {t('index.feature_community_desc')}
+                    </p>
+                    <Link to="/community" className="block">
+                      <Button variant="outline" className="w-full">
+                        {t('index.feature_community_btn')}
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* Feature 3: AI Assistant */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                viewport={{ once: true }}
+              >
+                <Card className="h-full hover:shadow-lg transition-all duration-300">
+                  <CardContent className="p-6">
+                    <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-6 mx-auto">
+                      <Sparkles className="h-8 w-8 text-accent" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-3 text-center">
+                      {t('index.feature_ai_title')}
+                    </h3>
+                    <p className="text-muted-foreground mb-6 text-center">
+                      {t('index.feature_ai_desc')}
+                    </p>
+                    <Link to="/ai-assistant" className="block">
+                      <Button variant="outline" className="w-full">
+                        {t('index.feature_ai_btn')}
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* 3. IMPACT SECTION */}
+        <CommunityImpactCounter />
+
+        {/* 4. AI ASSISTANT PREVIEW SECTION */}
+        <section className="py-16 md:py-24 bg-accent/5">
+          <div className="container mx-auto px-4">
+            <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+              {/* Left: Text Content */}
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                <h2 className="text-3xl md:text-4xl font-bold mb-6">
+                  {t('index.ai_preview_title')}
+                </h2>
+                <p className="text-lg text-muted-foreground mb-6">
+                  {t('index.ai_preview_desc')}
+                </p>
+                
+                <ul className="space-y-4 mb-8">
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <ChevronRight className="h-4 w-4 text-primary" />
+                    </div>
+                    <span className="text-muted-foreground">{t('index.ai_preview_feature_1')}</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <ChevronRight className="h-4 w-4 text-primary" />
+                    </div>
+                    <span className="text-muted-foreground">{t('index.ai_preview_feature_2')}</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <ChevronRight className="h-4 w-4 text-primary" />
+                    </div>
+                    <span className="text-muted-foreground">{t('index.ai_preview_feature_3')}</span>
+                  </li>
+                </ul>
+
+                <Link to="/ai-assistant">
+                  <Button size="lg">
+                    {t('index.ai_preview_cta')}
+                    <Sparkles className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+              </motion.div>
+
+              {/* Right: AI Preview Image/Card */}
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+                className="relative"
+              >
+                <div className="relative rounded-2xl overflow-hidden shadow-xl">
+                  <img 
+                    src="/lovable-uploads/3911d8a5-aebe-4ede-83a5-33c26952916a.png"
+                    alt="WellBot AI Assistant"
+                    className="w-full h-auto"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
+                </div>
+                
+                {/* Floating Badge */}
+                <div className="absolute -bottom-4 -right-4 bg-card rounded-xl shadow-lg p-4 border">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                      <Sparkles className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold">WellBot AI</p>
+                      <p className="text-xs text-muted-foreground">{t('index.ai_preview_badge')}</p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* Story of the Week */}
+        <StoryOfTheWeek />
+
         {/* Featured Challenges */}
         <FeaturedChallenges />
+
+        {/* 5. CTA FOOTER SECTION */}
+        <section className="py-20 md:py-28 bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 relative overflow-hidden">
+          <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+          <div className="container mx-auto px-4 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="text-center max-w-3xl mx-auto"
+            >
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                {t('index.cta_footer_title')}
+              </h2>
+              <p className="text-xl text-muted-foreground mb-8">
+                {t('index.cta_footer_subtitle')}
+              </p>
+              
+              <Link to="/auth">
+                <Button size="lg" className="min-w-[250px] h-14 text-lg">
+                  {t('index.cta_footer_button')}
+                  <ChevronRight className="ml-2 h-6 w-6" />
+                </Button>
+              </Link>
+
+              <p className="text-sm text-muted-foreground mt-6">
+                <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+                  {t('index.cta_footer_social_proof')}
+                </Badge>
+              </p>
+            </motion.div>
+          </div>
+        </section>
       </div>
       
       <Footer />
