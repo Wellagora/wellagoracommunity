@@ -1,31 +1,30 @@
 import { useState, useRef, useEffect } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { Avatar } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
   Send, 
-  Bot, 
-  User, 
-  Lightbulb, 
-  Leaf, 
-  Zap, 
+  Sparkles,
+  Calculator,
   Users,
-  Home
+  HelpCircle,
+  Loader2,
+  AlertCircle
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { format } from "date-fns";
 
 interface Message {
   id: string;
   content: string;
   sender: "user" | "ai";
   timestamp: Date;
-  suggestions?: string[];
 }
 
 const AIAssistantChat = () => {
@@ -37,14 +36,42 @@ const AIAssistantChat = () => {
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const quickActions = [
-    { icon: Leaf, label: t('wellbot.action_programs'), description: t('wellbot.action_programs_desc') },
-    { icon: Users, label: t('wellbot.action_community'), description: t('wellbot.action_community_desc') },
-    { icon: Zap, label: t('wellbot.action_getstarted'), description: t('wellbot.action_getstarted_desc') },
-    { icon: Home, label: t('wellbot.action_impact'), description: t('wellbot.action_impact_desc') }
+    { 
+      icon: Calculator, 
+      title: t('wellbot.action_carbon'), 
+      description: t('wellbot.action_carbon_desc'),
+      query: t('wellbot.query_carbon')
+    },
+    { 
+      icon: Sparkles, 
+      title: t('wellbot.action_programs'), 
+      description: t('wellbot.action_programs_desc'),
+      query: t('wellbot.query_programs')
+    },
+    { 
+      icon: Users, 
+      title: t('wellbot.action_community'), 
+      description: t('wellbot.action_community_desc'),
+      query: t('wellbot.query_community')
+    },
+    { 
+      icon: HelpCircle, 
+      title: t('wellbot.action_getstarted'), 
+      description: t('wellbot.action_getstarted_desc'),
+      query: t('wellbot.query_getstarted')
+    }
+  ];
+
+  const initialSuggestions = [
+    t('wellbot.suggestion_programs'),
+    t('wellbot.suggestion_community'),
+    t('wellbot.suggestion_howto'),
+    t('wellbot.suggestion_impact')
   ];
 
   const scrollToBottom = () => {
@@ -60,7 +87,6 @@ const AIAssistantChat = () => {
       }
 
       try {
-        // Fetch the most recent conversation for this user
         const { data: conversations, error: convError } = await supabase
           .from('ai_conversations')
           .select('id')
@@ -74,7 +100,6 @@ const AIAssistantChat = () => {
           const convId = conversations[0].id;
           setConversationId(convId);
 
-          // Fetch messages for this conversation
           const { data: messagesData, error: msgError } = await supabase
             .from('ai_messages')
             .select('*')
@@ -93,36 +118,10 @@ const AIAssistantChat = () => {
 
             setMessages(loadedMessages);
           }
-        } else {
-          // No previous conversation, show greeting
-          setMessages([{
-            id: "1",
-            content: t('wellbot.community_greeting'),
-            sender: "ai",
-            timestamp: new Date(),
-            suggestions: [
-              t('wellbot.suggestion_programs'),
-              t('wellbot.suggestion_community'),
-              t('wellbot.suggestion_howto'),
-              t('wellbot.suggestion_impact')
-            ]
-          }]);
         }
       } catch (error) {
         console.error('Error loading conversation history:', error);
-        // Show greeting on error
-        setMessages([{
-          id: "1",
-          content: t('wellbot.community_greeting'),
-          sender: "ai",
-          timestamp: new Date(),
-          suggestions: [
-            t('wellbot.suggestion_programs'),
-            t('wellbot.suggestion_community'),
-            t('wellbot.suggestion_howto'),
-            t('wellbot.suggestion_impact')
-          ]
-        }]);
+        setError(t('wellbot.error_message'));
       } finally {
         setIsLoading(false);
       }
@@ -134,6 +133,14 @@ const AIAssistantChat = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Auto-resize textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 160)}px`;
+    }
+  }, [inputValue]);
 
   const handleSendMessage = async (content: string) => {
     if (!content.trim()) return;
@@ -148,6 +155,7 @@ const AIAssistantChat = () => {
     setMessages(prev => [...prev, userMessage]);
     setInputValue("");
     setIsTyping(true);
+    setError(null);
 
     try {
       const conversationHistory = [...messages, userMessage].map(msg => ({
@@ -160,7 +168,7 @@ const AIAssistantChat = () => {
           messages: conversationHistory,
           language: language,
           conversationId: conversationId,
-          projectId: null // Will use user's default project from profile
+          projectId: null
         }
       });
 
@@ -169,33 +177,27 @@ const AIAssistantChat = () => {
         throw error;
       }
 
-      // Validate AI response payload
       if (!data || typeof (data as any).message !== 'string') {
         console.error('AI chat returned invalid response:', data);
-        toast({
-          title: t('error'),
-          description: t('wellbot.error_message'),
-          variant: 'destructive',
-        });
-        setIsTyping(false);
-        return;
+        throw new Error('Invalid response');
       }
 
       const payload = data as {
         message: string;
-        suggestions?: string[];
         conversationId?: string;
         error?: string;
       };
 
       if (payload.error) {
         if (payload.error.includes('Rate limit')) {
+          setError(t('wellbot.rate_limit_error'));
           toast({
             title: t('error'),
             description: t('wellbot.rate_limit_error'),
             variant: 'destructive',
           });
         } else if (payload.error.includes('Payment required')) {
+          setError(t('wellbot.payment_error'));
           toast({
             title: t('error'),
             description: t('wellbot.payment_error'),
@@ -208,7 +210,6 @@ const AIAssistantChat = () => {
         return;
       }
 
-      // Store conversation ID for future messages
       if (payload.conversationId && !conversationId) {
         setConversationId(payload.conversationId);
       }
@@ -217,14 +218,13 @@ const AIAssistantChat = () => {
         id: Date.now().toString(),
         content: payload.message,
         sender: 'ai',
-        timestamp: new Date(),
-        // Only show suggestions if this is the first exchange (no conversation ID yet)
-        suggestions: (!conversationId && payload.suggestions) ? payload.suggestions : undefined
+        timestamp: new Date()
       };
 
       setMessages(prev => [...prev, aiResponse]);
     } catch (error) {
       console.error('Error calling AI:', error);
+      setError(t('wellbot.error_message'));
       toast({
         title: t('error'),
         description: t('wellbot.error_message'),
@@ -236,177 +236,202 @@ const AIAssistantChat = () => {
   };
 
   const handleQuickAction = (action: typeof quickActions[0]) => {
-    const queries: Record<string, string> = {
-      [t('wellbot.action_programs')]: t('wellbot.query_programs'),
-      [t('wellbot.action_community')]: t('wellbot.query_community'),
-      [t('wellbot.action_getstarted')]: t('wellbot.query_getstarted'),
-      [t('wellbot.action_impact')]: t('wellbot.query_impact')
-    };
-    
-    handleSendMessage(queries[action.label] || action.label);
+    handleSendMessage(action.query);
   };
 
   const handleSuggestionClick = (suggestion: string) => {
     handleSendMessage(suggestion);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage(inputValue);
+    }
+  };
+
   return (
-    <div className="max-w-4xl mx-auto h-[80vh] flex flex-col">
-      <Card className="flex-1 flex flex-col">
-        <CardHeader className="border-b">
-          <CardTitle className="flex items-center space-x-2">
-            <div className="p-2 bg-gradient-primary rounded-full">
-              <Bot className="w-5 h-5 text-white" />
-            </div>
-            <span>{t('wellbot.assistant')}</span>
-            <Badge variant="secondary" className="bg-success text-success-foreground">
-              {t('wellbot.online')}
-            </Badge>
-          </CardTitle>
-        </CardHeader>
-
-        <CardContent className="flex-1 flex flex-col p-0">
-          {/* Quick Actions */}
-          <div className="p-4 border-b bg-muted/30">
-            <h4 className="text-sm font-medium mb-3 text-muted-foreground">{t('wellbot.quick_actions')}</h4>
-            <div className="flex flex-wrap gap-2">
-              {quickActions.map((action) => (
-                <Button
-                  key={action.label}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleQuickAction(action)}
-                  className="flex items-center space-x-2 hover:bg-primary hover:text-primary-foreground transition-smooth"
-                >
-                  <action.icon className="w-4 h-4" />
-                  <span>{action.label}</span>
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          {/* Messages */}
-          <ScrollArea className="flex-1 p-4">
-            <div className="space-y-4">
-              {isLoading ? (
-                <div className="flex items-center justify-center h-full">
-                  <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-muted-foreground rounded-full animate-pulse"></div>
-                    <div className="w-2 h-2 bg-muted-foreground rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                    <div className="w-2 h-2 bg-muted-foreground rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+    <div className="max-w-5xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Quick Actions Sidebar - Left */}
+        <div className="lg:col-span-1 space-y-3 animate-fade-in">
+          <h3 className="text-sm font-semibold text-muted-foreground mb-4">
+            {t('wellbot.quick_actions')}
+          </h3>
+          
+          {quickActions.map((action, index) => (
+            <Card 
+              key={index}
+              className="hover:bg-accent transition-colors cursor-pointer group"
+              onClick={() => handleQuickAction(action)}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                    <action.icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-medium text-sm mb-1">{action.title}</h4>
+                    <p className="text-xs text-muted-foreground line-clamp-2">
+                      {action.description}
+                    </p>
                   </div>
                 </div>
-              ) : messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex items-start space-x-3 ${
-                    message.sender === "user" ? "flex-row-reverse space-x-reverse" : ""
-                  }`}
-                >
-                  <Avatar className="w-8 h-8">
-                    {message.sender === "ai" ? (
-                      <div className="bg-gradient-primary w-full h-full flex items-center justify-center">
-                        <Bot className="w-4 h-4 text-white" />
-                      </div>
-                    ) : (
-                      <>
-                        <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face" />
-                        <AvatarFallback>
-                          <User className="w-4 h-4" />
-                        </AvatarFallback>
-                      </>
-                    )}
-                  </Avatar>
-                  
-                  <div className={`flex-1 max-w-[70%] ${message.sender === "user" ? "text-right" : ""}`}>
-                    <div
-                      className={`p-3 rounded-lg whitespace-pre-line ${
-                        message.sender === "user"
-                          ? "bg-primary text-primary-foreground ml-auto"
-                          : "bg-muted"
-                      }`}
-                    >
-                      {message.content}
-                    </div>
-                    
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
-                    {/* AI Suggestions */}
-                    {message.sender === "ai" && message.suggestions && (
-                      <div className="mt-3 space-y-2">
-                        <p className="text-xs text-muted-foreground flex items-center space-x-1">
-                          <Lightbulb className="w-3 h-3" />
-                          <span>{t('wellbot.suggestions')}:</span>
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {message.suggestions.map((suggestion, index) => (
-                            <Button
-                              key={index}
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleSuggestionClick(suggestion)}
-                              className="text-xs h-auto py-1 px-2 hover:bg-primary hover:text-primary-foreground"
-                            >
-                              {suggestion}
-                            </Button>
-                          ))}
+        {/* Chat Area - Right */}
+        <div className="lg:col-span-2 animate-fade-in">
+          <Card className="flex flex-col h-[600px]">
+            {/* Messages Container */}
+            <ScrollArea className="flex-1 p-6 bg-muted/30">
+              <div className="space-y-4">
+                {isLoading ? (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      <span>{t('common.loading')}</span>
+                    </div>
+                  </div>
+                ) : messages.length === 0 ? (
+                  /* Empty State */
+                  <div className="flex flex-col items-center justify-center h-full text-center py-12 animate-fade-in">
+                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                      <Sparkles className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">
+                      {t('wellbot.community_greeting')}
+                    </h3>
+                    
+                    {/* Initial Suggestion Chips */}
+                    <div className="flex flex-wrap gap-2 justify-center mt-6">
+                      {initialSuggestions.map((suggestion, index) => (
+                        <Button
+                          key={index}
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleSuggestionClick(suggestion)}
+                          className="rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
+                        >
+                          {suggestion}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    {messages.map((message) => (
+                      <div
+                        key={message.id}
+                        className={`flex gap-3 animate-fade-in ${
+                          message.sender === "user" ? "justify-end" : "justify-start"
+                        }`}
+                      >
+                        {/* Bot Avatar */}
+                        {message.sender === "ai" && (
+                          <Avatar className="w-8 h-8 flex-shrink-0">
+                            <div className="w-full h-full bg-primary/10 flex items-center justify-center">
+                              <Sparkles className="w-4 h-4 text-primary" />
+                            </div>
+                          </Avatar>
+                        )}
+                        
+                        {/* Message Bubble */}
+                        <div className={`flex flex-col max-w-[85%] ${message.sender === "user" ? "items-end" : "items-start"}`}>
+                          <div
+                            className={`p-3 rounded-lg whitespace-pre-wrap break-words ${
+                              message.sender === "user"
+                                ? "bg-primary text-primary-foreground rounded-tr-none"
+                                : "bg-card border border-border rounded-tl-none"
+                            }`}
+                          >
+                            {message.content}
+                          </div>
+                          <span className="text-xs text-muted-foreground mt-1">
+                            {format(message.timestamp, 'HH:mm')}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                    
+                    {/* Typing Indicator */}
+                    {isTyping && (
+                      <div className="flex gap-3 animate-fade-in">
+                        <Avatar className="w-8 h-8 flex-shrink-0">
+                          <div className="w-full h-full bg-primary/10 flex items-center justify-center">
+                            <Sparkles className="w-4 h-4 text-primary" />
+                          </div>
+                        </Avatar>
+                        <div className="bg-card border border-border p-3 rounded-lg rounded-tl-none">
+                          <div className="flex gap-1">
+                            <div className="w-2 h-2 bg-muted-foreground rounded-full animate-pulse"></div>
+                            <div className="w-2 h-2 bg-muted-foreground rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                            <div className="w-2 h-2 bg-muted-foreground rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                          </div>
                         </div>
                       </div>
                     )}
-                  </div>
-                </div>
-              ))}
-              
-              {/* Typing Indicator */}
-              {isTyping && (
-                <div className="flex items-start space-x-3">
-                  <Avatar className="w-8 h-8">
-                    <div className="bg-gradient-primary w-full h-full flex items-center justify-center">
-                      <Bot className="w-4 h-4 text-white" />
-                    </div>
-                  </Avatar>
-                  <div className="bg-muted p-3 rounded-lg">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-muted-foreground rounded-full animate-pulse"></div>
-                      <div className="w-2 h-2 bg-muted-foreground rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                      <div className="w-2 h-2 bg-muted-foreground rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                    </div>
-                  </div>
-                </div>
-              )}
-              
-              <div ref={messagesEndRef} />
-            </div>
-          </ScrollArea>
+                  </>
+                )}
+                
+                <div ref={messagesEndRef} />
+              </div>
+            </ScrollArea>
 
-          {/* Input */}
-          <div className="p-4 border-t">
-            <div className="flex space-x-2">
-              <Input
-                ref={inputRef}
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder={t('wellbot.input_placeholder')}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") {
-                    handleSendMessage(inputValue);
-                  }
-                }}
-                className="flex-1"
-              />
-              <Button
-                onClick={() => handleSendMessage(inputValue)}
-                disabled={!inputValue.trim() || isTyping}
-                className="bg-gradient-primary hover:shadow-glow"
-              >
-                <Send className="w-4 h-4" />
-              </Button>
+            {/* Error Alert */}
+            {error && (
+              <div className="px-4 pt-4">
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription className="flex items-center justify-between">
+                    <span>{error}</span>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setError(null)}
+                    >
+                      {t('common.dismiss')}
+                    </Button>
+                  </AlertDescription>
+                </Alert>
+              </div>
+            )}
+
+            {/* Input Area */}
+            <div className="border-t bg-background p-4">
+              <div className="relative">
+                <Textarea
+                  ref={textareaRef}
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder={t('wellbot.input_placeholder')}
+                  className="pr-12 resize-none min-h-[44px] max-h-[160px]"
+                  rows={1}
+                  disabled={isTyping}
+                />
+                <Button
+                  onClick={() => handleSendMessage(inputValue)}
+                  disabled={!inputValue.trim() || isTyping}
+                  size="icon"
+                  className="absolute right-2 bottom-2"
+                >
+                  {isTyping ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Send className="w-4 h-4" />
+                  )}
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                {t('wellbot.input_hint')}
+              </p>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
