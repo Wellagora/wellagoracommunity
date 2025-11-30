@@ -497,79 +497,77 @@ const OrganizationDetailView = ({ organizationId, onBack }: OrganizationDetailVi
   return (
     <div className="space-y-6">
       {/* Header Section */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-start justify-between mb-6">
-            <Button variant="ghost" onClick={onBack} className="gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Vissza a listához
+      <div className="border rounded-lg bg-card p-6">
+        <div className="flex items-start justify-between mb-6">
+          <Button variant="ghost" onClick={onBack} className="gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Vissza a listához
+          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" size="icon">
+              <Edit className="h-4 w-4" />
             </Button>
-            <div className="flex gap-2">
-              <Button variant="outline" size="icon">
-                <Edit className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="icon">
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
+            <Button variant="outline" size="icon">
+              <Trash2 className="h-4 w-4" />
+            </Button>
           </div>
+        </div>
 
-          <div className="flex items-start gap-6">
-            {organization.logo_url ? (
-              <img 
-                src={organization.logo_url} 
-                alt={organization.name}
-                className="w-24 h-24 rounded-lg object-cover border"
-              />
-            ) : (
-              <div className="w-24 h-24 rounded-lg bg-muted flex items-center justify-center border">
-                <Building2 className="h-12 w-12 text-muted-foreground" />
-              </div>
-            )}
+        <div className="flex items-start gap-6">
+          {organization.logo_url ? (
+            <img 
+              src={organization.logo_url} 
+              alt={organization.name}
+              className="w-24 h-24 rounded-lg object-cover border"
+            />
+          ) : (
+            <div className="w-24 h-24 rounded-lg bg-muted flex items-center justify-center border">
+              <Building2 className="h-12 w-12 text-muted-foreground" />
+            </div>
+          )}
 
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-3xl font-bold">{organization.name}</h1>
-                <Badge className={getTypeBadgeColor(organization.type)}>
-                  {organization.type}
-                </Badge>
-              </div>
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-2">
+              <h1 className="text-3xl font-bold">{organization.name}</h1>
+              <Badge className={getTypeBadgeColor(organization.type)}>
+                {organization.type}
+              </Badge>
+            </div>
 
-              <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground">
-                {organization.location && (
-                  <div className="flex items-center gap-2">
-                    <Building2 className="h-4 w-4" />
-                    {organization.location}
-                  </div>
-                )}
-                {organization.website_url && (
-                  <div className="flex items-center gap-2">
-                    <ExternalLink className="h-4 w-4" />
-                    <a 
-                      href={organization.website_url} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="hover:text-primary"
-                    >
-                      Weboldal
-                    </a>
-                  </div>
-                )}
+            <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground">
+              {organization.location && (
                 <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  Regisztráció: {new Date(organization.created_at).toLocaleDateString('hu-HU')}
+                  <Building2 className="h-4 w-4" />
+                  {organization.location}
                 </div>
-                {organization.employee_count && (
-                  <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4" />
-                    {organization.employee_count} munkatárs
-                  </div>
-                )}
+              )}
+              {organization.website_url && (
+                <div className="flex items-center gap-2">
+                  <ExternalLink className="h-4 w-4" />
+                  <a 
+                    href={organization.website_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="hover:text-primary"
+                  >
+                    Weboldal
+                  </a>
+                </div>
+              )}
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                Regisztráció: {new Date(organization.created_at).toLocaleDateString('hu-HU')}
               </div>
+              {organization.employee_count && (
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  {organization.employee_count} munkatárs
+                </div>
+              )}
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -635,17 +633,16 @@ const OrganizationDetailView = ({ organizationId, onBack }: OrganizationDetailVi
       </div>
 
       {/* Tabs Section */}
-      <Card>
-        <CardContent className="pt-6">
-          <Tabs defaultValue="overview">
-            <TabsList className="grid w-full grid-cols-6">
-              <TabsTrigger value="overview">Áttekintés</TabsTrigger>
-              <TabsTrigger value="subscription">Előfizetés</TabsTrigger>
-              <TabsTrigger value="invoices">Számlák</TabsTrigger>
-              <TabsTrigger value="members">Tagok</TabsTrigger>
-              <TabsTrigger value="sponsorships">Szponzorálások</TabsTrigger>
-              <TabsTrigger value="activity">Aktivitás</TabsTrigger>
-            </TabsList>
+      <div className="border rounded-lg bg-card p-6">
+        <Tabs defaultValue="overview">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="overview">Áttekintés</TabsTrigger>
+            <TabsTrigger value="subscription">Előfizetés</TabsTrigger>
+            <TabsTrigger value="invoices">Számlák</TabsTrigger>
+            <TabsTrigger value="members">Tagok</TabsTrigger>
+            <TabsTrigger value="sponsorships">Szponzorálások</TabsTrigger>
+            <TabsTrigger value="activity">Aktivitás</TabsTrigger>
+          </TabsList>
 
             <TabsContent value="overview" className="space-y-6 mt-6">
               {/* Organization Description */}
@@ -1000,9 +997,8 @@ const OrganizationDetailView = ({ organizationId, onBack }: OrganizationDetailVi
                 )}
               </div>
             </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+        </Tabs>
+      </div>
 
       {/* Create Subscription Dialog */}
       <Dialog open={createSubDialogOpen} onOpenChange={setCreateSubDialogOpen}>
