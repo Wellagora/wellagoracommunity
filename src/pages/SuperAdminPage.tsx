@@ -34,6 +34,7 @@ import Navigation from "@/components/Navigation";
 import OrganizationsManager from "@/components/superadmin/OrganizationsManager";
 import SubscriptionsManager from "@/components/superadmin/SubscriptionsManager";
 import InvoicesManager from "@/components/superadmin/InvoicesManager";
+import UsersManager from "@/components/superadmin/UsersManager";
 
 type MenuItem = {
   id: string;
@@ -314,7 +315,8 @@ const SuperAdminPage = () => {
               {activeTab === 'organizations' && <OrganizationsManager />}
               {activeTab === 'subscriptions' && <SubscriptionsManager />}
               {activeTab === 'invoices' && <InvoicesManager />}
-              {activeTab !== 'overview' && activeTab !== 'organizations' && activeTab !== 'subscriptions' && activeTab !== 'invoices' && (
+              {activeTab === 'users' && <UsersManager />}
+              {activeTab !== 'overview' && activeTab !== 'organizations' && activeTab !== 'subscriptions' && activeTab !== 'invoices' && activeTab !== 'users' && (
                 <Card className="border-dashed">
                   <CardContent className="pt-6">
                     <p className="text-center text-muted-foreground">
