@@ -984,6 +984,54 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_plans: {
+        Row: {
+          billing_period: string | null
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          features: Json | null
+          id: string
+          included_credits: number | null
+          is_active: boolean | null
+          name: string
+          plan_key: string
+          price_eur: number
+          price_huf: number
+          target_user_role: string | null
+        }
+        Insert: {
+          billing_period?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          features?: Json | null
+          id?: string
+          included_credits?: number | null
+          is_active?: boolean | null
+          name: string
+          plan_key: string
+          price_eur: number
+          price_huf: number
+          target_user_role?: string | null
+        }
+        Update: {
+          billing_period?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          features?: Json | null
+          id?: string
+          included_credits?: number | null
+          is_active?: boolean | null
+          name?: string
+          plan_key?: string
+          price_eur?: number
+          price_huf?: number
+          target_user_role?: string | null
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           auto_renew: boolean | null
