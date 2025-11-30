@@ -39,6 +39,7 @@ const TranslationToolPage = lazy(() => import("@/pages/TranslationToolPage"));
 const PrivacyPolicyPage = lazy(() => import("@/pages/PrivacyPolicyPage"));
 const ImpressumPage = lazy(() => import("@/pages/ImpressumPage"));
 const SuperAdminPage = lazy(() => import("@/pages/SuperAdminPage"));
+const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function App() {
@@ -83,6 +84,7 @@ function App() {
                       <Route path="/challenges" element={<ChallengesPage />} />
                       <Route path="/challenges/:challengeId" element={<ChallengeDetailPage />} />
                       <Route path="/profile" element={<ProfilePage />} />
+                      <Route path="/settings" element={<SettingsPage />} />
                       <Route path="/organization" element={<OrganizationDashboard />} />
                       <Route path="/organization/:organizationId" element={<PublicOrganizationPage />} />
                       <Route path="/sponsor-dashboard" element={<SponsorDashboardPage />} />
