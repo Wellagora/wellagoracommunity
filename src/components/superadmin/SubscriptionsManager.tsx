@@ -313,7 +313,7 @@ const SubscriptionsManager = () => {
 
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Aktív előfizetések</CardTitle>
             <CheckCircle className="h-4 w-4 text-green-500" />
@@ -322,7 +322,7 @@ const SubscriptionsManager = () => {
             <div className="text-2xl font-bold">{stats.activeCount}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Lejár 30 napon belül</CardTitle>
             <Clock className="h-4 w-4 text-orange-500" />
@@ -331,7 +331,7 @@ const SubscriptionsManager = () => {
             <div className="text-2xl font-bold">{stats.expiringSoon}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Függőben</CardTitle>
             <FileText className="h-4 w-4 text-yellow-500" />
@@ -340,7 +340,7 @@ const SubscriptionsManager = () => {
             <div className="text-2xl font-bold">{stats.pendingCount}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Havi bevétel (átlag)</CardTitle>
             <TrendingUp className="h-4 w-4 text-primary" />
@@ -389,7 +389,7 @@ const SubscriptionsManager = () => {
       </div>
 
       {/* Table */}
-      <div className="border rounded-lg">
+      <div className="border rounded-lg bg-card/30 backdrop-blur">
         <Table>
           <TableHeader>
             <TableRow>

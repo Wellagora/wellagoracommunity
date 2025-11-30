@@ -291,7 +291,7 @@ const SystemSettings = () => {
         </TabsList>
 
         <TabsContent value="general" className="space-y-6">
-          <Card>
+          <Card className="bg-card/30 backdrop-blur border-border/50">
             <CardHeader>
               <CardTitle>Alapértelmezett projekt</CardTitle>
             </CardHeader>
@@ -317,7 +317,7 @@ const SystemSettings = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-card/30 backdrop-blur border-border/50">
             <CardHeader>
               <CardTitle>Platform adatok</CardTitle>
             </CardHeader>
@@ -361,7 +361,7 @@ const SystemSettings = () => {
             </Button>
           </div>
 
-          <Card>
+          <Card className="bg-card/30 backdrop-blur border-border/50">
             <CardContent className="pt-6">
               <Table>
                 <TableHeader>
@@ -422,7 +422,7 @@ const SystemSettings = () => {
             </Button>
           </div>
 
-          <Card>
+          <Card className="bg-card/30 backdrop-blur border-border/50">
             <CardContent className="pt-6">
               <Table>
                 <TableHeader>
@@ -471,7 +471,7 @@ const SystemSettings = () => {
         </TabsContent>
 
         <TabsContent value="system" className="space-y-4">
-          <Card>
+          <Card className="bg-card/30 backdrop-blur border-border/50">
             <CardHeader>
               <CardTitle>Rendszer információ</CardTitle>
             </CardHeader>

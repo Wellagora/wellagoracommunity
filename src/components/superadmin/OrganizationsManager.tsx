@@ -375,7 +375,7 @@ const OrganizationsManager = () => {
       </div>
 
       {/* Table */}
-      <div className="border rounded-lg">
+      <div className="border rounded-lg bg-card/30 backdrop-blur">
         <Table>
           <TableHeader>
             <TableRow>

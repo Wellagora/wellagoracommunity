@@ -203,7 +203,7 @@ const OverviewTab = () => {
         {kpiCards.map((card) => {
           const Icon = card.icon;
           return (
-            <Card key={card.title} className="hover:shadow-lg transition-shadow">
+            <Card key={card.title} className="bg-card/30 backdrop-blur border-border/50 hover:bg-card/40 transition-all">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   {card.title}
@@ -224,7 +224,7 @@ const OverviewTab = () => {
         })}
       </div>
 
-      <Card className="border-dashed">
+      <Card className="border-dashed bg-card/30 backdrop-blur border-border/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Activity className="h-5 w-5" />

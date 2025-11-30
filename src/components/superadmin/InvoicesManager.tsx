@@ -455,7 +455,7 @@ const InvoicesManager = () => {
 
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Összes befizetés</CardTitle>
             <DollarSign className="h-4 w-4 text-green-500" />
@@ -466,7 +466,7 @@ const InvoicesManager = () => {
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Függőben</CardTitle>
             <FileText className="h-4 w-4 text-yellow-500" />
@@ -477,7 +477,7 @@ const InvoicesManager = () => {
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Lejárt számlák</CardTitle>
             <AlertCircle className="h-4 w-4 text-red-500" />
@@ -486,7 +486,7 @@ const InvoicesManager = () => {
             <div className="text-2xl font-bold">{stats.overdueCount}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Mai bevétel</CardTitle>
             <TrendingUp className="h-4 w-4 text-primary" />
@@ -535,7 +535,7 @@ const InvoicesManager = () => {
       </div>
 
       {/* Table */}
-      <div className="border rounded-lg">
+      <div className="border rounded-lg bg-card/30 backdrop-blur">
         <Table>
           <TableHeader>
             <TableRow>
