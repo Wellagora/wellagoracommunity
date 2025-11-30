@@ -84,6 +84,26 @@ interface Member {
   created_at: string;
 }
 
+interface Sponsorship {
+  id: string;
+  challenge_id: string;
+  challenge_title?: string;
+  package_type: string;
+  status: string;
+  start_date: string;
+  end_date: string | null;
+  credit_cost: number | null;
+  region: string;
+}
+
+interface ActivityItem {
+  id: string;
+  type: 'credit' | 'invoice' | 'sponsorship' | 'subscription';
+  description: string;
+  timestamp: string;
+  icon: string;
+}
+
 const OrganizationDetailView = ({ organizationId, onBack }: OrganizationDetailViewProps) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
@@ -99,6 +119,8 @@ const OrganizationDetailView = ({ organizationId, onBack }: OrganizationDetailVi
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
+  const [sponsorships, setSponsorships] = useState<Sponsorship[]>([]);
+  const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [subscriptionPlans, setSubscriptionPlans] = useState<any[]>([]);
 
   // Dialog states
@@ -154,6 +176,151 @@ const OrganizationDetailView = ({ organizationId, onBack }: OrganizationDetailVi
       .eq('organization_id', organizationId)
       .order('created_at', { ascending: false });
     setMembers(data || []);
+  };
+
+  const loadSponsorships = async () => {
+    const { data: sponsorshipsData } = await supabase
+      .from('challenge_sponsorships')
+      .select('*')
+      .eq('sponsor_organization_id', organizationId)
+      .order('created_at', { ascending: false });
+
+    if (sponsorshipsData) {
+      // Fetch challenge titles
+      const challengeIds = sponsorshipsData.map(s => s.challenge_id);
+      const { data: challengesData } = await supabase
+        .from('challenge_definitions')
+        .select('id, title')
+        .in('id', challengeIds);
+
+      const challengeMap = new Map(challengesData?.map(c => [c.id, c.title]) || []);
+
+      const enrichedSponsorships = sponsorshipsData.map(s => ({
+        ...s,
+        challenge_title: challengeMap.get(s.challenge_id) || 'Ismeretlen program'
+      }));
+
+      setSponsorships(enrichedSponsorships);
+    }
+  };
+
+  const loadActivities = async () => {
+    const allActivities: ActivityItem[] = [];
+
+    // Get member IDs
+    const { data: memberIds } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('organization_id', organizationId);
+
+    const userIds = memberIds?.map(m => m.id) || [];
+
+    // Credit transactions
+    if (userIds.length > 0) {
+      const { data: credits } = await supabase
+        .from('credit_transactions')
+        .select('*')
+        .in('sponsor_user_id', userIds)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      credits?.forEach(c => {
+        allActivities.push({
+          id: c.id,
+          type: 'credit',
+          description: `Kredit tranzakció: ${c.credits > 0 ? '+' : ''}${c.credits} kredit - ${c.description || c.transaction_type}`,
+          timestamp: c.created_at,
+          icon: 'coins'
+        });
+      });
+    }
+
+    // Invoices
+    const { data: invoicesData } = await supabase
+      .from('invoices')
+      .select('*')
+      .eq('organization_id', organizationId)
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    invoicesData?.forEach(inv => {
+      allActivities.push({
+        id: inv.id,
+        type: 'invoice',
+        description: inv.paid_at 
+          ? `Számla kifizetve: ${inv.invoice_number} - ${inv.amount.toLocaleString()} HUF`
+          : `Számla létrehozva: ${inv.invoice_number} - ${inv.amount.toLocaleString()} HUF`,
+        timestamp: inv.paid_at || inv.created_at,
+        icon: 'receipt'
+      });
+    });
+
+    // Sponsorships
+    const { data: sponsorshipsData } = await supabase
+      .from('challenge_sponsorships')
+      .select('*, challenge_definitions(title)')
+      .eq('sponsor_organization_id', organizationId)
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    sponsorshipsData?.forEach(s => {
+      allActivities.push({
+        id: s.id,
+        type: 'sponsorship',
+        description: `Program szponzorálás: ${(s as any).challenge_definitions?.title || 'Ismeretlen'} - ${s.package_type}`,
+        timestamp: s.created_at || s.start_date,
+        icon: 'heart'
+      });
+    });
+
+    // Subscriptions
+    const { data: subscriptionsData } = await supabase
+      .from('subscriptions')
+      .select('*')
+      .eq('organization_id', organizationId)
+      .order('created_at', { ascending: false })
+      .limit(5);
+
+    subscriptionsData?.forEach(sub => {
+      allActivities.push({
+        id: sub.id,
+        type: 'subscription',
+        description: `Előfizetés: ${sub.plan_type} - ${sub.status}`,
+        timestamp: sub.created_at,
+        icon: 'credit-card'
+      });
+    });
+
+    // Sort all activities by timestamp
+    allActivities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+    // Limit to 20
+    setActivities(allActivities.slice(0, 20));
+  };
+
+  const getRelativeTime = (timestamp: string) => {
+    const now = new Date();
+    const then = new Date(timestamp);
+    const diffMs = now.getTime() - then.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+
+    if (diffMinutes < 60) return `${diffMinutes} perce`;
+    if (diffHours < 24) return `${diffHours} órája`;
+    if (diffDays < 7) return `${diffDays} napja`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} hete`;
+    return `${Math.floor(diffDays / 30)} hónapja`;
+  };
+
+  const getActivityIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'coins': return Coins;
+      case 'receipt': return FileText;
+      case 'heart': return CreditCard;
+      case 'credit-card': return CreditCard;
+      default: return Calendar;
+    }
   };
 
   const loadOrganizationData = async () => {
@@ -702,15 +869,135 @@ const OrganizationDetailView = ({ organizationId, onBack }: OrganizationDetailVi
               </div>
             </TabsContent>
 
-            <TabsContent value="sponsorships" className="mt-6">
-              <div className="border rounded-lg p-8 text-center">
-                <p className="text-muted-foreground">Szponzorálások hamarosan</p>
+            <TabsContent value="sponsorships" className="mt-6" onFocus={loadSponsorships}>
+              <div className="space-y-4">
+                {/* Summary */}
+                <div className="grid grid-cols-2 gap-4">
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div className="flex items-center gap-2">
+                        <CreditCard className="h-5 w-5 text-muted-foreground" />
+                        <div>
+                          <p className="text-sm text-muted-foreground">Aktív szponzorálások</p>
+                          <p className="text-2xl font-bold">
+                            {sponsorships.filter(s => s.status === 'active').length}
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div className="flex items-center gap-2">
+                        <Coins className="h-5 w-5 text-muted-foreground" />
+                        <div>
+                          <p className="text-sm text-muted-foreground">Összes költött kredit</p>
+                          <p className="text-2xl font-bold">
+                            {sponsorships.reduce((sum, s) => sum + (s.credit_cost || 0), 0).toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold">Szponzorálások ({sponsorships.length})</h3>
+                  <Button size="sm">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Új szponzorálás
+                  </Button>
+                </div>
+
+                {sponsorships.length === 0 ? (
+                  <div className="border rounded-lg p-12 text-center">
+                    <CreditCard className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-muted-foreground">Még nincs szponzorált program</p>
+                  </div>
+                ) : (
+                  <div className="border rounded-lg">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Program neve</TableHead>
+                          <TableHead>Csomag típus</TableHead>
+                          <TableHead>Státusz</TableHead>
+                          <TableHead>Kezdés</TableHead>
+                          <TableHead>Lejárat</TableHead>
+                          <TableHead>Kredit költség</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {sponsorships.map((sponsorship) => (
+                          <TableRow key={sponsorship.id}>
+                            <TableCell className="font-medium">{sponsorship.challenge_title}</TableCell>
+                            <TableCell>{sponsorship.package_type}</TableCell>
+                            <TableCell>
+                              <Badge 
+                                className={
+                                  sponsorship.status === 'active' 
+                                    ? 'bg-green-500/10 text-green-500 border-green-500/20'
+                                    : sponsorship.status === 'cancelled'
+                                    ? 'bg-red-500/10 text-red-500 border-red-500/20'
+                                    : 'bg-gray-500/10 text-gray-500 border-gray-500/20'
+                                }
+                                variant="outline"
+                              >
+                                {sponsorship.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{new Date(sponsorship.start_date).toLocaleDateString('hu-HU')}</TableCell>
+                            <TableCell>
+                              {sponsorship.end_date ? new Date(sponsorship.end_date).toLocaleDateString('hu-HU') : '-'}
+                            </TableCell>
+                            <TableCell>{sponsorship.credit_cost?.toLocaleString() || '-'} kredit</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
               </div>
             </TabsContent>
 
-            <TabsContent value="activity" className="mt-6">
-              <div className="border rounded-lg p-8 text-center">
-                <p className="text-muted-foreground">Aktivitási napló hamarosan</p>
+            <TabsContent value="activity" className="mt-6" onFocus={loadActivities}>
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Aktivitási napló</h3>
+
+                {activities.length === 0 ? (
+                  <div className="border rounded-lg p-12 text-center">
+                    <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-muted-foreground">Még nincs aktivitás</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {activities.map((activity) => {
+                      const IconComponent = getActivityIcon(activity.icon);
+                      return (
+                        <Card key={activity.id}>
+                          <CardContent className="pt-6">
+                            <div className="flex items-start gap-4">
+                              <div className="mt-1">
+                                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                  <IconComponent className="h-5 w-5 text-primary" />
+                                </div>
+                              </div>
+                              <div className="flex-1">
+                                <p className="font-medium">{activity.description}</p>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                  {getRelativeTime(activity.timestamp)}
+                                </p>
+                              </div>
+                              <Badge variant="outline" className="text-xs">
+                                {activity.type}
+                              </Badge>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </TabsContent>
           </Tabs>
