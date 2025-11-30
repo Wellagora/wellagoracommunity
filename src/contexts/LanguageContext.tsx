@@ -237,3 +237,6 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     </LanguageContext.Provider>
   );
 };
+
+// Alias for backward compatibility with components using useTranslation
+export const useTranslation = useLanguage;
