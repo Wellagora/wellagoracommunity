@@ -59,7 +59,7 @@ serve(async (req) => {
     // Initialize Gemini AI
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash-preview-05-20",
       systemInstruction: systemPrompt
     });
 
@@ -242,14 +242,14 @@ async function storeConversation(supabase: any, userId: string, projectId: strin
     conversation_id: conversationId,
     role: userMessage.role,
     content: userMessage.content,
-    model: 'google/gemini-1.5-flash'
+    model: 'google/gemini-2.5-flash-preview-05-20'
   });
   
   await supabase.from('ai_messages').insert({
     conversation_id: conversationId,
     role: 'assistant',
     content: aiMessage,
-    model: 'google/gemini-1.5-flash'
+    model: 'google/gemini-2.5-flash-preview-05-20'
   });
 }
 
