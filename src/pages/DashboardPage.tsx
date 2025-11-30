@@ -170,21 +170,36 @@ const DashboardPage = () => {
       
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8 animate-fade-in">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8 animate-fade-in">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground">
               {t('dashboard.hello')}, {firstName}! 👋
             </h1>
             <p className="text-muted-foreground mt-1">{today}</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="ghost" size="icon" onClick={() => navigate('/challenges')}>
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={() => navigate('/challenges')}
+              title={t('dashboard.new_program')}
+            >
               <Plus className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => navigate('/profile')}>
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={() => navigate('/profile')}
+              title={t('nav.profile')}
+            >
               <User className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={() => navigate('/settings')}
+              title={t('nav.settings')}
+            >
               <Settings className="h-5 w-5" />
             </Button>
           </div>
@@ -193,19 +208,19 @@ const DashboardPage = () => {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-fade-in">
           {/* Points Card */}
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-md transition-all duration-300">
             <CardContent className="pt-6">
               <div className="flex items-start justify-between">
-                <div>
+                <div className="flex-1">
                   <p className="text-sm text-muted-foreground mb-2">{t('dashboard.points')}</p>
                   {loadingData ? (
                     <Skeleton className="h-9 w-24" />
                   ) : (
-                    <p className="text-3xl font-bold">{stats.points}</p>
+                    <p className="text-3xl font-bold text-foreground">{stats.points}</p>
                   )}
-                  <div className="flex items-center mt-2 text-green-500 text-sm">
+                  <div className="flex items-center mt-2 text-green-600 text-sm font-medium">
                     <TrendingUp className="h-4 w-4 mr-1" />
-                    <span>{t('dashboard.points_trend')}</span>
+                    <span>+12%</span>
                   </div>
                 </div>
                 <div className="p-3 rounded-full bg-yellow-500/10">
@@ -216,19 +231,19 @@ const DashboardPage = () => {
           </Card>
 
           {/* Active Programs Card */}
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-md transition-all duration-300">
             <CardContent className="pt-6">
               <div className="flex items-start justify-between">
-                <div>
+                <div className="flex-1">
                   <p className="text-sm text-muted-foreground mb-2">{t('dashboard.active_programs')}</p>
                   {loadingData ? (
                     <Skeleton className="h-9 w-16" />
                   ) : (
-                    <p className="text-3xl font-bold">{stats.activePrograms}</p>
+                    <p className="text-3xl font-bold text-foreground">{stats.activePrograms}</p>
                   )}
                   <Button 
                     variant="link" 
-                    className="p-0 h-auto mt-2 text-primary"
+                    className="p-0 h-auto mt-2 text-primary hover:text-primary/80"
                     onClick={() => navigate('/challenges')}
                   >
                     {t('dashboard.view_all')} <ArrowRight className="h-4 w-4 ml-1" />
@@ -242,15 +257,15 @@ const DashboardPage = () => {
           </Card>
 
           {/* Community Rank Card */}
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-md transition-all duration-300">
             <CardContent className="pt-6">
               <div className="flex items-start justify-between">
-                <div>
+                <div className="flex-1">
                   <p className="text-sm text-muted-foreground mb-2">{t('dashboard.community_rank')}</p>
                   {loadingData ? (
                     <Skeleton className="h-9 w-20" />
                   ) : (
-                    <p className="text-3xl font-bold">{stats.rank}</p>
+                    <p className="text-3xl font-bold text-foreground">{stats.rank}</p>
                   )}
                   <Badge variant="secondary" className="mt-2">
                     {t('dashboard.top_percent')}
@@ -266,17 +281,17 @@ const DashboardPage = () => {
 
         {/* Main Content - Two Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Left: Active Programs */}
+          {/* Left: Active Programs (2/3 width on desktop) */}
           <div className="lg:col-span-2 space-y-6 animate-fade-in">
             <Card>
               <CardHeader>
-                <CardTitle>{t('dashboard.my_active_programs')}</CardTitle>
+                <CardTitle className="text-xl">{t('dashboard.my_active_programs')}</CardTitle>
               </CardHeader>
               <CardContent>
                 {loadingData ? (
                   <div className="space-y-4">
                     {[1, 2, 3].map(i => (
-                      <Skeleton key={i} className="h-24 w-full" />
+                      <Skeleton key={i} className="h-28 w-full" />
                     ))}
                   </div>
                 ) : programs.length === 0 ? (
@@ -291,25 +306,29 @@ const DashboardPage = () => {
                 ) : (
                   <div className="space-y-4">
                     {programs.map((program) => (
-                      <Card key={program.id} className="hover-scale cursor-pointer" onClick={() => navigate(`/challenges/${program.id}`)}>
+                      <Card 
+                        key={program.id} 
+                        className="hover:shadow-md transition-all duration-300 cursor-pointer border-border/50" 
+                        onClick={() => navigate(`/challenges/${program.id}`)}
+                      >
                         <CardContent className="p-4">
                           <div className="flex gap-4">
                             {program.image_url && (
                               <img 
                                 src={program.image_url} 
                                 alt={program.title}
-                                className="w-20 h-20 rounded-lg object-cover"
+                                className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
                               />
                             )}
-                            <div className="flex-1">
-                              <h3 className="font-semibold mb-2">{program.title}</h3>
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-semibold mb-2 truncate">{program.title}</h3>
                               <div className="flex items-center gap-4 mb-2">
                                 <Progress value={program.progress} className="flex-1" />
-                                <span className="text-sm text-muted-foreground">{program.progress}%</span>
+                                <span className="text-sm text-muted-foreground whitespace-nowrap">{program.progress}%</span>
                               </div>
                               <div className="flex items-center justify-between">
-                                <Badge variant="secondary">
-                                  <Trophy className="h-3 w-3 mr-1" />
+                                <Badge variant="secondary" className="flex items-center gap-1">
+                                  <Trophy className="h-3 w-3" />
                                   {program.points} {t('dashboard.points')}
                                 </Badge>
                                 <Button size="sm" variant="outline">
@@ -326,92 +345,94 @@ const DashboardPage = () => {
               </CardContent>
             </Card>
 
-            {/* Recent Activity */}
-            <Card>
-              <CardHeader>
-                <CardTitle>{t('dashboard.recent_activity')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {loadingData ? (
-                  <div className="space-y-4">
-                    {[1, 2, 3].map(i => (
-                      <Skeleton key={i} className="h-16 w-full" />
-                    ))}
-                  </div>
-                ) : activities.length === 0 ? (
-                  <div className="text-center py-8">
-                    <Calendar className="h-10 w-10 mx-auto text-muted-foreground mb-2" />
-                    <p className="text-muted-foreground">{t('dashboard.no_activity')}</p>
-                    <p className="text-sm text-muted-foreground">{t('dashboard.no_activity_desc')}</p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {activities.map((activity) => {
-                      const Icon = activity.icon;
-                      return (
-                        <div key={activity.id} className="flex items-start gap-4">
-                          <div className="p-2 rounded-full bg-primary/10">
-                            <Icon className="h-4 w-4 text-primary" />
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-sm font-medium">{activity.description}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {format(new Date(activity.timestamp), 'PPp', { locale: dateLocale })}
-                            </p>
-                          </div>
+        {/* Recent Activity - Full width section */}
+        <div className="animate-fade-in">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-xl">{t('dashboard.recent_activity')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {loadingData ? (
+                <div className="space-y-4">
+                  {[1, 2, 3].map(i => (
+                    <Skeleton key={i} className="h-16 w-full" />
+                  ))}
+                </div>
+              ) : activities.length === 0 ? (
+                <div className="text-center py-8">
+                  <Calendar className="h-10 w-10 mx-auto text-muted-foreground mb-2" />
+                  <p className="text-muted-foreground">{t('dashboard.no_activity')}</p>
+                  <p className="text-sm text-muted-foreground">{t('dashboard.no_activity_desc')}</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {activities.map((activity) => {
+                    const Icon = activity.icon;
+                    return (
+                      <div key={activity.id} className="flex items-start gap-4 p-3 rounded-lg hover:bg-accent/50 transition-colors">
+                        <div className="p-2 rounded-full bg-primary/10 flex-shrink-0">
+                          <Icon className="h-4 w-4 text-primary" />
                         </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium">{activity.description}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {format(new Date(activity.timestamp), 'PPp', { locale: dateLocale })}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
           </div>
 
-          {/* Right: WellBot Widget */}
+          {/* Right: WellBot Widget (1/3 width on desktop) */}
           <div className="lg:col-span-1 animate-fade-in">
-            <Card className="bg-gradient-to-br from-primary/20 via-primary/10 to-background border-primary/20">
+            <Card className="bg-gradient-to-br from-primary/20 via-primary/10 to-background border-primary/20 sticky top-24">
               <CardContent className="pt-6">
                 <div className="text-center mb-6">
-                  <div className="inline-flex p-4 rounded-full bg-primary/20 mb-4">
+                  <div className="inline-flex p-4 rounded-full bg-primary/20 mb-4 shadow-lg">
                     <Sparkles className="h-8 w-8 text-primary" />
                   </div>
-                  <h3 className="font-bold text-lg mb-2">WellBot</h3>
+                  <h3 className="font-bold text-xl mb-2">WellBot</h3>
                   <p className="text-sm text-muted-foreground">{t('dashboard.wellbot_greeting')}</p>
                 </div>
 
                 <div className="space-y-2 mb-6">
                   <Button 
                     variant="secondary" 
-                    className="w-full justify-start"
+                    className="w-full justify-start hover:bg-secondary/80 transition-colors"
                     size="sm"
                     onClick={() => navigate('/ai-assistant')}
                   >
-                    <Target className="h-4 w-4 mr-2" />
-                    {t('dashboard.wellbot_suggest')}
+                    <Target className="h-4 w-4 mr-2 flex-shrink-0" />
+                    <span className="truncate">{t('dashboard.wellbot_suggest')}</span>
                   </Button>
                   <Button 
                     variant="secondary" 
-                    className="w-full justify-start"
+                    className="w-full justify-start hover:bg-secondary/80 transition-colors"
                     size="sm"
                     onClick={() => navigate('/ai-assistant')}
                   >
-                    <TrendingUp className="h-4 w-4 mr-2" />
-                    {t('dashboard.wellbot_progress')}
+                    <TrendingUp className="h-4 w-4 mr-2 flex-shrink-0" />
+                    <span className="truncate">{t('dashboard.wellbot_progress')}</span>
                   </Button>
                   <Button 
                     variant="secondary" 
-                    className="w-full justify-start"
+                    className="w-full justify-start hover:bg-secondary/80 transition-colors"
                     size="sm"
                     onClick={() => navigate('/ai-assistant')}
                   >
-                    <Sparkles className="h-4 w-4 mr-2" />
-                    {t('dashboard.wellbot_tips')}
+                    <Sparkles className="h-4 w-4 mr-2 flex-shrink-0" />
+                    <span className="truncate">{t('dashboard.wellbot_tips')}</span>
                   </Button>
                 </div>
 
                 <Button 
-                  className="w-full"
+                  className="w-full shadow-md hover:shadow-lg transition-all"
                   onClick={() => navigate('/ai-assistant')}
                 >
                   {t('dashboard.wellbot_full')}
