@@ -3,6 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { 
@@ -15,7 +21,10 @@ import {
   FileText,
   Users,
   Building2,
-  Calendar
+  Calendar,
+  Plus,
+  RefreshCw,
+  Eye
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -44,6 +53,37 @@ interface KPIData {
   memberCount: number;
 }
 
+interface Subscription {
+  id: string;
+  plan_type: string;
+  status: string;
+  start_date: string | null;
+  end_date: string | null;
+  price_paid: number | null;
+  auto_renew: boolean | null;
+  currency: string | null;
+}
+
+interface Invoice {
+  id: string;
+  invoice_number: string;
+  type: string;
+  amount: number;
+  status: string;
+  created_at: string;
+  paid_at: string | null;
+}
+
+interface Member {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  user_role: string;
+  avatar_url: string | null;
+  created_at: string;
+}
+
 const OrganizationDetailView = ({ organizationId, onBack }: OrganizationDetailViewProps) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
@@ -55,9 +95,66 @@ const OrganizationDetailView = ({ organizationId, onBack }: OrganizationDetailVi
     memberCount: 0
   });
 
+  // Tab-specific data
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [subscriptionPlans, setSubscriptionPlans] = useState<any[]>([]);
+
+  // Dialog states
+  const [createSubDialogOpen, setCreateSubDialogOpen] = useState(false);
+  const [editSubDialogOpen, setEditSubDialogOpen] = useState(false);
+  const [subForm, setSubForm] = useState({
+    plan_type: '',
+    price_paid: '',
+    start_date: new Date().toISOString().split('T')[0],
+    end_date: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    status: 'active',
+    currency: 'HUF'
+  });
+
   useEffect(() => {
     loadOrganizationData();
+    loadSubscriptionPlans();
   }, [organizationId]);
+
+  const loadSubscriptionPlans = async () => {
+    const { data } = await supabase
+      .from('subscription_plans')
+      .select('*')
+      .eq('is_active', true)
+      .order('display_order');
+    if (data) setSubscriptionPlans(data);
+  };
+
+  const loadSubscriptionData = async () => {
+    const { data } = await supabase
+      .from('subscriptions')
+      .select('*')
+      .eq('organization_id', organizationId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    setSubscription(data);
+  };
+
+  const loadInvoices = async () => {
+    const { data } = await supabase
+      .from('invoices')
+      .select('*')
+      .eq('organization_id', organizationId)
+      .order('created_at', { ascending: false });
+    setInvoices(data || []);
+  };
+
+  const loadMembers = async () => {
+    const { data } = await supabase
+      .from('profiles')
+      .select('id, first_name, last_name, email, user_role, avatar_url, created_at')
+      .eq('organization_id', organizationId)
+      .order('created_at', { ascending: false });
+    setMembers(data || []);
+  };
 
   const loadOrganizationData = async () => {
     setLoading(true);
@@ -142,9 +239,65 @@ const OrganizationDetailView = ({ organizationId, onBack }: OrganizationDetailVi
       active: 'bg-green-500/10 text-green-500 border-green-500/20',
       pending: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
       cancelled: 'bg-red-500/10 text-red-500 border-red-500/20',
-      expired: 'bg-gray-500/10 text-gray-500 border-gray-500/20'
+      expired: 'bg-gray-500/10 text-gray-500 border-gray-500/20',
+      draft: 'bg-gray-500/10 text-gray-500 border-gray-500/20',
+      paid: 'bg-green-500/10 text-green-500 border-green-500/20',
+      overdue: 'bg-red-500/10 text-red-500 border-red-500/20'
     };
     return colors[status as keyof typeof colors] || colors.pending;
+  };
+
+  const handleCreateSubscription = async () => {
+    try {
+      const { error } = await supabase.from('subscriptions').insert({
+        organization_id: organizationId,
+        plan_type: subForm.plan_type,
+        price_paid: parseFloat(subForm.price_paid),
+        start_date: subForm.start_date,
+        end_date: subForm.end_date,
+        status: subForm.status,
+        currency: subForm.currency
+      });
+
+      if (error) throw error;
+
+      toast({ title: 'Sikeres', description: 'Előfizetés létrehozva' });
+      setCreateSubDialogOpen(false);
+      loadOrganizationData();
+      loadSubscriptionData();
+    } catch (error: any) {
+      toast({ title: 'Hiba', description: error.message, variant: 'destructive' });
+    }
+  };
+
+  const handleExtendSubscription = async () => {
+    if (!subscription) return;
+    try {
+      const currentEndDate = new Date(subscription.end_date || Date.now());
+      const newEndDate = new Date(currentEndDate);
+      newEndDate.setFullYear(newEndDate.getFullYear() + 1);
+
+      const { error } = await supabase
+        .from('subscriptions')
+        .update({ end_date: newEndDate.toISOString().split('T')[0] })
+        .eq('id', subscription.id);
+
+      if (error) throw error;
+
+      toast({ title: 'Sikeres', description: 'Előfizetés meghosszabbítva 1 évvel' });
+      loadSubscriptionData();
+    } catch (error: any) {
+      toast({ title: 'Hiba', description: error.message, variant: 'destructive' });
+    }
+  };
+
+  const calculateDaysRemaining = (endDate: string | null) => {
+    if (!endDate) return null;
+    const end = new Date(endDate);
+    const today = new Date();
+    const diffTime = end.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
   };
 
   if (loading) {
@@ -370,21 +523,182 @@ const OrganizationDetailView = ({ organizationId, onBack }: OrganizationDetailVi
               </div>
             </TabsContent>
 
-            <TabsContent value="subscription" className="mt-6">
-              <div className="border rounded-lg p-8 text-center">
-                <p className="text-muted-foreground">Előfizetés kezelés hamarosan</p>
+            <TabsContent value="subscription" className="mt-6" onFocus={loadSubscriptionData}>
+              {subscription ? (
+                <Card>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle>Előfizetés részletei</CardTitle>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={handleExtendSubscription}>
+                          <RefreshCw className="h-4 w-4 mr-2" />
+                          Hosszabbítás
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => setEditSubDialogOpen(true)}>
+                          <Edit className="h-4 w-4 mr-2" />
+                          Szerkesztés
+                        </Button>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-2 gap-6">
+                      <div>
+                        <Label className="text-muted-foreground">Csomag típus</Label>
+                        <div className="flex items-center gap-2 mt-1">
+                          <p className="text-lg font-semibold">{subscription.plan_type}</p>
+                          <Badge className={getStatusBadgeColor(subscription.status)} variant="outline">
+                            {subscription.status}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div>
+                        <Label className="text-muted-foreground">Ár</Label>
+                        <p className="text-lg font-semibold mt-1">
+                          {subscription.price_paid?.toLocaleString()} {subscription.currency || 'HUF'}
+                        </p>
+                      </div>
+                      <div>
+                        <Label className="text-muted-foreground">Kezdés dátuma</Label>
+                        <p className="text-lg font-semibold mt-1">
+                          {subscription.start_date ? new Date(subscription.start_date).toLocaleDateString('hu-HU') : '-'}
+                        </p>
+                      </div>
+                      <div>
+                        <Label className="text-muted-foreground">Lejárat dátuma</Label>
+                        <p className="text-lg font-semibold mt-1">
+                          {subscription.end_date ? new Date(subscription.end_date).toLocaleDateString('hu-HU') : '-'}
+                        </p>
+                      </div>
+                      <div>
+                        <Label className="text-muted-foreground">Automatikus megújítás</Label>
+                        <p className="text-lg font-semibold mt-1">
+                          {subscription.auto_renew ? 'Igen' : 'Nem'}
+                        </p>
+                      </div>
+                      {subscription.end_date && (
+                        <div>
+                          <Label className="text-muted-foreground">Hátralévő napok</Label>
+                          <p className="text-lg font-semibold mt-1">
+                            {calculateDaysRemaining(subscription.end_date)} nap
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="border rounded-lg p-12 text-center space-y-4">
+                  <p className="text-muted-foreground text-lg">Nincs aktív előfizetés</p>
+                  <Button onClick={() => setCreateSubDialogOpen(true)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Előfizetés létrehozása
+                  </Button>
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="invoices" className="mt-6" onFocus={loadInvoices}>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold">Számlák ({invoices.length})</h3>
+                  <Button size="sm">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Új számla
+                  </Button>
+                </div>
+
+                {invoices.length === 0 ? (
+                  <div className="border rounded-lg p-12 text-center">
+                    <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-muted-foreground">Nincsenek számlák</p>
+                  </div>
+                ) : (
+                  <div className="border rounded-lg">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Számla szám</TableHead>
+                          <TableHead>Típus</TableHead>
+                          <TableHead>Összeg</TableHead>
+                          <TableHead>Státusz</TableHead>
+                          <TableHead>Dátum</TableHead>
+                          <TableHead>Fizetve</TableHead>
+                          <TableHead></TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {invoices.map((invoice) => (
+                          <TableRow key={invoice.id}>
+                            <TableCell className="font-medium">{invoice.invoice_number}</TableCell>
+                            <TableCell>{invoice.type}</TableCell>
+                            <TableCell>{invoice.amount.toLocaleString()} HUF</TableCell>
+                            <TableCell>
+                              <Badge className={getStatusBadgeColor(invoice.status)} variant="outline">
+                                {invoice.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{new Date(invoice.created_at).toLocaleDateString('hu-HU')}</TableCell>
+                            <TableCell>
+                              {invoice.paid_at ? new Date(invoice.paid_at).toLocaleDateString('hu-HU') : '-'}
+                            </TableCell>
+                            <TableCell>
+                              <Button variant="ghost" size="sm">
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
               </div>
             </TabsContent>
 
-            <TabsContent value="invoices" className="mt-6">
-              <div className="border rounded-lg p-8 text-center">
-                <p className="text-muted-foreground">Számlák kezelés hamarosan</p>
-              </div>
-            </TabsContent>
+            <TabsContent value="members" className="mt-6" onFocus={loadMembers}>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold">Tagok ({members.length})</h3>
+                </div>
 
-            <TabsContent value="members" className="mt-6">
-              <div className="border rounded-lg p-8 text-center">
-                <p className="text-muted-foreground">Tagok kezelés hamarosan</p>
+                {members.length === 0 ? (
+                  <div className="border rounded-lg p-12 text-center">
+                    <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-muted-foreground">Nincsenek tagok</p>
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    {members.map((member) => (
+                      <Card key={member.id}>
+                        <CardContent className="pt-6">
+                          <div className="flex items-center gap-4">
+                            <Avatar className="h-12 w-12">
+                              <AvatarImage src={member.avatar_url || undefined} />
+                              <AvatarFallback>
+                                {member.first_name[0]}{member.last_name[0]}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1">
+                              <p className="font-semibold">
+                                {member.first_name} {member.last_name}
+                              </p>
+                              <p className="text-sm text-muted-foreground">{member.email}</p>
+                            </div>
+                            <div className="text-right">
+                              <Badge className={getTypeBadgeColor(member.user_role)} variant="outline">
+                                {member.user_role}
+                              </Badge>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Csatlakozott: {new Date(member.created_at).toLocaleDateString('hu-HU')}
+                              </p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
               </div>
             </TabsContent>
 
@@ -402,6 +716,77 @@ const OrganizationDetailView = ({ organizationId, onBack }: OrganizationDetailVi
           </Tabs>
         </CardContent>
       </Card>
+
+      {/* Create Subscription Dialog */}
+      <Dialog open={createSubDialogOpen} onOpenChange={setCreateSubDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Új előfizetés létrehozása</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Csomag típus</Label>
+              <Select value={subForm.plan_type} onValueChange={(v) => setSubForm({ ...subForm, plan_type: v })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Válassz csomagot" />
+                </SelectTrigger>
+                <SelectContent>
+                  {subscriptionPlans.map((plan) => (
+                    <SelectItem key={plan.id} value={plan.plan_key}>
+                      {plan.name} ({plan.price_huf.toLocaleString()} HUF)
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Ár</Label>
+              <Input
+                type="number"
+                value={subForm.price_paid}
+                onChange={(e) => setSubForm({ ...subForm, price_paid: e.target.value })}
+                placeholder="Összeg"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Kezdés dátuma</Label>
+                <Input
+                  type="date"
+                  value={subForm.start_date}
+                  onChange={(e) => setSubForm({ ...subForm, start_date: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label>Lejárat dátuma</Label>
+                <Input
+                  type="date"
+                  value={subForm.end_date}
+                  onChange={(e) => setSubForm({ ...subForm, end_date: e.target.value })}
+                />
+              </div>
+            </div>
+            <div>
+              <Label>Státusz</Label>
+              <Select value={subForm.status} onValueChange={(v) => setSubForm({ ...subForm, status: v })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">Aktív</SelectItem>
+                  <SelectItem value="pending">Függőben</SelectItem>
+                  <SelectItem value="cancelled">Törölve</SelectItem>
+                  <SelectItem value="expired">Lejárt</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCreateSubDialogOpen(false)}>Mégse</Button>
+            <Button onClick={handleCreateSubscription}>Létrehozás</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
