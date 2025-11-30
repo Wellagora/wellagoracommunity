@@ -365,7 +365,7 @@ const ProjectsManager = () => {
 
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Összes projekt</CardTitle>
             <FolderKanban className="h-4 w-4 text-primary" />
@@ -374,7 +374,7 @@ const ProjectsManager = () => {
             <div className="text-2xl font-bold">{stats.totalProjects}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Aktív projektek</CardTitle>
             <CheckCircle className="h-4 w-4 text-green-500" />
@@ -383,7 +383,7 @@ const ProjectsManager = () => {
             <div className="text-2xl font-bold">{stats.activeProjects}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Összes program</CardTitle>
             <Target className="h-4 w-4 text-blue-500" />
@@ -392,7 +392,7 @@ const ProjectsManager = () => {
             <div className="text-2xl font-bold">{stats.totalPrograms}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Összes résztvevő</CardTitle>
             <Users className="h-4 w-4 text-purple-500" />
@@ -412,7 +412,7 @@ const ProjectsManager = () => {
           </div>
         ) : (
           projects.map((project) => (
-            <Card key={project.id} className="hover:shadow-lg transition-shadow">
+            <Card key={project.id} className="bg-card/30 backdrop-blur border-border/50 hover:bg-card/40 transition-all">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">

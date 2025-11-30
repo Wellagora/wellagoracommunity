@@ -338,7 +338,7 @@ const ProgramsManager = () => {
 
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Összes program</CardTitle>
             <Target className="h-4 w-4 text-primary" />
@@ -347,7 +347,7 @@ const ProgramsManager = () => {
             <div className="text-2xl font-bold">{stats.totalPrograms}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Aktív programok</CardTitle>
             <CheckCircle className="h-4 w-4 text-green-500" />
@@ -356,7 +356,7 @@ const ProgramsManager = () => {
             <div className="text-2xl font-bold">{stats.activePrograms}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Szponzorált</CardTitle>
             <Award className="h-4 w-4 text-yellow-500" />
@@ -365,7 +365,7 @@ const ProgramsManager = () => {
             <div className="text-2xl font-bold">{stats.sponsoredPrograms}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Teljesítések</CardTitle>
             <Activity className="h-4 w-4 text-blue-500" />
@@ -433,7 +433,7 @@ const ProgramsManager = () => {
       </div>
 
       {/* Table */}
-      <div className="border rounded-lg">
+      <div className="border rounded-lg bg-card/30 backdrop-blur">
         <Table>
           <TableHeader>
             <TableRow>

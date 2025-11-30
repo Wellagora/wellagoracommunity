@@ -317,7 +317,7 @@ const UsersManager = () => {
 
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Összes felhasználó</CardTitle>
             <UsersIcon className="h-4 w-4 text-primary" />
@@ -326,7 +326,7 @@ const UsersManager = () => {
             <div className="text-2xl font-bold">{stats.totalUsers}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Új felhasználók (30 nap)</CardTitle>
             <UserPlus className="h-4 w-4 text-green-500" />
@@ -335,7 +335,7 @@ const UsersManager = () => {
             <div className="text-2xl font-bold">{stats.newUsers}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Adminok</CardTitle>
             <Shield className="h-4 w-4 text-red-500" />
@@ -344,7 +344,7 @@ const UsersManager = () => {
             <div className="text-2xl font-bold">{stats.adminCount}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Szervezeti felhasználók</CardTitle>
             <Building2 className="h-4 w-4 text-purple-500" />
@@ -403,7 +403,7 @@ const UsersManager = () => {
       </div>
 
       {/* Table */}
-      <div className="border rounded-lg">
+      <div className="border rounded-lg bg-card/30 backdrop-blur">
         <Table>
           <TableHeader>
             <TableRow>
