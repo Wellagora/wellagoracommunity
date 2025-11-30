@@ -9,14 +9,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const languages = [
+  { code: 'hu', name: 'Magyar', flag: '🇭🇺' },
   { code: 'en', name: 'English', flag: '🇬🇧' },
   { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-  { code: 'hu', name: 'Magyar', flag: '🇭🇺' },
-  { code: 'cs', name: 'Čeština', flag: '🇨🇿' },
-  { code: 'sk', name: 'Slovenčina', flag: '🇸🇰' },
-  { code: 'hr', name: 'Hrvatski', flag: '🇭🇷' },
-  { code: 'ro', name: 'Română', flag: '🇷🇴' },
-  { code: 'pl', name: 'Polski', flag: '🇵🇱' },
 ];
 
 const LanguageSelector = () => {

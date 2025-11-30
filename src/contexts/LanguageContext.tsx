@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 // Supported language codes for the application
-type Language = 'en' | 'de' | 'hu' | 'cs' | 'sk' | 'hr' | 'ro' | 'pl';
+type Language = 'en' | 'de' | 'hu';
 
 interface LanguageContextType {
   language: Language;
@@ -25,18 +25,13 @@ const LanguageContext = createContext<LanguageContextType>(defaultContextValue);
 const translationCache: Record<Language, Record<string, string>> = {} as any;
 
 // Supported languages for easy reference
-const SUPPORTED_LANGUAGES: Language[] = ['en', 'de', 'hu', 'cs', 'sk', 'hr', 'ro', 'pl'];
+const SUPPORTED_LANGUAGES: Language[] = ['en', 'de', 'hu'];
 
 // Language mapping for browser language detection
 const LANGUAGE_MAP: Record<string, Language> = {
   'en': 'en', 'en-US': 'en', 'en-GB': 'en', 'en-CA': 'en', 'en-AU': 'en',
   'de': 'de', 'de-DE': 'de', 'de-AT': 'de', 'de-CH': 'de',
   'hu': 'hu', 'hu-HU': 'hu',
-  'cs': 'cs', 'cs-CZ': 'cs',
-  'sk': 'sk', 'sk-SK': 'sk',
-  'hr': 'hr', 'hr-HR': 'hr',
-  'ro': 'ro', 'ro-RO': 'ro',
-  'pl': 'pl', 'pl-PL': 'pl',
 };
 
 // Detect browser language with fallback
@@ -71,8 +66,8 @@ const detectBrowserLanguage = (): Language => {
     console.warn('Failed to detect browser language:', error);
   }
   
-  // Default to English
-  return 'en';
+  // Default to Hungarian
+  return 'hu';
 };
 
 // LocalStorage key for language preference

@@ -8,17 +8,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-type Language = 'en' | 'de' | 'hu' | 'cs' | 'sk' | 'hr' | 'ro' | 'pl';
+type Language = 'en' | 'de' | 'hu';
 
 const LANGUAGES: Record<Language, { name: string; nativeName: string; flag: string }> = {
+  'hu': { name: 'Hungarian', nativeName: 'Magyar', flag: '🇭🇺' },
   'en': { name: 'English', nativeName: 'English', flag: '🇬🇧' },
   'de': { name: 'German', nativeName: 'Deutsch', flag: '🇩🇪' },
-  'hu': { name: 'Hungarian', nativeName: 'Magyar', flag: '🇭🇺' },
-  'cs': { name: 'Czech', nativeName: 'Čeština', flag: '🇨🇿' },
-  'sk': { name: 'Slovak', nativeName: 'Slovenčina', flag: '🇸🇰' },
-  'hr': { name: 'Croatian', nativeName: 'Hrvatski', flag: '🇭🇷' },
-  'ro': { name: 'Romanian', nativeName: 'Română', flag: '🇷🇴' },
-  'pl': { name: 'Polish', nativeName: 'Polski', flag: '🇵🇱' },
 };
 
 export const LanguageSwitcher = () => {

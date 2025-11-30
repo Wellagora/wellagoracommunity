@@ -203,16 +203,11 @@ const LegalContentManager = () => {
         if (deleteError) throw deleteError;
       }
 
-      // Import all locale files
+      // Import all locale files (only 3 supported languages)
       const locales: Record<string, any> = {
         en: await import('@/locales/en.json'),
         de: await import('@/locales/de.json'),
         hu: await import('@/locales/hu.json'),
-        cs: await import('@/locales/cs.json'),
-        sk: await import('@/locales/sk.json'),
-        hr: await import('@/locales/hr.json'),
-        ro: await import('@/locales/ro.json'),
-        pl: await import('@/locales/pl.json')
       };
 
       // Real company data to be inserted
