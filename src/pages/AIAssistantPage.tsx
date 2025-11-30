@@ -15,8 +15,8 @@ const AIAssistantPage = () => {
         {/* Header */}
         <div className="max-w-5xl mx-auto mb-8 animate-fade-in">
           <div className="flex items-center gap-6">
-            {/* WellBot Avatar */}
-            <div className="bg-primary/10 rounded-full p-4 flex-shrink-0">
+            {/* WellBot Avatar - Larger and more prominent */}
+            <div className="bg-gradient-to-br from-primary/20 to-primary/5 rounded-full p-5 shadow-lg border border-primary/20 flex-shrink-0">
               <Sparkles className="h-16 w-16 text-primary" />
             </div>
             
@@ -35,8 +35,8 @@ const AIAssistantPage = () => {
               </p>
 
               <div className="flex items-center gap-2 text-sm">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-muted-foreground">{t('wellbot.online')}</span>
+                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-sm text-green-600 dark:text-green-400">{t('wellbot.online')}</span>
               </div>
             </div>
           </div>

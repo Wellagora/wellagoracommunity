@@ -296,13 +296,18 @@ const AIAssistantChat = () => {
                   </div>
                 ) : messages.length === 0 ? (
                   /* Empty State */
-                  <div className="flex flex-col items-center justify-center h-full text-center py-12 animate-fade-in">
-                    <div className="bg-primary/10 rounded-full p-6 mb-4">
-                      <Sparkles className="h-24 w-24 text-primary" />
+                  <div className="flex flex-col items-center justify-center h-full text-center py-16 animate-fade-in">
+                    <div className="bg-gradient-to-br from-primary/30 to-primary/5 rounded-full p-8 shadow-xl border-2 border-primary/30 mb-6">
+                      <Sparkles className="h-20 w-20 text-primary" />
                     </div>
-                    <h3 className="text-xl font-semibold mb-2">
-                      {t('wellbot.community_greeting')}
-                    </h3>
+                    <div>
+                      <h3 className="text-2xl font-bold mb-2">
+                        {t('wellbot.community_greeting')}
+                      </h3>
+                      <p className="text-muted-foreground max-w-md mb-6">
+                        {t('wellbot.description')}
+                      </p>
+                    </div>
                     
                     {/* Initial Suggestion Chips */}
                     <div className="flex flex-wrap gap-2 justify-center mt-6">
@@ -324,21 +329,25 @@ const AIAssistantChat = () => {
                     {messages.map((message) => (
                       <div
                         key={message.id}
-                        className={`flex gap-3 items-start animate-fade-in ${
+                        className={`flex gap-4 items-start animate-fade-in ${
                           message.sender === "user" ? "justify-end" : "justify-start"
                         }`}
                       >
-                        {/* Bot Avatar */}
+                        {/* Bot Avatar - Larger and more prominent */}
                         {message.sender === "ai" && (
-                          <div className="bg-primary/10 rounded-full p-1.5 flex-shrink-0">
-                            <Sparkles className="h-5 w-5 text-primary" />
+                          <div className="bg-gradient-to-br from-primary/20 to-primary/10 rounded-full p-2.5 flex-shrink-0 shadow-md border border-primary/20">
+                            <Sparkles className="h-7 w-7 text-primary" />
                           </div>
                         )}
                         
                         {/* Message Bubble */}
                         <div className={`flex flex-col max-w-[85%] ${message.sender === "user" ? "items-end" : "items-start"}`}>
+                          {/* WellBot label for bot messages */}
+                          {message.sender === "ai" && (
+                            <span className="text-sm font-medium text-primary mb-1">WellBot</span>
+                          )}
                           <div
-                            className={`p-3 rounded-lg whitespace-pre-wrap break-words ${
+                            className={`p-4 rounded-lg whitespace-pre-wrap break-words shadow-sm ${
                               message.sender === "user"
                                 ? "bg-primary text-primary-foreground rounded-tr-none"
                                 : "bg-card border border-border rounded-tl-none"
@@ -355,15 +364,18 @@ const AIAssistantChat = () => {
                     
                     {/* Typing Indicator */}
                     {isTyping && (
-                      <div className="flex gap-3 items-start animate-fade-in">
-                        <div className="bg-primary/10 rounded-full p-1.5 flex-shrink-0">
-                          <Sparkles className="h-5 w-5 text-primary animate-pulse" />
+                      <div className="flex gap-4 items-start animate-fade-in">
+                        <div className="bg-gradient-to-br from-primary/20 to-primary/10 rounded-full p-2.5 shadow-md border border-primary/20">
+                          <Sparkles className="h-7 w-7 text-primary animate-pulse" />
                         </div>
-                        <div className="bg-card border border-border p-3 rounded-lg rounded-tl-none">
-                          <div className="flex gap-1">
-                            <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                            <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                            <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                        <div className="bg-card border border-border p-4 rounded-lg rounded-tl-none shadow-sm">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-muted-foreground">WellBot gépel</span>
+                            <div className="flex gap-1">
+                              <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+                              <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></div>
+                              <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
+                            </div>
                           </div>
                         </div>
                       </div>
