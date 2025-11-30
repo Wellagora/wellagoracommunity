@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Avatar } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
@@ -298,10 +297,10 @@ const AIAssistantChat = () => {
                 ) : messages.length === 0 ? (
                   /* Empty State */
                   <div className="flex flex-col items-center justify-center h-full text-center py-12 animate-fade-in">
-                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                      <Sparkles className="h-8 w-8 text-primary" />
+                    <div className="bg-primary/10 rounded-full p-6 mb-4">
+                      <Sparkles className="h-24 w-24 text-primary" />
                     </div>
-                    <h3 className="text-lg font-semibold mb-2">
+                    <h3 className="text-xl font-semibold mb-2">
                       {t('wellbot.community_greeting')}
                     </h3>
                     
@@ -325,17 +324,15 @@ const AIAssistantChat = () => {
                     {messages.map((message) => (
                       <div
                         key={message.id}
-                        className={`flex gap-3 animate-fade-in ${
+                        className={`flex gap-3 items-start animate-fade-in ${
                           message.sender === "user" ? "justify-end" : "justify-start"
                         }`}
                       >
                         {/* Bot Avatar */}
                         {message.sender === "ai" && (
-                          <Avatar className="w-8 h-8 flex-shrink-0">
-                            <div className="w-full h-full bg-primary/10 flex items-center justify-center">
-                              <Sparkles className="w-4 h-4 text-primary" />
-                            </div>
-                          </Avatar>
+                          <div className="bg-primary/10 rounded-full p-1.5 flex-shrink-0">
+                            <Sparkles className="h-5 w-5 text-primary" />
+                          </div>
                         )}
                         
                         {/* Message Bubble */}
@@ -358,17 +355,15 @@ const AIAssistantChat = () => {
                     
                     {/* Typing Indicator */}
                     {isTyping && (
-                      <div className="flex gap-3 animate-fade-in">
-                        <Avatar className="w-8 h-8 flex-shrink-0">
-                          <div className="w-full h-full bg-primary/10 flex items-center justify-center">
-                            <Sparkles className="w-4 h-4 text-primary" />
-                          </div>
-                        </Avatar>
+                      <div className="flex gap-3 items-start animate-fade-in">
+                        <div className="bg-primary/10 rounded-full p-1.5 flex-shrink-0">
+                          <Sparkles className="h-5 w-5 text-primary animate-pulse" />
+                        </div>
                         <div className="bg-card border border-border p-3 rounded-lg rounded-tl-none">
                           <div className="flex gap-1">
-                            <div className="w-2 h-2 bg-muted-foreground rounded-full animate-pulse"></div>
-                            <div className="w-2 h-2 bg-muted-foreground rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                            <div className="w-2 h-2 bg-muted-foreground rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                            <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                            <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                           </div>
                         </div>
                       </div>
