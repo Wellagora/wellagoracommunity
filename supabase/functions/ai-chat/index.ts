@@ -59,8 +59,11 @@ serve(async (req) => {
     // Initialize Gemini AI
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.5-flash-preview-05-20",
-      systemInstruction: systemPrompt
+      model: "gemini-3-pro-preview",
+      systemInstruction: systemPrompt,
+      generationConfig: {
+        thinkingLevel: "low"
+      }
     });
 
     // Convert messages to Gemini format
@@ -242,14 +245,14 @@ async function storeConversation(supabase: any, userId: string, projectId: strin
     conversation_id: conversationId,
     role: userMessage.role,
     content: userMessage.content,
-    model: 'google/gemini-2.5-flash-preview-05-20'
+    model: 'google/gemini-3-pro-preview'
   });
   
   await supabase.from('ai_messages').insert({
     conversation_id: conversationId,
     role: 'assistant',
     content: aiMessage,
-    model: 'google/gemini-2.5-flash-preview-05-20'
+    model: 'google/gemini-3-pro-preview'
   });
 }
 
