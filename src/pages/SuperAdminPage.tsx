@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import Navigation from "@/components/Navigation";
+import OrganizationsManager from "@/components/superadmin/OrganizationsManager";
 
 type MenuItem = {
   id: string;
@@ -308,7 +309,8 @@ const SuperAdminPage = () => {
               </div>
 
               {activeTab === 'overview' && <OverviewTab />}
-              {activeTab !== 'overview' && (
+              {activeTab === 'organizations' && <OrganizationsManager />}
+              {activeTab !== 'overview' && activeTab !== 'organizations' && (
                 <Card className="border-dashed">
                   <CardContent className="pt-6">
                     <p className="text-center text-muted-foreground">
