@@ -56,55 +56,55 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <SubscriptionProvider>
-            <LanguageProvider>
+      <LanguageProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <SubscriptionProvider>
               <ProjectProvider>
                 <BrowserRouter>
-                <Suspense fallback={<LoadingFallback />}>
-                  <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/auth" element={<AuthPage />} />
-                  <Route path="/dashboard/handprint" element={<HandprintPage />} />
-                  <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
-                  <Route path="/dashboard" element={<DashboardPage />} />
-                  <Route path="/admin" element={<AdminDashboardPage />} />
-                  <Route path="/admin-dashboard" element={<AdminDashboardPage />} />
-                  <Route path="/regional-hub" element={<Navigate to="/community" replace />} />
-                  <Route path="/explore-region" element={<ExploreRegionPage />} />
-                  <Route path="/interactive-map" element={<Navigate to="/community" replace />} />
-                  <Route path="/matching" element={<Navigate to="/community" replace />} />
-                  <Route path="/dynamic-regional" element={<Navigate to="/community" replace />} />
-                  <Route path="/revolutionary" element={<Navigate to="/community" replace />} />
-                  <Route path="/community" element={<CommunityPage />} />
-                  <Route path="/ai-assistant" element={<AIAssistantPage />} />
-                  <Route path="/challenges" element={<ChallengesPage />} />
-                  <Route path="/challenges/:challengeId" element={<ChallengeDetailPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="/organization" element={<OrganizationDashboard />} />
-                  <Route path="/organization/:organizationId" element={<PublicOrganizationPage />} />
-                  <Route path="/sponsor-dashboard" element={<SponsorDashboardPage />} />
-                  <Route path="/browse-programs" element={<BrowseProgramsPage />} />
-                  <Route path="/project-admin" element={<ProjectAdminPage />} />
-                  <Route path="/projects" element={<ProjectsListPage />} />
-                  <Route path="/join/:projectSlug" element={<JoinProjectPage />} />
-                  <Route path="/contact" element={<ContactPage />} />
-                  <Route path="/inbox" element={<InboxPage />} />
-                  <Route path="/translation-tool" element={<TranslationToolPage />} />
-                  <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-                  <Route path="/impressum" element={<ImpressumPage />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Suspense>
-              <Toaster />
-              <SonnerToaster />
+                  <Suspense fallback={<LoadingFallback />}>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/auth" element={<AuthPage />} />
+                      <Route path="/dashboard/handprint" element={<HandprintPage />} />
+                      <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
+                      <Route path="/dashboard" element={<DashboardPage />} />
+                      <Route path="/admin" element={<AdminDashboardPage />} />
+                      <Route path="/admin-dashboard" element={<AdminDashboardPage />} />
+                      <Route path="/regional-hub" element={<Navigate to="/community" replace />} />
+                      <Route path="/explore-region" element={<ExploreRegionPage />} />
+                      <Route path="/interactive-map" element={<Navigate to="/community" replace />} />
+                      <Route path="/matching" element={<Navigate to="/community" replace />} />
+                      <Route path="/dynamic-regional" element={<Navigate to="/community" replace />} />
+                      <Route path="/revolutionary" element={<Navigate to="/community" replace />} />
+                      <Route path="/community" element={<CommunityPage />} />
+                      <Route path="/ai-assistant" element={<AIAssistantPage />} />
+                      <Route path="/challenges" element={<ChallengesPage />} />
+                      <Route path="/challenges/:challengeId" element={<ChallengeDetailPage />} />
+                      <Route path="/profile" element={<ProfilePage />} />
+                      <Route path="/organization" element={<OrganizationDashboard />} />
+                      <Route path="/organization/:organizationId" element={<PublicOrganizationPage />} />
+                      <Route path="/sponsor-dashboard" element={<SponsorDashboardPage />} />
+                      <Route path="/browse-programs" element={<BrowseProgramsPage />} />
+                      <Route path="/project-admin" element={<ProjectAdminPage />} />
+                      <Route path="/projects" element={<ProjectsListPage />} />
+                      <Route path="/join/:projectSlug" element={<JoinProjectPage />} />
+                      <Route path="/contact" element={<ContactPage />} />
+                      <Route path="/inbox" element={<InboxPage />} />
+                      <Route path="/translation-tool" element={<TranslationToolPage />} />
+                      <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                      <Route path="/impressum" element={<ImpressumPage />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </Suspense>
+                  <Toaster />
+                  <SonnerToaster />
                 </BrowserRouter>
               </ProjectProvider>
-            </LanguageProvider>
-          </SubscriptionProvider>
-        </AuthProvider>
-      </QueryClientProvider>
+            </SubscriptionProvider>
+          </AuthProvider>
+        </QueryClientProvider>
+      </LanguageProvider>
     </ErrorBoundary>
   );
 }
