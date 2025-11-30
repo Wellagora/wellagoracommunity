@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { 
   Send, 
   Sparkles,
@@ -11,7 +12,8 @@ import {
   Users,
   HelpCircle,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  Bot
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -250,42 +252,43 @@ const AIAssistantChat = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Quick Actions Sidebar - Left */}
-        <div className="lg:col-span-1 space-y-3 animate-fade-in">
-          <h3 className="text-sm font-semibold text-muted-foreground mb-4">
-            {t('wellbot.quick_actions')}
-          </h3>
-          
-          {quickActions.map((action, index) => (
-            <Card 
-              key={index}
-              className="hover:bg-accent transition-colors cursor-pointer group"
-              onClick={() => handleQuickAction(action)}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-start gap-3">
-                  <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                    <action.icon className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-sm mb-1">{action.title}</h4>
-                    <p className="text-xs text-muted-foreground line-clamp-2">
-                      {action.description}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+    <div className="max-w-4xl mx-auto animate-fade-in">
+      <Card className="flex flex-col h-[700px]">
+        {/* Card Header */}
+        <CardHeader className="flex flex-row items-center gap-3 border-b pb-4">
+          <div className="bg-primary/10 rounded-full p-2">
+            <Bot className="h-6 w-6 text-primary" />
+          </div>
+          <CardTitle className="text-xl">
+            {t('wellbot.title')}
+          </CardTitle>
+          <Badge variant="secondary" className="ml-auto">
+            {t('wellbot.online')}
+          </Badge>
+        </CardHeader>
 
-        {/* Chat Area - Right */}
-        <div className="lg:col-span-2 animate-fade-in">
-          <Card className="flex flex-col h-[600px]">
-            {/* Messages Container */}
-            <ScrollArea className="flex-1 p-6 bg-muted/30">
+        <CardContent className="p-0 flex-1 flex flex-col">
+          {/* Quick Actions */}
+          <div className="p-4 border-b">
+            <p className="text-sm text-muted-foreground mb-3">{t('wellbot.quick_actions')}</p>
+            <div className="flex flex-wrap gap-2">
+              {quickActions.map((action, index) => (
+                <Button
+                  key={index}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleQuickAction(action)}
+                  className="gap-2"
+                >
+                  <action.icon className="h-4 w-4" />
+                  {action.title}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Messages Container */}
+          <ScrollArea className="flex-1 p-4 bg-muted/30">
               <div className="space-y-4">
                 {isLoading ? (
                   <div className="flex items-center justify-center h-full">
@@ -436,9 +439,8 @@ const AIAssistantChat = () => {
                 {t('wellbot.input_hint')}
               </p>
             </div>
-          </Card>
-        </div>
-      </div>
+          </CardContent>
+        </Card>
     </div>
   );
 };
