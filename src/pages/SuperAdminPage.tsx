@@ -38,6 +38,7 @@ import UsersManager from "@/components/superadmin/UsersManager";
 import ProjectsManager from "@/components/superadmin/ProjectsManager";
 import ProgramsManager from "@/components/superadmin/ProgramsManager";
 import AIAnalyticsDashboard from "@/components/admin/AIAnalyticsDashboard";
+import SystemSettings from "@/components/superadmin/SystemSettings";
 
 type MenuItem = {
   id: string;
@@ -322,7 +323,8 @@ const SuperAdminPage = () => {
               {activeTab === 'projects' && <ProjectsManager />}
               {activeTab === 'programs' && <ProgramsManager />}
               {activeTab === 'ai-analytics' && <AIAnalyticsDashboard />}
-              {activeTab !== 'overview' && activeTab !== 'organizations' && activeTab !== 'subscriptions' && activeTab !== 'invoices' && activeTab !== 'users' && activeTab !== 'projects' && activeTab !== 'programs' && activeTab !== 'ai-analytics' && (
+              {activeTab === 'settings' && <SystemSettings />}
+              {activeTab !== 'overview' && activeTab !== 'organizations' && activeTab !== 'subscriptions' && activeTab !== 'invoices' && activeTab !== 'users' && activeTab !== 'projects' && activeTab !== 'programs' && activeTab !== 'ai-analytics' && activeTab !== 'settings' && (
                 <Card className="border-dashed">
                   <CardContent className="pt-6">
                     <p className="text-center text-muted-foreground">
