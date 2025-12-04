@@ -353,8 +353,10 @@ export type Database = {
           credits: number
           description: string | null
           id: string
+          organization_id: string | null
           related_sponsorship_id: string | null
           sponsor_user_id: string
+          subscription_id: string | null
           transaction_type: string
         }
         Insert: {
@@ -362,8 +364,10 @@ export type Database = {
           credits: number
           description?: string | null
           id?: string
+          organization_id?: string | null
           related_sponsorship_id?: string | null
           sponsor_user_id: string
+          subscription_id?: string | null
           transaction_type: string
         }
         Update: {
@@ -371,16 +375,32 @@ export type Database = {
           credits?: number
           description?: string | null
           id?: string
+          organization_id?: string | null
           related_sponsorship_id?: string | null
           sponsor_user_id?: string
+          subscription_id?: string | null
           transaction_type?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "credit_transactions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "credit_transactions_related_sponsorship_id_fkey"
             columns: ["related_sponsorship_id"]
             isOneToOne: false
             referencedRelation: "challenge_sponsorships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "credit_transactions_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "organization_subscriptions"
             referencedColumns: ["id"]
           },
         ]
@@ -625,6 +645,69 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      organization_subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean | null
+          cancelled_at: string | null
+          created_at: string | null
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          organization_id: string
+          payment_method: string | null
+          plan_id: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          cancel_at_period_end?: boolean | null
+          cancelled_at?: string | null
+          created_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          organization_id: string
+          payment_method?: string | null
+          plan_id: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          cancel_at_period_end?: boolean | null
+          cancelled_at?: string | null
+          created_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          organization_id?: string
+          payment_method?: string | null
+          plan_id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_subscriptions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organization_subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       organizations: {
         Row: {
@@ -958,8 +1041,11 @@ export type Database = {
         Row: {
           available_credits: number | null
           created_at: string | null
+          credits_never_expire: boolean | null
           id: string
+          organization_id: string | null
           sponsor_user_id: string
+          subscription_id: string | null
           total_credits: number
           updated_at: string | null
           used_credits: number
@@ -967,8 +1053,11 @@ export type Database = {
         Insert: {
           available_credits?: number | null
           created_at?: string | null
+          credits_never_expire?: boolean | null
           id?: string
+          organization_id?: string | null
           sponsor_user_id: string
+          subscription_id?: string | null
           total_credits?: number
           updated_at?: string | null
           used_credits?: number
@@ -976,16 +1065,35 @@ export type Database = {
         Update: {
           available_credits?: number | null
           created_at?: string | null
+          credits_never_expire?: boolean | null
           id?: string
+          organization_id?: string | null
           sponsor_user_id?: string
+          subscription_id?: string | null
           total_credits?: number
           updated_at?: string | null
           used_credits?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "sponsor_credits_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sponsor_credits_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "organization_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subscription_plans: {
         Row: {
+          billing_interval: string | null
           billing_period: string | null
           created_at: string | null
           description: string | null
@@ -994,13 +1102,16 @@ export type Database = {
           id: string
           included_credits: number | null
           is_active: boolean | null
+          monthly_credits: number | null
           name: string
           plan_key: string
           price_eur: number
           price_huf: number
           target_user_role: string | null
+          yearly_bonus_credits: number | null
         }
         Insert: {
+          billing_interval?: string | null
           billing_period?: string | null
           created_at?: string | null
           description?: string | null
@@ -1009,13 +1120,16 @@ export type Database = {
           id?: string
           included_credits?: number | null
           is_active?: boolean | null
+          monthly_credits?: number | null
           name: string
           plan_key: string
           price_eur: number
           price_huf: number
           target_user_role?: string | null
+          yearly_bonus_credits?: number | null
         }
         Update: {
+          billing_interval?: string | null
           billing_period?: string | null
           created_at?: string | null
           description?: string | null
@@ -1024,11 +1138,13 @@ export type Database = {
           id?: string
           included_credits?: number | null
           is_active?: boolean | null
+          monthly_credits?: number | null
           name?: string
           plan_key?: string
           price_eur?: number
           price_huf?: number
           target_user_role?: string | null
+          yearly_bonus_credits?: number | null
         }
         Relationships: []
       }
@@ -1316,6 +1432,20 @@ export type Database = {
           last_name: string
           public_display_name: string
           user_role: Database["public"]["Enums"]["user_role"]
+        }[]
+      }
+      get_organization_subscription: {
+        Args: { _organization_id: string }
+        Returns: {
+          current_period_end: string
+          current_period_start: string
+          included_credits: number
+          monthly_credits: number
+          plan_id: string
+          plan_key: string
+          plan_name: string
+          status: string
+          subscription_id: string
         }[]
       }
       get_public_profile: {
