@@ -9,7 +9,6 @@ import {
   Target, 
   Users,
   Leaf,
-  ArrowRight,
   CheckCircle,
   Sparkles,
   Home,
@@ -324,10 +323,9 @@ const SmartOnboarding = ({ onComplete, userType = "citizen" }: SmartOnboardingPr
             <Button 
               onClick={handleNext}
               disabled={!canProceed()}
-              className="bg-gradient-primary hover:shadow-glow transition-spring group"
+              className="bg-gradient-primary hover:shadow-glow transition-spring"
             >
               {currentStep === steps.length - 1 ? "Start Journey" : "Continue"}
-              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
           </div>
         </CardContent>

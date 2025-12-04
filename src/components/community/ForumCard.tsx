@@ -8,8 +8,7 @@ import {
   Users, 
   Pin, 
   TrendingUp, 
-  Clock,
-  ArrowRight
+  Clock
 } from "lucide-react";
 
 interface ForumPost {
@@ -112,7 +111,6 @@ const ForumCard = ({ forum, onViewForum }: ForumCardProps) => {
           onClick={() => onViewForum?.(forum.id)}
         >
           {t('community.view_forum')}
-          <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
       </CardContent>
     </Card>

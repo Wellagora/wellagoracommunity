@@ -13,8 +13,7 @@ import {
   User,
   Plus,
   Star,
-  Globe,
-  ArrowRight
+  Globe
 } from 'lucide-react';
 
 interface Stakeholder {
@@ -290,7 +289,6 @@ const InteractiveMap = () => {
                       </p>
                       <Button className="bg-gradient-to-r from-primary to-success">
                         {t('map.register_and_appear_on_map')}
-                        <ArrowRight className="w-4 h-4 ml-2" />
                       </Button>
                     </div>
                   )}

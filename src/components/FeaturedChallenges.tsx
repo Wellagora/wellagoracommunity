@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import { Users, Sprout, BookOpen, ArrowRight } from "lucide-react";
+import { Users, Sprout, BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -107,7 +107,6 @@ const FeaturedChallenges = () => {
                         className={`w-full bg-gradient-to-r ${challenge.color} hover:opacity-90 transition-opacity`}
                       >
                         {t("challenges.join_challenge")}
-                        <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </Button>
                     </Link>
                   </CardContent>
@@ -127,7 +126,6 @@ const FeaturedChallenges = () => {
           <Link to="/challenges">
               <Button variant="outline" size="lg" className="border-2 border-primary hover:bg-primary hover:text-white">
                 {t("challenges.view_all")}
-                <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
           </Link>
         </motion.div>

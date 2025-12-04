@@ -7,7 +7,6 @@ import {
   Trophy, 
   Sparkles, 
   Share2, 
-  ArrowRight, 
   Heart,
   Users,
   Leaf,
@@ -180,10 +179,9 @@ const CelebrationModal = ({ isOpen, onClose, achievement }: CelebrationModalProp
             </Button>
             <Button 
               onClick={onClose}
-              className="flex-1 bg-gradient-primary hover:shadow-glow transition-spring group"
+              className="flex-1 bg-gradient-primary hover:shadow-glow transition-spring"
             >
               {t('celebration.continue_journey')}
-              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
           </div>
 

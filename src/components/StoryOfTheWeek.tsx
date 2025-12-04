@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Quote, Star, ArrowRight, BookOpen, User } from "lucide-react";
+import { Quote, Star, BookOpen, User } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
 
@@ -62,11 +62,10 @@ export const StoryOfTheWeek = () => {
                   </div>
                   <Button 
                     variant="ghost" 
-                    className="gap-2 w-full sm:w-auto"
+                    className="w-full sm:w-auto"
                     onClick={() => setIsModalOpen(true)}
                   >
                     {t('story_week.read_more')}
-                    <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
               </CardContent>

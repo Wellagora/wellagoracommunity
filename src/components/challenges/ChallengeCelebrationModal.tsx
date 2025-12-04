@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
-import { Trophy, Share2, ArrowRight, Sparkles, Target, CheckCircle, Camera, Users, Heart, Upload, X } from "lucide-react";
+import { Trophy, Share2, Sparkles, Target, CheckCircle, Camera, Users, Heart, Upload, X } from "lucide-react";
 
 interface ChallengeCelebrationModalProps {
   isOpen: boolean;
@@ -218,7 +218,6 @@ const ChallengeCelebrationModal = ({
               className="w-full bg-gradient-primary hover:shadow-glow transition-smooth"
             >
               {t('challenges.next_challenge')}
-              <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           )}
 

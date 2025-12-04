@@ -10,7 +10,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Package, Coins, Heart, Eye, Lightbulb, ArrowRight, Sparkles } from 'lucide-react';
+import { Package, Coins, Heart, Eye, Lightbulb, Sparkles } from 'lucide-react';
 import { SubscriptionPlanSelector } from '@/components/subscription/SubscriptionPlanSelector';
 
 const SponsorLandingPage = () => {
@@ -113,7 +113,6 @@ const SponsorLandingPage = () => {
             className="text-lg px-8 py-6 h-auto"
           >
             {t('sponsor_landing.cta_see_packages')}
-            <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
         </div>
       </section>
@@ -281,7 +280,6 @@ const SponsorLandingPage = () => {
                 className="text-lg px-8 py-6 h-auto"
               >
                 {t('sponsor_landing.final_cta_button')}
-                <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </CardContent>
           </Card>

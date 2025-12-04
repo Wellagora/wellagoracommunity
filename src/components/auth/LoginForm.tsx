@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-import { Mail, Lock, ArrowRight } from "lucide-react";
+import { Mail, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -122,14 +122,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, onForgotPassword }: LoginFor
             className="w-full bg-gradient-primary hover:shadow-glow transition-smooth"
             disabled={isSubmitting}
           >
-            {isSubmitting ? (
-              t('auth.signing_in')
-            ) : (
-              <>
-                {t('auth.sign_in')}
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </>
-            )}
+            {isSubmitting ? t('auth.signing_in') : t('auth.sign_in')}
           </Button>
         </form>
 

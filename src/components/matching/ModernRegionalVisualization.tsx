@@ -11,8 +11,7 @@ import {
   Heart,
   TrendingUp,
   MapPin,
-  Target,
-  ArrowRight
+  Target
 } from "lucide-react";
 
 interface Stakeholder {
@@ -253,8 +252,9 @@ const ModernRegionalVisualization = ({
                           initial={{ opacity: 0 }}
                           animate={{ opacity: isHovered ? 1 : 0 }}
                           transition={{ duration: 0.2 }}
+                          className="text-xs text-primary font-medium"
                         >
-                          <ArrowRight className="w-4 h-4 text-primary" />
+                          View →
                         </motion.div>
                       </div>
 
