@@ -254,7 +254,15 @@ const SuperAdminPage = () => {
 
   useEffect(() => {
     const checkSuperAdminRole = async () => {
-      if (!user || authLoading) return;
+      // Still loading auth state
+      if (authLoading) return;
+
+      // No user logged in - redirect to auth
+      if (!user) {
+        setIsSuperAdmin(false);
+        navigate('/auth');
+        return;
+      }
 
       try {
         const { data, error } = await supabase.rpc('has_role', {
