@@ -4,7 +4,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -15,7 +15,6 @@ import {
   Building2, 
   Landmark, 
   Heart, 
-  ArrowRight, 
   ArrowLeft, 
   Check,
   CreditCard
@@ -33,7 +32,6 @@ interface OrganizationData {
   contactEmail: string;
   contactPhone: string;
   billingAddress: string;
-  billingEmail: string;
   sameAsBilling: boolean;
   selectedPlanId: string | null;
 }
@@ -57,17 +55,17 @@ const OrganizationRegisterPage = () => {
     contactEmail: '',
     contactPhone: '',
     billingAddress: '',
-    billingEmail: '',
     sameAsBilling: true,
     selectedPlanId: preselectedPlanId,
   });
 
   // Fetch plan details if preselected
   useEffect(() => {
-    if (data.selectedPlanId) {
-      fetchPlanDetails(data.selectedPlanId);
+    if (preselectedPlanId) {
+      setCurrentStep(2); // Skip to plan selection if plan is preselected
+      fetchPlanDetails(preselectedPlanId);
     }
-  }, [data.selectedPlanId]);
+  }, [preselectedPlanId]);
 
   const fetchPlanDetails = async (planId: string) => {
     const { data: plan } = await supabase
@@ -82,11 +80,9 @@ const OrganizationRegisterPage = () => {
   };
 
   const steps = [
-    { number: 1, label: t('org_register.step_type') },
-    { number: 2, label: t('org_register.step_details') },
-    { number: 3, label: t('org_register.step_plan') },
-    { number: 4, label: t('org_register.step_billing') },
-    { number: 5, label: t('org_register.step_summary') },
+    { number: 1, label: t('org_register.step_data') },
+    { number: 2, label: t('org_register.step_package') },
+    { number: 3, label: t('org_register.step_summary') },
   ];
 
   const organizationTypes = [
@@ -110,37 +106,25 @@ const OrganizationRegisterPage = () => {
     },
   ];
 
-  const canProceed = () => {
-    switch (currentStep) {
-      case 1:
-        return data.type !== null;
-      case 2:
-        return data.name && data.taxNumber && data.address && data.contactName && data.contactEmail;
-      case 3:
-        return data.selectedPlanId !== null;
-      case 4:
-        return data.sameAsBilling || (data.billingAddress && data.billingEmail);
-      default:
-        return true;
-    }
+  const canProceedStep1 = () => {
+    return data.type !== null && 
+           data.name && 
+           data.taxNumber && 
+           data.address && 
+           data.contactName && 
+           data.contactEmail;
   };
 
-  const handleNext = () => {
-    if (canProceed() && currentStep < 5) {
-      setCurrentStep(currentStep + 1);
-    }
+  const handleSelectPlan = (planId: string) => {
+    setData({ ...data, selectedPlanId: planId });
+    fetchPlanDetails(planId);
+    setCurrentStep(3); // Go directly to summary
   };
 
   const handleBack = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
-  };
-
-  const handleSelectPlan = (planId: string) => {
-    setData({ ...data, selectedPlanId: planId });
-    fetchPlanDetails(planId);
-    handleNext();
   };
 
   const handleSubmit = async () => {
@@ -194,9 +178,9 @@ const OrganizationRegisterPage = () => {
       <Navigation />
 
       <div className="max-w-4xl mx-auto px-4 py-12">
-        {/* Step Indicator */}
+        {/* Step Indicator - 3 steps */}
         <div className="mb-10">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-center gap-4">
             {steps.map((step, index) => (
               <div key={step.number} className="flex items-center">
                 <div className="flex flex-col items-center">
@@ -214,14 +198,14 @@ const OrganizationRegisterPage = () => {
                       step.number
                     )}
                   </div>
-                  <span className="text-xs mt-2 text-muted-foreground hidden sm:block">
+                  <span className="text-xs mt-2 text-muted-foreground">
                     {step.label}
                   </span>
                 </div>
                 {index < steps.length - 1 && (
                   <div
                     className={cn(
-                      "flex-1 h-1 mx-2 rounded",
+                      "w-16 sm:w-24 h-1 mx-2 rounded",
                       currentStep > step.number ? "bg-primary" : "bg-muted"
                     )}
                   />
@@ -233,13 +217,14 @@ const OrganizationRegisterPage = () => {
 
         {/* Step Content */}
         <div className="space-y-6">
-          {/* Step 1: Organization Type */}
+          {/* Step 1: Type + Details Combined */}
           {currentStep === 1 && (
             <div>
               <h2 className="text-2xl font-bold mb-2">{t('org_register.title_type')}</h2>
               <p className="text-muted-foreground mb-6">{t('org_register.subtitle_type')}</p>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Organization Type Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 {organizationTypes.map((orgType) => {
                   const Icon = orgType.icon;
                   const isSelected = data.type === orgType.type;
@@ -270,92 +255,107 @@ const OrganizationRegisterPage = () => {
                   );
                 })}
               </div>
-            </div>
-          )}
 
-          {/* Step 2: Organization Details */}
-          {currentStep === 2 && (
-            <div>
-              <h2 className="text-2xl font-bold mb-2">{t('org_register.title_details')}</h2>
-              <p className="text-muted-foreground mb-6">{t('org_register.subtitle_details')}</p>
-              
-              <Card>
-                <CardContent className="p-6 space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">{t('org_register.field_name')} *</Label>
-                      <Input
-                        id="name"
-                        value={data.name}
-                        onChange={(e) => setData({ ...data, name: e.target.value })}
-                        placeholder={t('org_register.field_name_placeholder')}
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="taxNumber">{t('org_register.field_tax_number')} *</Label>
-                      <Input
-                        id="taxNumber"
-                        value={data.taxNumber}
-                        onChange={(e) => setData({ ...data, taxNumber: e.target.value })}
-                        placeholder="12345678-1-23"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="address">{t('org_register.field_address')} *</Label>
-                    <Input
-                      id="address"
-                      value={data.address}
-                      onChange={(e) => setData({ ...data, address: e.target.value })}
-                      placeholder={t('org_register.field_address_placeholder')}
-                    />
-                  </div>
-                  
-                  <div className="border-t pt-4 mt-4">
-                    <h4 className="font-medium mb-4">{t('org_register.contact_section')}</h4>
-                    
+              {/* Form fields appear after type selection */}
+              {data.type && (
+                <Card className="animate-in fade-in slide-in-from-top-4 duration-300">
+                  <CardHeader>
+                    <CardTitle className="text-lg">{t('org_register.title_details')}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="contactName">{t('org_register.field_contact_name')} *</Label>
+                        <Label htmlFor="name">{t('org_register.field_name')} *</Label>
                         <Input
-                          id="contactName"
-                          value={data.contactName}
-                          onChange={(e) => setData({ ...data, contactName: e.target.value })}
+                          id="name"
+                          value={data.name}
+                          onChange={(e) => setData({ ...data, name: e.target.value })}
+                          placeholder={t('org_register.field_name_placeholder')}
                         />
                       </div>
                       
                       <div className="space-y-2">
-                        <Label htmlFor="contactEmail">{t('org_register.field_contact_email')} *</Label>
+                        <Label htmlFor="taxNumber">{t('org_register.field_tax_number')} *</Label>
                         <Input
-                          id="contactEmail"
-                          type="email"
-                          value={data.contactEmail}
-                          onChange={(e) => setData({ ...data, contactEmail: e.target.value })}
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="contactPhone">{t('org_register.field_contact_phone')}</Label>
-                        <Input
-                          id="contactPhone"
-                          type="tel"
-                          value={data.contactPhone}
-                          onChange={(e) => setData({ ...data, contactPhone: e.target.value })}
-                          placeholder="+36 XX XXX XXXX"
+                          id="taxNumber"
+                          value={data.taxNumber}
+                          onChange={(e) => setData({ ...data, taxNumber: e.target.value })}
+                          placeholder="12345678-1-23"
                         />
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="address">{t('org_register.field_address')} *</Label>
+                      <Input
+                        id="address"
+                        value={data.address}
+                        onChange={(e) => setData({ ...data, address: e.target.value })}
+                        placeholder={t('org_register.field_address_placeholder')}
+                      />
+                    </div>
+                    
+                    <div className="border-t pt-4 mt-4">
+                      <h4 className="font-medium mb-4">{t('org_register.contact_section')}</h4>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="contactName">{t('org_register.field_contact_name')} *</Label>
+                          <Input
+                            id="contactName"
+                            value={data.contactName}
+                            onChange={(e) => setData({ ...data, contactName: e.target.value })}
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="contactEmail">{t('org_register.field_contact_email')} *</Label>
+                          <Input
+                            id="contactEmail"
+                            type="email"
+                            value={data.contactEmail}
+                            onChange={(e) => setData({ ...data, contactEmail: e.target.value })}
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="contactPhone">{t('org_register.field_contact_phone')}</Label>
+                          <Input
+                            id="contactPhone"
+                            type="tel"
+                            value={data.contactPhone}
+                            onChange={(e) => setData({ ...data, contactPhone: e.target.value })}
+                            placeholder="+36 XX XXX XXXX"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end pt-4">
+                      <Button 
+                        onClick={() => setCurrentStep(2)}
+                        disabled={!canProceedStep1()}
+                        size="lg"
+                      >
+                        {t('org_register.next')}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           )}
 
-          {/* Step 3: Select Plan */}
-          {currentStep === 3 && (
+          {/* Step 2: Select Plan - clicking card goes to step 3 */}
+          {currentStep === 2 && (
             <div>
+              <div className="flex items-center gap-4 mb-6">
+                <Button variant="ghost" size="sm" onClick={handleBack}>
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  {t('org_register.back')}
+                </Button>
+              </div>
+              
               <h2 className="text-2xl font-bold mb-2">{t('org_register.title_plan')}</h2>
               <p className="text-muted-foreground mb-6">{t('org_register.subtitle_plan')}</p>
               
@@ -366,61 +366,21 @@ const OrganizationRegisterPage = () => {
             </div>
           )}
 
-          {/* Step 4: Billing Details */}
-          {currentStep === 4 && (
+          {/* Step 3: Summary + Billing + Payment */}
+          {currentStep === 3 && (
             <div>
-              <h2 className="text-2xl font-bold mb-2">{t('org_register.title_billing')}</h2>
-              <p className="text-muted-foreground mb-6">{t('org_register.subtitle_billing')}</p>
-              
-              <Card>
-                <CardContent className="p-6 space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="sameAsBilling"
-                      checked={data.sameAsBilling}
-                      onCheckedChange={(checked) => 
-                        setData({ ...data, sameAsBilling: checked as boolean })
-                      }
-                    />
-                    <Label htmlFor="sameAsBilling" className="cursor-pointer">
-                      {t('org_register.same_as_hq')}
-                    </Label>
-                  </div>
-                  
-                  {!data.sameAsBilling && (
-                    <div className="space-y-4 pt-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="billingAddress">{t('org_register.field_billing_address')} *</Label>
-                        <Input
-                          id="billingAddress"
-                          value={data.billingAddress}
-                          onChange={(e) => setData({ ...data, billingAddress: e.target.value })}
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="billingEmail">{t('org_register.field_billing_email')} *</Label>
-                        <Input
-                          id="billingEmail"
-                          type="email"
-                          value={data.billingEmail}
-                          onChange={(e) => setData({ ...data, billingEmail: e.target.value })}
-                        />
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          )}
+              <div className="flex items-center gap-4 mb-6">
+                <Button variant="ghost" size="sm" onClick={handleBack}>
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  {t('org_register.back')}
+                </Button>
+              </div>
 
-          {/* Step 5: Summary */}
-          {currentStep === 5 && (
-            <div>
               <h2 className="text-2xl font-bold mb-2">{t('org_register.title_summary')}</h2>
               <p className="text-muted-foreground mb-6">{t('org_register.subtitle_summary')}</p>
               
               <div className="space-y-4">
+                {/* Organization Summary */}
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-lg">{t('org_register.summary_org')}</CardTitle>
@@ -439,14 +399,55 @@ const OrganizationRegisterPage = () => {
                       </span>
                     </div>
                     <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('org_register.field_tax_number')}:</span>
+                      <span className="font-medium">{data.taxNumber}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('org_register.field_address')}:</span>
+                      <span className="font-medium">{data.address}</span>
+                    </div>
+                    <div className="flex justify-between">
                       <span className="text-muted-foreground">{t('org_register.field_contact_email')}:</span>
                       <span className="font-medium">{data.contactEmail}</span>
                     </div>
                   </CardContent>
                 </Card>
+
+                {/* Billing Address */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">{t('org_register.title_billing')}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="sameAsBilling"
+                        checked={data.sameAsBilling}
+                        onCheckedChange={(checked) => 
+                          setData({ ...data, sameAsBilling: checked as boolean })
+                        }
+                      />
+                      <Label htmlFor="sameAsBilling" className="cursor-pointer">
+                        {t('org_register.same_as_hq')}
+                      </Label>
+                    </div>
+                    
+                    {!data.sameAsBilling && (
+                      <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
+                        <Label htmlFor="billingAddress">{t('org_register.field_billing_address')} *</Label>
+                        <Input
+                          id="billingAddress"
+                          value={data.billingAddress}
+                          onChange={(e) => setData({ ...data, billingAddress: e.target.value })}
+                        />
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
                 
+                {/* Selected Plan Summary */}
                 {selectedPlan && (
-                  <Card>
+                  <Card className="border-primary/30 bg-primary/5">
                     <CardHeader>
                       <CardTitle className="text-lg">{t('org_register.summary_plan')}</CardTitle>
                     </CardHeader>
@@ -456,57 +457,47 @@ const OrganizationRegisterPage = () => {
                         <span className="font-medium">{selectedPlan.name}</span>
                       </div>
                       <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t('org_register.plan_credits')}:</span>
+                        <span className="font-medium">
+                          {selectedPlan.monthly_credits} {t('subscription.credits_per_month_short')}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center pt-2 border-t mt-2">
                         <span className="text-muted-foreground">{t('org_register.plan_price')}:</span>
-                        <span className="font-bold text-lg">{formatPrice(selectedPlan.price_huf)} Ft</span>
+                        <span className="font-bold text-xl text-primary">
+                          {formatPrice(selectedPlan.price_huf)} Ft
+                        </span>
                       </div>
                     </CardContent>
                   </Card>
                 )}
 
-                <Card className="border-primary/30 bg-primary/5">
-                  <CardContent className="p-6 flex items-center gap-4">
-                    <CreditCard className="h-10 w-10 text-primary" />
-                    <div>
-                      <p className="font-medium">{t('org_register.mock_payment_title')}</p>
-                      <p className="text-sm text-muted-foreground">{t('org_register.mock_payment_desc')}</p>
-                    </div>
-                  </CardContent>
-                </Card>
+                {/* Submit Button */}
+                <Button
+                  onClick={handleSubmit}
+                  disabled={isSubmitting || (!data.sameAsBilling && !data.billingAddress)}
+                  className="w-full"
+                  size="lg"
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center gap-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground"></div>
+                      {t('org_register.processing')}
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      <CreditCard className="h-5 w-5" />
+                      {t('org_register.submit_payment')}
+                    </span>
+                  )}
+                </Button>
+
+                <p className="text-xs text-center text-muted-foreground">
+                  {t('org_register.terms_notice')}
+                </p>
               </div>
             </div>
           )}
-
-          {/* Navigation Buttons */}
-          <div className="flex justify-between pt-6">
-            <Button
-              variant="outline"
-              onClick={handleBack}
-              disabled={currentStep === 1}
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              {t('org_register.back')}
-            </Button>
-            
-            {currentStep < 5 ? (
-              currentStep !== 3 && (
-                <Button
-                  onClick={handleNext}
-                  disabled={!canProceed()}
-                >
-                  {t('org_register.next')}
-                  <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
-              )
-            ) : (
-              <Button
-                onClick={handleSubmit}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? t('org_register.processing') : t('org_register.pay_button')}
-                <CreditCard className="h-4 w-4 ml-2" />
-              </Button>
-            )}
-          </div>
         </div>
       </div>
 
