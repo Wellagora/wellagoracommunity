@@ -1,4 +1,12 @@
 {
+  "subscription.monthly": "Havi",
+  "subscription.yearly": "Éves",
+  "subscription.discount": "~17% kedvezmény",
+  "subscription.credits_per_month": "Havi {{count}} kredit",
+  "subscription.bonus_credits": "+{{count}} bónusz kredit",
+  "subscription.select_plan": "Ezt választom",
+  "subscription.popular": "Népszerű",
+  "subscription.current_plan": "Jelenlegi csomag",
   "roles.super_admin": "Szuper Admin",
   "roles.role_label": "Szerepkör",
   "roles.citizen": "Magánszemély",
