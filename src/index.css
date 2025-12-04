@@ -90,14 +90,15 @@ Természetes színpaletta és elegáns tipográfia a közösség építés támo
     --font-heading: 'Playfair Display', 'Georgia', serif;
     --font-body: 'Inter', 'system-ui', sans-serif;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 120 15% 15%;
-    --sidebar-primary: 100 30% 33%;
+    /* Dark Sidebar - Matching Deep Blue Theme */
+    --sidebar-background: 220 60% 10%;
+    --sidebar-foreground: 220 20% 98%;
+    --sidebar-primary: 214 75% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 122 39% 95%;
-    --sidebar-accent-foreground: 120 15% 15%;
-    --sidebar-border: 45 10% 85%;
-    --sidebar-ring: 100 30% 33%;
+    --sidebar-accent: 220 50% 18%;
+    --sidebar-accent-foreground: 220 20% 98%;
+    --sidebar-border: 220 40% 18%;
+    --sidebar-ring: 214 75% 55%;
   }
 
   /* Dark mode - megtartjuk opcióként */
