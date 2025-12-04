@@ -43,8 +43,6 @@ interface Project {
   is_active: boolean;
   branding?: any;
 }
-  branding?: any;
-}
 
 interface ProjectMember {
   id: string;
