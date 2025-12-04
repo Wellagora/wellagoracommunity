@@ -22,7 +22,7 @@ const SponsorLandingPage = () => {
   };
 
   const handleSelectPlan = (planId: string) => {
-    navigate(`/auth?plan=${planId}&role=sponsor`);
+    navigate(`/register/organization?plan=${planId}`);
   };
 
   const steps = [
@@ -277,7 +277,7 @@ const SponsorLandingPage = () => {
               </p>
               <Button 
                 size="lg" 
-                onClick={() => navigate('/auth?role=sponsor')}
+                onClick={() => navigate('/register/organization')}
                 className="text-lg px-8 py-6 h-auto"
               >
                 {t('sponsor_landing.final_cta_button')}
