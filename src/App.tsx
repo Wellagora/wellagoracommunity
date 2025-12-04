@@ -89,7 +89,7 @@ function App() {
                       <Route path="/organization/:organizationId" element={<PublicOrganizationPage />} />
                       <Route path="/sponsor-dashboard" element={<SponsorDashboardPage />} />
                       <Route path="/browse-programs" element={<BrowseProgramsPage />} />
-                      <Route path="/project-admin" element={<ProjectAdminPage />} />
+                      <Route path="/project-admin/:projectId" element={<ProjectAdminPage />} />
                       <Route path="/projects" element={<ProjectsListPage />} />
                       <Route path="/join/:projectSlug" element={<JoinProjectPage />} />
                       <Route path="/contact" element={<ContactPage />} />
