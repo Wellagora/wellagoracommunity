@@ -27,6 +27,8 @@ interface SubscriptionPlan {
   price_huf: number;
   price_eur: number;
   included_credits: number;
+  monthly_credits: number | null;
+  yearly_bonus_credits: number | null;
   is_active: boolean;
   display_order: number;
   features: any;
@@ -141,19 +143,18 @@ const SystemSettings = () => {
     try {
       const { error } = await supabase
         .from('subscription_plans')
-        .upsert({
-          id: editingPlan.id,
+        .update({
           name: editingPlan.name,
-          plan_key: editingPlan.plan_key,
           price_huf: editingPlan.price_huf,
           price_eur: editingPlan.price_eur,
+          monthly_credits: editingPlan.monthly_credits,
+          yearly_bonus_credits: editingPlan.yearly_bonus_credits,
           included_credits: editingPlan.included_credits,
           is_active: editingPlan.is_active,
-          display_order: editingPlan.display_order,
           features: editingPlan.features,
-          billing_period: editingPlan.billing_period,
           description: editingPlan.description
-        });
+        })
+        .eq('id', editingPlan.id);
 
       if (error) throw error;
       toast.success('Csomag mentve');
@@ -166,22 +167,7 @@ const SystemSettings = () => {
     }
   };
 
-  const handleCreatePlan = () => {
-    setEditingPlan({
-      id: '',
-      name: '',
-      plan_key: '',
-      price_huf: 0,
-      price_eur: 0,
-      included_credits: 0,
-      is_active: true,
-      display_order: subscriptionPlans.length,
-      features: [],
-      billing_period: 'yearly',
-      description: ''
-    });
-    setShowPlanDialog(true);
-  };
+  // Removed handleCreatePlan - we don't allow creating new plans
 
   const handleTogglePlanActive = async (plan: SubscriptionPlan) => {
     try {
@@ -354,11 +340,12 @@ const SystemSettings = () => {
 
         <TabsContent value="subscriptions" className="space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">Előfizetési csomagok</h3>
-            <Button onClick={handleCreatePlan}>
-              <Plus className="w-4 h-4 mr-2" />
-              Új csomag
-            </Button>
+            <div>
+              <h3 className="text-lg font-semibold">Előfizetési csomagok</h3>
+              <p className="text-sm text-muted-foreground">
+                Szerkesztheti a meglévő 8 csomagot. Új csomag létrehozása vagy törlés nem engedélyezett.
+              </p>
+            </div>
           </div>
 
           <Card className="bg-card/30 backdrop-blur border-border/50">
@@ -366,47 +353,56 @@ const SystemSettings = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Név</TableHead>
-                    <TableHead>Kulcs</TableHead>
-                    <TableHead>Ár HUF</TableHead>
-                    <TableHead>Ár EUR</TableHead>
-                    <TableHead>Kredit</TableHead>
-                    <TableHead>Sorrend</TableHead>
+                    <TableHead>Csomag</TableHead>
+                    <TableHead>Tier</TableHead>
+                    <TableHead>Időszak</TableHead>
+                    <TableHead>Ár (HUF)</TableHead>
+                    <TableHead>Kredit/hó</TableHead>
+                    <TableHead>Bónusz</TableHead>
                     <TableHead>Aktív</TableHead>
                     <TableHead>Műveletek</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {subscriptionPlans.map(plan => (
-                    <TableRow key={plan.id}>
-                      <TableCell className="font-medium">{plan.name}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{plan.plan_key}</Badge>
-                      </TableCell>
-                      <TableCell>{plan.price_huf.toLocaleString()} HUF</TableCell>
-                      <TableCell>{plan.price_eur} EUR</TableCell>
-                      <TableCell>{plan.included_credits}</TableCell>
-                      <TableCell>{plan.display_order}</TableCell>
-                      <TableCell>
-                        <Switch
-                          checked={plan.is_active}
-                          onCheckedChange={() => handleTogglePlanActive(plan)}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            setEditingPlan(plan);
-                            setShowPlanDialog(true);
-                          }}
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {subscriptionPlans.map(plan => {
+                    const tier = plan.plan_key.split('_')[0];
+                    const period = plan.billing_period;
+                    
+                    return (
+                      <TableRow key={plan.id}>
+                        <TableCell className="font-medium">{plan.name}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className="capitalize">{tier}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          {period === 'monthly' ? 'Havi' : 'Éves'}
+                        </TableCell>
+                        <TableCell>{plan.price_huf.toLocaleString()} Ft</TableCell>
+                        <TableCell>{plan.monthly_credits || '-'}</TableCell>
+                        <TableCell>
+                          {plan.yearly_bonus_credits ? `+${plan.yearly_bonus_credits}` : '-'}
+                        </TableCell>
+                        <TableCell>
+                          <Switch
+                            checked={plan.is_active}
+                            onCheckedChange={() => handleTogglePlanActive(plan)}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setEditingPlan(plan);
+                              setShowPlanDialog(true);
+                            }}
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </CardContent>
@@ -509,7 +505,7 @@ const SystemSettings = () => {
       <Dialog open={showPlanDialog} onOpenChange={setShowPlanDialog}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{editingPlan?.id ? 'Csomag szerkesztése' : 'Új csomag'}</DialogTitle>
+            <DialogTitle>Csomag szerkesztése</DialogTitle>
           </DialogHeader>
           {editingPlan && (
             <div className="space-y-4">
@@ -522,10 +518,11 @@ const SystemSettings = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Kulcs</Label>
+                  <Label>Kulcs (csak olvasható)</Label>
                   <Input
                     value={editingPlan.plan_key}
-                    onChange={(e) => setEditingPlan({ ...editingPlan, plan_key: e.target.value })}
+                    disabled
+                    className="bg-muted"
                   />
                 </div>
               </div>
@@ -549,21 +546,29 @@ const SystemSettings = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label>Kredit</Label>
+                  <Label>Kredit/hó</Label>
+                  <Input
+                    type="number"
+                    value={editingPlan.monthly_credits || 0}
+                    onChange={(e) => setEditingPlan({ ...editingPlan, monthly_credits: Number(e.target.value) })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Bónusz kredit (éves)</Label>
+                  <Input
+                    type="number"
+                    value={editingPlan.yearly_bonus_credits || 0}
+                    onChange={(e) => setEditingPlan({ ...editingPlan, yearly_bonus_credits: Number(e.target.value) })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Össz. kredit</Label>
                   <Input
                     type="number"
                     value={editingPlan.included_credits}
                     onChange={(e) => setEditingPlan({ ...editingPlan, included_credits: Number(e.target.value) })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Sorrend</Label>
-                  <Input
-                    type="number"
-                    value={editingPlan.display_order}
-                    onChange={(e) => setEditingPlan({ ...editingPlan, display_order: Number(e.target.value) })}
                   />
                 </div>
               </div>
@@ -577,31 +582,16 @@ const SystemSettings = () => {
               </div>
 
               <div className="space-y-2">
-                <Label>Funkciók (vesszővel elválasztva)</Label>
+                <Label>Funkciók (soronként egy)</Label>
                 <Textarea
-                  value={Array.isArray(editingPlan.features) ? editingPlan.features.join(', ') : ''}
+                  value={Array.isArray(editingPlan.features) ? editingPlan.features.join('\n') : ''}
                   onChange={(e) => setEditingPlan({ 
                     ...editingPlan, 
-                    features: e.target.value.split(',').map(f => f.trim()).filter(Boolean)
+                    features: e.target.value.split('\n').map(f => f.trim()).filter(Boolean)
                   })}
-                  placeholder="Funkció 1, Funkció 2, Funkció 3"
+                  placeholder="Havi 1 kredit&#10;Szervezeti profil&#10;Logo megjelenés"
+                  rows={5}
                 />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Számlázási időszak</Label>
-                <Select
-                  value={editingPlan.billing_period}
-                  onValueChange={(value) => setEditingPlan({ ...editingPlan, billing_period: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="monthly">Havi</SelectItem>
-                    <SelectItem value="yearly">Éves</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
 
               <div className="flex items-center space-x-2">

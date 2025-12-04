@@ -40,6 +40,7 @@ const PrivacyPolicyPage = lazy(() => import("@/pages/PrivacyPolicyPage"));
 const ImpressumPage = lazy(() => import("@/pages/ImpressumPage"));
 const SuperAdminPage = lazy(() => import("@/pages/SuperAdminPage"));
 const SponsorLandingPage = lazy(() => import("@/pages/SponsorLandingPage"));
+const OrganizationRegisterPage = lazy(() => import("@/pages/OrganizationRegisterPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function App() {
@@ -98,6 +99,7 @@ function App() {
                       <Route path="/impressum" element={<ImpressumPage />} />
                       <Route path="/super-admin" element={<SuperAdminPage />} />
                       <Route path="/sponsor" element={<SponsorLandingPage />} />
+                      <Route path="/register/organization" element={<OrganizationRegisterPage />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>
