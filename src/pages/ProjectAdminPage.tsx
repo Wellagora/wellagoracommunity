@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,6 +36,7 @@ interface ProjectMember {
 }
 
 export default function ProjectAdminPage() {
+  const { projectId } = useParams<{ projectId: string }>();
   const { user } = useAuth();
   const { toast } = useToast();
   const { t } = useLanguage();
@@ -51,7 +53,7 @@ export default function ProjectAdminPage() {
     if (user) {
       loadProjects();
     }
-  }, [user]);
+  }, [user, projectId]);
 
   useEffect(() => {
     if (selectedProject) {
@@ -71,7 +73,17 @@ export default function ProjectAdminPage() {
       if (error) throw error;
       setProjects(data || []);
       
-      if (data && data.length > 0) {
+      // If projectId is in URL, select that project
+      if (projectId && data) {
+        const targetProject = data.find(p => p.id === projectId);
+        if (targetProject) {
+          setSelectedProject(targetProject);
+          loadMembers(targetProject.id);
+        } else if (data.length > 0) {
+          setSelectedProject(data[0]);
+          loadMembers(data[0].id);
+        }
+      } else if (data && data.length > 0) {
         setSelectedProject(data[0]);
         loadMembers(data[0].id);
       }
