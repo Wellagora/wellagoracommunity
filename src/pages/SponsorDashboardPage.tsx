@@ -9,12 +9,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import SponsorCreditsOverview from '@/components/sponsor/SponsorCreditsOverview';
 import SponsorTransactionHistory from '@/components/sponsor/SponsorTransactionHistory';
 import SponsorActiveSponsorships from '@/components/sponsor/SponsorActiveSponsorships';
-import SponsorshipPackageSelector from '@/components/business/SponsorshipPackageSelector';
+import { SubscriptionPlanSelector } from '@/components/subscription/SubscriptionPlanSelector';
+import { useSubscription } from '@/contexts/SubscriptionContext';
+import { toast } from 'sonner';
 
 const SponsorDashboardPage = () => {
   const navigate = useNavigate();
   const { user, profile } = useAuth();
   const { t } = useLanguage();
+  const { currentSubscription } = useSubscription();
   const [showPackages, setShowPackages] = useState(false);
 
   // Check if user is a business/sponsor type
@@ -111,7 +114,13 @@ const SponsorDashboardPage = () => {
             </DialogTitle>
           </DialogHeader>
           <div className="mt-4">
-            <SponsorshipPackageSelector />
+            <SubscriptionPlanSelector 
+              onSelectPlan={(planId) => {
+                toast.success('Csomag kiválasztva! Stripe fizetés hamarosan elérhető.');
+                setShowPackages(false);
+              }}
+              currentPlanKey={currentSubscription?.plan?.plan_key}
+            />
           </div>
         </DialogContent>
       </Dialog>

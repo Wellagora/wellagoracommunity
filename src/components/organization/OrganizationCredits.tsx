@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSubscription } from "@/contexts/SubscriptionContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -23,27 +23,15 @@ import {
   RefreshCw,
   ArrowUpCircle,
   ArrowDownCircle,
-  Zap
+  Zap,
+  Crown,
+  Star,
+  Gem
 } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { hu } from "date-fns/locale";
-
-interface SponsorCredits {
-  id: string;
-  sponsor_user_id: string;
-  total_credits: number;
-  used_credits: number;
-  available_credits: number | null;
-}
-
-interface CreditPackage {
-  id: string;
-  name: string;
-  credits: number;
-  price_huf: number;
-  price_eur: number;
-  created_at: string;
-}
+import { SubscriptionPlanSelector } from "@/components/subscription/SubscriptionPlanSelector";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface CreditTransaction {
   id: string;
@@ -56,77 +44,36 @@ interface CreditTransaction {
 }
 
 const OrganizationCredits = () => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
+  const { credits, availableCredits, currentSubscription, isLoading, refreshCredits } = useSubscription();
   const { toast } = useToast();
   
-  const [credits, setCredits] = useState<SponsorCredits | null>(null);
-  const [packages, setPackages] = useState<CreditPackage[]>([]);
   const [transactions, setTransactions] = useState<CreditTransaction[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedPackage, setSelectedPackage] = useState<CreditPackage | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
-
-  // Fetch sponsor credits
-  useEffect(() => {
-    const fetchCredits = async () => {
-      if (!user?.id) return;
-
-      try {
-        const { data, error } = await supabase
-          .from('sponsor_credits')
-          .select('*')
-          .eq('sponsor_user_id', user.id)
-          .maybeSingle();
-
-        if (error) {
-          console.error('Error fetching credits:', error);
-        } else {
-          setCredits(data);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    };
-
-    fetchCredits();
-  }, [user?.id]);
-
-  // Fetch credit packages
-  useEffect(() => {
-    const fetchPackages = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('credit_packages')
-          .select('*')
-          .order('credits', { ascending: true });
-
-        if (error) {
-          console.error('Error fetching packages:', error);
-        } else {
-          setPackages(data || []);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    };
-
-    fetchPackages();
-  }, []);
+  const [transactionsLoading, setTransactionsLoading] = useState(true);
+  const [showPlanSelector, setShowPlanSelector] = useState(false);
 
   // Fetch credit transactions
   useEffect(() => {
     const fetchTransactions = async () => {
       if (!user?.id) {
-        setLoading(false);
+        setTransactionsLoading(false);
         return;
       }
 
       try {
-        const { data, error } = await supabase
+        let query = supabase
           .from('credit_transactions')
           .select('*')
-          .eq('sponsor_user_id', user.id)
           .order('created_at', { ascending: false });
+        
+        // Filter by organization_id if available, otherwise by user_id
+        if (profile?.organization_id) {
+          query = query.eq('organization_id', profile.organization_id);
+        } else {
+          query = query.eq('sponsor_user_id', user.id);
+        }
+
+        const { data, error } = await query;
 
         if (error) {
           console.error('Error fetching transactions:', error);
@@ -136,64 +83,28 @@ const OrganizationCredits = () => {
       } catch (error) {
         console.error('Error:', error);
       } finally {
-        setLoading(false);
+        setTransactionsLoading(false);
       }
     };
 
     fetchTransactions();
-  }, [user?.id]);
+  }, [user?.id, profile?.organization_id]);
 
-  const handleSelectPackage = (pkg: CreditPackage) => {
-    setSelectedPackage(pkg);
-    setDialogOpen(true);
-  };
-
-  const handlePurchase = async () => {
-    if (!selectedPackage || !user?.id) return;
-
-    try {
-      // Create pending transaction
-      const { error } = await supabase
-        .from('credit_transactions')
-        .insert({
-          sponsor_user_id: user.id,
-          transaction_type: 'purchase_pending',
-          credits: selectedPackage.credits,
-          description: `Kredit csomag vásárlás: ${selectedPackage.name}`,
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "Sikeres kérés",
-        description: "Stripe fizetés hamarosan elérhető! Kérjük vedd fel a kapcsolatot az adminisztrátorral.",
-      });
-      
-      setDialogOpen(false);
-      
-      // Refresh transactions
-      const { data } = await supabase
-        .from('credit_transactions')
-        .select('*')
-        .eq('sponsor_user_id', user.id)
-        .order('created_at', { ascending: false });
-      
-      if (data) setTransactions(data);
-    } catch (error) {
-      console.error('Error creating transaction:', error);
-      toast({
-        title: "Hiba",
-        description: "Nem sikerült létrehozni a tranzakciót",
-        variant: "destructive",
-      });
-    }
+  const handleSelectPlan = async (planId: string) => {
+    toast({
+      title: "Csomag kiválasztva",
+      description: "Stripe fizetés hamarosan elérhető! Kérjük vedd fel a kapcsolatot az adminisztrátorral.",
+    });
+    setShowPlanSelector(false);
   };
 
   const getTransactionTypeBadge = (type: string) => {
     const typeMap = {
       purchase: { label: "Vásárlás", variant: "default" as const, icon: ShoppingCart },
-      purchase_pending: { label: "Vásárlás (függőben)", variant: "secondary" as const, icon: ShoppingCart },
+      purchase_pending: { label: "Függőben", variant: "secondary" as const, icon: ShoppingCart },
+      subscription: { label: "Előfizetés", variant: "default" as const, icon: Crown },
       sponsorship: { label: "Szponzorálás", variant: "outline" as const, icon: Award },
+      spend: { label: "Felhasználás", variant: "outline" as const, icon: ArrowDownCircle },
       bonus: { label: "Bónusz", variant: "default" as const, icon: Zap },
       refund: { label: "Visszatérítés", variant: "secondary" as const, icon: RefreshCw },
     };
@@ -214,12 +125,12 @@ const OrganizationCredits = () => {
     );
   };
 
-  const formatCredits = (credits: number, isPositive: boolean = true) => {
+  const formatCredits = (creditAmount: number, isPositive: boolean = true) => {
     const sign = isPositive ? '+' : '-';
     const color = isPositive ? 'text-success' : 'text-destructive';
     return (
       <span className={`font-bold ${color}`}>
-        {sign}{Math.abs(credits).toLocaleString()} kredit
+        {sign}{Math.abs(creditAmount).toLocaleString()} kredit
       </span>
     );
   };
@@ -232,20 +143,21 @@ const OrganizationCredits = () => {
     }
   };
 
-  const formatCurrency = (amount: number, currency: 'HUF' | 'EUR') => {
-    return `${amount.toLocaleString('hu-HU')} ${currency}`;
+  const getTierIcon = (tier: string | undefined) => {
+    switch (tier) {
+      case 'bronze': return <Award className="w-5 h-5 text-amber-500" />;
+      case 'silver': return <Star className="w-5 h-5 text-slate-400" />;
+      case 'gold': return <Crown className="w-5 h-5 text-yellow-500" />;
+      case 'diamond': return <Gem className="w-5 h-5 text-purple-500" />;
+      default: return <Coins className="w-5 h-5 text-primary" />;
+    }
   };
 
-  const calculatePricePerCredit = (price: number, credits: number) => {
-    return (price / credits).toFixed(2);
-  };
-
-  const availableCredits = credits?.available_credits ?? 0;
   const totalCredits = credits?.total_credits ?? 0;
   const usedCredits = credits?.used_credits ?? 0;
   const usagePercentage = totalCredits > 0 ? (usedCredits / totalCredits) * 100 : 0;
 
-  if (loading) {
+  if (isLoading || transactionsLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-muted-foreground">Betöltés...</div>
@@ -261,7 +173,7 @@ const OrganizationCredits = () => {
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="flex-1 text-center md:text-left">
               <div className="flex items-center gap-2 mb-2">
-                <Coins className="w-6 h-6 text-primary" />
+                {getTierIcon(currentSubscription?.plan?.tier)}
                 <h3 className="text-xl font-semibold">Kredit egyenleged</h3>
               </div>
               <div className="text-5xl font-bold text-primary mb-2">
@@ -270,6 +182,11 @@ const OrganizationCredits = () => {
               <p className="text-muted-foreground">
                 {availableCredits.toLocaleString()} / {totalCredits.toLocaleString()} kredit elérhető
               </p>
+              {currentSubscription?.plan && (
+                <Badge className="mt-2" variant="outline">
+                  {currentSubscription.plan.name}
+                </Badge>
+              )}
             </div>
 
             <div className="flex-1 w-full max-w-xs">
@@ -290,65 +207,15 @@ const OrganizationCredits = () => {
               <Button 
                 size="lg" 
                 className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
+                onClick={() => setShowPlanSelector(true)}
               >
                 <ShoppingCart className="w-5 h-5 mr-2" />
-                Kredit vásárlás
+                {currentSubscription ? 'Csomag váltás' : 'Előfizetés'}
               </Button>
             </div>
           </div>
         </CardContent>
       </Card>
-
-      {/* Credit Packages Grid */}
-      <div>
-        <h2 className="text-2xl font-bold mb-6">Elérhető kredit csomagok</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {packages.map((pkg) => (
-            <Card 
-              key={pkg.id} 
-              className="border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300"
-            >
-              <CardHeader>
-                <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl">
-                  <Coins className="w-8 h-8 text-primary" />
-                </div>
-                <CardTitle className="text-center text-xl">{pkg.name}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-primary mb-1">
-                    {pkg.credits.toLocaleString()}
-                  </div>
-                  <div className="text-sm text-muted-foreground">kredit</div>
-                </div>
-
-                <div className="space-y-2 py-4 border-y border-border">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">HUF</span>
-                    <span className="font-bold">{formatCurrency(pkg.price_huf, 'HUF')}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">EUR</span>
-                    <span className="font-bold">{formatCurrency(pkg.price_eur, 'EUR')}</span>
-                  </div>
-                </div>
-
-                <div className="text-center text-sm text-muted-foreground">
-                  {calculatePricePerCredit(pkg.price_huf, pkg.credits)} HUF / kredit
-                </div>
-
-                <Button
-                  className="w-full"
-                  onClick={() => handleSelectPackage(pkg)}
-                >
-                  <ShoppingCart className="w-4 h-4 mr-2" />
-                  Vásárlás
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
 
       {/* Transaction History */}
       <div>
@@ -411,58 +278,16 @@ const OrganizationCredits = () => {
         )}
       </div>
 
-      {/* Package Purchase Dialog */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-md">
+      {/* Plan Selector Dialog */}
+      <Dialog open={showPlanSelector} onOpenChange={setShowPlanSelector}>
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Kredit csomag vásárlása</DialogTitle>
-            <DialogDescription>
-              Jóváhagyod a következő csomag megrendelését?
-            </DialogDescription>
+            <DialogTitle>Előfizetési csomag választása</DialogTitle>
           </DialogHeader>
-
-          {selectedPackage && (
-            <div className="space-y-4 py-4">
-              <div className="flex items-center justify-center w-20 h-20 mx-auto bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl">
-                <Coins className="w-10 h-10 text-primary" />
-              </div>
-
-              <div className="text-center">
-                <h3 className="text-2xl font-bold mb-2">{selectedPackage.name}</h3>
-                <div className="text-4xl font-bold text-primary mb-1">
-                  {selectedPackage.credits.toLocaleString()}
-                </div>
-                <div className="text-sm text-muted-foreground">kredit</div>
-              </div>
-
-              <div className="p-4 bg-muted/50 rounded-lg space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">HUF ár</span>
-                  <span className="font-bold">{formatCurrency(selectedPackage.price_huf, 'HUF')}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">EUR ár</span>
-                  <span className="font-bold">{formatCurrency(selectedPackage.price_eur, 'EUR')}</span>
-                </div>
-                <div className="flex justify-between pt-2 border-t">
-                  <span className="text-muted-foreground">Kredit ára</span>
-                  <span className="font-medium text-sm">
-                    {calculatePricePerCredit(selectedPackage.price_huf, selectedPackage.credits)} HUF / kredit
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>
-              Mégse
-            </Button>
-            <Button onClick={handlePurchase} className="bg-gradient-to-r from-primary to-accent">
-              <ShoppingCart className="w-4 h-4 mr-2" />
-              Fizetés
-            </Button>
-          </DialogFooter>
+          <SubscriptionPlanSelector 
+            onSelectPlan={handleSelectPlan}
+            currentPlanKey={currentSubscription?.plan?.plan_key}
+          />
         </DialogContent>
       </Dialog>
     </div>
