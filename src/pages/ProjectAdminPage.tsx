@@ -39,9 +39,9 @@ interface Project {
   region_name: string;
   villages: string[];
   description: string | null;
-  settings?: any;
+  settings?: Record<string, unknown>;
   is_active: boolean;
-  branding?: any;
+  branding?: Record<string, unknown>;
 }
 
 interface ProjectMember {
@@ -182,17 +182,16 @@ export default function ProjectAdminPage() {
       return;
     }
     
-    setProject(data);
+    setProject(data as Project);
     setProjectName(data.name);
     setRegionName(data.region_name);
     setProjectDescription(data.description || "");
-    setIsPublic((data.settings as any)?.allowPublicView ?? true);
+    setIsPublic((data.settings as Record<string, unknown>)?.allowPublicView as boolean ?? true);
   };
 
   const loadMembers = async () => {
     if (!projectId) return;
     
-    // Get project members
     const { data: membersData, error } = await supabase
       .from("project_members")
       .select("id, user_id, role, created_at")
@@ -205,27 +204,23 @@ export default function ProjectAdminPage() {
       return;
     }
     
-    // Get profiles
     const userIds = membersData.map(m => m.user_id);
     const { data: profilesData } = await supabase
       .from("profiles")
       .select("id, email, first_name, last_name, avatar_url")
       .in("id", userIds);
     
-    // Get points from challenge_completions
     const { data: completionsData } = await supabase
       .from("challenge_completions")
       .select("user_id, points_earned")
       .eq("project_id", projectId)
       .in("user_id", userIds);
     
-    // Calculate points per user
     const pointsMap: Record<string, number> = {};
     completionsData?.forEach(c => {
       pointsMap[c.user_id] = (pointsMap[c.user_id] || 0) + c.points_earned;
     });
     
-    // Combine data
     const combined = membersData.map(member => {
       const profile = profilesData?.find(p => p.id === member.user_id);
       return {
@@ -250,22 +245,19 @@ export default function ProjectAdminPage() {
     
     if (error) return;
     
-    // Get completion stats for each program
     const programIds = data?.map(p => p.id) || [];
     const { data: completions } = await supabase
       .from("challenge_completions")
       .select("challenge_id, user_id, validation_status")
       .in("challenge_id", programIds);
     
-    // Get sponsorships
     const { data: sponsorshipsData } = await supabase
       .from("challenge_sponsorships")
       .select("challenge_id, sponsor_organization_id, status")
       .in("challenge_id", programIds)
       .eq("status", "active");
     
-    // Get organization names for sponsors
-    const orgIds = sponsorshipsData?.map(s => s.sponsor_organization_id).filter(Boolean) || [];
+    const orgIds = sponsorshipsData?.map(s => s.sponsor_organization_id).filter(Boolean) as string[] || [];
     const { data: orgsData } = orgIds.length > 0 ? await supabase
       .from("organizations")
       .select("id, name")
@@ -287,7 +279,7 @@ export default function ProjectAdminPage() {
       };
     }) || [];
     
-    setPrograms(programsWithStats);
+    setPrograms(programsWithStats as Program[]);
   };
 
   const loadSponsorships = async () => {
@@ -301,8 +293,7 @@ export default function ProjectAdminPage() {
     
     if (error) return;
     
-    // Get organization names and program titles
-    const orgIds = data?.map(s => s.sponsor_organization_id).filter(Boolean) || [];
+    const orgIds = data?.map(s => s.sponsor_organization_id).filter(Boolean) as string[] || [];
     const challengeIds = data?.map(s => s.challenge_id) || [];
     
     const [orgsRes, programsRes] = await Promise.all([
@@ -316,28 +307,23 @@ export default function ProjectAdminPage() {
       program_title: programsRes.data?.find(p => p.id === s.challenge_id)?.title || s.challenge_id,
     })) || [];
     
-    setSponsorships(enriched);
+    setSponsorships(enriched as Sponsorship[]);
   };
 
   const loadStats = async () => {
     if (!projectId) return;
-    
-    // Count active members (members with activity in last 30 days)
-    const thirtyDaysAgo = subDays(new Date(), 30).toISOString();
     
     const { count: totalMembers } = await supabase
       .from("project_members")
       .select("*", { count: "exact", head: true })
       .eq("project_id", projectId);
     
-    // Active programs
     const { count: activePrograms } = await supabase
       .from("challenge_definitions")
       .select("*", { count: "exact", head: true })
       .eq("project_id", projectId)
       .eq("is_active", true);
     
-    // Completions for rate calculation
     const { data: completions } = await supabase
       .from("challenge_completions")
       .select("validation_status")
@@ -347,7 +333,6 @@ export default function ProjectAdminPage() {
     const approvedCompletions = completions?.filter(c => c.validation_status === 'approved').length || 0;
     const completionRate = totalCompletions > 0 ? Math.round((approvedCompletions / totalCompletions) * 100) : 0;
     
-    // Sponsor revenue (credits)
     const { data: sponsorData } = await supabase
       .from("challenge_sponsorships")
       .select("credit_cost")
@@ -358,7 +343,7 @@ export default function ProjectAdminPage() {
     
     setStats({
       activeMembers: totalMembers || 0,
-      membersTrend: 5, // Mock trend for now
+      membersTrend: 5,
       runningPrograms: activePrograms || 0,
       completionRate,
       sponsorRevenue,
@@ -376,7 +361,6 @@ export default function ProjectAdminPage() {
       .eq("project_id", projectId)
       .gte("completion_date", thirtyDaysAgo.toISOString().split('T')[0]);
     
-    // Generate all days in range
     const days = eachDayOfInterval({ start: thirtyDaysAgo, end: new Date() });
     const activityMap: Record<string, number> = {};
     
@@ -411,7 +395,6 @@ export default function ProjectAdminPage() {
       return;
     }
     
-    // Also remove project_id from profile
     await supabase
       .from("profiles")
       .update({ project_id: null })
@@ -472,7 +455,7 @@ export default function ProjectAdminPage() {
         name: projectName,
         region_name: regionName,
         description: projectDescription || null,
-        settings: { ...(project.settings as any || {}), allowPublicView: isPublic },
+        settings: { ...(project.settings || {}), allowPublicView: isPublic },
       })
       .eq("id", project.id);
     
@@ -505,18 +488,15 @@ export default function ProjectAdminPage() {
   const sendMessage = async () => {
     if (!messageTitle || !messageContent || !project) return;
     
-    // Get target user IDs
     let targetUserIds: string[] = [];
     
     if (messageTarget === "all") {
       targetUserIds = members.map(m => m.user_id);
     } else if (messageTarget === "active") {
-      // For simplicity, use all members for now
       targetUserIds = members.map(m => m.user_id);
     }
     
     if (sendNotification) {
-      // Insert notifications
       const notifications = targetUserIds.map(userId => ({
         user_id: userId,
         title: messageTitle,
@@ -808,7 +788,6 @@ export default function ProjectAdminPage() {
 
           {/* TAB 2: Community */}
           <TabsContent value="community" className="space-y-6">
-            {/* Top Bar */}
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
               <div className="flex gap-3 flex-1">
                 <div className="relative flex-1 max-w-sm">
@@ -838,7 +817,6 @@ export default function ProjectAdminPage() {
             </div>
 
             <div className="grid lg:grid-cols-3 gap-6">
-              {/* Members Table */}
               <Card className="lg:col-span-2 bg-card/30 backdrop-blur border-border/50">
                 <CardHeader>
                   <CardTitle className="text-lg">Tagok ({filteredMembers.length})</CardTitle>
@@ -918,7 +896,6 @@ export default function ProjectAdminPage() {
                 </CardContent>
               </Card>
 
-              {/* Leaderboard */}
               <Card className="bg-card/30 backdrop-blur border-border/50">
                 <CardHeader>
                   <CardTitle className="text-lg">Top 10 tag</CardTitle>
@@ -955,7 +932,6 @@ export default function ProjectAdminPage() {
 
           {/* TAB 3: Programs */}
           <TabsContent value="programs" className="space-y-6">
-            {/* Top Bar */}
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
               <div className="flex gap-3">
                 <div className="flex border rounded-lg overflow-hidden">
@@ -994,7 +970,6 @@ export default function ProjectAdminPage() {
               </Button>
             </div>
 
-            {/* Programs Grid/List */}
             {programView === "cards" ? (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredPrograms.map((program) => (
@@ -1126,7 +1101,6 @@ export default function ProjectAdminPage() {
                 <TabsTrigger value="settings">Beállítások</TabsTrigger>
               </TabsList>
 
-              {/* Analytics Sub-tab */}
               <TabsContent value="analytics" className="space-y-6 mt-6">
                 <div className="flex gap-2">
                   {["7", "30", "90", "365"].map((days) => (
@@ -1190,7 +1164,7 @@ export default function ProjectAdminPage() {
                               outerRadius={80}
                               label={({ name, value }) => `${name}: ${value}`}
                             >
-                              {programsByCategory.map((entry, index) => (
+                              {programsByCategory.map((_, index) => (
                                 <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
                               ))}
                             </Pie>
@@ -1203,7 +1177,6 @@ export default function ProjectAdminPage() {
                 </div>
               </TabsContent>
 
-              {/* Sponsors Sub-tab */}
               <TabsContent value="sponsors" className="mt-6">
                 <Card className="bg-card/30 backdrop-blur border-border/50">
                   <CardHeader>
@@ -1249,7 +1222,6 @@ export default function ProjectAdminPage() {
                 </Card>
               </TabsContent>
 
-              {/* Messages Sub-tab */}
               <TabsContent value="messages" className="mt-6 space-y-6">
                 <Card className="bg-card/30 backdrop-blur border-border/50">
                   <CardHeader>
@@ -1304,7 +1276,6 @@ export default function ProjectAdminPage() {
                 </Card>
               </TabsContent>
 
-              {/* Settings Sub-tab */}
               <TabsContent value="settings" className="mt-6 space-y-6">
                 <Card className="bg-card/30 backdrop-blur border-border/50">
                   <CardHeader>
@@ -1346,7 +1317,6 @@ export default function ProjectAdminPage() {
                   </CardContent>
                 </Card>
 
-                {/* Danger Zone */}
                 <Card className="border-destructive/50">
                   <CardHeader>
                     <CardTitle className="text-lg text-destructive">Veszélyzóna</CardTitle>
