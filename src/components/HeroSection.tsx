@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Sparkles, ArrowRight, Globe, Users, Target, TrendingUp } from "lucide-react";
+import { Sparkles, Globe, Users, Target, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -68,9 +68,8 @@ const HeroSection = () => {
           {/* Premium Gradient Buttons */}
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-20 animate-fade-up" style={{ animationDelay: '0.4s' }}>
             <Link to="/auth">
-              <Button variant="premium" size="lg" className="group text-lg px-12 py-7 rounded-2xl">
+              <Button variant="premium" size="lg" className="text-lg px-12 py-7 rounded-2xl">
                 <span>Start Your Journey</span>
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
             <Link to="/challenges">

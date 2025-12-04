@@ -11,7 +11,6 @@ import {
   TrendingUp, 
   Award, 
   Target,
-  ArrowRight,
   Zap,
   Handshake,
   BarChart3
@@ -406,7 +405,6 @@ const RegionalOrchestrator2D = () => {
                           className="w-full text-xs bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
                         >
                           View Details
-                          <ArrowRight className="w-3 h-3 ml-1" />
                         </Button>
                       </motion.div>
                     </CardContent>

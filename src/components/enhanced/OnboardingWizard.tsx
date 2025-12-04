@@ -20,7 +20,6 @@ import {
   Trash2,
   Users,
   CheckCircle,
-  ArrowRight,
   ArrowLeft,
   Sparkles
 } from "lucide-react";
@@ -528,7 +527,6 @@ const OnboardingWizard = ({ onComplete, onSkip }: OnboardingWizardProps) => {
               disabled={!isStepValid()}
             >
               {currentStep === totalSteps - 1 ? "Complete Setup" : "Next"}
-              <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
         </CardContent>

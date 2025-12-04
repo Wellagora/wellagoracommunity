@@ -406,7 +406,6 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                         onClick={() => onRegionSelect(selectedRegion)}
                       >
                         Load {selectedRegion.displayName}
-                        <ChevronRight className="w-4 h-4 ml-2" />
                       </Button>
                     </div>
                   </CardContent>

@@ -11,7 +11,6 @@ import {
   Share2,
   Bookmark,
   MoreHorizontal,
-  ChevronRight,
   Sparkles,
   Camera,
   Award
@@ -280,7 +279,6 @@ const CommunitySection = () => {
                   </div>
                 ))}
                 <Button variant="outline" className="w-full">
-                  <ChevronRight className="w-4 h-4 mr-2" />
                   Share Your Story
                 </Button>
               </CardContent>

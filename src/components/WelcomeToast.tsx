@@ -10,7 +10,6 @@ import {
   Users, 
   Leaf, 
   X,
-  ArrowRight,
   Gift
 } from "lucide-react";
 
@@ -106,10 +105,9 @@ const WelcomeToast = () => {
             <div className="flex space-x-3">
               <Button 
                 onClick={handleGetStarted}
-                className="flex-1 bg-gradient-primary hover:shadow-glow transition-spring group"
+                className="flex-1 bg-gradient-primary hover:shadow-glow transition-spring"
               >
                 Let's Begin!
-                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
               <Button 
                 variant="outline" 

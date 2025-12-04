@@ -4,9 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { 
-  ArrowRight, 
   Recycle, 
-  Factory, 
+  Factory,
   Truck, 
   Store, 
   Home, 
@@ -423,7 +422,6 @@ const CircularEconomyFlow = () => {
                           
                           <Button className="w-full bg-gradient-to-r from-primary to-accent text-sm">
                             Explore Opportunity
-                            <ArrowRight className="w-4 h-4 ml-2" />
                           </Button>
                         </CardContent>
                       </Card>

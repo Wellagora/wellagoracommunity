@@ -6,7 +6,6 @@ import {
   Building2, 
   MapPin, 
   Users,
-  ArrowRight,
   CheckCircle,
   Target,
   Heart,
@@ -158,7 +157,6 @@ const CustomerJourney = () => {
                             <Link to="/auth" className="block">
                               <Button className="w-full sm:w-auto bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground font-semibold px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300 text-sm sm:text-base">
                                 {t('journey.start_registration')}
-                                <ArrowRight className="ml-2 w-3 h-3 sm:w-4 sm:h-4" />
                               </Button>
                             </Link>
                           </div>
@@ -179,7 +177,6 @@ const CustomerJourney = () => {
                             <Link to="/profile" className="block">
                               <Button variant="outline" className="w-full sm:w-auto border-primary/30 hover:bg-primary/10 text-sm sm:text-base">
                                 {t('journey.edit_profile')}
-                                <ArrowRight className="ml-2 w-3 h-3 sm:w-4 sm:h-4" />
                               </Button>
                             </Link>
                           </div>
@@ -200,7 +197,6 @@ const CustomerJourney = () => {
                             <Link to="/dashboard" className="block">
                               <Button variant="outline" className="w-full sm:w-auto border-accent/30 hover:bg-accent/10 text-sm sm:text-base">
                                 {t('journey.view_dashboard')}
-                                <ArrowRight className="ml-2 w-3 h-3 sm:w-4 sm:h-4" />
                               </Button>
                             </Link>
                           </div>
@@ -279,7 +275,6 @@ const CustomerJourney = () => {
               <Link to="/auth" className="block sm:inline-block">
                 <Button className="w-full sm:w-auto bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground font-semibold px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg sm:rounded-xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300 text-sm sm:text-base">
                   {t('journey.start_now')}
-                  <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
               </Link>
             </CardContent>
