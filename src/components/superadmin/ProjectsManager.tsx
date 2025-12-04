@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,6 +58,7 @@ const projectSchema = z.object({
 });
 
 const ProjectsManager = () => {
+  const navigate = useNavigate();
   const [projects, setProjects] = useState<ProjectWithStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -476,7 +478,12 @@ const ProjectsManager = () => {
 
               <CardFooter className="flex flex-col gap-2">
                 <div className="flex w-full gap-2">
-                  <Button variant="outline" size="sm" className="flex-1">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => navigate(`/project-admin/${project.id}`)}
+                  >
                     <Settings className="h-4 w-4 mr-1" />
                     Kezelés
                   </Button>

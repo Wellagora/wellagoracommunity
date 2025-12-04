@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Settings, Package, CreditCard, Info, Pencil, Trash2, Plus } from "lucide-react";
+import { Settings, Package, Info, Pencil } from "lucide-react";
 
 interface Project {
   id: string;
@@ -36,14 +36,6 @@ interface SubscriptionPlan {
   description: string;
 }
 
-interface CreditPackage {
-  id: string;
-  name: string;
-  credits: number;
-  price_huf: number;
-  price_eur: number;
-}
-
 const SystemSettings = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [defaultProjectId, setDefaultProjectId] = useState<string>("");
@@ -51,12 +43,9 @@ const SystemSettings = () => {
   const [supportEmail, setSupportEmail] = useState<string>("");
   
   const [subscriptionPlans, setSubscriptionPlans] = useState<SubscriptionPlan[]>([]);
-  const [creditPackages, setCreditPackages] = useState<CreditPackage[]>([]);
   
   const [editingPlan, setEditingPlan] = useState<SubscriptionPlan | null>(null);
-  const [editingPackage, setEditingPackage] = useState<CreditPackage | null>(null);
   const [showPlanDialog, setShowPlanDialog] = useState(false);
-  const [showPackageDialog, setShowPackageDialog] = useState(false);
   
   const [loading, setLoading] = useState(true);
 
@@ -95,13 +84,6 @@ const SystemSettings = () => {
         .select('*')
         .order('display_order');
       setSubscriptionPlans(plansData || []);
-
-      // Load credit packages
-      const { data: packagesData } = await supabase
-        .from('credit_packages')
-        .select('*')
-        .order('credits');
-      setCreditPackages(packagesData || []);
 
     } catch (error) {
       console.error('Error loading settings:', error);
@@ -167,8 +149,6 @@ const SystemSettings = () => {
     }
   };
 
-  // Removed handleCreatePlan - we don't allow creating new plans
-
   const handleTogglePlanActive = async (plan: SubscriptionPlan) => {
     try {
       const { error } = await supabase
@@ -183,60 +163,6 @@ const SystemSettings = () => {
       console.error('Error toggling plan:', error);
       toast.error('Hiba történt a frissítés során');
     }
-  };
-
-  const handleSavePackage = async () => {
-    if (!editingPackage) return;
-
-    try {
-      const { error } = await supabase
-        .from('credit_packages')
-        .upsert({
-          id: editingPackage.id || undefined,
-          name: editingPackage.name,
-          credits: editingPackage.credits,
-          price_huf: editingPackage.price_huf,
-          price_eur: editingPackage.price_eur
-        });
-
-      if (error) throw error;
-      toast.success('Kredit csomag mentve');
-      setShowPackageDialog(false);
-      setEditingPackage(null);
-      loadData();
-    } catch (error) {
-      console.error('Error saving package:', error);
-      toast.error('Hiba történt a mentés során');
-    }
-  };
-
-  const handleDeletePackage = async (id: string) => {
-    if (!confirm('Biztosan törölni szeretnéd ezt a kredit csomagot?')) return;
-
-    try {
-      const { error } = await supabase
-        .from('credit_packages')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-      toast.success('Kredit csomag törölve');
-      loadData();
-    } catch (error) {
-      console.error('Error deleting package:', error);
-      toast.error('Hiba történt a törlés során');
-    }
-  };
-
-  const handleCreatePackage = () => {
-    setEditingPackage({
-      id: '',
-      name: '',
-      credits: 0,
-      price_huf: 0,
-      price_eur: 0
-    });
-    setShowPackageDialog(true);
   };
 
   if (loading) {
@@ -257,18 +183,14 @@ const SystemSettings = () => {
       </div>
 
       <Tabs defaultValue="general" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="general">
             <Settings className="w-4 h-4 mr-2" />
             Általános
           </TabsTrigger>
           <TabsTrigger value="subscriptions">
             <Package className="w-4 h-4 mr-2" />
-            Előfizetések
-          </TabsTrigger>
-          <TabsTrigger value="credits">
-            <CreditCard className="w-4 h-4 mr-2" />
-            Kredit csomagok
+            Előfizetési csomagok
           </TabsTrigger>
           <TabsTrigger value="system">
             <Info className="w-4 h-4 mr-2" />
@@ -343,7 +265,7 @@ const SystemSettings = () => {
             <div>
               <h3 className="text-lg font-semibold">Előfizetési csomagok</h3>
               <p className="text-sm text-muted-foreground">
-                Szerkesztheti a meglévő 8 csomagot. Új csomag létrehozása vagy törlés nem engedélyezett.
+                Szerkesztheti a meglévő 8 csomagot (Bronze, Silver, Gold, Diamond × Havi/Éves). Új csomag létrehozása vagy törlés nem engedélyezett.
               </p>
             </div>
           </div>
@@ -360,7 +282,7 @@ const SystemSettings = () => {
                     <TableHead>Kredit/hó</TableHead>
                     <TableHead>Bónusz</TableHead>
                     <TableHead>Aktív</TableHead>
-                    <TableHead>Műveletek</TableHead>
+                    <TableHead>Szerkesztés</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -409,63 +331,6 @@ const SystemSettings = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="credits" className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">Kredit csomagok</h3>
-            <Button onClick={handleCreatePackage}>
-              <Plus className="w-4 h-4 mr-2" />
-              Új kredit csomag
-            </Button>
-          </div>
-
-          <Card className="bg-card/30 backdrop-blur border-border/50">
-            <CardContent className="pt-6">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Név</TableHead>
-                    <TableHead>Kreditek</TableHead>
-                    <TableHead>Ár HUF</TableHead>
-                    <TableHead>Ár EUR</TableHead>
-                    <TableHead>Műveletek</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {creditPackages.map(pkg => (
-                    <TableRow key={pkg.id}>
-                      <TableCell className="font-medium">{pkg.name}</TableCell>
-                      <TableCell>{pkg.credits}</TableCell>
-                      <TableCell>{pkg.price_huf.toLocaleString()} HUF</TableCell>
-                      <TableCell>{pkg.price_eur} EUR</TableCell>
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              setEditingPackage(pkg);
-                              setShowPackageDialog(true);
-                            }}
-                          >
-                            <Pencil className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleDeletePackage(pkg.id)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
         <TabsContent value="system" className="space-y-4">
           <Card className="bg-card/30 backdrop-blur border-border/50">
             <CardHeader>
@@ -490,11 +355,11 @@ const SystemSettings = () => {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">Összes felhasználó</span>
-                <span className="font-semibold">{/* Could load from profiles */}-</span>
+                <span className="font-semibold">-</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">Összes szervezet</span>
-                <span className="font-semibold">{/* Could load from organizations */}-</span>
+                <span className="font-semibold">-</span>
               </div>
             </CardContent>
           </Card>
@@ -608,58 +473,6 @@ const SystemSettings = () => {
               Mégse
             </Button>
             <Button onClick={handleSavePlan}>Mentés</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit Package Dialog */}
-      <Dialog open={showPackageDialog} onOpenChange={setShowPackageDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{editingPackage?.id ? 'Kredit csomag szerkesztése' : 'Új kredit csomag'}</DialogTitle>
-          </DialogHeader>
-          {editingPackage && (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>Név</Label>
-                <Input
-                  value={editingPackage.name}
-                  onChange={(e) => setEditingPackage({ ...editingPackage, name: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Kreditek</Label>
-                <Input
-                  type="number"
-                  value={editingPackage.credits}
-                  onChange={(e) => setEditingPackage({ ...editingPackage, credits: Number(e.target.value) })}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Ár HUF</Label>
-                  <Input
-                    type="number"
-                    value={editingPackage.price_huf}
-                    onChange={(e) => setEditingPackage({ ...editingPackage, price_huf: Number(e.target.value) })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Ár EUR</Label>
-                  <Input
-                    type="number"
-                    value={editingPackage.price_eur}
-                    onChange={(e) => setEditingPackage({ ...editingPackage, price_eur: Number(e.target.value) })}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowPackageDialog(false)}>
-              Mégse
-            </Button>
-            <Button onClick={handleSavePackage}>Mentés</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
