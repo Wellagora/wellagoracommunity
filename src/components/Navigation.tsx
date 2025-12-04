@@ -11,7 +11,8 @@ import {
   Mail,
   Inbox,
   ChevronDown,
-  ShieldCheck
+  ShieldCheck,
+  Heart
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -129,6 +130,7 @@ const Navigation = () => {
     { path: '/challenges', label: t('nav.challenges'), icon: Target },
     { path: '/community', label: t('nav.community'), icon: UsersIcon },
     { path: '/ai-assistant', label: 'WellBot AI', icon: Bot },
+    ...(!user ? [{ path: '/sponsor', label: t('nav.sponsors'), icon: Heart }] : []),
   ];
 
   // Add dashboard based on user type
