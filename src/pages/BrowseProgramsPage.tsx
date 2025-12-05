@@ -89,27 +89,6 @@ const BrowseProgramsPage = () => {
     return translations[language]?.description || program.description || '';
   };
 
-  const getCategoryColor = (category: string) => {
-    const colors: Record<string, string> = {
-      energy: 'bg-yellow-500/10 text-yellow-600 border-yellow-200',
-      transport: 'bg-blue-500/10 text-blue-600 border-blue-200',
-      waste: 'bg-green-500/10 text-green-600 border-green-200',
-      water: 'bg-cyan-500/10 text-cyan-600 border-cyan-200',
-      food: 'bg-orange-500/10 text-orange-600 border-orange-200',
-      community: 'bg-purple-500/10 text-purple-600 border-purple-200'
-    };
-    return colors[category] || 'bg-gray-500/10 text-gray-600 border-gray-200';
-  };
-
-  const getDifficultyLabel = (difficulty: string) => {
-    const labels: Record<string, string> = {
-      beginner: t('challenges.difficulty.beginner'),
-      intermediate: t('challenges.difficulty.intermediate'),
-      advanced: t('challenges.difficulty.advanced')
-    };
-    return labels[difficulty] || difficulty;
-  };
-
   if (!user || !isSponsor) {
     return (
       <div className="min-h-screen bg-gradient-light-transition flex items-center justify-center p-6">
@@ -172,12 +151,6 @@ const BrowseProgramsPage = () => {
                   </div>
                 )}
                 <CardHeader>
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <Badge className={getCategoryColor(program.category)}>
-                      {program.category}
-                    </Badge>
-                    <Badge variant="outline">{getDifficultyLabel(program.difficulty)}</Badge>
-                  </div>
                   <CardTitle className="text-lg">{getLocalizedTitle(program)}</CardTitle>
                   <CardDescription className="line-clamp-2">
                     {getLocalizedDescription(program)}

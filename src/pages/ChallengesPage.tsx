@@ -4,41 +4,22 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useProject } from "@/contexts/ProjectContext";
 import Navigation from "@/components/Navigation";
-import { Card3D, FeatureCard3D } from "@/components/ui/card-3d";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card3D } from "@/components/ui/card-3d";
+import { CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Search,
-  Filter,
   Users,
   Clock,
   Trophy,
-  Target,
-  Leaf,
-  Recycle,
-  Car,
-  Utensils,
-  UsersIcon,
-  Lightbulb,
-  Droplets,
-  TreePine,
-  RotateCcw,
-  DollarSign,
   Star,
-  Loader2,
-  TrendingUp,
-  Award,
-  Calculator,
   Calendar,
   MapPin,
   Zap
 } from "lucide-react";
-import { challenges, Challenge } from "@/data/challenges";
+import { Challenge } from "@/data/challenges";
 import { loadChallengesFromDatabase } from "@/services/ChallengeSponsorshipService";
 
 const ChallengesPage = () => {
@@ -47,8 +28,6 @@ const ChallengesPage = () => {
   const { t, language } = useLanguage();
   const { currentProject } = useProject();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string>("all");
   const [filteredChallenges, setFilteredChallenges] = useState<Challenge[]>([]);
   const [allChallenges, setAllChallenges] = useState<Challenge[]>([]);
   const [sponsorsLoading, setSponsorsLoading] = useState(true);
@@ -72,81 +51,21 @@ const ChallengesPage = () => {
   //   }
   // }, [user, loading, navigate]);
 
-  // Filter challenges based on search and filters
+  // Filter challenges based on search
   useEffect(() => {
     let filtered = [...allChallenges];
 
-    console.log('Debug - All challenges count:', allChallenges.length);
-    console.log('Debug - Challenges:', allChallenges);
-    console.log('Debug - Search term:', searchTerm);
-    console.log('Debug - Selected category:', selectedCategory);
-    console.log('Debug - Selected difficulty:', selectedDifficulty);
-
     if (searchTerm) {
       filtered = filtered.filter(challenge => {
-        // Since we're using database values directly, no need for t()
         const title = challenge.titleKey;
         const description = challenge.descriptionKey;
-        console.log('Debug - Checking challenge:', challenge.id, 'Title:', title, 'Desc:', description);
         return title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                description.toLowerCase().includes(searchTerm.toLowerCase());
       });
     }
 
-    if (selectedCategory !== "all") {
-      filtered = filtered.filter(challenge => challenge.category === selectedCategory);
-    }
-
-    if (selectedDifficulty !== "all") {
-      filtered = filtered.filter(challenge => challenge.difficulty === selectedDifficulty);
-    }
-
-    console.log('Debug - Filtered challenges count:', filtered.length);
-    console.log('Debug - Filtered challenges:', filtered);
     setFilteredChallenges(filtered);
-  }, [searchTerm, selectedCategory, selectedDifficulty, allChallenges]);
-
-  const getCategoryIcon = (category: Challenge['category']) => {
-    switch (category) {
-      case "energy": return <Lightbulb className="w-5 h-5" />;
-      case "transport": return <Car className="w-5 h-5" />;
-      case "food": return <Utensils className="w-5 h-5" />;
-      case "waste": return <Recycle className="w-5 h-5" />;
-      case "community": return <UsersIcon className="w-5 h-5" />;
-      case "innovation": return <Target className="w-5 h-5" />;
-      case "water": return <Droplets className="w-5 h-5" />;
-      case "biodiversity": return <TreePine className="w-5 h-5" />;
-      case "circular-economy": return <RotateCcw className="w-5 h-5" />;
-      case "green-finance": return <DollarSign className="w-5 h-5" />;
-      default: return <Leaf className="w-5 h-5" />;
-    }
-  };
-
-  const getDifficultyColor = (difficulty: Challenge['difficulty']) => {
-    switch (difficulty) {
-      case "beginner": return "bg-success/20 text-success border-success/30";
-      case "intermediate": return "bg-primary/20 text-primary border-primary/30";
-      case "advanced": return "bg-warning/20 text-warning border-warning/30";
-      case "expert": return "bg-destructive/20 text-destructive border-destructive/30";
-      default: return "bg-muted/20 text-muted-foreground border-muted/30";
-    }
-  };
-
-  const getCategoryColor = (category: Challenge['category']) => {
-    switch (category) {
-      case "energy": return "bg-warning/20 text-warning";
-      case "transport": return "bg-primary/20 text-primary";
-      case "food": return "bg-success/20 text-success";
-      case "waste": return "bg-secondary/20 text-secondary";
-      case "community": return "bg-accent/20 text-accent";
-      case "innovation": return "bg-primary/20 text-primary";
-      case "water": return "bg-info/20 text-info";
-      case "biodiversity": return "bg-success/20 text-success";
-      case "circular-economy": return "bg-secondary/20 text-secondary";
-      case "green-finance": return "bg-warning/20 text-warning";
-      default: return "bg-muted/20 text-muted-foreground";
-    }
-  };
+  }, [searchTerm, allChallenges]);
 
   const isOrganization = () => {
     return profile && ['business', 'government', 'ngo'].includes(profile.user_role);
@@ -231,37 +150,6 @@ const ChallengesPage = () => {
               />
             </div>
             
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-full lg:w-48 bg-background/50 border-border/50">
-                <SelectValue placeholder={t('challenges.category_label')} />
-              </SelectTrigger>
-              <SelectContent className="bg-background border-border">
-                <SelectItem value="all">{t('challenges.all_categories')}</SelectItem>
-                <SelectItem value="energy">{t('challenges.category.energy')}</SelectItem>
-                <SelectItem value="transport">{t('challenges.category.transport')}</SelectItem>
-                <SelectItem value="food">{t('challenges.category.food')}</SelectItem>
-                <SelectItem value="waste">{t('challenges.category.waste')}</SelectItem>
-                <SelectItem value="community">{t('challenges.category.community')}</SelectItem>
-                <SelectItem value="innovation">{t('challenges.category.innovation')}</SelectItem>
-                <SelectItem value="water">{t('challenges.category.water')}</SelectItem>
-                <SelectItem value="biodiversity">{t('challenges.category.biodiversity')}</SelectItem>
-                <SelectItem value="circular-economy">{t('challenges.category.circular_economy')}</SelectItem>
-                <SelectItem value="green-finance">{t('challenges.category.green_finance')}</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
-              <SelectTrigger className="w-full lg:w-48 bg-background/50 border-border/50">
-                <SelectValue placeholder={t('challenges.difficulty_label')} />
-              </SelectTrigger>
-              <SelectContent className="bg-background border-border">
-                <SelectItem value="all">{t('challenges.all_levels')}</SelectItem>
-                <SelectItem value="beginner">{t('challenges.difficulty.beginner')}</SelectItem>
-                <SelectItem value="intermediate">{t('challenges.difficulty.intermediate')}</SelectItem>
-                <SelectItem value="advanced">{t('challenges.difficulty.advanced')}</SelectItem>
-                <SelectItem value="expert">{t('challenges.difficulty.expert')}</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
         </Card3D>
 
@@ -280,32 +168,9 @@ const ChallengesPage = () => {
                     alt={t(challenge.titleKey)}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute top-2 right-2">
-                    <Badge className={`${getDifficultyColor(challenge.difficulty)} text-xs font-medium px-3 py-1 rounded-full backdrop-blur-sm`}>
-                      {t(`challenges.difficulty.${challenge.difficulty}`)}
-                    </Badge>
-                  </div>
                 </div>
               )}
               <CardHeader className="pb-4">
-                {!challenge.imageUrl && (
-                  <div className="flex items-start justify-between mb-3">
-                    <div className={`p-3 rounded-2xl ${getCategoryColor(challenge.category)} shadow-premium`}>
-                      {getCategoryIcon(challenge.category)}
-                    </div>
-                    <Badge className={`${getDifficultyColor(challenge.difficulty)} text-xs font-medium px-3 py-1 rounded-full`}>
-                      {t(`challenges.difficulty.${challenge.difficulty}`)}
-                    </Badge>
-                  </div>
-                )}
-                {challenge.imageUrl && (
-                  <div className="flex items-center mb-3">
-                    <div className={`p-3 rounded-2xl ${getCategoryColor(challenge.category)} shadow-premium`}>
-                      {getCategoryIcon(challenge.category)}
-                    </div>
-                  </div>
-                )}
-                
                 <CardTitle className="text-foreground text-base sm:text-lg lg:text-xl leading-tight mb-2 line-clamp-2">
                   {challenge.titleKey}
                 </CardTitle>

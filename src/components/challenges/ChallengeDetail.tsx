@@ -241,16 +241,8 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
           {/* Mobile-optimized header */}
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between space-y-4 sm:space-y-0">
             <div className="flex-1">
-              {/* Category and badges - mobile friendly */}
+              {/* Duration badge */}
               <div className="flex flex-wrap items-center gap-2 mb-3">
-                <div className={`p-2 rounded-lg ${categoryConfig[challenge.category].color}`}>
-                  <CategoryIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>
-                <Badge 
-                  className={`${difficultyConfig[challenge.difficulty].color} text-white text-xs`}
-                >
-                  {difficultyConfig[challenge.difficulty].label}
-                </Badge>
                 <Badge variant="outline" className="flex items-center space-x-1 text-xs">
                   <Clock className="w-3 h-3" />
                   <span>{t(challenge.durationKey)}</span>
