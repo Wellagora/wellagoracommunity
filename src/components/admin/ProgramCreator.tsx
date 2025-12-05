@@ -22,8 +22,6 @@ const programSchema = z.object({
   id: z.string().min(1, "ID kötelező"),
   title: z.string().min(1, "Cím kötelező"),
   description: z.string().min(1, "Leírás kötelező"),
-  category: z.string().min(1, "Kategória kötelező"),
-  difficulty: z.string().min(1, "Nehézség kötelező"),
   points_base: z.number().min(1, "Pontok száma kötelező"),
   duration_days: z.number().min(1, "Időtartam kötelező"),
   is_continuous: z.boolean(),
@@ -146,8 +144,8 @@ export const ProgramCreator = ({
           id: data.id,
           title: data.title,
           description: data.description,
-          category: data.category,
-          difficulty: data.difficulty,
+          category: 'community',
+          difficulty: 'beginner',
           points_base: data.points_base,
           duration_days: data.duration_days,
           is_continuous: isContinuous,
@@ -223,46 +221,6 @@ export const ProgramCreator = ({
                 {...register("description")}
               />
               {errors.description && <p className="text-sm text-destructive mt-1">{errors.description.message}</p>}
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="category">Kategória *</Label>
-                <Select onValueChange={(value) => setValue("category", value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Válassz kategóriát" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="energy">Energia</SelectItem>
-                    <SelectItem value="transport">Közlekedés</SelectItem>
-                    <SelectItem value="food">Élelmiszer</SelectItem>
-                    <SelectItem value="waste">Hulladék</SelectItem>
-                    <SelectItem value="community">Közösség</SelectItem>
-                    <SelectItem value="innovation">Innováció</SelectItem>
-                    <SelectItem value="water">Víz</SelectItem>
-                    <SelectItem value="biodiversity">Biodiverzitás</SelectItem>
-                    <SelectItem value="circular-economy">Körforgásos gazdaság</SelectItem>
-                    <SelectItem value="green-finance">Zöld finanszírozás</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.category && <p className="text-sm text-destructive mt-1">{errors.category.message}</p>}
-              </div>
-
-              <div>
-                <Label htmlFor="difficulty">Nehézség *</Label>
-                <Select onValueChange={(value) => setValue("difficulty", value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Válassz nehézséget" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="beginner">Kezdő</SelectItem>
-                    <SelectItem value="intermediate">Haladó</SelectItem>
-                    <SelectItem value="advanced">Tapasztalt</SelectItem>
-                    <SelectItem value="expert">Szakértő</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.difficulty && <p className="text-sm text-destructive mt-1">{errors.difficulty.message}</p>}
-              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
