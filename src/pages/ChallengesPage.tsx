@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useProject } from "@/contexts/ProjectContext";
 import Navigation from "@/components/Navigation";
 import { Card3D } from "@/components/ui/card-3d";
 import { CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -26,23 +25,23 @@ const ChallengesPage = () => {
   const navigate = useNavigate();
   const { user, loading, profile } = useAuth();
   const { t, language } = useLanguage();
-  const { currentProject } = useProject();
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredChallenges, setFilteredChallenges] = useState<Challenge[]>([]);
   const [allChallenges, setAllChallenges] = useState<Challenge[]>([]);
   const [sponsorsLoading, setSponsorsLoading] = useState(true);
 
-  // Load challenges from database (project-specific if project selected)
+  // Load ALL active challenges from database (no project filtering for public page)
   useEffect(() => {
     const loadChallenges = async () => {
       setSponsorsLoading(true);
-      const dbChallenges = await loadChallengesFromDatabase(currentProject?.id, language);
+      // Pass undefined to load ALL active challenges, not filtered by project
+      const dbChallenges = await loadChallengesFromDatabase(undefined, language);
       setAllChallenges(dbChallenges);
       setSponsorsLoading(false);
     };
     
     loadChallenges();
-  }, [currentProject, language]);
+  }, [language]);
 
   // Temporarily disable auth check to debug challenges display
   // useEffect(() => {
@@ -332,11 +331,11 @@ const ChallengesPage = () => {
           ))}
         </div>
 
-        {filteredChallenges.length === 0 && (
+        {filteredChallenges.length === 0 && !sponsorsLoading && (
           <Card3D className="text-center py-16 bg-card/50 backdrop-blur-sm">
             <div className="text-6xl mb-6">🔍</div>
             <h3 className="text-2xl font-bold text-foreground mb-4">{t('challenges.no_challenges_found')}</h3>
-            <p className="text-muted-foreground text-lg">{t('challenges.modify_search')}</p>
+            <p className="text-muted-foreground text-lg">{t('challenges.no_programs_yet')}</p>
           </Card3D>
         )}
       </div>
