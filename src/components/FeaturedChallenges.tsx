@@ -42,10 +42,6 @@ const FeaturedChallenges = () => {
     },
   ];
 
-  const difficultyLabel = (difficulty: string) => {
-    return t(`challenges.difficulty.${difficulty}`);
-  };
-
   return (
     <section className="py-16 bg-background">
       <div className="container mx-auto px-4">
@@ -88,14 +84,6 @@ const FeaturedChallenges = () => {
                     </div>
                   </div>
                   <CardHeader>
-                    <div className="flex gap-2 mb-3">
-                      <Badge variant="secondary" className="text-xs">
-                        {t(challenge.categoryKey)}
-                      </Badge>
-                      <Badge variant="outline" className="text-xs">
-                        {difficultyLabel(challenge.difficulty)}
-                      </Badge>
-                    </div>
                     <CardTitle className="text-xl mb-2">{t(challenge.titleKey)}</CardTitle>
                   </CardHeader>
                   <CardContent>

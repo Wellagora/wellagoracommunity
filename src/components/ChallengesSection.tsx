@@ -1,30 +1,18 @@
-import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { challenges } from "@/data/challenges";
 import {
-  Bike,
-  Leaf,
-  Recycle,
   Users,
   Clock,
   Trophy,
   Star,
-  TrendingUp,
   MapPin,
-  Heart,
   Zap,
   Target,
-  Lightbulb,
-  Droplets,
-  TreePine,
-  RotateCcw,
-  Coins,
   Calendar
 } from "lucide-react";
 import communityImage from "@/assets/community-challenges.jpg";
@@ -32,59 +20,8 @@ import communityImage from "@/assets/community-challenges.jpg";
 const ChallengesSection = () => {
   const { t } = useLanguage();
   const { profile } = useAuth();
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
-  const challengeCategories = [
-    { name: "Transport", icon: Bike, color: "accent", count: 45 },
-    { name: "Energy", icon: Zap, color: "warning", count: 38 },
-    { name: "Waste", icon: Recycle, color: "success", count: 52 },
-    { name: "Food", icon: Leaf, color: "primary", count: 29 },
-    { name: "Community", icon: Users, color: "secondary", count: 33 },
-    { name: "Innovation", icon: Lightbulb, color: "accent", count: 21 },
-    { name: "Water", icon: Droplets, color: "info", count: 27 },
-    { name: "Biodiversity", icon: TreePine, color: "success", count: 19 },
-    { name: "Circular Economy", icon: RotateCcw, color: "warning", count: 24 },
-    { name: "Green Finance", icon: Coins, color: "primary", count: 16 },
-  ];
 
-  // Filter challenges based on category and difficulty
-  let filteredChallenges = challenges;
-  
-  if (selectedCategory) {
-    filteredChallenges = filteredChallenges.filter(challenge => 
-      challenge.category === selectedCategory
-    );
-  }
-  
-  if (selectedDifficulty) {
-    filteredChallenges = filteredChallenges.filter(challenge => 
-      challenge.difficulty === selectedDifficulty
-    );
-  }
-  
-  // Use filtered challenges or all if no filter is applied
-  const featuredChallenges = filteredChallenges.length > 0 ? filteredChallenges.slice(0, 2) : challenges.slice(0, 2);
-
-  const difficultyColors = {
-    "Beginner": "success",
-    "Intermediate": "warning", 
-    "Advanced": "destructive"
-  };
-
-  const getJoinButtonText = () => {
-    if (!profile) return t('challenges.join_challenge');
-    
-    switch (profile.user_role) {
-      case "business":
-        return t('challenges.join_and_sponsor');
-      case "ngo":
-        return t('challenges.join_and_support');
-      case "government":
-        return t('challenges.join_and_support');
-      default:
-        return t('challenges.join_challenge');
-    }
-  };
+  const featuredChallenges = challenges.slice(0, 2);
 
   return (
     <section id="challenges" className="py-20 bg-background">
@@ -107,60 +44,17 @@ const ChallengesSection = () => {
           </p>
         </div>
 
-        {/* Challenge Categories */}
-        <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-10 gap-4 mb-12">
-          {challengeCategories.map((category) => (
-            <Card 
-              key={category.name}
-              className={`hover:shadow-eco transition-smooth cursor-pointer group ${
-                selectedCategory === category.name.toLowerCase() ? 'ring-2 ring-primary bg-primary/5' : ''
-              }`}
-              onClick={() => {
-                if (selectedCategory === category.name.toLowerCase()) {
-                  setSelectedCategory(null); // Deselect if already selected
-                } else {
-                  setSelectedCategory(category.name.toLowerCase());
-                }
-              }}
-            >
-              <CardContent className="p-6 text-center">
-                <div className={`w-12 h-12 bg-${category.color}/10 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-${category.color}/20 transition-smooth ${
-                  selectedCategory === category.name.toLowerCase() ? `bg-${category.color}/30` : ''
-                }`}>
-                  <category.icon className={`w-6 h-6 text-${category.color}`} />
-                </div>
-                <h3 className="font-semibold text-foreground mb-1">{category.name}</h3>
-                <p className="text-sm text-muted-foreground">{category.count} {t('challenges.challenges_count')}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
         <div className="grid lg:grid-cols-3 gap-8">
           
           {/* Featured Challenges */}
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-bold text-foreground">
-                {selectedCategory || selectedDifficulty ? t('challenges.filtered') : t('challenges.featured.title')}
+                {t('challenges.featured.title')}
               </h3>
-              <div className="flex gap-2">
-                {(selectedCategory || selectedDifficulty) && (
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => {
-                      setSelectedCategory(null);
-                      setSelectedDifficulty(null);
-                    }}
-                  >
-                    {t('challenges.clear_filters')}
-                  </Button>
-                )}
-                <Button variant="outline" asChild>
-                  <Link to="/challenges">{t('challenges.view_all')}</Link>
-                </Button>
-              </div>
+              <Button variant="outline" asChild>
+                <Link to="/challenges">{t('challenges.view_all')}</Link>
+              </Button>
             </div>
             
             <div className="space-y-6">
@@ -193,10 +87,6 @@ const ChallengesSection = () => {
                   <CardContent className="space-y-4">
                     {/* Challenge Meta */}
                     <div className="flex flex-wrap gap-2">
-                      <Badge variant="outline">{challenge.category}</Badge>
-                      <Badge variant="outline">
-                        {challenge.difficulty}
-                      </Badge>
                       <Badge variant="outline">
                         <Clock className="w-3 h-3 mr-1" />
                         {t(challenge.durationKey)}
@@ -319,7 +209,7 @@ const ChallengesSection = () => {
             <div className="relative">
               <img 
                 src={communityImage} 
-                alt="Community challenges and collaboration" 
+                alt="Community programs and collaboration" 
                 className="w-full h-48 object-cover rounded-2xl"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-2xl"></div>
@@ -335,7 +225,7 @@ const ChallengesSection = () => {
                 <h4 className="font-bold text-lg mb-4">{t('challenges.regional_impact')}</h4>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t('challenges.active_challenges')}</span>
+                    <span className="text-muted-foreground">{t('challenges.active_programs')}</span>
                     <span className="font-bold text-foreground">197</span>
                   </div>
                   <div className="flex justify-between">
