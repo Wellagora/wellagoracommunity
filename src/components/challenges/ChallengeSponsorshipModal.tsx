@@ -111,6 +111,14 @@ const ChallengeSponsorshipModal = ({
         .eq('id', user.id)
         .maybeSingle();
 
+      // Map duration to valid package_type values (constraint: bronze, silver, gold, platinum)
+      const getPackageType = (months: number) => {
+        if (months >= 12) return 'platinum';
+        if (months >= 6) return 'gold';
+        if (months >= 3) return 'silver';
+        return 'bronze';
+      };
+
       // Insert sponsorship
       const { data: sponsorshipData, error: sponsorError } = await supabase
         .from('challenge_sponsorships')
@@ -119,8 +127,8 @@ const ChallengeSponsorshipModal = ({
           sponsor_user_id: user.id,
           sponsor_organization_id: profile?.organization_id,
           region: region,
-          package_type: `${selectedMonths}_months`,
-          tier: selectedMonths >= 12 ? 'gold' : selectedMonths >= 6 ? 'silver' : 'bronze',
+          package_type: getPackageType(selectedMonths),
+          tier: selectedMonths >= 12 ? 'diamond' : selectedMonths >= 6 ? 'gold' : selectedMonths >= 3 ? 'silver' : 'bronze',
           credit_cost: creditCost,
           status: 'active',
           start_date: startDate.toISOString().split('T')[0],

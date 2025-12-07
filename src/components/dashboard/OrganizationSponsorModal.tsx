@@ -163,6 +163,14 @@ export const OrganizationSponsorModal = ({ open, onOpenChange, onSuccess }: Orga
     try {
       const selectedChallengeData = challenges.find(c => c.id === selectedChallenge);
       
+      // Map duration to valid package_type values (constraint: bronze, silver, gold, platinum)
+      const getPackageType = (months: number) => {
+        if (months >= 12) return 'platinum';
+        if (months >= 6) return 'gold';
+        if (months >= 3) return 'silver';
+        return 'bronze';
+      };
+
       // Create sponsorship record
       const { data: sponsorshipData, error: sponsorError } = await supabase
         .from('challenge_sponsorships')
@@ -174,8 +182,8 @@ export const OrganizationSponsorModal = ({ open, onOpenChange, onSuccess }: Orga
           region: currentProject?.region_name || 'Magyarország',
           status: 'active',
           credit_cost: creditCost,
-          package_type: `${selectedMonths}_months`,
-          tier: selectedMonths >= 12 ? 'gold' : selectedMonths >= 6 ? 'silver' : 'bronze',
+          package_type: getPackageType(selectedMonths),
+          tier: selectedMonths >= 12 ? 'diamond' : selectedMonths >= 6 ? 'gold' : selectedMonths >= 3 ? 'silver' : 'bronze',
           start_date: startDate.toISOString().split('T')[0],
           end_date: endDate.toISOString().split('T')[0],
         })
