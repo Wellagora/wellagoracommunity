@@ -9,121 +9,55 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Slider } from "@/components/ui/slider";
 import { 
   Award, 
-  MapPin, 
   Target, 
   TrendingUp, 
   Loader2,
-  Crown,
-  Star,
-  Sparkles
+  Calendar,
+  Coins,
+  AlertCircle
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useProject } from "@/contexts/ProjectContext";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { addMonths, format } from "date-fns";
+import { hu, enUS, de } from "date-fns/locale";
 
 interface OrganizationSponsorModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
 }
 
-interface SponsorTier {
-  id: string;
-  name: string;
-  credits: number;
-  features: string[];
-  icon: typeof Award;
-  gradient: string;
-}
-
-const SPONSOR_TIERS: SponsorTier[] = [
-  {
-    id: 'bronze',
-    name: 'Bronze',
-    credits: 50,
-    features: [], // Will be populated with translations
-    icon: Award,
-    gradient: 'from-amber-600 to-orange-600'
-  },
-  {
-    id: 'silver',
-    name: 'Silver',
-    credits: 100,
-    features: [], // Will be populated with translations
-    icon: Star,
-    gradient: 'from-slate-400 to-gray-500'
-  },
-  {
-    id: 'gold',
-    name: 'Gold',
-    credits: 200,
-    features: [], // Will be populated with translations
-    icon: Crown,
-    gradient: 'from-yellow-400 to-amber-500'
-  },
-  {
-    id: 'diamond',
-    name: 'Diamond',
-    credits: 500,
-    features: [], // Will be populated with translations
-    icon: Sparkles,
-    gradient: 'from-purple-500 to-pink-500'
-  }
+const DURATION_OPTIONS = [
+  { months: 1, label: '1 hónap' },
+  { months: 3, label: '3 hónap' },
+  { months: 6, label: '6 hónap' },
+  { months: 12, label: '12 hónap' },
 ];
 
-export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSponsorModalProps) => {
+export const OrganizationSponsorModal = ({ open, onOpenChange, onSuccess }: OrganizationSponsorModalProps) => {
   const { toast } = useToast();
   const { profile } = useAuth();
   const { t, language } = useLanguage();
   const { currentProject } = useProject();
-  const navigate = useNavigate();
   
   const [selectedChallenge, setSelectedChallenge] = useState("");
-  const [selectedTier, setSelectedTier] = useState<string | null>(null);
+  const [selectedMonths, setSelectedMonths] = useState(1);
   const [challenges, setChallenges] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [credits, setCredits] = useState<number>(0);
 
-  // Get translated tier features
-  const getTierFeatures = (tierId: string): string[] => {
-    switch (tierId) {
-      case 'bronze':
-        return [
-          t('organization.feature_regional_visibility') || 'Regional visibility',
-          t('organization.feature_logo_page') || 'Logo on challenge page',
-          t('organization.feature_monthly_report') || 'Monthly report'
-        ];
-      case 'silver':
-        return [
-          t('organization.feature_national_visibility') || 'National visibility',
-          t('organization.feature_featured_sponsor') || 'Featured sponsor',
-          t('organization.feature_weekly_analytics') || 'Weekly analytics',
-          t('organization.feature_social_mentions') || 'Social media mentions'
-        ];
-      case 'gold':
-        return [
-          t('organization.feature_premium_visibility') || 'Premium visibility',
-          t('organization.feature_top_placement') || 'Top placement',
-          t('organization.feature_daily_insights') || 'Daily insights',
-          t('organization.feature_press_release') || 'Press release',
-          t('organization.feature_cobranding') || 'Co-branding opportunities'
-        ];
-      case 'diamond':
-        return [
-          t('organization.feature_exclusive_partnership') || 'Exclusive partnership',
-          t('organization.feature_campaign_custom') || 'Campaign customization',
-          t('organization.feature_realtime_analytics') || 'Real-time analytics',
-          t('organization.feature_dedicated_support') || 'Dedicated support',
-          t('organization.feature_impact_report') || 'Impact report'
-        ];
-      default:
-        return [];
-    }
+  const localeMap = {
+    hu: hu,
+    en: enUS,
+    de: de,
   };
 
   // Get translated challenge title and description
@@ -132,7 +66,6 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
       const translation = challenge.translations[language][field];
       if (translation) return translation;
     }
-    // Fallback to default field
     return challenge[field] || '';
   };
 
@@ -143,12 +76,19 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
 
       try {
         setLoading(true);
-        const { data, error } = await supabase
+        
+        // Load all active challenges for the project, or all if no project
+        let query = supabase
           .from('challenge_definitions')
-          .select('*')
+          .select('id, title, description, translations, image_url')
           .eq('is_active', true)
-          .eq('project_id', currentProject?.id || '')
           .limit(20);
+        
+        if (currentProject?.id) {
+          query = query.eq('project_id', currentProject.id);
+        }
+
+        const { data, error } = await query;
 
         if (error) {
           console.error("Error loading challenges:", error);
@@ -164,7 +104,7 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
     };
 
     loadChallenges();
-  }, [open]);
+  }, [open, currentProject?.id]);
 
   // Load user credits
   useEffect(() => {
@@ -192,32 +132,29 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
     loadCredits();
   }, [profile?.id, open]);
 
+  const creditCost = selectedMonths; // 1 credit = 1 month
+  const hasEnoughCredits = credits >= creditCost;
+  const startDate = new Date();
+  const endDate = addMonths(startDate, selectedMonths);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!selectedChallenge || !selectedTier) {
+    if (!selectedChallenge) {
       toast({
         title: t('organization.error'),
-        description: t('organization.select_challenge_and_package'),
+        description: t('organization.select_challenge_required'),
         variant: "destructive",
       });
       return;
     }
 
-    const tier = SPONSOR_TIERS.find(t => t.id === selectedTier);
-    if (!tier) return;
-
-    if (credits < tier.credits) {
+    if (!hasEnoughCredits) {
       toast({
         title: t('organization.not_enough_credits'),
-        description: t('organization.need_credits')
-          .replace('{amount}', tier.credits.toString())
-          .replace('{available}', credits.toString()),
+        description: t('sponsorship.purchase_credits'),
         variant: "destructive",
       });
-      // Navigate to purchase page
-      navigate('/sponsor-dashboard');
-      onOpenChange(false);
       return;
     }
 
@@ -226,53 +163,69 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
     try {
       const selectedChallengeData = challenges.find(c => c.id === selectedChallenge);
       
-      // Create sponsorship
-      const { error: sponsorError } = await supabase
+      // Create sponsorship record
+      const { data: sponsorshipData, error: sponsorError } = await supabase
         .from('challenge_sponsorships')
         .insert({
           challenge_id: selectedChallenge,
           sponsor_user_id: profile!.id,
           sponsor_organization_id: profile!.organization_id,
-          tier: selectedTier,
-          region: 'Országos',
+          project_id: currentProject?.id,
+          region: currentProject?.region_name || 'Magyarország',
           status: 'active',
-          credit_cost: tier.credits,
-          package_type: selectedTier,
-        });
+          credit_cost: creditCost,
+          package_type: `${selectedMonths}_months`,
+          tier: selectedMonths >= 12 ? 'gold' : selectedMonths >= 6 ? 'silver' : 'bronze',
+          start_date: startDate.toISOString().split('T')[0],
+          end_date: endDate.toISOString().split('T')[0],
+        })
+        .select()
+        .single();
 
       if (sponsorError) throw sponsorError;
 
-      // Deduct credits
-      const { error: creditError } = await supabase
+      // Deduct credits - get current values first
+      const { data: currentCreditsData } = await supabase
         .from('sponsor_credits')
-        .update({ 
-          available_credits: credits - tier.credits,
-          used_credits: credits
-        })
-        .eq('sponsor_user_id', profile!.id);
+        .select('available_credits, used_credits')
+        .eq('sponsor_user_id', profile!.id)
+        .maybeSingle();
 
-      if (creditError) throw creditError;
+      if (currentCreditsData) {
+        const { error: creditError } = await supabase
+          .from('sponsor_credits')
+          .update({ 
+            available_credits: (currentCreditsData.available_credits || 0) - creditCost,
+            used_credits: (currentCreditsData.used_credits || 0) + creditCost
+          })
+          .eq('sponsor_user_id', profile!.id);
+
+        if (creditError) {
+          console.error("Credit deduction error:", creditError);
+        }
+      }
 
       // Log transaction
       await supabase
         .from('credit_transactions')
         .insert({
           sponsor_user_id: profile!.id,
-          transaction_type: 'spend',
-          credits: -tier.credits,
-          description: `${selectedChallengeData.title} kihívás szponzorálása`
+          organization_id: profile!.organization_id,
+          transaction_type: 'sponsorship',
+          credits: -creditCost,
+          description: `${selectedMonths} hónap szponzorálás: ${selectedChallengeData?.title || selectedChallenge}`,
+          related_sponsorship_id: sponsorshipData?.id
         });
 
       toast({
-        title: t('organization.sponsorship_success'),
-        description: t('organization.package_activated')
-          .replace('{tier}', tier.name)
-          .replace('{challenge}', selectedChallengeData.title),
+        title: t('sponsorship.success'),
+        description: `${selectedMonths} hónapos szponzorálás elindítva!`,
       });
 
       onOpenChange(false);
       setSelectedChallenge("");
-      setSelectedTier(null);
+      setSelectedMonths(1);
+      onSuccess?.();
     } catch (error: any) {
       console.error("Error creating sponsorship:", error);
       toast({
@@ -285,11 +238,9 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
     }
   };
 
-  const selectedTierData = SPONSOR_TIERS.find(t => t.id === selectedTier);
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Award className="w-5 h-5 text-warning" />
@@ -302,11 +253,17 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Available Credits */}
-          <div className="p-4 bg-success/5 rounded-lg border border-success/20">
+          <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">{t('organization.available_credits')}</span>
-              <span className="text-2xl font-bold text-success">{credits}</span>
+              <div className="flex items-center gap-2">
+                <Coins className="w-5 h-5 text-primary" />
+                <span className="font-medium">{t('organization.available_credits')}</span>
+              </div>
+              <span className="text-2xl font-bold text-primary">{credits}</span>
             </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              1 kredit = 1 hónap szponzori jelenlét
+            </p>
           </div>
 
           {/* Challenge Selection */}
@@ -320,7 +277,9 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
                 <Loader2 className="w-6 h-6 animate-spin text-primary" />
               </div>
             ) : challenges.length === 0 ? (
-              <p className="text-sm text-muted-foreground p-4 text-center">{t('organization.no_available_challenges')}</p>
+              <p className="text-sm text-muted-foreground p-4 text-center">
+                {t('organization.no_available_challenges')}
+              </p>
             ) : (
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {challenges.map((challenge) => (
@@ -328,26 +287,32 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
                     key={challenge.id}
                     className={`p-3 border rounded-lg cursor-pointer transition-all ${
                       selectedChallenge === challenge.id
-                        ? 'border-primary bg-primary/5'
+                        ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
                         : 'border-border hover:border-primary/50'
                     }`}
                     onClick={() => setSelectedChallenge(challenge.id)}
                   >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <h4 className="font-medium text-sm">{getChallengeTranslation(challenge, 'title')}</h4>
-                        <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
+                    <div className="flex items-start gap-3">
+                      {challenge.image_url && (
+                        <img 
+                          src={challenge.image_url} 
+                          alt="" 
+                          className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                        />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-sm truncate">
+                          {getChallengeTranslation(challenge, 'title')}
+                        </h4>
+                        <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
                           {getChallengeTranslation(challenge, 'description')}
                         </p>
-                        <div className="flex gap-2 mt-2">
-                          <Badge variant="secondary" className="text-xs">
-                            {challenge.difficulty}
-                          </Badge>
-                          <Badge variant="secondary" className="text-xs">
-                            {challenge.category}
-                          </Badge>
-                        </div>
                       </div>
+                      {selectedChallenge === challenge.id && (
+                        <Badge className="bg-primary text-primary-foreground flex-shrink-0">
+                          Kiválasztva
+                        </Badge>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -355,73 +320,70 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
             )}
           </div>
 
-          {/* Tier Selection */}
-          <div className="space-y-3">
+          {/* Duration Selection */}
+          <div className="space-y-4">
             <Label className="flex items-center gap-2">
-              <Crown className="w-4 h-4" />
-              {t('organization.select_sponsor_package')}
+              <Calendar className="w-4 h-4" />
+              Szponzorálás időtartama
             </Label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {SPONSOR_TIERS.map((tier) => {
-                const TierIcon = tier.icon;
-                const canAfford = credits >= tier.credits;
-                const features = getTierFeatures(tier.id);
-                
-                return (
-                  <div
-                    key={tier.id}
-                    className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                      selectedTier === tier.id
-                        ? 'border-primary bg-primary/5'
-                        : canAfford
-                        ? 'border-border hover:border-primary/50'
-                        : 'border-border opacity-50 cursor-not-allowed'
-                    }`}
-                    onClick={() => canAfford && setSelectedTier(tier.id)}
-                  >
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className={`p-2 rounded-lg bg-gradient-to-r ${tier.gradient}`}>
-                        <TierIcon className="w-5 h-5 text-white" />
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-semibold">{tier.name}</h4>
-                        <p className="text-sm font-bold text-primary">{tier.credits} {t('organization.credit')}</p>
-                      </div>
-                    </div>
-                    <ul className="space-y-1">
-                      {features.map((feature, idx) => (
-                        <li key={idx} className="text-xs text-muted-foreground flex items-start gap-1">
-                          <span className="text-success mt-0.5">✓</span>
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
+            
+            <div className="grid grid-cols-4 gap-2">
+              {DURATION_OPTIONS.map((option) => (
+                <button
+                  key={option.months}
+                  type="button"
+                  className={`p-3 rounded-lg border-2 transition-all text-center ${
+                    selectedMonths === option.months
+                      ? 'border-primary bg-primary/10'
+                      : 'border-border hover:border-primary/50'
+                  }`}
+                  onClick={() => setSelectedMonths(option.months)}
+                >
+                  <div className="text-lg font-bold">{option.months}</div>
+                  <div className="text-xs text-muted-foreground">hónap</div>
+                  <div className="text-xs font-medium text-primary mt-1">
+                    {option.months} kredit
                   </div>
-                );
-              })}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex items-center justify-between text-sm bg-muted/50 rounded-lg p-3">
+              <span className="text-muted-foreground">Kezdés:</span>
+              <span className="font-medium">
+                {format(startDate, 'yyyy. MMMM d.', { locale: localeMap[language as keyof typeof localeMap] || hu })}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-sm bg-muted/50 rounded-lg p-3">
+              <span className="text-muted-foreground">Befejezés:</span>
+              <span className="font-medium">
+                {format(endDate, 'yyyy. MMMM d.', { locale: localeMap[language as keyof typeof localeMap] || hu })}
+              </span>
             </div>
           </div>
 
-          {/* Impact Preview */}
-          {selectedTierData && selectedChallenge && (
-            <div className="p-4 bg-success/5 rounded-lg border border-success/20">
-              <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
-                <TrendingUp className="w-4 h-4" />
-                {t('organization.expected_impact')}
-              </h4>
-              <div className="grid grid-cols-2 gap-4 text-center">
-                <div>
-                  <Crown className="w-5 h-5 mx-auto mb-1 text-warning" />
-                  <p className="text-sm font-bold">{selectedTierData.name}</p>
-                  <p className="text-xs text-muted-foreground">{t('organization.package')}</p>
-                </div>
-                <div>
-                  <Award className="w-5 h-5 mx-auto mb-1 text-success" />
-                  <p className="text-sm font-bold">-{selectedTierData.credits}</p>
-                  <p className="text-xs text-muted-foreground">{t('organization.credit')}</p>
-                </div>
-              </div>
+          {/* Cost Summary */}
+          <div className="p-4 bg-success/5 rounded-lg border border-success/20">
+            <div className="flex items-center justify-between mb-2">
+              <span className="font-medium flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-success" />
+                Összesen
+              </span>
+              <span className="text-2xl font-bold text-success">{creditCost} kredit</span>
             </div>
+            <p className="text-xs text-muted-foreground">
+              {selectedMonths} hónap szponzori jelenlét a kiválasztott programon
+            </p>
+          </div>
+
+          {/* Insufficient Credits Warning */}
+          {!hasEnoughCredits && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Nincs elegendő kredit. Szükséges: {creditCost}, elérhető: {credits}
+              </AlertDescription>
+            </Alert>
           )}
 
           {/* Actions */}
@@ -436,8 +398,8 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
             </Button>
             <Button 
               type="submit" 
-              className="flex-1"
-              disabled={!selectedChallenge || !selectedTier || submitting || loading}
+              className="flex-1 bg-gradient-primary"
+              disabled={!selectedChallenge || !hasEnoughCredits || submitting || loading}
             >
               {submitting ? (
                 <>
@@ -445,7 +407,10 @@ export const OrganizationSponsorModal = ({ open, onOpenChange }: OrganizationSpo
                   {t('organization.sponsoring')}
                 </>
               ) : (
-                `${t('organization.sponsor_button')} (${selectedTierData?.credits || 0} ${t('organization.credit')})`
+                <>
+                  <Award className="w-4 h-4 mr-2" />
+                  Szponzorálás ({creditCost} kredit)
+                </>
               )}
             </Button>
           </div>

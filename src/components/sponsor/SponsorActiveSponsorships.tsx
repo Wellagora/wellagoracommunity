@@ -4,25 +4,36 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useProject } from '@/contexts/ProjectContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Trophy, Calendar, MapPin, Award, Users, Leaf, TrendingUp } from 'lucide-react';
+import { Trophy, Calendar, MapPin, Award, Coins, Users, Leaf, TrendingUp } from 'lucide-react';
 import { format } from 'date-fns';
 import { hu, enUS, de } from 'date-fns/locale';
-import { getSponsorshipsWithImpact, type SponsorshipImpact } from '@/services/SponsorImpactService';
+
+interface Sponsorship {
+  id: string;
+  challenge_id: string;
+  status: string;
+  credit_cost: number | null;
+  start_date: string;
+  end_date: string | null;
+  tier: string | null;
+  region: string;
+  package_type: string;
+  created_at: string;
+}
 
 interface ChallengeDefinition {
   id: string;
   title: string;
   description: string;
   translations: any;
+  image_url: string | null;
 }
 
 const SponsorActiveSponsorships = () => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { t, language } = useLanguage();
-  const { currentProject } = useProject();
-  const [sponsorships, setSponsorships] = useState<SponsorshipImpact[]>([]);
+  const [sponsorships, setSponsorships] = useState<Sponsorship[]>([]);
   const [challengeDefinitions, setChallengeDefinitions] = useState<Map<string, ChallengeDefinition>>(new Map());
   const [loading, setLoading] = useState(true);
 
@@ -33,27 +44,46 @@ const SponsorActiveSponsorships = () => {
   };
 
   useEffect(() => {
-    if (user && currentProject) {
+    if (user) {
       loadSponsorships();
     }
-  }, [user, currentProject]);
+  }, [user]);
 
   const loadSponsorships = async () => {
     try {
-      // Get sponsorships with impact data
-      const data = await getSponsorshipsWithImpact(user?.id || '');
+      setLoading(true);
       
-      // Filter by current project
-      const projectSponsorships = data.filter(s => s.project_id === currentProject?.id);
+      // Get sponsorships for this user or their organization
+      let query = supabase
+        .from('challenge_sponsorships')
+        .select('*')
+        .eq('status', 'active')
+        .order('created_at', { ascending: false });
+
+      // Filter by user OR organization
+      if (profile?.organization_id) {
+        query = query.or(`sponsor_user_id.eq.${user?.id},sponsor_organization_id.eq.${profile.organization_id}`);
+      } else {
+        query = query.eq('sponsor_user_id', user?.id || '');
+      }
+
+      const { data: sponsorshipsData, error: sponsorshipsError } = await query;
+
+      if (sponsorshipsError) {
+        console.error('Error loading sponsorships:', sponsorshipsError);
+        return;
+      }
+
+      setSponsorships(sponsorshipsData || []);
       
       // Get unique challenge IDs
-      const challengeIds = [...new Set(projectSponsorships.map(s => s.challenge_id))];
+      const challengeIds = [...new Set((sponsorshipsData || []).map(s => s.challenge_id))];
       
       // Fetch challenge definitions
       if (challengeIds.length > 0) {
         const { data: challenges, error } = await supabase
           .from('challenge_definitions')
-          .select('id, title, description, translations')
+          .select('id, title, description, translations, image_url')
           .in('id', challengeIds);
         
         if (error) {
@@ -66,8 +96,6 @@ const SponsorActiveSponsorships = () => {
           setChallengeDefinitions(challengeMap);
         }
       }
-      
-      setSponsorships(projectSponsorships);
     } catch (error) {
       console.error('Error loading sponsorships:', error);
     } finally {
@@ -91,19 +119,15 @@ const SponsorActiveSponsorships = () => {
     return translations[language]?.description || challenge.description || '';
   };
 
-  const getTierBadge = (tier: string) => {
-    const tiers: Record<string, { label: string; color: string; icon: string }> = {
-      bronze: { label: t('sponsor.tier.bronze'), color: 'bg-amber-700 text-white', icon: '🥉' },
-      silver: { label: t('sponsor.tier.silver'), color: 'bg-gray-400 text-white', icon: '🥈' },
-      gold: { label: t('sponsor.tier.gold'), color: 'bg-yellow-500 text-white', icon: '🥇' },
-      diamond: { label: t('sponsor.tier.diamond'), color: 'bg-cyan-500 text-white', icon: '💎' },
-    };
-    const config = tiers[tier] || tiers.bronze;
-    return (
-      <Badge className={config.color}>
-        {config.icon} {config.label}
-      </Badge>
-    );
+  const getChallengeImage = (challengeId: string): string | null => {
+    const challenge = challengeDefinitions.get(challengeId);
+    return challenge?.image_url || null;
+  };
+
+  const getDurationLabel = (months: number): string => {
+    if (months >= 12) return `${months} hónap (Gold)`;
+    if (months >= 6) return `${months} hónap (Silver)`;
+    return `${months} hónap`;
   };
 
   if (loading) {
@@ -121,161 +145,107 @@ const SponsorActiveSponsorships = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Trophy className="w-5 h-5 text-primary" />
-          {t('sponsor.active_sponsorships')}
+          {t('sponsor.active_sponsorships') || 'Aktív szponzorálások'}
         </CardTitle>
-        <CardDescription>{t('sponsor.active_sponsorships_desc')}</CardDescription>
+        <CardDescription>
+          {t('sponsor.active_sponsorships_desc') || 'A jelenleg futó program szponzorálásaid'}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         {sponsorships.length === 0 ? (
           <div className="text-center py-8">
             <Trophy className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-            <p className="text-muted-foreground">{t('sponsor.no_active_sponsorships')}</p>
-            <Button className="mt-4" onClick={() => window.location.href = '/challenges'}>
-              {t('sponsor.browse_challenges')}
+            <p className="text-muted-foreground mb-4">
+              {t('sponsor.no_active_sponsorships') || 'Még nincs aktív szponzorálásod'}
+            </p>
+            <Button onClick={() => window.location.href = '/challenges'}>
+              {t('sponsor.browse_challenges') || 'Programok böngészése'}
             </Button>
           </div>
         ) : (
           <div className="space-y-4">
-            {sponsorships.map((sponsorship) => (
-              <Card key={sponsorship.sponsorship_id} className="border-2 hover:shadow-lg transition-shadow">
-                <CardContent className="pt-6">
-                  <div className="space-y-4">
-                    {/* Header */}
-                    <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex flex-col gap-1 mb-2">
-                          <h4 className="font-semibold text-lg">{getLocalizedTitle(sponsorship.challenge_id)}</h4>
-                          <p className="text-sm text-muted-foreground">{getLocalizedDescription(sponsorship.challenge_id)}</p>
-                          <div className="flex items-center gap-2 mt-1">
-                            {getTierBadge(sponsorship.tier)}
-                          </div>
+            {sponsorships.map((sponsorship) => {
+              const imageUrl = getChallengeImage(sponsorship.challenge_id);
+              const months = sponsorship.credit_cost || 1;
+              
+              return (
+                <Card key={sponsorship.id} className="border hover:shadow-lg transition-shadow overflow-hidden">
+                  <CardContent className="p-0">
+                    <div className="flex flex-col md:flex-row">
+                      {/* Image */}
+                      {imageUrl && (
+                        <div className="md:w-48 h-32 md:h-auto flex-shrink-0">
+                          <img 
+                            src={imageUrl} 
+                            alt="" 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      
+                      {/* Content */}
+                      <div className="flex-1 p-4 space-y-3">
+                        {/* Header */}
+                        <div>
+                          <h4 className="font-semibold text-lg">
+                            {getLocalizedTitle(sponsorship.challenge_id)}
+                          </h4>
+                          <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
+                            {getLocalizedDescription(sponsorship.challenge_id)}
+                          </p>
                         </div>
                         
-                        <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-2">
+                        {/* Info Grid */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                          <div className="flex items-center gap-2 text-muted-foreground">
+                            <Calendar className="w-4 h-4" />
+                            <span>
+                              {format(new Date(sponsorship.start_date), 'yyyy. MM. dd.', {
+                                locale: localeMap[language as keyof typeof localeMap] || hu,
+                              })}
+                            </span>
+                          </div>
+                          
+                          {sponsorship.end_date && (
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              <TrendingUp className="w-4 h-4" />
+                              <span>
+                                {format(new Date(sponsorship.end_date), 'yyyy. MM. dd.', {
+                                  locale: localeMap[language as keyof typeof localeMap] || hu,
+                                })}
+                              </span>
+                            </div>
+                          )}
+                          
+                          <div className="flex items-center gap-2 text-muted-foreground">
                             <MapPin className="w-4 h-4" />
                             <span>{sponsorship.region}</span>
                           </div>
+                          
                           <div className="flex items-center gap-2">
-                            <Calendar className="w-4 h-4" />
-                            <span>
-                              {format(new Date(sponsorship.start_date), 'PP', {
-                                locale: localeMap[language as keyof typeof localeMap] || enUS,
-                              })}
-                              {sponsorship.end_date && (
-                                <> - {format(new Date(sponsorship.end_date), 'PP', {
-                                  locale: localeMap[language as keyof typeof localeMap] || enUS,
-                                })}</>
-                              )}
+                            <Coins className="w-4 h-4 text-primary" />
+                            <span className="font-medium text-primary">
+                              {sponsorship.credit_cost || 1} kredit
                             </span>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <Award className="w-4 h-4" />
-                            <span>{sponsorship.credit_cost} {t('sponsor.credits_per_month')}</span>
-                          </div>
                         </div>
-                      </div>
-                      
-                      <div className="flex flex-col gap-2">
-                        <Button variant="outline" size="sm">
-                          {t('sponsor.view_analytics')}
-                        </Button>
-                        <Button variant="ghost" size="sm" className="text-muted-foreground">
-                          {t('sponsor.manage')}
-                        </Button>
-                      </div>
-                    </div>
-
-                    {/* Real Impact Metrics */}
-                    {sponsorship.total_completions > 0 ? (
-                      <div className="border-t pt-4">
-                        <div className="text-xs font-semibold text-muted-foreground mb-3 uppercase flex items-center gap-2">
-                          <span>🎯 {t('sponsor.real_impact_from_db')}</span>
-                          <Badge variant="outline" className="text-xs">
-                            {(sponsorship.average_validation_score * 100).toFixed(0)}% {t('sponsor.accuracy')}
+                        
+                        {/* Status Badge */}
+                        <div className="flex items-center gap-2">
+                          <Badge className="bg-success/10 text-success border-success/20">
+                            <span className="w-2 h-2 rounded-full bg-success mr-2 animate-pulse" />
+                            Aktív
+                          </Badge>
+                          <Badge variant="outline">
+                            {getDurationLabel(months)}
                           </Badge>
                         </div>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2 text-success">
-                              <Users className="w-4 h-4" />
-                              <span className="text-xs font-medium">{t('sponsor.participants')}</span>
-                            </div>
-                            <p className="text-xl font-bold text-success">
-                              {sponsorship.total_participants}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {sponsorship.total_completions} {t('sponsor.completions')}
-                            </p>
-                          </div>
-
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2 text-primary">
-                              <Leaf className="w-4 h-4" />
-                              <span className="text-xs font-medium">{t('sponsor.co2_impact')}</span>
-                            </div>
-                            <p className="text-xl font-bold text-primary">
-                              {sponsorship.total_co2_saved.toFixed(1)} kg
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              ≈ {sponsorship.trees_equivalent.toFixed(1)} {t('sponsor.trees')}
-                            </p>
-                          </div>
-
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2 text-warning">
-                              <Award className="w-4 h-4" />
-                              <span className="text-xs font-medium">{t('sponsor.points')}</span>
-                            </div>
-                            <p className="text-xl font-bold text-warning">
-                              {sponsorship.total_points_earned.toLocaleString()}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {t('sponsor.gamification')}
-                            </p>
-                          </div>
-
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2 text-accent">
-                              <TrendingUp className="w-4 h-4" />
-                              <span className="text-xs font-medium">{t('sponsor.average_handprint')}</span>
-                            </div>
-                            <p className="text-xl font-bold text-accent">
-                              {(sponsorship.total_co2_saved / sponsorship.total_participants).toFixed(1)} kg
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {t('sponsor.per_participant')}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Activity Breakdown */}
-                        {Object.keys(sponsorship.activities_by_type).length > 0 && (
-                          <div className="mt-4 pt-4 border-t">
-                            <div className="text-xs font-semibold text-muted-foreground mb-2">
-                              {t('sponsor.activity_types')}
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                              {Object.entries(sponsorship.activities_by_type).map(([type, data]) => (
-                                <Badge key={type} variant="outline" className="text-xs">
-                                  {type}: {data.count}x ({data.co2_saved.toFixed(1)} kg CO₂)
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-                        )}
                       </div>
-                    ) : (
-                      <div className="border-t pt-4 text-center">
-                        <p className="text-sm text-muted-foreground">
-                          {t('sponsor.no_completions_yet')}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         )}
       </CardContent>
