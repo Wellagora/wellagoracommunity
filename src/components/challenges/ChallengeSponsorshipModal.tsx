@@ -2,14 +2,15 @@ import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Target, Trophy, Coins, TrendingUp, Check, AlertCircle } from 'lucide-react';
+import { Target, Coins, Calendar, AlertCircle, Award, Loader2 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { addMonths, format } from 'date-fns';
+import { hu, enUS, de } from 'date-fns/locale';
 
 interface ChallengeSponsorshipModalProps {
   open: boolean;
@@ -19,6 +20,13 @@ interface ChallengeSponsorshipModalProps {
   region: string;
 }
 
+const DURATION_OPTIONS = [
+  { months: 1, label: '1 hónap' },
+  { months: 3, label: '3 hónap' },
+  { months: 6, label: '6 hónap' },
+  { months: 12, label: '12 hónap' },
+];
+
 const ChallengeSponsorshipModal = ({
   open,
   onOpenChange,
@@ -26,60 +34,18 @@ const ChallengeSponsorshipModal = ({
   challengeTitle,
   region
 }: ChallengeSponsorshipModalProps) => {
-  const [selectedPackage, setSelectedPackage] = useState<string>('bronze');
+  const [selectedMonths, setSelectedMonths] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [availableCredits, setAvailableCredits] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
-  const packageOptions = [
-    {
-      value: 'bronze',
-      name: t('sponsorship.package_bronze'),
-      credits: 10,
-      benefits: [
-        t('sponsorship.benefit_bronze_1'),
-        t('sponsorship.benefit_bronze_2'),
-        t('sponsorship.benefit_bronze_3')
-      ]
-    },
-    {
-      value: 'silver',
-      name: t('sponsorship.package_silver'),
-      credits: 20,
-      benefits: [
-        t('sponsorship.benefit_silver_1'),
-        t('sponsorship.benefit_silver_2'),
-        t('sponsorship.benefit_silver_3'),
-        t('sponsorship.benefit_silver_4')
-      ]
-    },
-    {
-      value: 'gold',
-      name: t('sponsorship.package_gold'),
-      credits: 40,
-      benefits: [
-        t('sponsorship.benefit_gold_1'),
-        t('sponsorship.benefit_gold_2'),
-        t('sponsorship.benefit_gold_3'),
-        t('sponsorship.benefit_gold_4'),
-        t('sponsorship.benefit_gold_5')
-      ]
-    },
-    {
-      value: 'platinum',
-      name: t('sponsorship.package_platinum'),
-      credits: 100,
-      benefits: [
-        t('sponsorship.benefit_platinum_1'),
-        t('sponsorship.benefit_platinum_2'),
-        t('sponsorship.benefit_platinum_3'),
-        t('sponsorship.benefit_platinum_4'),
-        t('sponsorship.benefit_platinum_5')
-      ]
-    }
-  ];
+  const localeMap = {
+    hu: hu,
+    en: enUS,
+    de: de,
+  };
 
   // Load available credits
   useEffect(() => {
@@ -109,8 +75,10 @@ const ChallengeSponsorshipModal = ({
     }
   };
 
-  const selectedPackageData = packageOptions.find(p => p.value === selectedPackage);
-  const hasEnoughCredits = availableCredits >= (selectedPackageData?.credits || 0);
+  const creditCost = selectedMonths; // 1 credit = 1 month
+  const hasEnoughCredits = availableCredits >= creditCost;
+  const startDate = new Date();
+  const endDate = addMonths(startDate, selectedMonths);
 
   const handleSponsor = async () => {
     if (!hasEnoughCredits) {
@@ -143,25 +111,27 @@ const ChallengeSponsorshipModal = ({
         .eq('id', user.id)
         .maybeSingle();
 
-      const creditCost = selectedPackageData?.credits || 0;
-
-      // Insert sponsorship with credit cost
-      const { error: sponsorError } = await supabase
+      // Insert sponsorship
+      const { data: sponsorshipData, error: sponsorError } = await supabase
         .from('challenge_sponsorships')
         .insert({
           challenge_id: challengeId,
           sponsor_user_id: user.id,
           sponsor_organization_id: profile?.organization_id,
           region: region,
-          package_type: selectedPackage,
-          tier: selectedPackage,
+          package_type: `${selectedMonths}_months`,
+          tier: selectedMonths >= 12 ? 'gold' : selectedMonths >= 6 ? 'silver' : 'bronze',
           credit_cost: creditCost,
-          status: 'active'
-        });
+          status: 'active',
+          start_date: startDate.toISOString().split('T')[0],
+          end_date: endDate.toISOString().split('T')[0],
+        })
+        .select()
+        .single();
 
       if (sponsorError) throw sponsorError;
 
-      // Deduct credits manually - first get current credits
+      // Deduct credits - get current values first
       const { data: currentCredits } = await supabase
         .from('sponsor_credits')
         .select('used_credits, available_credits')
@@ -182,26 +152,24 @@ const ChallengeSponsorshipModal = ({
         }
       }
 
-      // Also log transaction
+      // Log transaction
       await supabase
         .from('credit_transactions')
         .insert({
           sponsor_user_id: user.id,
           credits: -creditCost,
           transaction_type: 'sponsorship',
-          description: `Sponsorship for challenge: ${challengeTitle}`,
-          related_sponsorship_id: null
+          description: `${selectedMonths} hónap szponzorálás: ${challengeTitle}`,
+          related_sponsorship_id: sponsorshipData?.id
         });
 
       toast({
         title: t('sponsorship.success'),
-        description: t('sponsorship.success_desc')
-          .replace('{challengeTitle}', challengeTitle)
-          .replace('{credits}', creditCost.toString())
+        description: `${selectedMonths} hónapos szponzorálás elindítva!`
       });
 
       onOpenChange(false);
-      loadCredits(); // Reload credits
+      loadCredits();
     } catch (error: any) {
       toast({
         title: t('sponsorship.error'),
@@ -215,14 +183,14 @@ const ChallengeSponsorshipModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Trophy className="w-6 h-6 text-primary" />
+            <Award className="w-6 h-6 text-primary" />
             {t('sponsorship.title')}
           </DialogTitle>
           <DialogDescription>
-            {t('sponsorship.subtitle').replace('{challengeTitle}', challengeTitle)}
+            {challengeTitle}
           </DialogDescription>
           
           {/* Credits Display */}
@@ -236,6 +204,9 @@ const ChallengeSponsorshipModal = ({
                 {loading ? '...' : availableCredits}
               </div>
             </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              1 kredit = 1 hónap szponzori jelenlét
+            </p>
           </div>
         </DialogHeader>
 
@@ -257,64 +228,54 @@ const ChallengeSponsorshipModal = ({
             </CardContent>
           </Card>
 
-          <div>
-            <h3 className="text-lg font-semibold mb-4">{t('sponsorship.choose_package')}</h3>
-            <RadioGroup value={selectedPackage} onValueChange={setSelectedPackage}>
-              <div className="grid gap-4">
-                {packageOptions.map((pkg) => (
-                  <Card
-                    key={pkg.value}
-                    className={`cursor-pointer transition-all ${
-                      selectedPackage === pkg.value
-                        ? 'border-primary shadow-lg ring-2 ring-primary/20'
-                        : 'hover:border-primary/50'
-                    }`}
-                    onClick={() => setSelectedPackage(pkg.value)}
-                  >
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center gap-3">
-                          <RadioGroupItem value={pkg.value} id={pkg.value} />
-                          <div>
-                            <Label htmlFor={pkg.value} className="text-lg font-bold cursor-pointer">
-                              {pkg.name}
-                            </Label>
-                            <div className="flex items-center gap-2 mt-1">
-                              <Coins className="w-4 h-4 text-primary" />
-                              <span className="text-sm font-semibold text-primary">{pkg.credits} {t('sponsorship.credits')}</span>
-                            </div>
-                          </div>
-                        </div>
-                        {selectedPackage === pkg.value && (
-                          <Badge className="bg-primary">
-                            <Check className="w-3 h-3 mr-1" />
-                            {t('sponsorship.selected')}
-                          </Badge>
-                        )}
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-2">
-                        {pkg.benefits.map((benefit, idx) => (
-                          <li key={idx} className="flex items-center gap-2 text-sm">
-                            <TrendingUp className="w-4 h-4 text-success flex-shrink-0" />
-                            {benefit}
-                          </li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </RadioGroup>
+          {/* Duration Selection */}
+          <div className="space-y-4">
+            <Label className="flex items-center gap-2">
+              <Calendar className="w-4 h-4" />
+              Szponzorálás időtartama
+            </Label>
+            
+            <div className="grid grid-cols-4 gap-2">
+              {DURATION_OPTIONS.map((option) => (
+                <button
+                  key={option.months}
+                  type="button"
+                  className={`p-3 rounded-lg border-2 transition-all text-center ${
+                    selectedMonths === option.months
+                      ? 'border-primary bg-primary/10'
+                      : 'border-border hover:border-primary/50'
+                  }`}
+                  onClick={() => setSelectedMonths(option.months)}
+                >
+                  <div className="text-lg font-bold">{option.months}</div>
+                  <div className="text-xs text-muted-foreground">hónap</div>
+                  <div className="text-xs font-medium text-primary mt-1">
+                    {option.months} kredit
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <div className="flex items-center justify-between text-sm bg-muted/50 rounded-lg p-3">
+              <span className="text-muted-foreground">Kezdés:</span>
+              <span className="font-medium">
+                {format(startDate, 'yyyy. MMMM d.', { locale: localeMap[language as keyof typeof localeMap] || hu })}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-sm bg-muted/50 rounded-lg p-3">
+              <span className="text-muted-foreground">Befejezés:</span>
+              <span className="font-medium">
+                {format(endDate, 'yyyy. MMMM d.', { locale: localeMap[language as keyof typeof localeMap] || hu })}
+              </span>
+            </div>
           </div>
 
           {/* Insufficient Credits Warning */}
-          {!hasEnoughCredits && selectedPackageData && (
+          {!hasEnoughCredits && !loading && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                {t('sponsorship.need_more_credits')} {selectedPackageData.credits - availableCredits} {t('sponsorship.credits')}
+                Nincs elegendő kredit. Szükséges: {creditCost}, elérhető: {availableCredits}
               </AlertDescription>
             </Alert>
           )}
@@ -329,10 +290,20 @@ const ChallengeSponsorshipModal = ({
             </Button>
             <Button
               onClick={handleSponsor}
-              disabled={isSubmitting || !hasEnoughCredits}
+              disabled={isSubmitting || !hasEnoughCredits || loading}
               className="flex-1 bg-gradient-primary"
             >
-              {isSubmitting ? t('sponsorship.processing') : t('sponsorship.start')}
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  {t('sponsorship.processing')}
+                </>
+              ) : (
+                <>
+                  <Award className="w-4 h-4 mr-2" />
+                  Szponzorálás ({creditCost} kredit)
+                </>
+              )}
             </Button>
           </div>
         </div>

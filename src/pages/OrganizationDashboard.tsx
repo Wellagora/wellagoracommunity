@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -6,6 +6,7 @@ import Navigation from "@/components/Navigation";
 import { MobilizeTeamModal } from "@/components/dashboard/MobilizeTeamModal";
 import { OrganizationSponsorModal } from "@/components/dashboard/OrganizationSponsorModal";
 import { OrganizationChallengeStats } from "@/components/dashboard/OrganizationChallengeStats";
+import SponsorActiveSponsorships from "@/components/sponsor/SponsorActiveSponsorships";
 import OrganizationProfileEditor from "@/components/organization/OrganizationProfileEditor";
 import OrganizationSubscription from "@/components/organization/OrganizationSubscription";
 import OrganizationInvoices from "@/components/organization/OrganizationInvoices";
@@ -83,6 +84,13 @@ const OrganizationDashboard = () => {
   const [mobilizeModalOpen, setMobilizeModalOpen] = useState(false);
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
   const [creatingOrg, setCreatingOrg] = useState(false);
+  const [sponsorshipRefreshKey, setSponsorshipRefreshKey] = useState(0);
+  
+  const handleSponsorshipSuccess = useCallback(() => {
+    setSponsorshipRefreshKey(prev => prev + 1);
+    // Also refresh metrics
+    setMetrics(prev => ({ ...prev, loading: true }));
+  }, []);
 
   // Real data from database
   const [challenges] = useState<Challenge[]>([]);
@@ -615,75 +623,8 @@ const OrganizationDashboard = () => {
               <OrganizationChallengeStats />
             </div>
 
-            {/* Sponsored & Created Challenges */}
-            <div className="mb-4">
-              <h4 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                <Award className="w-5 h-5 text-warning" />
-                {t('organization.sponsored_challenges')}
-              </h4>
-            </div>
-
-            <div className="grid gap-4">
-              {challenges.map((challenge) => {
-                const typeInfo = getChallengeTypeInfo(challenge.type);
-                const TypeIcon = typeInfo.icon;
-                return (
-                  <Card key={challenge.id} className="bg-card/50 backdrop-blur-sm border-border/50 hover:shadow-md transition-shadow">
-                    <CardContent className="p-4 sm:p-6">
-                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                        <div className="space-y-3 flex-1">
-                          <div className="flex items-start gap-3">
-                            <div className={`p-2 rounded-lg ${typeInfo.color}/20`}>
-                              <TypeIcon className={`w-5 h-5 text-${typeInfo.color.replace('bg-', '')}`} />
-                            </div>
-                            <div className="flex-1">
-                              <div className="flex flex-wrap items-center gap-2 mb-2">
-                                <h4 className="text-base sm:text-lg font-semibold text-foreground">{challenge.title}</h4>
-                                <Badge className={`${typeInfo.color} text-white text-xs`}>
-                                  {typeInfo.label}
-                                </Badge>
-                            {challenge.status === 'completed' && (
-                              <Badge variant="outline" className="text-success border-success">
-                                <CheckCircle2 className="w-3 h-3 mr-1" />
-                                {t('organization.completed')}
-                              </Badge>
-                            )}
-                          </div>
-                          <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-muted-foreground">
-                            <span className="flex items-center space-x-1">
-                              <Users className="w-4 h-4" />
-                              <span>{challenge.participants} {t('organization.participants')}</span>
-                            </span>
-                                <span className="flex items-center space-x-1">
-                                  <Leaf className="w-4 h-4 text-success" />
-                                  <span>{challenge.co2_saved}t CO₂</span>
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-xs sm:text-sm">
-                            <span className="text-muted-foreground">{t('organization.progress')}</span>
-                            <span className="font-medium">{challenge.progress}%</span>
-                          </div>
-                          <Progress value={challenge.progress} className="h-2" />
-                        </div>
-                      </div>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="w-full sm:w-auto"
-                        onClick={() => navigate(`/challenges/${challenge.id}`)}
-                      >
-                        <BarChart3 className="w-4 h-4 mr-2" />
-                        {t('organization.details')}
-                      </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
+            {/* Active Sponsorships */}
+            <SponsorActiveSponsorships key={sponsorshipRefreshKey} />
 
             {/* Partnerships Section */}
             <div className="mb-8">
@@ -870,6 +811,7 @@ const OrganizationDashboard = () => {
       <OrganizationSponsorModal
         open={sponsorModalOpen}
         onOpenChange={setSponsorModalOpen}
+        onSuccess={handleSponsorshipSuccess}
       />
     </div>
   );
