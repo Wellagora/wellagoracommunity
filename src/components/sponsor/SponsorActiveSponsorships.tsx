@@ -105,10 +105,10 @@ const SponsorActiveSponsorships = () => {
 
   const getLocalizedTitle = (challengeId: string): string => {
     const challenge = challengeDefinitions.get(challengeId);
-    if (!challenge) return challengeId;
+    if (!challenge) return language === 'hu' ? 'Program nem található' : language === 'de' ? 'Programm nicht gefunden' : 'Program not found';
     
     const translations = challenge.translations || {};
-    return translations[language]?.title || challenge.title || challengeId;
+    return translations[language]?.title || challenge.title || challenge.id;
   };
 
   const getLocalizedDescription = (challengeId: string): string => {
@@ -124,10 +124,17 @@ const SponsorActiveSponsorships = () => {
     return challenge?.image_url || null;
   };
 
+  const calculateDurationMonths = (startDate: string, endDate: string | null): number => {
+    if (!endDate) return 1;
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+    return Math.max(1, Math.min(12, months)); // Clamp between 1-12
+  };
+
   const getDurationLabel = (months: number): string => {
-    if (months >= 12) return `${months} hónap (Gold)`;
-    if (months >= 6) return `${months} hónap (Silver)`;
-    return `${months} hónap`;
+    const monthLabel = language === 'hu' ? 'hónap' : language === 'de' ? 'Monat(e)' : 'month(s)';
+    return `${months} ${monthLabel}`;
   };
 
   if (loading) {
@@ -166,7 +173,8 @@ const SponsorActiveSponsorships = () => {
           <div className="space-y-4">
             {sponsorships.map((sponsorship) => {
               const imageUrl = getChallengeImage(sponsorship.challenge_id);
-              const months = sponsorship.credit_cost || 1;
+              const months = calculateDurationMonths(sponsorship.start_date, sponsorship.end_date);
+              const hasProgram = challengeDefinitions.has(sponsorship.challenge_id);
               
               return (
                 <Card key={sponsorship.id} className="border hover:shadow-lg transition-shadow overflow-hidden">
