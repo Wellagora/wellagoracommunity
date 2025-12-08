@@ -11,7 +11,7 @@ import OrganizationProfileEditor from "@/components/organization/OrganizationPro
 import OrganizationSubscription from "@/components/organization/OrganizationSubscription";
 import OrganizationInvoices from "@/components/organization/OrganizationInvoices";
 import OrganizationCredits from "@/components/organization/OrganizationCredits";
-import OrganizationTeam from "@/components/organization/OrganizationTeam";
+import OrganizationEmployees from "@/components/organization/OrganizationEmployees";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -796,9 +796,9 @@ const OrganizationDashboard = () => {
             <OrganizationInvoices />
           </TabsContent>
 
-          {/* Team Tab */}
+          {/* Team/Employees Tab */}
           <TabsContent value="team" className="space-y-6">
-            <OrganizationTeam />
+            <OrganizationEmployees />
           </TabsContent>
         </Tabs>
       </div>

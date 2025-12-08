@@ -41,6 +41,7 @@ const ImpressumPage = lazy(() => import("@/pages/ImpressumPage"));
 const SuperAdminPage = lazy(() => import("@/pages/SuperAdminPage"));
 const SponsorLandingPage = lazy(() => import("@/pages/SponsorLandingPage"));
 const OrganizationRegisterPage = lazy(() => import("@/pages/OrganizationRegisterPage"));
+const JoinOrganizationPage = lazy(() => import("@/pages/JoinOrganizationPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function App() {
@@ -100,6 +101,7 @@ function App() {
                       <Route path="/super-admin" element={<SuperAdminPage />} />
                       <Route path="/sponsor" element={<SponsorLandingPage />} />
                       <Route path="/register/organization" element={<OrganizationRegisterPage />} />
+                      <Route path="/join/org/:inviteCode" element={<JoinOrganizationPage />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>
