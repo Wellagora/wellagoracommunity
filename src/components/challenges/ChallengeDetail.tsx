@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useProgramActions } from "@/hooks/useProgramActions";
 import ChallengeCelebrationModal from "./ChallengeCelebrationModal";
 import InviteFriendsModal from "./InviteFriendsModal";
 import ChallengeSponsorshipModal from "./ChallengeSponsorshipModal";
@@ -36,7 +37,10 @@ import {
   Camera,
   Upload,
   X,
-  UserPlus
+  UserPlus,
+  Check,
+  RefreshCcw,
+  Eye
 } from "lucide-react";
 
 interface Challenge {
@@ -109,7 +113,9 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
   const { t } = useLanguage();
   const { profile } = useAuth();
   
-  const isOrganization = profile && ['business', 'government', 'ngo'].includes(profile.user_role);
+  // Use the role-based program actions hook
+  const { isOrganization, sponsorshipStatus, getButtonType } = useProgramActions(challenge.id);
+  const buttonType = getButtonType();
   
   const CategoryIcon = categoryConfig[challenge.category].icon;
   
@@ -548,46 +554,71 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
             </div>
           )}
           
-          {/* Action Buttons - mobile optimized */}
+          {/* Action Buttons - role-based */}
           <div className="flex flex-col sm:flex-row gap-3 w-full">
-            {!userProgress?.isParticipating ? (
+            {/* Organization users - sponsorship buttons */}
+            {isOrganization && (
               <>
-                <Button 
-                  onClick={handleJoinChallenge}
-                  className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth h-12 sm:h-11 text-base font-semibold group"
-                >
-                  <Trophy className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                  {t('challenges.join_challenge')}
-                  <Sparkles className="w-4 h-4 ml-2 opacity-70" />
-                </Button>
-                {isOrganization && (
+                {buttonType === 'sponsored' && (
+                  <Button 
+                    className="flex-1 bg-success hover:bg-success/90 h-12 sm:h-11 text-base font-semibold"
+                  >
+                    <Check className="w-5 h-5 mr-2" />
+                    {t('challenges.sponsored')}
+                  </Button>
+                )}
+                {buttonType === 'extend' && (
                   <Button 
                     onClick={() => setShowSponsorModal(true)}
-                    variant="outline"
-                    className="sm:w-auto h-12 sm:h-11 border-warning text-warning hover:bg-warning/10"
+                    className="flex-1 bg-warning hover:bg-warning/90 h-12 sm:h-11 text-base font-semibold"
                   >
-                    <Star className="w-5 h-5 mr-2" />
+                    <RefreshCcw className="w-5 h-5 mr-2" />
+                    {t('challenges.extend_sponsorship')}
+                  </Button>
+                )}
+                {buttonType === 'sponsor' && (
+                  <Button 
+                    onClick={() => setShowSponsorModal(true)}
+                    className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth h-12 sm:h-11 text-base font-semibold group"
+                  >
+                    <Star className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
                     {t('challenges.sponsor_challenge')}
                   </Button>
                 )}
               </>
-            ) : userProgress.isCompleted ? (
-              <Button 
-                disabled
-                className="flex-1 bg-success hover:bg-success h-11 sm:h-10"
-              >
-                <CheckCircle className="w-4 h-4 mr-2" />
-                {t('challenges.challenge_completed_label')}
-              </Button>
-            ) : (
-              <Button 
-                onClick={handleCompleteChallenge}
-                className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth h-12 sm:h-11 text-base font-semibold group"
-              >
-                <CheckCircle className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                {t('challenges.complete_challenge')}
-                <Award className="w-4 h-4 ml-2 opacity-70" />
-              </Button>
+            )}
+            
+            {/* Individual users - participation buttons */}
+            {!isOrganization && (
+              <>
+                {!userProgress?.isParticipating ? (
+                  <Button 
+                    onClick={handleJoinChallenge}
+                    className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth h-12 sm:h-11 text-base font-semibold group"
+                  >
+                    <Trophy className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                    {t('challenges.join_challenge')}
+                    <Sparkles className="w-4 h-4 ml-2 opacity-70" />
+                  </Button>
+                ) : userProgress.isCompleted ? (
+                  <Button 
+                    disabled
+                    className="flex-1 bg-success hover:bg-success h-11 sm:h-10"
+                  >
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    {t('challenges.challenge_completed_label')}
+                  </Button>
+                ) : (
+                  <Button 
+                    onClick={handleCompleteChallenge}
+                    className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth h-12 sm:h-11 text-base font-semibold group"
+                  >
+                    <CheckCircle className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                    {t('challenges.complete_challenge')}
+                    <Award className="w-4 h-4 ml-2 opacity-70" />
+                  </Button>
+                )}
+              </>
             )}
             
             <Button 

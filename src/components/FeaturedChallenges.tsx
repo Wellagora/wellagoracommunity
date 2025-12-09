@@ -1,13 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { Users, Sprout, BookOpen } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import ProgramCardButtons from "@/components/challenges/ProgramCardButtons";
 
 const FeaturedChallenges = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   const challenges = [
     {
@@ -90,13 +91,11 @@ const FeaturedChallenges = () => {
                     <p className="text-muted-foreground mb-6">
                       {t(challenge.descriptionKey)}
                     </p>
-                    <Link to={`/challenges/${challenge.id}`}>
-                      <Button 
-                        className={`w-full bg-gradient-to-r ${challenge.color} hover:opacity-90 transition-opacity`}
-                      >
-                        {t("challenges.join_challenge")}
-                      </Button>
-                    </Link>
+                    <ProgramCardButtons
+                      challengeId={challenge.id}
+                      onNavigate={() => navigate(`/challenges/${challenge.id}`)}
+                      onSponsor={() => navigate(`/challenges/${challenge.id}?action=sponsor`)}
+                    />
                   </CardContent>
                 </Card>
               </motion.div>
