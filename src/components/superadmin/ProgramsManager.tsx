@@ -49,8 +49,6 @@ type ProgramWithDetails = {
   image_url: string | null;
   project_id: string | null;
   project_name: string | null;
-  category: string;
-  difficulty: string;
   points_base: number;
   is_active: boolean;
   sponsor_name: string | null;
@@ -63,7 +61,6 @@ const ProgramsManager = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [projectFilter, setProjectFilter] = useState<string>("all");
-  const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [sponsorFilter, setSponsorFilter] = useState<string>("all");
   
@@ -132,8 +129,6 @@ const ProgramsManager = () => {
           image_url: program.image_url,
           project_id: program.project_id,
           project_name: project?.name || null,
-          category: program.category,
-          difficulty: program.difficulty,
           points_base: program.points_base,
           is_active: program.is_active ?? true,
           sponsor_name: sponsor
@@ -167,32 +162,6 @@ const ProgramsManager = () => {
     }
   };
 
-  const getDifficultyBadge = (difficulty: string) => {
-    switch (difficulty) {
-      case "beginner":
-        return <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Kezdő</Badge>;
-      case "intermediate":
-        return <Badge className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">Haladó</Badge>;
-      case "advanced":
-        return <Badge className="bg-orange-500/10 text-orange-600 border-orange-500/20">Profi</Badge>;
-      case "expert":
-        return <Badge variant="destructive">Szakértő</Badge>;
-      default:
-        return <Badge variant="outline">{difficulty}</Badge>;
-    }
-  };
-
-  const getCategoryColor = (category: string) => {
-    const colors: Record<string, string> = {
-      transport: "bg-blue-500/10 text-blue-600 border-blue-500/20",
-      energy: "bg-yellow-500/10 text-yellow-600 border-yellow-500/20",
-      waste: "bg-green-500/10 text-green-600 border-green-500/20",
-      water: "bg-cyan-500/10 text-cyan-600 border-cyan-500/20",
-      food: "bg-orange-500/10 text-orange-600 border-orange-500/20",
-      community: "bg-purple-500/10 text-purple-600 border-purple-500/20",
-    };
-    return colors[category] || "bg-gray-500/10 text-gray-600 border-gray-500/20";
-  };
 
   const handleToggleActive = async (programId: string, currentStatus: boolean) => {
     try {
@@ -275,8 +244,6 @@ const ProgramsManager = () => {
     const matchesSearch = program.title.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesProject =
       projectFilter === "all" || program.project_id === projectFilter;
-    const matchesCategory =
-      categoryFilter === "all" || program.category === categoryFilter;
     const matchesStatus =
       statusFilter === "all" ||
       (statusFilter === "active" && program.is_active) ||
@@ -286,17 +253,8 @@ const ProgramsManager = () => {
       (sponsorFilter === "sponsored" && program.sponsor_name) ||
       (sponsorFilter === "not_sponsored" && !program.sponsor_name);
 
-    return (
-      matchesSearch &&
-      matchesProject &&
-      matchesCategory &&
-      matchesStatus &&
-      matchesSponsor
-    );
+    return matchesSearch && matchesProject && matchesStatus && matchesSponsor;
   });
-
-  // Get unique categories
-  const uniqueCategories = Array.from(new Set(programs.map((p) => p.category)));
 
   if (loading) {
     return (
@@ -397,19 +355,6 @@ const ProgramsManager = () => {
             ))}
           </SelectContent>
         </Select>
-        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Kategória" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Összes kategória</SelectItem>
-            {uniqueCategories.map((category) => (
-              <SelectItem key={category} value={category}>
-                {category}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Státusz" />
@@ -438,10 +383,8 @@ const ProgramsManager = () => {
           <TableHeader>
             <TableRow>
               <TableHead>Kép</TableHead>
-              <TableHead>Cím</TableHead>
+              <TableHead>Név</TableHead>
               <TableHead>Projekt</TableHead>
-              <TableHead>Kategória</TableHead>
-              <TableHead>Nehézség</TableHead>
               <TableHead>Pontok</TableHead>
               <TableHead>Státusz</TableHead>
               <TableHead>Szponzor</TableHead>
@@ -452,7 +395,7 @@ const ProgramsManager = () => {
           <TableBody>
             {filteredPrograms.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
                   Nincs megjeleníthető program
                 </TableCell>
               </TableRow>
@@ -469,12 +412,6 @@ const ProgramsManager = () => {
                   </TableCell>
                   <TableCell className="font-medium">{program.title}</TableCell>
                   <TableCell>{program.project_name || "-"}</TableCell>
-                  <TableCell>
-                    <Badge className={getCategoryColor(program.category)}>
-                      {program.category}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{getDifficultyBadge(program.difficulty)}</TableCell>
                   <TableCell>{program.points_base}</TableCell>
                   <TableCell>
                     {program.is_active ? (
