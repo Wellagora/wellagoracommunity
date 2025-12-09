@@ -16,10 +16,15 @@ import {
   Star,
   Calendar,
   MapPin,
-  Zap
+  Zap,
+  Check,
+  RefreshCcw,
+  Eye
 } from "lucide-react";
+import { useProgramActions } from "@/hooks/useProgramActions";
 import { Challenge } from "@/data/challenges";
 import { loadChallengesFromDatabase } from "@/services/ChallengeSponsorshipService";
+import ProgramCardButtons from "@/components/challenges/ProgramCardButtons";
 
 const ChallengesPage = () => {
   const navigate = useNavigate();
@@ -293,39 +298,12 @@ const ChallengesPage = () => {
                   </div>
                 </div>
 
-                {/* Action Buttons based on user role */}
-                <div className="flex flex-col sm:flex-row gap-2">
-                  {/* Join Challenge Button - shown to all authenticated users */}
-                  {profile && (
-                    <Button 
-                      onClick={() => navigate(`/challenges/${challenge.id}`)}
-                      className="w-full sm:flex-1 bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground font-semibold rounded-2xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300 px-3 py-2"
-                    >
-                      {t('challenges.join_challenge')}
-                    </Button>
-                  )}
-                  
-                  {/* Sponsor Button - shown only to business/ngo/government */}
-                  {profile && ['business', 'ngo', 'government'].includes(profile.user_role) && (
-                    <Button 
-                      onClick={() => navigate(`/challenges/${challenge.id}?action=sponsor`)}
-                      variant="outline"
-                      className="w-full sm:flex-1 rounded-2xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300 px-3 py-2"
-                    >
-                      {t('challenges.sponsor_challenge')}
-                    </Button>
-                  )}
-                  
-                  {/* Not logged in - show generic button */}
-                  {!profile && (
-                    <Button 
-                      onClick={() => navigate(`/challenges/${challenge.id}`)}
-                      className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground font-semibold rounded-2xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300 px-3 py-2"
-                    >
-                      {t('challenges.view_challenge')}
-                    </Button>
-                  )}
-                </div>
+                {/* Action Buttons based on user role and status */}
+                <ProgramCardButtons
+                  challengeId={challenge.id}
+                  onNavigate={() => navigate(`/challenges/${challenge.id}`)}
+                  onSponsor={() => navigate(`/challenges/${challenge.id}?action=sponsor`)}
+                />
               </CardContent>
             </Card3D>
           ))}
