@@ -25,20 +25,23 @@ export const ViewModeProvider = ({ children }: { children: ReactNode }) => {
     const checkSuperAdmin = async () => {
       if (!user) {
         setIsSuperAdmin(false);
-        setViewModeState('super_admin');
+        setViewModeState('citizen');
         return;
       }
 
       try {
-        const { data } = await supabase.rpc('has_role', {
+        const { data, error } = await supabase.rpc('has_role', {
           _user_id: user.id,
           _role: 'super_admin'
         });
+        
+        console.log('Super admin check result:', { userId: user.id, isSuperAdmin: data, error });
+        
         setIsSuperAdmin(data || false);
 
-        // If not super admin, reset view mode
+        // If not super admin, reset view mode to citizen
         if (!data) {
-          setViewModeState('super_admin');
+          setViewModeState('citizen');
           localStorage.removeItem(STORAGE_KEY);
         }
       } catch (error) {
