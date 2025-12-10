@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useViewMode } from '@/contexts/ViewModeContext';
 import { supabase } from '@/integrations/supabase/client';
 
 interface SponsorshipStatus {
@@ -21,6 +22,7 @@ interface ProgramActionsResult {
 
 export const useProgramActions = (programId: string): ProgramActionsResult => {
   const { profile, user } = useAuth();
+  const { getEffectiveRole, isSuperAdmin } = useViewMode();
   
   const [sponsorshipStatus, setSponsorshipStatus] = useState<SponsorshipStatus>({
     isActiveSponsorship: false,
@@ -34,7 +36,9 @@ export const useProgramActions = (programId: string): ProgramActionsResult => {
     loading: true,
   });
 
-  const isOrganization = profile && ['business', 'government', 'ngo'].includes(profile.user_role);
+  // Use effective role for super admin view mode simulation
+  const effectiveRole = getEffectiveRole();
+  const isOrganization = ['business', 'government', 'ngo'].includes(effectiveRole);
 
   // Check sponsorship status for organization users
   useEffect(() => {
