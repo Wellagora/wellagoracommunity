@@ -107,10 +107,20 @@ const Navigation = () => {
     ...(!user ? [{ path: "/sponsor", label: t("nav.sponsors"), icon: Heart }] : []),
   ];
 
-  // Add dashboard based on user type
+  // Add dashboard based on user type and view mode
   if (user && profile) {
+    const getDashboardPath = () => {
+      if (viewMode === "citizen") return "/dashboard";
+      if (viewMode === "business") return "/organization";
+      // super_admin - use actual role
+      if (["business", "government", "ngo"].includes(profile.user_role)) {
+        return "/organization";
+      }
+      return "/dashboard";
+    };
+
     navItems.splice(3, 0, {
-      path: "/dashboard",
+      path: getDashboardPath(),
       label: t("nav.dashboard"),
       icon: Home,
     });
