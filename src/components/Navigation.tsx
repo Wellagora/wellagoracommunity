@@ -8,14 +8,15 @@ import {
   Target,
   Users as UsersIcon,
   Bot,
-  Mail,
   Inbox,
   ChevronDown,
   ShieldCheck,
-  Heart
+  Heart,
+  Eye
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useViewMode } from "@/contexts/ViewModeContext";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -32,6 +33,19 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import wellagoraLogo from "@/assets/wellagora-logo.png";
@@ -40,34 +54,11 @@ import LanguageSelector from "./LanguageSelector";
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const { user, profile, signOut } = useAuth();
+  const { viewMode, setViewMode, isSuperAdmin } = useViewMode();
   const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Check super admin role
-  useEffect(() => {
-    const checkSuperAdminRole = async () => {
-      if (!user) {
-        setIsSuperAdmin(false);
-        return;
-      }
-
-      try {
-        const { data } = await supabase.rpc('has_role', {
-          _user_id: user.id,
-          _role: 'super_admin'
-        });
-        setIsSuperAdmin(data || false);
-      } catch (error) {
-        console.error('Error checking super_admin role:', error);
-        setIsSuperAdmin(false);
-      }
-    };
-
-    checkSuperAdminRole();
-  }, [user]);
 
   // Load unread message count
   useEffect(() => {
@@ -179,6 +170,32 @@ const Navigation = () => {
 
           {/* Desktop Actions - Right */}
           <div className="hidden lg:flex items-center space-x-4">
+            {/* Super Admin View Mode Switcher */}
+            {isSuperAdmin && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1.5 px-2 py-1 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                      <Eye className="h-3.5 w-3.5 text-purple-500" />
+                      <Select value={viewMode} onValueChange={(value: 'super_admin' | 'business' | 'citizen') => setViewMode(value)}>
+                        <SelectTrigger className="w-[110px] h-7 text-xs border-0 bg-transparent p-0 focus:ring-0 text-purple-600 dark:text-purple-400">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="super_admin">Super Admin</SelectItem>
+                          <SelectItem value="business">Cég nézet</SelectItem>
+                          <SelectItem value="citizen">Felhasználó</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Tesztelési nézet váltás</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+
             {/* Language Selector */}
             <LanguageSelector />
 
