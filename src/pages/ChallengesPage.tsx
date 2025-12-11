@@ -106,36 +106,16 @@ const ChallengesPage = () => {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="relative py-8 sm:py-16 lg:py-20 xl:py-24 bg-card/20 overflow-hidden">
+      <section className="relative py-6 sm:py-10 lg:py-12 bg-card/20 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center animate-fade-up-3d">
-            <h1 className="text-2xl sm:text-3xl lg:text-5xl xl:text-6xl font-bold text-foreground mb-3 sm:mb-6 xl:mb-8">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground mb-2 sm:mb-4">
               {t('nav.challenges')}
             </h1>
-            <p className="text-sm sm:text-base lg:text-xl xl:text-2xl text-muted-foreground max-w-3xl xl:max-w-4xl mx-auto mb-6 sm:mb-8 xl:mb-10 px-4">
+            <p className="text-sm sm:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
               {t('challenges.hero_subtitle')}
             </p>
-            
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 max-w-2xl mx-auto">
-            <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
-                <div className="text-3xl font-bold text-foreground mb-1">{allChallenges.length}</div>
-                <div className="text-muted-foreground">{t('challenges.active_challenges')}</div>
-              </Card3D>
-              <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
-                <div className="text-3xl font-bold text-foreground mb-1">
-                  {allChallenges.reduce((sum, c) => sum + c.participants, 0).toLocaleString()}
-                </div>
-                <div className="text-muted-foreground">{t('challenges.total_participants')}</div>
-              </Card3D>
-              <Card3D className="bg-card/50 backdrop-blur-sm border border-border/50 p-6">
-                <div className="text-3xl font-bold text-foreground mb-1">
-                  {allChallenges.length > 0 ? Math.round(allChallenges.reduce((sum, c) => sum + c.completionRate, 0) / allChallenges.length) : 0}%
-                </div>
-                <div className="text-muted-foreground">{t('challenges.average_completion')}</div>
-              </Card3D>
-            </div>
           </div>
         </div>
       </section>
