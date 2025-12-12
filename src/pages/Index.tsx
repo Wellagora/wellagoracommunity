@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -8,14 +8,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
 import { 
   Users, 
-  BarChart3,
-  User,
-  Building2,
-  Landmark,
-  Heart,
   Award,
   TrendingUp,
-  Calendar,
   Trophy,
   Sparkles,
   ArrowDown,
@@ -52,119 +46,79 @@ const Index = () => {
         <div className="min-h-screen bg-background flex flex-col">
           <Navigation />
         
-        {/* Welcome Hero for Authenticated Users */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5">
-          <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-          <div className="container mx-auto px-4 py-12 relative z-10">
-            <motion.div 
-              className="max-w-4xl"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
-                {t('index.welcome_back')}, {profile.first_name}! 👋
-              </h1>
-              <p className="text-lg text-muted-foreground">
-                {t('index.ready_to_make_impact')}
-              </p>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Quick Actions for Authenticated Users */}
-        <section className="py-12 bg-background">
-          <div className="container mx-auto px-4">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
+          {/* 1. SIMPLIFIED HERO - Welcome + Single CTA */}
+          <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5">
+            <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+            <div className="container mx-auto px-4 py-8 sm:py-12 relative z-10">
+              <motion.div 
+                className="max-w-4xl mx-auto text-center"
+                initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
+                transition={{ duration: 0.6 }}
               >
-                <Link to="/dashboard">
-                  <Card className="h-full bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20 hover:shadow-glow transition-all duration-300 group cursor-pointer">
-                    <CardContent className="p-6 text-center">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-primary to-secondary mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <BarChart3 className="w-7 h-7 text-white" />
-                      </div>
-                      <h3 className="text-lg font-bold mb-2">{t('nav.dashboard')}</h3>
-                      <p className="text-muted-foreground text-sm">{t('index.dashboard_desc_auth')}</p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3">
+                  {t('index.welcome_back')}, {profile.first_name}! 👋
+                </h1>
+                <p className="text-base sm:text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
+                  {t('index.ready_to_make_impact')}
+                </p>
                 <Link to="/challenges">
-                  <Card className="h-full bg-gradient-to-br from-accent/5 to-warning/5 border-accent/20 hover:shadow-glow transition-all duration-300 group cursor-pointer">
-                    <CardContent className="p-6 text-center">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-accent to-warning mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Award className="w-7 h-7 text-white" />
-                      </div>
-                      <h3 className="text-lg font-bold mb-2">{t('nav.challenges')}</h3>
-                      <p className="text-muted-foreground text-sm">{t('index.challenges_desc_auth')}</p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-              >
-                <Link to="/community">
-                  <Card className="h-full bg-gradient-to-br from-success/5 to-info/5 border-success/20 hover:shadow-glow transition-all duration-300 group cursor-pointer">
-                    <CardContent className="p-6 text-center">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-success to-info mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Users className="w-7 h-7 text-white" />
-                      </div>
-                      <h3 className="text-lg font-bold mb-2">{t('nav.community')}</h3>
-                      <p className="text-muted-foreground text-sm">{t('index.community_desc_auth')}</p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-              >
-                <Link to="/profile">
-                  <Card className="h-full bg-gradient-to-br from-purple-500/5 to-pink-500/5 border-purple-500/20 hover:shadow-glow transition-all duration-300 group cursor-pointer">
-                    <CardContent className="p-6 text-center">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <User className="w-7 h-7 text-white" />
-                      </div>
-                      <h3 className="text-lg font-bold mb-2">{t('nav.profile')}</h3>
-                      <p className="text-muted-foreground text-sm">{t('index.profile_desc_auth')}</p>
-                    </CardContent>
-                  </Card>
+                  <Button size="lg" className="min-w-[200px]">
+                    {t('index.browse_programs_cta')}
+                  </Button>
                 </Link>
               </motion.div>
             </div>
+          </section>
+
+          {/* 2. FEATURED PROGRAMS - Main content, immediately visible */}
+          <FeaturedChallenges />
+
+          {/* 3. STORY OF THE WEEK - Compact */}
+          <StoryOfTheWeek />
+
+          {/* 4. COMMUNITY STATS - Compact horizontal bar */}
+          <section className="py-8 bg-card/30">
+            <div className="container mx-auto px-4">
+              <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Users className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <div className="text-xl font-bold text-foreground">1,250+</div>
+                    <div className="text-xs text-muted-foreground">{t('index.stat_members')}</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+                    <Award className="w-5 h-5 text-accent" />
+                  </div>
+                  <div>
+                    <div className="text-xl font-bold text-foreground">340+</div>
+                    <div className="text-xs text-muted-foreground">{t('index.stat_completions')}</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center">
+                    <TrendingUp className="w-5 h-5 text-success" />
+                  </div>
+                  <div>
+                    <div className="text-xl font-bold text-foreground">12,500+</div>
+                    <div className="text-xs text-muted-foreground">{t('index.stat_points')}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 5. REGIONAL IMPACT GARDEN - Smaller */}
+          <div className="py-6">
+            <RegionalImpactGarden />
           </div>
-        </section>
 
-        {/* Community Impact Counter */}
-        <CommunityImpactCounter />
-
-        {/* Regional Impact Garden */}
-        <RegionalImpactGarden />
-        
-        {/* Story of the Week */}
-        <StoryOfTheWeek />
-
-        {/* Featured Challenges */}
-        <FeaturedChallenges />
-
-          {/* Regional Map Preview */}
-          <section className="py-12 bg-background">
+          {/* 6. REGIONAL MAP - Bottom */}
+          <section className="py-8 bg-background">
             <div className="container mx-auto px-4">
               <RegionalImpactMap />
             </div>
