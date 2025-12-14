@@ -115,7 +115,7 @@ const Index = () => {
                     <Users className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <div className="text-xl font-bold text-foreground">1,250+</div>
+                    <div className="text-xl font-bold text-foreground">{communityStats.members}</div>
                     <div className="text-xs text-muted-foreground">{t("index.stat_members")}</div>
                   </div>
                 </div>
@@ -124,7 +124,7 @@ const Index = () => {
                     <Award className="w-5 h-5 text-accent" />
                   </div>
                   <div>
-                    <div className="text-xl font-bold text-foreground">340+</div>
+                    <div className="text-xl font-bold text-foreground">{communityStats.completions}</div>
                     <div className="text-xs text-muted-foreground">{t("index.stat_completions")}</div>
                   </div>
                 </div>
@@ -133,7 +133,7 @@ const Index = () => {
                     <TrendingUp className="w-5 h-5 text-success" />
                   </div>
                   <div>
-                    <div className="text-xl font-bold text-foreground">12,500+</div>
+                    <div className="text-xl font-bold text-foreground">{communityStats.points.toLocaleString()}</div>
                     <div className="text-xs text-muted-foreground">{t("index.stat_points")}</div>
                   </div>
                 </div>
