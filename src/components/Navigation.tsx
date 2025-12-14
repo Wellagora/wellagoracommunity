@@ -102,23 +102,36 @@ const Navigation = () => {
   // Compute dashboard path based on view mode (use viewMode directly for reactivity)
   const dashboardPath = useMemo(() => {
     if (!user || !profile) return null;
-    if (viewMode === 'citizen') return '/dashboard';
-    if (viewMode === 'business') return '/organization';
-    // super_admin - use actual role
-    if (['business', 'government', 'ngo'].includes(profile.user_role)) {
-      return '/organization';
-    }
-    return '/dashboard';
-  }, [user, profile, viewMode]);
 
-  const navItems = useMemo(() => [
-    { path: '/', label: t('nav.home'), icon: Home },
-    { path: '/challenges', label: t('nav.challenges'), icon: Target },
-    { path: '/community', label: t('nav.community'), icon: UsersIcon },
-    ...(user && profile && dashboardPath ? [{ path: dashboardPath, label: t('nav.dashboard'), icon: Home }] : []),
-    { path: '/ai-assistant', label: 'WellBot AI', icon: Bot },
-    ...(!user ? [{ path: '/sponsor', label: t('nav.sponsors'), icon: Heart }] : []),
-  ], [user, profile, dashboardPath, t]);
+    // For super admin, use viewMode to determine path
+    if (isSuperAdmin) {
+      if (viewMode === "citizen") return "/dashboard";
+      if (viewMode === "business") return "/organization";
+      // super_admin mode - use actual role
+      if (["business", "government", "ngo"].includes(profile.user_role)) {
+        return "/organization";
+      }
+      return "/dashboard";
+    }
+
+    // For regular users, use their actual role
+    if (["business", "government", "ngo"].includes(profile.user_role)) {
+      return "/organization";
+    }
+    return "/dashboard";
+  }, [user, profile, viewMode, isSuperAdmin]);
+
+  const navItems = useMemo(
+    () => [
+      { path: "/", label: t("nav.home"), icon: Home },
+      { path: "/challenges", label: t("nav.challenges"), icon: Target },
+      { path: "/community", label: t("nav.community"), icon: UsersIcon },
+      ...(user && profile && dashboardPath ? [{ path: dashboardPath, label: t("nav.dashboard"), icon: Home }] : []),
+      { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
+      ...(!user ? [{ path: "/sponsor", label: t("nav.sponsors"), icon: Heart }] : []),
+    ],
+    [user, profile, dashboardPath, t],
+  );
 
   return (
     <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
