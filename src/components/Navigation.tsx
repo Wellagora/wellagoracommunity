@@ -101,8 +101,8 @@ const Navigation = () => {
 
   // Compute dashboard path based on view mode (use viewMode directly for reactivity)
   const dashboardPath = useMemo(() => {
+    console.log("dashboardPath calc:", { viewMode, isSuperAdmin, user: !!user, profile: !!profile });
     if (!user || !profile) return null;
-    console.log("dashboardPath calc:", { viewMode, isSuperAdmin, userRole: profile.user_role });
     // For super admin, use viewMode to determine path
     if (isSuperAdmin) {
       if (viewMode === "citizen") return "/dashboard";
