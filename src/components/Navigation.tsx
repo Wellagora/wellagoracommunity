@@ -99,35 +99,26 @@ const Navigation = () => {
     return location.pathname === path;
   };
 
-  // Compute dashboard path based on effective role (including super admin view mode)
+  // Compute dashboard path based on view mode (use viewMode directly for reactivity)
   const dashboardPath = useMemo(() => {
     if (!user || !profile) return null;
-    if (["business", "government", "ngo"].includes(effectiveRole)) {
-      return "/organization";
+    if (viewMode === 'citizen') return '/dashboard';
+    if (viewMode === 'business') return '/organization';
+    // super_admin - use actual role
+    if (['business', 'government', 'ngo'].includes(profile.user_role)) {
+      return '/organization';
     }
-    return "/dashboard";
-  }, [user, profile, effectiveRole]);
+    return '/dashboard';
+  }, [user, profile, viewMode]);
 
-  const navItems = useMemo(() => {
-    const items = [
-      { path: "/", label: t("nav.home"), icon: Home },
-      { path: "/challenges", label: t("nav.challenges"), icon: Target },
-      { path: "/community", label: t("nav.community"), icon: UsersIcon },
-      { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
-      ...(!user ? [{ path: "/sponsor", label: t("nav.sponsors"), icon: Heart }] : []),
-    ];
-
-    // Add dashboard based on user type and view mode
-    if (dashboardPath) {
-      items.splice(3, 0, {
-        path: dashboardPath,
-        label: t("nav.dashboard"),
-        icon: Home,
-      });
-    }
-
-    return items;
-  }, [user, t, dashboardPath]);
+  const navItems = useMemo(() => [
+    { path: '/', label: t('nav.home'), icon: Home },
+    { path: '/challenges', label: t('nav.challenges'), icon: Target },
+    { path: '/community', label: t('nav.community'), icon: UsersIcon },
+    ...(user && profile && dashboardPath ? [{ path: dashboardPath, label: t('nav.dashboard'), icon: Home }] : []),
+    { path: '/ai-assistant', label: 'WellBot AI', icon: Bot },
+    ...(!user ? [{ path: '/sponsor', label: t('nav.sponsors'), icon: Heart }] : []),
+  ], [user, profile, dashboardPath, t]);
 
   return (
     <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
