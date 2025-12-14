@@ -53,7 +53,6 @@ const DashboardPage = () => {
   const [stats, setStats] = useState({
     points: 0,
     activePrograms: 0,
-    rank: "Top 15%",
   });
   const [programs, setPrograms] = useState<ProgramProgress[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -104,12 +103,12 @@ const DashboardPage = () => {
           .eq("is_active", true)
           .limit(4);
 
-        // Mock progress data (in real app, fetch from user's progress table)
+        // Programs without mock progress (will show 0% until real tracking is implemented)
         const programsWithProgress =
           allPrograms?.map((p) => ({
             id: p.id,
             title: p.title,
-            progress: Math.floor(Math.random() * 100),
+            progress: 0,
             points: p.points_base,
             image_url: p.image_url,
           })) || [];
@@ -117,29 +116,12 @@ const DashboardPage = () => {
         setStats({
           points: totalPoints,
           activePrograms: allPrograms?.length || 0,
-          rank: "Top 15%",
         });
 
         setPrograms(programsWithProgress);
 
-        // Mock recent activities
-        const mockActivities: Activity[] = [
-          {
-            id: "1",
-            type: "joined",
-            description: t("dashboard.joined_program"),
-            timestamp: new Date().toISOString(),
-            icon: CheckCircle2,
-          },
-          {
-            id: "2",
-            type: "points",
-            description: t("dashboard.earned_points"),
-            timestamp: new Date(Date.now() - 3600000).toISOString(),
-            icon: Trophy,
-          },
-        ];
-        setActivities(mockActivities);
+        // No mock activities - will be empty until real activity tracking
+        setActivities([]);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       } finally {
