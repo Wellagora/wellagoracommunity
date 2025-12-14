@@ -37,13 +37,18 @@ export const RegionalImpactMap = () => {
       { x: 65, y: 65 },
     ];
 
-   return currentProject.villages.slice(0, 4).map((village, index) => ({
-  id: `${index + 1}`,
-  name: village,
-  x: positions[index]?.x || 50,
-  y: positions[index]?.y || 50,
-  color: colors[index % colors.length],
-}));
+    return currentProject.villages.slice(0, 4).map((village, index) => ({
+      id: `${index + 1}`,
+      name: village,
+      x: positions[index]?.x || 50,
+      y: positions[index]?.y || 50,
+      color: colors[index % colors.length],
+    }));
+  }, [currentProject]);
+
+  if (!currentProject || regions.length === 0) {
+    return null;
+  }
 
   return (
     <Card className="bg-gradient-to-br from-primary/5 via-card to-accent/5 overflow-hidden">
@@ -81,11 +86,13 @@ export const RegionalImpactMap = () => {
                 >
                   {/* Pulse Effect */}
                   <div className={`absolute inset-0 ${region.color} opacity-30 rounded-full animate-ping`}></div>
-                  
+
                   {/* Main Marker */}
-                  <div className={`relative ${region.color} w-6 h-6 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
-                    hoveredRegion === region.id ? 'scale-150' : 'scale-100'
-                  } ${selectedRegion?.id === region.id ? 'ring-4 ring-primary' : ''}`}>
+                  <div
+                    className={`relative ${region.color} w-6 h-6 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+                      hoveredRegion === region.id ? "scale-150" : "scale-100"
+                    } ${selectedRegion?.id === region.id ? "ring-4 ring-primary" : ""}`}
+                  >
                     <MapPin className="w-4 h-4 text-white" />
                   </div>
 
@@ -136,7 +143,9 @@ export const RegionalImpactMap = () => {
               <div className="bg-background/80 backdrop-blur-sm border border-border rounded-lg p-3 sm:p-4 space-y-3 sm:space-y-4 animate-fade-in">
                 <div>
                   <h4 className="font-semibold text-base sm:text-lg mb-1">{selectedRegion.name}</h4>
-                  <Badge variant="secondary" className="text-xs">{selectedRegion.activeChallenges} Active Challenges</Badge>
+                  <Badge variant="secondary" className="text-xs">
+                    {selectedRegion.activeChallenges} Active Challenges
+                  </Badge>
                 </div>
 
                 <div className="space-y-3">
@@ -165,20 +174,14 @@ export const RegionalImpactMap = () => {
                   </div>
                 </div>
 
-                <Button 
-                  className="w-full" 
-                  variant="default"
-                  onClick={() => setSelectedRegion(null)}
-                >
+                <Button className="w-full" variant="default" onClick={() => setSelectedRegion(null)}>
                   View Details
                 </Button>
               </div>
             ) : (
               <div className="bg-background/50 border border-border/50 border-dashed rounded-lg p-4 sm:p-8 text-center">
                 <MapPin className="w-8 h-8 sm:w-12 sm:h-12 text-muted-foreground mx-auto mb-2 sm:mb-3" />
-                <p className="text-xs sm:text-sm text-muted-foreground">
-                  Click on a region marker to view details
-                </p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Click on a region marker to view details</p>
               </div>
             )}
           </div>
