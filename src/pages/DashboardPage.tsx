@@ -184,7 +184,7 @@ const DashboardPage = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-fade-in">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 animate-fade-in">
           {/* Points Card */}
           <Card className="hover:shadow-md transition-all duration-300">
             <CardContent className="pt-6">
@@ -196,10 +196,6 @@ const DashboardPage = () => {
                   ) : (
                     <p className="text-3xl font-bold text-foreground">{stats.points}</p>
                   )}
-                  <div className="flex items-center mt-2 text-green-600 text-sm font-medium">
-                    <TrendingUp className="h-4 w-4 mr-1" />
-                    <span>+12%</span>
-                  </div>
                 </div>
                 <div className="p-3 rounded-full bg-yellow-500/10">
                   <Trophy className="h-6 w-6 text-yellow-500" />
@@ -229,28 +225,6 @@ const DashboardPage = () => {
                 </div>
                 <div className="p-3 rounded-full bg-blue-500/10">
                   <Target className="h-6 w-6 text-blue-500" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Community Rank Card */}
-          <Card className="hover:shadow-md transition-all duration-300">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <p className="text-sm text-muted-foreground mb-2">{t("dashboard.community_rank")}</p>
-                  {loadingData ? (
-                    <Skeleton className="h-9 w-20" />
-                  ) : (
-                    <p className="text-3xl font-bold text-foreground">{stats.rank}</p>
-                  )}
-                  <Badge variant="secondary" className="mt-2">
-                    {t("dashboard.top_percent")}
-                  </Badge>
-                </div>
-                <div className="p-3 rounded-full bg-green-500/10">
-                  <Users className="h-6 w-6 text-green-500" />
                 </div>
               </div>
             </CardContent>
