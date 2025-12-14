@@ -93,12 +93,14 @@ export const RegionalImpactMap = () => {
                     <MapPin className="w-4 h-4 text-white" />
                   </div>
 
-                {/* Hover Tooltip */}
-{hoveredRegion === region.id && (
-  <div className="absolute top-8 left-1/2 transform -translate-x-1/2 bg-popover text-popover-foreground p-3 rounded-lg shadow-xl z-10 whitespace-nowrap animate-fade-in border border-border">
-    <p className="font-semibold">{region.name}</p>
-  </div>
-)}
+                  {/* Hover Tooltip */}
+                  {hoveredRegion === region.id && (
+                    <div className="absolute top-8 left-1/2 transform -translate-x-1/2 bg-popover text-popover-foreground p-3 rounded-lg shadow-xl z-10 whitespace-nowrap animate-fade-in border border-border">
+                      <p className="font-semibold">{region.name}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
 
               {/* Connection Lines */}
               <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20">
