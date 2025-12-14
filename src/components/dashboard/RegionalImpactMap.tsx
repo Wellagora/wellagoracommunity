@@ -51,10 +51,10 @@ export const RegionalImpactMap = () => {
     <Card className="bg-gradient-to-br from-primary/5 via-card to-accent/5 overflow-hidden">
       <div className="p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4">
-          <h3 className="text-base sm:text-lg font-semibold">Regional Impact Map</h3>
+          <h3 className="text-base sm:text-lg font-semibold">Regionális térkép</h3>
           <Badge variant="outline" className="gap-2">
             <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
-            Live Data
+            Adatok
           </Badge>
         </div>
 
@@ -141,7 +141,7 @@ export const RegionalImpactMap = () => {
             ) : (
               <div className="bg-background/50 border border-border/50 border-dashed rounded-lg p-4 sm:p-8 text-center">
                 <MapPin className="w-8 h-8 sm:w-12 sm:h-12 text-muted-foreground mx-auto mb-2 sm:mb-3" />
-                <p className="text-xs sm:text-sm text-muted-foreground">Click on a region marker to view details</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Kattints egy településre a részletekért</p>
               </div>
             )}
           </div>
