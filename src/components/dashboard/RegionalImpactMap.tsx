@@ -10,9 +10,6 @@ interface RegionData {
   name: string;
   x: number;
   y: number;
-  participants: number;
-  co2Saved: number;
-  activeChallenges: number;
   color: string;
 }
 
