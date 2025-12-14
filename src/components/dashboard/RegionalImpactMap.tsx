@@ -126,45 +126,21 @@ export const RegionalImpactMap = () => {
 
           {/* Region Details Panel */}
           <div className="space-y-4 mt-4 lg:mt-0">
-            {selectedRegion ? (
+{selectedRegion ? (
               <div className="bg-background/80 backdrop-blur-sm border border-border rounded-lg p-3 sm:p-4 space-y-3 sm:space-y-4 animate-fade-in">
                 <div>
                   <h4 className="font-semibold text-base sm:text-lg mb-1">{selectedRegion.name}</h4>
-                  <Badge variant="secondary" className="text-xs">
-                    {selectedRegion.activeChallenges} Active Challenges
-                  </Badge>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4 text-primary" />
-                      <span className="text-sm">Participants</span>
-                    </div>
-                    <span className="font-semibold">{selectedRegion.participants}</span>
-                  </div>
+                <p className="text-sm text-muted-foreground">
+                  Résztvevők és statisztikák hamarosan...
+                </p>
 
-                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <Leaf className="w-4 h-4 text-success" />
-                      <span className="text-sm">CO₂ Saved</span>
-                    </div>
-                    <span className="font-semibold">{selectedRegion.co2Saved}t</span>
-                  </div>
-
-                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4 text-warning" />
-                      <span className="text-sm">Growth</span>
-                    </div>
-                    <span className="font-semibold text-success">+12%</span>
-                  </div>
-                </div>
-
-                <Button className="w-full" variant="default" onClick={() => setSelectedRegion(null)}>
-                  View Details
+                <Button className="w-full" variant="outline" onClick={() => setSelectedRegion(null)}>
+                  Bezárás
                 </Button>
               </div>
+            )
             ) : (
               <div className="bg-background/50 border border-border/50 border-dashed rounded-lg p-4 sm:p-8 text-center">
                 <MapPin className="w-8 h-8 sm:w-12 sm:h-12 text-muted-foreground mx-auto mb-2 sm:mb-3" />
