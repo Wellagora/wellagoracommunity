@@ -74,23 +74,13 @@ export const RegionalImpactGarden = () => {
                 <CardContent className="p-4 md:p-6">
                   <div className="flex items-start justify-between mb-3 md:mb-4">
                     <div className="flex items-center gap-2 md:gap-3">
-                      <div
-                        className={`w-8 h-8 md:w-10 md:h-10 ${getGrowthBg(region.growth)} rounded-full flex items-center justify-center shrink-0`}
-                      >
-                        <MapPin className={`w-4 h-4 md:w-5 md:h-5 ${getGrowthColor(region.growth)}`} />
+                      <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
+                        <MapPin className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                       </div>
                       <div>
                         <h3 className="font-semibold text-foreground text-sm md:text-base">{region.name}</h3>
-                        <p className="text-xs md:text-sm text-muted-foreground">
-                          {region.participants} {t("impact_garden.participants")}
-                        </p>
                       </div>
                     </div>
-                    <Badge
-                      className={`${getGrowthBg(region.growth)} ${getGrowthColor(region.growth)} border-0 text-xs md:text-sm shrink-0`}
-                    >
-                      {region.growth}%
-                    </Badge>
                   </div>
 
                   {/* Visual Garden - Deep Blue Glassmorphism */}
@@ -217,27 +207,6 @@ export const RegionalImpactGarden = () => {
                       ))}
                     </div>
                   </motion.div>
-
-                  {/* Modern Progress Indicator */}
-                  <div className="space-y-1.5 md:space-y-2">
-                    <div className="flex justify-between text-xs md:text-sm items-center">
-                      <span className="text-[#A7B6D8]">{t("impact_garden.growth_level")}</span>
-                      <span className="font-semibold text-[#8AAEFF]">{region.growth}%</span>
-                    </div>
-                    <div className="h-1.5 md:h-2 rounded-full overflow-hidden" style={{ backgroundColor: "#081632" }}>
-                      <motion.div
-                        className="h-full rounded-full"
-                        style={{
-                          background: "linear-gradient(90deg, #274BD1, #8AAEFF)",
-                          boxShadow: "0 0 8px rgba(60, 110, 255, 0.4)",
-                        }}
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${region.growth}%` }}
-                        transition={{ duration: 1, delay: 0.2 }}
-                        viewport={{ once: true }}
-                      />
-                    </div>
-                  </div>
                 </CardContent>
               </Card>
             </motion.div>
