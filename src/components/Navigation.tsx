@@ -101,6 +101,12 @@ const Navigation = () => {
 
   // Compute dashboard path based on effective role (including super admin view mode)
   const dashboardPath = useMemo(() => {
+    console.log('Dashboard path calculation:', {
+      viewMode,
+      effectiveRole,
+      profileUserRole: profile?.user_role,
+    });
+
     if (!user || !profile) return null;
     if (["business", "government", "ngo"].includes(effectiveRole)) {
       return "/organization";
