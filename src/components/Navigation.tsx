@@ -38,11 +38,11 @@ const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const { user, profile, signOut } = useAuth();
-  const { viewMode, setViewMode, isSuperAdmin } = useViewMode();
+  const { viewMode, setViewMode, isSuperAdmin, getEffectiveRole } = useViewMode();
   const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
-
+  const effectiveRole = getEffectiveRole();
   // Load unread message count
   useEffect(() => {
     const loadUnreadCount = async () => {
@@ -99,17 +99,14 @@ const Navigation = () => {
     return location.pathname === path;
   };
 
-  // Compute dashboard path based on view mode
+  // Compute dashboard path based on effective role (including super admin view mode)
   const dashboardPath = useMemo(() => {
     if (!user || !profile) return null;
-    if (viewMode === "citizen") return "/dashboard";
-    if (viewMode === "business") return "/organization";
-    // super_admin - use actual role
-    if (["business", "government", "ngo"].includes(profile.user_role)) {
+    if (["business", "government", "ngo"].includes(effectiveRole)) {
       return "/organization";
     }
     return "/dashboard";
-  }, [user, profile, viewMode]);
+  }, [user, profile, effectiveRole]);
 
   const navItems = useMemo(() => {
     const items = [
