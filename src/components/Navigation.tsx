@@ -101,17 +101,14 @@ const Navigation = () => {
 
   // Compute dashboard path based on view mode (use viewMode directly for reactivity)
   const dashboardPath = useMemo(() => {
-    console.log("dashboardPath calc:", { viewMode, isSuperAdmin, user: !!user, profile: !!profile });
     if (!user || !profile) return null;
+
     // For super admin, use viewMode to determine path
     if (isSuperAdmin) {
       if (viewMode === "citizen") return "/dashboard";
       if (viewMode === "business") return "/organization";
-      // super_admin mode - use actual role
-      if (["business", "government", "ngo"].includes(profile.user_role)) {
-        return "/organization";
-      }
-      return "/dashboard";
+      // super_admin mode - go to super admin page
+      return "/super-admin";
     }
 
     // For regular users, use their actual role
