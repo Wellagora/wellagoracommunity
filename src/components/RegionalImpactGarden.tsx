@@ -20,17 +20,12 @@ export const RegionalImpactGarden = () => {
     // TODO: Replace with actual participant and impact data from database
     // For now, generate representative data based on village index
     return currentProject.villages.map((village, index) => {
-      const baseParticipants = 400 + index * 150;
-      const baseGrowth = 65 + (index * 7) % 30;
-      
       return {
         id: index + 1,
         name: village,
-        growth: Math.min(95, baseGrowth + Math.floor(Math.random() * 10)),
-        participants: baseParticipants + Math.floor(Math.random() * 200),
-        trees: 8 + Math.floor(Math.random() * 8),
-        flowers: 5 + Math.floor(Math.random() * 7),
-        sprouts: 4 + Math.floor(Math.random() * 6)
+        trees: 5,
+        flowers: 3,
+        sprouts: 2,
       };
     });
   }, [currentProject]);
@@ -58,11 +53,11 @@ export const RegionalImpactGarden = () => {
         <div className="text-center mb-8 md:mb-12">
           <Badge className="mb-4 bg-success/10 text-success border-success/20">
             <TreePine className="w-3 h-3 md:w-4 md:h-4 mr-1" />
-            {t('impact_garden.badge')}
+            {t("impact_garden.badge")}
           </Badge>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 px-4">{t('impact_garden.title')}</h2>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 px-4">{t("impact_garden.title")}</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base px-4">
-            {t('impact_garden.subtitle')}
+            {t("impact_garden.subtitle")}
           </p>
         </div>
 
@@ -79,45 +74,47 @@ export const RegionalImpactGarden = () => {
                 <CardContent className="p-4 md:p-6">
                   <div className="flex items-start justify-between mb-3 md:mb-4">
                     <div className="flex items-center gap-2 md:gap-3">
-                      <div className={`w-8 h-8 md:w-10 md:h-10 ${getGrowthBg(region.growth)} rounded-full flex items-center justify-center shrink-0`}>
+                      <div
+                        className={`w-8 h-8 md:w-10 md:h-10 ${getGrowthBg(region.growth)} rounded-full flex items-center justify-center shrink-0`}
+                      >
                         <MapPin className={`w-4 h-4 md:w-5 md:h-5 ${getGrowthColor(region.growth)}`} />
                       </div>
                       <div>
                         <h3 className="font-semibold text-foreground text-sm md:text-base">{region.name}</h3>
-                        <p className="text-xs md:text-sm text-muted-foreground">{region.participants} {t('impact_garden.participants')}</p>
+                        <p className="text-xs md:text-sm text-muted-foreground">
+                          {region.participants} {t("impact_garden.participants")}
+                        </p>
                       </div>
                     </div>
-                    <Badge className={`${getGrowthBg(region.growth)} ${getGrowthColor(region.growth)} border-0 text-xs md:text-sm shrink-0`}>
+                    <Badge
+                      className={`${getGrowthBg(region.growth)} ${getGrowthColor(region.growth)} border-0 text-xs md:text-sm shrink-0`}
+                    >
                       {region.growth}%
                     </Badge>
                   </div>
 
                   {/* Visual Garden - Deep Blue Glassmorphism */}
-                  <motion.div 
+                  <motion.div
                     className="relative h-32 md:h-40 rounded-[16px] md:rounded-[20px] mb-3 md:mb-4 overflow-hidden group/garden"
                     style={{
-                      background: 'linear-gradient(180deg, #0A1F4D 0%, #102B68 45%, #1C3F8E 100%)',
+                      background: "linear-gradient(180deg, #0A1F4D 0%, #102B68 45%, #1C3F8E 100%)",
                       opacity: 0.9,
-                      backdropFilter: 'blur(20px)',
-                      border: '1px solid rgba(80, 120, 255, 0.35)',
-                      boxShadow: '0 0 24px rgba(60, 100, 255, 0.18) inset'
+                      backdropFilter: "blur(20px)",
+                      border: "1px solid rgba(80, 120, 255, 0.35)",
+                      boxShadow: "0 0 24px rgba(60, 100, 255, 0.18) inset",
                     }}
-                    whileHover={{ y: -2, boxShadow: '0 0 32px rgba(60, 100, 255, 0.28) inset' }}
+                    whileHover={{ y: -2, boxShadow: "0 0 32px rgba(60, 100, 255, 0.28) inset" }}
                     transition={{ duration: 0.3 }}
                   >
                     {/* Curved Ground Line */}
-                    <svg 
-                      className="absolute bottom-0 left-0 right-0 w-full h-8 md:h-12" 
+                    <svg
+                      className="absolute bottom-0 left-0 right-0 w-full h-8 md:h-12"
                       preserveAspectRatio="none"
                       viewBox="0 0 400 48"
                     >
-                      <path 
-                        d="M0,48 L0,24 Q100,12 200,16 T400,20 L400,48 Z" 
-                        fill="#07193E"
-                        opacity="0.6"
-                      />
+                      <path d="M0,48 L0,24 Q100,12 200,16 T400,20 L400,48 Z" fill="#07193E" opacity="0.6" />
                     </svg>
-                    
+
                     {/* Elegant Icon Layout - Left Group (Trees) */}
                     <div className="absolute bottom-6 md:bottom-8 left-3 md:left-6 flex gap-2 md:gap-3 items-end">
                       {Array.from({ length: Math.min(2, Math.ceil(region.trees / 6)) }).map((_, i) => (
@@ -127,12 +124,13 @@ export const RegionalImpactGarden = () => {
                           animate={{ scale: 1, y: 0 }}
                           transition={{ delay: 0.1 * i, duration: 0.5 }}
                         >
-                          <TreePine 
+                          <TreePine
                             className="w-5 h-5 md:w-7 md:h-7"
-                            style={{ 
-                              color: '#7FDBFF',
-                              filter: 'drop-shadow(0 0 4px rgba(127, 219, 255, 0.4)) md:drop-shadow(0 0 6px rgba(127, 219, 255, 0.4))',
-                              strokeWidth: 1.5
+                            style={{
+                              color: "#7FDBFF",
+                              filter:
+                                "drop-shadow(0 0 4px rgba(127, 219, 255, 0.4)) md:drop-shadow(0 0 6px rgba(127, 219, 255, 0.4))",
+                              strokeWidth: 1.5,
                             }}
                           />
                         </motion.div>
@@ -148,12 +146,13 @@ export const RegionalImpactGarden = () => {
                           animate={{ scale: 1, y: 0 }}
                           transition={{ delay: 0.15 * i + 0.2, duration: 0.5 }}
                         >
-                          <TreePine 
+                          <TreePine
                             className="w-4 h-4 md:w-6 md:h-6"
-                            style={{ 
-                              color: '#7FDBFF',
-                              filter: 'drop-shadow(0 0 4px rgba(127, 219, 255, 0.4)) md:drop-shadow(0 0 6px rgba(127, 219, 255, 0.4))',
-                              strokeWidth: 1.5
+                            style={{
+                              color: "#7FDBFF",
+                              filter:
+                                "drop-shadow(0 0 4px rgba(127, 219, 255, 0.4)) md:drop-shadow(0 0 6px rgba(127, 219, 255, 0.4))",
+                              strokeWidth: 1.5,
                             }}
                           />
                         </motion.div>
@@ -165,12 +164,13 @@ export const RegionalImpactGarden = () => {
                           animate={{ scale: 1, rotate: 0 }}
                           transition={{ delay: 0.15 * i + 0.3, duration: 0.6 }}
                         >
-                          <Flower 
+                          <Flower
                             className="w-4 h-4 md:w-5 md:h-5"
-                            style={{ 
-                              color: '#FF84B5',
-                              filter: 'drop-shadow(0 0 4px rgba(255, 132, 181, 0.4)) md:drop-shadow(0 0 6px rgba(255, 132, 181, 0.4))',
-                              strokeWidth: 1.5
+                            style={{
+                              color: "#FF84B5",
+                              filter:
+                                "drop-shadow(0 0 4px rgba(255, 132, 181, 0.4)) md:drop-shadow(0 0 6px rgba(255, 132, 181, 0.4))",
+                              strokeWidth: 1.5,
                             }}
                           />
                         </motion.div>
@@ -186,12 +186,13 @@ export const RegionalImpactGarden = () => {
                           animate={{ scale: 1, rotate: 0 }}
                           transition={{ delay: 0.2 * i + 0.4, duration: 0.6 }}
                         >
-                          <Flower 
+                          <Flower
                             className="w-4 h-4 md:w-5 md:h-5"
-                            style={{ 
-                              color: '#A8C8FF',
-                              filter: 'drop-shadow(0 0 4px rgba(168, 200, 255, 0.4)) md:drop-shadow(0 0 6px rgba(168, 200, 255, 0.4))',
-                              strokeWidth: 1.5
+                            style={{
+                              color: "#A8C8FF",
+                              filter:
+                                "drop-shadow(0 0 4px rgba(168, 200, 255, 0.4)) md:drop-shadow(0 0 6px rgba(168, 200, 255, 0.4))",
+                              strokeWidth: 1.5,
                             }}
                           />
                         </motion.div>
@@ -203,12 +204,13 @@ export const RegionalImpactGarden = () => {
                           animate={{ scale: 1, y: 0 }}
                           transition={{ delay: 0.25 * i + 0.5, duration: 0.4 }}
                         >
-                          <Sprout 
+                          <Sprout
                             className="w-3 h-3 md:w-4 md:h-4"
-                            style={{ 
-                              color: '#6EE1FF',
-                              filter: 'drop-shadow(0 0 4px rgba(110, 225, 255, 0.4)) md:drop-shadow(0 0 6px rgba(110, 225, 255, 0.4))',
-                              strokeWidth: 1.5
+                            style={{
+                              color: "#6EE1FF",
+                              filter:
+                                "drop-shadow(0 0 4px rgba(110, 225, 255, 0.4)) md:drop-shadow(0 0 6px rgba(110, 225, 255, 0.4))",
+                              strokeWidth: 1.5,
                             }}
                           />
                         </motion.div>
@@ -219,20 +221,15 @@ export const RegionalImpactGarden = () => {
                   {/* Modern Progress Indicator */}
                   <div className="space-y-1.5 md:space-y-2">
                     <div className="flex justify-between text-xs md:text-sm items-center">
-                      <span className="text-[#A7B6D8]">{t('impact_garden.growth_level')}</span>
-                      <span className="font-semibold text-[#8AAEFF]">
-                        {region.growth}%
-                      </span>
+                      <span className="text-[#A7B6D8]">{t("impact_garden.growth_level")}</span>
+                      <span className="font-semibold text-[#8AAEFF]">{region.growth}%</span>
                     </div>
-                    <div 
-                      className="h-1.5 md:h-2 rounded-full overflow-hidden"
-                      style={{ backgroundColor: '#081632' }}
-                    >
-                      <motion.div 
+                    <div className="h-1.5 md:h-2 rounded-full overflow-hidden" style={{ backgroundColor: "#081632" }}>
+                      <motion.div
                         className="h-full rounded-full"
                         style={{
-                          background: 'linear-gradient(90deg, #274BD1, #8AAEFF)',
-                          boxShadow: '0 0 8px rgba(60, 110, 255, 0.4)'
+                          background: "linear-gradient(90deg, #274BD1, #8AAEFF)",
+                          boxShadow: "0 0 8px rgba(60, 110, 255, 0.4)",
                         }}
                         initial={{ width: 0 }}
                         whileInView={{ width: `${region.growth}%` }}
@@ -252,22 +249,21 @@ export const RegionalImpactGarden = () => {
             <CardContent className="p-4 md:p-6">
               <div className="flex flex-col sm:flex-row items-center gap-3 md:gap-4">
                 <div className="flex items-center gap-2">
-                  <TreePine className="w-4 h-4 md:w-5 md:h-5" style={{ color: '#7FDBFF' }} />
-                  <span className="text-xs md:text-sm text-[#A7B6D8]">{t('impact_garden.legend_mature')}</span>
+                  <TreePine className="w-4 h-4 md:w-5 md:h-5" style={{ color: "#7FDBFF" }} />
+                  <span className="text-xs md:text-sm text-[#A7B6D8]">{t("impact_garden.legend_mature")}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Flower className="w-4 h-4 md:w-5 md:h-5" style={{ color: '#FF84B5' }} />
-                  <span className="text-xs md:text-sm text-[#A7B6D8]">{t('impact_garden.legend_blooming')}</span>
+                  <Flower className="w-4 h-4 md:w-5 md:h-5" style={{ color: "#FF84B5" }} />
+                  <span className="text-xs md:text-sm text-[#A7B6D8]">{t("impact_garden.legend_blooming")}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Sprout className="w-4 h-4 md:w-5 md:h-5" style={{ color: '#6EE1FF' }} />
-                  <span className="text-xs md:text-sm text-[#A7B6D8]">{t('impact_garden.legend_growing')}</span>
+                  <Sprout className="w-4 h-4 md:w-5 md:h-5" style={{ color: "#6EE1FF" }} />
+                  <span className="text-xs md:text-sm text-[#A7B6D8]">{t("impact_garden.legend_growing")}</span>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
-
       </div>
     </section>
   );
