@@ -126,21 +126,18 @@ export const RegionalImpactMap = () => {
 
           {/* Region Details Panel */}
           <div className="space-y-4 mt-4 lg:mt-0">
-{selectedRegion ? (
+            {selectedRegion ? (
               <div className="bg-background/80 backdrop-blur-sm border border-border rounded-lg p-3 sm:p-4 space-y-3 sm:space-y-4 animate-fade-in">
                 <div>
                   <h4 className="font-semibold text-base sm:text-lg mb-1">{selectedRegion.name}</h4>
                 </div>
 
-                <p className="text-sm text-muted-foreground">
-                  Résztvevők és statisztikák hamarosan...
-                </p>
+                <p className="text-sm text-muted-foreground">Résztvevők és statisztikák hamarosan...</p>
 
                 <Button className="w-full" variant="outline" onClick={() => setSelectedRegion(null)}>
                   Bezárás
                 </Button>
               </div>
-            )
             ) : (
               <div className="bg-background/50 border border-border/50 border-dashed rounded-lg p-4 sm:p-8 text-center">
                 <MapPin className="w-8 h-8 sm:w-12 sm:h-12 text-muted-foreground mx-auto mb-2 sm:mb-3" />
