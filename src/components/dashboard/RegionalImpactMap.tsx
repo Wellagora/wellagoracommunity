@@ -37,21 +37,13 @@ export const RegionalImpactMap = () => {
       { x: 65, y: 65 },
     ];
 
-    return currentProject.villages.slice(0, 4).map((village, index) => ({
-      id: `${index + 1}`,
-      name: village,
-      x: positions[index]?.x || 50,
-      y: positions[index]?.y || 50,
-      participants: Math.floor(Math.random() * 500) + 200,
-      co2Saved: Math.floor(Math.random() * 15) + 5,
-      activeChallenges: Math.floor(Math.random() * 5) + 1,
-      color: colors[index % colors.length],
-    }));
-  }, [currentProject]);
-
-  if (!currentProject || regions.length === 0) {
-    return null;
-  }
+   return currentProject.villages.slice(0, 4).map((village, index) => ({
+  id: `${index + 1}`,
+  name: village,
+  x: positions[index]?.x || 50,
+  y: positions[index]?.y || 50,
+  color: colors[index % colors.length],
+}));
 
   return (
     <Card className="bg-gradient-to-br from-primary/5 via-card to-accent/5 overflow-hidden">
