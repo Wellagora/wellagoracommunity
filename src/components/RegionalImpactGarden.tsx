@@ -35,18 +35,6 @@ export const RegionalImpactGarden = () => {
     return null;
   }
 
-  const getGrowthColor = (growth: number) => {
-    if (growth >= 80) return "text-success";
-    if (growth >= 60) return "text-primary";
-    return "text-warning";
-  };
-
-  const getGrowthBg = (growth: number) => {
-    if (growth >= 80) return "bg-success/10";
-    if (growth >= 60) return "bg-primary/10";
-    return "bg-warning/10";
-  };
-
   return (
     <section className="py-8 md:py-16 bg-gradient-to-br from-success/5 via-background to-primary/5">
       <div className="container mx-auto px-4 md:px-6">
