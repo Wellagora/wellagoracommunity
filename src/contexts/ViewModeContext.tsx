@@ -71,35 +71,21 @@ export const ViewModeProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const getEffectiveRole = (): string => {
-    let role: string;
-
     // If not super admin, return actual profile role
     if (!isSuperAdmin) {
-      role = profile?.user_role || 'citizen';
-    } else {
-      // If super admin, return simulated role based on view mode
-      switch (viewMode) {
-        case 'business':
-          role = 'business';
-          break;
-        case 'citizen':
-          role = 'citizen';
-          break;
-        case 'super_admin':
-        default:
-          role = profile?.user_role || 'citizen';
-          break;
-      }
+      return profile?.user_role || 'citizen';
     }
 
-    console.log('ViewModeContext getEffectiveRole:', {
-      viewMode,
-      isSuperAdmin,
-      profileUserRole: profile?.user_role,
-      effectiveRole: role,
-    });
-
-    return role;
+    // If super admin, return simulated role based on view mode
+    switch (viewMode) {
+      case 'business':
+        return 'business';
+      case 'citizen':
+        return 'citizen';
+      case 'super_admin':
+      default:
+        return profile?.user_role || 'citizen';
+    }
   };
 
   return (
