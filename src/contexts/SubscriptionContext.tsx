@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 // Types
 export type TierKey = 'bronze' | 'silver' | 'gold' | 'diamond';
@@ -126,7 +127,7 @@ export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ 
         .order('display_order', { ascending: true });
 
       if (fetchError) {
-        console.error('Error fetching plans:', fetchError);
+        logger.error('Error fetching plans', fetchError, 'Subscription');
         setError('Failed to load subscription plans');
         return;
       }
@@ -151,7 +152,7 @@ export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
       setPlans(typedPlans);
     } catch (err) {
-      console.error('Error fetching plans:', err);
+      logger.error('Error fetching plans', err, 'Subscription');
       setError('Failed to load subscription plans');
     } finally {
       setPlansLoading(false);
@@ -180,7 +181,7 @@ export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ 
         .maybeSingle();
 
       if (fetchError) {
-        console.error('Error fetching subscription:', fetchError);
+        logger.error('Error fetching subscription', fetchError, 'Subscription');
         setError('Failed to load subscription');
         return;
       }
@@ -220,7 +221,7 @@ export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ 
         setCurrentSubscription(null);
       }
     } catch (err) {
-      console.error('Error fetching subscription:', err);
+      logger.error('Error fetching subscription', err, 'Subscription');
       setError('Failed to load subscription');
     } finally {
       setSubscriptionLoading(false);
@@ -252,7 +253,7 @@ export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ 
       const { data, error: fetchError } = await query.maybeSingle();
 
       if (fetchError) {
-        console.error('Error fetching credits:', fetchError);
+        logger.error('Error fetching credits', fetchError, 'Subscription');
         // Don't set error for credits - it's optional
         return;
       }
@@ -270,7 +271,7 @@ export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ 
         setCredits(null);
       }
     } catch (err) {
-      console.error('Error fetching credits:', err);
+      logger.error('Error fetching credits', err, 'Subscription');
     } finally {
       setCreditsLoading(false);
     }
