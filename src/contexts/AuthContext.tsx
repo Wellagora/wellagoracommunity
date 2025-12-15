@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 interface Profile {
   id: string;
@@ -54,7 +55,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Helper function to fetch profile data
   const fetchProfileData = async (userId: string) => {
-    console.log('🔍 Fetching profile for userId:', userId);
+    logger.debug('Fetching profile', { userId }, 'Auth');
     try {
       const { data: profile, error } = await supabase
         .from('profiles')
@@ -84,31 +85,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .eq('id', userId)
         .maybeSingle();
       
-      console.log('📊 Profile query result:', { profile, error, hasData: !!profile });
+      logger.debug('Profile query result', { hasData: !!profile, hasError: !!error }, 'Auth');
       
       if (error && error.code !== 'PGRST116') {
-        console.error('❌ Error fetching profile:', error);
+        logger.error('Error fetching profile', error, 'Auth');
         return null;
       }
       
       if (!profile) {
-        console.warn('⚠️ No profile found for user:', userId);
+        logger.warn('No profile found', { userId }, 'Auth');
       }
       
       return profile as Profile;
     } catch (err) {
-      console.error('❌ Profile fetch error:', err);
+      logger.error('Profile fetch error', err, 'Auth');
       return null;
     }
   };
 
   useEffect(() => {
-    console.log('🔧 Setting up auth state listener...');
+    logger.debug('Setting up auth state listener', null, 'Auth');
     
     // Set up auth state listener - MUST NOT be async!
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log('🔔 Auth state changed:', event, { hasSession: !!session, hasUser: !!session?.user });
+        logger.debug('Auth state changed', { event, hasSession: !!session }, 'Auth');
         
         // Only synchronous updates here
         setSession(session);
@@ -116,20 +117,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         // Defer profile fetch with setTimeout to prevent deadlock
         if (session?.user) {
-          console.log('👤 User detected, deferring profile fetch...');
+          logger.debug('User detected, deferring profile fetch', null, 'Auth');
           setTimeout(() => {
             fetchProfileData(session.user.id).then(profile => {
-              console.log('✅ Profile fetched:', { hasProfile: !!profile });
+              logger.debug('Profile fetched successfully', { hasProfile: !!profile }, 'Auth');
               setProfile(profile);
               setLoading(false);
             }).catch(err => {
-              console.error('❌ Profile fetch failed:', err);
+              logger.error('Profile fetch failed', err, 'Auth');
               setProfile(null);
               setLoading(false);
             });
           }, 0);
         } else {
-          console.log('👤 No user, clearing profile');
+          logger.debug('No user, clearing profile', null, 'Auth');
           setProfile(null);
           setLoading(false);
         }
@@ -137,20 +138,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
 
     // Get initial session
-    console.log('🔍 Checking for existing session...');
+    logger.debug('Checking for existing session', null, 'Auth');
     supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('📋 Initial session check:', { hasSession: !!session, hasUser: !!session?.user });
+      logger.debug('Initial session check', { hasSession: !!session }, 'Auth');
       setSession(session);
       setUser(session?.user ?? null);
       
       if (session?.user) {
         setTimeout(() => {
           fetchProfileData(session.user.id).then(profile => {
-            console.log('✅ Initial profile fetched:', { hasProfile: !!profile });
+            logger.debug('Initial profile fetched', { hasProfile: !!profile }, 'Auth');
             setProfile(profile);
             setLoading(false);
           }).catch(err => {
-            console.error('❌ Initial profile fetch failed:', err);
+            logger.error('Initial profile fetch failed', err, 'Auth');
             setProfile(null);
             setLoading(false);
           });
@@ -161,7 +162,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     return () => {
-      console.log('🧹 Cleaning up auth subscription');
+      logger.debug('Cleaning up auth subscription', null, 'Auth');
       subscription.unsubscribe();
     };
   }, []);
