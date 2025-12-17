@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from '@/lib/logger';
 
 interface Project {
   id: string;
@@ -87,7 +88,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         localStorage.setItem("currentProjectId", projects[0].id);
       }
     } catch (error) {
-      console.error("Error loading projects:", error);
+      logger.error('Error loading projects', error, 'Project');
     } finally {
       setIsLoading(false);
     }
