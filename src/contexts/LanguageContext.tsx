@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import huTranslations from '@/locales/hu.json';
 import enTranslations from '@/locales/en.json';
 import deTranslations from '@/locales/de.json';
+import { logger } from '@/lib/logger';
 
 export type Language = 'hu' | 'en' | 'de';
 
@@ -31,7 +32,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
         setLanguageState(saved);
       }
     } catch (error) {
-      console.warn('Failed to read language from localStorage', error);
+      logger.warn('Failed to read language from localStorage', error, 'Language');
     } finally {
       setIsLoading(false);
     }
@@ -42,7 +43,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     try {
       localStorage.setItem('language', lang);
     } catch (error) {
-      console.warn('Failed to save language to localStorage', error);
+      logger.warn('Failed to save language to localStorage', error, 'Language');
     }
   };
 
@@ -61,7 +62,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     for (const segment of segments) {
       value = value?.[segment];
       if (value === undefined || value === null) {
-        console.warn(`Translation missing: ${key} (${language})`);
+        logger.debug('Translation missing', { key, language }, 'Language');
         return key;
       }
     }
