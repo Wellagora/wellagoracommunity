@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { Challenge } from "@/data/challenges";
+import { logger } from '@/lib/logger';
 
 interface SponsorInfo {
   name: string;
@@ -50,7 +51,7 @@ export const getActiveSponsorships = async (projectId?: string): Promise<Map<str
     const { data: sponsorships, error: sponsorshipsError } = await query;
 
     if (sponsorshipsError) {
-      console.error('Error fetching sponsorships:', sponsorshipsError);
+      logger.error('Error fetching sponsorships', sponsorshipsError, 'Sponsorship');
       return new Map();
     }
 
@@ -68,7 +69,7 @@ export const getActiveSponsorships = async (projectId?: string): Promise<Map<str
       .in('id', sponsorUserIds);
 
     if (profilesError) {
-      console.error('Error fetching profiles:', profilesError);
+      logger.error('Error fetching profiles', profilesError, 'Sponsorship');
       return new Map();
     }
 
@@ -103,7 +104,7 @@ export const getActiveSponsorships = async (projectId?: string): Promise<Map<str
 
     return sponsorshipMap;
   } catch (error) {
-    console.error('Exception in getActiveSponsorships:', error);
+    logger.error('Exception in getActiveSponsorships', error, 'Sponsorship');
     return new Map();
   }
 };
@@ -160,16 +161,16 @@ export const loadChallengesFromDatabase = async (
     const { data: dbChallenges, error } = await query;
 
     if (error) {
-      console.error('Error fetching challenges:', error);
+      logger.error('Error fetching challenges', error, 'Sponsorship');
       return [];
     }
 
     if (!dbChallenges || dbChallenges.length === 0) {
-      console.log('No challenges found in database');
+      logger.debug('No challenges found in database', null, 'Sponsorship');
       return [];
     }
     
-    console.log(`Loaded ${dbChallenges.length} challenges from database`);
+    logger.debug('Loaded challenges from database', { count: dbChallenges.length }, 'Sponsorship');
 
     // Get sponsorships
     const sponsorships = await getActiveSponsorships(projectId);
@@ -239,7 +240,7 @@ export const loadChallengesFromDatabase = async (
 
     return challenges;
   } catch (error) {
-    console.error('Exception in loadChallengesFromDatabase:', error);
+    logger.error('Exception in loadChallengesFromDatabase', error, 'Sponsorship');
     return [];
   }
 };
