@@ -31,6 +31,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 import wellagoraLogo from "@/assets/wellagora-logo.png";
 import LanguageSelector from "./LanguageSelector";
 
@@ -62,7 +63,7 @@ const Navigation = () => {
           setUnreadCount(count);
         }
       } catch (error) {
-        console.error("Error loading unread count:", error);
+        logger.error('Error loading unread count', error, 'Navigation');
       }
     };
 
