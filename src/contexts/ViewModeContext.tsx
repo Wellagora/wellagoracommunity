@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useAuth } from './AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 type ViewMode = 'super_admin' | 'business' | 'citizen';
 
@@ -35,7 +36,7 @@ export const ViewModeProvider = ({ children }: { children: ReactNode }) => {
           _role: 'super_admin'
         });
         
-        console.log('Super admin check result:', { userId: user.id, isSuperAdmin: data, error });
+        logger.debug('Super admin check result', { userId: user.id, isSuperAdmin: data, hasError: !!error }, 'ViewMode');
         
         setIsSuperAdmin(data || false);
 
@@ -45,7 +46,7 @@ export const ViewModeProvider = ({ children }: { children: ReactNode }) => {
           localStorage.removeItem(STORAGE_KEY);
         }
       } catch (error) {
-        console.error('Error checking super_admin role:', error);
+        logger.error('Error checking super_admin role', error, 'ViewMode');
         setIsSuperAdmin(false);
       }
     };
