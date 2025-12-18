@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { logger } from '@/lib/logger';
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -112,7 +113,7 @@ const JoinOrganizationPage = () => {
 
         setOrganization(orgData);
       } catch (err) {
-        console.error('Error fetching invite:', err);
+        logger.error('Error fetching invite', err, 'JoinOrganization');
         setError("Hiba történt a meghívó betöltésekor");
       } finally {
         setLoading(false);
@@ -152,7 +153,7 @@ const JoinOrganizationPage = () => {
 
       navigate('/organization');
     } catch (err) {
-      console.error('Error joining organization:', err);
+      logger.error('Error joining organization', err, 'JoinOrganization');
       toast({
         title: "Hiba",
         description: "Nem sikerült csatlakozni a szervezethez",
@@ -220,7 +221,7 @@ const JoinOrganizationPage = () => {
           .eq('id', authData.user.id);
 
         if (profileError) {
-          console.error('Profile update error:', profileError);
+          logger.error('Profile update error', profileError, 'JoinOrganization');
         }
 
         // Increment use_count
@@ -237,7 +238,7 @@ const JoinOrganizationPage = () => {
         navigate('/auth');
       }
     } catch (err: any) {
-      console.error('Error registering:', err);
+      logger.error('Error registering', err, 'JoinOrganization');
       toast({
         title: "Hiba",
         description: err.message || "Nem sikerült a regisztráció",
