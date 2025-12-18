@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 interface SendNotificationParams {
   userId: string;
@@ -28,10 +29,10 @@ export const notificationService = {
 
       if (error) throw error;
 
-      console.log('Notification sent successfully:', data);
+      logger.debug('Notification sent successfully', data, 'Notification');
       return { success: true, data };
     } catch (error) {
-      console.error('Failed to send notification:', error);
+      logger.error('Failed to send notification', error, 'Notification');
       return { success: false, error };
     }
   },
