@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from '@/lib/logger';
 
 export interface SponsorshipImpact {
   sponsorship_id: string;
@@ -56,7 +57,7 @@ export const getSponsorshipsWithImpact = async (
       .order('start_date', { ascending: false });
 
     if (sponsorshipsError || !sponsorships || sponsorships.length === 0) {
-      console.error('Error fetching sponsorships:', sponsorshipsError);
+      logger.error('Error fetching sponsorships', sponsorshipsError, 'SponsorImpact');
       return [];
     }
 
@@ -69,7 +70,7 @@ export const getSponsorshipsWithImpact = async (
       .in('id', challengeIds);
 
     if (challengesError) {
-      console.error('Error fetching challenges:', challengesError);
+      logger.error('Error fetching challenges', challengesError, 'SponsorImpact');
     }
 
     // Create a map for quick lookup
@@ -84,7 +85,7 @@ export const getSponsorshipsWithImpact = async (
       .in('challenge_id', challengeIds);
 
     if (completionsError) {
-      console.error('Error fetching completions:', completionsError);
+      logger.error('Error fetching completions', completionsError, 'SponsorImpact');
     }
 
     // Step 4: Get all sustainability activities for these challenges
@@ -96,7 +97,7 @@ export const getSponsorshipsWithImpact = async (
       .not('challenge_completion_id', 'is', null);
 
     if (activitiesError) {
-      console.error('Error fetching activities:', activitiesError);
+      logger.error('Error fetching activities', activitiesError, 'SponsorImpact');
     }
 
     // Step 5: Aggregate data per challenge (in memory, but all data loaded at once)
@@ -192,7 +193,7 @@ export const getSponsorshipsWithImpact = async (
     });
 
   } catch (error) {
-    console.error('Error getting sponsorships with impact:', error);
+    logger.error('Error getting sponsorships with impact', error, 'SponsorImpact');
     return [];
   }
 };
@@ -211,7 +212,7 @@ export const getSponsorDashboardMetrics = async (
       .eq('sponsor_user_id', sponsorUserId);
 
     if (sponsorshipsError || !sponsorships) {
-      console.error('Error fetching sponsorships:', sponsorshipsError);
+      logger.error('Error fetching sponsorships', sponsorshipsError, 'SponsorImpact');
       return getEmptyMetrics();
     }
 
@@ -225,7 +226,7 @@ export const getSponsorDashboardMetrics = async (
       .in('challenge_id', challengeIds);
 
     if (completionsError) {
-      console.error('Error fetching completions:', completionsError);
+      logger.error('Error fetching completions', completionsError, 'SponsorImpact');
       return getEmptyMetrics();
     }
 
@@ -265,7 +266,7 @@ export const getSponsorDashboardMetrics = async (
       average_validation_score: avgValidationScore
     };
   } catch (error) {
-    console.error('Error getting sponsor metrics:', error);
+    logger.error('Error getting sponsor metrics', error, 'SponsorImpact');
     return getEmptyMetrics();
   }
 };
