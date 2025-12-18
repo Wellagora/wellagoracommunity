@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 /**
  * Safely fetch public profile data without exposing sensitive information like email addresses
@@ -11,14 +12,14 @@ export const getPublicProfile = async (profileId: string) => {
     });
 
     if (error) {
-      console.error('Error fetching public profile:', error);
+      logger.error('Error fetching public profile', error, 'Profile');
       return { data: null, error };
     }
 
     // Return the first result (should be single profile or null)
     return { data: data?.[0] || null, error: null };
   } catch (err) {
-    console.error('Public profile fetch error:', err);
+    logger.error('Public profile fetch error', err, 'Profile');
     return { data: null, error: err };
   }
 };
@@ -37,7 +38,7 @@ export const getPublicProfiles = async (profileIds: string[]) => {
       error: null
     };
   } catch (err) {
-    console.error('Multiple public profiles fetch error:', err);
+    logger.error('Multiple public profiles fetch error', err, 'Profile');
     return { data: [], error: err };
   }
 };
@@ -53,13 +54,13 @@ export const getOrganizationMemberProfiles = async (organizationId: string) => {
     });
 
     if (error) {
-      console.error('Error fetching organization member profiles:', error);
+      logger.error('Error fetching organization member profiles', error, 'Profile');
       return { data: [], error };
     }
 
     return { data: data || [], error: null };
   } catch (err) {
-    console.error('Organization member profiles fetch error:', err);
+    logger.error('Organization member profiles fetch error', err, 'Profile');
     return { data: [], error: err };
   }
 };
