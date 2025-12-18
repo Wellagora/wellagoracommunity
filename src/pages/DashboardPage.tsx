@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { logger } from '@/lib/logger';
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -123,7 +124,7 @@ const DashboardPage = () => {
         // No mock activities - will be empty until real activity tracking
         setActivities([]);
       } catch (error) {
-        console.error("Error fetching dashboard data:", error);
+        logger.error('Error fetching dashboard data', error, 'Dashboard');
       } finally {
         setLoadingData(false);
       }

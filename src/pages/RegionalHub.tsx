@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { logger } from '@/lib/logger';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '@/components/Navigation';
@@ -180,7 +181,7 @@ const RegionalHub = () => {
 
         setStakeholders(transformedStakeholders);
       } catch (error) {
-        console.error('Error fetching stakeholders:', error);
+        logger.error('Error fetching stakeholders', error, 'RegionalHub');
         toast({
           title: t('common.error'),
           description: t('regional.error_loading_stakeholders'),

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { logger } from '@/lib/logger';
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -188,7 +189,7 @@ const OrganizationDashboard = () => {
 
         setImpactStories(stories);
       } catch (error) {
-        console.error('Error loading impact stories:', error);
+        logger.error('Error loading impact stories', error, 'OrgDashboard');
         setImpactStories([]);
       } finally {
         setLoadingStories(false);
