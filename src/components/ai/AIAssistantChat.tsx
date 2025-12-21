@@ -1,8 +1,6 @@
-import { useState, useRef, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -13,13 +11,14 @@ import {
   HelpCircle,
   Loader2,
   AlertCircle,
-  Bot
+  Zap
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
+import robotAvatar from "@/assets/ai-assistant.jpg";
 
 interface Message {
   id: string;
@@ -38,46 +37,30 @@ const AIAssistantChat = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const quickActions = [
     { 
       icon: Calculator, 
       title: t('wellbot.action_carbon'), 
-      description: t('wellbot.action_carbon_desc'),
       query: t('wellbot.query_carbon')
     },
     { 
       icon: Sparkles, 
       title: t('wellbot.action_programs'), 
-      description: t('wellbot.action_programs_desc'),
       query: t('wellbot.query_programs')
     },
     { 
       icon: Users, 
       title: t('wellbot.action_community'), 
-      description: t('wellbot.action_community_desc'),
       query: t('wellbot.query_community')
     },
     { 
       icon: HelpCircle, 
       title: t('wellbot.action_getstarted'), 
-      description: t('wellbot.action_getstarted_desc'),
       query: t('wellbot.query_getstarted')
     }
   ];
-
-  const initialSuggestions = [
-    t('wellbot.suggestion_programs'),
-    t('wellbot.suggestion_community'),
-    t('wellbot.suggestion_howto'),
-    t('wellbot.suggestion_impact')
-  ];
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
 
   // Load conversation history on mount
   useEffect(() => {
@@ -105,7 +88,7 @@ const AIAssistantChat = () => {
             .from('ai_messages')
             .select('*')
             .eq('conversation_id', convId)
-            .order('timestamp', { ascending: true });
+            .order('timestamp', { ascending: false }); // Newest first
 
           if (msgError) throw msgError;
 
@@ -131,15 +114,11 @@ const AIAssistantChat = () => {
     loadConversationHistory();
   }, [user, t]);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
   // Auto-resize textarea
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 160)}px`;
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
     }
   }, [inputValue]);
 
@@ -153,13 +132,16 @@ const AIAssistantChat = () => {
       timestamp: new Date()
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    // Add new message at the beginning (newest first)
+    setMessages(prev => [userMessage, ...prev]);
     setInputValue("");
     setIsTyping(true);
     setError(null);
 
     try {
-      const conversationHistory = [...messages, userMessage].map(msg => ({
+      // For API call, we need chronological order
+      const chronologicalMessages = [...messages].reverse();
+      const conversationHistory = [...chronologicalMessages, userMessage].map(msg => ({
         role: msg.sender === "user" ? "user" : "assistant",
         content: msg.content
       }));
@@ -216,13 +198,14 @@ const AIAssistantChat = () => {
       }
 
       const aiResponse: Message = {
-        id: Date.now().toString(),
+        id: (Date.now() + 1).toString(),
         content: payload.message,
         sender: 'ai',
         timestamp: new Date()
       };
 
-      setMessages(prev => [...prev, aiResponse]);
+      // Add AI response at the beginning (newest first)
+      setMessages(prev => [aiResponse, ...prev]);
     } catch (error) {
       console.error('Error calling AI:', error);
       setError(t('wellbot.error_message'));
@@ -240,10 +223,6 @@ const AIAssistantChat = () => {
     handleSendMessage(action.query);
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    handleSendMessage(suggestion);
-  };
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -252,195 +231,188 @@ const AIAssistantChat = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto animate-fade-in">
-      <Card className="flex flex-col h-[700px]">
-        {/* Card Header */}
-        <CardHeader className="flex flex-row items-center gap-3 border-b pb-4">
-          <div className="bg-primary/10 rounded-full p-2">
-            <Bot className="h-6 w-6 text-primary" />
-          </div>
-          <CardTitle className="text-xl">
-            {t('wellbot.title')}
-          </CardTitle>
-          <Badge variant="secondary" className="ml-auto">
-            {t('wellbot.online')}
-          </Badge>
-        </CardHeader>
-
-        <CardContent className="p-0 flex-1 flex flex-col">
-          {/* Quick Actions */}
-          <div className="p-4 border-b">
-            <p className="text-sm text-muted-foreground mb-3">{t('wellbot.quick_actions')}</p>
-            <div className="flex flex-wrap gap-2">
-              {quickActions.map((action, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleQuickAction(action)}
-                  className="gap-2"
-                >
-                  <action.icon className="h-4 w-4" />
-                  {action.title}
-                </Button>
-              ))}
+    <div className="container mx-auto px-4 py-6 max-w-3xl">
+      {/* FIXED HEADER */}
+      <div className="bg-background/95 backdrop-blur-sm sticky top-0 z-10 pb-4 border-b border-border">
+        {/* Avatar and Title */}
+        <div className="flex items-center gap-4 mb-4">
+          <div className="relative flex-shrink-0">
+            <img 
+              src={robotAvatar} 
+              alt="WellBot" 
+              className="w-16 h-16 object-cover rounded-full shadow-lg border-2 border-primary/20"
+            />
+            <div className="absolute -top-1 -right-1 bg-primary rounded-full p-1.5 shadow-md">
+              <Zap className="h-3 w-3 text-primary-foreground" />
             </div>
           </div>
-
-          {/* Messages Container */}
-          <ScrollArea className="flex-1 p-4 bg-muted/30">
-              <div className="space-y-4">
-                {isLoading ? (
-                  <div className="flex items-center justify-center h-full">
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                      <span>{t('common.loading')}</span>
-                    </div>
-                  </div>
-                ) : messages.length === 0 ? (
-                  /* Empty State */
-                  <div className="flex flex-col items-center justify-center h-full text-center py-16 animate-fade-in">
-                    <div className="bg-gradient-to-br from-primary/30 to-primary/5 rounded-full p-8 shadow-xl border-2 border-primary/30 mb-6">
-                      <Sparkles className="h-20 w-20 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="text-2xl font-bold mb-2">
-                        {t('wellbot.community_greeting')}
-                      </h3>
-                      <p className="text-muted-foreground max-w-md mb-6">
-                        {t('wellbot.description')}
-                      </p>
-                    </div>
-                    
-                    {/* Initial Suggestion Chips */}
-                    <div className="flex flex-wrap gap-2 justify-center mt-6">
-                      {initialSuggestions.map((suggestion, index) => (
-                        <Button
-                          key={index}
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleSuggestionClick(suggestion)}
-                          className="rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
-                        >
-                          {suggestion}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    {messages.map((message) => (
-                      <div
-                        key={message.id}
-                        className={`flex gap-4 items-start animate-fade-in ${
-                          message.sender === "user" ? "justify-end" : "justify-start"
-                        }`}
-                      >
-                        {/* Bot Avatar - Larger and more prominent */}
-                        {message.sender === "ai" && (
-                          <div className="bg-gradient-to-br from-primary/20 to-primary/10 rounded-full p-2.5 flex-shrink-0 shadow-md border border-primary/20">
-                            <Sparkles className="h-7 w-7 text-primary" />
-                          </div>
-                        )}
-                        
-                        {/* Message Bubble */}
-                        <div className={`flex flex-col max-w-[85%] ${message.sender === "user" ? "items-end" : "items-start"}`}>
-                          {/* WellBot label for bot messages */}
-                          {message.sender === "ai" && (
-                            <span className="text-sm font-medium text-primary mb-1">WellBot</span>
-                          )}
-                          <div
-                            className={`p-4 rounded-lg whitespace-pre-wrap break-words shadow-sm ${
-                              message.sender === "user"
-                                ? "bg-primary text-primary-foreground rounded-tr-none"
-                                : "bg-card border border-border rounded-tl-none"
-                            }`}
-                          >
-                            {message.content}
-                          </div>
-                          <span className="text-xs text-muted-foreground mt-1">
-                            {format(message.timestamp, 'HH:mm')}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                    
-                    {/* Typing Indicator */}
-                    {isTyping && (
-                      <div className="flex gap-4 items-start animate-fade-in">
-                        <div className="bg-gradient-to-br from-primary/20 to-primary/10 rounded-full p-2.5 shadow-md border border-primary/20">
-                          <Sparkles className="h-7 w-7 text-primary animate-pulse" />
-                        </div>
-                        <div className="bg-card border border-border p-4 rounded-lg rounded-tl-none shadow-sm">
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm text-muted-foreground">WellBot gépel</span>
-                            <div className="flex gap-1">
-                              <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                              <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></div>
-                              <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </>
-                )}
-                
-                <div ref={messagesEndRef} />
+          
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1 className="text-2xl font-bold italic text-foreground">
+                WellBot
+              </h1>
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="text-xs">
+                  {t('wellbot.available_24_7')}
+                </Badge>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-xs text-green-600 dark:text-green-400">{t('wellbot.online')}</span>
+                </div>
               </div>
-            </ScrollArea>
+            </div>
+            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+              {t('wellbot.description')}
+            </p>
+          </div>
+        </div>
 
-            {/* Error Alert */}
-            {error && (
-              <div className="px-4 pt-4">
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription className="flex items-center justify-between">
-                    <span>{error}</span>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => setError(null)}
-                    >
-                      {t('common.dismiss')}
-                    </Button>
-                  </AlertDescription>
-                </Alert>
-              </div>
+        {/* Quick Action Buttons */}
+        <div className="flex flex-wrap gap-2">
+          {quickActions.map((action, index) => (
+            <Button
+              key={index}
+              variant="outline"
+              size="sm"
+              onClick={() => handleQuickAction(action)}
+              className="gap-1.5 text-xs"
+              disabled={isTyping}
+            >
+              <action.icon className="h-3.5 w-3.5" />
+              {action.title}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      {/* INPUT FIELD - Below header, always visible */}
+      <div className="sticky top-[180px] z-10 bg-background/95 backdrop-blur-sm py-4 border-b border-border">
+        {error && (
+          <Alert variant="destructive" className="mb-3">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription className="flex items-center justify-between">
+              <span>{error}</span>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setError(null)}
+                className="h-auto p-1"
+              >
+                ✕
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+        
+        <div className="relative">
+          <Textarea
+            ref={textareaRef}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={t('wellbot.input_placeholder')}
+            className="pr-12 resize-none min-h-[48px] max-h-[120px] bg-card"
+            rows={1}
+            disabled={isTyping}
+          />
+          <Button
+            onClick={() => handleSendMessage(inputValue)}
+            disabled={!inputValue.trim() || isTyping}
+            size="icon"
+            className="absolute right-2 bottom-2"
+          >
+            {isTyping ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Send className="w-4 h-4" />
             )}
+          </Button>
+        </div>
+        <p className="text-xs text-muted-foreground mt-2">
+          {t('wellbot.input_hint')}
+        </p>
+      </div>
 
-            {/* Input Area */}
-            <div className="border-t bg-background p-4">
-              <div className="relative">
-                <Textarea
-                  ref={textareaRef}
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder={t('wellbot.input_placeholder')}
-                  className="pr-12 resize-none min-h-[44px] max-h-[160px]"
-                  rows={1}
-                  disabled={isTyping}
-                />
-                <Button
-                  onClick={() => handleSendMessage(inputValue)}
-                  disabled={!inputValue.trim() || isTyping}
-                  size="icon"
-                  className="absolute right-2 bottom-2"
-                >
-                  {isTyping ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Send className="w-4 h-4" />
-                  )}
-                </Button>
-              </div>
-              <p className="text-xs text-muted-foreground mt-2">
-                {t('wellbot.input_hint')}
-              </p>
+      {/* MESSAGES SECTION - Newest at top, scroll down for older */}
+      <div className="py-4 space-y-4">
+        {/* Typing Indicator - Shows at TOP when AI is responding */}
+        {isTyping && (
+          <div className="flex gap-3 items-start animate-fade-in">
+            <div className="bg-gradient-to-br from-primary/20 to-primary/10 rounded-full p-2 flex-shrink-0 shadow-md border border-primary/20">
+              <Sparkles className="h-5 w-5 text-primary animate-pulse" />
             </div>
-          </CardContent>
-        </Card>
+            <div className="bg-card border border-border p-3 rounded-lg rounded-tl-none shadow-sm">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">{t('wellbot.typing')}</span>
+                <div className="flex gap-1">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"></div>
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></div>
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Loader2 className="h-5 w-5 animate-spin" />
+              <span>{t('common.loading')}</span>
+            </div>
+          </div>
+        ) : messages.length === 0 && !isTyping ? (
+          /* Empty State */
+          <div className="flex flex-col items-center justify-center text-center py-12 animate-fade-in">
+            <div className="bg-gradient-to-br from-primary/20 to-primary/5 rounded-full p-6 shadow-lg border border-primary/20 mb-4">
+              <Sparkles className="h-12 w-12 text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">
+              {t('wellbot.community_greeting')}
+            </h3>
+            <p className="text-muted-foreground max-w-md text-sm">
+              {t('wellbot.empty_state_hint')}
+            </p>
+          </div>
+        ) : (
+          /* Messages - Newest first (reverse chronological) */
+          messages.map((message) => (
+            <div
+              key={message.id}
+              className={`flex gap-3 items-start animate-fade-in ${
+                message.sender === "user" ? "justify-end" : "justify-start"
+              }`}
+            >
+              {/* Bot Avatar */}
+              {message.sender === "ai" && (
+                <div className="bg-gradient-to-br from-primary/20 to-primary/10 rounded-full p-2 flex-shrink-0 shadow-md border border-primary/20">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                </div>
+              )}
+              
+              {/* Message Bubble */}
+              <div className={`flex flex-col max-w-[80%] ${message.sender === "user" ? "items-end" : "items-start"}`}>
+                {message.sender === "ai" && (
+                  <span className="text-xs font-medium text-primary mb-1">WellBot</span>
+                )}
+                <div
+                  className={`p-3 rounded-lg whitespace-pre-wrap break-words shadow-sm text-sm ${
+                    message.sender === "user"
+                      ? "bg-primary text-primary-foreground rounded-tr-none"
+                      : "bg-card border border-border rounded-tl-none"
+                  }`}
+                >
+                  {message.content}
+                </div>
+                <span className="text-xs text-muted-foreground mt-1">
+                  {format(message.timestamp, 'HH:mm')}
+                </span>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 };
