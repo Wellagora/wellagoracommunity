@@ -2,30 +2,14 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
 import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai@0.21.0";
 
-const ALLOWED_ORIGINS = [
-  'https://vvunxewylcifwphxgqab.supabase.co',
-  Deno.env.get('PRODUCTION_DOMAIN'),
-  'http://localhost:5173',
-  'http://localhost:8080',
-].filter(Boolean);
-
-function getCorsHeaders(origin: string | null): Record<string, string> {
-  const allowedOrigin = origin && ALLOWED_ORIGINS.some(allowed => origin.startsWith(allowed || ''))
-    ? origin 
-    : ALLOWED_ORIGINS[0] || '*';
-  
-  return {
-    'Access-Control-Allow-Origin': allowedOrigin,
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  };
-}
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
 
 serve(async (req) => {
-  const origin = req.headers.get('origin');
-  
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: getCorsHeaders(origin) });
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
@@ -108,7 +92,7 @@ serve(async (req) => {
           error: 'ai_unavailable',
           message: errorMessages[language] || errorMessages.en
         }),
-        { headers: { ...getCorsHeaders(origin), "Content-Type": "application/json" }, status: 503 }
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 503 }
       );
     }
 
@@ -146,14 +130,14 @@ serve(async (req) => {
         suggestions,
         conversationId: finalConversationId
       }),
-      { headers: { ...getCorsHeaders(origin), "Content-Type": "application/json" } }
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 
   } catch (error) {
     console.error('Error in ai-chat function:', error);
     return new Response(
       JSON.stringify({ error: error.message || "Internal server error" }),
-      { status: 500, headers: { ...getCorsHeaders(origin), "Content-Type": "application/json" } }
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });
