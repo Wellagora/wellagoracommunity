@@ -150,7 +150,7 @@ const Navigation = () => {
                   key={item.path}
                   to={item.path}
                   className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    active ? "text-primary bg-accent" : "text-muted-foreground hover:text-primary hover:bg-accent/50"
+                    active ? "text-primary-foreground bg-primary" : "text-foreground/90 hover:text-foreground hover:bg-accent/50"
                   }`}
                 >
                   <Icon className="h-4 w-4" />
@@ -197,7 +197,7 @@ const Navigation = () => {
             {user ? (
               <>
                 {/* Inbox with Badge */}
-                <Link to="/inbox" className="relative p-2 text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/inbox" className="relative p-2 text-foreground/80 hover:text-foreground transition-colors">
                   <Inbox className="h-5 w-5" />
                   {unreadCount > 0 && (
                     <Badge
@@ -221,7 +221,7 @@ const Navigation = () => {
                         </AvatarFallback>
                       </Avatar>
                       <span className="text-sm font-medium hidden xl:inline">{profile?.first_name}</span>
-                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                      <ChevronDown className="h-4 w-4 text-foreground/70" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
@@ -314,7 +314,7 @@ const Navigation = () => {
                         <p className="text-sm font-semibold truncate">
                           {profile.first_name} {profile.last_name}
                         </p>
-                        <p className="text-xs text-muted-foreground capitalize truncate">{profile.user_role}</p>
+                        <p className="text-xs text-foreground/70 capitalize truncate">{profile.user_role}</p>
                       </div>
                     </Link>
                   )}
@@ -331,8 +331,8 @@ const Navigation = () => {
                           onClick={() => setIsMobileMenuOpen(false)}
                           className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors ${
                             active
-                              ? "text-primary bg-accent font-medium"
-                              : "text-muted-foreground hover:text-primary hover:bg-accent/50"
+                              ? "text-primary-foreground bg-primary font-medium"
+                              : "text-foreground/90 hover:text-foreground hover:bg-accent/50"
                           }`}
                         >
                           <Icon className="h-5 w-5 shrink-0" />
@@ -348,8 +348,8 @@ const Navigation = () => {
                           onClick={() => setIsMobileMenuOpen(false)}
                           className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors ${
                             isActive("/inbox")
-                              ? "text-primary bg-accent font-medium"
-                              : "text-muted-foreground hover:text-primary hover:bg-accent/50"
+                              ? "text-primary-foreground bg-primary font-medium"
+                              : "text-foreground/90 hover:text-foreground hover:bg-accent/50"
                           }`}
                         >
                           <Inbox className="h-5 w-5 shrink-0" />
@@ -380,7 +380,7 @@ const Navigation = () => {
                   {/* Super Admin View Mode Switcher - Mobile */}
                   {isSuperAdmin && (
                     <div className="pt-4 border-t border-border">
-                      <p className="text-xs text-muted-foreground mb-2 px-3">Tesztelési nézet</p>
+                      <p className="text-xs text-foreground/70 mb-2 px-3">Tesztelési nézet</p>
                       <div className="px-3">
                         <div className="flex items-center gap-2 p-2 bg-purple-500/10 border border-purple-500/30 rounded-lg">
                           <Eye className="h-4 w-4 text-purple-500" />
@@ -403,7 +403,7 @@ const Navigation = () => {
                   )}
                   {/* Language Selector - Mobile */}
                   <div className="pt-4 border-t border-border">
-                    <p className="text-xs text-muted-foreground mb-2 px-3">{t("nav.language") || "Language"}</p>
+                    <p className="text-xs text-foreground/70 mb-2 px-3">{t("nav.language") || "Language"}</p>
                     <LanguageSelector />
                   </div>
 
