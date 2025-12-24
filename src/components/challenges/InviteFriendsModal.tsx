@@ -10,7 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
-import { Users, Mail, Copy, Check, MessageCircle } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { Users, Mail, Copy, Check, MessageCircle, Loader2 } from "lucide-react";
 
 interface InviteFriendsModalProps {
   isOpen: boolean;
@@ -27,8 +29,10 @@ const InviteFriendsModal = ({
 }: InviteFriendsModalProps) => {
   const { t } = useLanguage();
   const { toast } = useToast();
+  const { user, profile } = useAuth();
   const [emails, setEmails] = useState("");
   const [copied, setCopied] = useState(false);
+  const [sending, setSending] = useState(false);
 
   const inviteLink = `${window.location.origin}/challenges/${challengeId}`;
 
@@ -42,13 +46,95 @@ const InviteFriendsModal = ({
     });
   };
 
-  const handleSendInvites = () => {
-    // TODO: Implement email sending logic
-    toast({
-      title: t('challenges.invites_sent'),
-      description: t('challenges.invites_sent_desc'),
-    });
-    onClose();
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email.trim());
+  };
+
+  const handleSendInvites = async () => {
+    // Parse and validate emails
+    const emailList = emails
+      .split(',')
+      .map(e => e.trim())
+      .filter(e => e.length > 0);
+
+    if (emailList.length === 0) {
+      toast({
+        title: t('challenges.error'),
+        description: t('challenges.enter_valid_emails'),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate all emails
+    const invalidEmails = emailList.filter(e => !validateEmail(e));
+    if (invalidEmails.length > 0) {
+      toast({
+        title: t('challenges.invalid_emails'),
+        description: `${invalidEmails.join(', ')}`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if user is authenticated
+    if (!user) {
+      // Fallback: show copyable link
+      navigator.clipboard.writeText(inviteLink);
+      toast({
+        title: t('challenges.link_copied'),
+        description: t('challenges.share_link_manually'),
+      });
+      onClose();
+      return;
+    }
+
+    setSending(true);
+
+    try {
+      // Prepare invitations
+      const invitations = emailList.map(email => ({
+        email,
+        name: email.split('@')[0], // Use email prefix as name
+      }));
+
+      const { data, error } = await supabase.functions.invoke('send-team-invitation', {
+        body: {
+          challengeId,
+          challengeTitle,
+          invitations,
+          organizationId: profile?.organization_id || user.id, // Fallback to user id if no org
+        },
+      });
+
+      if (error) {
+        console.error('Error sending invitations:', error);
+        throw new Error(error.message || 'Failed to send invitations');
+      }
+
+      if (data?.success) {
+        toast({
+          title: t('challenges.invites_sent'),
+          description: t('challenges.invites_sent_desc').replace('{count}', String(data.sent || emailList.length)),
+        });
+        setEmails("");
+        onClose();
+      } else {
+        throw new Error(data?.error || 'Unknown error');
+      }
+    } catch (error: any) {
+      console.error('Failed to send invitations:', error);
+      // Fallback: copy link and show message
+      navigator.clipboard.writeText(inviteLink);
+      toast({
+        title: t('challenges.link_copied'),
+        description: t('challenges.email_fallback_message'),
+      });
+      onClose();
+    } finally {
+      setSending(false);
+    }
   };
 
   const handleShareWhatsApp = () => {
@@ -128,10 +214,14 @@ const InviteFriendsModal = ({
           <Button
             onClick={handleSendInvites}
             className="w-full bg-gradient-primary hover:shadow-glow"
-            disabled={!emails}
+            disabled={!emails || sending}
           >
-            <Mail className="w-4 h-4 mr-2" />
-            {t('challenges.send_invites')}
+            {sending ? (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              <Mail className="w-4 h-4 mr-2" />
+            )}
+            {sending ? t('challenges.sending') : t('challenges.send_invites')}
           </Button>
 
           {/* Motivational Message */}
