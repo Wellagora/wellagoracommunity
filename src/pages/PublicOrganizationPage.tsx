@@ -27,6 +27,8 @@ const PublicOrganizationPage = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [organizationData, setOrganizationData] = useState<any>(null);
+  const [activeChallenges, setActiveChallenges] = useState(0);
+  const [peopleReached, setPeopleReached] = useState(0);
 
   useEffect(() => {
     const fetchOrganization = async () => {
@@ -37,14 +39,32 @@ const PublicOrganizationPage = () => {
 
       try {
         setLoading(true);
-        const { data, error } = await supabase
-          .from('organizations')
-          .select('*')
-          .eq('id', organizationId)
-          .eq('is_public', true)
-          .maybeSingle();
+        
+        // Fetch organization data and stats in parallel
+        const [orgResult, challengesResult, completionsResult] = await Promise.all([
+          // Organization data
+          supabase
+            .from('organizations')
+            .select('*')
+            .eq('id', organizationId)
+            .eq('is_public', true)
+            .maybeSingle(),
+          
+          // Active challenge sponsorships count
+          supabase
+            .from('challenge_sponsorships')
+            .select('*', { count: 'exact', head: true })
+            .eq('sponsor_organization_id', organizationId)
+            .eq('status', 'active'),
+          
+          // People reached: count unique users who completed challenges sponsored by this org
+          supabase
+            .from('challenge_sponsorships')
+            .select('challenge_id')
+            .eq('sponsor_organization_id', organizationId)
+        ]);
 
-        if (error || !data) {
+        if (orgResult.error || !orgResult.data) {
           toast({
             title: "Error",
             description: "Organization not found or is not public",
@@ -54,7 +74,19 @@ const PublicOrganizationPage = () => {
           return;
         }
 
-        setOrganizationData(data);
+        setOrganizationData(orgResult.data);
+        setActiveChallenges(challengesResult.count || 0);
+
+        // Calculate people reached from challenge completions
+        if (completionsResult.data && completionsResult.data.length > 0) {
+          const challengeIds = completionsResult.data.map(s => s.challenge_id);
+          const { count: peopleCount } = await supabase
+            .from('challenge_completions')
+            .select('user_id', { count: 'exact', head: true })
+            .in('challenge_id', challengeIds);
+          
+          setPeopleReached(peopleCount || 0);
+        }
       } catch (err) {
         console.error('Error fetching organization:', err);
         toast({
@@ -93,8 +125,8 @@ const PublicOrganizationPage = () => {
     location: organizationData.location || "Magyarország",
     website: organizationData.website_url,
     stats: {
-      activeChallenges: 0, // TODO: fetch from challenge_sponsorships
-      peopleReached: 0, // TODO: calculate from activities
+      activeChallenges: activeChallenges,
+      peopleReached: peopleReached,
       co2Saved: organizationData.co2_reduction_total || 0,
       partnerships: 0 // TODO: fetch from partnerships
     },
