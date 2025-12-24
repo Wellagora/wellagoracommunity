@@ -386,7 +386,13 @@ const Navigation = () => {
                           <Eye className="h-4 w-4 text-purple-500" />
                           <Select
                             value={viewMode}
-                            onValueChange={(value: "super_admin" | "business" | "citizen") => setViewMode(value)}
+                            onValueChange={(value: "super_admin" | "business" | "citizen") => {
+                              setViewMode(value);
+                              setIsMobileMenuOpen(false);
+                              // Navigate to appropriate dashboard based on new view mode
+                              const newPath = value === "citizen" ? "/dashboard" : value === "business" ? "/organization" : "/super-admin";
+                              navigate(newPath);
+                            }}
                           >
                             <SelectTrigger className="flex-1 h-8 text-sm border-0 bg-transparent focus:ring-0 text-purple-600 dark:text-purple-400">
                               <SelectValue />
