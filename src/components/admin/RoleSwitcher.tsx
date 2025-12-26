@@ -30,7 +30,7 @@ export const RoleSwitcher = () => {
           setOriginalRole(profile.user_role);
         }
       } catch (error) {
-        console.error('Error checking super admin status:', error);
+        // Silent fail - user is not super admin
       }
     };
 

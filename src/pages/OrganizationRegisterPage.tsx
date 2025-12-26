@@ -162,7 +162,6 @@ const OrganizationRegisterPage = () => {
       toast.success(t('org_register.success_message'));
       navigate('/auth?role=sponsor');
     } catch (error) {
-      console.error('Error creating organization:', error);
       toast.error(t('org_register.error_message'));
     } finally {
       setIsSubmitting(false);

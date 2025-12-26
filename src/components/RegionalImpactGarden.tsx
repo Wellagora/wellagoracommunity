@@ -89,7 +89,6 @@ export const RegionalImpactGarden = () => {
 
         setMetricsMap(newMetricsMap);
       } catch (error) {
-        console.error('Error fetching region metrics:', error);
         // Set fallback data
         const fallbackMap: Record<string, RegionMetrics> = {};
         regions.forEach(region => {

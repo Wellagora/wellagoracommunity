@@ -137,7 +137,6 @@ const UnifiedCommunityHub = () => {
 
         setStakeholders(transformedStakeholders);
       } catch (error) {
-        console.error('Error fetching stakeholders:', error);
         setStakeholders([]);
       } finally {
         setLoadingStakeholders(false);

@@ -89,7 +89,7 @@ export function ProgramCalendar() {
 
       setChallenges(data || []);
     } catch (error) {
-      console.error("Error loading challenges:", error);
+      // Silent fail - challenges load failed
     } finally {
       setLoading(false);
     }

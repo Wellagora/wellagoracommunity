@@ -75,7 +75,7 @@ const ChallengeCelebrationModal = ({
           url: window.location.href,
         });
       } catch (err) {
-        console.log('Share cancelled');
+        // Share was cancelled by user
       }
     } else {
       navigator.clipboard.writeText(shareText + '\n' + window.location.href);
