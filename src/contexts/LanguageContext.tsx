@@ -80,9 +80,18 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
+  
+  // Return fallback if context is not available (outside provider or during HMR)
   if (!context) {
-    throw new Error('useLanguage must be used within LanguageProvider');
+    console.warn('useLanguage called outside of LanguageProvider, using fallback');
+    return {
+      language: 'hu' as Language,
+      setLanguage: () => {},
+      t: (key: string) => key,
+      isLoading: false,
+    };
   }
+  
   return context;
 };
 

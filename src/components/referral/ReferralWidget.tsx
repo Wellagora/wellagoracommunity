@@ -1,45 +1,15 @@
-import { memo, useState, useContext } from "react";
+import { memo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useReferral } from "@/hooks/useReferral";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { Copy, Check, Gift, Users, UserPlus, Trophy, MessageCircle, Mail, Share2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import React from "react";
-
-// Fallback translations if context not available
-const fallbackTranslations: Record<string, string> = {
-  'referral.invite_friends': 'Invite Friends',
-  'referral.your_code': 'Your code',
-  'referral.copy_link': 'Copy link',
-  'referral.stats_invited': 'Invited',
-  'referral.stats_joined': 'Joined',
-  'referral.stats_completed': 'Completed',
-  'referral.stats_points': 'Points',
-  'referral.reward_hint': 'Earn 100 points when your friend completes their first challenge!',
-  'referral.link_copied': 'Link copied!',
-  'referral.share_message': 'Join me on this sustainability journey!',
-  'referral.email_subject': 'Join me on a sustainability journey!',
-  'challenges.link_copied': 'Link copied!',
-  'challenges.whatsapp_blocked_hint': 'If WhatsApp does not open, paste manually.',
-};
-
-// Safe hook to use language with fallback
-const useSafeLanguage = () => {
-  try {
-    // Dynamic import to avoid hook rules issues
-    const { useLanguage } = require('@/contexts/LanguageContext');
-    return useLanguage();
-  } catch {
-    return {
-      t: (key: string) => fallbackTranslations[key] || key
-    };
-  }
-};
 
 export const ReferralWidget = memo(() => {
-  const { t } = useSafeLanguage();
+  const { t } = useLanguage();
   const { toast } = useToast();
   const { referralCode, stats, loading, generateShareLink } = useReferral();
   const [copied, setCopied] = useState(false);
