@@ -1,4 +1,18 @@
 {
+  "impact": {
+    "title": "My Impact",
+    "total_co2": "CO2 Saved",
+    "categories": "Categories",
+    "recent_actions": "Recent Actions",
+    "community_impact": "Community Impact",
+    "view_full_report": "View full report",
+    "no_entries_yet": "No entries yet",
+    "category_community": "Community",
+    "category_transport": "Transport",
+    "category_energy": "Energy",
+    "category_food": "Food",
+    "category_waste": "Waste"
+  },
   "share_impact": {
     "title": "Share your impact",
     "my_impact": "My impact",
