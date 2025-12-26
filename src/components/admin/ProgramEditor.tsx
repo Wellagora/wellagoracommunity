@@ -67,9 +67,13 @@ export const ProgramEditor = ({
   const [currentImageUrl, setCurrentImageUrl] = useState<string | null>(null);
   const [programData, setProgramData] = useState<ProgramData | null>(null);
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<ProgramFormData>({
+  const { register, handleSubmit, formState: { errors, isValid }, reset, setValue } = useForm<ProgramFormData>({
     resolver: zodResolver(programSchema),
+    mode: 'onChange', // Validate on change to see errors immediately
   });
+
+  // DEBUG: Log component render and form state
+  console.log('[ProgramEditor] Rendered, programId:', programId, 'errors:', errors, 'isValid:', isValid);
 
   // Load program data
   useEffect(() => {
@@ -535,7 +539,12 @@ export const ProgramEditor = ({
                 Mégse
               </Button>
             )}
-            <Button type="submit" disabled={isSubmitting} className="flex-1">
+            <Button 
+              type="submit" 
+              disabled={isSubmitting} 
+              className="flex-1"
+              onClick={() => console.log('[ProgramEditor] Save button clicked, form errors:', errors)}
+            >
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
