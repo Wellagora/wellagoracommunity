@@ -2552,5 +2552,18 @@
 
   "challenges.active_participants": "Aktív résztvevők",
   "challenges.completed_challenges": "Befejezett programok",
-  "challenges.community_events": "Közösségi események"
+  "challenges.community_events": "Közösségi események",
+
+  "referral.invite_friends": "Hívd meg barátaidat",
+  "referral.your_code": "A te meghívó kódod",
+  "referral.copy_link": "Link másolása",
+  "referral.share_link": "Megosztás",
+  "referral.stats_invited": "Meghívott",
+  "referral.stats_joined": "Csatlakozott",
+  "referral.stats_completed": "Teljesített",
+  "referral.stats_points": "Pont",
+  "referral.reward_hint": "Szerezz 100 pontot, ha a barátod teljesíti az első kihívását!",
+  "referral.link_copied": "Link másolva!",
+  "referral.share_message": "Csatlakozz hozzám a fenntarthatósági úton!",
+  "referral.email_subject": "Csatlakozz a fenntarthatósági közösséghez!"
 }

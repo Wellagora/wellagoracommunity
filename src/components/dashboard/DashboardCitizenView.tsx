@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { UserProgramsList } from "./UserProgramsList";
 import { ProgramCalendar } from "./ProgramCalendar";
 import Dashboard from "./Dashboard";
+import { ReferralWidget } from "@/components/referral/ReferralWidget";
 import { Target, Users, BarChart3 } from "lucide-react";
 
 type UserRole = "citizen" | "business" | "government" | "ngo";
@@ -18,6 +19,11 @@ export const DashboardCitizenView = memo(({ currentRole }: DashboardCitizenViewP
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      {/* Referral Widget at top */}
+      <div className="mb-6">
+        <ReferralWidget />
+      </div>
+
       <Tabs defaultValue="programs" className="space-y-6">
         <TabsList className="grid w-full grid-cols-3 bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-2">
           <TabsTrigger value="programs" className="flex items-center justify-center space-x-2 text-sm">
