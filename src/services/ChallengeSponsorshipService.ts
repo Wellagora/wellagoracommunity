@@ -147,8 +147,6 @@ export const loadChallengesFromDatabase = async (
   language: string = 'hu'
 ): Promise<Challenge[]> => {
   try {
-    console.log('[loadChallengesFromDatabase] Called with:', { projectId, language });
-    
     // Build the query - always load challenges, optionally filter by project
     let query = supabase
       .from('challenge_definitions')
@@ -161,12 +159,6 @@ export const loadChallengesFromDatabase = async (
     }
 
     const { data: dbChallenges, error } = await query;
-
-    console.log('[loadChallengesFromDatabase] Raw DB results:', {
-      count: dbChallenges?.length,
-      error: error?.message,
-      challenges: dbChallenges?.map(c => ({ id: c.id, title: c.title, project_id: c.project_id }))
-    });
 
     if (error) {
       logger.error('Error fetching challenges', error, 'Sponsorship');
@@ -187,13 +179,10 @@ export const loadChallengesFromDatabase = async (
     const challenges: Challenge[] = dbChallenges.map((dbChallenge) => {
       const sponsorInfo = sponsorships.get(dbChallenge.id);
       
-      // Get translated content if available
-      const translations = (dbChallenge.translations as any) || {};
-      const currentLangTranslation = translations[language] || {};
-      
-      // Use translated title/description or fall back to original
-      const title = currentLangTranslation.title || dbChallenge.title || 'Untitled Challenge';
-      const description = currentLangTranslation.description || dbChallenge.description || '';
+      // PRIORITY: Use raw database title/description first (these are the source of truth)
+      // Only fall back to translations if database fields are empty
+      const title = dbChallenge.title || 'Untitled Challenge';
+      const description = dbChallenge.description || '';
       
       // Translate duration text based on language
       let durationText = '';
