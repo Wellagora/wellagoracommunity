@@ -2003,5 +2003,7 @@
   "impressum.disclaimer_copyright_text": "Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem geltenden Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.",
   "impressum.dispute_title": "EU-Streitbeilegung",
   "impressum.dispute_text": "Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:",
-  "impressum.dispute_link": "Link"
+  "impressum.dispute_link": "Link",
+  "profile.messaging_coming_soon": "Nachrichten bald verfügbar!",
+  "profile.messaging_coming_soon_description": "Die Nachrichtenfunktion befindet sich in der Entwicklung."
 }

@@ -2537,5 +2537,7 @@
   "sponsor_landing.faq_5_a": "Yes, you can change packages anytime. Your existing credits remain and transfer to the new package.",
   "sponsor_landing.final_cta_title": "Ready to Start?",
   "sponsor_landing.final_cta_subtitle": "Join the community supporters and help local initiatives succeed.",
-  "sponsor_landing.final_cta_button": "Get Started Now"
+  "sponsor_landing.final_cta_button": "Get Started Now",
+  "profile.messaging_coming_soon": "Messaging coming soon!",
+  "profile.messaging_coming_soon_description": "The messaging feature is under development."
 }

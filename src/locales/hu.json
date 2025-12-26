@@ -2527,5 +2527,7 @@
   "project_admin.remove_member_desc": "A tag elveszíti hozzáférését a projekt programjaihoz.",
   "project_admin.error": "Hiba",
   "project_admin.success": "Sikeres",
-  "project_admin.settings_updated": "Beállítások mentve"
+  "project_admin.settings_updated": "Beállítások mentve",
+  "profile.messaging_coming_soon": "Üzenetküldés hamarosan!",
+  "profile.messaging_coming_soon_description": "Az üzenetküldés funkció fejlesztés alatt áll."
 }
