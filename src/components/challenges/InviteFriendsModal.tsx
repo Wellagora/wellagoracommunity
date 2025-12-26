@@ -109,7 +109,6 @@ const InviteFriendsModal = ({
       });
 
       if (error) {
-        console.error('Error sending invitations:', error);
         throw new Error(error.message || 'Failed to send invitations');
       }
 
@@ -124,7 +123,6 @@ const InviteFriendsModal = ({
         throw new Error(data?.error || 'Unknown error');
       }
     } catch (error: any) {
-      console.error('Failed to send invitations:', error);
       // Fallback: copy link and show message
       navigator.clipboard.writeText(inviteLink);
       toast({

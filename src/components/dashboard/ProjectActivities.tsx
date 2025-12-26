@@ -88,7 +88,6 @@ export function ProjectActivities() {
 
       setActivities(enrichedActivities);
     } catch (error) {
-      console.error("Error loading activities:", error);
     } finally {
       setLoading(false);
     }

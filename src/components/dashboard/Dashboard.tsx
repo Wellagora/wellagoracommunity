@@ -125,7 +125,6 @@ const Dashboard = ({ userRole }: DashboardProps) => {
       }
       
     } catch (error) {
-      console.error('Error loading dashboard data:', error);
     } finally {
       setLoading(false);
     }

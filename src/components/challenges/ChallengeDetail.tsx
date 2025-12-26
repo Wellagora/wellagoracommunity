@@ -218,7 +218,6 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, onStepComplete, userPr
         });
       }
     } catch (error) {
-      console.error('Error completing step:', error);
       toast({
         title: t('challenges.error'),
         description: t('challenges.step_completion_error'),
@@ -247,7 +246,7 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, onStepComplete, userPr
           url: window.location.href,
         });
       } catch (err) {
-        console.log('Share cancelled');
+        // Share cancelled by user
       }
     } else {
       navigator.clipboard.writeText(shareText + '\n' + window.location.href);
