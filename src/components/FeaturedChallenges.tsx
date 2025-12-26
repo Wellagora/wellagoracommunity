@@ -1,14 +1,17 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import { Users, Sprout, BookOpen } from "lucide-react";
+import { Users, Sprout, BookOpen, Check } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import ProgramCardButtons from "@/components/challenges/ProgramCardButtons";
+import { useUserChallenges } from "@/hooks/useUserChallenges";
 
 const FeaturedChallenges = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const { isJoined } = useUserChallenges();
 
   const challenges = [
     {
@@ -72,7 +75,17 @@ const FeaturedChallenges = () => {
                 transition={{ duration: 0.6, delay: index * 0.15 }}
                 viewport={{ once: true }}
               >
-                <Card className="h-full bg-card hover:shadow-glow transition-all duration-300 border-border/50 group overflow-hidden">
+                <Card className="h-full bg-card hover:shadow-glow transition-all duration-300 border-border/50 group overflow-hidden relative">
+                  {/* Joined Badge */}
+                  {isJoined(challenge.id) && (
+                    <Badge 
+                      variant="default" 
+                      className="absolute top-3 right-3 z-10 bg-success text-success-foreground shadow-lg"
+                    >
+                      <Check className="w-3 h-3 mr-1" />
+                      {t('challenges.joined_badge')}
+                    </Badge>
+                  )}
                   <div className="relative h-48 w-full overflow-hidden">
                     <img 
                       src={challenge.image} 
@@ -93,6 +106,7 @@ const FeaturedChallenges = () => {
                     </p>
                     <ProgramCardButtons
                       challengeId={challenge.id}
+                      isJoined={isJoined(challenge.id)}
                       onNavigate={() => navigate(`/challenges/${challenge.id}`)}
                       onSponsor={() => navigate(`/challenges/${challenge.id}?action=sponsor`)}
                     />

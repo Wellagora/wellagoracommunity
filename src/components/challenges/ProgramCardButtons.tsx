@@ -1,16 +1,19 @@
 import { Button } from "@/components/ui/button";
-import { Check, RefreshCcw, Star, Users, Eye } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Check, RefreshCcw, Star, Users, Eye, Play } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useProgramActions } from "@/hooks/useProgramActions";
 
 interface ProgramCardButtonsProps {
   challengeId: string;
+  isJoined?: boolean;
   onNavigate: () => void;
   onSponsor: () => void;
 }
 
 const ProgramCardButtons = ({
   challengeId,
+  isJoined = false,
   onNavigate,
   onSponsor,
 }: ProgramCardButtonsProps) => {
@@ -78,7 +81,23 @@ const ProgramCardButtons = ({
     }
   }
 
-  // Individual users - show participation-based buttons
+  // Individual users - show different button for joined vs not joined
+  if (isJoined) {
+    return (
+      <div className="flex flex-col sm:flex-row gap-2">
+        <Button
+          onClick={onNavigate}
+          variant="outline"
+          className="w-full border-success text-success hover:bg-success/10 font-semibold rounded-2xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300 px-3 py-2"
+        >
+          <Play className="w-4 h-4 mr-2" />
+          {t('challenges.continue_program')}
+        </Button>
+      </div>
+    );
+  }
+
+  // Not joined - show join/view buttons based on status
   switch (buttonType) {
     case 'open':
       return (
