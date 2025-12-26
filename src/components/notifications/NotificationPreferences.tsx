@@ -52,8 +52,8 @@ export const NotificationPreferences = () => {
       if (data) {
         setPreferences(data);
       }
-    } catch (error: any) {
-      console.error('Error fetching preferences:', error);
+    } catch {
+      // Silent failure - use defaults
     } finally {
       setLoading(false);
     }
@@ -78,8 +78,7 @@ export const NotificationPreferences = () => {
         title: t('notifications.settings_saved'),
         description: t('notifications.settings_saved_description')
       });
-    } catch (error: any) {
-      console.error('Error saving preferences:', error);
+    } catch {
       toast({
         title: t('common.error'),
         description: t('notifications.settings_save_error'),

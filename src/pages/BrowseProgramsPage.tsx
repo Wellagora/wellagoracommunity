@@ -72,8 +72,8 @@ const BrowseProgramsPage = () => {
       }));
 
       setPrograms(enrichedPrograms);
-    } catch (error) {
-      console.error('Error loading programs:', error);
+    } catch {
+      // Silent failure - toast not needed for program list
     } finally {
       setLoading(false);
     }

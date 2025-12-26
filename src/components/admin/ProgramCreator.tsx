@@ -111,14 +111,12 @@ export const ProgramCreator = ({
           });
         
         if (translationError) {
-          console.error('Translation error:', translationError);
           toast.warning("A fordítás sikertelen, de a program létrehozva magyarul");
         } else if (translationData?.translations) {
           translations = translationData.translations;
           toast.success(`Lefordítva ${Object.keys(translations).length} nyelvre`);
         }
-      } catch (error) {
-        console.error('Translation failed:', error);
+      } catch {
         toast.warning("A fordítás sikertelen, de folytatom a program létrehozását");
       }
 
@@ -173,7 +171,6 @@ export const ProgramCreator = ({
         onSuccess();
       }
     } catch (error: any) {
-      console.error('Error creating program:', error);
       toast.error(error.message || t('admin.program_created_error') || 'Hiba történt a program létrehozásakor');
     } finally {
       setIsSubmitting(false);

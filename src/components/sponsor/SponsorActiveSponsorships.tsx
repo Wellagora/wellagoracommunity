@@ -70,7 +70,6 @@ const SponsorActiveSponsorships = () => {
       const { data: sponsorshipsData, error: sponsorshipsError } = await query;
 
       if (sponsorshipsError) {
-        console.error('Error loading sponsorships:', sponsorshipsError);
         return;
       }
 
@@ -86,9 +85,7 @@ const SponsorActiveSponsorships = () => {
           .select('id, title, description, translations, image_url')
           .in('id', challengeIds);
         
-        if (error) {
-          console.error('Error loading challenge definitions:', error);
-        } else {
+        if (!error) {
           const challengeMap = new Map<string, ChallengeDefinition>();
           challenges?.forEach(challenge => {
             challengeMap.set(challenge.id, challenge);
@@ -96,8 +93,8 @@ const SponsorActiveSponsorships = () => {
           setChallengeDefinitions(challengeMap);
         }
       }
-    } catch (error) {
-      console.error('Error loading sponsorships:', error);
+    } catch {
+      // Silent failure
     } finally {
       setLoading(false);
     }

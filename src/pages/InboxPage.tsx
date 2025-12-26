@@ -59,8 +59,7 @@ const InboxPage = () => {
 
       if (error) throw error;
       setMessages((data || []) as Message[]);
-    } catch (error) {
-      console.error('Error loading messages:', error);
+    } catch {
       toast({
         title: t('inbox.error'),
         description: t('inbox.error_loading'),
@@ -83,8 +82,8 @@ const InboxPage = () => {
 
       if (error) throw error;
       loadMessages();
-    } catch (error) {
-      console.error('Error marking message as read:', error);
+    } catch {
+      // Silent failure - non-critical operation
     }
   };
 
@@ -121,7 +120,6 @@ const InboxPage = () => {
       setReplyText('');
       setReplySubject('');
     } catch (error: any) {
-      console.error('Error sending reply:', error);
       toast({
         title: t('inbox.error'),
         description: error.message || t('inbox.error_sending'),
