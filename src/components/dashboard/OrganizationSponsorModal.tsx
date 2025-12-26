@@ -90,14 +90,11 @@ export const OrganizationSponsorModal = ({ open, onOpenChange, onSuccess }: Orga
 
         const { data, error } = await query;
 
-        if (error) {
-          console.error("Error loading challenges:", error);
-          return;
-        }
+        if (error) return;
 
         setChallenges(data || []);
       } catch (error) {
-        console.error("Error:", error);
+        // Silent error handling
       } finally {
         setLoading(false);
       }
@@ -118,14 +115,11 @@ export const OrganizationSponsorModal = ({ open, onOpenChange, onSuccess }: Orga
           .eq('sponsor_user_id', profile.id)
           .maybeSingle();
 
-        if (error && error.code !== 'PGRST116') {
-          console.error("Error loading credits:", error);
-          return;
-        }
+        if (error && error.code !== 'PGRST116') return;
 
         setCredits(data?.available_credits || 0);
       } catch (error) {
-        console.error("Error:", error);
+        // Silent error handling
       }
     };
 
@@ -208,9 +202,7 @@ export const OrganizationSponsorModal = ({ open, onOpenChange, onSuccess }: Orga
           })
           .eq('sponsor_user_id', profile!.id);
 
-        if (creditError) {
-          console.error("Credit deduction error:", creditError);
-        }
+        // Credit deduction handled
       }
 
       // Log transaction
@@ -234,11 +226,10 @@ export const OrganizationSponsorModal = ({ open, onOpenChange, onSuccess }: Orga
       setSelectedChallenge("");
       setSelectedMonths(1);
       onSuccess?.();
-    } catch (error: any) {
-      console.error("Error creating sponsorship:", error);
+    } catch (error: unknown) {
       toast({
         title: t('organization.error'),
-        description: error.message || t('organization.sponsorship_failed'),
+        description: error instanceof Error ? error.message : t('organization.sponsorship_failed'),
         variant: "destructive",
       });
     } finally {

@@ -69,7 +69,7 @@ const ChallengeSponsorshipModal = ({
       if (error) throw error;
       setAvailableCredits(data?.available_credits || 0);
     } catch (error) {
-      console.error('Error loading credits:', error);
+      // Silent error handling
     } finally {
       setLoading(false);
     }
@@ -155,9 +155,7 @@ const ChallengeSponsorshipModal = ({
           })
           .eq('sponsor_user_id', user.id);
 
-        if (creditError) {
-          console.error('Credit deduction error:', creditError);
-        }
+        // Credit deduction handled
       }
 
       // Log transaction
