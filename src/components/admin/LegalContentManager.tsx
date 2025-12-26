@@ -47,7 +47,6 @@ const LegalContentManager = () => {
       if (error) throw error;
       setSections((data as LegalSection[]) || []);
     } catch (error: any) {
-      console.error('Error loading legal sections:', error);
       toast({
         title: t('admin.error'),
         description: error.message,
@@ -120,7 +119,6 @@ const LegalContentManager = () => {
       setEditingSection(null);
       loadSections();
     } catch (error: any) {
-      console.error('Error saving section:', error);
       toast({
         title: t('admin.error'),
         description: error.message,
@@ -147,7 +145,6 @@ const LegalContentManager = () => {
 
       loadSections();
     } catch (error: any) {
-      console.error('Error deleting section:', error);
       toast({
         title: t('admin.error'),
         description: error.message,
@@ -172,7 +169,6 @@ const LegalContentManager = () => {
 
       loadSections();
     } catch (error: any) {
-      console.error('Error toggling visibility:', error);
       toast({
         title: t('admin.error'),
         description: error.message,
