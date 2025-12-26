@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProgramActions } from "@/hooks/useProgramActions";
+import { supabase } from "@/integrations/supabase/client";
 import ChallengeCelebrationModal from "./ChallengeCelebrationModal";
 import InviteFriendsModal from "./InviteFriendsModal";
 import ChallengeSponsorshipModal from "./ChallengeSponsorshipModal";
@@ -40,7 +41,8 @@ import {
   UserPlus,
   Check,
   RefreshCcw,
-  Eye
+  Eye,
+  Loader2
 } from "lucide-react";
 
 interface Challenge {
@@ -73,6 +75,7 @@ interface ChallengeDetailProps {
   challenge: Challenge;
   onJoin?: (challengeId: string) => void;
   onComplete?: (challengeId: string) => void;
+  onStepComplete?: (stepIndex: number, completedSteps: number[]) => void;
   userProgress?: {
     isParticipating: boolean;
     isCompleted: boolean;
@@ -101,17 +104,18 @@ const difficultyConfig = {
   expert: { color: "bg-destructive", label: "Szakértő" }
 };
 
-const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: ChallengeDetailProps) => {
+const ChallengeDetail = ({ challenge, onJoin, onComplete, onStepComplete, userProgress }: ChallengeDetailProps) => {
   const [activeStep, setActiveStep] = useState(0);
   const [showTips, setShowTips] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [showSponsorModal, setShowSponsorModal] = useState(false);
   const [uploadedPhoto, setUploadedPhoto] = useState<string | null>(null);
+  const [isCompletingStep, setIsCompletingStep] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { t } = useLanguage();
-  const { profile } = useAuth();
+  const { user, profile } = useAuth();
   
   // Use the role-based program actions hook
   const { isOrganization, sponsorshipStatus, getButtonType } = useProgramActions(challenge.id);
@@ -127,12 +131,102 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
     });
   };
 
-  const handleCompleteStep = (stepIndex: number) => {
-    // TODO: Implement step completion logic
-    toast({
-      title: t('challenges.step_completed'),
-      description: t('challenges.step_completed_desc'),
-    });
+  const handleCompleteStep = async (stepIndex: number) => {
+    if (!user || isCompletingStep) return;
+    
+    setIsCompletingStep(true);
+    
+    try {
+      // Calculate new completed steps
+      const currentCompletedSteps = userProgress?.completedSteps || [];
+      if (currentCompletedSteps.includes(stepIndex)) {
+        setIsCompletingStep(false);
+        return; // Already completed
+      }
+      
+      const newCompletedSteps = [...currentCompletedSteps, stepIndex].sort((a, b) => a - b);
+      const totalSteps = challenge.stepsKeys.length;
+      const newProgress = Math.round((newCompletedSteps.length / totalSteps) * 100);
+      const allStepsCompleted = newCompletedSteps.length === totalSteps;
+      
+      // Check if user already has a completion record
+      const { data: existingCompletion } = await supabase
+        .from('challenge_completions')
+        .select('id, evidence_data')
+        .eq('challenge_id', challenge.id)
+        .eq('user_id', user.id)
+        .maybeSingle();
+      
+      if (existingCompletion) {
+        // Update existing record
+        const { error: updateError } = await supabase
+          .from('challenge_completions')
+          .update({
+            evidence_data: {
+              ...(existingCompletion.evidence_data as object || {}),
+              completed_steps: newCompletedSteps,
+              progress: newProgress,
+              last_step_completed_at: new Date().toISOString()
+            },
+            validation_status: allStepsCompleted ? 'approved' : 'pending',
+            points_earned: allStepsCompleted ? challenge.pointsReward : 0
+          })
+          .eq('id', existingCompletion.id);
+          
+        if (updateError) throw updateError;
+      } else {
+        // Create new completion record
+        const { error: insertError } = await supabase
+          .from('challenge_completions')
+          .insert({
+            challenge_id: challenge.id,
+            user_id: user.id,
+            organization_id: profile?.organization_id || null,
+            completion_type: 'manual',
+            validation_status: allStepsCompleted ? 'approved' : 'pending',
+            points_earned: allStepsCompleted ? challenge.pointsReward : 0,
+            impact_data: {
+              category: challenge.category,
+              difficulty: challenge.difficulty
+            },
+            evidence_data: {
+              completed_steps: newCompletedSteps,
+              progress: newProgress,
+              started_at: new Date().toISOString(),
+              last_step_completed_at: new Date().toISOString()
+            }
+          });
+          
+        if (insertError) throw insertError;
+      }
+      
+      // Notify parent component to update state
+      onStepComplete?.(stepIndex, newCompletedSteps);
+      
+      // Show appropriate toast
+      if (allStepsCompleted) {
+        toast({
+          title: t('challenges.challenge_completed'),
+          description: `${t('challenges.earned_points')}: ${challenge.pointsReward}`,
+        });
+        // Trigger celebration and completion
+        handleCompleteChallenge();
+      } else {
+        toast({
+          title: t('challenges.step_completed'),
+          description: `${t('challenges.step')} ${stepIndex + 1} ${t('challenges.of')} ${totalSteps} ${t('challenges.completed')}`,
+        });
+      }
+    } catch (error) {
+      console.error('Error completing step:', error);
+      toast({
+        title: t('challenges.error'),
+        description: t('challenges.step_completion_error'),
+        variant: 'destructive'
+      });
+    } finally {
+      setIsCompletingStep(false);
+    }
   };
 
   const handleCompleteChallenge = () => {
@@ -434,11 +528,17 @@ const ChallengeDetail = ({ challenge, onJoin, onComplete, userProgress }: Challe
                         size="sm" 
                         variant="ghost"
                         className="mt-2 text-xs h-7"
+                        disabled={isCompletingStep}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleCompleteStep(index);
                         }}
                       >
+                        {isCompletingStep ? (
+                          <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                        ) : (
+                          <Check className="w-3 h-3 mr-1" />
+                        )}
                         {t('challenges.mark_complete')}
                       </Button>
                     )}
