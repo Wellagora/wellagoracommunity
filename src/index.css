@@ -8,78 +8,83 @@ Természetes színpaletta és elegáns tipográfia a közösség építés támo
 
 @layer base {
   :root {
-    /* Wellagora Elegant & Innovative Design System */
-    /* Deep Blue Premium - Apple-Level Quality */
-    --background: 218 70% 8%;
-    --foreground: 220 20% 98%;
+    /* Wellagora - Bimanu Inspired Deep Blue Design System */
+    /* Professional deep blue with vibrant gradients and turquoise accents */
+    
+    /* Main Background: #0A1930 */
+    --background: 216 71% 11%;
+    --foreground: 0 0% 100%;
 
-    --card: 220 60% 12%;
-    --card-foreground: 220 20% 98%;
+    /* Card Background: #112240 */
+    --card: 218 60% 16%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 220 60% 12%;
-    --popover-foreground: 220 20% 98%;
+    --popover: 218 60% 16%;
+    --popover-foreground: 0 0% 100%;
 
-    /* Deep Royal Blue Primary */
-    --primary: 218 70% 28%;
+    /* Primary Blue: #0066FF */
+    --primary: 216 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 218 75% 45%;
-    --primary-dark: 218 80% 15%;
+    --primary-glow: 195 100% 50%;
+    --primary-dark: 216 71% 11%;
 
-    /* Ocean Blue Secondary */
-    --secondary: 210 65% 38%;
+    /* Secondary Ocean Blue */
+    --secondary: 200 100% 45%;
     --secondary-foreground: 0 0% 100%;
 
-    /* Muted Bluish-Grey */
-    --muted: 220 40% 20%;
-    --muted-foreground: 218 20% 82%;
+    /* Muted: Light blue-gray #B0C4DE */
+    --muted: 218 50% 22%;
+    --muted-foreground: 214 41% 78%;
 
-    /* Electric Blue Accent */
-    --accent: 214 75% 55%;
-    --accent-foreground: 0 0% 100%;
-    --accent-light: 214 70% 68%;
+    /* Turquoise Accent: #00E5FF */
+    --accent: 186 100% 50%;
+    --accent-foreground: 216 71% 11%;
+    --accent-light: 186 100% 65%;
 
-    /* Success - Subtle Blue-Teal */
-    --success: 180 50% 48%;
+    /* Success - Teal */
+    --success: 170 80% 45%;
     --success-foreground: 0 0% 100%;
-    --success-light: 180 45% 60%;
+    --success-light: 170 70% 55%;
 
-    /* Warning - Refined Amber */
-    --warning: 38 85% 55%;
-    --warning-foreground: 218 70% 8%;
+    /* Warning - Amber */
+    --warning: 38 90% 55%;
+    --warning-foreground: 216 71% 11%;
 
-    /* Info - Light Mist Blue */
-    --info: 210 70% 70%;
-    --info-foreground: 218 70% 8%;
+    /* Info - Cyan */
+    --info: 195 100% 50%;
+    --info-foreground: 216 71% 11%;
 
     /* Destructive */
     --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 40% 22%;
-    --input: 220 50% 18%;
-    --ring: 214 75% 55%;
+    --border: 218 50% 25%;
+    --input: 218 55% 20%;
+    --ring: 186 100% 50%;
 
-    --radius: 1.125rem;
+    --radius: 1.25rem;
 
-    /* Wellagora Elegant Blue Gradients - Premium Quality */
-    --gradient-primary: linear-gradient(135deg, hsl(218 80% 15%) 0%, hsl(218 70% 28%) 50%, hsl(210 65% 38%) 100%);
-    --gradient-vibrant: linear-gradient(135deg, hsl(214 75% 55%) 0%, hsl(210 70% 60%) 50%, hsl(206 65% 65%) 100%);
-    --gradient-nature: linear-gradient(180deg, hsl(218 70% 12%) 0%, hsl(218 70% 8%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(218 80% 10%) 0%, hsl(218 70% 20%) 40%, hsl(210 65% 32%) 75%, hsl(206 60% 42%) 100%);
-    --gradient-wave: linear-gradient(135deg, hsl(220 60% 18%) 0%, hsl(215 60% 26%) 50%, hsl(210 55% 35%) 100%);
-    --gradient-atmospheric: linear-gradient(180deg, hsl(218 80% 12%) 0%, hsl(218 70% 18%) 50%, hsl(215 65% 26%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(218 70% 8%) 0%, hsl(220 60% 12%) 100%);
-    --gradient-aqua: linear-gradient(135deg, hsl(214 75% 55%) 0%, hsl(180 60% 55%) 100%);
-    --gradient-depth: linear-gradient(135deg, hsl(218 80% 15%) 0%, hsl(215 70% 26%) 50%, hsl(210 65% 38%) 100%);
-    --gradient-tech: linear-gradient(135deg, hsl(220 70% 22%) 0%, hsl(214 75% 55%) 100%);
-    --gradient-glass: linear-gradient(135deg, hsl(220 60% 18% / 0.7) 0%, hsl(218 55% 22% / 0.5) 100%);
+    /* Bimanu-style Gradients */
+    --gradient-primary: linear-gradient(to right, hsl(216 100% 50%), hsl(195 100% 50%));
+    --gradient-vibrant: linear-gradient(135deg, hsl(216 100% 50%) 0%, hsl(195 100% 50%) 50%, hsl(186 100% 50%) 100%);
+    --gradient-nature: linear-gradient(180deg, hsl(216 71% 14%) 0%, hsl(216 71% 11%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(216 71% 11%) 0%, hsl(218 60% 16%) 40%, hsl(216 100% 35%) 75%, hsl(195 100% 45%) 100%);
+    --gradient-wave: linear-gradient(135deg, hsl(218 60% 16%) 0%, hsl(216 80% 25%) 50%, hsl(200 90% 40%) 100%);
+    --gradient-atmospheric: linear-gradient(180deg, hsl(216 71% 14%) 0%, hsl(218 60% 18%) 50%, hsl(216 70% 25%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(216 71% 11%) 0%, hsl(218 60% 16%) 100%);
+    --gradient-aqua: linear-gradient(to right, hsl(216 100% 50%), hsl(186 100% 50%));
+    --gradient-depth: linear-gradient(135deg, hsl(216 71% 11%) 0%, hsl(218 60% 20%) 50%, hsl(216 100% 40%) 100%);
+    --gradient-tech: linear-gradient(135deg, hsl(218 60% 16%) 0%, hsl(216 100% 50%) 50%, hsl(195 100% 50%) 100%);
+    --gradient-glass: linear-gradient(135deg, hsl(218 60% 16% / 0.8) 0%, hsl(218 55% 20% / 0.6) 100%);
+    --gradient-button: linear-gradient(to right, hsl(216 100% 50%), hsl(186 100% 50%));
 
-    /* Elegant Blue Shadows - Refined Glow */
-    --shadow-eco: 0 10px 40px -6px hsl(214 70% 50% / 0.2);
-    --shadow-glow: 0 0 40px hsl(214 75% 55% / 0.25), 0 0 20px hsl(210 70% 60% / 0.15);
-    --shadow-card: 0 8px 32px -6px hsl(220 70% 8% / 0.6);
-    --shadow-premium: 0 20px 60px -12px hsl(214 75% 55% / 0.25);
-    --shadow-float: 0 25px 60px -18px hsl(214 75% 55% / 0.3);
+    /* Premium Shadows with Blue Glow */
+    --shadow-eco: 0 10px 40px -6px hsl(216 100% 50% / 0.25);
+    --shadow-glow: 0 0 30px hsl(195 100% 50% / 0.3), 0 0 60px hsl(186 100% 50% / 0.15);
+    --shadow-card: 0 8px 32px -6px hsl(216 71% 5% / 0.7);
+    --shadow-premium: 0 20px 60px -12px hsl(216 100% 50% / 0.3);
+    --shadow-float: 0 25px 60px -18px hsl(195 100% 50% / 0.35);
+    --shadow-button: 0 8px 24px -4px hsl(216 100% 50% / 0.4);
 
     /* Smooth animation system */
     --transition-smooth: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -91,14 +96,14 @@ Természetes színpaletta és elegáns tipográfia a közösség építés támo
     --font-body: 'Inter', 'system-ui', sans-serif;
 
     /* Dark Sidebar - Matching Deep Blue Theme */
-    --sidebar-background: 220 60% 10%;
-    --sidebar-foreground: 220 20% 98%;
-    --sidebar-primary: 214 75% 55%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 50% 18%;
-    --sidebar-accent-foreground: 220 20% 98%;
-    --sidebar-border: 220 40% 18%;
-    --sidebar-ring: 214 75% 55%;
+    --sidebar-background: 216 71% 8%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 186 100% 50%;
+    --sidebar-primary-foreground: 216 71% 11%;
+    --sidebar-accent: 218 55% 20%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 218 50% 22%;
+    --sidebar-ring: 186 100% 50%;
   }
 
   /* Dark mode - megtartjuk opcióként */
