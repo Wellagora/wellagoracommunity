@@ -1,4 +1,14 @@
 {
+  "share_impact": {
+    "title": "Teile deine Wirkung",
+    "my_impact": "Meine Wirkung",
+    "challenges_completed": "Abgeschlossene Challenges",
+    "points_earned": "Punkte",
+    "co2_saved": "Eingesparte CO2",
+    "join_me": "Schließ dich mir an!",
+    "share_button": "Teilen",
+    "anonymous": "Anonymer Benutzer"
+  },
   "hero.impact_badge": "Impact Plattform",
   "hero.headline_part1": "Deine Wirkung zählt.",
   "hero.headline_part2": "Handle lokal.",

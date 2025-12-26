@@ -1,4 +1,14 @@
 {
+  "share_impact": {
+    "title": "Oszd meg a hatásodat",
+    "my_impact": "Az én hatásom",
+    "challenges_completed": "Teljesített kihívás",
+    "points_earned": "Pont",
+    "co2_saved": "Megmentett CO2",
+    "join_me": "Csatlakozz hozzám!",
+    "share_button": "Megosztás",
+    "anonymous": "Névtelen felhasználó"
+  },
   "hero.impact_badge": "Hatás Platform",
   "hero.headline_part1": "Hatásod számít.",
   "hero.headline_part2": "Cselekedj lokálisan.",
