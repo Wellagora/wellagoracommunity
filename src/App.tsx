@@ -44,6 +44,7 @@ const SuperAdminPage = lazy(() => import("@/pages/SuperAdminPage"));
 const SponsorLandingPage = lazy(() => import("@/pages/SponsorLandingPage"));
 const OrganizationRegisterPage = lazy(() => import("@/pages/OrganizationRegisterPage"));
 const JoinOrganizationPage = lazy(() => import("@/pages/JoinOrganizationPage"));
+const EventsPage = lazy(() => import("@/pages/EventsPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function App() {
@@ -94,6 +95,7 @@ function App() {
                         <Route path="/revolutionary" element={<Navigate to="/community" replace />} />
                         <Route path="/community" element={<CommunityPage />} />
                         <Route path="/ai-assistant" element={<AIAssistantPage />} />
+                        <Route path="/events" element={<EventsPage />} />
                         <Route path="/challenges" element={<ChallengesPage />} />
                         <Route path="/challenges/:challengeId" element={<ChallengeDetailPage />} />
                         <Route path="/profile" element={

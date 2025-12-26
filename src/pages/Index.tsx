@@ -15,6 +15,7 @@ import { StoryOfTheWeek } from "@/components/StoryOfTheWeek";
 import { RegionalImpactGarden } from "@/components/RegionalImpactGarden";
 import { RegionalImpactMap } from "@/components/dashboard/RegionalImpactMap";
 import { StatsBarSkeleton } from "@/components/ui/skeletons";
+import { UpcomingEventsSection } from "@/components/events/UpcomingEventsSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -69,6 +70,9 @@ const Index = () => {
 
           {/* 2. FEATURED PROGRAMS - Main content, immediately visible */}
           <FeaturedChallenges />
+
+          {/* 2.5. UPCOMING EVENTS - Right after featured challenges */}
+          <UpcomingEventsSection />
 
           {/* 3. STORY OF THE WEEK - Compact */}
           <StoryOfTheWeek />
