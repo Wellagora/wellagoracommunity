@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Navigation from "@/components/Navigation";
 import { Card3D } from "@/components/ui/card-3d";
 import { CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,22 +15,14 @@ import {
   Star,
   Calendar,
   MapPin,
-  Zap,
-  Check,
-  RefreshCcw,
-  Eye
+  Zap
 } from "lucide-react";
-import { useProgramActions } from "@/hooks/useProgramActions";
 import { Challenge } from "@/data/challenges";
 import { loadChallengesFromDatabase } from "@/services/ChallengeSponsorshipService";
 import ProgramCardButtons from "@/components/challenges/ProgramCardButtons";
 
 const ChallengesPage = () => {
-  console.log('[ChallengesPage] Component rendering');
-
   const navigate = useNavigate();
-  const location = useLocation();
-  const debug = new URLSearchParams(location.search).has('debug');
 
   const { user, loading, profile } = useAuth();
   const { t, language } = useLanguage();
@@ -42,13 +33,10 @@ const ChallengesPage = () => {
 
   // Load ALL active challenges from database (no project filtering for public page)
   useEffect(() => {
-    console.log('[ChallengesPage] useEffect triggered, language:', language);
     const loadChallenges = async () => {
       setSponsorsLoading(true);
-      console.log('[ChallengesPage] Calling loadChallengesFromDatabase...');
       // Pass undefined to load ALL active challenges, not filtered by project
       const dbChallenges = await loadChallengesFromDatabase(undefined, language);
-      console.log('[ChallengesPage] Got challenges:', dbChallenges?.length, dbChallenges?.map(c => ({ id: c.id, title: c.titleKey })));
       setAllChallenges(dbChallenges);
       setSponsorsLoading(false);
     };
@@ -111,20 +99,6 @@ const ChallengesPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {debug && (
-        <aside className="fixed bottom-4 right-4 z-50 w-[360px] max-w-[calc(100vw-2rem)] rounded-xl border border-border bg-card/95 backdrop-blur p-3 shadow-lg">
-          <div className="text-xs font-semibold text-foreground">/challenges debug panel</div>
-          <div className="mt-1 text-xs text-muted-foreground">path: {location.pathname}{location.search}</div>
-          <div className="mt-2 text-xs text-muted-foreground">language: {language}</div>
-          <div className="mt-2 text-xs text-muted-foreground">loading: {String(sponsorsLoading)} | total: {allChallenges.length}</div>
-          <div className="mt-2 max-h-40 overflow-auto rounded-md bg-background/40 p-2">
-            {allChallenges.slice(0, 10).map((c) => (
-              <div key={c.id} className="text-xs text-foreground truncate">{c.id}: {c.titleKey}</div>
-            ))}
-          </div>
-        </aside>
-      )}
-
       <Navigation />
       
       {/* Hero Section */}
