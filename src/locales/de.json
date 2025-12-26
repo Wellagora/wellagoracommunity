@@ -743,9 +743,9 @@
   "dashboard.wellbot_progress": "Zeige meinen Fortschritt",
   "dashboard.wellbot_tips": "Tipps",
   "dashboard.wellbot_full": "Vollständiger Assistent",
-  "dashboard.recent_activity": "Letzte Aktivität",
-  "dashboard.no_activity": "Noch keine Aktivität",
-  "dashboard.no_activity_desc": "Deine Aktivitäten werden hier erscheinen",
+  "dashboard.recent_activity": "Kommende Veranstaltungen",
+  "dashboard.no_activity": "Keine kommenden Veranstaltungen",
+  "dashboard.no_activity_desc": "Ihre Veranstaltungen werden hier erscheinen",
   "dashboard.joined_program": "Einem Programm beigetreten",
   "dashboard.completed_program": "Ein Programm abgeschlossen",
   "dashboard.earned_badge": "Ein Abzeichen verdient",
@@ -2474,5 +2474,8 @@
   "events.date_time": "Datum & Uhrzeit",
   "events.participants": "Teilnehmer",
   "events.no_events": "Keine kommenden Veranstaltungen",
-  "events.view_all": "Alle Veranstaltungen anzeigen"
+  "events.view_all": "Alle Veranstaltungen anzeigen",
+  "events.rsvp_success": "Teilnahme aktualisiert!",
+  "events.rsvp_error": "Fehler beim Aktualisieren der Teilnahme",
+  "dashboard.activity_hint": "Durchsuche Programme nach Veranstaltungen"
 }

@@ -784,9 +784,9 @@
   "dashboard.wellbot_progress": "Mutasd progresszióm",
   "dashboard.wellbot_tips": "Tippek",
   "dashboard.wellbot_full": "Teljes asszisztens",
-  "dashboard.recent_activity": "Legutóbbi Aktivitás",
-  "dashboard.no_activity": "Még nincs aktivitás",
-  "dashboard.no_activity_desc": "Az aktivitásaid itt fognak megjelenni",
+  "dashboard.recent_activity": "Közelgő események",
+  "dashboard.no_activity": "Nincsenek közelgő események",
+  "dashboard.no_activity_desc": "Az eseményeid itt fognak megjelenni",
   "dashboard.joined_program": "Csatlakoztál egy programhoz",
   "dashboard.completed_program": "Teljesítettél egy programot",
   "dashboard.earned_badge": "Jelvényt szereztél",
@@ -2683,5 +2683,8 @@
   "events.date_time": "Időpont",
   "events.participants": "Résztvevők",
   "events.no_events": "Nincs közelgő esemény",
-  "events.view_all": "Összes esemény"
+  "events.view_all": "Összes esemény",
+  "events.rsvp_success": "Részvétel frissítve!",
+  "events.rsvp_error": "Hiba a részvétel frissítésekor",
+  "dashboard.activity_hint": "Böngéssz a programok között eseményekért"
 }
