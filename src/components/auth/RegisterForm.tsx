@@ -19,7 +19,7 @@ const registerSchema = z.object({
   email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters"),
   password: z.string().min(8, "Password must be at least 8 characters").max(128, "Password must be less than 128 characters"),
   confirmPassword: z.string(),
-  role: z.enum(["citizen", "business", "municipal", "ngo"], {
+  role: z.enum(["citizen", "business", "government", "ngo"], {
     message: "Please select a role",
   }),
   organization: z.string().trim().max(100, "Organization name must be less than 100 characters").optional(),
@@ -30,7 +30,9 @@ const registerSchema = z.object({
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
-const getUserRoles = (t: any) => [
+type TranslateFunction = (key: string) => string | undefined;
+
+const getUserRoles = (t: TranslateFunction) => [
   { 
     id: "citizen", 
     name: t('journey.role_citizen') || "Einzelperson", 
@@ -46,7 +48,7 @@ const getUserRoles = (t: any) => [
     color: "bg-accent"
   },
   { 
-    id: "municipal", 
+    id: "government", 
     name: t('journey.role_government') || "Gemeinde", 
     icon: MapPin, 
     description: t('profile.role_government_desc') || "Stadtweite Initiativen",
@@ -95,7 +97,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
           data: {
             first_name: data.firstName,
             last_name: data.lastName,
-            role: data.role,
+            user_role: data.role,
             organization: data.organization || null,
           },
         },
@@ -111,10 +113,11 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
       });
       
       onSuccess?.();
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Handle specific error messages
-      let errorMessage = error.message;
-      if (error.message?.includes('already registered')) {
+      const errorObj = error as { message?: string };
+      let errorMessage = errorObj.message || '';
+      if (errorMessage.includes('already registered')) {
         errorMessage = t('auth.email_already_registered') || 'Ez az e-mail cím már regisztrálva van.';
       }
       
@@ -234,7 +237,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
                   placeholder={
                     watchedRole === "citizen" ? (t('profile.company_placeholder') || "Melyik cégnél dolgozol?") :
                     watchedRole === "business" ? (t('profile.business_name_placeholder') || "Cég neve") :
-                    watchedRole === "municipal" ? (t('profile.municipality_placeholder') || "Önkormányzat / Település neve") :
+                    watchedRole === "government" ? (t('profile.municipality_placeholder') || "Önkormányzat / Település neve") :
                     (t('profile.organization_placeholder') || "Szervezet neve")
                   }
                   className={`pl-10 ${errors.organization ? "border-destructive" : ""}`}
