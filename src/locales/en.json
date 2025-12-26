@@ -2562,5 +2562,18 @@
 
   "challenges.active_participants": "Active Participants",
   "challenges.completed_challenges": "Completed Programs",
-  "challenges.community_events": "Community Events"
+  "challenges.community_events": "Community Events",
+
+  "referral.invite_friends": "Invite Friends",
+  "referral.your_code": "Your referral code",
+  "referral.copy_link": "Copy link",
+  "referral.share_link": "Share",
+  "referral.stats_invited": "Invited",
+  "referral.stats_joined": "Joined",
+  "referral.stats_completed": "Completed",
+  "referral.stats_points": "Points",
+  "referral.reward_hint": "Earn 100 points when your friend completes their first challenge!",
+  "referral.link_copied": "Link copied!",
+  "referral.share_message": "Join me on this sustainability journey!",
+  "referral.email_subject": "Join our sustainability community!"
 }

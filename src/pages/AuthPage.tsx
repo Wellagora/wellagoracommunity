@@ -20,9 +20,9 @@ const AuthPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-
-  // Get role from URL parameters
+  // Get role and referral code from URL parameters
   const roleFromUrl = searchParams.get('role');
+  const refCodeFromUrl = searchParams.get('ref');
 
   // Validation schemas
   const loginSchema = z.object({
@@ -44,6 +44,14 @@ const AuthPage = () => {
     message: t('auth.password_match'),
     path: ["confirmPassword"],
   });
+
+  // Store referral code in localStorage on mount
+  useEffect(() => {
+    if (refCodeFromUrl) {
+      localStorage.setItem('referral_code', refCodeFromUrl);
+      console.log('Referral code stored:', refCodeFromUrl);
+    }
+  }, [refCodeFromUrl]);
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -147,6 +155,15 @@ const AuthPage = () => {
       }
     } else {
       setSuccess(t('auth.account_created'));
+      
+      // Process referral after successful registration
+      const storedRefCode = localStorage.getItem('referral_code');
+      if (storedRefCode) {
+        // The referral processing will happen via a database trigger or hook
+        // For now, just log it - the useReferral hook will handle tracking
+        console.log('User registered via referral code:', storedRefCode);
+        localStorage.removeItem('referral_code');
+      }
     }
     
     setIsLoading(false);

@@ -46,31 +46,35 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    // Get the authorization token
+    // Get the authorization token - make auth optional for sharing
     const authHeader = req.headers.get("authorization");
-    if (!authHeader) {
-      throw new Error("No authorization header");
-    }
+    let user = null;
 
-    // Create Supabase client with the user's token - uses anon key with JWT for RLS
+    // Create Supabase client
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: {
-        headers: { authorization: authHeader },
+        headers: authHeader ? { authorization: authHeader } : {},
       },
     });
 
-    // Verify user is authenticated
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      console.error("Authentication error:", authError);
-      throw new Error("User not authenticated");
+    // Try to verify user if auth header is present
+    if (authHeader) {
+      const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
+      if (!authError && authUser) {
+        user = authUser;
+      } else {
+        console.log("Auth header present but user verification failed:", authError?.message);
+      }
     }
 
+    // For email invitations, we still require authentication
     const requestData: TeamInvitationRequest = await req.json();
+    
+    // If this is an email invitation request, require auth
+    if (requestData.invitations && requestData.invitations.length > 0 && !user) {
+      console.error("Email invitations require authentication");
+      throw new Error("User not authenticated - login required to send email invitations");
+    }
     console.log("Processing team invitations:", {
       challengeId: requestData.challengeId,
       invitationCount: requestData.invitations.length,
@@ -78,10 +82,13 @@ const handler = async (req: Request): Promise<Response> => {
 
     const { challengeId, challengeTitle, invitations, message, organizationId } = requestData;
 
-    // Validate input
-    if (!challengeId || !invitations || invitations.length === 0 || !organizationId) {
-      throw new Error("Missing required fields");
+    // Validate input - organizationId can be optional for non-org users
+    if (!challengeId || !invitations || invitations.length === 0) {
+      throw new Error("Missing required fields: challengeId and invitations are required");
     }
+
+    // Use organizationId if provided, otherwise use user.id as fallback
+    const effectiveOrgId = organizationId || user?.id;
 
     // Create invitation records and send emails
     const results = await Promise.allSettled(
@@ -94,8 +101,8 @@ const handler = async (req: Request): Promise<Response> => {
         const { data: invitationData, error: dbError } = await supabase
           .from("team_invitations")
           .insert({
-            organization_id: organizationId,
-            inviter_user_id: user.id,
+            organization_id: effectiveOrgId,
+            inviter_user_id: user!.id,
             invitee_email: invitation.email,
             invitee_name: invitation.name,
             challenge_id: challengeId,

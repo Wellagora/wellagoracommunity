@@ -11,8 +11,9 @@ import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { useReferral } from "@/hooks/useReferral";
 import { supabase } from "@/integrations/supabase/client";
-import { Users, Mail, Copy, Check, MessageCircle, Loader2 } from "lucide-react";
+import { Users, Mail, Copy, Check, MessageCircle, Loader2, Gift } from "lucide-react";
 
 interface InviteFriendsModalProps {
   isOpen: boolean;
@@ -30,11 +31,13 @@ const InviteFriendsModal = ({
   const { t } = useLanguage();
   const { toast } = useToast();
   const { user, profile } = useAuth();
+  const { referralCode, generateShareLink, createReferral } = useReferral();
   const [emails, setEmails] = useState("");
   const [copied, setCopied] = useState(false);
   const [sending, setSending] = useState(false);
 
-  const inviteLink = `${window.location.origin}/challenges/${challengeId}`;
+  // Use referral link if available, otherwise plain link
+  const inviteLink = generateShareLink(challengeId);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(inviteLink);
@@ -93,6 +96,11 @@ const InviteFriendsModal = ({
     setSending(true);
 
     try {
+      // Create referral records for tracking
+      for (const email of emailList) {
+        await createReferral(email, 'email_invite', challengeId);
+      }
+
       // Prepare invitations
       const invitations = emailList.map(email => ({
         email,
@@ -123,6 +131,7 @@ const InviteFriendsModal = ({
         throw new Error(data?.error || 'Unknown error');
       }
     } catch (error: any) {
+      console.error('Email invite error:', error);
       // Fallback: copy link and show message
       navigator.clipboard.writeText(inviteLink);
       toast({
@@ -170,6 +179,15 @@ const InviteFriendsModal = ({
         </DialogHeader>
 
         <div className="space-y-4 mt-4">
+          {/* Referral Code Badge */}
+          {referralCode && (
+            <div className="flex items-center justify-center gap-2 bg-primary/10 rounded-lg p-2 border border-primary/20">
+              <Gift className="w-4 h-4 text-primary" />
+              <span className="text-xs text-muted-foreground">{t('referral.your_code')}:</span>
+              <code className="text-sm font-mono font-bold text-primary">{referralCode}</code>
+            </div>
+          )}
+
           {/* Copy Link */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">
@@ -179,7 +197,7 @@ const InviteFriendsModal = ({
               <Input
                 value={inviteLink}
                 readOnly
-                className="flex-1"
+                className="flex-1 text-xs"
               />
               <Button
                 onClick={handleCopyLink}

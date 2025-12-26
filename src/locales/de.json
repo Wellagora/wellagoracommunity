@@ -2301,5 +2301,18 @@
   "challenges.no_programs_yet": "Noch keine Programme",
   "challenges.congratulations": "Herzlichen Glückwunsch!",
   "challenges.completed_pending": "Programm abgeschlossen! Warte auf Genehmigung.",
-  "challenges.completed": "Abgeschlossen"
+  "challenges.completed": "Abgeschlossen",
+
+  "referral.invite_friends": "Freunde einladen",
+  "referral.your_code": "Dein Empfehlungscode",
+  "referral.copy_link": "Link kopieren",
+  "referral.share_link": "Teilen",
+  "referral.stats_invited": "Eingeladen",
+  "referral.stats_joined": "Beigetreten",
+  "referral.stats_completed": "Abgeschlossen",
+  "referral.stats_points": "Punkte",
+  "referral.reward_hint": "Verdiene 100 Punkte, wenn dein Freund seine erste Challenge abschließt!",
+  "referral.link_copied": "Link kopiert!",
+  "referral.share_message": "Begleite mich auf dieser Nachhaltigkeitsreise!",
+  "referral.email_subject": "Tritt unserer Nachhaltigkeits-Community bei!"
 }
