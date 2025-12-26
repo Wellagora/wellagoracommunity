@@ -1509,6 +1509,8 @@
   "common.language_code": "hu",
   "common.back": "Vissza",
   "common.back_to_dashboard": "Vissza a Dashboard-hoz",
+  "common.search": "Keresés",
+  "common.all": "Összes",
   "common.trees": "Fák",
   "auth.login_required": "Bejelentkezés szükséges",
   "auth.login": "Bejelentkezés",

@@ -1244,6 +1244,8 @@
   "common.language_code": "de",
   "common.back": "Zurück",
   "common.back_to_dashboard": "Zurück zum Dashboard",
+  "common.search": "Suche",
+  "common.all": "Alle",
   "common.champion": "Champion",
   "common.error": "Fehler",
   "common.trees": "Bäume",

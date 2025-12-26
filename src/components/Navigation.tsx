@@ -134,7 +134,7 @@ const Navigation = () => {
   );
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
+    <nav className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-md border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -143,7 +143,7 @@ const Navigation = () => {
           </Link>
 
           {/* Desktop Navigation - Center */}
-          <div className="hidden lg:flex items-center space-x-1 flex-1 justify-center">
+          <div className="hidden md:flex items-center space-x-1 flex-1 justify-center">
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.path);
@@ -163,7 +163,7 @@ const Navigation = () => {
           </div>
 
           {/* Desktop Actions - Right */}
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-4">
             {/* Super Admin View Mode Switcher */}
             {isSuperAdmin && (
               <TooltipProvider>
@@ -282,7 +282,7 @@ const Navigation = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="lg:hidden">
+          <div className="md:hidden">
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-10 w-10">
