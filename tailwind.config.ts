@@ -150,6 +150,10 @@ export default {
           "0%, 100%": { boxShadow: "0 0 20px hsl(var(--primary) / 0.3)", transform: "scale(1)" },
           "50%": { boxShadow: "0 0 40px hsl(var(--primary) / 0.6)", transform: "scale(1.02)" }
         },
+        "gradient-x": {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" }
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -162,6 +166,7 @@ export default {
         "fade-up-3d": "fade-up-3d 1s ease-out",
         "slide-in-3d": "slide-in-3d 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
         "glow-pulse": "glow-pulse 3s ease-in-out infinite",
+        "gradient-x": "gradient-x 3s ease-in-out infinite",
       },
       transitionTimingFunction: {
         'smooth': 'var(--transition-smooth)',
