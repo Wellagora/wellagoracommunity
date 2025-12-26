@@ -1498,6 +1498,8 @@
   "challenges.duration.monthly": "Havonta",
   "challenges.duration.seasonal": "Szezonális",
   "challenges.duration.ongoing": "Folyamatos",
+  "challenges.day": "nap",
+  "challenges.days": "nap",
   "challenges.kaliMuhely.title": "Káli Műhely - Havi közösségi találkozók",
   "challenges.kaliMuhely.description": "Havonta egyszer, rotálva a 4 településen (Kővágóörs, Kékkút, Mindszentkálla, Köveskál)",
   "challenges.kaliMuhely.longDescription": "Strukturált beszélgetés problémákról, ötletekről és közös projektekről. Közös étkezés és természetes kapcsolatépítés.",

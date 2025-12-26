@@ -1555,6 +1555,8 @@
   "challenges.duration.21_days": "21 days",
   "challenges.duration.30_days": "30 days",
   "challenges.duration.12_weeks": "12 weeks",
+  "challenges.day": "day",
+  "challenges.days": "days",
   "challenges.reusableContainers.title": "Reusable Containers Week",
   "challenges.reusableContainers.description": "Switch to reusable containers and reduce single-use plastic",
   "challenges.reusableContainers.steps.bottle": "Get a reusable water bottle",

@@ -52,7 +52,9 @@ const ChallengeDetailPage = () => {
           longDescriptionKey: data.description,
           category: (data.category || 'community') as Challenge['category'],
           difficulty: (data.difficulty || 'beginner') as Challenge['difficulty'],
-          durationKey: data.duration_days ? `${data.duration_days} ${t('challenges.days')}` : t('challenges.duration.ongoing'),
+          durationKey: data.duration_days 
+            ? `${data.duration_days} ${data.duration_days === 1 ? t('challenges.day') : t('challenges.days')}` 
+            : t('challenges.duration.ongoing'),
           pointsReward: data.points_base || 0,
           participants: 0,
           completionRate: 0,
