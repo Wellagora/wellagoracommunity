@@ -841,6 +841,7 @@ export type Database = {
           preferred_stakeholder_types: string[] | null
           project_id: string | null
           public_display_name: string | null
+          referral_code: string | null
           region: string | null
           region_type: string | null
           role: string
@@ -876,6 +877,7 @@ export type Database = {
           preferred_stakeholder_types?: string[] | null
           project_id?: string | null
           public_display_name?: string | null
+          referral_code?: string | null
           region?: string | null
           region_type?: string | null
           role: string
@@ -911,6 +913,7 @@ export type Database = {
           preferred_stakeholder_types?: string[] | null
           project_id?: string | null
           public_display_name?: string | null
+          referral_code?: string | null
           region?: string | null
           region_type?: string | null
           role?: string
@@ -1044,6 +1047,66 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      referrals: {
+        Row: {
+          challenge_id: string | null
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          invitee_email: string | null
+          invitee_id: string | null
+          joined_at: string | null
+          referrer_id: string
+          reward_claimed: boolean | null
+          reward_points: number | null
+          source: string | null
+          status: string | null
+        }
+        Insert: {
+          challenge_id?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          invitee_email?: string | null
+          invitee_id?: string | null
+          joined_at?: string | null
+          referrer_id: string
+          reward_claimed?: boolean | null
+          reward_points?: number | null
+          source?: string | null
+          status?: string | null
+        }
+        Update: {
+          challenge_id?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          invitee_email?: string | null
+          invitee_id?: string | null
+          joined_at?: string | null
+          referrer_id?: string
+          reward_claimed?: boolean | null
+          reward_points?: number | null
+          source?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_invitee_id_fkey"
+            columns: ["invitee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       security_audit_log: {
         Row: {
