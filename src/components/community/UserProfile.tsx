@@ -341,27 +341,27 @@ const UserProfile = ({ userId, isOwnProfile = false }: UserProfileProps) => {
           <div className="grid md:grid-cols-2 gap-6">
             <Card className="bg-gradient-primary text-primary-foreground border-0">
               <CardHeader>
-                <CardTitle>Environmental Impact</CardTitle>
+                <CardTitle>Community Participation</CardTitle>
                 <CardDescription className="text-white/80">
-                  Your contribution to a sustainable future
+                  Your contribution to the community
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between">
-                  <span>CO₂ Saved</span>
-                  <span className="font-bold">{user.impactStats.co2Saved} kg</span>
+                  <span>Challenges Completed</span>
+                  <span className="font-bold">{user.stats.challengesCompleted}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Trees Equivalent</span>
-                  <span className="font-bold">{user.impactStats.treesEquivalent} trees</span>
+                  <span>Points Earned</span>
+                  <span className="font-bold">{user.stats.totalPoints}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Waste Reduced</span>
-                  <span className="font-bold">{user.impactStats.wasteReduced} kg</span>
+                  <span>Forum Posts</span>
+                  <span className="font-bold">{user.stats.forumPosts}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Energy Saved</span>
-                  <span className="font-bold">{user.impactStats.energySaved} kWh</span>
+                  <span>Users Helped</span>
+                  <span className="font-bold">{user.stats.helpedUsers}</span>
                 </div>
               </CardContent>
             </Card>

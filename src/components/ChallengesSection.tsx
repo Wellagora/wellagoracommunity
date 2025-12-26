@@ -229,16 +229,16 @@ const ChallengesSection = () => {
                     <span className="font-bold text-foreground">197</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t('challenges.co2_saved')}</span>
-                    <span className="font-bold text-foreground">12.8 {t('common.tons')}</span>
+                    <span className="text-muted-foreground">{t('challenges.active_participants')}</span>
+                    <span className="font-bold text-foreground">1,245</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t('challenges.trees_planted')}</span>
+                    <span className="text-muted-foreground">{t('challenges.completed_challenges')}</span>
                     <span className="font-bold text-foreground">3,247</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t('challenges.waste_reduced')}</span>
-                    <span className="font-bold text-foreground">890 kg</span>
+                    <span className="text-muted-foreground">{t('challenges.community_events')}</span>
+                    <span className="font-bold text-foreground">156</span>
                   </div>
                 </div>
               </CardContent>
