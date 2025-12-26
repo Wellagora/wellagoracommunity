@@ -52,7 +52,6 @@ const MessagesManager = () => {
       if (error) throw error;
       setMessages((data || []) as Message[]);
     } catch (error) {
-      console.error('Error loading messages:', error);
       toast({
         title: 'Hiba',
         description: 'Nem sikerült betölteni az üzeneteket',
@@ -80,7 +79,6 @@ const MessagesManager = () => {
         title: 'Üzenet olvasottnak jelölve',
       });
     } catch (error) {
-      console.error('Error marking message as read:', error);
       toast({
         title: 'Hiba',
         description: 'Nem sikerült frissíteni az üzenetet',
@@ -104,7 +102,6 @@ const MessagesManager = () => {
         title: 'Üzenet archiválva',
       });
     } catch (error) {
-      console.error('Error archiving message:', error);
       toast({
         title: 'Hiba',
         description: 'Nem sikerült archiválni az üzenetet',
@@ -129,7 +126,6 @@ const MessagesManager = () => {
       });
       loadMessages();
     } catch (error) {
-      console.error('Error saving notes:', error);
       toast({
         title: 'Hiba',
         description: 'Nem sikerült menteni a jegyzeteket',

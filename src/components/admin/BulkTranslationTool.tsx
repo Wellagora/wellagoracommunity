@@ -50,8 +50,6 @@ export function BulkTranslationTool() {
       });
 
       if (error) {
-        console.error("Translation error:", error);
-        
         // Handle rate limiting
         if (error.message?.includes("Rate limits exceeded")) {
           toast({
@@ -85,7 +83,6 @@ export function BulkTranslationTool() {
         description: `Translated to ${Object.keys(data.translations).length} languages`,
       });
     } catch (error) {
-      console.error("Translation failed:", error);
       toast({
         title: "Translation Failed",
         description: error instanceof Error ? error.message : "Unknown error occurred",
