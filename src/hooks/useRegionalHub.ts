@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useProject } from '@/contexts/ProjectContext';
@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { Challenge } from '@/data/challenges';
+import { useUserLocation, useNearbyStakeholders, NearbyStakeholder } from './useNearbyStakeholders';
 
 export interface StakeholderProfile {
   id: string;
@@ -24,6 +25,7 @@ export interface StakeholderProfile {
   verified: boolean;
   impactScore: number;
   isRegistered: boolean;
+  distanceMeters?: number; // PostGIS calculated distance
 }
 
 export interface SponsorInfo {
@@ -40,12 +42,29 @@ export interface RegionalChallenge extends Omit<Challenge, 'sponsor'> {
   sponsor?: SponsorInfo;
 }
 
-export const useRegionalHub = () => {
+export const useRegionalHub = (options?: { usePostGIS?: boolean; radiusMeters?: number }) => {
+  const { usePostGIS = false, radiusMeters = 25000 } = options || {};
   const { t } = useLanguage();
   const { toast } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
   const { currentProject, isLoading: projectLoading } = useProject();
+
+  // Get user's location for PostGIS queries
+  const { location: userLocation, loading: locationLoading } = useUserLocation();
+
+  // PostGIS-based nearby stakeholders (used when usePostGIS is true and location is available)
+  const {
+    stakeholders: nearbyStakeholders,
+    loading: nearbyLoading,
+    formatDistance
+  } = useNearbyStakeholders({
+    latitude: userLocation?.latitude,
+    longitude: userLocation?.longitude,
+    radiusMeters,
+    projectId: currentProject?.id,
+    enabled: usePostGIS && !!userLocation
+  });
 
   const [viewMode, setViewMode] = useState<'stakeholders' | 'challenges' | 'sponsorship'>('stakeholders');
   const [selectedTypes, setSelectedTypes] = useState<string[]>(['citizen', 'business', 'government', 'ngo']);
@@ -275,8 +294,35 @@ export const useRegionalHub = () => {
     });
   };
 
+  // Convert PostGIS nearby results to StakeholderProfile format
+  const convertNearbyToProfiles = useCallback((nearby: NearbyStakeholder[]): StakeholderProfile[] => {
+    return nearby.map((s, index) => ({
+      id: s.id,
+      name: s.name,
+      type: s.user_role as StakeholderProfile['type'],
+      organization: s.organization || undefined,
+      location: s.location || currentProject?.region_name || '',
+      region: currentProject?.region_name || '',
+      city: s.location || currentProject?.region_name || '',
+      latitude: 0, // Not needed when using PostGIS - distance is pre-calculated
+      longitude: 0,
+      description: s.bio || t('regional.no_description'),
+      sustainabilityGoals: [],
+      avatar: s.avatar_url || "👤",
+      verified: true,
+      impactScore: 0,
+      isRegistered: true,
+      distanceMeters: s.distance_meters // Extra field for display
+    }));
+  }, [currentProject, t]);
+
+  // Use PostGIS results when available, otherwise fall back to regular stakeholders
+  const effectiveStakeholders = usePostGIS && userLocation && nearbyStakeholders.length > 0
+    ? convertNearbyToProfiles(nearbyStakeholders)
+    : stakeholders;
+
   // Filter profiles
-  let filteredProfiles = stakeholders.filter(p => selectedTypes.includes(p.type));
+  let filteredProfiles = effectiveStakeholders.filter(p => selectedTypes.includes(p.type));
   
   if (searchQuery) {
     filteredProfiles = filteredProfiles.filter(p => 
@@ -291,8 +337,8 @@ export const useRegionalHub = () => {
     viewMode,
     selectedTypes,
     searchQuery,
-    stakeholders,
-    loadingStakeholders,
+    stakeholders: effectiveStakeholders,
+    loadingStakeholders: usePostGIS ? (locationLoading || nearbyLoading) : loadingStakeholders,
     challenges,
     sponsorships,
     selectedChallengeForSponsorship,
@@ -303,6 +349,11 @@ export const useRegionalHub = () => {
     user,
     filteredProfiles,
     regionalChallenges: getRegionalChallenges(),
+
+    // PostGIS specific
+    userLocation,
+    isUsingPostGIS: usePostGIS && !!userLocation,
+    formatDistance,
 
     // Setters
     setViewMode,
