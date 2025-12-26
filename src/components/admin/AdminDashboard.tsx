@@ -137,8 +137,7 @@ const AdminDashboard = () => {
         } else {
           setHasAdminAccess(true);
         }
-      } catch (error) {
-        console.error('Error verifying admin access:', error);
+      } catch {
         toast({
           title: 'Hiba',
           description: 'Hiba történt az adminisztrátori jogosultságok ellenőrzése során.',
@@ -206,8 +205,8 @@ const AdminDashboard = () => {
             setDraftChallenges(draftResult.data as any);
             draftsCount = draftResult.data.length;
           }
-        } catch (e) {
-          console.error('Error loading drafts:', e);
+        } catch {
+          // Silent failure - drafts load is non-critical
         }
       }
 
@@ -225,8 +224,8 @@ const AdminDashboard = () => {
           setPendingChallenges(pendingResult.data as any);
           pendingCount = pendingResult.data.length;
         }
-      } catch (e) {
-        console.error('Error loading pending:', e);
+      } catch {
+        // Silent failure - pending load is non-critical
       }
 
       // Load stats
@@ -260,8 +259,8 @@ const AdminDashboard = () => {
             setActivePrograms(activeProgramsResult.data as any);
           }
         }
-      } catch (e) {
-        console.error('Error loading active programs:', e);
+      } catch {
+        // Silent failure - active programs load is non-critical
       }
       
       // Load draft challenges filtered by selected project
@@ -281,8 +280,8 @@ const AdminDashboard = () => {
             draftsCount = draftsResult.data.length;
           }
         }
-      } catch (e) {
-        console.error('Error loading drafts:', e);
+      } catch {
+        // Silent failure - drafts load is non-critical
       }
 
       setStats({
@@ -292,8 +291,7 @@ const AdminDashboard = () => {
         totalParticipants: participantsCount || 0
       });
 
-    } catch (error) {
-      console.error('Error loading data:', error);
+    } catch {
       toast({
         title: 'Hiba',
         description: 'Nem sikerült betölteni az adatokat',
@@ -319,8 +317,7 @@ const AdminDashboard = () => {
       });
 
       loadData();
-    } catch (error) {
-      console.error('Error approving challenge:', error);
+    } catch {
       toast({
         title: 'Hiba',
         description: 'Nem sikerült jóváhagyni a kihívást',
@@ -344,8 +341,7 @@ const AdminDashboard = () => {
       });
 
       loadData();
-    } catch (error) {
-      console.error('Error rejecting challenge:', error);
+    } catch {
       toast({
         title: 'Hiba',
         description: 'Nem sikerült elutasítani a kihívást',
@@ -427,7 +423,6 @@ const AdminDashboard = () => {
       setShowCreateProject(false);
       loadData();
     } catch (error: any) {
-      console.error('Error creating project:', error);
       toast({
         title: 'Hiba',
         description: error.message || 'Nem sikerült létrehozni a projektet',
@@ -451,8 +446,7 @@ const AdminDashboard = () => {
       });
 
       loadData();
-    } catch (error: any) {
-      console.error('Error updating project:', error);
+    } catch {
       toast({
         title: 'Hiba',
         description: 'Nem sikerült frissíteni a projektet',
@@ -495,8 +489,7 @@ const AdminDashboard = () => {
         title: 'Alapértelmezett projekt beállítva',
         description: 'Az új felhasználók automatikusan ehhez a projekthez kerülnek',
       });
-    } catch (error: any) {
-      console.error('Error setting default project:', error);
+    } catch {
       toast({
         title: 'Hiba',
         description: 'Nem sikerült beállítani az alapértelmezett projektet',
@@ -582,7 +575,6 @@ const AdminDashboard = () => {
       setShowCreateChallenge(false);
       loadData();
     } catch (error: any) {
-      console.error('Error creating challenge:', error);
       toast({
         title: 'Hiba',
         description: error.message || 'Nem sikerült létrehozni a kihívást',
@@ -606,8 +598,7 @@ const AdminDashboard = () => {
       });
 
       loadData();
-    } catch (error: any) {
-      console.error('Error publishing challenge:', error);
+    } catch {
       toast({
         title: 'Hiba',
         description: 'Nem sikerült közzétenni a kihívást',
@@ -655,7 +646,6 @@ const AdminDashboard = () => {
             });
 
           if (translationError) {
-            console.error(`Translation error for ${program.id}:`, translationError);
             errorCount++;
             continue;
           }
@@ -669,13 +659,11 @@ const AdminDashboard = () => {
             .eq('id', program.id);
 
           if (updateError) {
-            console.error(`Update error for ${program.id}:`, updateError);
             errorCount++;
           } else {
             successCount++;
           }
-        } catch (err) {
-          console.error(`Error processing ${program.id}:`, err);
+        } catch {
           errorCount++;
         }
       }
@@ -687,8 +675,7 @@ const AdminDashboard = () => {
 
       // Refresh the programs list
       loadData();
-    } catch (error) {
-      console.error('Translation error:', error);
+    } catch {
       toast({
         title: "Hiba",
         description: "A fordítás során hiba történt.",

@@ -516,7 +516,7 @@ const UnifiedCommunityHub = () => {
                 <ForumCard 
                   key={forum.id} 
                   forum={forum} 
-                  onViewForum={(id) => console.log('View forum:', id)}
+                  onViewForum={() => {}}
                 />
               ))}
             </div>

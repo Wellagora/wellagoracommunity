@@ -69,7 +69,7 @@ const InteractiveFeatures = () => {
   }, []);
 
   const handleLike = (activityId: number) => {
-    console.log("Liked activity:", activityId);
+    // Like functionality - to be implemented
   };
 
   const handleShare = (activity: typeof liveActivity[0]) => {

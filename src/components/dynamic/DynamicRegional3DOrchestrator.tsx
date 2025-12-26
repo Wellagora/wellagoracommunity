@@ -163,8 +163,8 @@ const DynamicRegional3DOrchestrator: React.FC<DynamicRegional3DOrchestratorProps
         setRegionalData(data);
         setSelectedStakeholder(null);
         adjustCameraForRegion(selectedRegion);
-      } catch (error) {
-        console.error('Failed to load regional data:', error);
+      } catch {
+        // Silent failure - regional data load is non-critical
       } finally {
         setLoading(false);
       }
@@ -191,8 +191,8 @@ const DynamicRegional3DOrchestrator: React.FC<DynamicRegional3DOrchestratorProps
             }
           };
         });
-      } catch (error) {
-        console.error('Failed to update real-time data:', error);
+      } catch {
+        // Silent failure - real-time update is non-critical
       }
     }, 30000); // Update every 30 seconds
 

@@ -72,9 +72,6 @@ export const ProgramEditor = ({
     mode: 'onChange', // Validate on change to see errors immediately
   });
 
-  // DEBUG: Log component render and form state
-  console.log('[ProgramEditor] Rendered, programId:', programId, 'errors:', errors, 'isValid:', isValid);
-
   // Load program data
   useEffect(() => {
     const loadProgram = async () => {
@@ -112,8 +109,7 @@ export const ProgramEditor = ({
             setEndTime(format(endDateTime, 'HH:mm'));
           }
         }
-      } catch (error: any) {
-        console.error('Error loading program:', error);
+      } catch {
         toast.error('Hiba történt a program betöltésekor');
       } finally {
         setIsLoading(false);
@@ -156,8 +152,7 @@ export const ProgramEditor = ({
       
       setCurrentImageUrl(null);
       toast.success('Kép törölve');
-    } catch (error) {
-      console.error('Error removing image:', error);
+    } catch {
       toast.error('Hiba történt a kép törlése során');
     }
   };
@@ -166,17 +161,12 @@ export const ProgramEditor = ({
     setIsSubmitting(true);
 
     try {
-      console.log('[ProgramEditor] Submitting update for programId:', programId);
-
       // 1) Verify record exists (detect static/mock programs)
       const { data: existing, error: existingError } = await supabase
         .from('challenge_definitions')
         .select('id, title, project_id')
         .eq('id', programId)
         .maybeSingle();
-
-      console.log('[ProgramEditor] Existing record:', existing);
-      console.log('[ProgramEditor] Existing error:', existingError);
 
       if (existingError) throw existingError;
 
@@ -212,8 +202,8 @@ export const ProgramEditor = ({
             const pathParts = url.pathname.split('/');
             const oldFileName = pathParts[pathParts.length - 1];
             await supabase.storage.from('program-images').remove([oldFileName]);
-          } catch (e) {
-            console.error('[ProgramEditor] Error deleting old image:', e);
+          } catch {
+            // Silent failure - old image cleanup is non-critical
           }
         }
       }
@@ -246,16 +236,11 @@ export const ProgramEditor = ({
         image_url: imageUrl,
       };
 
-      console.log('[ProgramEditor] Update payload:', updateData);
-
       const { data: updatedRows, error: updateError } = await supabase
         .from('challenge_definitions')
         .update(updateData)
         .eq('id', programId)
         .select('id, title, project_id');
-
-      console.log('[ProgramEditor] Update result rows:', updatedRows);
-      console.log('[ProgramEditor] Update error:', updateError);
 
       if (updateError) throw updateError;
 
@@ -270,7 +255,6 @@ export const ProgramEditor = ({
         onSuccess();
       }
     } catch (error: any) {
-      console.error('[ProgramEditor] Error updating program:', error);
       toast.error(error?.message || 'Hiba történt a program frissítése során');
     } finally {
       setIsSubmitting(false);
@@ -543,7 +527,6 @@ export const ProgramEditor = ({
               type="submit" 
               disabled={isSubmitting} 
               className="flex-1"
-              onClick={() => console.log('[ProgramEditor] Save button clicked, form errors:', errors)}
             >
               {isSubmitting ? (
                 <>
