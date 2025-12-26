@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Navigation from "@/components/Navigation";
@@ -28,8 +28,11 @@ import ProgramCardButtons from "@/components/challenges/ProgramCardButtons";
 
 const ChallengesPage = () => {
   console.log('[ChallengesPage] Component rendering');
-  
+
   const navigate = useNavigate();
+  const location = useLocation();
+  const debug = new URLSearchParams(location.search).has('debug');
+
   const { user, loading, profile } = useAuth();
   const { t, language } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
@@ -108,6 +111,20 @@ const ChallengesPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {debug && (
+        <aside className="fixed bottom-4 right-4 z-50 w-[360px] max-w-[calc(100vw-2rem)] rounded-xl border border-border bg-card/95 backdrop-blur p-3 shadow-lg">
+          <div className="text-xs font-semibold text-foreground">/challenges debug panel</div>
+          <div className="mt-1 text-xs text-muted-foreground">path: {location.pathname}{location.search}</div>
+          <div className="mt-2 text-xs text-muted-foreground">language: {language}</div>
+          <div className="mt-2 text-xs text-muted-foreground">loading: {String(sponsorsLoading)} | total: {allChallenges.length}</div>
+          <div className="mt-2 max-h-40 overflow-auto rounded-md bg-background/40 p-2">
+            {allChallenges.slice(0, 10).map((c) => (
+              <div key={c.id} className="text-xs text-foreground truncate">{c.id}: {c.titleKey}</div>
+            ))}
+          </div>
+        </aside>
+      )}
+
       <Navigation />
       
       {/* Hero Section */}
