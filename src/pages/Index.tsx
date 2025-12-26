@@ -371,6 +371,9 @@ const Index = () => {
         {/* Featured Challenges */}
         <FeaturedChallenges />
 
+        {/* Upcoming Events - Right after Featured Challenges */}
+        <UpcomingEventsSection />
+
         {/* 5. CTA FOOTER SECTION */}
         <section className="py-20 md:py-28 bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 relative overflow-hidden">
           <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
