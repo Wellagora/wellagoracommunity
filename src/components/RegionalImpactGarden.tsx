@@ -144,54 +144,44 @@ export const RegionalImpactGarden = () => {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   viewport={{ once: true }}
                 >
-                  <Card className="relative overflow-hidden group hover:shadow-glow transition-all duration-300">
+                  <Card className="relative overflow-hidden group hover:shadow-glow transition-all duration-300 h-full">
                     <CardContent className="p-4 md:p-6">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center gap-2 md:gap-3">
-                          <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
-                            <MapPin className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-foreground text-sm md:text-base">{region.name}</h3>
-                          </div>
+                      <div className="flex items-center gap-2 md:gap-3 mb-4">
+                        <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
+                          <MapPin className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                         </div>
+                        <h3 className="font-semibold text-foreground text-sm md:text-base">{region.name}</h3>
                       </div>
 
-                      {/* Metrics Display */}
-                      <div className="grid grid-cols-3 gap-3 md:gap-4">
-                        <div className="text-center p-3 bg-primary/5 rounded-lg">
-                          <div className="flex items-center justify-center mb-1">
-                            <Users className="w-4 h-4 text-primary" />
-                          </div>
+                      {/* Metrics Display - Horizontal Row */}
+                      <div className="grid grid-cols-3 gap-2 md:gap-3">
+                        <div className="text-center p-2 md:p-3 bg-primary/5 rounded-lg">
+                          <Users className="w-4 h-4 text-primary mx-auto mb-1" />
                           <div className="text-lg md:text-xl font-bold text-primary">
                             {metrics.participants}
                           </div>
-                          <div className="text-xs text-muted-foreground">
-                            {t('impact_garden.participants') || 'Résztvevő'}
+                          <div className="text-xs text-muted-foreground truncate">
+                            {t('impact_garden.participants')}
                           </div>
                         </div>
 
-                        <div className="text-center p-3 bg-success/5 rounded-lg">
-                          <div className="flex items-center justify-center mb-1">
-                            <Target className="w-4 h-4 text-success" />
-                          </div>
+                        <div className="text-center p-2 md:p-3 bg-success/5 rounded-lg">
+                          <Target className="w-4 h-4 text-success mx-auto mb-1" />
                           <div className="text-lg md:text-xl font-bold text-success">
                             {metrics.programs}
                           </div>
-                          <div className="text-xs text-muted-foreground">
-                            {t('impact_garden.programs') || 'Program'}
+                          <div className="text-xs text-muted-foreground truncate">
+                            {t('impact_garden.programs')}
                           </div>
                         </div>
 
-                        <div className="text-center p-3 bg-accent/5 rounded-lg">
-                          <div className="flex items-center justify-center mb-1">
-                            <Calendar className="w-4 h-4 text-accent" />
-                          </div>
+                        <div className="text-center p-2 md:p-3 bg-accent/5 rounded-lg">
+                          <Calendar className="w-4 h-4 text-accent mx-auto mb-1" />
                           <div className="text-lg md:text-xl font-bold text-accent">
                             {metrics.events}
                           </div>
-                          <div className="text-xs text-muted-foreground">
-                            {t('impact_garden.events') || 'Esemény'}
+                          <div className="text-xs text-muted-foreground truncate">
+                            {t('impact_garden.events')}
                           </div>
                         </div>
                       </div>
@@ -206,18 +196,18 @@ export const RegionalImpactGarden = () => {
         <div className="text-center px-4">
           <Card className="inline-block bg-card/80 backdrop-blur-sm border-primary/30">
             <CardContent className="p-4 md:p-6">
-              <div className="flex flex-col sm:flex-row items-center gap-3 md:gap-4">
+              <div className="flex flex-col sm:flex-row items-center gap-3 md:gap-6">
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-                  <span className="text-xs md:text-sm text-muted-foreground">{t("impact_garden.legend_participants") || "Aktív résztvevők"}</span>
+                  <span className="text-xs md:text-sm text-muted-foreground">{t("impact_garden.legend_participants")}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Target className="w-4 h-4 md:w-5 md:h-5 text-success" />
-                  <span className="text-xs md:text-sm text-muted-foreground">{t("impact_garden.legend_programs") || "Futó programok"}</span>
+                  <span className="text-xs md:text-sm text-muted-foreground">{t("impact_garden.legend_programs")}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 md:w-5 md:h-5 text-accent" />
-                  <span className="text-xs md:text-sm text-muted-foreground">{t("impact_garden.legend_events") || "Események"}</span>
+                  <span className="text-xs md:text-sm text-muted-foreground">{t("impact_garden.legend_events")}</span>
                 </div>
               </div>
             </CardContent>
