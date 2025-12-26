@@ -36,22 +36,22 @@ export class ErrorBoundary extends Component<Props, State> {
         <div className="flex items-center justify-center min-h-screen bg-background p-4">
           <div className="max-w-md w-full text-center space-y-4">
             <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
-            <h1 className="text-2xl font-bold">Hoppá! Valami hiba történt</h1>
+            <h1 className="text-2xl font-bold text-foreground">Something went wrong</h1>
             <p className="text-muted-foreground">
-              Ne aggódj, dolgozunk a probléma megoldásán.
+              We're working on fixing the problem. Please try again.
             </p>
             {this.state.error && (
               <details className="text-left text-sm bg-muted p-4 rounded-lg">
-                <summary className="cursor-pointer font-medium">
-                  Technikai részletek
+                <summary className="cursor-pointer font-medium text-foreground">
+                  Technical details
                 </summary>
-                <p className="mt-2 text-muted-foreground">
+                <p className="mt-2 text-muted-foreground break-words">
                   {this.state.error.message}
                 </p>
               </details>
             )}
             <Button onClick={this.handleReset} className="mt-4">
-              Vissza a főoldalra
+              Return to Home
             </Button>
           </div>
         </div>

@@ -30,10 +30,10 @@ interface AuthContextType {
     lastName: string;
     role: string;
     organization?: string;
-  }) => Promise<{ error: any }>;
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
+  }) => Promise<{ error: Error | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
-  updateProfile: (updates: Partial<Profile>) => Promise<{ error: any }>;
+  updateProfile: (updates: Partial<Profile>) => Promise<{ error: Error | null }>;
   setProfile: React.Dispatch<React.SetStateAction<Profile | null>>;
 }
 

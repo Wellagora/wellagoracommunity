@@ -52,10 +52,11 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, onForgotPassword }: LoginFor
       });
       
       onSuccess?.();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorObj = error as { message?: string };
       toast({
         title: t('auth.login_failed'),
-        description: error.message || t('auth.invalid_credentials'),
+        description: errorObj.message || t('auth.invalid_credentials'),
         variant: "destructive",
       });
     }
