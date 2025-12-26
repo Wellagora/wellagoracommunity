@@ -51,16 +51,34 @@ const ChallengeDetailPage = () => {
       if (error) throw error;
 
       if (data) {
+        // Parse completed steps from evidence_data
+        const evidenceData = data.evidence_data as { completed_steps?: number[]; progress?: number } | null;
+        const completedSteps = evidenceData?.completed_steps || [];
+        const progress = evidenceData?.progress || (data.validation_status === "approved" ? 100 : 0);
+        
         setUserProgress({
           isParticipating: true,
           isCompleted: data.validation_status === "approved",
-          progress: 100,
-          completedSteps: []
+          progress,
+          completedSteps
         });
       }
     } catch (error) {
       console.error("Error loading progress:", error);
     }
+  };
+
+  const handleStepComplete = (stepIndex: number, completedSteps: number[]) => {
+    const totalSteps = challenge?.stepsKeys?.length || 1;
+    const newProgress = Math.round((completedSteps.length / totalSteps) * 100);
+    const allCompleted = completedSteps.length === totalSteps;
+    
+    setUserProgress(prev => ({
+      ...prev,
+      completedSteps,
+      progress: newProgress,
+      isCompleted: allCompleted
+    }));
   };
 
   if (!challenge) {
@@ -169,6 +187,7 @@ const ChallengeDetailPage = () => {
           userProgress={userProgress}
           onJoin={handleJoinChallenge}
           onComplete={handleCompleteChallenge}
+          onStepComplete={handleStepComplete}
         />
       </div>
     </div>
