@@ -50,7 +50,7 @@ const Index = () => {
           points: totalPoints,
         });
       } catch (error) {
-        console.error("Error fetching community stats:", error);
+        // Silent failure - community stats are not critical
       }
     };
 

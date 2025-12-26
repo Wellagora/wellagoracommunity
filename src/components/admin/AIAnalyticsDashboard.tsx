@@ -217,7 +217,7 @@ const AIAnalyticsDashboard = () => {
       }
 
     } catch (error) {
-      console.error('Error fetching analytics:', error);
+      // Silent failure - analytics are not critical
     } finally {
       setLoading(false);
     }
@@ -237,7 +237,7 @@ const AIAnalyticsDashboard = () => {
       if (error) throw error;
       setConversationMessages(messages || []);
     } catch (error) {
-      console.error('Error fetching conversation messages:', error);
+      // Silent failure
     } finally {
       setLoadingMessages(false);
     }

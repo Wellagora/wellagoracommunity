@@ -139,7 +139,6 @@ const SubscriptionsManager = () => {
         monthlyRevenue: Math.round(revenue),
       });
     } catch (error) {
-      console.error("Error loading subscriptions:", error);
       toast.error("Hiba az előfizetések betöltésekor");
     } finally {
       setLoading(false);
@@ -178,7 +177,6 @@ const SubscriptionsManager = () => {
       toast.success("Előfizetés aktiválva");
       loadData();
     } catch (error) {
-      console.error("Error activating subscription:", error);
       toast.error("Hiba az aktiválás során");
     }
   };
@@ -204,7 +202,6 @@ const SubscriptionsManager = () => {
       setSelectedSubscription(null);
       loadData();
     } catch (error) {
-      console.error("Error extending subscription:", error);
       toast.error("Hiba a hosszabbítás során");
     }
   };
@@ -221,7 +218,6 @@ const SubscriptionsManager = () => {
       toast.success("Előfizetés lemondva");
       loadData();
     } catch (error) {
-      console.error("Error cancelling subscription:", error);
       toast.error("Hiba a lemondás során");
     }
   };

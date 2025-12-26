@@ -149,7 +149,6 @@ const OrganizationsManager = () => {
 
       setOrganizations(mergedData);
     } catch (error) {
-      console.error("Error loading organizations:", error);
       toast.error("Hiba a szervezetek betöltése során");
     } finally {
       setLoading(false);
@@ -166,7 +165,6 @@ const OrganizationsManager = () => {
       if (error) throw error;
       setOrgMembers(data || []);
     } catch (error) {
-      console.error("Error loading org members:", error);
       toast.error("Hiba a tagok betöltése során");
     }
   };
@@ -221,7 +219,6 @@ const OrganizationsManager = () => {
       setSubscriptionDialogOpen(false);
       loadOrganizations();
     } catch (error) {
-      console.error("Error saving subscription:", error);
       toast.error("Hiba az előfizetés mentése során");
     }
   };
@@ -249,7 +246,6 @@ const OrganizationsManager = () => {
       setEditDialogOpen(false);
       loadOrganizations();
     } catch (error) {
-      console.error("Error updating organization:", error);
       toast.error("Hiba a szervezet frissítése során");
     }
   };

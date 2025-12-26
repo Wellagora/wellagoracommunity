@@ -64,7 +64,6 @@ export const useProgramActions = (programId: string): ProgramActionsResult => {
           .maybeSingle();
 
         if (error) {
-          console.error('Error checking sponsorship:', error);
           setSponsorshipStatus({
             isActiveSponsorship: false,
             isExpiredSponsorship: false,
@@ -95,7 +94,6 @@ export const useProgramActions = (programId: string): ProgramActionsResult => {
           });
         }
       } catch (error) {
-        console.error('Error checking sponsorship:', error);
         setSponsorshipStatus({
           isActiveSponsorship: false,
           isExpiredSponsorship: false,
@@ -127,16 +125,11 @@ export const useProgramActions = (programId: string): ProgramActionsResult => {
           .eq('challenge_id', programId)
           .maybeSingle();
 
-        if (error) {
-          console.error('Error checking participation:', error);
-        }
-
         setParticipationStatus({
           isParticipating: !!data,
           loading: false,
         });
       } catch (error) {
-        console.error('Error checking participation:', error);
         setParticipationStatus({
           isParticipating: false,
           loading: false,
