@@ -7,7 +7,7 @@ export default function AppLayout() {
       <header>
         <Navigation />
       </header>
-      <main className="pt-16">
+      <main className="pt-12 md:pt-14">
         <Outlet />
       </main>
     </div>
