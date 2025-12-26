@@ -12,11 +12,12 @@ import { initSentry } from "@/lib/sentry";
 import { LoadingFallback } from "@/components/LoadingFallback";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import AppLayout from "@/components/layout/AppLayout";
 import "./index.css";
 
 // Lazy load all pages for better performance
-const RegionalHub = lazy(() => import('./pages/RegionalHub'));
-const ExploreRegionPage = lazy(() => import('./pages/ExploreRegionPage'));
+const RegionalHub = lazy(() => import("./pages/RegionalHub"));
+const ExploreRegionPage = lazy(() => import("./pages/ExploreRegionPage"));
 const Index = lazy(() => import("@/pages/Index"));
 const AuthPage = lazy(() => import("@/pages/AuthPage"));
 const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
@@ -72,79 +73,111 @@ function App() {
                   <BrowserRouter>
                     <Suspense fallback={<LoadingFallback />}>
                       <Routes>
-                        <Route path="/" element={<Index />} />
+                        {/* Auth page intentionally without global nav */}
                         <Route path="/auth" element={<AuthPage />} />
-                        <Route path="/dashboard/handprint" element={<HandprintPage />} />
-                        <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
-                        <Route path="/dashboard" element={<DashboardPage />} />
-                        <Route path="/admin" element={
-                          <ProtectedRoute requireAdmin>
-                            <AdminDashboardPage />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/admin-dashboard" element={
-                          <ProtectedRoute requireAdmin>
-                            <AdminDashboardPage />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/regional-hub" element={<Navigate to="/community" replace />} />
-                        <Route path="/explore-region" element={<ExploreRegionPage />} />
-                        <Route path="/interactive-map" element={<Navigate to="/community" replace />} />
-                        <Route path="/matching" element={<Navigate to="/community" replace />} />
-                        <Route path="/dynamic-regional" element={<Navigate to="/community" replace />} />
-                        <Route path="/revolutionary" element={<Navigate to="/community" replace />} />
-                        <Route path="/community" element={<CommunityPage />} />
-                        <Route path="/ai-assistant" element={<AIAssistantPage />} />
-                        <Route path="/events" element={<EventsPage />} />
-                        <Route path="/challenges" element={<ChallengesPage />} />
-                        <Route path="/challenges/:challengeId" element={<ChallengeDetailPage />} />
-                        <Route path="/profile" element={
-                          <ProtectedRoute>
-                            <ProfilePage />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/profile/:userId" element={<ProfilePage />} />
-                        <Route path="/organization" element={
-                          <ProtectedRoute allowedRoles={['business', 'government', 'ngo']}>
-                            <OrganizationDashboard />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/organization/:organizationId" element={<PublicOrganizationPage />} />
-                        <Route path="/sponsor-dashboard" element={
-                          <ProtectedRoute allowedRoles={['business', 'government', 'ngo']}>
-                            <SponsorDashboardPage />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/browse-programs" element={<BrowseProgramsPage />} />
-                        <Route path="/project-admin/:projectId" element={
-                          <ProtectedRoute requireAdmin>
-                            <ProjectAdminPage />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/projects" element={<ProjectsListPage />} />
-                        <Route path="/join/:projectSlug" element={<JoinProjectPage />} />
-                        <Route path="/contact" element={<ContactPage />} />
-                        <Route path="/inbox" element={
-                          <ProtectedRoute>
-                            <InboxPage />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/translation-tool" element={
-                          <ProtectedRoute requireAdmin>
-                            <TranslationToolPage />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-                        <Route path="/impressum" element={<ImpressumPage />} />
-                        <Route path="/super-admin" element={
-                          <ProtectedRoute requireSuperAdmin>
-                            <SuperAdminPage />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/sponsor" element={<SponsorLandingPage />} />
-                        <Route path="/register/organization" element={<OrganizationRegisterPage />} />
-                        <Route path="/join/org/:inviteCode" element={<JoinOrganizationPage />} />
-                        <Route path="*" element={<NotFound />} />
+
+                        {/* All other pages share a single, top-level navigation layout */}
+                        <Route element={<AppLayout />}>
+                          <Route path="/" element={<Index />} />
+                          <Route path="/dashboard/handprint" element={<HandprintPage />} />
+                          <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
+                          <Route path="/dashboard" element={<DashboardPage />} />
+                          <Route
+                            path="/admin"
+                            element={
+                              <ProtectedRoute requireAdmin>
+                                <AdminDashboardPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/admin-dashboard"
+                            element={
+                              <ProtectedRoute requireAdmin>
+                                <AdminDashboardPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route path="/regional-hub" element={<Navigate to="/community" replace />} />
+                          <Route path="/explore-region" element={<ExploreRegionPage />} />
+                          <Route path="/interactive-map" element={<Navigate to="/community" replace />} />
+                          <Route path="/matching" element={<Navigate to="/community" replace />} />
+                          <Route path="/dynamic-regional" element={<Navigate to="/community" replace />} />
+                          <Route path="/revolutionary" element={<Navigate to="/community" replace />} />
+                          <Route path="/community" element={<CommunityPage />} />
+                          <Route path="/ai-assistant" element={<AIAssistantPage />} />
+                          <Route path="/events" element={<EventsPage />} />
+                          <Route path="/challenges" element={<ChallengesPage />} />
+                          <Route path="/challenges/:challengeId" element={<ChallengeDetailPage />} />
+                          <Route
+                            path="/profile"
+                            element={
+                              <ProtectedRoute>
+                                <ProfilePage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route path="/profile/:userId" element={<ProfilePage />} />
+                          <Route
+                            path="/organization"
+                            element={
+                              <ProtectedRoute allowedRoles={["business", "government", "ngo"]}>
+                                <OrganizationDashboard />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route path="/organization/:organizationId" element={<PublicOrganizationPage />} />
+                          <Route
+                            path="/sponsor-dashboard"
+                            element={
+                              <ProtectedRoute allowedRoles={["business", "government", "ngo"]}>
+                                <SponsorDashboardPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route path="/browse-programs" element={<BrowseProgramsPage />} />
+                          <Route
+                            path="/project-admin/:projectId"
+                            element={
+                              <ProtectedRoute requireAdmin>
+                                <ProjectAdminPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route path="/projects" element={<ProjectsListPage />} />
+                          <Route path="/join/:projectSlug" element={<JoinProjectPage />} />
+                          <Route path="/contact" element={<ContactPage />} />
+                          <Route
+                            path="/inbox"
+                            element={
+                              <ProtectedRoute>
+                                <InboxPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/translation-tool"
+                            element={
+                              <ProtectedRoute requireAdmin>
+                                <TranslationToolPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                          <Route path="/impressum" element={<ImpressumPage />} />
+                          <Route
+                            path="/super-admin"
+                            element={
+                              <ProtectedRoute requireSuperAdmin>
+                                <SuperAdminPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route path="/sponsor" element={<SponsorLandingPage />} />
+                          <Route path="/register/organization" element={<OrganizationRegisterPage />} />
+                          <Route path="/join/org/:inviteCode" element={<JoinOrganizationPage />} />
+                          <Route path="*" element={<NotFound />} />
+                        </Route>
                       </Routes>
                     </Suspense>
                     <Toaster />
