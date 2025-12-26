@@ -2529,5 +2529,12 @@
   "project_admin.success": "Sikeres",
   "project_admin.settings_updated": "Beállítások mentve",
   "profile.messaging_coming_soon": "Üzenetküldés hamarosan!",
-  "profile.messaging_coming_soon_description": "Az üzenetküldés funkció fejlesztés alatt áll."
+  "profile.messaging_coming_soon_description": "Az üzenetküldés funkció fejlesztés alatt áll.",
+
+  "community.coming_soon": "Hamarosan",
+  "community.forum_detail_coming_soon": "A fórum részletei hamarosan elérhetők lesznek.",
+
+  "challenges.active_participants": "Aktív résztvevők",
+  "challenges.completed_challenges": "Befejezett programok",
+  "challenges.community_events": "Közösségi események"
 }
