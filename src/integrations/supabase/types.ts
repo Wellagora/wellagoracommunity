@@ -1443,6 +1443,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_community_impact_stats: {
+        Args: { p_project_id?: string }
+        Returns: Json
+      }
       get_current_user_role: {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
