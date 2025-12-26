@@ -1664,6 +1664,8 @@
   "challenges.link_copied": "Link Copied!",
   "challenges.link_copied_desc": "Share link has been copied to clipboard",
   "challenges.share_whatsapp": "Share on WhatsApp",
+  "challenges.copy_link_whatsapp": "Copy Link + WhatsApp",
+  "challenges.whatsapp_blocked_hint": "Link copied! If WhatsApp doesn't open, paste manually.",
   "challenges.invite_by_email": "Invite by Email",
   "challenges.enter_emails": "Enter email addresses",
   "challenges.separate_emails": "Separate multiple emails with commas",

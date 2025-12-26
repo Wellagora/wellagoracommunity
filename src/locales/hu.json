@@ -1634,6 +1634,8 @@
   "challenges.link_copied": "Link másolva!",
   "challenges.link_copied_desc": "A megosztási link a vágólapra került",
   "challenges.share_whatsapp": "Megosztás WhatsAppon",
+  "challenges.copy_link_whatsapp": "Link másolása + WhatsApp",
+  "challenges.whatsapp_blocked_hint": "Link másolva! Ha a WhatsApp nem nyílik meg, illeszd be manuálisan.",
   "challenges.invite_by_email": "Meghívás emailben",
   "challenges.enter_emails": "Email címek megadása",
   "challenges.separate_emails": "Több email címet vesszővel válassz el",
