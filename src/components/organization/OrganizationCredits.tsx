@@ -76,12 +76,12 @@ const OrganizationCredits = () => {
         const { data, error } = await query;
 
         if (error) {
-          console.error('Error fetching transactions:', error);
+          // Silent error handling
         } else {
           setTransactions(data || []);
         }
       } catch (error) {
-        console.error('Error:', error);
+        // Silent error handling
       } finally {
         setTransactionsLoading(false);
       }

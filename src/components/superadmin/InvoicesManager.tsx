@@ -169,7 +169,6 @@ const InvoicesManager = () => {
         todayRevenue: todayTotal,
       });
     } catch (error) {
-      console.error("Error loading invoices:", error);
       toast.error("Hiba a számlák betöltésekor");
     } finally {
       setLoading(false);
@@ -244,7 +243,6 @@ const InvoicesManager = () => {
       if (error instanceof z.ZodError) {
         toast.error(error.issues[0].message);
       } else {
-        console.error("Error creating invoice:", error);
         toast.error("Hiba a számla létrehozásakor");
       }
     }
@@ -265,7 +263,6 @@ const InvoicesManager = () => {
       toast.success("Számla fizetettnek jelölve");
       loadData();
     } catch (error) {
-      console.error("Error marking invoice as paid:", error);
       toast.error("Hiba a számla frissítésekor");
     }
   };
@@ -281,7 +278,6 @@ const InvoicesManager = () => {
       toast.success("Számla törölve");
       loadData();
     } catch (error) {
-      console.error("Error deleting invoice:", error);
       toast.error("Hiba a számla törlésekor");
     }
   };

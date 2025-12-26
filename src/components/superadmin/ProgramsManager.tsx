@@ -155,7 +155,6 @@ const ProgramsManager = () => {
         completions: completionsCount || 0,
       });
     } catch (error) {
-      console.error("Error loading programs:", error);
       toast.error("Hiba a programok betöltésekor");
     } finally {
       setLoading(false);
@@ -175,7 +174,6 @@ const ProgramsManager = () => {
       toast.success(currentStatus ? "Program deaktiválva" : "Program aktiválva");
       loadData();
     } catch (error) {
-      console.error("Error toggling program status:", error);
       toast.error("Hiba a program státusz váltásakor");
     }
   };
@@ -216,7 +214,6 @@ const ProgramsManager = () => {
       toast.success("Program másolva");
       loadData();
     } catch (error) {
-      console.error("Error duplicating program:", error);
       toast.error("Hiba a program másolásakor");
     }
   };
@@ -235,7 +232,6 @@ const ProgramsManager = () => {
       toast.success("Program törölve");
       loadData();
     } catch (error) {
-      console.error("Error deleting program:", error);
       toast.error("Hiba a program törlésekor");
     }
   };

@@ -87,12 +87,12 @@ const OrganizationTeam = () => {
           .order('created_at', { ascending: true });
 
         if (error) {
-          console.error('Error fetching team members:', error);
+          // Silent error handling
         } else {
           setTeamMembers(data || []);
         }
       } catch (error) {
-        console.error('Error:', error);
+        // Silent error handling
       }
     };
 
@@ -116,12 +116,12 @@ const OrganizationTeam = () => {
           .order('created_at', { ascending: false });
 
         if (error) {
-          console.error('Error fetching invitations:', error);
+          // Silent error handling
         } else {
           setPendingInvitations(data || []);
         }
       } catch (error) {
-        console.error('Error:', error);
+        // Silent error handling
       } finally {
         setLoading(false);
       }
@@ -187,7 +187,6 @@ const OrganizationTeam = () => {
       setInviteMessage("");
       setInviteDialogOpen(false);
     } catch (error) {
-      console.error('Error creating invitation:', error);
       toast({
         title: "Hiba",
         description: "Nem sikerült elküldeni a meghívót",
@@ -215,7 +214,6 @@ const OrganizationTeam = () => {
       // Refresh list
       setPendingInvitations(prev => prev.filter(inv => inv.id !== invitationId));
     } catch (error) {
-      console.error('Error canceling invitation:', error);
       toast({
         title: "Hiba",
         description: "Nem sikerült visszavonni a meghívót",
