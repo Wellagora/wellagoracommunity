@@ -261,7 +261,6 @@ const OrganizationDashboard = () => {
           loading: false
         });
       } catch (error) {
-        console.error('Error loading metrics:', error);
         setMetrics(prev => ({ ...prev, loading: false }));
       }
     };
@@ -284,7 +283,6 @@ const OrganizationDashboard = () => {
 
       try {
         setCreatingOrg(true);
-        console.log("Creating organization:", profile.organization);
 
         // Create organization
         const { data: orgData, error: orgError } = await supabase
@@ -297,10 +295,7 @@ const OrganizationDashboard = () => {
           .select()
           .single();
 
-        if (orgError) {
-          console.error("Error creating organization:", orgError);
-          return;
-        }
+        if (orgError) return;
 
         // Update profile with organization_id
         const { error: profileError } = await supabase
@@ -308,15 +303,11 @@ const OrganizationDashboard = () => {
           .update({ organization_id: orgData.id })
           .eq('id', profile.id);
 
-        if (profileError) {
-          console.error("Error updating profile:", profileError);
-          return;
-        }
+        if (profileError) return;
 
-        console.log("Organization created successfully:", orgData.id);
         window.location.reload(); // Reload to get updated profile
       } catch (error) {
-        console.error("Error in organization creation:", error);
+        // Silent fail
       } finally {
         setCreatingOrg(false);
       }

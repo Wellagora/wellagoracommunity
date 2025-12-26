@@ -245,7 +245,6 @@ const ProfilePage = () => {
         description: "A profilkép sikeresen feltöltve",
       });
     } catch (error) {
-      console.error('Error uploading avatar:', error);
       toast({
         title: "Hiba",
         description: "A profilkép feltöltése sikertelen",
@@ -292,7 +291,6 @@ const ProfilePage = () => {
         description: "A logó sikeresen feltöltve",
       });
     } catch (error) {
-      console.error('Error uploading logo:', error);
       toast({
         title: "Hiba",
         description: "A logó feltöltése sikertelen",
@@ -333,7 +331,6 @@ const ProfilePage = () => {
 
       if (error) {
         setError("Hiba történt a profil mentése során: " + error.message);
-        console.error("Profile update error:", error);
         return;
       }
 
@@ -349,7 +346,6 @@ const ProfilePage = () => {
           .eq('id', (profile as any).organization_id);
 
         if (orgError) {
-          console.error("Organization update error:", orgError);
           setError("A profil mentve, de a szervezeti adatok mentése sikertelen: " + orgError.message);
           return;
         }
@@ -375,23 +371,12 @@ const ProfilePage = () => {
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError("Hiba történt a profil mentése során");
-      console.error("Profile update error:", err);
     } finally {
       setIsLoading(false);
     }
   };
 
   const isOrganization = profile?.user_role !== "citizen";
-
-  // Debug logging
-  useEffect(() => {
-    console.log('Profile Page Debug:', { 
-      authLoading, 
-      hasUser: !!user, 
-      hasProfile: !!profile,
-      profileData: profile 
-    });
-  }, [authLoading, user, profile]);
 
   if (authLoading) {
     return (
@@ -402,7 +387,6 @@ const ProfilePage = () => {
   }
 
   if (!user) {
-    console.error('No user found');
     navigate('/auth');
     return null;
   }

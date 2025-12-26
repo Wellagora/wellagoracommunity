@@ -64,7 +64,7 @@ const ChallengeDetailPage = () => {
         });
       }
     } catch (error) {
-      console.error("Error loading progress:", error);
+      // Silent fail - UI handles no progress state
     }
   };
 
