@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ForumCard from "./ForumCard";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { 
+import { useToast } from "@/hooks/use-toast";
+import {
   MessageCircle, 
   Users, 
   Calendar, 
@@ -22,6 +24,8 @@ import {
 const CommunityHub = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { t } = useLanguage();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   // Mock data - will be replaced with Supabase data
   const forums = [
@@ -181,8 +185,11 @@ const CommunityHub = () => {
   ];
 
   const handleViewForum = (forumId: string) => {
-    // TODO: Navigate to forum detail page
-    console.log("Viewing forum:", forumId);
+    // Forum detail page doesn't exist yet, show coming soon toast
+    toast({
+      title: t('community.coming_soon') || "Coming Soon",
+      description: t('community.forum_detail_coming_soon') || `Forum "${forumId}" details will be available soon!`,
+    });
   };
 
   return (
