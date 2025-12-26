@@ -18,6 +18,7 @@ export interface Event {
   project_id: string | null;
   challenge_id: string | null;
   organization_id: string | null;
+  created_by: string | null;
 }
 
 export interface EventRsvp {
@@ -28,8 +29,21 @@ export interface EventRsvp {
   created_at: string;
 }
 
+export interface CreateEventData {
+  title: string;
+  description?: string | null;
+  start_date: string;
+  end_date?: string | null;
+  location_name?: string | null;
+  village?: string | null;
+  max_participants?: number | null;
+  is_public?: boolean;
+  organization_id?: string | null;
+  project_id?: string | null;
+}
+
 export function useEvents() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const queryClient = useQueryClient();
 
   const getUpcomingEvents = (limit: number = 5) => {
@@ -109,6 +123,29 @@ export function useEvents() {
     },
   });
 
+  const createEvent = useMutation({
+    mutationFn: async (eventData: CreateEventData) => {
+      if (!user?.id) throw new Error('User not authenticated');
+
+      const { data, error } = await supabase
+        .from('events')
+        .insert({
+          ...eventData,
+          created_by: user.id,
+          organization_id: eventData.organization_id || profile?.organization_id || null,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data as Event;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['upcomingEvents'] });
+      queryClient.invalidateQueries({ queryKey: ['organizationEvents'] });
+    },
+  });
+
   const getEventsByVillage = (village: string) => {
     return useQuery({
       queryKey: ['eventsByVillage', village],
@@ -127,10 +164,31 @@ export function useEvents() {
     });
   };
 
+  const getOrganizationEvents = (organizationId: string | null) => {
+    return useQuery({
+      queryKey: ['organizationEvents', organizationId],
+      queryFn: async () => {
+        if (!organizationId) return [];
+        
+        const { data, error } = await supabase
+          .from('events')
+          .select('*')
+          .eq('organization_id', organizationId)
+          .order('start_date', { ascending: true });
+
+        if (error) throw error;
+        return data as Event[];
+      },
+      enabled: !!organizationId,
+    });
+  };
+
   return {
     getUpcomingEvents,
     getUserRsvps,
     rsvpToEvent,
+    createEvent,
     getEventsByVillage,
+    getOrganizationEvents,
   };
 }

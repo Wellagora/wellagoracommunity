@@ -16,12 +16,15 @@ import {
   CreditCard,
   Coins,
   Receipt,
-  LayoutDashboard
+  LayoutDashboard,
+  CalendarPlus
 } from "lucide-react";
 import { useOrgDashboard } from "@/hooks/useOrgDashboard";
 import { OrgDashboardHeader } from "@/components/organization/dashboard/OrgDashboardHeader";
 import { OrgOverviewTab } from "@/components/organization/dashboard/OrgOverviewTab";
 import { OrgSponsorshipsTab } from "@/components/organization/dashboard/OrgSponsorshipsTab";
+import { CreateEventDialog } from "@/components/events/CreateEventDialog";
+import { Button } from "@/components/ui/button";
 
 const OrganizationDashboard = () => {
   const {
@@ -98,12 +101,22 @@ const OrganizationDashboard = () => {
       <Navigation />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 xl:py-16">
-        <OrgDashboardHeader 
-          profile={profile}
-          roleInfo={roleInfo}
-          partnerships={partnerships}
-          t={t}
-        />
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <OrgDashboardHeader 
+            profile={profile}
+            roleInfo={roleInfo}
+            partnerships={partnerships}
+            t={t}
+          />
+          <CreateEventDialog 
+            trigger={
+              <Button className="gap-2 shrink-0">
+                <CalendarPlus className="w-4 h-4" />
+                {t('events.create')}
+              </Button>
+            }
+          />
+        </div>
 
         {/* Main Content Tabs */}
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6 sm:space-y-8">
