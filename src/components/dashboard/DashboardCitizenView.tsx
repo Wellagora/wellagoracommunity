@@ -9,7 +9,8 @@ import { ReferralWidget } from "@/components/referral/ReferralWidget";
 import { ShareImpactCard } from "@/components/referral/ShareImpactCard";
 import { PersonalImpactGarden } from "./PersonalImpactGarden";
 import { EventsWidget } from "./EventsWidget";
-import { Target, Users, BarChart3, Calendar } from "lucide-react";
+import { MyEventsWidget } from "./MyEventsWidget";
+import { Target, BarChart3, Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -70,9 +71,10 @@ export const DashboardCitizenView = memo(({ currentRole }: DashboardCitizenViewP
         />
       </div>
 
-      {/* Events Widget */}
-      <div className="mb-6">
+      {/* Events Section - Two columns: Upcoming Events + My Events */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
         <EventsWidget />
+        <MyEventsWidget />
       </div>
 
       <Tabs defaultValue="programs" className="space-y-6">

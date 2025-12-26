@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   Heart,
   Eye,
+  Calendar,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -123,6 +124,7 @@ const Navigation = () => {
     () => [
       { path: "/", label: t("nav.home"), icon: Home },
       { path: "/challenges", label: t("nav.challenges"), icon: Target },
+      { path: "/events", label: t("nav.events"), icon: Calendar },
       { path: "/community", label: t("nav.community"), icon: UsersIcon },
       ...(user && profile && dashboardPath ? [{ path: dashboardPath, label: t("nav.dashboard"), icon: Home }] : []),
       { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
