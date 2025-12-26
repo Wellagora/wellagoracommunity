@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import RegisterForm from "./RegisterForm";
 import LoginForm from "./LoginForm";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -11,11 +13,31 @@ interface AuthModalProps {
 
 const AuthModal = ({ isOpen, onClose, initialMode = "register" }: AuthModalProps) => {
   const [mode, setMode] = useState<"login" | "register" | "forgot">(initialMode);
+  const navigate = useNavigate();
+  const { profile } = useAuth();
 
   const handleSuccess = () => {
     onClose();
-    // TODO: Redirect to dashboard or refresh user state
+    
+    // Redirect based on user role
+    const userRole = profile?.user_role;
+    
+    if (userRole === 'business' || userRole === 'government' || userRole === 'ngo') {
+      navigate('/organization');
+    } else {
+      // Default to dashboard for citizens and unknown roles
+      navigate('/dashboard');
+    }
   };
+
+  // Also check for super_admin role via user_roles table
+  useEffect(() => {
+    if (profile?.id) {
+      // The profile.user_role only covers citizen/business/government/ngo
+      // For super_admin redirect, we'd need to check user_roles table
+      // But for simplicity, super_admins can navigate manually from dashboard
+    }
+  }, [profile]);
 
   const renderContent = () => {
     switch (mode) {

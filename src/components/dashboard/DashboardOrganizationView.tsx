@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import Dashboard from "./Dashboard";
 import PointsSystem from "@/components/gamification/PointsSystem";
 import CreativeGamification from "@/components/gamification/CreativeGamification";
-import HandprintWidget from "./HandprintWidget";
+
 import ForestGrowth from "./ForestGrowth";
 import { ProjectLeaderboard } from "./ProjectLeaderboard";
 import { ProjectActivities } from "./ProjectActivities";
@@ -75,10 +75,9 @@ export const DashboardOrganizationView = memo(({
         <TabsContent value="progress" className="animate-fade-in">
           {currentRole === "citizen" ? (
             <>
-              {/* Forest Growth & Handprint - Only for citizens */}
-              <div className="grid md:grid-cols-2 gap-6 mb-8">
+              {/* Progress view for citizens - simplified without environmental metrics */}
+              <div className="mb-8">
                 <ForestGrowth />
-                <HandprintWidget />
               </div>
               <div className="mt-8 text-center">
                 <Button 
@@ -110,8 +109,8 @@ export const DashboardOrganizationView = memo(({
                     </div>
                     <div>
                       <h4 className="font-semibold text-lg text-foreground">Energia Mester</h4>
-                      <p className="text-muted-foreground">30%-kal csökkented az energiafogyasztásod!</p>
-                      <div className="text-sm text-success font-medium mt-1">🌱 45.2kg CO₂ megtakarítás</div>
+                      <p className="text-muted-foreground">Aktívan részt veszel a közösségi programokban!</p>
+                      <div className="text-sm text-success font-medium mt-1">🌱 +500 pont szerzett</div>
                     </div>
                   </div>
                 </CardContent>
@@ -124,11 +123,11 @@ export const DashboardOrganizationView = memo(({
                     <h4 className="text-lg font-semibold mb-4 text-foreground">🎯 Havi Cél Előrehaladás</h4>
                     <div className="space-y-3">
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">CO₂ csökkentés</span>
-                        <span className="font-medium text-foreground">67/100 kg</span>
+                        <span className="text-muted-foreground">Kihívások teljesítve</span>
+                        <span className="font-medium text-foreground">67/100</span>
                       </div>
                       <Progress value={67} className="h-3" />
-                      <div className="text-xs text-muted-foreground">33 kg-ig eléred a következő szintet!</div>
+                      <div className="text-xs text-muted-foreground">33 kihívásig eléred a következő szintet!</div>
                     </div>
                   </CardContent>
                 </Card>

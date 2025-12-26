@@ -5,7 +5,7 @@ import { Progress } from '@/components/ui/progress';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Coins, TrendingUp, TrendingDown, Wallet, Leaf, Users, Award } from 'lucide-react';
+import { Coins, TrendingUp, TrendingDown, Wallet, Users, Award } from 'lucide-react';
 import { getSponsorDashboardMetrics, type SponsorDashboardMetrics } from '@/services/SponsorImpactService';
 
 interface SponsorCredits {
@@ -143,16 +143,16 @@ const SponsorCreditsOverview = () => {
           <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                {t('sponsor.co2_savings')}
+                {t('sponsor.active_sponsorships')}
               </CardTitle>
-              <Leaf className="h-4 w-4 text-primary" />
+              <TrendingUp className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-primary">
-                {metrics.total_co2_saved.toFixed(1)} kg
+                {metrics.active_sponsorships}
               </div>
               <p className="text-xs text-muted-foreground">
-                ≈ {metrics.trees_equivalent.toFixed(1)} {t('sponsor.trees')}
+                {metrics.total_sponsorships} {t('sponsor.total')}
               </p>
             </CardContent>
           </Card>
