@@ -160,15 +160,34 @@ export const ProgramEditor = ({
 
   const onSubmit = async (data: ProgramFormData) => {
     setIsSubmitting(true);
-    
+
     try {
+      console.log('[ProgramEditor] Submitting update for programId:', programId);
+
+      // 1) Verify record exists (detect static/mock programs)
+      const { data: existing, error: existingError } = await supabase
+        .from('challenge_definitions')
+        .select('id, title, project_id')
+        .eq('id', programId)
+        .maybeSingle();
+
+      console.log('[ProgramEditor] Existing record:', existing);
+      console.log('[ProgramEditor] Existing error:', existingError);
+
+      if (existingError) throw existingError;
+
+      if (!existing) {
+        toast.error('Program not found in database (might be static data).');
+        return;
+      }
+
       let imageUrl = currentImageUrl;
-      
+
       // Upload new image if provided
       if (uploadedImage) {
         const fileExt = uploadedImage.name.split('.').pop();
         const fileName = `${programId}-${Date.now()}.${fileExt}`;
-        
+
         const { error: uploadError } = await supabase.storage
           .from('program-images')
           .upload(fileName, uploadedImage);
@@ -179,9 +198,9 @@ export const ProgramEditor = ({
         const { data: { publicUrl } } = supabase.storage
           .from('program-images')
           .getPublicUrl(fileName);
-        
+
         imageUrl = publicUrl;
-        
+
         // Delete old image if exists
         if (currentImageUrl) {
           try {
@@ -190,21 +209,21 @@ export const ProgramEditor = ({
             const oldFileName = pathParts[pathParts.length - 1];
             await supabase.storage.from('program-images').remove([oldFileName]);
           } catch (e) {
-            console.error('Error deleting old image:', e);
+            console.error('[ProgramEditor] Error deleting old image:', e);
           }
         }
       }
 
       // Combine date and time for scheduled events
-      let startDateTime = null;
-      let endDateTime = null;
-      
+      let startDateTime: Date | null = null;
+      let endDateTime: Date | null = null;
+
       if (!isContinuous && startDate) {
         const [startHour, startMinute] = startTime.split(':');
         startDateTime = new Date(startDate);
         startDateTime.setHours(parseInt(startHour), parseInt(startMinute), 0, 0);
       }
-      
+
       if (!isContinuous && endDate) {
         const [endHour, endMinute] = endTime.split(':');
         endDateTime = new Date(endDate);
@@ -222,22 +241,33 @@ export const ProgramEditor = ({
         location: data.location || null,
         image_url: imageUrl,
       };
-      
-      const { error } = await supabase
+
+      console.log('[ProgramEditor] Update payload:', updateData);
+
+      const { data: updatedRows, error: updateError } = await supabase
         .from('challenge_definitions')
         .update(updateData)
-        .eq('id', programId);
+        .eq('id', programId)
+        .select('id, title, project_id');
 
-      if (error) throw error;
+      console.log('[ProgramEditor] Update result rows:', updatedRows);
+      console.log('[ProgramEditor] Update error:', updateError);
+
+      if (updateError) throw updateError;
+
+      if (!updatedRows || updatedRows.length === 0) {
+        toast.error('Update succeeded but no row was returned/updated. Check RLS and ID match.');
+        return;
+      }
 
       toast.success('Program sikeresen frissítve!');
-      
+
       if (onSuccess) {
         onSuccess();
       }
     } catch (error: any) {
-      console.error('Error updating program:', error);
-      toast.error(error.message || 'Hiba történt a program frissítése során');
+      console.error('[ProgramEditor] Error updating program:', error);
+      toast.error(error?.message || 'Hiba történt a program frissítése során');
     } finally {
       setIsSubmitting(false);
     }
