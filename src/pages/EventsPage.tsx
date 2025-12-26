@@ -137,10 +137,10 @@ const EventsPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background flex flex-col pt-16">
+    <div className="min-h-screen bg-background flex flex-col">
       <Navigation />
 
-      <main className="flex-1">
+      <main className="flex-1 pt-16">
         <div className="container mx-auto px-4 py-8">
           {/* Header */}
           <div className="mb-8">

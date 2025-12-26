@@ -1281,6 +1281,8 @@
   "common.language_code": "en",
   "common.back": "Back",
   "common.back_to_dashboard": "Back to Dashboard",
+  "common.search": "Search",
+  "common.all": "All",
   "common.trees": "Trees",
   "common.details": "Details",
   "auth.login_required": "Sign in required",

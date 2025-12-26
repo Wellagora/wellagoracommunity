@@ -4,10 +4,12 @@ import { StoryOfTheWeek } from "@/components/StoryOfTheWeek";
 
 const CommunityPage = () => {
   return (
-    <div className="min-h-screen bg-background pt-16">
+    <div className="min-h-screen bg-background">
       <Navigation />
-      <UnifiedCommunityHub />
-      <StoryOfTheWeek />
+      <main className="pt-16">
+        <UnifiedCommunityHub />
+        <StoryOfTheWeek />
+      </main>
     </div>
   );
 };

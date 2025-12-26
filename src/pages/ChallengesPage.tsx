@@ -103,10 +103,10 @@ const ChallengesPage = () => {
   // }
 
   return (
-    <div className="min-h-screen bg-background pt-16">
+    <div className="min-h-screen bg-background">
       <Navigation />
-      
-      {/* Hero Section */}
+
+      <main className="pt-16">
       <section className="relative py-6 sm:py-10 lg:py-12 bg-card/20 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -314,6 +314,7 @@ const ChallengesPage = () => {
           </Card3D>
         )}
       </div>
+      </main>
     </div>
   );
 };
