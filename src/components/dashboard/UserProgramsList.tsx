@@ -79,7 +79,6 @@ export function UserProgramsList() {
 
       setProjects(projectsData || []);
     } catch (error) {
-      console.error("Error loading projects:", error);
     } finally {
       setLoading(false);
     }
@@ -132,7 +131,6 @@ export function UserProgramsList() {
 
       setParticipants(mergedData);
     } catch (error) {
-      console.error("Error loading participants:", error);
     } finally {
       setLoadingParticipants(false);
     }

@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import ChallengeDetail from "@/components/challenges/ChallengeDetail";
 import Navigation from "@/components/Navigation";
-import { getChallengeById, challenges } from "@/data/challenges";
+import { Challenge } from "@/data/challenges";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProject } from "@/contexts/ProjectContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -19,16 +19,59 @@ const ChallengeDetailPage = () => {
   const { t } = useLanguage();
   const { toast } = useToast();
   
-  // Get challenge data by ID
-  const challenge = challengeId ? getChallengeById(challengeId) : null;
+  const [challenge, setChallenge] = useState<Challenge | null>(null);
+  const [loading, setLoading] = useState(true);
   
-  // Mock user progress - will be fetched from Supabase
   const [userProgress, setUserProgress] = useState({
     isParticipating: false,
     isCompleted: false,
     progress: 0,
     completedSteps: [] as number[]
   });
+
+  // Fetch challenge from database
+  useEffect(() => {
+    const fetchChallenge = async () => {
+      if (!challengeId) {
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('challenge_definitions')
+        .select('*')
+        .eq('id', challengeId)
+        .maybeSingle();
+
+      if (!error && data) {
+        // Transform database record to Challenge format
+        const transformedChallenge: Challenge = {
+          id: data.id,
+          titleKey: data.title, // Use title directly as titleKey since ChallengeDetail translates it
+          descriptionKey: data.description,
+          longDescriptionKey: data.description,
+          category: (data.category || 'community') as Challenge['category'],
+          difficulty: (data.difficulty || 'beginner') as Challenge['difficulty'],
+          durationKey: data.duration_days ? `${data.duration_days} ${t('challenges.days')}` : t('challenges.duration.ongoing'),
+          pointsReward: data.points_base || 0,
+          participants: 0,
+          completionRate: 0,
+          stepsKeys: [],
+          tipsKeys: [],
+          participants_preview: [],
+          isContinuous: data.is_continuous ?? true,
+          startDate: data.start_date || undefined,
+          endDate: data.end_date || undefined,
+          location: data.location || undefined,
+          imageUrl: data.image_url || undefined,
+        };
+        setChallenge(transformedChallenge);
+      }
+      setLoading(false);
+    };
+
+    fetchChallenge();
+  }, [challengeId, t]);
 
   // Load user progress
   useEffect(() => {
@@ -51,7 +94,6 @@ const ChallengeDetailPage = () => {
       if (error) throw error;
 
       if (data) {
-        // Parse completed steps from evidence_data
         const evidenceData = data.evidence_data as { completed_steps?: number[]; progress?: number } | null;
         const completedSteps = evidenceData?.completed_steps || [];
         const progress = evidenceData?.progress || (data.validation_status === "approved" ? 100 : 0);
@@ -80,6 +122,21 @@ const ChallengeDetailPage = () => {
       isCompleted: allCompleted
     }));
   };
+
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+        <Navigation />
+        <div className="container mx-auto px-4 py-8 flex justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </div>
+    );
+  }
 
   if (!challenge) {
     return (
@@ -126,7 +183,6 @@ const ChallengeDetailPage = () => {
     }
 
     try {
-      // Get user's profile to link to organization
       const { data: profileData } = await supabase
         .from("profiles")
         .select("organization_id")
@@ -161,16 +217,11 @@ const ChallengeDetailPage = () => {
     }
   };
 
-  const handleGoBack = () => {
-    navigate(-1);
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 xl:py-12">
-        {/* Back Button */}
         <div className="mb-4 sm:mb-6 xl:mb-8">
           <Button 
             variant="ghost" 
