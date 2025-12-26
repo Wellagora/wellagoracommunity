@@ -2031,6 +2031,7 @@
   "project_admin.no_description": "No description",
   "project_admin.save_settings": "Save changes",
   "project_admin.settings_updated": "Project settings updated!",
+  "project_admin.program_updated": "Program successfully updated!",
   "project_admin.settings_update_error": "Failed to update project settings",
   "project_admin.error": "Error",
   "project_admin.success": "Success",

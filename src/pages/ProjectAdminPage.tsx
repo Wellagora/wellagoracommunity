@@ -1377,9 +1377,10 @@ export default function ProjectAdminPage() {
           {showProgramEditor && (
             <ProgramEditor 
               programId={showProgramEditor}
-              onSuccess={() => {
+              onSuccess={async () => {
                 setShowProgramEditor(null);
-                loadPrograms();
+                await loadPrograms();
+                toast({ title: t('project_admin.success'), description: t('project_admin.program_updated') });
               }}
               onCancel={() => setShowProgramEditor(null)}
             />

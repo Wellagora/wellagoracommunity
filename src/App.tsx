@@ -88,6 +88,7 @@ function App() {
                         <Route path="/challenges" element={<ChallengesPage />} />
                         <Route path="/challenges/:challengeId" element={<ChallengeDetailPage />} />
                         <Route path="/profile" element={<ProfilePage />} />
+                        <Route path="/profile/:userId" element={<ProfilePage />} />
                         <Route path="/organization" element={<OrganizationDashboard />} />
                         <Route path="/organization/:organizationId" element={<PublicOrganizationPage />} />
                         <Route path="/sponsor-dashboard" element={<SponsorDashboardPage />} />

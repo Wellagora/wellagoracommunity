@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Navigation from "@/components/Navigation";
@@ -24,7 +24,9 @@ import { useToast } from "@/hooks/use-toast";
 const ProfilePage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const viewingUserId = searchParams.get('userId');
+  const { userId: paramUserId } = useParams<{ userId: string }>();
+  // Support both /profile/:userId and /profile?userId=xxx
+  const viewingUserId = paramUserId || searchParams.get('userId');
   const { user, profile, updateProfile, loading: authLoading } = useAuth();
   const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
