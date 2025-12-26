@@ -159,8 +159,8 @@ export function UpcomingEventsSection() {
                       </div>
 
                       <Link to="/events" className="block mt-4">
-                        <Button variant="outline" size="sm" className="w-full">
-                          {t("common.details") || "Részletek"}
+                        <Button variant="secondary" size="sm" className="w-full">
+                          {t("common.details")}
                         </Button>
                       </Link>
                     </CardContent>

@@ -25,7 +25,7 @@ const UnifiedCommunityHub = () => {
   const handleBack = () => setActiveView("overview");
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background">
       <CommunityHeader
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
