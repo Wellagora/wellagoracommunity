@@ -1,4 +1,14 @@
 {
+  "share_impact": {
+    "title": "Share your impact",
+    "my_impact": "My impact",
+    "challenges_completed": "Challenges completed",
+    "points_earned": "Points",
+    "co2_saved": "CO2 saved",
+    "join_me": "Join me!",
+    "share_button": "Share",
+    "anonymous": "Anonymous user"
+  },
   "hero.impact_badge": "Impact Platform",
   "hero.headline_part1": "Your Impact Matters.",
   "hero.headline_part2": "Act Locally.",
