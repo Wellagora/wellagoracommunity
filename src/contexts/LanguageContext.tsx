@@ -57,11 +57,12 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
     // Then try nested object lookup (e.g., { nav: { home: "..." } })
     const segments = key.split('.');
-    let value: any = langTranslations;
+    let value: Record<string, unknown> | string | undefined = langTranslations as Record<string, unknown>;
 
     for (const segment of segments) {
-      value = value?.[segment];
-      if (value === undefined || value === null) {
+      if (value && typeof value === 'object' && segment in value) {
+        value = (value as Record<string, unknown>)[segment] as Record<string, unknown> | string | undefined;
+      } else {
         logger.debug('Translation missing', { key, language }, 'Language');
         return key;
       }

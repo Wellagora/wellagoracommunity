@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useViewMode } from '@/contexts/ViewModeContext';
 import { supabase } from '@/integrations/supabase/client';
+import type { SponsorshipRecord } from '@/types/database';
 
 interface SponsorshipStatus {
   isActiveSponsorship: boolean;
   isExpiredSponsorship: boolean;
-  sponsorship: any | null;
+  sponsorship: SponsorshipRecord | null;
   loading: boolean;
 }
 
