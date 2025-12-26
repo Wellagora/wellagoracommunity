@@ -27,6 +27,8 @@ import { loadChallengesFromDatabase } from "@/services/ChallengeSponsorshipServi
 import ProgramCardButtons from "@/components/challenges/ProgramCardButtons";
 
 const ChallengesPage = () => {
+  console.log('[ChallengesPage] Component rendering');
+  
   const navigate = useNavigate();
   const { user, loading, profile } = useAuth();
   const { t, language } = useLanguage();
@@ -37,10 +39,13 @@ const ChallengesPage = () => {
 
   // Load ALL active challenges from database (no project filtering for public page)
   useEffect(() => {
+    console.log('[ChallengesPage] useEffect triggered, language:', language);
     const loadChallenges = async () => {
       setSponsorsLoading(true);
+      console.log('[ChallengesPage] Calling loadChallengesFromDatabase...');
       // Pass undefined to load ALL active challenges, not filtered by project
       const dbChallenges = await loadChallengesFromDatabase(undefined, language);
+      console.log('[ChallengesPage] Got challenges:', dbChallenges?.length, dbChallenges?.map(c => ({ id: c.id, title: c.titleKey })));
       setAllChallenges(dbChallenges);
       setSponsorsLoading(false);
     };
