@@ -147,6 +147,8 @@ export const loadChallengesFromDatabase = async (
   language: string = 'hu'
 ): Promise<Challenge[]> => {
   try {
+    console.log('[loadChallengesFromDatabase] Called with:', { projectId, language });
+    
     // Build the query - always load challenges, optionally filter by project
     let query = supabase
       .from('challenge_definitions')
@@ -159,6 +161,12 @@ export const loadChallengesFromDatabase = async (
     }
 
     const { data: dbChallenges, error } = await query;
+
+    console.log('[loadChallengesFromDatabase] Raw DB results:', {
+      count: dbChallenges?.length,
+      error: error?.message,
+      challenges: dbChallenges?.map(c => ({ id: c.id, title: c.title, project_id: c.project_id }))
+    });
 
     if (error) {
       logger.error('Error fetching challenges', error, 'Sponsorship');
