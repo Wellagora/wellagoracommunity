@@ -58,7 +58,6 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
         });
 
         if (error) {
-          console.error("Error loading team members:", error);
           toast({
             title: t('organization.error'),
             description: t('organization.failed_to_send'),
@@ -80,7 +79,7 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
           }));
         setTeamMembers(filteredMembers as TeamMember[]);
       } catch (error) {
-        console.error("Error:", error);
+        // Silent error handling
       } finally {
         setLoading(false);
       }
@@ -102,14 +101,11 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
           .eq('project_id', currentProject?.id || '')
           .limit(10);
 
-        if (error) {
-          console.error("Error loading challenges:", error);
-          return;
-        }
+        if (error) return;
 
         setChallenges(data || []);
       } catch (error) {
-        console.error("Error:", error);
+        // Silent error handling
       }
     };
 
@@ -182,11 +178,10 @@ export const MobilizeTeamModal = ({ open, onOpenChange }: MobilizeTeamModalProps
       setSelectedChallenge("");
       setSelectedMembers([]);
       setMessage("");
-    } catch (error: any) {
-      console.error("Error sending invitations:", error);
+    } catch (error: unknown) {
       toast({
         title: t('organization.error'),
-        description: error.message || t('organization.failed_to_send'),
+        description: error instanceof Error ? error.message : t('organization.failed_to_send'),
         variant: "destructive",
       });
     } finally {
