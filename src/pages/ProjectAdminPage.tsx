@@ -237,11 +237,16 @@ export default function ProjectAdminPage() {
   const loadPrograms = async () => {
     if (!projectId) return;
     
+    console.log('loadPrograms called for projectId:', projectId);
+    
     const { data, error } = await supabase
       .from("challenge_definitions")
       .select("*")
       .eq("project_id", projectId)
       .order("created_at", { ascending: false });
+    
+    console.log('Programs loaded:', data);
+    if (error) console.log('Load programs error:', error);
     
     if (error) return;
     

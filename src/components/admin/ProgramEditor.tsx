@@ -211,26 +211,37 @@ export const ProgramEditor = ({
         endDateTime.setHours(parseInt(endHour), parseInt(endMinute), 0, 0);
       }
 
-      const { error } = await supabase
+      console.log('Updating program with id:', programId);
+      
+      const updateData = {
+        title: data.title,
+        description: data.description,
+        points_base: data.points_base,
+        duration_days: data.duration_days,
+        is_continuous: isContinuous,
+        start_date: startDateTime?.toISOString() || null,
+        end_date: endDateTime?.toISOString() || null,
+        location: data.location || null,
+        image_url: imageUrl,
+      };
+      
+      console.log('Update data:', updateData);
+      
+      const { data: updateResult, error } = await supabase
         .from('challenge_definitions')
-        .update({
-          title: data.title,
-          description: data.description,
-          points_base: data.points_base,
-          duration_days: data.duration_days,
-          is_continuous: isContinuous,
-          start_date: startDateTime?.toISOString(),
-          end_date: endDateTime?.toISOString(),
-          location: data.location || null,
-          image_url: imageUrl,
-        })
-        .eq('id', programId);
+        .update(updateData)
+        .eq('id', programId)
+        .select();
+
+      console.log('Update result:', updateResult);
+      console.log('Update error:', error);
 
       if (error) throw error;
 
       toast.success('Program sikeresen frissítve!');
       
       if (onSuccess) {
+        console.log('Calling onSuccess callback');
         onSuccess();
       }
     } catch (error: any) {
