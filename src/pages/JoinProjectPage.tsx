@@ -103,8 +103,8 @@ export default function JoinProjectPage() {
         });
         navigate("/dashboard");
       }
-    } catch (error: any) {
-      console.error("Error checking membership:", error);
+    } catch {
+      // Silent failure - membership check is non-critical
     }
   };
 

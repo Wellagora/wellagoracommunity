@@ -99,8 +99,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
         };
 
         setRegions([hungaryRegion, ...projectRegions]);
-      } catch (error) {
-        console.error('Error fetching regions:', error);
+      } catch {
         // Fallback to basic Hungary region
         setRegions([{
           id: 'hungary',

@@ -127,11 +127,10 @@ export default function ProjectDetailView({
               }
             });
 
-          if (translationError) {
-            console.error(`Translation error for ${program.id}:`, translationError);
-            errorCount++;
-            continue;
-          }
+        if (translationError) {
+          errorCount++;
+          continue;
+        }
 
           const translations = translationData?.translations || {};
 
@@ -142,13 +141,11 @@ export default function ProjectDetailView({
             .eq('id', program.id);
 
           if (updateError) {
-            console.error(`Update error for ${program.id}:`, updateError);
             errorCount++;
           } else {
             successCount++;
           }
-        } catch (err) {
-          console.error(`Error processing ${program.id}:`, err);
+        } catch {
           errorCount++;
         }
       }
@@ -159,8 +156,7 @@ export default function ProjectDetailView({
 
       // Refresh the programs list
       onRefresh();
-    } catch (error) {
-      console.error('Translation error:', error);
+    } catch {
       toast.error("Hiba", {
         description: "A fordítás során hiba történt.",
       });

@@ -117,8 +117,8 @@ export const OrganizationChallengeStats = () => {
         totalCompletions: completions?.length || 0,
         totalPoints
       });
-    } catch (error) {
-      console.error("Error loading stats:", error);
+    } catch {
+      // Silent failure
     } finally {
       setLoading(false);
     }

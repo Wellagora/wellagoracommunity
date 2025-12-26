@@ -101,13 +101,12 @@ export const SubscriptionPlanSelector: React.FC<SubscriptionPlanSelectorProps> =
           .order('display_order', { ascending: true });
 
         if (error) {
-          console.error('Error fetching plans:', error);
           return;
         }
 
         setPlans(data || []);
-      } catch (err) {
-        console.error('Error fetching plans:', err);
+      } catch {
+        // Silent failure
       } finally {
         setLoading(false);
       }
