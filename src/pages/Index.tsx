@@ -20,36 +20,40 @@ import Footer from "@/components/Footer";
 const Index = () => {
   const { t } = useLanguage();
   const { user, profile, loading } = useAuth();
-  // Real community stats from database
+  // Real community stats from database via server-side RPC
   const [communityStats, setCommunityStats] = useState({
     members: 0,
     completions: 0,
     points: 0,
+    activeChallenges: 0,
   });
 
   useEffect(() => {
     const fetchCommunityStats = async () => {
       try {
-        const { count: membersCount } = await supabase.from("profiles").select("*", { count: "exact", head: true });
-
-        const { count: completionsCount } = await supabase
-          .from("challenge_completions")
-          .select("*", { count: "exact", head: true })
-          .eq("validation_status", "approved");
-
-        const { data: pointsData } = await supabase
-          .from("challenge_completions")
-          .select("points_earned")
-          .eq("validation_status", "approved");
-
-        const totalPoints = pointsData?.reduce((sum, item) => sum + (item.points_earned || 0), 0) || 0;
-
-        setCommunityStats({
-          members: membersCount || 0,
-          completions: completionsCount || 0,
-          points: totalPoints,
+        // Use server-side RPC for efficient aggregation
+        const { data, error } = await supabase.rpc('get_community_impact_stats', {
+          p_project_id: null // Global stats, can pass project ID for filtered stats
         });
+
+        if (error) throw error;
+
+        if (data) {
+          const stats = data as { 
+            total_members: number; 
+            total_completions: number; 
+            total_points: number; 
+            active_challenges: number; 
+          };
+          setCommunityStats({
+            members: stats.total_members || 0,
+            completions: stats.total_completions || 0,
+            points: stats.total_points || 0,
+            activeChallenges: stats.active_challenges || 0,
+          });
+        }
       } catch (error) {
+        console.error('Failed to fetch community stats:', error);
         // Silent failure - community stats are not critical
       }
     };
