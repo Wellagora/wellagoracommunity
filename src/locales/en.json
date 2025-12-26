@@ -1282,6 +1282,7 @@
   "common.back": "Back",
   "common.back_to_dashboard": "Back to Dashboard",
   "common.trees": "Trees",
+  "common.details": "Details",
   "auth.login_required": "Sign in required",
   "auth.login": "Sign In",
   "auth.welcome_back": "Welcome back!",

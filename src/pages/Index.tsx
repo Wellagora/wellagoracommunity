@@ -42,7 +42,7 @@ const Index = () => {
       <>
         <div className="min-h-screen bg-background flex flex-col">
           <Navigation />
-
+          <main className="pt-16 flex-1">
           {/* 1. SIMPLIFIED HERO - Welcome + Single CTA */}
           <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5">
             <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
@@ -127,6 +127,7 @@ const Index = () => {
               <RegionalImpactMap />
             </div>
           </section>
+          </main>
         </div>
 
         <Footer />
@@ -139,9 +140,9 @@ const Index = () => {
     <>
       <div className="min-h-screen bg-background flex flex-col">
         <Navigation />
-
+        <main className="flex-1">
         {/* 1. HERO SECTION - Full viewport with hero image */}
-        <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden">
           {/* Hero Background Image */}
           <div className="absolute inset-0 z-0">
             <img
@@ -403,6 +404,7 @@ const Index = () => {
             </motion.div>
           </div>
         </section>
+        </main>
       </div>
 
       <Footer />

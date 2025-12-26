@@ -1248,6 +1248,7 @@
   "common.error": "Fehler",
   "common.trees": "Bäume",
   "common.tons": "Tonnen",
+  "common.details": "Details",
   "auth.login_required": "Anmeldung erforderlich",
   "auth.login": "Anmelden",
   "auth.welcome_back": "Willkommen zurück!",
