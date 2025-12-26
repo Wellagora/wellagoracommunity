@@ -199,7 +199,7 @@ const ChallengeDetailPage = () => {
         project_id: currentProject?.id || null,
         organization_id: profileData?.organization_id || null,
         completion_type: "manual",
-        validation_status: "in_progress",
+        validation_status: "pending",
         impact_data: {},
         evidence_data: { completed_steps: [], progress: 0 },
         points_earned: 0,
