@@ -1623,6 +1623,7 @@
   "project_admin.no_description": "Keine Beschreibung",
   "project_admin.save_settings": "Änderungen speichern",
   "project_admin.settings_updated": "Projekteinstellungen aktualisiert!",
+  "project_admin.program_updated": "Programm erfolgreich aktualisiert!",
   "project_admin.settings_update_error": "Aktualisierung der Projekteinstellungen fehlgeschlagen",
   "project_admin.error": "Fehler",
   "project_admin.success": "Erfolgreich",
