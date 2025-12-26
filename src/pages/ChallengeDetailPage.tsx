@@ -166,12 +166,65 @@ const ChallengeDetailPage = () => {
       return;
     }
 
-    setUserProgress(prev => ({ ...prev, isParticipating: true }));
-    
-    toast({
-      title: t('challenges.joined_success'),
-      description: t('challenges.joined_success_desc'),
-    });
+    try {
+      // Check if already participating
+      const { data: existingRecord } = await supabase
+        .from("challenge_completions")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("challenge_id", challengeId)
+        .maybeSingle();
+
+      if (existingRecord) {
+        // Already participating, just update local state
+        setUserProgress(prev => ({ ...prev, isParticipating: true }));
+        toast({
+          title: t('challenges.already_joined'),
+          description: t('challenges.already_joined_desc'),
+        });
+        return;
+      }
+
+      // Get user's profile data for organization_id
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("organization_id")
+        .eq("id", user.id)
+        .single();
+
+      // Insert participation record into challenge_completions
+      const { error } = await supabase.from("challenge_completions").insert({
+        user_id: user.id,
+        challenge_id: challengeId,
+        project_id: currentProject?.id || null,
+        organization_id: profileData?.organization_id || null,
+        completion_type: "participation",
+        validation_status: "in_progress",
+        impact_data: {},
+        evidence_data: { completed_steps: [], progress: 0 },
+        points_earned: 0,
+      });
+
+      if (error) {
+        console.error('Failed to join challenge:', error);
+        throw error;
+      }
+
+      // Update local state on success
+      setUserProgress(prev => ({ ...prev, isParticipating: true }));
+      
+      toast({
+        title: t('challenges.joined_success'),
+        description: t('challenges.joined_success_desc'),
+      });
+    } catch (error: any) {
+      console.error('Error joining challenge:', error);
+      toast({
+        title: t('common.error'),
+        description: error.message || t('challenges.join_failed'),
+        variant: "destructive",
+      });
+    }
   };
 
   const handleCompleteChallenge = async (challengeId: string) => {
