@@ -136,10 +136,20 @@ const InviteFriendsModal = ({
   };
 
   const handleShareWhatsApp = () => {
-    const text = encodeURIComponent(
-      `${t('challenges.join_me_challenge')} "${challengeTitle}"!\n\n${inviteLink}`
-    );
-    window.open(`https://wa.me/?text=${text}`, '_blank');
+    const text = `${t('challenges.join_me_challenge')} "${challengeTitle}"!\n\n${inviteLink}`;
+    
+    // Copy to clipboard first (always works)
+    navigator.clipboard.writeText(text);
+    
+    // Try to open WhatsApp
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    
+    // Show toast that link is copied (in case WhatsApp is blocked)
+    toast({
+      title: t('challenges.link_copied'),
+      description: t('challenges.whatsapp_blocked_hint'),
+    });
   };
 
   return (
@@ -191,7 +201,7 @@ const InviteFriendsModal = ({
             className="w-full bg-[#25D366] hover:bg-[#20BA5A] text-white"
           >
             <MessageCircle className="w-4 h-4 mr-2" />
-            {t('challenges.share_whatsapp')}
+            {t('challenges.copy_link_whatsapp')}
           </Button>
 
           {/* Email Invites */}

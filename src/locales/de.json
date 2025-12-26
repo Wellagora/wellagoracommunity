@@ -1366,6 +1366,8 @@
   "challenges.link_copied": "Link kopiert!",
   "challenges.link_copied_desc": "Der Link wurde in die Zwischenablage kopiert",
   "challenges.share_whatsapp": "Auf WhatsApp teilen",
+  "challenges.copy_link_whatsapp": "Link kopieren + WhatsApp",
+  "challenges.whatsapp_blocked_hint": "Link kopiert! Falls WhatsApp nicht öffnet, manuell einfügen.",
   "challenges.invite_by_email": "Per E-Mail einladen",
   "challenges.enter_emails": "E-Mail-Adressen eingeben",
   "challenges.separate_emails": "Mehrere E-Mails mit Kommas trennen",
