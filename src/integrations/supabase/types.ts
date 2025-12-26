@@ -560,7 +560,6 @@ export type Database = {
       }
       events: {
         Row: {
-          challenge_id: string | null
           created_at: string | null
           created_by: string | null
           current_participants: number | null
@@ -576,6 +575,7 @@ export type Database = {
           longitude: number | null
           max_participants: number | null
           organization_id: string | null
+          program_id: string | null
           project_id: string | null
           recurrence: string | null
           start_date: string
@@ -584,7 +584,6 @@ export type Database = {
           village: string | null
         }
         Insert: {
-          challenge_id?: string | null
           created_at?: string | null
           created_by?: string | null
           current_participants?: number | null
@@ -600,6 +599,7 @@ export type Database = {
           longitude?: number | null
           max_participants?: number | null
           organization_id?: string | null
+          program_id?: string | null
           project_id?: string | null
           recurrence?: string | null
           start_date: string
@@ -608,7 +608,6 @@ export type Database = {
           village?: string | null
         }
         Update: {
-          challenge_id?: string | null
           created_at?: string | null
           created_by?: string | null
           current_participants?: number | null
@@ -624,6 +623,7 @@ export type Database = {
           longitude?: number | null
           max_participants?: number | null
           organization_id?: string | null
+          program_id?: string | null
           project_id?: string | null
           recurrence?: string | null
           start_date?: string
