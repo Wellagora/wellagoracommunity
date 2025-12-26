@@ -1253,6 +1253,8 @@
   "challenges.duration.21_days": "21 Tage",
   "challenges.duration.30_days": "30 Tage",
   "challenges.duration.12_weeks": "12 Wochen",
+  "challenges.day": "Tag",
+  "challenges.days": "Tage",
   "challenges.reusableContainers.title": "Wiederverwendbare Behälter Woche",
   "challenges.reusableContainers.description": "Wechsle zu wiederverwendbaren Behältern und reduziere Einwegplastik",
   "challenges.reusableContainers.steps.bottle": "Besorge eine wiederverwendbare Wasserflasche",

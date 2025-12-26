@@ -59,7 +59,7 @@ const ChallengeHeader = ({
         <div className="flex flex-wrap items-center gap-2 mb-3">
           <Badge variant="outline" className="flex items-center space-x-1 text-xs">
             <Clock className="w-3 h-3" />
-            <span>{t(durationKey)}</span>
+            <span>{durationKey}</span>
           </Badge>
         </div>
         
