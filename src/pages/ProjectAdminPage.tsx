@@ -130,6 +130,7 @@ export default function ProjectAdminPage() {
   const [programFilter, setProgramFilter] = useState("all");
   const [analyticsRange, setAnalyticsRange] = useState("30");
   const [settingsSubTab, setSettingsSubTab] = useState("analytics");
+  const [programsRefreshKey, setProgramsRefreshKey] = useState(0);
   
   // Modals
   const [showProgramCreator, setShowProgramCreator] = useState(false);
@@ -237,16 +238,11 @@ export default function ProjectAdminPage() {
   const loadPrograms = async () => {
     if (!projectId) return;
     
-    console.log('loadPrograms called for projectId:', projectId);
-    
     const { data, error } = await supabase
       .from("challenge_definitions")
       .select("*")
       .eq("project_id", projectId)
       .order("created_at", { ascending: false });
-    
-    console.log('Programs loaded:', data);
-    if (error) console.log('Load programs error:', error);
     
     if (error) return;
     
@@ -554,7 +550,7 @@ export default function ProjectAdminPage() {
       if (programFilter === "planned") return !p.is_active && (!p.start_date || new Date(p.start_date) > new Date());
       return true;
     });
-  }, [programs, programFilter]);
+  }, [programs, programFilter, programsRefreshKey]);
 
   const topMembers = useMemo(() => {
     return [...members].sort((a, b) => (b.points || 0) - (a.points || 0)).slice(0, 10);
@@ -1374,7 +1370,9 @@ export default function ProjectAdminPage() {
       </Dialog>
 
       {/* Program Editor Modal */}
-      <Dialog open={!!showProgramEditor} onOpenChange={() => setShowProgramEditor(null)}>
+      <Dialog open={!!showProgramEditor} onOpenChange={(open) => {
+        if (!open) setShowProgramEditor(null);
+      }}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Program szerkesztése</DialogTitle>
@@ -1383,8 +1381,14 @@ export default function ProjectAdminPage() {
             <ProgramEditor 
               programId={showProgramEditor}
               onSuccess={async () => {
+                // Close modal first
                 setShowProgramEditor(null);
+                // Clear programs to force re-render
+                setPrograms([]);
+                // Reload from database
                 await loadPrograms();
+                // Increment refresh key to force useMemo recalculation
+                setProgramsRefreshKey(prev => prev + 1);
                 toast({ title: t('project_admin.success'), description: t('project_admin.program_updated') });
               }}
               onCancel={() => setShowProgramEditor(null)}

@@ -80,7 +80,7 @@ export const ProgramEditor = ({
           .from('challenge_definitions')
           .select('*')
           .eq('id', programId)
-          .single();
+          .maybeSingle();
 
         if (error) throw error;
 
@@ -211,8 +211,6 @@ export const ProgramEditor = ({
         endDateTime.setHours(parseInt(endHour), parseInt(endMinute), 0, 0);
       }
 
-      console.log('Updating program with id:', programId);
-      
       const updateData = {
         title: data.title,
         description: data.description,
@@ -225,23 +223,16 @@ export const ProgramEditor = ({
         image_url: imageUrl,
       };
       
-      console.log('Update data:', updateData);
-      
-      const { data: updateResult, error } = await supabase
+      const { error } = await supabase
         .from('challenge_definitions')
         .update(updateData)
-        .eq('id', programId)
-        .select();
-
-      console.log('Update result:', updateResult);
-      console.log('Update error:', error);
+        .eq('id', programId);
 
       if (error) throw error;
 
       toast.success('Program sikeresen frissítve!');
       
       if (onSuccess) {
-        console.log('Calling onSuccess callback');
         onSuccess();
       }
     } catch (error: any) {
