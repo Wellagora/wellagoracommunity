@@ -126,7 +126,7 @@ const ChallengeDetailPage = () => {
   };
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate('/challenges');
   };
 
   if (loading) {
@@ -198,7 +198,7 @@ const ChallengeDetailPage = () => {
         challenge_id: challengeId,
         project_id: currentProject?.id || null,
         organization_id: profileData?.organization_id || null,
-        completion_type: "participation",
+        completion_type: "manual",
         validation_status: "in_progress",
         impact_data: {},
         evidence_data: { completed_steps: [], progress: 0 },
