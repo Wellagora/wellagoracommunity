@@ -20,6 +20,7 @@ import {
 import { Challenge } from "@/data/challenges";
 import { loadChallengesFromDatabase } from "@/services/ChallengeSponsorshipService";
 import ProgramCardButtons from "@/components/challenges/ProgramCardButtons";
+import { ChallengeGridSkeleton } from "@/components/ui/skeletons";
 
 const ChallengesPage = () => {
   const navigate = useNavigate();
@@ -134,8 +135,12 @@ const ChallengesPage = () => {
         </Card3D>
 
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
-          {filteredChallenges.map((challenge, index) => (
+        {/* Show skeleton while loading */}
+        {sponsorsLoading ? (
+          <ChallengeGridSkeleton count={4} />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
+            {filteredChallenges.map((challenge, index) => (
             <Card3D 
               key={challenge.id} 
               className="bg-card/50 backdrop-blur-sm border border-border/50 hover:bg-card/70 transition-all duration-300 hover:shadow-glow hover:scale-105 animate-slide-in-3d overflow-hidden"
@@ -281,9 +286,10 @@ const ChallengesPage = () => {
                   onSponsor={() => navigate(`/challenges/${challenge.id}?action=sponsor`)}
                 />
               </CardContent>
-            </Card3D>
-          ))}
-        </div>
+              </Card3D>
+            ))}
+          </div>
+        )}
 
         {filteredChallenges.length === 0 && !sponsorsLoading && (
           <Card3D className="text-center py-16 bg-card/50 backdrop-blur-sm">

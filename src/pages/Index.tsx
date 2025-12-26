@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCommunityStats } from "@/hooks/useCommunityStats";
 import { motion } from "framer-motion";
 import { Users, Award, TrendingUp, Trophy, Sparkles, ArrowDown, ChevronRight } from "lucide-react";
 
@@ -15,51 +14,15 @@ import { CommunityImpactCounter } from "@/components/CommunityImpactCounter";
 import { StoryOfTheWeek } from "@/components/StoryOfTheWeek";
 import { RegionalImpactGarden } from "@/components/RegionalImpactGarden";
 import { RegionalImpactMap } from "@/components/dashboard/RegionalImpactMap";
+import { StatsBarSkeleton } from "@/components/ui/skeletons";
 import Footer from "@/components/Footer";
 
 const Index = () => {
   const { t } = useLanguage();
   const { user, profile, loading } = useAuth();
-  // Real community stats from database via server-side RPC
-  const [communityStats, setCommunityStats] = useState({
-    members: 0,
-    completions: 0,
-    points: 0,
-    activeChallenges: 0,
-  });
-
-  useEffect(() => {
-    const fetchCommunityStats = async () => {
-      try {
-        // Use server-side RPC for efficient aggregation
-        const { data, error } = await supabase.rpc('get_community_impact_stats', {
-          p_project_id: null // Global stats, can pass project ID for filtered stats
-        });
-
-        if (error) throw error;
-
-        if (data) {
-          const stats = data as { 
-            total_members: number; 
-            total_completions: number; 
-            total_points: number; 
-            active_challenges: number; 
-          };
-          setCommunityStats({
-            members: stats.total_members || 0,
-            completions: stats.total_completions || 0,
-            points: stats.total_points || 0,
-            activeChallenges: stats.active_challenges || 0,
-          });
-        }
-      } catch (error) {
-        console.error('Failed to fetch community stats:', error);
-        // Silent failure - community stats are not critical
-      }
-    };
-
-    fetchCommunityStats();
-  }, []);
+  
+  // Use the centralized hook for community stats
+  const { stats: communityStats, loading: statsLoading } = useCommunityStats();
   // Show loading state while checking authentication
   if (loading) {
     return (
@@ -110,38 +73,42 @@ const Index = () => {
           {/* 3. STORY OF THE WEEK - Compact */}
           <StoryOfTheWeek />
 
-          {/* 4. COMMUNITY STATS - Compact horizontal bar */}
+          {/* 4. COMMUNITY STATS - Compact horizontal bar with skeleton */}
           <section className="py-8 bg-card/30">
             <div className="container mx-auto px-4">
-              <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Users className="w-5 h-5 text-primary" />
+              {statsLoading ? (
+                <StatsBarSkeleton />
+              ) : (
+                <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Users className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <div className="text-xl font-bold text-foreground">{communityStats.members}</div>
+                      <div className="text-xs text-muted-foreground">{t("index.stat_members")}</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-xl font-bold text-foreground">{communityStats.members}</div>
-                    <div className="text-xs text-muted-foreground">{t("index.stat_members")}</div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+                      <Award className="w-5 h-5 text-accent" />
+                    </div>
+                    <div>
+                      <div className="text-xl font-bold text-foreground">{communityStats.completions}</div>
+                      <div className="text-xs text-muted-foreground">{t("index.stat_completions")}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center">
+                      <TrendingUp className="w-5 h-5 text-success" />
+                    </div>
+                    <div>
+                      <div className="text-xl font-bold text-foreground">{communityStats.points.toLocaleString()}</div>
+                      <div className="text-xs text-muted-foreground">{t("index.stat_points")}</div>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
-                    <Award className="w-5 h-5 text-accent" />
-                  </div>
-                  <div>
-                    <div className="text-xl font-bold text-foreground">{communityStats.completions}</div>
-                    <div className="text-xs text-muted-foreground">{t("index.stat_completions")}</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center">
-                    <TrendingUp className="w-5 h-5 text-success" />
-                  </div>
-                  <div>
-                    <div className="text-xl font-bold text-foreground">{communityStats.points.toLocaleString()}</div>
-                    <div className="text-xs text-muted-foreground">{t("index.stat_points")}</div>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
           </section>
 

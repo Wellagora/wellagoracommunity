@@ -5,6 +5,7 @@ import { Users, Sprout } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import StakeholderFilters from '@/components/matching/StakeholderFilters';
 import ModernRegionalVisualization from '@/components/matching/ModernRegionalVisualization';
+import { ProfileGridSkeleton, MapSkeleton } from '@/components/ui/skeletons';
 import type { StakeholderProfile } from '@/hooks/useRegionalHub';
 
 interface RegionalStakeholderListProps {
@@ -34,8 +35,19 @@ export const RegionalStakeholderList = ({
 
   if (loading) {
     return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">{t('common.loading')}</p>
+      <div className="space-y-6">
+        <StakeholderFilters
+          selectedTypes={selectedTypes}
+          onTypeToggle={onTypeToggle}
+          selectedRegion={regionName}
+          onRegionChange={() => {}}
+          regions={[]}
+          searchQuery={searchQuery}
+          onSearchChange={onSearchChange}
+          totalCount={0}
+        />
+        <MapSkeleton />
+        <ProfileGridSkeleton count={4} />
       </div>
     );
   }
