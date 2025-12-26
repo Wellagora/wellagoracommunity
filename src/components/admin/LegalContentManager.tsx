@@ -437,7 +437,6 @@ const LegalContentManager = () => {
 
       loadSections();
     } catch (error: any) {
-      console.error('Error importing content:', error);
       toast({
         title: t('admin.error'),
         description: error.message,

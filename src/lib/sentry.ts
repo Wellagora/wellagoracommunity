@@ -6,7 +6,6 @@ export const initSentry = () => {
   const sentryEnabled = import.meta.env.VITE_ENABLE_SENTRY === 'true';
   
   if (!sentryDsn || !sentryEnabled) {
-    console.log('Sentry monitoring disabled');
     return;
   }
 
@@ -38,9 +37,8 @@ export const initSentry = () => {
         return event;
       },
     });
-    console.log('Sentry monitoring initialized');
-  } catch (error) {
-    console.error('Failed to initialize Sentry:', error);
+  } catch {
+    // Silent failure - Sentry init is optional
   }
 };
 

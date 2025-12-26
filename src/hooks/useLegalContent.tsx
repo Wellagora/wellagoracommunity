@@ -28,8 +28,7 @@ export const useLegalContent = (contentType: 'impressum' | 'privacy_policy', lan
 
       if (error) throw error;
       setSections((data as LegalSection[]) || []);
-    } catch (error) {
-      console.error('Error loading legal content:', error);
+    } catch {
       setSections([]);
     } finally {
       setLoading(false);

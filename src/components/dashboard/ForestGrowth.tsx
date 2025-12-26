@@ -56,8 +56,8 @@ const ForestGrowth = () => {
         level,
         nextLevelProgress
       });
-    } catch (error) {
-      console.error('Forest data load error:', error);
+    } catch {
+      // Silent failure - forest data is decorative
     } finally {
       setLoading(false);
     }
