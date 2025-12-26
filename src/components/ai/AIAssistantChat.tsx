@@ -230,32 +230,32 @@ const AIAssistantChat = () => {
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] max-w-3xl mx-auto">
       {/* STICKY HEADER - Avatar, Title, Quick Actions */}
-      <div className="sticky top-0 z-20 bg-background border-b border-border px-4 py-4">
+      <div className="sticky top-0 z-20 bg-card border-b border-accent/20 px-4 py-4 shadow-card">
         {/* Avatar and Title */}
         <div className="flex items-center gap-4 mb-4">
           <div className="relative flex-shrink-0">
             <img 
               src={robotAvatar} 
               alt="WellBot" 
-              className="w-16 h-16 object-cover rounded-full shadow-lg border-2 border-primary/20"
+              className="w-16 h-16 object-cover rounded-full shadow-lg border-2 border-accent/30"
             />
-            <div className="absolute -top-1 -right-1 bg-primary rounded-full p-1.5 shadow-md">
-              <Zap className="h-3 w-3 text-primary-foreground" />
+            <div className="absolute -top-1 -right-1 bg-gradient-to-r from-[hsl(216,100%,50%)] to-[hsl(186,100%,50%)] rounded-full p-1.5 shadow-md">
+              <Zap className="h-3 w-3 text-white" />
             </div>
           </div>
           
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-2xl font-bold italic text-foreground">
+              <h1 className="text-2xl font-bold italic text-white">
                 WellBot
               </h1>
               <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="text-xs">
+                <Badge className="text-xs bg-gradient-to-r from-[hsl(216,100%,50%)] to-[hsl(186,100%,50%)] text-white border-0">
                   {t('wellbot.available_24_7')}
                 </Badge>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-xs text-green-600 dark:text-green-400">{t('wellbot.online')}</span>
+                  <div className="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
+                  <span className="text-xs text-accent">{t('wellbot.online')}</span>
                 </div>
               </div>
             </div>
@@ -273,7 +273,7 @@ const AIAssistantChat = () => {
               variant="outline"
               size="sm"
               onClick={() => handleQuickAction(action)}
-              className="gap-1.5 text-xs"
+              className="gap-1.5 text-xs hover:border-accent hover:text-accent"
               disabled={isTyping}
             >
               <action.icon className="h-3.5 w-3.5" />
@@ -284,7 +284,7 @@ const AIAssistantChat = () => {
       </div>
 
       {/* INPUT FIELD - Below header, sticky */}
-      <div className="sticky top-[168px] z-20 bg-background border-b border-border px-4 py-4">
+      <div className="sticky top-[168px] z-20 bg-card border-b border-accent/20 px-4 py-4">
         {error && (
           <Alert variant="destructive" className="mb-3">
             <AlertCircle className="h-4 w-4" />
@@ -309,7 +309,7 @@ const AIAssistantChat = () => {
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={t('wellbot.input_placeholder')}
-            className="pr-12 resize-none min-h-[48px] max-h-[120px] bg-card"
+            className="pr-12 resize-none min-h-[48px] max-h-[120px] bg-background border-accent/20 focus:border-accent text-white"
             rows={1}
             disabled={isTyping}
           />
@@ -336,16 +336,16 @@ const AIAssistantChat = () => {
         {/* Typing Indicator - Shows at TOP when AI is responding */}
         {isTyping && (
           <div className="flex gap-3 items-start animate-fade-in">
-            <div className="bg-gradient-to-br from-primary/20 to-primary/10 rounded-full p-2 flex-shrink-0 shadow-md border border-primary/20">
-              <Sparkles className="h-5 w-5 text-primary animate-pulse" />
+            <div className="bg-gradient-to-br from-accent/20 to-accent/10 rounded-full p-2 flex-shrink-0 shadow-md border border-accent/30">
+              <Sparkles className="h-5 w-5 text-accent animate-pulse" />
             </div>
-            <div className="bg-card border border-border p-3 rounded-lg rounded-tl-none shadow-sm">
+            <div className="bg-card border border-accent/20 p-3 rounded-xl rounded-tl-none shadow-card">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground">{t('wellbot.typing')}</span>
                 <div className="flex gap-1">
-                  <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"></div>
-                  <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></div>
-                  <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
+                  <div className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce"></div>
+                  <div className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></div>
+                  <div className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
                 </div>
               </div>
             </div>
@@ -355,17 +355,17 @@ const AIAssistantChat = () => {
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Loader2 className="h-5 w-5 animate-spin" />
+              <Loader2 className="h-5 w-5 animate-spin text-accent" />
               <span>{t('common.loading')}</span>
             </div>
           </div>
         ) : messages.length === 0 && !isTyping ? (
           /* Empty State */
           <div className="flex flex-col items-center justify-center text-center py-12 animate-fade-in">
-            <div className="bg-gradient-to-br from-primary/20 to-primary/5 rounded-full p-6 shadow-lg border border-primary/20 mb-4">
-              <Sparkles className="h-12 w-12 text-primary" />
+            <div className="bg-gradient-to-br from-[hsl(216,100%,50%)]/20 to-[hsl(186,100%,50%)]/10 rounded-full p-6 shadow-lg border border-accent/30 mb-4">
+              <Sparkles className="h-12 w-12 text-accent" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">
+            <h3 className="text-xl font-semibold mb-2 text-white">
               {t('wellbot.community_greeting')}
             </h3>
             <p className="text-muted-foreground max-w-md text-sm">
@@ -383,21 +383,21 @@ const AIAssistantChat = () => {
             >
               {/* Bot Avatar */}
               {message.sender === "ai" && (
-                <div className="bg-gradient-to-br from-primary/20 to-primary/10 rounded-full p-2 flex-shrink-0 shadow-md border border-primary/20">
-                  <Sparkles className="h-5 w-5 text-primary" />
+                <div className="bg-gradient-to-br from-accent/20 to-accent/10 rounded-full p-2 flex-shrink-0 shadow-md border border-accent/30">
+                  <Sparkles className="h-5 w-5 text-accent" />
                 </div>
               )}
               
               {/* Message Bubble */}
               <div className={`flex flex-col max-w-[80%] ${message.sender === "user" ? "items-end" : "items-start"}`}>
                 {message.sender === "ai" && (
-                  <span className="text-xs font-medium text-primary mb-1">WellBot</span>
+                  <span className="text-xs font-medium text-accent mb-1">WellBot</span>
                 )}
                 <div
-                  className={`p-3 rounded-lg whitespace-pre-wrap break-words shadow-sm text-sm ${
+                  className={`p-3 rounded-xl whitespace-pre-wrap break-words shadow-card text-sm ${
                     message.sender === "user"
-                      ? "bg-primary text-primary-foreground rounded-tr-none"
-                      : "bg-card border border-border rounded-tl-none"
+                      ? "bg-gradient-to-r from-[hsl(216,100%,50%)] to-[hsl(186,100%,50%)] text-white rounded-tr-none"
+                      : "bg-card border border-accent/20 text-foreground rounded-tl-none"
                   }`}
                 >
                   {message.content}

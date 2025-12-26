@@ -85,9 +85,10 @@ export default {
         'gradient-depth': 'var(--gradient-depth)',
         'gradient-tech': 'var(--gradient-tech)',
         'gradient-glass': 'var(--gradient-glass)',
-        'mountain-mist': 'linear-gradient(180deg, transparent 0%, hsl(218 65% 15% / 0.3) 30%, hsl(215 60% 20% / 0.5) 60%, hsl(210 55% 25% / 0.7) 100%)',
-        'aqua-glow': 'radial-gradient(circle at center, hsl(210 75% 55% / 0.2) 0%, transparent 70%)',
-        'organic-shapes': 'radial-gradient(ellipse at 30% 30%, hsl(210 75% 55% / 0.06) 0%, transparent 50%), radial-gradient(ellipse at 70% 70%, hsl(205 70% 50% / 0.04) 0%, transparent 50%), radial-gradient(circle at 50% 50%, hsl(218 70% 20% / 0.08) 0%, transparent 60%)',
+        'gradient-button': 'var(--gradient-button)',
+        'mountain-mist': 'linear-gradient(180deg, transparent 0%, hsl(216 71% 11% / 0.3) 30%, hsl(218 60% 16% / 0.5) 60%, hsl(200 90% 35% / 0.7) 100%)',
+        'aqua-glow': 'radial-gradient(circle at center, hsl(186 100% 50% / 0.2) 0%, transparent 70%)',
+        'organic-shapes': 'radial-gradient(ellipse at 30% 30%, hsl(195 100% 50% / 0.06) 0%, transparent 50%), radial-gradient(ellipse at 70% 70%, hsl(186 100% 50% / 0.04) 0%, transparent 50%), radial-gradient(circle at 50% 50%, hsl(216 71% 20% / 0.08) 0%, transparent 60%)',
       },
       boxShadow: {
         'eco': 'var(--shadow-eco)',
@@ -95,6 +96,7 @@ export default {
         'card': 'var(--shadow-card)',
         'premium': 'var(--shadow-premium)',
         'float': 'var(--shadow-float)',
+        'button': 'var(--shadow-button)',
       },
       borderRadius: {
         lg: "var(--radius)",
