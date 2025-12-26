@@ -883,9 +883,9 @@
   "dashboard.wellbot_progress": "Show my progress",
   "dashboard.wellbot_tips": "Tips",
   "dashboard.wellbot_full": "Full Assistant",
-  "dashboard.recent_activity": "Recent Activity",
-  "dashboard.no_activity": "No activity yet",
-  "dashboard.no_activity_desc": "Your activities will appear here",
+  "dashboard.recent_activity": "Upcoming Events",
+  "dashboard.no_activity": "No upcoming events",
+  "dashboard.no_activity_desc": "Your events will appear here",
   "dashboard.joined_program": "Joined a program",
   "dashboard.completed_program": "Completed a program",
   "dashboard.earned_badge": "Earned a badge",
@@ -2721,5 +2721,8 @@
   "events.date_time": "Date & Time",
   "events.participants": "Participants",
   "events.no_events": "No upcoming events",
-  "events.view_all": "View all events"
+  "events.view_all": "View all events",
+  "events.rsvp_success": "RSVP updated!",
+  "events.rsvp_error": "Failed to update RSVP",
+  "dashboard.activity_hint": "Browse programs for events"
 }

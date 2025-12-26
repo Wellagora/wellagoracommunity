@@ -8,7 +8,8 @@ import Dashboard from "./Dashboard";
 import { ReferralWidget } from "@/components/referral/ReferralWidget";
 import { ShareImpactCard } from "@/components/referral/ShareImpactCard";
 import { PersonalImpactGarden } from "./PersonalImpactGarden";
-import { Target, Users, BarChart3 } from "lucide-react";
+import { EventsWidget } from "./EventsWidget";
+import { Target, Users, BarChart3, Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -69,6 +70,11 @@ export const DashboardCitizenView = memo(({ currentRole }: DashboardCitizenViewP
         />
       </div>
 
+      {/* Events Widget */}
+      <div className="mb-6">
+        <EventsWidget />
+      </div>
+
       <Tabs defaultValue="programs" className="space-y-6">
         <TabsList className="grid w-full grid-cols-3 bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-2">
           <TabsTrigger value="programs" className="flex items-center justify-center space-x-2 text-sm">
@@ -76,7 +82,7 @@ export const DashboardCitizenView = memo(({ currentRole }: DashboardCitizenViewP
             <span>{t('dashboard.tabs.my_programs')}</span>
           </TabsTrigger>
           <TabsTrigger value="calendar" className="flex items-center justify-center space-x-2 text-sm">
-            <Users className="w-4 h-4" />
+            <Calendar className="w-4 h-4" />
             <span>{t('dashboard.tabs.calendar')}</span>
           </TabsTrigger>
           <TabsTrigger value="activities" className="flex items-center justify-center space-x-2 text-sm">
