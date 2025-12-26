@@ -228,7 +228,7 @@ const AIAssistantChat = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] max-w-3xl mx-auto">
+    <div className="flex flex-col h-[calc(100vh-3rem)] md:h-[calc(100vh-3.5rem)] max-w-3xl mx-auto">
       {/* STICKY HEADER - Avatar, Title, Quick Actions */}
       <div className="sticky top-0 z-20 bg-card border-b border-accent/20 px-4 py-4 shadow-card">
         {/* Avatar and Title */}

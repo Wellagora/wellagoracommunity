@@ -42,11 +42,11 @@ const Index = () => {
       <>
         <div className="min-h-screen bg-background flex flex-col">
           <Navigation />
-          <main className="pt-16 flex-1">
+          <main className="pt-2 md:pt-4 flex-1">
           {/* 1. SIMPLIFIED HERO - Welcome + Single CTA */}
           <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5">
             <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-            <div className="container mx-auto px-4 py-8 sm:py-12 relative z-10">
+            <div className="container mx-auto px-4 py-4 sm:py-8 relative z-10">
               <motion.div
                 className="max-w-4xl mx-auto text-center"
                 initial={{ opacity: 0, y: -20 }}
@@ -140,7 +140,7 @@ const Index = () => {
     <>
       <div className="min-h-screen bg-background flex flex-col">
         <Navigation />
-        <main className="flex-1">
+        <main className="pt-2 md:pt-4 flex-1">
         {/* 1. HERO SECTION - Full viewport with hero image */}
         <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden">
           {/* Hero Background Image */}
