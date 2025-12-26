@@ -106,7 +106,7 @@ export function ProjectLeaderboard() {
 
       setLeaderboard(leaderboardData);
     } catch (error) {
-      console.error("Error loading leaderboard:", error);
+      // Silent fail - leaderboard load failed
     } finally {
       setLoading(false);
     }

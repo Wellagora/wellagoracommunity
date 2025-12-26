@@ -79,12 +79,12 @@ const OrganizationSubscription = () => {
           .single();
 
         if (error && error.code !== 'PGRST116') {
-          console.error('Error fetching subscription:', error);
+          // Non-critical error - no subscription found
         } else if (data) {
           setCurrentSubscription(data);
         }
       } catch (error) {
-        console.error('Error:', error);
+        // Silent fail - subscription fetch failed
       }
     };
 
@@ -102,12 +102,12 @@ const OrganizationSubscription = () => {
           .order('display_order');
 
         if (error) {
-          console.error('Error fetching plans:', error);
+          // Silent fail - plans fetch failed
         } else {
           setAvailablePlans(data || []);
         }
       } catch (error) {
-        console.error('Error:', error);
+        // Silent fail
       } finally {
         setLoading(false);
       }
@@ -133,7 +133,6 @@ const OrganizationSubscription = () => {
         description: value ? "Az automatikus megújítás bekapcsolva" : "Az automatikus megújítás kikapcsolva",
       });
     } catch (error) {
-      console.error('Error updating auto-renew:', error);
       toast({
         title: "Hiba",
         description: "Nem sikerült frissíteni az automatikus megújítást",
@@ -172,7 +171,6 @@ const OrganizationSubscription = () => {
       
       setDialogOpen(false);
     } catch (error) {
-      console.error('Error creating subscription:', error);
       toast({
         title: "Hiba",
         description: "Nem sikerült létrehozni az előfizetést",

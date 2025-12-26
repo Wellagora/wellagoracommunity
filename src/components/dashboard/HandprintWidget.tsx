@@ -62,7 +62,7 @@ const HandprintWidget = () => {
         setHandprint(data.handprint);
       }
     } catch (error) {
-      console.error('Handprint data load error:', error);
+      // Silent fail - handprint load failed
     } finally {
       setLoading(false);
     }

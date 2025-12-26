@@ -57,7 +57,6 @@ const UserRoleManager = () => {
 
       setUsers(usersWithRoles);
     } catch (error) {
-      console.error('Error loading users:', error);
       toast({
         title: 'Hiba',
         description: 'Nem sikerült betölteni a felhasználókat',
@@ -104,7 +103,6 @@ const UserRoleManager = () => {
       setSelectedUserId(null);
       setSelectedRole('');
     } catch (error: any) {
-      console.error('Error assigning role:', error);
       toast({
         title: t('users.error'),
         description: error.message || t('users.assign_error'),
@@ -130,7 +128,6 @@ const UserRoleManager = () => {
 
       loadUsers();
     } catch (error) {
-      console.error('Error removing role:', error);
       toast({
         title: t('users.error'),
         description: t('users.remove_error'),

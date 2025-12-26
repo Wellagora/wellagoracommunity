@@ -104,7 +104,6 @@ const AIAssistantChat = () => {
           }
         }
       } catch (error) {
-        console.error('Error loading conversation history:', error);
         setError(t('wellbot.error_message'));
       } finally {
         setIsLoading(false);
@@ -156,12 +155,10 @@ const AIAssistantChat = () => {
       });
 
       if (error) {
-        console.error('AI chat error:', error);
         throw error;
       }
 
       if (!data || typeof (data as any).message !== 'string') {
-        console.error('AI chat returned invalid response:', data);
         throw new Error('Invalid response');
       }
 
@@ -207,7 +204,6 @@ const AIAssistantChat = () => {
       // Add AI response at the beginning (newest first)
       setMessages(prev => [aiResponse, ...prev]);
     } catch (error) {
-      console.error('Error calling AI:', error);
       setError(t('wellbot.error_message'));
       toast({
         title: t('error'),

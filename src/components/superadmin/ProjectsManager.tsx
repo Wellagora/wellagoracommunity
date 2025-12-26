@@ -152,7 +152,6 @@ const ProjectsManager = () => {
         totalParticipants,
       });
     } catch (error) {
-      console.error("Error loading projects:", error);
       toast.error("Hiba a projektek betöltésekor");
     } finally {
       setLoading(false);
@@ -219,7 +218,6 @@ const ProjectsManager = () => {
       if (error instanceof z.ZodError) {
         toast.error(error.issues[0].message);
       } else {
-        console.error("Error creating project:", error);
         toast.error("Hiba a projekt létrehozásakor");
       }
     }
@@ -237,7 +235,6 @@ const ProjectsManager = () => {
       toast.success(currentStatus ? "Projekt deaktiválva" : "Projekt aktiválva");
       loadData();
     } catch (error) {
-      console.error("Error toggling project status:", error);
       toast.error("Hiba a projekt státusz váltásakor");
     }
   };
@@ -272,7 +269,6 @@ const ProjectsManager = () => {
       toast.success("Alapértelmezett projekt beállítva");
       loadData();
     } catch (error) {
-      console.error("Error setting default project:", error);
       toast.error("Hiba az alapértelmezett projekt beállításakor");
     }
   };

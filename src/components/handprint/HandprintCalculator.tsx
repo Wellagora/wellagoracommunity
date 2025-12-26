@@ -156,7 +156,6 @@ const HandprintCalculator = () => {
       });
 
     } catch (error) {
-      console.error('Error loading handprint:', error);
       toast({
         title: t('common.error'),
         description: t('handprint.error_loading'),

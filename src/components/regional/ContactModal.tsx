@@ -76,7 +76,6 @@ export default function ContactModal({ open, onOpenChange, recipientName, recipi
       setFormData({ name: "", email: "", message: "" });
       onOpenChange(false);
     } catch (error: any) {
-      console.error("Error sending message:", error);
       toast({
         title: t("contact.error_title"),
         description: t("contact.error_description"),
