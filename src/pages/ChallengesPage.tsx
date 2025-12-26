@@ -6,6 +6,7 @@ import Navigation from "@/components/Navigation";
 import { Card3D } from "@/components/ui/card-3d";
 import { CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   Search,
@@ -15,18 +16,21 @@ import {
   Star,
   Calendar,
   MapPin,
-  Zap
+  Zap,
+  Check
 } from "lucide-react";
 import { Challenge } from "@/data/challenges";
 import { loadChallengesFromDatabase } from "@/services/ChallengeSponsorshipService";
 import ProgramCardButtons from "@/components/challenges/ProgramCardButtons";
 import { ChallengeGridSkeleton } from "@/components/ui/skeletons";
+import { useUserChallenges } from "@/hooks/useUserChallenges";
 
 const ChallengesPage = () => {
   const navigate = useNavigate();
 
   const { user, loading, profile } = useAuth();
   const { t, language } = useLanguage();
+  const { isJoined } = useUserChallenges();
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredChallenges, setFilteredChallenges] = useState<Challenge[]>([]);
   const [allChallenges, setAllChallenges] = useState<Challenge[]>([]);
@@ -143,9 +147,19 @@ const ChallengesPage = () => {
             {filteredChallenges.map((challenge, index) => (
             <Card3D 
               key={challenge.id} 
-              className="bg-card/50 backdrop-blur-sm border border-border/50 hover:bg-card/70 transition-all duration-300 hover:shadow-glow hover:scale-105 animate-slide-in-3d overflow-hidden"
+              className="bg-card/50 backdrop-blur-sm border border-border/50 hover:bg-card/70 transition-all duration-300 hover:shadow-glow hover:scale-105 animate-slide-in-3d overflow-hidden relative"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
+              {/* Joined Badge */}
+              {isJoined(challenge.id) && (
+                <Badge 
+                  variant="default" 
+                  className="absolute top-3 right-3 z-10 bg-success text-success-foreground shadow-lg"
+                >
+                  <Check className="w-3 h-3 mr-1" />
+                  {t('challenges.joined_badge')}
+                </Badge>
+              )}
               {challenge.imageUrl && (
                 <div className="relative w-full h-48 sm:h-56 lg:h-64 overflow-hidden">
                   <img 
@@ -282,6 +296,7 @@ const ChallengesPage = () => {
                 {/* Action Buttons based on user role and status */}
                 <ProgramCardButtons
                   challengeId={challenge.id}
+                  isJoined={isJoined(challenge.id)}
                   onNavigate={() => navigate(`/challenges/${challenge.id}`)}
                   onSponsor={() => navigate(`/challenges/${challenge.id}?action=sponsor`)}
                 />
