@@ -2539,5 +2539,12 @@
   "sponsor_landing.final_cta_subtitle": "Join the community supporters and help local initiatives succeed.",
   "sponsor_landing.final_cta_button": "Get Started Now",
   "profile.messaging_coming_soon": "Messaging coming soon!",
-  "profile.messaging_coming_soon_description": "The messaging feature is under development."
+  "profile.messaging_coming_soon_description": "The messaging feature is under development.",
+
+  "community.coming_soon": "Coming Soon",
+  "community.forum_detail_coming_soon": "Forum details will be available soon.",
+
+  "challenges.active_participants": "Active Participants",
+  "challenges.completed_challenges": "Completed Programs",
+  "challenges.community_events": "Community Events"
 }
