@@ -11,11 +11,14 @@ import {
   Bot, 
   Settings,
   TrendingUp,
-  Activity
+  Activity,
+  Calendar,
+  CalendarPlus
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -37,8 +40,10 @@ import InvoicesManager from "@/components/superadmin/InvoicesManager";
 import UsersManager from "@/components/superadmin/UsersManager";
 import ProjectsManager from "@/components/superadmin/ProjectsManager";
 import ProgramsManager from "@/components/superadmin/ProgramsManager";
+import EventsManager from "@/components/superadmin/EventsManager";
 import AIAnalyticsDashboard from "@/components/admin/AIAnalyticsDashboard";
 import SystemSettings from "@/components/superadmin/SystemSettings";
+import { CreateEventDialog } from "@/components/events/CreateEventDialog";
 
 type MenuItem = {
   id: string;
@@ -54,6 +59,7 @@ const menuItems: MenuItem[] = [
   { id: 'subscriptions', label: 'Előfizetések', icon: CreditCard },
   { id: 'invoices', label: 'Számlák', icon: Receipt },
   { id: 'programs', label: 'Programok', icon: Target },
+  { id: 'events', label: 'Események', icon: Calendar },
   { id: 'ai-analytics', label: 'AI Analytics', icon: Bot },
   { id: 'settings', label: 'Beállítások', icon: Settings },
 ];
@@ -314,14 +320,24 @@ const SuperAdminPage = () => {
           
           <main className="flex-1 overflow-auto bg-background">
             <div className="container mx-auto p-6 lg:p-8">
-              <div className="mb-6 flex items-center gap-2">
-                <SidebarTrigger />
-                <div>
-                  <h1 className="text-2xl font-bold">Super Admin Dashboard</h1>
-                  <p className="text-sm text-muted-foreground">
-                    Üdvözöljük, {profile?.first_name}!
-                  </p>
+              <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-2">
+                  <SidebarTrigger />
+                  <div>
+                    <h1 className="text-2xl font-bold">Super Admin Dashboard</h1>
+                    <p className="text-sm text-muted-foreground">
+                      Üdvözöljük, {profile?.first_name}!
+                    </p>
+                  </div>
                 </div>
+                <CreateEventDialog 
+                  trigger={
+                    <Button className="gap-2">
+                      <CalendarPlus className="w-4 h-4" />
+                      Új esemény
+                    </Button>
+                  }
+                />
               </div>
 
               {activeTab === 'overview' && <OverviewTab />}
@@ -331,17 +347,9 @@ const SuperAdminPage = () => {
               {activeTab === 'users' && <UsersManager />}
               {activeTab === 'projects' && <ProjectsManager />}
               {activeTab === 'programs' && <ProgramsManager />}
+              {activeTab === 'events' && <EventsManager />}
               {activeTab === 'ai-analytics' && <AIAnalyticsDashboard />}
               {activeTab === 'settings' && <SystemSettings />}
-              {activeTab !== 'overview' && activeTab !== 'organizations' && activeTab !== 'subscriptions' && activeTab !== 'invoices' && activeTab !== 'users' && activeTab !== 'projects' && activeTab !== 'programs' && activeTab !== 'ai-analytics' && activeTab !== 'settings' && (
-                <Card className="border-dashed">
-                  <CardContent className="pt-6">
-                    <p className="text-center text-muted-foreground">
-                      Ez a funkció hamarosan elérhető lesz.
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
             </div>
           </main>
         </div>
