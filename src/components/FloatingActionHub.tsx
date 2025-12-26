@@ -1,59 +1,69 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Plus, 
   MessageCircle, 
   Target, 
   Users,
   Sparkles,
-  Heart,
   Camera,
-  Share2,
   Lightbulb,
   X
 } from "lucide-react";
 
 const FloatingActionHub = () => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const actions = [
     {
       icon: Target,
       label: "Start Challenge",
       color: "bg-primary hover:bg-primary-dark",
-      description: "Begin a new sustainability challenge"
+      description: "Begin a new sustainability challenge",
+      action: () => navigate('/challenges')
     },
     {
       icon: MessageCircle,
       label: "Ask AI",
       color: "bg-accent hover:bg-accent-light",
-      description: "Get instant sustainability advice"
+      description: "Get instant sustainability advice",
+      action: () => navigate('/ai-assistant')
     },
     {
       icon: Users,
       label: "Find Friends",
       color: "bg-success hover:bg-success-light",
-      description: "Connect with local champions"
+      description: "Connect with local champions",
+      action: () => navigate('/community')
     },
     {
       icon: Camera,
       label: "Share Progress",
       color: "bg-warning hover:bg-warning/80",
-      description: "Show off your achievements"
+      description: "Show off your achievements",
+      action: () => navigate('/dashboard')
     },
     {
       icon: Lightbulb,
       label: "Get Ideas",
       color: "bg-purple-500 hover:bg-purple-600",
-      description: "Discover new eco-friendly tips"
+      description: "Discover new eco-friendly tips",
+      action: () => navigate('/browse-programs')
     }
   ];
 
   const handleActionClick = (action: typeof actions[0]) => {
-    // TODO: Implement action handlers
-    console.log("Action clicked:", action.label);
+    action.action();
     setIsExpanded(false);
+    toast({
+      title: action.label,
+      description: action.description,
+    });
   };
 
   return (
