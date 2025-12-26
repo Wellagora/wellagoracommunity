@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Separator } from "@/components/ui/separator";
+import { MapPin, Mail } from "lucide-react";
 
 const Footer = () => {
   const { t } = useLanguage();
@@ -13,9 +14,22 @@ const Footer = () => {
           {/* About Section */}
           <div>
             <h3 className="font-bold text-foreground mb-3">{t('footer.about_title')}</h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground mb-3">
               {t('footer.about_text')}
             </p>
+            <div className="space-y-1 text-sm text-muted-foreground">
+              <p className="font-medium text-foreground">Wellagora OG</p>
+              <div className="flex items-start gap-1.5">
+                <MapPin className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
+                <span>Nastlbergergasse 12, 1130 Vienna</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Mail className="w-3.5 h-3.5 flex-shrink-0" />
+                <a href="mailto:info@wellagora.org" className="hover:text-primary transition-colors">
+                  info@wellagora.org
+                </a>
+              </div>
+            </div>
           </div>
 
           {/* Quick Links */}
@@ -55,7 +69,12 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="mailto:info@wellagora.com" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/help" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  {t('footer.link_help')}
+                </Link>
+              </li>
+              <li>
+                <a href="mailto:info@wellagora.org" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                   {t('footer.link_email')}
                 </a>
               </li>
