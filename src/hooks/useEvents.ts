@@ -16,7 +16,7 @@ export interface Event {
   image_url: string | null;
   is_public: boolean | null;
   project_id: string | null;
-  challenge_id: string | null;
+  program_id: string | null;
   organization_id: string | null;
   created_by: string | null;
 }

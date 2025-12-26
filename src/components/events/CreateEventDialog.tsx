@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -41,6 +41,24 @@ export function CreateEventDialog({ trigger }: CreateEventDialogProps) {
     location_name: '',
     village: '',
     max_participants: '',
+    program_id: '',
+    image_url: '',
+  });
+
+  // Fetch available programs for the dropdown
+  const { data: programs } = useQuery({
+    queryKey: ['programs-for-events'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('challenge_definitions')
+        .select('id, title')
+        .eq('is_active', true)
+        .order('title');
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: open,
   });
 
   const createEventMutation = useMutation({
@@ -55,6 +73,8 @@ export function CreateEventDialog({ trigger }: CreateEventDialogProps) {
         location_name: formData.location_name || null,
         village: formData.village || null,
         max_participants: formData.max_participants ? parseInt(formData.max_participants) : null,
+        program_id: formData.program_id || null,
+        image_url: formData.image_url || null,
         is_public: true,
         created_by: user.id,
         organization_id: profile?.organization_id || null,
@@ -64,7 +84,8 @@ export function CreateEventDialog({ trigger }: CreateEventDialogProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['upcomingEvents'] });
-      toast.success(t('events.create_success') || 'Event created successfully!');
+      queryClient.invalidateQueries({ queryKey: ['organizationEvents'] });
+      toast.success(t('events.create_success') || 'Esemény sikeresen létrehozva!');
       setOpen(false);
       setFormData({
         title: '',
@@ -74,18 +95,20 @@ export function CreateEventDialog({ trigger }: CreateEventDialogProps) {
         location_name: '',
         village: '',
         max_participants: '',
+        program_id: '',
+        image_url: '',
       });
     },
     onError: (error) => {
       console.error('Error creating event:', error);
-      toast.error(t('events.create_error') || 'Failed to create event');
+      toast.error(t('events.create_error') || 'Hiba történt az esemény létrehozásakor');
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title || !formData.start_date) {
-      toast.error(t('events.validation_error') || 'Please fill in required fields');
+      toast.error(t('events.validation_error') || 'Kérjük, töltse ki a kötelező mezőket');
       return;
     }
     createEventMutation.mutate();
@@ -101,7 +124,7 @@ export function CreateEventDialog({ trigger }: CreateEventDialogProps) {
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <CalendarPlus className="w-5 h-5 text-primary" />
@@ -116,7 +139,7 @@ export function CreateEventDialog({ trigger }: CreateEventDialogProps) {
               id="title"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              placeholder={t('events.title_placeholder') || 'Event title'}
+              placeholder="Esemény címe"
               required
             />
           </div>
@@ -127,7 +150,7 @@ export function CreateEventDialog({ trigger }: CreateEventDialogProps) {
               id="description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder={t('events.description_placeholder') || 'Event description'}
+              placeholder="Esemény leírása"
               rows={3}
             />
           </div>
@@ -160,7 +183,7 @@ export function CreateEventDialog({ trigger }: CreateEventDialogProps) {
               id="location_name"
               value={formData.location_name}
               onChange={(e) => setFormData({ ...formData, location_name: e.target.value })}
-              placeholder={t('events.location_placeholder') || 'Event location'}
+              placeholder="Helyszín neve"
             />
           </div>
 
@@ -172,7 +195,7 @@ export function CreateEventDialog({ trigger }: CreateEventDialogProps) {
                 onValueChange={(value) => setFormData({ ...formData, village: value })}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={t('events.select_village') || 'Select village'} />
+                  <SelectValue placeholder="Válassz települést" />
                 </SelectTrigger>
                 <SelectContent>
                   {VILLAGES.map((village) => (
@@ -194,6 +217,36 @@ export function CreateEventDialog({ trigger }: CreateEventDialogProps) {
                 placeholder="20"
               />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="program_id">{t('events.linked_program') || 'Kapcsolódó program'}</Label>
+            <Select
+              value={formData.program_id}
+              onValueChange={(value) => setFormData({ ...formData, program_id: value === 'none' ? '' : value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Önálló esemény (nincs program)" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Önálló esemény (nincs program)</SelectItem>
+                {programs?.map((program) => (
+                  <SelectItem key={program.id} value={program.id}>
+                    {program.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="image_url">{t('events.image_url') || 'Kép URL'}</Label>
+            <Input
+              id="image_url"
+              value={formData.image_url}
+              onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+              placeholder="https://example.com/image.jpg"
+            />
           </div>
 
           <div className="flex justify-end gap-3 pt-4">

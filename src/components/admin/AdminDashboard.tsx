@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Building2, Mail, Users, Languages, Shield, Sparkles } from 'lucide-react';
+import { ArrowLeft, Building2, Mail, Users, Languages, Shield, Sparkles, CalendarPlus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAdminDashboard } from '@/hooks/useAdminDashboard';
@@ -11,6 +11,7 @@ import MessagesManager from './MessagesManager';
 import AIAnalyticsDashboard from './AIAnalyticsDashboard';
 import LegalContentManager from './LegalContentManager';
 import ProjectDetailView from './ProjectDetailView';
+import { CreateEventDialog } from '@/components/events/CreateEventDialog';
 import { useState } from 'react';
 
 const AdminDashboard = () => {
@@ -53,6 +54,14 @@ const AdminDashboard = () => {
           {t('admin.back_to_platform')}
         </Button>
         <div className="flex items-center gap-3">
+          <CreateEventDialog 
+            trigger={
+              <Button className="gap-2">
+                <CalendarPlus className="w-4 h-4" />
+                {t('events.create')}
+              </Button>
+            }
+          />
           <Button
             onClick={() => navigate('/translation-tool')}
             variant="outline"
