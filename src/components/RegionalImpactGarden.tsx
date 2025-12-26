@@ -1,14 +1,14 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Users, Target, Calendar, Loader2, Leaf } from "lucide-react";
+import { MapPin, Users, Target, Calendar, Loader2 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useProject } from "@/contexts/ProjectContext";
 import { motion } from "framer-motion";
 import { useMemo, useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useCommunityImpact } from "@/hooks/useImpactSummary";
 
-interface RegionMetrics {
+interface VillageStats {
+  village_name: string;
   participants: number;
   programs: number;
   events: number;
@@ -17,104 +17,107 @@ interface RegionMetrics {
 export const RegionalImpactGarden = () => {
   const { t } = useLanguage();
   const { currentProject } = useProject();
-  const [metricsMap, setMetricsMap] = useState<Record<string, RegionMetrics>>({});
+  const [villageStats, setVillageStats] = useState<VillageStats[]>([]);
   const [loading, setLoading] = useState(true);
-  
-  // Fetch real community impact data
-  const { impact: communityImpact } = useCommunityImpact(currentProject?.id);
 
   // Generate region data from actual project villages
-  const regions = useMemo(() => {
+  const projectVillages = useMemo(() => {
     if (!currentProject?.villages || currentProject.villages.length === 0) {
       return [];
     }
-
-    return currentProject.villages.map((village, index) => ({
-      id: index + 1,
-      name: village,
-    }));
+    return currentProject.villages;
   }, [currentProject]);
 
-  // Fetch real metrics from Supabase
+  // Fetch real metrics from Supabase RPC
   useEffect(() => {
     const fetchMetrics = async () => {
-      if (!currentProject?.id || regions.length === 0) {
+      if (!currentProject?.id) {
         setLoading(false);
         return;
       }
 
       try {
-        // Fetch participants per region (profiles with matching region)
-        const { data: profilesData } = await supabase
-          .from('profiles')
-          .select('region, city')
-          .eq('project_id', currentProject.id);
+        const { data, error } = await supabase.rpc('get_regional_village_stats', {
+          p_project_id: currentProject.id
+        });
 
-        // Fetch programs/challenges per region
-        const { data: challengesData } = await supabase
-          .from('challenge_definitions')
-          .select('location')
-          .eq('project_id', currentProject.id)
-          .eq('is_active', true);
-
-        // Fetch events/activities per region
-        const { data: activitiesData } = await supabase
-          .from('sustainability_activities')
-          .select('description')
-          .eq('project_id', currentProject.id);
-
-        // Build metrics map for each village
-        const newMetricsMap: Record<string, RegionMetrics> = {};
-        
-        regions.forEach(region => {
-          const villageName = region.name.toLowerCase();
+        if (error) {
+          console.error('Error fetching village stats:', error);
+          // Use project villages as fallback with zero counts
+          const fallbackStats = projectVillages.map(village => ({
+            village_name: village,
+            participants: 0,
+            programs: 0,
+            events: 0,
+          }));
+          setVillageStats(fallbackStats);
+        } else if (data && Array.isArray(data)) {
+          // Merge RPC data with project villages
+          const statsMap = new Map<string, VillageStats>();
           
-          // Count participants in this region
-          const participants = profilesData?.filter(p => 
-            p.region?.toLowerCase().includes(villageName) || 
-            p.city?.toLowerCase().includes(villageName)
-          ).length || 0;
-
-          // Count programs/challenges in this region
-          const programs = challengesData?.filter(c => 
-            c.location?.toLowerCase().includes(villageName)
-          ).length || 0;
-
-          // Distribute activities evenly for now (real implementation would need location data)
-          const totalActivities = activitiesData?.length || 0;
-          const events = Math.floor(totalActivities / regions.length);
-
-          newMetricsMap[region.name] = {
-            participants: participants || Math.floor(Math.random() * 20) + 5,
-            programs: programs || Math.floor(Math.random() * 8) + 2,
-            events: events || Math.floor(Math.random() * 15) + 3,
-          };
-        });
-
-        setMetricsMap(newMetricsMap);
+          // Initialize with project villages
+          projectVillages.forEach(village => {
+            statsMap.set(village.toLowerCase(), {
+              village_name: village,
+              participants: 0,
+              programs: 0,
+              events: 0,
+            });
+          });
+          
+          // Overlay RPC data
+          (data as unknown as VillageStats[]).forEach(stat => {
+            const key = stat.village_name.toLowerCase();
+            if (statsMap.has(key)) {
+              statsMap.set(key, {
+                ...stat,
+                village_name: statsMap.get(key)!.village_name, // Keep original casing
+              });
+            } else {
+              // Add new villages from RPC data
+              statsMap.set(key, stat);
+            }
+          });
+          
+          setVillageStats(Array.from(statsMap.values()));
+        } else {
+          // No data, use project villages
+          const fallbackStats = projectVillages.map(village => ({
+            village_name: village,
+            participants: 0,
+            programs: 0,
+            events: 0,
+          }));
+          setVillageStats(fallbackStats);
+        }
       } catch (error) {
-        // Set fallback data
-        const fallbackMap: Record<string, RegionMetrics> = {};
-        regions.forEach(region => {
-          fallbackMap[region.name] = {
-            participants: Math.floor(Math.random() * 20) + 5,
-            programs: Math.floor(Math.random() * 8) + 2,
-            events: Math.floor(Math.random() * 15) + 3,
-          };
-        });
-        setMetricsMap(fallbackMap);
+        console.error('Error fetching metrics:', error);
+        const fallbackStats = projectVillages.map(village => ({
+          village_name: village,
+          participants: 0,
+          programs: 0,
+          events: 0,
+        }));
+        setVillageStats(fallbackStats);
       } finally {
         setLoading(false);
       }
     };
 
     fetchMetrics();
-  }, [currentProject?.id, regions]);
+  }, [currentProject?.id, projectVillages]);
 
-  // Don't render if no regions available
-  if (regions.length === 0) {
+  // Don't render if no villages
+  if (projectVillages.length === 0 && villageStats.length === 0) {
     return null;
   }
+
+  const displayStats = villageStats.length > 0 ? villageStats : projectVillages.map(v => ({
+    village_name: v,
+    participants: 0,
+    programs: 0,
+    events: 0,
+  }));
 
   return (
     <section className="py-8 md:py-16 bg-gradient-to-br from-success/5 via-background to-primary/5">
@@ -136,89 +139,59 @@ export const RegionalImpactGarden = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-6xl mx-auto mb-8">
-            {regions.map((region, index) => {
-              const metrics = metricsMap[region.name] || { participants: 0, programs: 0, events: 0 };
-              
-              return (
-                <motion.div
-                  key={region.id}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <Card className="relative overflow-hidden group hover:shadow-glow transition-all duration-300 h-full">
-                    <CardContent className="p-4 md:p-6">
-                      <div className="flex items-center gap-2 md:gap-3 mb-4">
-                        <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
-                          <MapPin className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+            {displayStats.map((stats, index) => (
+              <motion.div
+                key={stats.village_name}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <Card className="relative overflow-hidden group hover:shadow-glow transition-all duration-300 h-full">
+                  <CardContent className="p-4 md:p-6">
+                    <div className="flex items-center gap-2 md:gap-3 mb-4">
+                      <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
+                        <MapPin className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+                      </div>
+                      <h3 className="font-semibold text-foreground text-sm md:text-base">{stats.village_name}</h3>
+                    </div>
+
+                    {/* Metrics Display - Horizontal Row */}
+                    <div className="grid grid-cols-3 gap-2 md:gap-3">
+                      <div className="text-center p-2 md:p-3 bg-primary/5 rounded-lg">
+                        <Users className="w-4 h-4 text-primary mx-auto mb-1" />
+                        <div className="text-lg md:text-xl font-bold text-primary">
+                          {stats.participants}
                         </div>
-                        <h3 className="font-semibold text-foreground text-sm md:text-base">{region.name}</h3>
+                        <div className="text-xs text-muted-foreground truncate">
+                          {t('impact_garden.participants')}
+                        </div>
                       </div>
 
-                      {/* Metrics Display - Horizontal Row */}
-                      <div className="grid grid-cols-3 gap-2 md:gap-3">
-                        <div className="text-center p-2 md:p-3 bg-primary/5 rounded-lg">
-                          <Users className="w-4 h-4 text-primary mx-auto mb-1" />
-                          <div className="text-lg md:text-xl font-bold text-primary">
-                            {metrics.participants}
-                          </div>
-                          <div className="text-xs text-muted-foreground truncate">
-                            {t('impact_garden.participants')}
-                          </div>
+                      <div className="text-center p-2 md:p-3 bg-success/5 rounded-lg">
+                        <Target className="w-4 h-4 text-success mx-auto mb-1" />
+                        <div className="text-lg md:text-xl font-bold text-success">
+                          {stats.programs}
                         </div>
-
-                        <div className="text-center p-2 md:p-3 bg-success/5 rounded-lg">
-                          <Target className="w-4 h-4 text-success mx-auto mb-1" />
-                          <div className="text-lg md:text-xl font-bold text-success">
-                            {metrics.programs}
-                          </div>
-                          <div className="text-xs text-muted-foreground truncate">
-                            {t('impact_garden.programs')}
-                          </div>
-                        </div>
-
-                        <div className="text-center p-2 md:p-3 bg-accent/5 rounded-lg">
-                          <Calendar className="w-4 h-4 text-accent mx-auto mb-1" />
-                          <div className="text-lg md:text-xl font-bold text-accent">
-                            {metrics.events}
-                          </div>
-                          <div className="text-xs text-muted-foreground truncate">
-                            {t('impact_garden.events')}
-                          </div>
+                        <div className="text-xs text-muted-foreground truncate">
+                          {t('impact_garden.programs')}
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              );
-            })}
-          </div>
-        )}
 
-        {/* Community Impact Summary */}
-        {communityImpact && communityImpact.total_co2_kg > 0 && (
-          <div className="text-center mb-6 px-4">
-            <Card className="inline-block bg-gradient-to-r from-success/10 to-primary/10 border-success/30">
-              <CardContent className="p-4 md:p-6">
-                <div className="flex flex-col sm:flex-row items-center gap-4 md:gap-8">
-                  <div className="flex items-center gap-2">
-                    <Leaf className="w-5 h-5 text-success" />
-                    <span className="text-lg font-bold text-success">
-                      {communityImpact.total_co2_kg.toFixed(1)} kg CO₂
-                    </span>
-                    <span className="text-sm text-muted-foreground">{t("impact.community_impact")}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Users className="w-5 h-5 text-primary" />
-                    <span className="text-lg font-bold text-primary">
-                      {communityImpact.total_participants}
-                    </span>
-                    <span className="text-sm text-muted-foreground">{t("impact_garden.legend_participants")}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                      <div className="text-center p-2 md:p-3 bg-accent/5 rounded-lg">
+                        <Calendar className="w-4 h-4 text-accent mx-auto mb-1" />
+                        <div className="text-lg md:text-xl font-bold text-accent">
+                          {stats.events}
+                        </div>
+                        <div className="text-xs text-muted-foreground truncate">
+                          {t('impact_garden.events')}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
           </div>
         )}
 

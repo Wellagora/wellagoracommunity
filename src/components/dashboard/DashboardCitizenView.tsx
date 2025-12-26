@@ -7,7 +7,7 @@ import { ProgramCalendar } from "./ProgramCalendar";
 import Dashboard from "./Dashboard";
 import { ReferralWidget } from "@/components/referral/ReferralWidget";
 import { ShareImpactCard } from "@/components/referral/ShareImpactCard";
-import { ImpactDashboardWidget } from "./ImpactDashboardWidget";
+import { PersonalImpactGarden } from "./PersonalImpactGarden";
 import { Target, Users, BarChart3 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -60,7 +60,7 @@ export const DashboardCitizenView = memo(({ currentRole }: DashboardCitizenViewP
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
       {/* Top widgets grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        <ImpactDashboardWidget />
+        <PersonalImpactGarden />
         <ReferralWidget />
         <ShareImpactCard 
           totalPoints={userStats?.totalPoints || 0}

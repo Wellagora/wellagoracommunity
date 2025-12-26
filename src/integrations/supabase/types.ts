@@ -519,6 +519,142 @@ export type Database = {
           },
         ]
       }
+      event_rsvps: {
+        Row: {
+          created_at: string | null
+          event_id: string | null
+          id: string
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_id?: string | null
+          id?: string
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          event_id?: string | null
+          id?: string
+          status?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_rsvps_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_rsvps_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          challenge_id: string | null
+          created_at: string | null
+          created_by: string | null
+          current_participants: number | null
+          description: string | null
+          end_date: string | null
+          id: string
+          image_url: string | null
+          is_all_day: boolean | null
+          is_public: boolean | null
+          latitude: number | null
+          location_address: string | null
+          location_name: string | null
+          longitude: number | null
+          max_participants: number | null
+          organization_id: string | null
+          project_id: string | null
+          recurrence: string | null
+          start_date: string
+          title: string
+          updated_at: string | null
+          village: string | null
+        }
+        Insert: {
+          challenge_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          current_participants?: number | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          image_url?: string | null
+          is_all_day?: boolean | null
+          is_public?: boolean | null
+          latitude?: number | null
+          location_address?: string | null
+          location_name?: string | null
+          longitude?: number | null
+          max_participants?: number | null
+          organization_id?: string | null
+          project_id?: string | null
+          recurrence?: string | null
+          start_date: string
+          title: string
+          updated_at?: string | null
+          village?: string | null
+        }
+        Update: {
+          challenge_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          current_participants?: number | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          image_url?: string | null
+          is_all_day?: boolean | null
+          is_public?: boolean | null
+          latitude?: number | null
+          location_address?: string | null
+          location_name?: string | null
+          longitude?: number | null
+          max_participants?: number | null
+          organization_id?: string | null
+          project_id?: string | null
+          recurrence?: string | null
+          start_date?: string
+          title?: string
+          updated_at?: string | null
+          village?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invoices: {
         Row: {
           amount: number
@@ -2051,6 +2187,10 @@ export type Database = {
           user_role: Database["public"]["Enums"]["user_role"]
           website_url: string
         }[]
+      }
+      get_regional_village_stats: {
+        Args: { p_project_id?: string }
+        Returns: Json
       }
       get_user_impact_summary: { Args: { p_user_id?: string }; Returns: Json }
       get_user_organization_id: { Args: { _user_id: string }; Returns: string }
