@@ -141,7 +141,7 @@ const OrganizationEmployees = () => {
           }
         }
       } catch (error) {
-        console.error('Error fetching employees:', error);
+        // Silent error handling
       } finally {
         setLoading(false);
       }
@@ -187,7 +187,6 @@ const OrganizationEmployees = () => {
         description: "A link 30 napig érvényes.",
       });
     } catch (error) {
-      console.error('Error generating invite:', error);
       toast({
         title: "Hiba",
         description: "Nem sikerült létrehozni a meghívó linket",
@@ -249,7 +248,6 @@ const OrganizationEmployees = () => {
         description: "A munkatárs sikeresen eltávolítva a szervezetből.",
       });
     } catch (error) {
-      console.error('Error removing employee:', error);
       toast({
         title: "Hiba",
         description: "Nem sikerült eltávolítani a munkatársat",

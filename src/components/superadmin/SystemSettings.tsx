@@ -86,7 +86,6 @@ const SystemSettings = () => {
       setSubscriptionPlans(plansData || []);
 
     } catch (error) {
-      console.error('Error loading settings:', error);
       toast.error('Hiba történt a beállítások betöltésekor');
     } finally {
       setLoading(false);
@@ -102,7 +101,6 @@ const SystemSettings = () => {
       if (error) throw error;
       toast.success('Beállítás mentve');
     } catch (error) {
-      console.error('Error saving setting:', error);
       toast.error('Hiba történt a mentés során');
     }
   };
@@ -144,7 +142,6 @@ const SystemSettings = () => {
       setEditingPlan(null);
       loadData();
     } catch (error) {
-      console.error('Error saving plan:', error);
       toast.error('Hiba történt a mentés során');
     }
   };
@@ -160,7 +157,6 @@ const SystemSettings = () => {
       toast.success('Állapot frissítve');
       loadData();
     } catch (error) {
-      console.error('Error toggling plan:', error);
       toast.error('Hiba történt a frissítés során');
     }
   };

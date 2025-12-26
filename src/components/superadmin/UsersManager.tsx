@@ -163,7 +163,6 @@ const UsersManager = () => {
         orgUsers: orgUsers.length,
       });
     } catch (error) {
-      console.error("Error loading users:", error);
       toast.error("Hiba a felhasználók betöltésekor");
     } finally {
       setLoading(false);
@@ -254,7 +253,6 @@ const UsersManager = () => {
       setIsRoleDialogOpen(false);
       loadData();
     } catch (error) {
-      console.error("Error saving role:", error);
       toast.error("Hiba a szerepkör mentésekor");
     }
   };
@@ -274,7 +272,6 @@ const UsersManager = () => {
       setIsOrgDialogOpen(false);
       loadData();
     } catch (error) {
-      console.error("Error assigning organization:", error);
       toast.error("Hiba a szervezethez rendelésnél");
     }
   };

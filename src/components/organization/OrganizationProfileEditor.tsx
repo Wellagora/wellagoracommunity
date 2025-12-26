@@ -77,7 +77,6 @@ const OrganizationProfileEditor = () => {
         });
       }
     } catch (error) {
-      console.error('Error loading organization:', error);
       toast.error('Hiba történt a szervezet adatok betöltésekor');
     } finally {
       setLoading(false);
@@ -124,7 +123,6 @@ const OrganizationProfileEditor = () => {
       setOrganizationData(prev => ({ ...prev, logo_url: urlData.publicUrl }));
       toast.success('Logó feltöltve');
     } catch (error) {
-      console.error('Error uploading logo:', error);
       toast.error('Hiba történt a logó feltöltésekor');
     } finally {
       setUploading(false);
@@ -165,7 +163,6 @@ const OrganizationProfileEditor = () => {
 
       toast.success('Szervezet profil mentve');
     } catch (error) {
-      console.error('Error saving organization:', error);
       toast.error('Hiba történt a mentés során');
     } finally {
       setSaving(false);

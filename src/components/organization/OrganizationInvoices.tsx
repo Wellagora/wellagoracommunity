@@ -68,12 +68,12 @@ const OrganizationInvoices = () => {
           .order('created_at', { ascending: false });
 
         if (error) {
-          console.error('Error fetching invoices:', error);
+          // Silent error handling
         } else {
           setInvoices(data || []);
         }
       } catch (error) {
-        console.error('Error:', error);
+        // Silent error handling
       } finally {
         setLoading(false);
       }
