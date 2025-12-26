@@ -2145,6 +2145,16 @@
   "sponsor_landing.final_cta_subtitle": "Schließen Sie sich den Community-Unterstützern an und helfen Sie lokalen Initiativen zum Erfolg.",
   "sponsor_landing.final_cta_button": "Jetzt starten",
 
+  "subscription.monthly": "Monatlich",
+  "subscription.yearly": "Jährlich",
+  "subscription.discount": "~17% Rabatt",
+  "subscription.credits_per_month": "{{count}} Credits/Monat",
+  "subscription.bonus_credits": "+{{count}} Bonus-Credits",
+  "subscription.select_plan": "Dieses wählen",
+  "subscription.popular": "Beliebt",
+  "subscription.current_plan": "Aktuelles Paket",
+  "subscription.credits_per_month_short": "Credits/Monat",
+
   "sponsorship.dashboard_title": "Sponsoring-Übersicht",
   "sponsorship.dashboard_subtitle": "Verwalten Sie Ihre Sponsorings und verfolgen Sie Ihre Wirkung",
   "sponsorship.current_package": "Aktuelles Paket",

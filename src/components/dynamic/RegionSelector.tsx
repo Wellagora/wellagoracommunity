@@ -1,12 +1,13 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MapPin, Globe, Building2, Users, Navigation, ChevronRight } from 'lucide-react';
+import { Search, MapPin, Globe, Building2, Users, Navigation, ChevronRight, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface Region {
   id: string;
@@ -53,106 +54,71 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
   const [searchResults, setSearchResults] = useState<Region[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hierarchyPath, setHierarchyPath] = useState<Region[]>([]);
+  const [regions, setRegions] = useState<Region[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock regions database - in real app this would come from API
-  const mockRegions: Region[] = useMemo(() => [
-    {
-      id: 'austria',
-      name: 'Austria',
-      displayName: 'Austria',
-      type: 'country',
-      coordinates: { lat: 47.5162, lng: 14.5501 },
-      bounds: { north: 49.0211, south: 46.3722, east: 17.1608, west: 9.5307 },
-      population: 8900000,
-      area: 83879,
-      language: 'de',
-      currency: 'EUR',
-      adminLevel: 2
-    },
-    {
-      id: 'vienna',
-      name: 'Wien',
-      displayName: 'Vienna',
-      type: 'city',
-      parentId: 'austria',
-      coordinates: { lat: 48.2082, lng: 16.3738 },
-      bounds: { north: 48.3233, south: 48.1183, east: 16.5776, west: 16.1827 },
-      population: 1911000,
-      area: 414.6,
-      language: 'de',
-      currency: 'EUR',
-      adminLevel: 4
-    },
-    {
-      id: 'hietzing',
-      name: 'Hietzing',
-      displayName: 'Hietzing (13th District)',
-      type: 'district',
-      parentId: 'vienna',
-      coordinates: { lat: 48.1858, lng: 16.2993 },
-      bounds: { north: 48.2044, south: 48.1672, east: 16.3302, west: 16.2684 },
-      population: 53846,
-      area: 37.8,
-      language: 'de',
-      currency: 'EUR',
-      adminLevel: 6
-    },
-    {
-      id: 'burgenland',
-      name: 'Burgenland',
-      displayName: 'Burgenland',
-      type: 'state',
-      parentId: 'austria',
-      coordinates: { lat: 47.5000, lng: 16.5333 },
-      bounds: { north: 48.1167, south: 46.8833, east: 17.1667, west: 15.9333 },
-      population: 294436,
-      area: 3965,
-      language: 'de',
-      currency: 'EUR',
-      adminLevel: 4
-    },
-    {
-      id: 'eisenstadt',
-      name: 'Eisenstadt',
-      displayName: 'Eisenstadt',
-      type: 'city',
-      parentId: 'burgenland',
-      coordinates: { lat: 47.8450, lng: 16.5200 },
-      bounds: { north: 47.8672, south: 47.8228, east: 16.5544, west: 16.4856 },
-      population: 14816,
-      area: 42.9,
-      language: 'de',
-      currency: 'EUR',
-      adminLevel: 6
-    },
-    {
-      id: 'hungary',
-      name: 'Hungary',
-      displayName: 'Magyarország',
-      type: 'country',
-      coordinates: { lat: 47.1625, lng: 19.5033 },
-      bounds: { north: 48.5853, south: 45.7370, east: 22.9060, west: 16.1139 },
-      population: 9750000,
-      area: 93028,
-      language: 'hu',
-      currency: 'HUF',
-      adminLevel: 2
-    },
-    {
-      id: 'budapest',
-      name: 'Budapest',
-      displayName: 'Budapest',
-      type: 'city',
-      parentId: 'hungary',
-      coordinates: { lat: 47.4979, lng: 19.0402 },
-      bounds: { north: 47.5846, south: 47.3565, east: 19.3389, west: 18.9061 },
-      population: 1752000,
-      area: 525.2,
-      language: 'hu',
-      currency: 'HUF',
-      adminLevel: 4
-    }
-  ], []);
+  // Fetch regions from projects table
+  useEffect(() => {
+    const fetchRegions = async () => {
+      try {
+        setLoading(true);
+        const { data: projects, error } = await supabase
+          .from('projects')
+          .select('id, name, slug, region_name, villages')
+          .eq('is_active', true);
+
+        if (error) throw error;
+
+        // Convert projects to regions format
+        const projectRegions: Region[] = (projects || []).map(project => ({
+          id: project.id,
+          name: project.name,
+          displayName: project.region_name || project.name,
+          type: 'district' as const,
+          coordinates: { lat: 46.9, lng: 17.7 }, // Default to Káli basin area
+          language: 'hu',
+          currency: 'HUF',
+          adminLevel: 6,
+          population: (project.villages?.length || 0) * 500, // Estimate
+          area: (project.villages?.length || 0) * 15, // Estimate km²
+        }));
+
+        // Add Hungary as parent country
+        const hungaryRegion: Region = {
+          id: 'hungary',
+          name: 'Hungary',
+          displayName: 'Magyarország',
+          type: 'country',
+          coordinates: { lat: 47.1625, lng: 19.5033 },
+          bounds: { north: 48.5853, south: 45.7370, east: 22.9060, west: 16.1139 },
+          population: 9750000,
+          area: 93028,
+          language: 'hu',
+          currency: 'HUF',
+          adminLevel: 2
+        };
+
+        setRegions([hungaryRegion, ...projectRegions]);
+      } catch (error) {
+        console.error('Error fetching regions:', error);
+        // Fallback to basic Hungary region
+        setRegions([{
+          id: 'hungary',
+          name: 'Hungary',
+          displayName: 'Magyarország',
+          type: 'country',
+          coordinates: { lat: 47.1625, lng: 19.5033 },
+          language: 'hu',
+          currency: 'HUF',
+          adminLevel: 2
+        }]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRegions();
+  }, []);
 
   // Search functionality
   useEffect(() => {
@@ -163,7 +129,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
 
     setIsSearching(true);
     const timer = setTimeout(() => {
-      const results = mockRegions.filter(region =>
+      const results = regions.filter(region =>
         region.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         region.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
@@ -172,7 +138,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [searchQuery, mockRegions]);
+  }, [searchQuery, regions]);
 
   const getRegionTypeIcon = (type: Region['type']) => {
     switch (type) {
@@ -203,7 +169,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
     while (current) {
       path.unshift(current);
       if (current.parentId) {
-        current = mockRegions.find(r => r.id === current.parentId)!;
+        current = regions.find(r => r.id === current.parentId)!;
       } else {
         break;
       }
@@ -236,7 +202,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
     
     // Add popular regions if we need more
     if (suggestions.length < 6) {
-      const popular = mockRegions
+      const popular = regions
         .filter(r => !suggestions.some(s => s.id === r.id))
         .sort((a, b) => (b.population || 0) - (a.population || 0))
         .slice(0, 6 - suggestions.length);
@@ -244,7 +210,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
     }
     
     return suggestions;
-  }, [favoriteRegions, recentRegions, mockRegions]);
+  }, [favoriteRegions, recentRegions, regions]);
 
   return (
     <motion.div
@@ -308,6 +274,12 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                 {searchQuery ? 'Search Results' : 'Suggested Regions'}
               </h3>
               <div className="space-y-2">
+                {loading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                    <span className="ml-2 text-muted-foreground">Loading regions...</span>
+                  </div>
+                ) : (
                 <AnimatePresence>
                   {(searchQuery ? searchResults : suggestedRegions).map((region, index) => {
                     const IconComponent = getRegionTypeIcon(region.type);
@@ -355,6 +327,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                     );
                   })}
                 </AnimatePresence>
+                )}
               </div>
             </div>
 
