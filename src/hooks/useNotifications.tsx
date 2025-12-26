@@ -35,7 +35,7 @@ export const useNotifications = () => {
       setNotifications((data || []) as Notification[]);
       setUnreadCount((data || []).filter(n => !n.read).length);
     } catch (error: any) {
-      console.error('Error fetching notifications:', error);
+      // Silent failure
     } finally {
       setLoading(false);
     }
@@ -55,7 +55,7 @@ export const useNotifications = () => {
       );
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (error: any) {
-      console.error('Error marking notification as read:', error);
+      // Silent failure
     }
   };
 
@@ -75,7 +75,7 @@ export const useNotifications = () => {
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
       setUnreadCount(0);
     } catch (error: any) {
-      console.error('Error marking all as read:', error);
+      // Silent failure
     }
   };
 
@@ -146,7 +146,6 @@ export const useNotifications = () => {
         description: "You'll now receive push notifications"
       });
     } catch (error: any) {
-      console.error('Error subscribing to push:', error);
       toast({
         title: "Subscription Failed",
         description: "Could not enable push notifications",

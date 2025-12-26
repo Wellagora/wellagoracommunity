@@ -46,7 +46,7 @@ const SponsorTransactionHistory = () => {
       if (error) throw error;
       setTransactions((data || []) as Transaction[]);
     } catch (error) {
-      console.error('Error loading transactions:', error);
+      // Silent failure - toast not needed for transaction history
     } finally {
       setLoading(false);
     }

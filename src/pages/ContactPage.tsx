@@ -70,7 +70,6 @@ export default function ContactPage() {
 
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (error: any) {
-      console.error("Error sending message:", error);
       toast({
         title: "Hiba történt",
         description: "Nem sikerült elküldeni az üzenetet. Kérjük, próbáld újra később.",

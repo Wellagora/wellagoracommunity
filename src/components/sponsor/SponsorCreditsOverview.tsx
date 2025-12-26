@@ -37,7 +37,7 @@ const SponsorCreditsOverview = () => {
         .maybeSingle();
 
       if (creditsError && creditsError.code !== 'PGRST116') {
-        console.error('Error loading credits:', creditsError);
+        // Silent failure - credits will show as 0
       }
 
       setCredits(creditsData || { total_credits: 0, used_credits: 0, available_credits: 0 });
@@ -46,7 +46,7 @@ const SponsorCreditsOverview = () => {
       const impactMetrics = await getSponsorDashboardMetrics(user?.id || '');
       setMetrics(impactMetrics);
     } catch (error) {
-      console.error('Error:', error);
+      // Silent failure
     } finally {
       setLoading(false);
     }
