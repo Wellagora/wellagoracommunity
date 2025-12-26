@@ -2452,5 +2452,27 @@
     "help": "Hilfe",
     "company": "© 2024 Wellagora OG. Alle Rechte vorbehalten."
   },
-  "nav.help": "Hilfe"
+  "nav.help": "Hilfe",
+  "gamification.my_garden": "Mein Wirkungsgarten",
+  "gamification.level": "Stufe",
+  "gamification.seed": "Samen",
+  "gamification.seedling": "Setzling",
+  "gamification.growing_tree": "Wachsender Baum",
+  "gamification.strong_tree": "Starker Baum",
+  "gamification.forest": "Wald",
+  "gamification.next_level": "Nächste Stufe",
+  "gamification.points_to_next": "Punkte bis zur nächsten Stufe",
+  "gamification.points": "Punkte",
+  "gamification.challenges": "Programme",
+  "events.title": "Veranstaltungen",
+  "events.upcoming": "Kommende Veranstaltungen",
+  "events.rsvp": "Teilnehmen",
+  "events.going": "Ich komme",
+  "events.maybe": "Vielleicht",
+  "events.not_going": "Ich komme nicht",
+  "events.location": "Ort",
+  "events.date_time": "Datum & Uhrzeit",
+  "events.participants": "Teilnehmer",
+  "events.no_events": "Keine kommenden Veranstaltungen",
+  "events.view_all": "Alle Veranstaltungen anzeigen"
 }
