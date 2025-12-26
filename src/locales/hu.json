@@ -1,4 +1,18 @@
 {
+  "impact": {
+    "title": "Hatásom",
+    "total_co2": "Megmentett CO2",
+    "categories": "Kategóriák",
+    "recent_actions": "Legutóbbi akciók",
+    "community_impact": "Közösségi hatás",
+    "view_full_report": "Teljes jelentés",
+    "no_entries_yet": "Még nincs bejegyzésed",
+    "category_community": "Közösség",
+    "category_transport": "Közlekedés",
+    "category_energy": "Energia",
+    "category_food": "Élelmiszer",
+    "category_waste": "Hulladék"
+  },
   "share_impact": {
     "title": "Oszd meg a hatásodat",
     "my_impact": "Az én hatásom",

@@ -1,11 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Users, Target, Calendar, Loader2 } from "lucide-react";
+import { MapPin, Users, Target, Calendar, Loader2, Leaf } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useProject } from "@/contexts/ProjectContext";
 import { motion } from "framer-motion";
 import { useMemo, useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useCommunityImpact } from "@/hooks/useImpactSummary";
 
 interface RegionMetrics {
   participants: number;
@@ -18,6 +19,9 @@ export const RegionalImpactGarden = () => {
   const { currentProject } = useProject();
   const [metricsMap, setMetricsMap] = useState<Record<string, RegionMetrics>>({});
   const [loading, setLoading] = useState(true);
+  
+  // Fetch real community impact data
+  const { impact: communityImpact } = useCommunityImpact(currentProject?.id);
 
   // Generate region data from actual project villages
   const regions = useMemo(() => {
@@ -189,6 +193,32 @@ export const RegionalImpactGarden = () => {
                 </motion.div>
               );
             })}
+          </div>
+        )}
+
+        {/* Community Impact Summary */}
+        {communityImpact && communityImpact.total_co2_kg > 0 && (
+          <div className="text-center mb-6 px-4">
+            <Card className="inline-block bg-gradient-to-r from-success/10 to-primary/10 border-success/30">
+              <CardContent className="p-4 md:p-6">
+                <div className="flex flex-col sm:flex-row items-center gap-4 md:gap-8">
+                  <div className="flex items-center gap-2">
+                    <Leaf className="w-5 h-5 text-success" />
+                    <span className="text-lg font-bold text-success">
+                      {communityImpact.total_co2_kg.toFixed(1)} kg CO₂
+                    </span>
+                    <span className="text-sm text-muted-foreground">{t("impact.community_impact")}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Users className="w-5 h-5 text-primary" />
+                    <span className="text-lg font-bold text-primary">
+                      {communityImpact.total_participants}
+                    </span>
+                    <span className="text-sm text-muted-foreground">{t("impact_garden.legend_participants")}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         )}
 

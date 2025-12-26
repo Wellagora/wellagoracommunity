@@ -1,4 +1,18 @@
 {
+  "impact": {
+    "title": "Meine Wirkung",
+    "total_co2": "Eingesparte CO2",
+    "categories": "Kategorien",
+    "recent_actions": "Letzte Aktionen",
+    "community_impact": "Gemeinschaftswirkung",
+    "view_full_report": "Vollständiger Bericht",
+    "no_entries_yet": "Noch keine Einträge",
+    "category_community": "Gemeinschaft",
+    "category_transport": "Transport",
+    "category_energy": "Energie",
+    "category_food": "Lebensmittel",
+    "category_waste": "Abfall"
+  },
   "share_impact": {
     "title": "Teile deine Wirkung",
     "my_impact": "Meine Wirkung",

@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      affiliate_commissions: {
+        Row: {
+          amount_cents: number
+          challenge_completion_id: string | null
+          created_at: string | null
+          currency: string | null
+          id: string
+          paid_at: string | null
+          partner_id: string | null
+          status: string | null
+          stripe_transfer_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_cents: number
+          challenge_completion_id?: string | null
+          created_at?: string | null
+          currency?: string | null
+          id?: string
+          paid_at?: string | null
+          partner_id?: string | null
+          status?: string | null
+          stripe_transfer_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          challenge_completion_id?: string | null
+          created_at?: string | null
+          currency?: string | null
+          id?: string
+          paid_at?: string | null
+          partner_id?: string | null
+          status?: string | null
+          stripe_transfer_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_commissions_challenge_completion_id_fkey"
+            columns: ["challenge_completion_id"]
+            isOneToOne: false
+            referencedRelation: "challenge_completions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "affiliate_commissions_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_conversations: {
         Row: {
           created_at: string
@@ -98,6 +152,66 @@ export type Database = {
             columns: ["conversation_id"]
             isOneToOne: false
             referencedRelation: "ai_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      carbon_handprint_entries: {
+        Row: {
+          action_type: string
+          category: string
+          challenge_completion_id: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          impact_kg_co2: number
+          metadata: Json | null
+          project_id: string | null
+          title: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          category: string
+          challenge_completion_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          impact_kg_co2?: number
+          metadata?: Json | null
+          project_id?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          category?: string
+          challenge_completion_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          impact_kg_co2?: number
+          metadata?: Json | null
+          project_id?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "carbon_handprint_entries_challenge_completion_id_fkey"
+            columns: ["challenge_completion_id"]
+            isOneToOne: false
+            referencedRelation: "challenge_completions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "carbon_handprint_entries_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
@@ -837,6 +951,7 @@ export type Database = {
           longitude: number | null
           organization: string | null
           organization_id: string | null
+          payout_enabled: boolean | null
           preferred_language: string | null
           preferred_stakeholder_types: string[] | null
           project_id: string | null
@@ -846,6 +961,8 @@ export type Database = {
           region_type: string | null
           role: string
           seeking_partnerships: boolean | null
+          stripe_account_id: string | null
+          stripe_onboarding_complete: boolean | null
           sustainability_goals: string[] | null
           updated_at: string
           user_role: Database["public"]["Enums"]["user_role"]
@@ -873,6 +990,7 @@ export type Database = {
           longitude?: number | null
           organization?: string | null
           organization_id?: string | null
+          payout_enabled?: boolean | null
           preferred_language?: string | null
           preferred_stakeholder_types?: string[] | null
           project_id?: string | null
@@ -882,6 +1000,8 @@ export type Database = {
           region_type?: string | null
           role: string
           seeking_partnerships?: boolean | null
+          stripe_account_id?: string | null
+          stripe_onboarding_complete?: boolean | null
           sustainability_goals?: string[] | null
           updated_at?: string
           user_role?: Database["public"]["Enums"]["user_role"]
@@ -909,6 +1029,7 @@ export type Database = {
           longitude?: number | null
           organization?: string | null
           organization_id?: string | null
+          payout_enabled?: boolean | null
           preferred_language?: string | null
           preferred_stakeholder_types?: string[] | null
           project_id?: string | null
@@ -918,6 +1039,8 @@ export type Database = {
           region_type?: string | null
           role?: string
           seeking_partnerships?: boolean | null
+          stripe_account_id?: string | null
+          stripe_onboarding_complete?: boolean | null
           sustainability_goals?: string[] | null
           updated_at?: string
           user_role?: Database["public"]["Enums"]["user_role"]
@@ -1856,6 +1979,10 @@ export type Database = {
         Args: { p_project_id?: string }
         Returns: Json
       }
+      get_community_impact_summary: {
+        Args: { p_project_id?: string }
+        Returns: Json
+      }
       get_current_user_role: {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
@@ -1925,6 +2052,7 @@ export type Database = {
           website_url: string
         }[]
       }
+      get_user_impact_summary: { Args: { p_user_id?: string }; Returns: Json }
       get_user_organization_id: { Args: { _user_id: string }; Returns: string }
       get_user_primary_role: {
         Args: { _user_id: string }
