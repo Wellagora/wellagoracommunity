@@ -1,6 +1,5 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -32,7 +31,6 @@ interface UserProfileProps {
 
 const UserProfile = ({ userId, isOwnProfile = false }: UserProfileProps) => {
   const { toast } = useToast();
-  const { t } = useLanguage();
   
   // Mock user data - will be fetched from Supabase
   const user = {
@@ -124,8 +122,8 @@ const UserProfile = ({ userId, isOwnProfile = false }: UserProfileProps) => {
 
   const handleSendMessage = () => {
     toast({
-      title: t('profile.messaging_coming_soon'),
-      description: t('profile.messaging_coming_soon_description'),
+      title: "Üzenetküldés hamarosan!",
+      description: "Ez a funkció hamarosan elérhető lesz.",
     });
   };
 
