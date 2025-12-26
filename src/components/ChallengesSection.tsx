@@ -1,10 +1,12 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { challenges } from "@/data/challenges";
+import { useProject } from "@/contexts/ProjectContext";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Users,
   Clock,
@@ -13,15 +15,71 @@ import {
   MapPin,
   Zap,
   Target,
-  Calendar
+  Calendar,
+  Loader2
 } from "lucide-react";
 import communityImage from "@/assets/community-challenges.jpg";
+
+interface ChallengeData {
+  id: string;
+  title: string;
+  description: string;
+  points_base: number;
+  duration_days: number | null;
+  is_continuous: boolean | null;
+  start_date: string | null;
+  end_date: string | null;
+  location: string | null;
+  image_url: string | null;
+}
 
 const ChallengesSection = () => {
   const { t } = useLanguage();
   const { profile } = useAuth();
+  const { currentProject } = useProject();
+  const [challenges, setChallenges] = useState<ChallengeData[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const featuredChallenges = challenges.slice(0, 2);
+  useEffect(() => {
+    const fetchChallenges = async () => {
+      if (!currentProject) {
+        setChallenges([]);
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('challenge_definitions')
+        .select('id, title, description, points_base, duration_days, is_continuous, start_date, end_date, location, image_url')
+        .eq('project_id', currentProject.id)
+        .eq('is_active', true)
+        .order('created_at', { ascending: false })
+        .limit(2);
+
+      if (!error && data) {
+        setChallenges(data);
+      }
+      setLoading(false);
+    };
+
+    fetchChallenges();
+  }, [currentProject]);
+
+  const getDurationLabel = (challenge: ChallengeData) => {
+    if (challenge.is_continuous) return t('challenges.duration.ongoing');
+    if (challenge.duration_days) return `${challenge.duration_days} ${t('challenges.days')}`;
+    return t('challenges.duration.ongoing');
+  };
+
+  if (loading) {
+    return (
+      <section id="challenges" className="py-20 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="challenges" className="py-20 bg-background">
@@ -58,7 +116,13 @@ const ChallengesSection = () => {
             </div>
             
             <div className="space-y-6">
-              {featuredChallenges.map((challenge) => (
+              {challenges.length === 0 ? (
+                <Card className="shadow-card">
+                  <CardContent className="py-8 text-center text-muted-foreground">
+                    {t('challenges.no_challenges')}
+                  </CardContent>
+                </Card>
+              ) : challenges.map((challenge) => (
                 <Card 
                   key={challenge.id} 
                   className="shadow-card hover:shadow-eco transition-smooth ring-2 ring-primary/20"
@@ -67,18 +131,18 @@ const ChallengesSection = () => {
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
-                          <CardTitle className="text-lg">{t(challenge.titleKey)}</CardTitle>
+                          <CardTitle className="text-lg">{challenge.title}</CardTitle>
                           <Badge className="bg-warning/10 text-warning border-warning/20">
                             <Star className="w-3 h-3 mr-1" />
                             {t('challenges.featured')}
                           </Badge>
                         </div>
                         <CardDescription className="text-muted-foreground">
-                          {t(challenge.descriptionKey)}
+                          {challenge.description}
                         </CardDescription>
                       </div>
                       <div className="text-right">
-                        <div className="text-2xl font-bold text-primary">{challenge.pointsReward}</div>
+                        <div className="text-2xl font-bold text-primary">{challenge.points_base}</div>
                         <div className="text-xs text-muted-foreground">{t('challenges.points')}</div>
                       </div>
                     </div>
@@ -89,21 +153,21 @@ const ChallengesSection = () => {
                     <div className="flex flex-wrap gap-2">
                       <Badge variant="outline">
                         <Clock className="w-3 h-3 mr-1" />
-                        {t(challenge.durationKey)}
+                        {getDurationLabel(challenge)}
                       </Badge>
                     </div>
 
                     {/* Event Date and Location */}
-                    {challenge.isContinuous === false && (challenge.startDate || challenge.location) && (
+                    {!challenge.is_continuous && (challenge.start_date || challenge.location) && (
                       <div className="bg-accent/10 rounded-lg p-3 space-y-2 border border-accent/20">
                         <div className="flex items-center gap-2 text-xs font-semibold text-accent">
                           <Calendar className="w-3 h-3" />
                           <span>{t('challenges.event_type.scheduled')}</span>
                         </div>
-                        {challenge.startDate && (
+                        {challenge.start_date && (
                           <div className="text-sm text-foreground">
                             <span className="font-medium">{t('challenges.event_starts')}: </span>
-                            {new Date(challenge.startDate).toLocaleDateString('hu-HU', { 
+                            {new Date(challenge.start_date).toLocaleDateString('hu-HU', { 
                               year: 'numeric', 
                               month: 'long', 
                               day: 'numeric',
@@ -112,10 +176,10 @@ const ChallengesSection = () => {
                             })}
                           </div>
                         )}
-                        {challenge.endDate && (
+                        {challenge.end_date && (
                           <div className="text-sm text-foreground">
                             <span className="font-medium">{t('challenges.event_ends')}: </span>
-                            {new Date(challenge.endDate).toLocaleDateString('hu-HU', { 
+                            {new Date(challenge.end_date).toLocaleDateString('hu-HU', { 
                               year: 'numeric', 
                               month: 'long', 
                               day: 'numeric',
@@ -133,7 +197,7 @@ const ChallengesSection = () => {
                       </div>
                     )}
 
-                    {challenge.isContinuous !== false && (
+                    {challenge.is_continuous && (
                       <div className="bg-success/10 rounded-lg p-3 border border-success/20">
                         <div className="flex items-center gap-2 text-sm font-medium text-success">
                           <Zap className="w-4 h-4" />
@@ -147,14 +211,9 @@ const ChallengesSection = () => {
                       <div className="flex items-center space-x-4">
                         <div className="flex items-center text-muted-foreground">
                           <Users className="w-4 h-4 mr-1" />
-                          {challenge.participants.toLocaleString()}
+                          0
                         </div>
                       </div>
-                      {challenge.sponsor && (
-                        <div className="text-xs text-muted-foreground">
-                          {t('challenges.sponsored_by')} {challenge.sponsor.name}
-                        </div>
-                      )}
                     </div>
 
                     {/* Action Buttons based on user role */}
@@ -226,19 +285,19 @@ const ChallengesSection = () => {
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('challenges.active_programs')}</span>
-                    <span className="font-bold text-foreground">197</span>
+                    <span className="font-bold text-foreground">{challenges.length}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('challenges.active_participants')}</span>
-                    <span className="font-bold text-foreground">1,245</span>
+                    <span className="font-bold text-foreground">-</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('challenges.completed_challenges')}</span>
-                    <span className="font-bold text-foreground">3,247</span>
+                    <span className="font-bold text-foreground">-</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('challenges.community_events')}</span>
-                    <span className="font-bold text-foreground">156</span>
+                    <span className="font-bold text-foreground">-</span>
                   </div>
                 </div>
               </CardContent>
@@ -253,20 +312,7 @@ const ChallengesSection = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {[
-                  { name: "Sarah Chen", points: 2840, badge: "🏆", rank: 1 },
-                  { name: "Mike Rodriguez", points: 2650, badge: "🥈", rank: 2 },
-                  { name: "Emma Johnson", points: 2420, badge: "🥉", rank: 3 },
-                ].map((user) => (
-                  <div key={user.rank} className="flex items-center space-x-3">
-                    <div className="text-lg">{user.badge}</div>
-                    <div className="flex-1">
-                      <div className="font-medium text-foreground">{user.name}</div>
-                      <div className="text-sm text-muted-foreground">{user.points} {t('challenges.points')}</div>
-                    </div>
-                    <Badge variant="outline">#{user.rank}</Badge>
-                  </div>
-                ))}
+                <p className="text-sm text-muted-foreground">{t('challenges.coming_soon')}</p>
                 <Button variant="outline" className="w-full mt-4">
                   {t('challenges.view_leaderboard')}
                 </Button>

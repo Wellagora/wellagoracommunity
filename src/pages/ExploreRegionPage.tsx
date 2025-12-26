@@ -100,7 +100,6 @@ const ExploreRegionPage = () => {
         setOrganizations(orgsData as Organization[]);
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
     }

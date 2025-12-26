@@ -123,7 +123,6 @@ const OverviewTab = () => {
           activePrograms: programsRes.count || 0,
         });
       } catch (error) {
-        console.error('Error loading stats:', error);
       } finally {
         setLoading(false);
       }
@@ -248,7 +247,6 @@ const SuperAdminPage = () => {
   const [isSuperAdmin, setIsSuperAdmin] = useState<boolean | null>(null);
 
   const handleTabChange = (tab: string) => {
-    console.log('[SuperAdmin] Changing activeTab to:', tab);
     setActiveTab(tab);
   };
 
@@ -271,7 +269,6 @@ const SuperAdminPage = () => {
         });
 
         if (error) {
-          console.error('Error checking super_admin role:', error);
           setIsSuperAdmin(false);
           navigate('/dashboard');
           return;
@@ -282,7 +279,6 @@ const SuperAdminPage = () => {
           navigate('/dashboard');
         }
       } catch (error) {
-        console.error('Error checking super_admin role:', error);
         setIsSuperAdmin(false);
         navigate('/dashboard');
       }

@@ -31,31 +31,23 @@ export default function ProjectsListPage() {
   // Intelligent redirect: if only one project exists, go directly to join page
   useEffect(() => {
     if (!loading && projects.length === 1) {
-      console.log("Only one project found, redirecting to join page...");
       navigate(`/join/${projects[0].slug}`);
     }
   }, [loading, projects, navigate]);
 
   const loadProjects = async () => {
     try {
-      console.log("Loading projects...");
       const { data, error } = await supabase
         .from("projects")
         .select("*")
         .eq("is_active", true)
         .order("created_at", { ascending: false });
-
-      console.log("Projects query result:", { data, error });
       
-      if (error) {
-        console.error("Error loading projects:", error);
-        throw error;
-      }
+      if (error) throw error;
       
       setProjects(data || []);
-      console.log("Projects loaded:", data?.length || 0);
     } catch (error) {
-      console.error("Error loading projects:", error);
+      // Silent fail - UI handles empty state
     } finally {
       setLoading(false);
     }

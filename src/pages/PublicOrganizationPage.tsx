@@ -88,7 +88,6 @@ const PublicOrganizationPage = () => {
           setPeopleReached(peopleCount || 0);
         }
       } catch (err) {
-        console.error('Error fetching organization:', err);
         toast({
           title: "Error",
           description: "Failed to load organization",

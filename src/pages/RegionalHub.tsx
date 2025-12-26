@@ -30,7 +30,7 @@ import {
   TrendingUp,
   Euro
 } from 'lucide-react';
-import { challenges, Challenge } from '@/data/challenges';
+import { Challenge } from '@/data/challenges';
 
 interface StakeholderProfile {
   id: string;
@@ -85,6 +85,7 @@ const RegionalHub = () => {
   } | null>(null);
   const [stakeholders, setStakeholders] = useState<StakeholderProfile[]>([]);
   const [loadingStakeholders, setLoadingStakeholders] = useState(true);
+  const [challenges, setChallenges] = useState<Challenge[]>([]);
 
   const handleTypeToggle = (type: string) => {
     setSelectedTypes(prev => 
@@ -195,6 +196,51 @@ const RegionalHub = () => {
 
     fetchStakeholders();
   }, [currentProject, t, toast]);
+
+  // Fetch challenges from database for current project
+  useEffect(() => {
+    if (!currentProject) {
+      setChallenges([]);
+      return;
+    }
+
+    const fetchChallenges = async () => {
+      const { data, error } = await supabase
+        .from('challenge_definitions')
+        .select('*')
+        .eq('project_id', currentProject.id)
+        .eq('is_active', true)
+        .order('created_at', { ascending: false })
+        .limit(6);
+
+      if (!error && data) {
+        // Transform to Challenge format
+        const transformedChallenges: Challenge[] = data.map(ch => ({
+          id: ch.id,
+          titleKey: ch.title,
+          descriptionKey: ch.description,
+          longDescriptionKey: ch.description,
+          category: (ch.category || 'community') as Challenge['category'],
+          difficulty: (ch.difficulty || 'beginner') as Challenge['difficulty'],
+          durationKey: ch.duration_days ? `${ch.duration_days} days` : 'ongoing',
+          pointsReward: ch.points_base || 0,
+          participants: 0,
+          completionRate: 0,
+          stepsKeys: [],
+          tipsKeys: [],
+          participants_preview: [],
+          isContinuous: ch.is_continuous,
+          startDate: ch.start_date || undefined,
+          endDate: ch.end_date || undefined,
+          location: ch.location || undefined,
+          imageUrl: ch.image_url || undefined,
+        }));
+        setChallenges(transformedChallenges);
+      }
+    };
+
+    fetchChallenges();
+  }, [currentProject]);
 
   // Fetch sponsorships from database for current project
   useEffect(() => {

@@ -94,7 +94,6 @@ const AuthPage = () => {
     const { error } = await signIn(loginForm.email.trim(), loginForm.password);
     
     if (error) {
-      console.error("Login error:", error);
       if (error.message.includes("Invalid login credentials")) {
         setError(t('auth.invalid_credentials'));
       } else if (error.message.includes("Email not confirmed")) {
@@ -137,7 +136,6 @@ const AuthPage = () => {
     });
 
     if (error) {
-      console.error("Signup error:", error);
       if (error.message.includes("User already registered")) {
         setError(t('auth.account_exists'));
       } else if (error.message.includes("Password should be at least")) {
