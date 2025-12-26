@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from '@/lib/logger';
+import type { ProjectBranding, ProjectSettings } from '@/types/database';
 
 interface Project {
   id: string;
@@ -10,10 +11,12 @@ interface Project {
   region_name: string;
   villages: string[];
   description: string | null;
-  branding: any;
-  settings: any;
+  branding: ProjectBranding | null;
+  settings: ProjectSettings | null;
   is_active: boolean;
 }
+
+export type { Project };
 
 interface ProjectContextType {
   currentProject: Project | null;
@@ -67,7 +70,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       const projectIds = memberData.map((m) => m.project_id);
 
       // Get project details
-      const { data: projects, error: projectsError } = await supabase
+      const { data: projectsData, error: projectsError } = await supabase
         .from("projects")
         .select("*")
         .in("id", projectIds)
@@ -75,15 +78,28 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 
       if (projectsError) throw projectsError;
 
-      setUserProjects(projects || []);
+      // Map to typed Project interface
+      const projects: Project[] = (projectsData || []).map(p => ({
+        id: p.id,
+        name: p.name,
+        slug: p.slug,
+        region_name: p.region_name,
+        villages: p.villages || [],
+        description: p.description,
+        branding: (p.branding as unknown) as ProjectBranding | null,
+        settings: (p.settings as unknown) as ProjectSettings | null,
+        is_active: p.is_active ?? true,
+      }));
+
+      setUserProjects(projects);
 
       // Set current project
       const savedProjectId = localStorage.getItem("currentProjectId");
       
-      if (savedProjectId && projects?.find((p) => p.id === savedProjectId)) {
+      if (savedProjectId && projects.find((p) => p.id === savedProjectId)) {
         const project = projects.find((p) => p.id === savedProjectId);
         setCurrentProjectState(project || null);
-      } else if (projects && projects.length > 0) {
+      } else if (projects.length > 0) {
         setCurrentProjectState(projects[0]);
         localStorage.setItem("currentProjectId", projects[0].id);
       }

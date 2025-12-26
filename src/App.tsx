@@ -11,6 +11,7 @@ import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { initSentry } from "@/lib/sentry";
 import { LoadingFallback } from "@/components/LoadingFallback";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import "./index.css";
 
 // Lazy load all pages for better performance
@@ -75,8 +76,16 @@ function App() {
                         <Route path="/dashboard/handprint" element={<HandprintPage />} />
                         <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
                         <Route path="/dashboard" element={<DashboardPage />} />
-                        <Route path="/admin" element={<AdminDashboardPage />} />
-                        <Route path="/admin-dashboard" element={<AdminDashboardPage />} />
+                        <Route path="/admin" element={
+                          <ProtectedRoute requireAdmin>
+                            <AdminDashboardPage />
+                          </ProtectedRoute>
+                        } />
+                        <Route path="/admin-dashboard" element={
+                          <ProtectedRoute requireAdmin>
+                            <AdminDashboardPage />
+                          </ProtectedRoute>
+                        } />
                         <Route path="/regional-hub" element={<Navigate to="/community" replace />} />
                         <Route path="/explore-region" element={<ExploreRegionPage />} />
                         <Route path="/interactive-map" element={<Navigate to="/community" replace />} />
@@ -87,21 +96,49 @@ function App() {
                         <Route path="/ai-assistant" element={<AIAssistantPage />} />
                         <Route path="/challenges" element={<ChallengesPage />} />
                         <Route path="/challenges/:challengeId" element={<ChallengeDetailPage />} />
-                        <Route path="/profile" element={<ProfilePage />} />
+                        <Route path="/profile" element={
+                          <ProtectedRoute>
+                            <ProfilePage />
+                          </ProtectedRoute>
+                        } />
                         <Route path="/profile/:userId" element={<ProfilePage />} />
-                        <Route path="/organization" element={<OrganizationDashboard />} />
+                        <Route path="/organization" element={
+                          <ProtectedRoute allowedRoles={['business', 'government', 'ngo']}>
+                            <OrganizationDashboard />
+                          </ProtectedRoute>
+                        } />
                         <Route path="/organization/:organizationId" element={<PublicOrganizationPage />} />
-                        <Route path="/sponsor-dashboard" element={<SponsorDashboardPage />} />
+                        <Route path="/sponsor-dashboard" element={
+                          <ProtectedRoute allowedRoles={['business', 'government', 'ngo']}>
+                            <SponsorDashboardPage />
+                          </ProtectedRoute>
+                        } />
                         <Route path="/browse-programs" element={<BrowseProgramsPage />} />
-                        <Route path="/project-admin/:projectId" element={<ProjectAdminPage />} />
+                        <Route path="/project-admin/:projectId" element={
+                          <ProtectedRoute requireAdmin>
+                            <ProjectAdminPage />
+                          </ProtectedRoute>
+                        } />
                         <Route path="/projects" element={<ProjectsListPage />} />
                         <Route path="/join/:projectSlug" element={<JoinProjectPage />} />
                         <Route path="/contact" element={<ContactPage />} />
-                        <Route path="/inbox" element={<InboxPage />} />
-                        <Route path="/translation-tool" element={<TranslationToolPage />} />
+                        <Route path="/inbox" element={
+                          <ProtectedRoute>
+                            <InboxPage />
+                          </ProtectedRoute>
+                        } />
+                        <Route path="/translation-tool" element={
+                          <ProtectedRoute requireAdmin>
+                            <TranslationToolPage />
+                          </ProtectedRoute>
+                        } />
                         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
                         <Route path="/impressum" element={<ImpressumPage />} />
-                        <Route path="/super-admin" element={<SuperAdminPage />} />
+                        <Route path="/super-admin" element={
+                          <ProtectedRoute requireSuperAdmin>
+                            <SuperAdminPage />
+                          </ProtectedRoute>
+                        } />
                         <Route path="/sponsor" element={<SponsorLandingPage />} />
                         <Route path="/register/organization" element={<OrganizationRegisterPage />} />
                         <Route path="/join/org/:inviteCode" element={<JoinOrganizationPage />} />
