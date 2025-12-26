@@ -38,6 +38,7 @@ const AIAssistantChat = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const quickActions = [
     { 
@@ -227,9 +228,9 @@ const AIAssistantChat = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-3xl">
-      {/* FIXED HEADER */}
-      <div className="bg-background/95 backdrop-blur-sm sticky top-0 z-10 pb-4 border-b border-border">
+    <div className="flex flex-col h-[calc(100vh-4rem)] max-w-3xl mx-auto">
+      {/* STICKY HEADER - Avatar, Title, Quick Actions */}
+      <div className="sticky top-0 z-20 bg-background border-b border-border px-4 py-4">
         {/* Avatar and Title */}
         <div className="flex items-center gap-4 mb-4">
           <div className="relative flex-shrink-0">
@@ -282,8 +283,8 @@ const AIAssistantChat = () => {
         </div>
       </div>
 
-      {/* INPUT FIELD - Below header, always visible */}
-      <div className="sticky top-[180px] z-10 bg-background/95 backdrop-blur-sm py-4 border-b border-border">
+      {/* INPUT FIELD - Below header, sticky */}
+      <div className="sticky top-[168px] z-20 bg-background border-b border-border px-4 py-4">
         {error && (
           <Alert variant="destructive" className="mb-3">
             <AlertCircle className="h-4 w-4" />
@@ -330,8 +331,8 @@ const AIAssistantChat = () => {
         </p>
       </div>
 
-      {/* MESSAGES SECTION - Newest at top, scroll down for older */}
-      <div className="py-4 space-y-4">
+      {/* SCROLLABLE MESSAGES AREA - Only this part scrolls */}
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
         {/* Typing Indicator - Shows at TOP when AI is responding */}
         {isTyping && (
           <div className="flex gap-3 items-start animate-fade-in">
@@ -408,6 +409,7 @@ const AIAssistantChat = () => {
             </div>
           ))
         )}
+        <div ref={messagesEndRef} />
       </div>
     </div>
   );
