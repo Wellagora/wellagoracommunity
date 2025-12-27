@@ -93,7 +93,7 @@ interface PlatformStats {
   total_events: number;
 }
 
-const SuperAdminSidebar = ({ activeTab, onTabChange }: { activeTab: string; onTabChange: (tab: string) => void }) => {
+const SuperAdminSidebar = ({ activeTab, onTabChange, pendingCount }: { activeTab: string; onTabChange: (tab: string) => void; pendingCount?: number }) => {
   const { state } = useSidebar();
 
   return (
@@ -108,11 +108,12 @@ const SuperAdminSidebar = ({ activeTab, onTabChange }: { activeTab: string; onTa
               {menuItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeTab === item.id;
+                const showDot = item.id === 'content-moderation' && (pendingCount || 0) > 0;
                 return (
                   <SidebarMenuItem key={item.id}>
                     <SidebarMenuButton
                       onClick={() => onTabChange(item.id)}
-                      className={isActive ? "bg-accent text-accent-foreground" : ""}
+                      className={`relative ${isActive ? "bg-accent text-accent-foreground" : ""}`}
                       tooltip={item.label}
                     >
                       <Icon 
@@ -120,6 +121,12 @@ const SuperAdminSidebar = ({ activeTab, onTabChange }: { activeTab: string; onTa
                         style={item.iconColor ? { color: item.iconColor } : undefined}
                       />
                       <span>{item.label}</span>
+                      {showDot && (
+                        <span className="absolute right-2 top-1/2 -translate-y-1/2 flex h-2 w-2">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75" />
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500" />
+                        </span>
+                      )}
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
@@ -393,6 +400,17 @@ const SuperAdminPage = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [isSuperAdmin, setIsSuperAdmin] = useState<boolean | null>(null);
 
+  // Fetch stats for sidebar notification dot
+  const { data: sidebarStats } = useQuery({
+    queryKey: ['adminStats'],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_admin_platform_stats');
+      if (error) throw error;
+      return data as unknown as PlatformStats;
+    },
+    enabled: isSuperAdmin === true,
+  });
+
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
@@ -457,7 +475,7 @@ const SuperAdminPage = () => {
       
       <SidebarProvider>
         <div className="flex flex-1 w-full">
-          <SuperAdminSidebar activeTab={activeTab} onTabChange={handleTabChange} />
+          <SuperAdminSidebar activeTab={activeTab} onTabChange={handleTabChange} pendingCount={sidebarStats?.pending_content} />
           
           <main className="flex-1 overflow-auto bg-background">
             <div className="container mx-auto p-6 lg:p-8">
