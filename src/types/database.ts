@@ -8,7 +8,7 @@ export type { Database } from '@/integrations/supabase/types';
 export type { Json } from '@/integrations/supabase/types';
 
 // User roles - must match the user_role enum in the database
-export type UserRole = 'citizen' | 'business' | 'government' | 'ngo';
+export type UserRole = 'citizen' | 'creator' | 'business' | 'government' | 'ngo';
 
 // App roles - must match the app_role enum in the database
 export type AppRole = 'super_admin' | 'admin' | 'business' | 'government' | 'ngo' | 'citizen' | 'project_admin';
