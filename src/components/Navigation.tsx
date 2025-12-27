@@ -164,11 +164,11 @@ const Navigation = () => {
   const navItems = useMemo(
     () => [
       { path: "/", label: t("nav.home"), icon: Home },
-      { path: "/piactr", label: t("nav.marketplace"), icon: Store },
+      { path: "/piacer", label: t("nav.marketplace"), icon: Store },
       { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
       { path: "/community", label: t("nav.community"), icon: UsersIcon },
       ...(user && profile && dashboardPath ? [{ path: dashboardPath, label: t("nav.dashboard"), icon: LayoutDashboard }] : []),
-      ...(user && (isCreator || isSuperAdmin) ? [{ 
+      ...(user && isCreator && viewMode === 'citizen' ? [{ 
         path: "/szakertoi-studio", 
         label: t("nav.expert_studio"), 
         icon: Sparkles,
