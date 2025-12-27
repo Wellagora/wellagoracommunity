@@ -1178,6 +1178,8 @@ export type Database = {
           stripe_connect_id: string | null
           stripe_onboarding_complete: boolean | null
           suspended_at: string | null
+          suspended_by: string | null
+          suspended_reason: string | null
           sustainability_goals: string[] | null
           updated_at: string
           user_role: Database["public"]["Enums"]["user_role"]
@@ -1223,6 +1225,8 @@ export type Database = {
           stripe_connect_id?: string | null
           stripe_onboarding_complete?: boolean | null
           suspended_at?: string | null
+          suspended_by?: string | null
+          suspended_reason?: string | null
           sustainability_goals?: string[] | null
           updated_at?: string
           user_role?: Database["public"]["Enums"]["user_role"]
@@ -1268,6 +1272,8 @@ export type Database = {
           stripe_connect_id?: string | null
           stripe_onboarding_complete?: boolean | null
           suspended_at?: string | null
+          suspended_by?: string | null
+          suspended_reason?: string | null
           sustainability_goals?: string[] | null
           updated_at?: string
           user_role?: Database["public"]["Enums"]["user_role"]
@@ -1289,6 +1295,13 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_suspended_by_fkey"
+            columns: ["suspended_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
