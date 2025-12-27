@@ -168,7 +168,7 @@ const Navigation = () => {
       { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
       { path: "/community", label: t("nav.community"), icon: UsersIcon },
       ...(user && profile && dashboardPath ? [{ path: dashboardPath, label: t("nav.dashboard"), icon: LayoutDashboard }] : []),
-      ...(user && isCreator ? [{ 
+      ...(user && (isCreator || isSuperAdmin) ? [{ 
         path: "/szakertoi-studio", 
         label: t("nav.expert_studio"), 
         icon: Sparkles,
@@ -300,51 +300,49 @@ const Navigation = () => {
                       </Link>
                     </DropdownMenuItem>
                     
-                    {/* Role Switcher for regular users */}
-                    {!isSuperAdmin && (
-                      <>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuLabel className="text-xs text-muted-foreground">
-                          {t('nav.switch_role')}
-                        </DropdownMenuLabel>
-                        <DropdownMenuItem
-                          onClick={() => handleRoleSwitch('citizen')}
-                          disabled={isRoleSwitching}
-                          className={`flex items-center gap-2 cursor-pointer ${
-                            profile?.user_role === 'citizen' ? 'bg-accent' : ''
-                          }`}
-                        >
-                          <Compass className="h-4 w-4" />
-                          {t('nav.role_explorer')}
-                          {profile?.user_role === 'citizen' && (
-                            <Badge variant="secondary" className="ml-auto text-xs">
-                              ✓
-                            </Badge>
-                          )}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => handleRoleSwitch('creator')}
-                          disabled={isRoleSwitching}
-                          className={`flex items-center gap-2 cursor-pointer ${
-                            profile?.user_role === 'creator' ? 'bg-[#00E5FF]/10' : ''
-                          }`}
-                        >
-                          <Sparkles className="h-4 w-4 text-[#00E5FF]" />
-                          <span className={profile?.user_role === 'creator' ? 'text-[#00E5FF]' : ''}>
-                            {t('nav.role_expert')}
-                          </span>
-                          {profile?.user_role === 'creator' ? (
-                            <Badge className="ml-auto text-xs bg-[#00E5FF] text-black">
-                              ✓
-                            </Badge>
-                          ) : (
-                            <Badge className="ml-auto text-xs bg-[#00E5FF] text-black">
-                              {t('common.new')}
-                            </Badge>
-                          )}
-                        </DropdownMenuItem>
-                      </>
-                    )}
+                    {/* Role Switcher - available for all logged-in users */}
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuLabel className="text-xs text-muted-foreground">
+                        {t('nav.switch_role')}
+                      </DropdownMenuLabel>
+                      <DropdownMenuItem
+                        onClick={() => handleRoleSwitch('citizen')}
+                        disabled={isRoleSwitching}
+                        className={`flex items-center gap-2 cursor-pointer ${
+                          profile?.user_role === 'citizen' ? 'bg-accent' : ''
+                        }`}
+                      >
+                        <Compass className="h-4 w-4" />
+                        {t('nav.role_explorer')}
+                        {profile?.user_role === 'citizen' && (
+                          <Badge variant="secondary" className="ml-auto text-xs">
+                            ✓
+                          </Badge>
+                        )}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleRoleSwitch('creator')}
+                        disabled={isRoleSwitching}
+                        className={`flex items-center gap-2 cursor-pointer ${
+                          profile?.user_role === 'creator' ? 'bg-[#00E5FF]/10' : ''
+                        }`}
+                      >
+                        <Sparkles className="h-4 w-4 text-[#00E5FF]" />
+                        <span className={profile?.user_role === 'creator' ? 'text-[#00E5FF]' : ''}>
+                          {t('nav.role_expert')}
+                        </span>
+                        {profile?.user_role === 'creator' ? (
+                          <Badge className="ml-auto text-xs bg-[#00E5FF] text-black">
+                            ✓
+                          </Badge>
+                        ) : (
+                          <Badge className="ml-auto text-xs bg-[#00E5FF] text-black">
+                            {t('common.new')}
+                          </Badge>
+                        )}
+                      </DropdownMenuItem>
+                    </>
                     
                     {isSuperAdmin && (
                       <>
