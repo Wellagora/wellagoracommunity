@@ -37,6 +37,12 @@ import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import {
   Search,
   Sparkles,
   CheckCircle,
@@ -643,15 +649,26 @@ const CreatorManager = () => {
 
               <Separator />
 
-              {/* Suspend Action */}
-              <Button
-                variant={selectedCreator.suspended_at ? 'default' : 'destructive'}
-                className="w-full"
-                onClick={() => suspendCreator(selectedCreator.id, !!selectedCreator.suspended_at)}
-              >
-                <Ban className="h-4 w-4 mr-2" />
-                {selectedCreator.suspended_at ? 'Kreátor aktiválása' : 'Kreátor felfüggesztése'}
-              </Button>
+              {/* Suspend Action - Disabled for now */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="w-full">
+                      <Button
+                        variant="destructive"
+                        className="w-full opacity-50 cursor-not-allowed"
+                        disabled
+                      >
+                        <Ban className="h-4 w-4 mr-2" />
+                        Felfüggesztés
+                      </Button>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Hamarosan elérhető</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           )}
         </SheetContent>
