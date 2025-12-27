@@ -211,13 +211,13 @@ const CreatorManager = () => {
     if (error) {
       toast({
         title: t('admin.error'),
-        description: 'Nem sikerült frissíteni a státuszt',
+        description: t('admin.status_update_failed'),
         variant: 'destructive',
       });
     } else {
       toast({
-        title: 'Siker',
-        description: isSuspended ? 'Kreátor aktiválva' : 'Kreátor felfüggesztve',
+        title: t('common.success'),
+        description: isSuspended ? t('admin.creator_activated') : t('admin.creator_suspended'),
       });
       loadCreators();
       setSheetOpen(false);
@@ -288,7 +288,7 @@ const CreatorManager = () => {
           {t('admin.creators_management')}
         </h2>
         <p className="text-muted-foreground">
-          Kreátorok validálása és kezelése
+          {t('admin.creators_management_desc') || 'Kreátorok validálása és kezelése'}
         </p>
       </div>
 
@@ -380,7 +380,7 @@ const CreatorManager = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t('admin.all_creators')}</SelectItem>
-                <SelectItem value="has_content">Van tartalom</SelectItem>
+                <SelectItem value="has_content">{t('admin.has_content')}</SelectItem>
                 <SelectItem value="no_content">{t('admin.no_content')}</SelectItem>
               </SelectContent>
             </Select>
@@ -399,13 +399,13 @@ const CreatorManager = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Kreátor</TableHead>
+                <TableHead>{t('admin.creator')}</TableHead>
                 <TableHead>{t('admin.registered')}</TableHead>
-                <TableHead>Hitelesítés</TableHead>
+                <TableHead>{t('admin.verification')}</TableHead>
                 <TableHead>Stripe</TableHead>
-                <TableHead>Kifizetés</TableHead>
+                <TableHead>{t('admin.payout')}</TableHead>
                 <TableHead>{t('admin.content_count')}</TableHead>
-                <TableHead>Műveletek</TableHead>
+                <TableHead>{t('admin.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -424,7 +424,7 @@ const CreatorManager = () => {
                           {creator.first_name} {creator.last_name}
                           {creator.suspended_at && (
                             <Badge variant="destructive" className="text-xs">
-                              Felfüggesztve
+                              {t('admin.suspended')}
                             </Badge>
                           )}
                         </div>
@@ -452,11 +452,11 @@ const CreatorManager = () => {
                     {creator.stripe_onboarding_complete ? (
                       <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
                         <CreditCard className="h-3 w-3 mr-1" />
-                        Összekapcsolva
+                        {t('admin.stripe_connected')}
                       </Badge>
                     ) : (
                       <Badge variant="outline" className="text-orange-400 border-orange-500/30">
-                        Nincs
+                        {t('admin.stripe_not_connected')}
                       </Badge>
                     )}
                   </TableCell>
@@ -496,7 +496,7 @@ const CreatorManager = () => {
               {filteredCreators.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                    Nincs találat
+                    {t('admin.no_results')}
                   </TableCell>
                 </TableRow>
               )}
