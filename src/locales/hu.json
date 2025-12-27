@@ -16,7 +16,7 @@
   "share_impact": {
     "title": "Oszd meg a hatásodat",
     "my_impact": "Az én hatásom",
-    "challenges_completed": "Teljesített kihívás",
+    "challenges_completed": "Teljesített program",
     "points_earned": "Pont",
     "co2_saved": "Megmentett CO2",
     "join_me": "Csatlakozz hozzám!",
@@ -2716,5 +2716,23 @@
   "nearby.events": "Közelgő események",
   "nearby.location_denied": "Helymeghatározás nem engedélyezett",
   "nearby.location_not_supported": "Helymeghatározás nem támogatott",
-  "nearby.no_results": "Nincs közeli partner vagy esemény"
+  "nearby.no_results": "Nincs közeli partner vagy esemény",
+  "nearby.retry": "Próbáld újra",
+  "creator.title": "Kreátor Fiók",
+  "creator.active_badge": "Aktív Kreátor",
+  "creator.description": "Állítsd be a kifizetési preferenciáidat és a kreátor fiók beállításait.",
+  "creator.payout_preference": "Kifizetési preferencia",
+  "creator.stripe_connect": "Stripe Connect Összekapcsolása",
+  "creator.stripe_connected": "Összekapcsolva",
+  "creator.stripe_connected_desc": "A Stripe fiókod aktív és készen áll a kifizetésekre.",
+  "creator.stripe_not_connected": "Nincs összekapcsolva",
+  "creator.stripe_connect_desc": "Kapcsold össze a Stripe fiókodat a kifizetések fogadásához.",
+  "creator.wise_email": "Wise Email",
+  "creator.wise_iban": "Wise IBAN",
+  "creator.become_creator": "Legyél Kreátor",
+  "creator.bank_transfer": "Banki átutalás",
+  "creator.save_settings": "Változtatások mentése",
+  "creator.settings_saved": "Beállítások mentve",
+  "creator.settings_saved_desc": "A kreátor fiók beállításai sikeresen mentve.",
+  "creator.save_error": "Nem sikerült menteni a beállításokat."
 }
