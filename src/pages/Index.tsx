@@ -61,7 +61,7 @@ const Index = () => {
                 <p className="text-base sm:text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
                   {t("index.ready_to_make_impact")}
                 </p>
-                <Link to="/challenges">
+                <Link to="/piacer">
                   <Button size="lg" className="min-w-[200px]">
                     {t("index.browse_programs_cta")}
                   </Button>
@@ -230,7 +230,7 @@ const Index = () => {
                     </div>
                     <h3 className="text-xl font-bold mb-3 text-center">{t("index.feature_challenges_title")}</h3>
                     <p className="text-muted-foreground mb-6 text-center">{t("index.feature_challenges_desc")}</p>
-                    <Link to="/challenges" className="block">
+                    <Link to="/piacer" className="block">
                       <Button variant="outline" className="w-full">
                         {t("index.feature_challenges_btn")}
                       </Button>

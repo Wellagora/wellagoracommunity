@@ -107,8 +107,8 @@ const FeaturedChallenges = () => {
                     <ProgramCardButtons
                       challengeId={challenge.id}
                       isJoined={isJoined(challenge.id)}
-                      onNavigate={() => navigate(`/challenges/${challenge.id}`)}
-                      onSponsor={() => navigate(`/challenges/${challenge.id}?action=sponsor`)}
+                      onNavigate={() => navigate(`/piacer/${challenge.id}`)}
+                      onSponsor={() => navigate(`/piacer/${challenge.id}?action=sponsor`)}
                     />
                   </CardContent>
                 </Card>
@@ -124,7 +124,7 @@ const FeaturedChallenges = () => {
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <Link to="/challenges">
+          <Link to="/piacer">
               <Button variant="outline" size="lg" className="border-2 border-primary hover:bg-primary hover:text-white">
                 {t("challenges.view_all")}
               </Button>

@@ -93,7 +93,7 @@ const ChallengeCelebrationModal = ({
 
   const handleNextChallenge = () => {
     if (nextChallengeId) {
-      navigate(`/challenges/${nextChallengeId}`);
+      navigate(`/piacer/${nextChallengeId}`);
       onClose();
     }
   };

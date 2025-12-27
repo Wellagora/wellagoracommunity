@@ -127,7 +127,7 @@ const ChallengeDetailPage = () => {
   };
 
   const handleGoBack = () => {
-    navigate('/challenges');
+    navigate('/piacer');
   };
 
   if (loading) {
@@ -149,7 +149,7 @@ const ChallengeDetailPage = () => {
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-4">{t('challenges.not_found')}</h1>
             <p className="text-muted-foreground mb-4">{t('challenges.not_found_desc')}</p>
-            <Button onClick={() => navigate("/challenges")}>{t('challenges.back_to_challenges')}</Button>
+            <Button onClick={() => navigate("/piacer")}>{t('challenges.back_to_challenges')}</Button>
           </div>
         </div>
       </div>

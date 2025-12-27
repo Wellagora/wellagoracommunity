@@ -198,7 +198,7 @@ export function ProgramCalendar() {
                 <div 
                   key={challenge.id}
                   className="p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
-                  onClick={() => navigate(`/challenges/${challenge.id}`)}
+                  onClick={() => navigate(`/piacer/${challenge.id}`)}
                 >
                   <div className="flex items-start justify-between mb-2">
                     <h4 className="font-semibold">{challenge.title}</h4>

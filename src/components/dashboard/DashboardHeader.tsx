@@ -94,7 +94,7 @@ export const DashboardHeader = memo(({
           {showQuickActions && (
             <div className="flex flex-wrap items-center justify-center gap-3 mt-6 sm:mt-8">
               <Button
-                onClick={() => navigate('/challenges')}
+                onClick={() => navigate('/piacer')}
                 variant="default"
                 size="sm"
                 className="gap-2"

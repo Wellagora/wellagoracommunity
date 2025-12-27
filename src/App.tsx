@@ -119,8 +119,8 @@ function App() {
                           <Route path="/esemenyek" element={<EventsPage />} />
                           
                           {/* Redirect challenges to marketplace */}
-                          <Route path="/challenges" element={<Navigate to="/piactr" replace />} />
-                          <Route path="/challenges/:challengeId" element={<Navigate to="/piactr" replace />} />
+                          <Route path="/challenges" element={<Navigate to="/piacer" replace />} />
+                          <Route path="/challenges/:challengeId" element={<Navigate to="/piacer" replace />} />
                           
                           <Route
                             path="/profile"
@@ -148,7 +148,7 @@ function App() {
                               </ProtectedRoute>
                             }
                           />
-                          <Route path="/browse-programs" element={<Navigate to="/piactr" replace />} />
+                          <Route path="/browse-programs" element={<Navigate to="/piacer" replace />} />
                           <Route
                             path="/project-admin/:projectId"
                             element={
@@ -222,13 +222,14 @@ function App() {
                           <Route path="/creator/programs/:id/edit" element={<Navigate to="/szakertoi-studio/utmutato/:id" replace />} />
                           
                           {/* Marketplace (Piactér) - new Hungarian routes */}
-                          <Route path="/piactr" element={<ProgramsListingPage />} />
-                          <Route path="/piactr/:id" element={<ProgramDetailPage />} />
+                          <Route path="/piacer" element={<ProgramsListingPage />} />
+                          <Route path="/piacer/:id" element={<ProgramDetailPage />} />
                           <Route path="/programs/:id" element={<ProgramDetailPage />} />
-                          <Route path="/programs" element={<Navigate to="/piactr" replace />} />
+                          <Route path="/programs" element={<Navigate to="/piacer" replace />} />
+                          <Route path="/piactr" element={<Navigate to="/piacer" replace />} />
                           
                           <Route
-                            path="/piactr/:id/learn"
+                            path="/piacer/:id/learn"
                             element={
                               <ProtectedRoute>
                                 <ProgramLearnPage />

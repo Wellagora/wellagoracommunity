@@ -111,7 +111,7 @@ const ChallengesSection = () => {
                 {t('challenges.featured.title')}
               </h3>
               <Button variant="outline" asChild>
-                <Link to="/challenges">{t('challenges.view_all')}</Link>
+                <Link to="/piacer">{t('challenges.view_all')}</Link>
               </Button>
             </div>
             
@@ -224,7 +224,7 @@ const ChallengesSection = () => {
                           className="flex-1 bg-gradient-primary hover:shadow-glow transition-smooth px-3 py-2"
                           asChild
                         >
-                          <Link to={`/challenges/${challenge.id}`}>
+                          <Link to={`/piacer/${challenge.id}`}>
                             {t('challenges.join_challenge')}
                           </Link>
                         </Button>
@@ -237,7 +237,7 @@ const ChallengesSection = () => {
                           className="flex-1 px-3 py-2"
                           asChild
                         >
-                          <Link to={`/challenges/${challenge.id}?action=sponsor`}>
+                          <Link to={`/piacer/${challenge.id}?action=sponsor`}>
                             {t('challenges.sponsor_challenge')}
                           </Link>
                         </Button>
@@ -249,7 +249,7 @@ const ChallengesSection = () => {
                           className="w-full bg-gradient-primary hover:shadow-glow transition-smooth px-3 py-2"
                           asChild
                         >
-                          <Link to={`/challenges/${challenge.id}`}>
+                          <Link to={`/piacer/${challenge.id}`}>
                             {t('challenges.view_challenge')}
                           </Link>
                         </Button>

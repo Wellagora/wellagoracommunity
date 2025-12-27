@@ -170,7 +170,7 @@ const DashboardPage = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate("/challenges")}
+              onClick={() => navigate("/piacer")}
               title={t("dashboard.new_program")}
             >
               <Plus className="h-5 w-5" />
@@ -219,7 +219,7 @@ const DashboardPage = () => {
                   <Button
                     variant="link"
                     className="p-0 h-auto mt-2 text-primary hover:text-primary/80"
-                    onClick={() => navigate("/challenges")}
+                    onClick={() => navigate("/piacer")}
                   >
                     {t("dashboard.view_all")} <ArrowRight className="h-4 w-4 ml-1" />
                   </Button>
@@ -252,7 +252,7 @@ const DashboardPage = () => {
                     <Target className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                     <p className="text-lg font-medium mb-2">{t("dashboard.no_programs")}</p>
                     <p className="text-muted-foreground mb-4">{t("dashboard.no_programs_desc")}</p>
-                    <Button onClick={() => navigate("/challenges")}>{t("dashboard.browse_programs")}</Button>
+                    <Button onClick={() => navigate("/piacer")}>{t("dashboard.browse_programs")}</Button>
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -260,7 +260,7 @@ const DashboardPage = () => {
                       <Card
                         key={program.id}
                         className="hover:shadow-md transition-all duration-300 cursor-pointer border-border/50"
-                        onClick={() => navigate(`/challenges/${program.id}`)}
+                        onClick={() => navigate(`/piacer/${program.id}`)}
                       >
                         <CardContent className="p-4">
                           <div className="flex gap-4">
