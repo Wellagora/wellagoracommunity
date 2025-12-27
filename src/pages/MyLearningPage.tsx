@@ -8,12 +8,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { 
-  GraduationCap, 
+  Bookmark, 
   PlayCircle, 
   ArrowRight, 
   BookOpen,
   Crown,
-  ShoppingCart
+  ShoppingCart,
+  Store
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -134,7 +135,7 @@ const MyLearningPage = () => {
     return (
       <div className="min-h-screen bg-[#0A1930] flex items-center justify-center">
         <div className="text-center">
-          <GraduationCap className="w-16 h-16 text-[hsl(var(--cyan))] mx-auto mb-4" />
+          <Bookmark className="w-16 h-16 text-[hsl(var(--cyan))] mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-foreground mb-2">
             {t("learning.login_required")}
           </h1>
@@ -160,14 +161,14 @@ const MyLearningPage = () => {
         >
           <div className="flex items-center gap-3 mb-2">
             <div className="w-12 h-12 rounded-xl bg-[hsl(var(--cyan))]/20 flex items-center justify-center">
-              <GraduationCap className="w-6 h-6 text-[hsl(var(--cyan))]" />
+              <Bookmark className="w-6 h-6 text-[hsl(var(--cyan))]" />
             </div>
             <div>
               <h1 className="text-3xl font-bold text-foreground">
-                {t("learning.my_learning")}
+                {t("my_agora.title")}
               </h1>
               <p className="text-muted-foreground">
-                {t("learning.my_learning_description")}
+                {t("my_agora.subtitle")}
               </p>
             </div>
           </div>
@@ -196,13 +197,14 @@ const MyLearningPage = () => {
           >
             <BookOpen className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-foreground mb-2">
-              {t("learning.no_programs")}
+              {t("my_agora.empty")}
             </h2>
             <p className="text-muted-foreground mb-6">
-              {t("learning.no_programs_description")}
+              {t("my_agora.browse")}
             </p>
-            <Button onClick={() => navigate("/")} variant="outline">
-              {t("learning.browse_programs")}
+            <Button onClick={() => navigate("/piactr")} variant="outline">
+              <Store className="w-4 h-4 mr-2" />
+              {t("nav.marketplace")}
             </Button>
           </motion.div>
         ) : (
@@ -239,13 +241,13 @@ const MyLearningPage = () => {
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
-                            <GraduationCap className="w-12 h-12 text-[hsl(var(--cyan))]/30" />
+                            <Bookmark className="w-12 h-12 text-[hsl(var(--cyan))]/30" />
                           </div>
                         )}
 
                         {/* Play overlay */}
                         <Link
-                          to={`/programs/${program.id}/learn`}
+                          to={`/piactr/${program.id}/learn`}
                           className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity"
                         >
                           <div className="w-16 h-16 rounded-full bg-[hsl(var(--cyan))] flex items-center justify-center">
@@ -264,18 +266,18 @@ const MyLearningPage = () => {
                         </div>
 
                         {creator && (
-                          <Link to={`/creators/${creator.id}`} className="text-sm text-muted-foreground hover:text-[hsl(var(--cyan))] transition-colors mb-4 block">
+                          <Link to={`/szakertok/${creator.id}`} className="text-sm text-muted-foreground hover:text-[hsl(var(--cyan))] transition-colors mb-4 block">
                             {t("program.by_creator")} {creator.first_name}{" "}
                             {creator.last_name}
                           </Link>
                         )}
 
-                        <Link to={`/programs/${program.id}/learn`}>
+                        <Link to={`/piactr/${program.id}/learn`}>
                           <Button
                             variant="outline"
                             className="w-full border-[hsl(var(--cyan))]/30 text-[hsl(var(--cyan))] hover:bg-[hsl(var(--cyan))]/10"
                           >
-                            {t("learning.continue_learning")}
+                            {t("my_agora.continue")}
                             <ArrowRight className="w-4 h-4 ml-2" />
                           </Button>
                         </Link>
