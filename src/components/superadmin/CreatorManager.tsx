@@ -347,7 +347,7 @@ const CreatorManager = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Keresés név vagy email alapján..."
+                  placeholder={t('admin.search_placeholder')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 bg-background/50"
@@ -356,7 +356,7 @@ const CreatorManager = () => {
             </div>
             <Select value={verificationFilter} onValueChange={setVerificationFilter}>
               <SelectTrigger className={`w-[180px] bg-background/50 ${verificationFilter !== 'all' ? 'border-[#FFD700]' : ''}`}>
-                <SelectValue placeholder="Hitelesítés" />
+                <SelectValue placeholder={t('admin.verification')} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t('admin.all_creators')}</SelectItem>
@@ -366,7 +366,7 @@ const CreatorManager = () => {
             </Select>
             <Select value={stripeFilter} onValueChange={setStripeFilter}>
               <SelectTrigger className={`w-[180px] bg-background/50 ${stripeFilter !== 'all' ? 'border-[#FFD700]' : ''}`}>
-                <SelectValue placeholder="Stripe státusz" />
+                <SelectValue placeholder="Stripe" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t('admin.all_creators')}</SelectItem>
@@ -376,7 +376,7 @@ const CreatorManager = () => {
             </Select>
             <Select value={contentFilter} onValueChange={setContentFilter}>
               <SelectTrigger className={`w-[180px] bg-background/50 ${contentFilter !== 'all' ? 'border-[#FFD700]' : ''}`}>
-                <SelectValue placeholder="Tartalom" />
+                <SelectValue placeholder={t('admin.contents')} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t('admin.all_creators')}</SelectItem>
@@ -392,7 +392,7 @@ const CreatorManager = () => {
       <Card className="bg-[#112240] border-border/50">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <span>Kreátorok ({filteredCreators.length})</span>
+            <span>{t('admin.creator')} ({filteredCreators.length})</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
