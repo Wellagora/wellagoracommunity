@@ -15,6 +15,7 @@ import {
   Eye,
   Calendar,
   LayoutDashboard,
+  GraduationCap,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -130,6 +131,12 @@ const Navigation = () => {
       { path: "/events", label: t("nav.events"), icon: Calendar },
       { path: "/community", label: t("nav.community"), icon: UsersIcon },
       ...(user && profile && dashboardPath ? [{ path: dashboardPath, label: t("nav.dashboard"), icon: Home }] : []),
+      ...(user ? [{ 
+        path: "/my-learning", 
+        label: t("nav.my_learning"), 
+        icon: GraduationCap,
+        iconColor: "#00E5FF"
+      }] : []),
       ...(user && isCreator ? [{ 
         path: "/creator/dashboard", 
         label: t("nav.creator_studio"), 

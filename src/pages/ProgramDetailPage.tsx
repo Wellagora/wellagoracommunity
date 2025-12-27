@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { 
   ArrowLeft, 
   Star, 
-  ExternalLink, 
+  PlayCircle, 
   Lock, 
   Crown, 
   CheckCircle2,
@@ -19,8 +20,10 @@ import {
   ShoppingCart
 } from "lucide-react";
 import { motion } from "framer-motion";
+import PurchaseModal from "@/components/PurchaseModal";
 
 const ProgramDetailPage = () => {
+  const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -114,9 +117,9 @@ const ProgramDetailPage = () => {
           <Button 
             size="lg"
             className="bg-gradient-to-r from-[hsl(var(--cyan))] to-[hsl(var(--primary))] hover:opacity-90 text-white font-semibold"
-            onClick={() => program?.content_url && window.open(program.content_url, '_blank')}
+            onClick={() => navigate(`/programs/${id}/learn`)}
           >
-            <ExternalLink className="w-5 h-5 mr-2" />
+            <PlayCircle className="w-5 h-5 mr-2" />
             {t('program.view_content')}
           </Button>
         );
@@ -149,10 +152,7 @@ const ProgramDetailPage = () => {
           <Button 
             size="lg"
             className="bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--cyan))] hover:opacity-90 text-white font-semibold"
-            onClick={() => {
-              // Placeholder for purchase flow
-              console.log('Purchase flow not implemented yet');
-            }}
+            onClick={() => setIsPurchaseModalOpen(true)}
           >
             <ShoppingCart className="w-5 h-5 mr-2" />
             {t('program.purchase')}: {price?.toLocaleString()} Ft
@@ -336,6 +336,20 @@ const ProgramDetailPage = () => {
             </div>
           )}
         </motion.div>
+
+        {/* Purchase Modal */}
+        {program && (
+          <PurchaseModal
+            isOpen={isPurchaseModalOpen}
+            onClose={() => setIsPurchaseModalOpen(false)}
+            content={{
+              id: program.id,
+              title: program.title,
+              price_huf: program.price_huf || 0,
+              creator_id: program.creator_id || '',
+            }}
+          />
+        )}
       </div>
     </div>
   );
