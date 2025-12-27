@@ -20,6 +20,8 @@ import {
   Clock,
   RefreshCw,
   ChevronRight,
+  AlertTriangle,
+  UserCheck,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -136,7 +138,7 @@ const OverviewTab = ({ onNavigate }: { onNavigate: (tab: string) => void }) => {
   const [secondsAgo, setSecondsAgo] = useState(0);
 
   // Fetch stats using React Query
-  const { data: stats, isLoading, refetch, isRefetching } = useQuery({
+  const { data: stats, isLoading, isError, refetch, isRefetching } = useQuery({
     queryKey: ['adminStats'],
     queryFn: async () => {
       const { data, error } = await supabase.rpc('get_admin_platform_stats');
@@ -190,6 +192,25 @@ const OverviewTab = ({ onNavigate }: { onNavigate: (tab: string) => void }) => {
           ))}
         </div>
       </div>
+    );
+  }
+
+  // Error state
+  if (isError) {
+    return (
+      <Card className="bg-destructive/10 border-destructive/50">
+        <CardContent className="flex flex-col items-center justify-center py-12 gap-4">
+          <AlertTriangle className="h-12 w-12 text-destructive" />
+          <div className="text-center">
+            <h3 className="text-lg font-semibold text-destructive">Hiba a betöltéskor</h3>
+            <p className="text-muted-foreground">Nem sikerült betölteni a statisztikákat</p>
+          </div>
+          <Button onClick={() => refetch()} variant="outline" className="gap-2">
+            <RefreshCw className="h-4 w-4" />
+            Újrapróbálás
+          </Button>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -266,7 +287,7 @@ const OverviewTab = ({ onNavigate }: { onNavigate: (tab: string) => void }) => {
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Függő Tartalmak
             </CardTitle>
-            <Clock className={`h-5 w-5 ${(stats?.pending_content || 0) > 0 ? 'text-orange-500' : 'text-muted-foreground'}`} />
+            <Clock className={`h-5 w-5 ${(stats?.pending_content || 0) > 0 ? 'text-orange-500 animate-pulse' : 'text-muted-foreground'}`} />
           </CardHeader>
           <CardContent>
             <div className={`text-3xl font-bold ${(stats?.pending_content || 0) > 0 ? 'text-orange-500' : ''}`}>
