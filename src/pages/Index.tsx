@@ -17,6 +17,7 @@ import { RegionalImpactMap } from "@/components/dashboard/RegionalImpactMap";
 import { StatsBarSkeleton } from "@/components/ui/skeletons";
 import { UpcomingEventsSection } from "@/components/events/UpcomingEventsSection";
 import CreatorLandingSection from "@/components/landing/CreatorLandingSection";
+import FeaturedProgramsSection from "@/components/FeaturedProgramsSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -369,6 +370,9 @@ const Index = () => {
 
         {/* Story of the Week */}
         <StoryOfTheWeek />
+
+        {/* Featured Programs from Creators */}
+        <FeaturedProgramsSection />
 
         {/* CREATOR LANDING SECTION */}
         <CreatorLandingSection />
