@@ -49,6 +49,7 @@ const EventsPage = lazy(() => import("@/pages/EventsPage"));
 const CreatorDashboardPage = lazy(() => import("@/pages/CreatorDashboardPage"));
 const CreatorProgramNewPage = lazy(() => import("@/pages/CreatorProgramNewPage"));
 const CreatorProgramEditPage = lazy(() => import("@/pages/CreatorProgramEditPage"));
+const ProgramDetailPage = lazy(() => import("@/pages/ProgramDetailPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function App() {
@@ -200,9 +201,10 @@ function App() {
                             element={
                               <ProtectedRoute allowedRoles={["creator"]}>
                                 <CreatorProgramEditPage />
-                              </ProtectedRoute>
+                          </ProtectedRoute>
                             }
                           />
+                          <Route path="/programs/:id" element={<ProgramDetailPage />} />
                           <Route path="*" element={<NotFound />} />
                         </Route>
                       </Routes>
