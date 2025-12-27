@@ -13,7 +13,9 @@ import {
   TrendingUp,
   Activity,
   Calendar,
-  CalendarPlus
+  CalendarPlus,
+  Sparkles,
+  FileCheck,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -43,6 +45,9 @@ import ProgramsManager from "@/components/superadmin/ProgramsManager";
 import EventsManager from "@/components/superadmin/EventsManager";
 import AIAnalyticsDashboard from "@/components/admin/AIAnalyticsDashboard";
 import SystemSettings from "@/components/superadmin/SystemSettings";
+import CreatorManager from "@/components/superadmin/CreatorManager";
+import ContentModerationPanel from "@/components/superadmin/ContentModerationPanel";
+import FinancialOverview from "@/components/superadmin/FinancialOverview";
 import { CreateEventDialog } from "@/components/events/CreateEventDialog";
 
 type MenuItem = {
@@ -56,6 +61,9 @@ const menuItems: MenuItem[] = [
   { id: 'projects', label: 'Projektek', icon: FolderKanban },
   { id: 'organizations', label: 'Szervezetek', icon: Building2 },
   { id: 'users', label: 'Felhasználók', icon: Users },
+  { id: 'creators', label: 'Kreátorok', icon: Sparkles },
+  { id: 'content-moderation', label: 'Tartalom Moderáció', icon: FileCheck },
+  { id: 'financial', label: 'Pénzügyi Áttekintés', icon: TrendingUp },
   { id: 'subscriptions', label: 'Előfizetések', icon: CreditCard },
   { id: 'invoices', label: 'Számlák', icon: Receipt },
   { id: 'programs', label: 'Programok', icon: Target },
@@ -345,6 +353,9 @@ const SuperAdminPage = () => {
               {activeTab === 'subscriptions' && <SubscriptionsManager />}
               {activeTab === 'invoices' && <InvoicesManager />}
               {activeTab === 'users' && <UsersManager />}
+              {activeTab === 'creators' && <CreatorManager />}
+              {activeTab === 'content-moderation' && <ContentModerationPanel />}
+              {activeTab === 'financial' && <FinancialOverview />}
               {activeTab === 'projects' && <ProjectsManager />}
               {activeTab === 'programs' && <ProgramsManager />}
               {activeTab === 'events' && <EventsManager />}
