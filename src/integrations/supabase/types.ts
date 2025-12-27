@@ -434,6 +434,44 @@ export type Database = {
           },
         ]
       }
+      content_access: {
+        Row: {
+          amount_paid: number | null
+          content_id: string
+          created_at: string
+          id: string
+          payment_reference: string | null
+          purchased_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_paid?: number | null
+          content_id: string
+          created_at?: string
+          id?: string
+          payment_reference?: string | null
+          purchased_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_paid?: number | null
+          content_id?: string
+          created_at?: string
+          id?: string
+          payment_reference?: string | null
+          purchased_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_access_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       credit_packages: {
         Row: {
           created_at: string | null
@@ -1154,6 +1192,7 @@ export type Database = {
           first_name: string
           id: string
           industry: string | null
+          is_premium: boolean | null
           is_public_profile: boolean | null
           is_verified_expert: boolean | null
           last_name: string
@@ -1167,6 +1206,7 @@ export type Database = {
           payout_preference: string | null
           preferred_language: string | null
           preferred_stakeholder_types: string[] | null
+          premium_until: string | null
           project_id: string | null
           public_display_name: string | null
           referral_code: string | null
@@ -1201,6 +1241,7 @@ export type Database = {
           first_name: string
           id: string
           industry?: string | null
+          is_premium?: boolean | null
           is_public_profile?: boolean | null
           is_verified_expert?: boolean | null
           last_name: string
@@ -1214,6 +1255,7 @@ export type Database = {
           payout_preference?: string | null
           preferred_language?: string | null
           preferred_stakeholder_types?: string[] | null
+          premium_until?: string | null
           project_id?: string | null
           public_display_name?: string | null
           referral_code?: string | null
@@ -1248,6 +1290,7 @@ export type Database = {
           first_name?: string
           id?: string
           industry?: string | null
+          is_premium?: boolean | null
           is_public_profile?: boolean | null
           is_verified_expert?: boolean | null
           last_name?: string
@@ -1261,6 +1304,7 @@ export type Database = {
           payout_preference?: string | null
           preferred_language?: string | null
           preferred_stakeholder_types?: string[] | null
+          premium_until?: string | null
           project_id?: string | null
           public_display_name?: string | null
           referral_code?: string | null
@@ -2066,6 +2110,10 @@ export type Database = {
             }
             Returns: string
           }
+      check_content_access: {
+        Args: { p_content_id: string; p_user_id: string }
+        Returns: boolean
+      }
       disablelongtransactions: { Args: never; Returns: string }
       dropgeometrycolumn:
         | {
@@ -2224,6 +2272,10 @@ export type Database = {
       }
       get_community_impact_summary: {
         Args: { p_project_id?: string }
+        Returns: Json
+      }
+      get_content_access_status: {
+        Args: { p_content_id: string; p_user_id: string }
         Returns: Json
       }
       get_current_user_role: {
