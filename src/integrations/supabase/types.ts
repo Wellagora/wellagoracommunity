@@ -666,8 +666,13 @@ export type Database = {
           creator_id: string | null
           description: string | null
           id: string
+          is_featured: boolean | null
           is_published: boolean | null
           price_huf: number | null
+          rejected_at: string | null
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           thumbnail_url: string | null
           title: string
           updated_at: string | null
@@ -679,8 +684,13 @@ export type Database = {
           creator_id?: string | null
           description?: string | null
           id?: string
+          is_featured?: boolean | null
           is_published?: boolean | null
           price_huf?: number | null
+          rejected_at?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           thumbnail_url?: string | null
           title: string
           updated_at?: string | null
@@ -692,8 +702,13 @@ export type Database = {
           creator_id?: string | null
           description?: string | null
           id?: string
+          is_featured?: boolean | null
           is_published?: boolean | null
           price_huf?: number | null
+          rejected_at?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           thumbnail_url?: string | null
           title?: string
           updated_at?: string | null
@@ -702,6 +717,13 @@ export type Database = {
           {
             foreignKeyName: "expert_contents_creator_id_fkey"
             columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expert_contents_reviewed_by_fkey"
+            columns: ["reviewed_by"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -1133,6 +1155,7 @@ export type Database = {
           id: string
           industry: string | null
           is_public_profile: boolean | null
+          is_verified_expert: boolean | null
           last_name: string
           latitude: number | null
           location: string | null
@@ -1154,6 +1177,7 @@ export type Database = {
           stripe_account_id: string | null
           stripe_connect_id: string | null
           stripe_onboarding_complete: boolean | null
+          suspended_at: string | null
           sustainability_goals: string[] | null
           updated_at: string
           user_role: Database["public"]["Enums"]["user_role"]
@@ -1176,6 +1200,7 @@ export type Database = {
           id: string
           industry?: string | null
           is_public_profile?: boolean | null
+          is_verified_expert?: boolean | null
           last_name: string
           latitude?: number | null
           location?: string | null
@@ -1197,6 +1222,7 @@ export type Database = {
           stripe_account_id?: string | null
           stripe_connect_id?: string | null
           stripe_onboarding_complete?: boolean | null
+          suspended_at?: string | null
           sustainability_goals?: string[] | null
           updated_at?: string
           user_role?: Database["public"]["Enums"]["user_role"]
@@ -1219,6 +1245,7 @@ export type Database = {
           id?: string
           industry?: string | null
           is_public_profile?: boolean | null
+          is_verified_expert?: boolean | null
           last_name?: string
           latitude?: number | null
           location?: string | null
@@ -1240,6 +1267,7 @@ export type Database = {
           stripe_account_id?: string | null
           stripe_connect_id?: string | null
           stripe_onboarding_complete?: boolean | null
+          suspended_at?: string | null
           sustainability_goals?: string[] | null
           updated_at?: string
           user_role?: Database["public"]["Enums"]["user_role"]
@@ -2176,6 +2204,7 @@ export type Database = {
         Returns: boolean
       }
       geomfromewkt: { Args: { "": string }; Returns: unknown }
+      get_admin_platform_stats: { Args: never; Returns: Json }
       get_community_impact_stats: {
         Args: { p_project_id?: string }
         Returns: Json
