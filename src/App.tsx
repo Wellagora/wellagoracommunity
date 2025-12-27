@@ -114,9 +114,13 @@ function App() {
                           <Route path="/revolutionary" element={<Navigate to="/community" replace />} />
                           <Route path="/community" element={<CommunityPage />} />
                           <Route path="/ai-assistant" element={<AIAssistantPage />} />
-                          <Route path="/events" element={<EventsPage />} />
-                          <Route path="/challenges" element={<ChallengesPage />} />
-                          <Route path="/challenges/:challengeId" element={<ChallengeDetailPage />} />
+                          <Route path="/events" element={<Navigate to="/elo-alkalmak" replace />} />
+                          <Route path="/elo-alkalmak" element={<EventsPage />} />
+                          
+                          {/* Redirect challenges to marketplace */}
+                          <Route path="/challenges" element={<Navigate to="/piactr" replace />} />
+                          <Route path="/challenges/:challengeId" element={<Navigate to="/piactr" replace />} />
+                          
                           <Route
                             path="/profile"
                             element={
@@ -143,7 +147,7 @@ function App() {
                               </ProtectedRoute>
                             }
                           />
-                          <Route path="/browse-programs" element={<BrowseProgramsPage />} />
+                          <Route path="/browse-programs" element={<Navigate to="/piactr" replace />} />
                           <Route
                             path="/project-admin/:projectId"
                             element={
@@ -184,8 +188,10 @@ function App() {
                           <Route path="/sponsor" element={<SponsorLandingPage />} />
                           <Route path="/register/organization" element={<OrganizationRegisterPage />} />
                           <Route path="/join/org/:inviteCode" element={<JoinOrganizationPage />} />
+                          
+                          {/* Expert Studio (Szakértői Stúdió) - new Hungarian routes */}
                           <Route
-                            path="/creator/dashboard"
+                            path="/szakertoi-studio"
                             element={
                               <ProtectedRoute allowedRoles={["creator"]}>
                                 <CreatorDashboardPage />
@@ -193,7 +199,7 @@ function App() {
                             }
                           />
                           <Route
-                            path="/creator/programs/new"
+                            path="/szakertoi-studio/uj-utmutato"
                             element={
                               <ProtectedRoute allowedRoles={["creator"]}>
                                 <CreatorProgramNewPage />
@@ -201,15 +207,33 @@ function App() {
                             }
                           />
                           <Route
-                            path="/creator/programs/:id/edit"
+                            path="/szakertoi-studio/utmutato/:id"
                             element={
                               <ProtectedRoute allowedRoles={["creator"]}>
                                 <CreatorProgramEditPage />
-                          </ProtectedRoute>
+                              </ProtectedRoute>
                             }
                           />
+                          
+                          {/* Redirects from old creator routes */}
+                          <Route path="/creator/dashboard" element={<Navigate to="/szakertoi-studio" replace />} />
+                          <Route path="/creator/programs/new" element={<Navigate to="/szakertoi-studio/uj-utmutato" replace />} />
+                          <Route path="/creator/programs/:id/edit" element={<Navigate to="/szakertoi-studio/utmutato/:id" replace />} />
+                          
+                          {/* Marketplace (Piactér) - new Hungarian routes */}
+                          <Route path="/piactr" element={<ProgramsListingPage />} />
+                          <Route path="/piactr/:id" element={<ProgramDetailPage />} />
                           <Route path="/programs/:id" element={<ProgramDetailPage />} />
-                          <Route path="/programs" element={<ProgramsListingPage />} />
+                          <Route path="/programs" element={<Navigate to="/piactr" replace />} />
+                          
+                          <Route
+                            path="/piactr/:id/learn"
+                            element={
+                              <ProtectedRoute>
+                                <ProgramLearnPage />
+                              </ProtectedRoute>
+                            }
+                          />
                           <Route
                             path="/programs/:id/learn"
                             element={
@@ -218,15 +242,22 @@ function App() {
                               </ProtectedRoute>
                             }
                           />
+                          
+                          {/* My Agora (Én Agorám) - new Hungarian route */}
                           <Route
-                            path="/my-learning"
+                            path="/en-agoram"
                             element={
                               <ProtectedRoute>
                                 <MyLearningPage />
                               </ProtectedRoute>
                             }
                           />
+                          <Route path="/my-learning" element={<Navigate to="/en-agoram" replace />} />
+                          
+                          {/* Expert profiles (Szakértők) */}
+                          <Route path="/szakertok/:id" element={<CreatorPublicProfilePage />} />
                           <Route path="/creators/:id" element={<CreatorPublicProfilePage />} />
+                          
                           <Route path="*" element={<NotFound />} />
                         </Route>
                       </Routes>
