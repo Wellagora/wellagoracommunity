@@ -130,3 +130,84 @@ export const StatsBarSkeleton = () => (
     <StatCardSkeleton />
   </div>
 );
+
+/**
+ * Skeleton for program cards in marketplace
+ */
+export const ProgramCardSkeleton = () => (
+  <Card className="bg-[#112240] border-[hsl(var(--cyan))]/10 overflow-hidden">
+    <Skeleton className="aspect-video w-full bg-[#1a3a5c]" />
+    <CardContent className="p-4">
+      <Skeleton className="h-5 w-3/4 mb-2 bg-[#1a3a5c]" />
+      <Skeleton className="h-4 w-1/2 mb-3 bg-[#1a3a5c]" />
+      <div className="flex gap-2">
+        <Skeleton className="h-6 w-16 bg-[#1a3a5c]" />
+        <Skeleton className="h-6 w-20 bg-[#1a3a5c]" />
+      </div>
+    </CardContent>
+  </Card>
+);
+
+/**
+ * Skeleton for creator profile header
+ */
+export const CreatorCardSkeleton = () => (
+  <div className="bg-[#112240] rounded-xl p-8">
+    <div className="flex flex-col md:flex-row items-center gap-6 mb-8">
+      <Skeleton className="w-24 h-24 rounded-full bg-[#1a3a5c]" />
+      <div className="text-center md:text-left">
+        <Skeleton className="h-8 w-48 mb-2 bg-[#1a3a5c]" />
+        <Skeleton className="h-4 w-32 bg-[#1a3a5c]" />
+      </div>
+    </div>
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+      {[1, 2, 3].map((i) => (
+        <Skeleton key={i} className="h-24 rounded-lg bg-[#1a3a5c]" />
+      ))}
+    </div>
+    <Skeleton className="h-32 w-full bg-[#1a3a5c]" />
+  </div>
+);
+
+/**
+ * Skeleton for review cards
+ */
+export const ReviewCardSkeleton = () => (
+  <Card className="bg-[#112240]/50 border-[hsl(var(--cyan))]/10">
+    <CardContent className="p-6">
+      <div className="flex items-start gap-4">
+        <Skeleton className="w-10 h-10 rounded-full bg-[#1a3a5c]" />
+        <div className="flex-1">
+          <div className="flex items-center justify-between mb-2">
+            <Skeleton className="h-5 w-32 bg-[#1a3a5c]" />
+            <Skeleton className="h-4 w-24 bg-[#1a3a5c]" />
+          </div>
+          <Skeleton className="h-4 w-full mb-2 bg-[#1a3a5c]" />
+          <Skeleton className="h-4 w-3/4 bg-[#1a3a5c]" />
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+);
+
+/**
+ * Grid of program card skeletons
+ */
+export const ProgramGridSkeleton = ({ count = 6 }: { count?: number }) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {Array.from({ length: count }).map((_, i) => (
+      <ProgramCardSkeleton key={i} />
+    ))}
+  </div>
+);
+
+/**
+ * Grid of review card skeletons
+ */
+export const ReviewListSkeleton = ({ count = 3 }: { count?: number }) => (
+  <div className="space-y-4">
+    {Array.from({ length: count }).map((_, i) => (
+      <ReviewCardSkeleton key={i} />
+    ))}
+  </div>
+);

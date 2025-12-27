@@ -16,6 +16,7 @@ import {
   Calendar,
   LayoutDashboard,
   GraduationCap,
+  BookOpen,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -127,6 +128,7 @@ const Navigation = () => {
   const navItems = useMemo(
     () => [
       { path: "/", label: t("nav.home"), icon: Home },
+      { path: "/programs", label: t("nav.programs"), icon: BookOpen },
       { path: "/challenges", label: t("nav.challenges"), icon: Target },
       { path: "/events", label: t("nav.events"), icon: Calendar },
       { path: "/community", label: t("nav.community"), icon: UsersIcon },

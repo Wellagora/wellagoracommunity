@@ -53,6 +53,7 @@ const ProgramDetailPage = lazy(() => import("@/pages/ProgramDetailPage"));
 const ProgramLearnPage = lazy(() => import("@/pages/ProgramLearnPage"));
 const MyLearningPage = lazy(() => import("@/pages/MyLearningPage"));
 const CreatorPublicProfilePage = lazy(() => import("@/pages/CreatorPublicProfilePage"));
+const ProgramsListingPage = lazy(() => import("@/pages/ProgramsListingPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function App() {
@@ -208,6 +209,7 @@ function App() {
                             }
                           />
                           <Route path="/programs/:id" element={<ProgramDetailPage />} />
+                          <Route path="/programs" element={<ProgramsListingPage />} />
                           <Route
                             path="/programs/:id/learn"
                             element={

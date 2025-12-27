@@ -1,6 +1,8 @@
-import React, { Component, ErrorInfo, ReactNode } from "react";
-import { AlertCircle } from "lucide-react";
+import React, { Component, ErrorInfo, ReactNode, lazy, Suspense } from "react";
+import { AlertCircle, Home, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+const ErrorPage = lazy(() => import("@/pages/ErrorPage"));
 
 interface Props {
   children: ReactNode;
@@ -22,39 +24,57 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("ErrorBoundary caught an error:", error, errorInfo);
+    // Log error but avoid console.log in production
+    if (process.env.NODE_ENV === "development") {
+      console.error("ErrorBoundary caught an error:", error, errorInfo);
+    }
   }
 
   private handleReset = () => {
+    this.setState({ hasError: false, error: null });
+  };
+
+  private handleGoHome = () => {
     this.setState({ hasError: false, error: null });
     window.location.href = "/";
   };
 
   public render() {
     if (this.state.hasError) {
+      // Fallback UI in case ErrorPage fails to load
       return (
-        <div className="flex items-center justify-center min-h-screen bg-background p-4">
-          <div className="max-w-md w-full text-center space-y-4">
-            <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
-            <h1 className="text-2xl font-bold text-foreground">Something went wrong</h1>
-            <p className="text-muted-foreground">
-              We're working on fixing the problem. Please try again.
-            </p>
-            {this.state.error && (
-              <details className="text-left text-sm bg-muted p-4 rounded-lg">
-                <summary className="cursor-pointer font-medium text-foreground">
-                  Technical details
-                </summary>
-                <p className="mt-2 text-muted-foreground break-words">
-                  {this.state.error.message}
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center min-h-screen bg-[#0A1930] p-4">
+              <div className="max-w-md w-full text-center space-y-4">
+                <AlertCircle className="h-12 w-12 text-red-400 mx-auto" />
+                <h1 className="text-2xl font-bold text-foreground">Something went wrong</h1>
+                <p className="text-muted-foreground">
+                  We're working on fixing the problem. Please try again.
                 </p>
-              </details>
-            )}
-            <Button onClick={this.handleReset} className="mt-4">
-              Return to Home
-            </Button>
-          </div>
-        </div>
+                <div className="flex gap-3 justify-center">
+                  <Button 
+                    onClick={this.handleReset} 
+                    variant="outline"
+                    className="border-[hsl(var(--cyan))]/30"
+                  >
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    Try again
+                  </Button>
+                  <Button 
+                    onClick={this.handleGoHome}
+                    className="bg-gradient-to-r from-[hsl(var(--cyan))] to-[hsl(var(--primary))]"
+                  >
+                    <Home className="w-4 h-4 mr-2" />
+                    Go home
+                  </Button>
+                </div>
+              </div>
+            </div>
+          }
+        >
+          <ErrorPage error={this.state.error} resetError={this.handleReset} />
+        </Suspense>
       );
     }
 
