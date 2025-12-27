@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { CitizenProfileForm } from "@/components/profile/CitizenProfileForm";
 import { OrganizationProfileForm } from "@/components/profile/OrganizationProfileForm";
+import { CreatorAccountSection } from "@/components/profile/CreatorAccountSection";
 import { 
   Loader2, 
   Building2, 
@@ -444,6 +445,14 @@ const ProfilePage = () => {
               <CitizenProfileForm
                 formData={profileForm}
                 onChange={handleFormChange}
+              />
+            )}
+
+            {/* Creator Account Section */}
+            {user && profile && (
+              <CreatorAccountSection 
+                userId={user.id} 
+                profile={profile}
               />
             )}
 

@@ -16,7 +16,7 @@
   "share_impact": {
     "title": "Share your impact",
     "my_impact": "My impact",
-    "challenges_completed": "Challenges completed",
+    "challenges_completed": "Programs completed",
     "points_earned": "Points",
     "co2_saved": "CO2 saved",
     "join_me": "Join me!",
@@ -2754,5 +2754,23 @@
   "nearby.events": "Upcoming events",
   "nearby.location_denied": "Location access denied",
   "nearby.location_not_supported": "Location not supported",
-  "nearby.no_results": "No nearby partners or events"
+  "nearby.no_results": "No nearby partners or events",
+  "nearby.retry": "Try again",
+  "creator.title": "Creator Account",
+  "creator.active_badge": "Active Creator",
+  "creator.description": "Set up your payout preferences and creator account settings.",
+  "creator.payout_preference": "Payout Preference",
+  "creator.stripe_connect": "Connect Stripe",
+  "creator.stripe_connected": "Connected",
+  "creator.stripe_connected_desc": "Your Stripe account is active and ready for payouts.",
+  "creator.stripe_not_connected": "Not connected",
+  "creator.stripe_connect_desc": "Connect your Stripe account to receive payouts.",
+  "creator.wise_email": "Wise Email",
+  "creator.wise_iban": "Wise IBAN",
+  "creator.become_creator": "Become a Creator",
+  "creator.bank_transfer": "Bank Transfer",
+  "creator.save_settings": "Save Changes",
+  "creator.settings_saved": "Settings saved",
+  "creator.settings_saved_desc": "Creator account settings saved successfully.",
+  "creator.save_error": "Failed to save settings."
 }
