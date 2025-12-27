@@ -143,7 +143,7 @@ const ProgramDetailPage = () => {
           <Button 
             size="lg"
             className="bg-gradient-to-r from-[hsl(var(--cyan))] to-[hsl(var(--primary))] hover:opacity-90 text-white font-semibold"
-            onClick={() => navigate(`/programs/${id}/learn`)}
+            onClick={() => navigate(`/piacer/${id}/learn`)}
           >
             <PlayCircle className="w-5 h-5 mr-2" />
             {t('program.view_content')}
@@ -335,7 +335,7 @@ const ProgramDetailPage = () => {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {relatedPrograms.map((relProgram) => (
-                  <Link key={relProgram.id} to={`/programs/${relProgram.id}`}>
+                  <Link key={relProgram.id} to={`/piacer/${relProgram.id}`}>
                     <Card className="bg-[#112240] border-[hsl(var(--cyan))]/10 hover:border-[hsl(var(--cyan))]/30 transition-all duration-300 hover:shadow-lg hover:shadow-[hsl(var(--cyan))]/5">
                       <CardContent className="p-0">
                         <div className="aspect-video bg-gradient-to-br from-[hsl(var(--cyan))]/10 to-[hsl(var(--primary))]/10 rounded-t-lg overflow-hidden">

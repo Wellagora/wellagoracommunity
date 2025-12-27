@@ -37,7 +37,7 @@ const Footer = () => {
             <h3 className="font-bold text-foreground mb-3">{t('footer.quick_links')}</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/challenges" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/piacer" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                   {t('footer.link_programs')}
                 </Link>
               </li>

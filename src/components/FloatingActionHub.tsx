@@ -25,7 +25,7 @@ const FloatingActionHub = () => {
       label: "Start Challenge",
       color: "bg-primary hover:bg-primary-dark",
       description: "Begin a new sustainability challenge",
-      action: () => navigate('/challenges')
+      action: () => navigate('/piacer')
     },
     {
       icon: MessageCircle,

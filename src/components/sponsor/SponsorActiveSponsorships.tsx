@@ -162,7 +162,7 @@ const SponsorActiveSponsorships = () => {
             <p className="text-muted-foreground mb-4">
               {t('sponsor.no_active_sponsorships') || 'Még nincs aktív szponzorálásod'}
             </p>
-            <Button onClick={() => window.location.href = '/challenges'}>
+            <Button onClick={() => window.location.href = '/piacer'}>
               {t('sponsor.browse_challenges') || 'Programok böngészése'}
             </Button>
           </div>

@@ -184,7 +184,7 @@ export const EventsWidget = memo(() => {
             <p className="text-sm text-muted-foreground/70 mb-4">
               {t('dashboard.activity_hint')}
             </p>
-            <Link to="/challenges">
+            <Link to="/piacer">
               <Button variant="outline" size="sm">
                 {t('nav.programs')}
                 <ChevronRight className="w-4 h-4 ml-1" />

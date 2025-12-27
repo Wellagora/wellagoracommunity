@@ -285,7 +285,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
                   <div 
                     key={challenge.id} 
                     className="flex flex-col space-y-2 p-4 border rounded-lg cursor-pointer hover:bg-muted/20 transition-colors" 
-                    onClick={() => window.location.href = `/challenges/${challenge.id}`}
+                    onClick={() => window.location.href = `/piacer/${challenge.id}`}
                   >
                     <div className="flex justify-between items-start">
                       <h4 className="font-medium">{challenge.titleKey}</h4>
@@ -309,7 +309,7 @@ const Dashboard = ({ userRole }: DashboardProps) => {
                     variant="outline" 
                     size="sm" 
                     className="mt-4"
-                    onClick={() => window.location.href = '/challenges'}
+                    onClick={() => window.location.href = '/piacer'}
                   >
                     {t('dashboard.browse_challenges')}
                   </Button>
