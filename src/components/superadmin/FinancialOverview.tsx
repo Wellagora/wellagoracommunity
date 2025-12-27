@@ -415,6 +415,69 @@ const FinancialOverview = ({ onNavigate }: FinancialOverviewProps) => {
         </TooltipProvider>
       </div>
 
+      {/* Ecosystem Health Section */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card className="bg-[#112240] border-border/50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-[#FFD700]" />
+              Hitelesített Szakértők Aránya
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Hitelesített / Összes</span>
+                <span className="font-semibold text-[#FFD700]">
+                  {stats?.verified_creators || 0} / {stats?.total_creators || 0}
+                </span>
+              </div>
+              <div className="h-3 rounded-full bg-background overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-[#FFD700] to-amber-400 transition-all duration-500"
+                  style={{
+                    width: `${stats?.total_creators ? ((stats.verified_creators || 0) / stats.total_creators) * 100 : 0}%`,
+                  }}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {stats?.total_creators ? Math.round(((stats.verified_creators || 0) / stats.total_creators) * 100) : 0}% hitelesítve
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-[#112240] border-border/50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CreditCard className="h-5 w-5 text-cyan-400" />
+              Stripe Összekapcsolási Arány
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Stripe aktív / Összes kreátor</span>
+                <span className="font-semibold text-cyan-400">
+                  {stats?.stripe_connected || 0} / {stats?.total_creators || 0}
+                </span>
+              </div>
+              <div className="h-3 rounded-full bg-background overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-cyan-500 to-blue-400 transition-all duration-500"
+                  style={{
+                    width: `${stats?.total_creators ? ((stats.stripe_connected || 0) / stats.total_creators) * 100 : 0}%`,
+                  }}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {stats?.total_creators ? Math.round(((stats.stripe_connected || 0) / stats.total_creators) * 100) : 0}% összekapcsolva
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Community Impact & Regional Distribution */}
       <div className="grid gap-4 md:grid-cols-2">
         <Card className="bg-[#112240] border-border/50">
