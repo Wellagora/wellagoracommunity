@@ -209,10 +209,13 @@ const CreatorDashboardPage = () => {
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <Button 
+            asChild
             className="h-auto py-4 bg-gradient-to-r from-[#00E5FF] to-[#00B8D4] hover:from-[#00E5FF]/90 hover:to-[#00B8D4]/90 text-[#0A1930] font-semibold"
           >
-            <Plus className="h-5 w-5 mr-2" />
-            {t("creator.new_program")}
+            <Link to="/creator/programs/new">
+              <Plus className="h-5 w-5 mr-2" />
+              {t("creator.new_program")}
+            </Link>
           </Button>
           
           <Button 
@@ -267,9 +270,11 @@ const CreatorDashboardPage = () => {
                 </div>
                 <h3 className="text-xl font-semibold text-white mb-2">{t("creator.empty_title")}</h3>
                 <p className="text-white/60 mb-6">{t("creator.empty_desc")}</p>
-                <Button className="bg-gradient-to-r from-[#00E5FF] to-[#00B8D4] hover:from-[#00E5FF]/90 hover:to-[#00B8D4]/90 text-[#0A1930] font-semibold">
-                  <Plus className="h-5 w-5 mr-2" />
-                  {t("creator.first_program")}
+                <Button asChild className="bg-gradient-to-r from-[#00E5FF] to-[#00B8D4] hover:from-[#00E5FF]/90 hover:to-[#00B8D4]/90 text-[#0A1930] font-semibold">
+                  <Link to="/creator/programs/new">
+                    <Plus className="h-5 w-5 mr-2" />
+                    {t("creator.first_program")}
+                  </Link>
                 </Button>
               </div>
             ) : (
@@ -317,11 +322,14 @@ const CreatorDashboardPage = () => {
                             </Tooltip>
                           )}
                           <Button 
+                            asChild
                             size="sm" 
                             variant="ghost" 
                             className="text-[#00E5FF] hover:text-[#00E5FF] hover:bg-[#00E5FF]/10"
                           >
-                            {t("creator.edit_program")}
+                            <Link to={`/creator/programs/${program.id}/edit`}>
+                              {t("creator.edit_program")}
+                            </Link>
                           </Button>
                         </div>
                       </div>
