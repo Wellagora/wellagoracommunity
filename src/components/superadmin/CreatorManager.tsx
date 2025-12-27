@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
-import {
+import { useQueryClient } from '@tanstack/react-query';
   Card,
   CardContent,
   CardHeader,
@@ -102,7 +102,7 @@ function useDebounce<T>(value: T, delay: number): T {
 const CreatorManager = () => {
   const { t } = useLanguage();
   const { toast } = useToast();
-  const [creators, setCreators] = useState<Creator[]>([]);
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [verificationFilter, setVerificationFilter] = useState('all');
@@ -193,6 +193,7 @@ const CreatorManager = () => {
         description: !currentStatus ? 'Szakértő hitelesítve!' : 'Hitelesítés visszavonva',
       });
       loadCreators();
+      queryClient.invalidateQueries({ queryKey: ['adminStats'] });
       if (selectedCreator?.id === creatorId) {
         setSelectedCreator(prev => prev ? { ...prev, is_verified_expert: !currentStatus } : null);
       }

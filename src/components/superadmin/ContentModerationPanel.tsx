@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Card,
   CardContent,
@@ -80,6 +81,7 @@ const ContentModerationPanel = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [contents, setContents] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('pending');
@@ -151,6 +153,7 @@ const ContentModerationPanel = () => {
         title: t('admin.content_approved') || 'Tartalom jóváhagyva és közzétéve!',
       });
       loadContents();
+      queryClient.invalidateQueries({ queryKey: ['adminStats'] });
     }
     setApproveDialogOpen(false);
     setContentToAction(null);
@@ -184,6 +187,7 @@ const ContentModerationPanel = () => {
       setRejectionReason('');
       setSelectedContent(null);
       loadContents();
+      queryClient.invalidateQueries({ queryKey: ['adminStats'] });
     }
   };
 
@@ -208,6 +212,7 @@ const ContentModerationPanel = () => {
         title: t('admin.content_unpublished') || 'Közzététel visszavonva',
       });
       loadContents();
+      queryClient.invalidateQueries({ queryKey: ['adminStats'] });
     }
     setUnpublishDialogOpen(false);
     setContentToAction(null);
@@ -258,6 +263,7 @@ const ContentModerationPanel = () => {
         title: t('admin.content_deleted') || 'Tartalom törölve',
       });
       loadContents();
+      queryClient.invalidateQueries({ queryKey: ['adminStats'] });
     }
     setDeleteDialogOpen(false);
     setDeleteConfirmText('');

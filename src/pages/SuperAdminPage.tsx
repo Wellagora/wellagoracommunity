@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { 
   LayoutDashboard, 
   FolderKanban, 
@@ -16,11 +17,15 @@ import {
   CalendarPlus,
   Sparkles,
   FileCheck,
+  Clock,
+  RefreshCw,
+  ChevronRight,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Sidebar,
   SidebarContent,
@@ -73,6 +78,19 @@ const menuItems: MenuItem[] = [
   { id: 'settings', label: 'Beállítások', icon: Settings },
 ];
 
+interface PlatformStats {
+  total_users: number;
+  total_creators: number;
+  verified_creators: number;
+  active_creators: number;
+  pending_content: number;
+  published_content: number;
+  stripe_connected: number;
+  total_carbon_handprint: number;
+  total_programs: number;
+  total_events: number;
+}
+
 const SuperAdminSidebar = ({ activeTab, onTabChange }: { activeTab: string; onTabChange: (tab: string) => void }) => {
   const { state } = useSidebar();
 
@@ -112,133 +130,223 @@ const SuperAdminSidebar = ({ activeTab, onTabChange }: { activeTab: string; onTa
   );
 };
 
-const OverviewTab = () => {
-  const [stats, setStats] = useState({
-    totalProjects: 0,
-    totalUsers: 0,
-    totalOrganizations: 0,
-    activeSubscriptions: 0,
-    activePrograms: 0,
+const OverviewTab = ({ onNavigate }: { onNavigate: (tab: string) => void }) => {
+  const queryClient = useQueryClient();
+  const [lastRefresh, setLastRefresh] = useState(Date.now());
+  const [secondsAgo, setSecondsAgo] = useState(0);
+
+  // Fetch stats using React Query
+  const { data: stats, isLoading, refetch, isRefetching } = useQuery({
+    queryKey: ['adminStats'],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_admin_platform_stats');
+      if (error) throw error;
+      setLastRefresh(Date.now());
+      return data as unknown as PlatformStats;
+    },
   });
-  const [loading, setLoading] = useState(true);
 
+  // Auto-refresh every 30 seconds
   useEffect(() => {
-    const loadStats = async () => {
-      try {
-        const [projectsRes, usersRes, orgsRes, subsRes, programsRes] = await Promise.all([
-          supabase.from('projects').select('*', { count: 'exact', head: true }),
-          supabase.from('profiles').select('*', { count: 'exact', head: true }),
-          supabase.from('organizations').select('*', { count: 'exact', head: true }),
-          supabase.from('subscriptions').select('*', { count: 'exact', head: true }).eq('status', 'active'),
-          supabase.from('challenge_definitions').select('*', { count: 'exact', head: true }).eq('is_active', true),
-        ]);
+    const interval = setInterval(() => {
+      refetch();
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [refetch]);
 
-        setStats({
-          totalProjects: projectsRes.count || 0,
-          totalUsers: usersRes.count || 0,
-          totalOrganizations: orgsRes.count || 0,
-          activeSubscriptions: subsRes.count || 0,
-          activePrograms: programsRes.count || 0,
-        });
-      } catch (error) {
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Update seconds ago counter
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSecondsAgo(Math.floor((Date.now() - lastRefresh) / 1000));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [lastRefresh]);
 
-    loadStats();
-  }, []);
+  const handleManualRefresh = () => {
+    refetch();
+  };
 
-  const kpiCards = [
-    {
-      title: 'Összes Projekt',
-      value: stats.totalProjects,
-      icon: FolderKanban,
-      color: 'text-blue-500',
-    },
-    {
-      title: 'Összes Felhasználó',
-      value: stats.totalUsers,
-      icon: Users,
-      color: 'text-green-500',
-    },
-    {
-      title: 'Összes Szervezet',
-      value: stats.totalOrganizations,
-      icon: Building2,
-      color: 'text-purple-500',
-    },
-    {
-      title: 'Aktív Előfizetések',
-      value: stats.activeSubscriptions,
-      icon: CreditCard,
-      color: 'text-orange-500',
-    },
-    {
-      title: 'Havi Bevétel',
-      value: 'Hamarosan',
-      icon: TrendingUp,
-      color: 'text-emerald-500',
-      isPlaceholder: true,
-    },
-    {
-      title: 'Aktív Programok',
-      value: stats.activePrograms,
-      icon: Target,
-      color: 'text-pink-500',
-    },
-  ];
+  const unverifiedCreators = (stats?.total_creators || 0) - (stats?.verified_creators || 0);
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {[...Array(6)].map((_, i) => (
-          <Card key={i}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <Skeleton className="h-4 w-32" />
-              <Skeleton className="h-5 w-5 rounded" />
-            </CardHeader>
-            <CardContent>
-              <Skeleton className="h-8 w-20" />
-            </CardContent>
-          </Card>
-        ))}
+      <div className="space-y-6">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {[...Array(4)].map((_, i) => (
+            <Card key={i}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-5 w-5 rounded" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-8 w-20" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        <div className="grid gap-6 md:grid-cols-3">
+          {[...Array(3)].map((_, i) => (
+            <Skeleton key={i} className="h-40" />
+          ))}
+        </div>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-3xl font-bold tracking-tight">Áttekintés</h2>
-        <p className="text-muted-foreground">
-          Kulcsfontosságú mutatók és statisztikák a teljes platformról
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">Áttekintés</h2>
+          <p className="text-muted-foreground">
+            Kulcsfontosságú mutatók és statisztikák a teljes platformról
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-muted-foreground">
+            Utoljára frissítve: {secondsAgo} másodperce
+          </span>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleManualRefresh}
+            disabled={isRefetching}
+          >
+            <RefreshCw className={`h-4 w-4 ${isRefetching ? 'animate-spin' : ''}`} />
+          </Button>
+        </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {kpiCards.map((card) => {
-          const Icon = card.icon;
-          return (
-            <Card key={card.title} className="bg-card/30 backdrop-blur border-border/50 hover:bg-card/40 transition-all">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  {card.title}
-                </CardTitle>
-                <Icon className={`h-5 w-5 ${card.color}`} />
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold">
-                  {card.isPlaceholder ? (
-                    <span className="text-xl text-muted-foreground">{card.value}</span>
-                  ) : (
-                    card.value.toLocaleString()
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+      {/* Hero Stats Row */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="bg-card/30 backdrop-blur border-border/50 hover:bg-card/40 transition-all">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Összes Felhasználó
+            </CardTitle>
+            <Users className="h-5 w-5 text-green-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">
+              {(stats?.total_users || 0).toLocaleString()}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-card/30 backdrop-blur border-border/50 hover:bg-card/40 transition-all">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Kreátorok
+            </CardTitle>
+            <Sparkles className="h-5 w-5 text-[#FFD700]" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">
+              {(stats?.total_creators || 0).toLocaleString()}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-card/30 backdrop-blur border-border/50 hover:bg-card/40 transition-all">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Aktív Programok
+            </CardTitle>
+            <Target className="h-5 w-5 text-purple-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">
+              {(stats?.total_programs || 0).toLocaleString()}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className={`bg-card/30 backdrop-blur border-border/50 hover:bg-card/40 transition-all ${(stats?.pending_content || 0) > 0 ? 'border-orange-500/50' : ''}`}>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Függő Tartalmak
+            </CardTitle>
+            <Clock className={`h-5 w-5 ${(stats?.pending_content || 0) > 0 ? 'text-orange-500' : 'text-muted-foreground'}`} />
+          </CardHeader>
+          <CardContent>
+            <div className={`text-3xl font-bold ${(stats?.pending_content || 0) > 0 ? 'text-orange-500' : ''}`}>
+              {(stats?.pending_content || 0).toLocaleString()}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Quick Action Cards Row */}
+      <div className="grid gap-6 md:grid-cols-3">
+        <Card className={`bg-[#112240] border-border/50 hover:border-[#FFD700] transition-all cursor-pointer ${unverifiedCreators > 0 ? 'border-[#FFD700]/50' : ''}`}
+          onClick={() => onNavigate('creators')}
+        >
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-[#FFD700]" />
+              Kreátor Jóváhagyások
+              {unverifiedCreators > 0 && (
+                <Badge className="ml-auto bg-[#FFD700] text-black">
+                  {unverifiedCreators}
+                </Badge>
+              )}
+            </CardTitle>
+            <CardDescription>
+              Hitelesítésre váró szakértők
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="ghost" className="w-full justify-between hover:bg-[#FFD700]/10">
+              Megtekintés
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className={`bg-[#112240] border-border/50 hover:border-orange-500 transition-all cursor-pointer ${(stats?.pending_content || 0) > 0 ? 'border-orange-500/50' : ''}`}
+          onClick={() => onNavigate('content-moderation')}
+        >
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileCheck className="h-5 w-5 text-orange-500" />
+              Tartalom Moderáció
+              {(stats?.pending_content || 0) > 0 && (
+                <Badge className="ml-auto bg-orange-500 text-white">
+                  {stats?.pending_content}
+                </Badge>
+              )}
+            </CardTitle>
+            <CardDescription>
+              Jóváhagyásra váró tartalmak
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="ghost" className="w-full justify-between hover:bg-orange-500/10">
+              Moderálás
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-[#112240] border-border/50 hover:border-[#FFD700] transition-all cursor-pointer"
+          onClick={() => onNavigate('financial')}
+        >
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-[#FFD700]" />
+              Platform Áttekintés
+            </CardTitle>
+            <CardDescription>
+              {stats?.total_programs || 0} program, {stats?.total_events || 0} esemény
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="ghost" className="w-full justify-between hover:bg-[#FFD700]/10">
+              Részletek
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
       </div>
 
       <Card className="border-dashed bg-card/30 backdrop-blur border-border/50">
@@ -250,7 +358,7 @@ const OverviewTab = () => {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            További admin funkciók (Projektek, Szervezetek, Felhasználók, Előfizetések, stb.) hamarosan elérhetők lesznek.
+            További admin funkciók (Projektek, Szervezetek, Felhasználók, Előfizetések, stb.) a bal oldali menüből elérhetők.
           </p>
         </CardContent>
       </Card>
@@ -352,14 +460,14 @@ const SuperAdminPage = () => {
                 />
               </div>
 
-              {activeTab === 'overview' && <OverviewTab />}
+              {activeTab === 'overview' && <OverviewTab onNavigate={handleTabChange} />}
               {activeTab === 'organizations' && <OrganizationsManager />}
               {activeTab === 'subscriptions' && <SubscriptionsManager />}
               {activeTab === 'invoices' && <InvoicesManager />}
               {activeTab === 'users' && <UsersManager />}
               {activeTab === 'creators' && <CreatorManager />}
               {activeTab === 'content-moderation' && <ContentModerationPanel />}
-              {activeTab === 'financial' && <FinancialOverview />}
+              {activeTab === 'financial' && <FinancialOverview onNavigate={handleTabChange} />}
               {activeTab === 'projects' && <ProjectsManager />}
               {activeTab === 'programs' && <ProgramsManager />}
               {activeTab === 'events' && <EventsManager />}
