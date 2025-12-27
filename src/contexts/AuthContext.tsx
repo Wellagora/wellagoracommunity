@@ -8,7 +8,7 @@ interface Profile {
   first_name: string;
   last_name: string;
   email: string;
-  user_role: 'citizen' | 'business' | 'government' | 'ngo';
+  user_role: 'citizen' | 'business' | 'government' | 'ngo' | 'creator';
   organization?: string;
   avatar_url?: string;
   created_at: string;
@@ -16,6 +16,9 @@ interface Profile {
   organization_id?: string;
   public_display_name?: string;
   is_public_profile?: boolean;
+  stripe_onboarding_complete?: boolean;
+  payout_preference?: string | null;
+  is_verified_expert?: boolean;
 }
 
 interface AuthContextType {
