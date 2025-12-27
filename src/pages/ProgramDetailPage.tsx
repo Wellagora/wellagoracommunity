@@ -21,6 +21,8 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import PurchaseModal from "@/components/PurchaseModal";
+import ReviewSection from "@/components/reviews/ReviewSection";
+import StarRating from "@/components/reviews/StarRating";
 
 const ProgramDetailPage = () => {
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
@@ -82,6 +84,30 @@ const ProgramDetailPage = () => {
       return data;
     },
     enabled: !!program?.creator_id,
+  });
+
+  // Fetch average rating
+  const { data: avgRating } = useQuery({
+    queryKey: ['contentAvgRating', id],
+    queryFn: async () => {
+      const { data } = await supabase.rpc('get_content_average_rating', {
+        p_content_id: id,
+      });
+      return data as number;
+    },
+    enabled: !!id,
+  });
+
+  // Fetch review count
+  const { data: reviewCount } = useQuery({
+    queryKey: ['contentReviewCount', id],
+    queryFn: async () => {
+      const { data } = await supabase.rpc('get_content_review_count', {
+        p_content_id: id,
+      });
+      return data as number;
+    },
+    enabled: !!id,
   });
 
   const getAccessBadge = (accessLevel: string | null) => {
@@ -251,10 +277,20 @@ const ProgramDetailPage = () => {
                 {program.title}
               </h1>
 
+              {/* Rating Display */}
+              {reviewCount !== undefined && reviewCount > 0 && (
+                <div className="flex items-center gap-3 mb-4">
+                  <StarRating rating={Math.round(avgRating || 0)} size="md" />
+                  <span className="text-muted-foreground">
+                    {avgRating?.toFixed(1)} ({reviewCount} {t('reviews.count')})
+                  </span>
+                </div>
+              )}
+
               {/* Creator Section */}
               {creator && (
                 <Link 
-                  to={`/profile/${creator.id}`}
+                  to={`/creators/${creator.id}`}
                   className="flex items-center gap-3 mb-6 group"
                 >
                   <Avatar className="h-12 w-12 border-2 border-[hsl(var(--cyan))]/30">
@@ -335,6 +371,9 @@ const ProgramDetailPage = () => {
               </div>
             </div>
           )}
+
+          {/* Reviews Section */}
+          {id && <ReviewSection contentId={id} />}
         </motion.div>
 
         {/* Purchase Modal */}

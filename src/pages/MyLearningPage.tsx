@@ -264,10 +264,10 @@ const MyLearningPage = () => {
                         </div>
 
                         {creator && (
-                          <p className="text-sm text-muted-foreground mb-4">
+                          <Link to={`/creators/${creator.id}`} className="text-sm text-muted-foreground hover:text-[hsl(var(--cyan))] transition-colors mb-4 block">
                             {t("program.by_creator")} {creator.first_name}{" "}
                             {creator.last_name}
-                          </p>
+                          </Link>
                         )}
 
                         <Link to={`/programs/${program.id}/learn`}>

@@ -52,6 +52,7 @@ const CreatorProgramEditPage = lazy(() => import("@/pages/CreatorProgramEditPage
 const ProgramDetailPage = lazy(() => import("@/pages/ProgramDetailPage"));
 const ProgramLearnPage = lazy(() => import("@/pages/ProgramLearnPage"));
 const MyLearningPage = lazy(() => import("@/pages/MyLearningPage"));
+const CreatorPublicProfilePage = lazy(() => import("@/pages/CreatorPublicProfilePage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function App() {
@@ -223,6 +224,7 @@ function App() {
                               </ProtectedRoute>
                             }
                           />
+                          <Route path="/creators/:id" element={<CreatorPublicProfilePage />} />
                           <Route path="*" element={<NotFound />} />
                         </Route>
                       </Routes>
