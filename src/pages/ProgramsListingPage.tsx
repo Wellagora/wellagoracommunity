@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  BookOpen,
+  Store,
   Search,
   X,
   Grid,
@@ -22,6 +22,8 @@ import {
   Crown,
   ShoppingCart,
   Star,
+  BookOpen,
+  Gift,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import StarRating from "@/components/reviews/StarRating";
@@ -163,14 +165,14 @@ const ProgramsListingPage = () => {
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-3 rounded-xl bg-[hsl(var(--cyan))]/20">
-              <BookOpen className="w-6 h-6 text-[hsl(var(--cyan))]" />
+              <Store className="w-6 h-6 text-[hsl(var(--cyan))]" />
             </div>
             <h1 className="text-3xl font-bold text-foreground">
-              {t("nav.programs")}
+              {t("marketplace.title")}
             </h1>
           </div>
           <p className="text-muted-foreground">
-            {t("programs.browse_description")}
+            {t("marketplace.subtitle")}
           </p>
         </div>
 
@@ -271,7 +273,7 @@ const ProgramsListingPage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                 >
-                  <Link to={`/programs/${program.id}`}>
+                  <Link to={`/piactr/${program.id}`}>
                     <Card className="bg-[#112240] border-[hsl(var(--cyan))]/10 hover:border-[hsl(var(--cyan))]/30 transition-all duration-300 hover:shadow-lg hover:shadow-[hsl(var(--cyan))]/5 overflow-hidden h-full">
                       <CardContent className="p-0">
                         <div className="aspect-video bg-gradient-to-br from-[hsl(var(--cyan))]/10 to-[hsl(var(--primary))]/10 relative">
@@ -301,7 +303,7 @@ const ProgramsListingPage = () => {
                           {/* Creator */}
                           {program.creator && (
                             <Link
-                              to={`/creators/${program.creator.id}`}
+                              to={`/szakertok/${program.creator.id}`}
                               onClick={(e) => e.stopPropagation()}
                               className="text-sm text-muted-foreground hover:text-[hsl(var(--cyan))] transition-colors mb-3 block"
                             >

@@ -752,11 +752,15 @@ export type Database = {
           id: string
           is_featured: boolean | null
           is_published: boolean | null
+          is_sponsored: boolean | null
           price_huf: number | null
           rejected_at: string | null
           rejection_reason: string | null
           reviewed_at: string | null
           reviewed_by: string | null
+          sponsor_id: string | null
+          sponsor_logo_url: string | null
+          sponsor_name: string | null
           thumbnail_url: string | null
           title: string
           updated_at: string | null
@@ -771,11 +775,15 @@ export type Database = {
           id?: string
           is_featured?: boolean | null
           is_published?: boolean | null
+          is_sponsored?: boolean | null
           price_huf?: number | null
           rejected_at?: string | null
           rejection_reason?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
+          sponsor_id?: string | null
+          sponsor_logo_url?: string | null
+          sponsor_name?: string | null
           thumbnail_url?: string | null
           title: string
           updated_at?: string | null
@@ -790,11 +798,15 @@ export type Database = {
           id?: string
           is_featured?: boolean | null
           is_published?: boolean | null
+          is_sponsored?: boolean | null
           price_huf?: number | null
           rejected_at?: string | null
           rejection_reason?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
+          sponsor_id?: string | null
+          sponsor_logo_url?: string | null
+          sponsor_name?: string | null
           thumbnail_url?: string | null
           title?: string
           updated_at?: string | null
@@ -810,6 +822,13 @@ export type Database = {
           {
             foreignKeyName: "expert_contents_reviewed_by_fkey"
             columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expert_contents_sponsor_id_fkey"
+            columns: ["sponsor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
