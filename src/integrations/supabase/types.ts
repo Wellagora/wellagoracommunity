@@ -472,6 +472,51 @@ export type Database = {
           },
         ]
       }
+      content_reviews: {
+        Row: {
+          comment: string | null
+          content_id: string
+          created_at: string | null
+          id: string
+          rating: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          content_id: string
+          created_at?: string | null
+          id?: string
+          rating: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          content_id?: string
+          created_at?: string | null
+          id?: string
+          rating?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_reviews_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_reviews_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       credit_packages: {
         Row: {
           created_at: string | null
@@ -699,6 +744,7 @@ export type Database = {
       expert_contents: {
         Row: {
           access_level: string | null
+          category: string | null
           content_url: string | null
           created_at: string | null
           creator_id: string | null
@@ -717,6 +763,7 @@ export type Database = {
         }
         Insert: {
           access_level?: string | null
+          category?: string | null
           content_url?: string | null
           created_at?: string | null
           creator_id?: string | null
@@ -735,6 +782,7 @@ export type Database = {
         }
         Update: {
           access_level?: string | null
+          category?: string | null
           content_url?: string | null
           created_at?: string | null
           creator_id?: string | null
@@ -1189,6 +1237,7 @@ export type Database = {
           district: string | null
           email: string
           employee_count: number | null
+          expertise_areas: string[] | null
           first_name: string
           id: string
           industry: string | null
@@ -1238,6 +1287,7 @@ export type Database = {
           district?: string | null
           email: string
           employee_count?: number | null
+          expertise_areas?: string[] | null
           first_name: string
           id: string
           industry?: string | null
@@ -1287,6 +1337,7 @@ export type Database = {
           district?: string | null
           email?: string
           employee_count?: number | null
+          expertise_areas?: string[] | null
           first_name?: string
           id?: string
           industry?: string | null
@@ -2335,6 +2386,14 @@ export type Database = {
       get_content_access_status: {
         Args: { p_content_id: string; p_user_id: string }
         Returns: Json
+      }
+      get_content_average_rating: {
+        Args: { p_content_id: string }
+        Returns: number
+      }
+      get_content_review_count: {
+        Args: { p_content_id: string }
+        Returns: number
       }
       get_current_user_role: {
         Args: never
