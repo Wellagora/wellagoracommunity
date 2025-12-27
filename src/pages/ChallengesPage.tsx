@@ -8,6 +8,7 @@ import { CardHeader, CardTitle, CardDescription, CardContent } from "@/component
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
 import {
   Search,
   Users,
@@ -30,7 +31,7 @@ const ChallengesPage = () => {
 
   const { user, loading, profile } = useAuth();
   const { t, language } = useLanguage();
-  const { isJoined } = useUserChallenges();
+  const { isJoined, getProgress } = useUserChallenges();
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredChallenges, setFilteredChallenges] = useState<Challenge[]>([]);
   const [allChallenges, setAllChallenges] = useState<Challenge[]>([]);
@@ -142,22 +143,36 @@ const ChallengesPage = () => {
           <ChallengeGridSkeleton count={4} />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
-            {filteredChallenges.map((challenge, index) => (
+            {filteredChallenges.map((challenge, index) => {
+              const userJoined = isJoined(challenge.id);
+              const progressData = getProgress(challenge.id);
+              const progress = progressData?.progress || 0;
+              const isCompleted = progressData?.isCompleted || progress === 100;
+              
+              return (
             <Card3D 
               key={challenge.id} 
               className="bg-card/50 backdrop-blur-sm border border-border/50 hover:bg-card/70 transition-all duration-300 hover:shadow-glow hover:scale-105 animate-slide-in-3d overflow-hidden relative"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              {/* Joined Badge */}
-              {isJoined(challenge.id) && (
+              {/* Status Badge - Completed or Joined */}
+              {isCompleted ? (
                 <Badge 
                   variant="default" 
                   className="absolute top-3 right-3 z-10 bg-success text-success-foreground shadow-lg"
                 >
                   <Check className="w-3 h-3 mr-1" />
+                  {t('challenges.completed_badge') || 'Teljesítve'}
+                </Badge>
+              ) : userJoined ? (
+                <Badge 
+                  variant="default" 
+                  className="absolute top-3 right-3 z-10 bg-accent text-accent-foreground shadow-lg"
+                >
+                  <Check className="w-3 h-3 mr-1" />
                   {t('challenges.joined_badge')}
                 </Badge>
-              )}
+              ) : null}
               {challenge.imageUrl && (
                 <div className="relative w-full h-48 sm:h-56 lg:h-64 overflow-hidden">
                   <img 
@@ -291,16 +306,34 @@ const ChallengesPage = () => {
                   </div>
                 </div>
 
+                {/* Progress Bar - Only show if joined */}
+                {userJoined && !isCompleted && (
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground">{t('challenges.progress')}</span>
+                      <span className="text-foreground font-medium">
+                        {progress > 0 ? `${progress}%` : t('challenges.started') || 'Elkezdve'}
+                      </span>
+                    </div>
+                    {progress > 0 && (
+                      <Progress value={progress} className="h-2" />
+                    )}
+                  </div>
+                )}
+
                 {/* Action Buttons based on user role and status */}
                 <ProgramCardButtons
                   challengeId={challenge.id}
-                  isJoined={isJoined(challenge.id)}
+                  isJoined={userJoined}
+                  progress={progress}
+                  isCompleted={isCompleted}
                   onNavigate={() => navigate(`/challenges/${challenge.id}`)}
                   onSponsor={() => navigate(`/challenges/${challenge.id}?action=sponsor`)}
                 />
               </CardContent>
               </Card3D>
-            ))}
+              );
+            })}
           </div>
         )}
 

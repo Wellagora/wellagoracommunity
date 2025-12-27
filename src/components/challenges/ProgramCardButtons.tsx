@@ -7,6 +7,8 @@ import { useProgramActions } from "@/hooks/useProgramActions";
 interface ProgramCardButtonsProps {
   challengeId: string;
   isJoined?: boolean;
+  progress?: number;
+  isCompleted?: boolean;
   onNavigate: () => void;
   onSponsor: () => void;
 }
@@ -14,6 +16,8 @@ interface ProgramCardButtonsProps {
 const ProgramCardButtons = ({
   challengeId,
   isJoined = false,
+  progress = 0,
+  isCompleted = false,
   onNavigate,
   onSponsor,
 }: ProgramCardButtonsProps) => {
@@ -81,14 +85,28 @@ const ProgramCardButtons = ({
     }
   }
 
-  // Individual users - show different button for joined vs not joined
+  // Individual users - Completed state (100% or approved)
+  if (isCompleted || progress === 100) {
+    return (
+      <div className="flex flex-col sm:flex-row gap-2">
+        <Badge 
+          className="w-full justify-center py-3 bg-success/20 text-success border border-success/30 font-semibold text-sm rounded-2xl"
+        >
+          <Check className="w-4 h-4 mr-2" />
+          {t('challenges.completed_badge') || 'Teljesítve ✓'}
+        </Badge>
+      </div>
+    );
+  }
+
+  // Individual users - Joined but not completed (Continue)
   if (isJoined) {
     return (
       <div className="flex flex-col sm:flex-row gap-2">
         <Button
           onClick={onNavigate}
           variant="outline"
-          className="w-full border-success text-success hover:bg-success/10 font-semibold rounded-2xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300 px-3 py-2"
+          className="w-full border-accent text-accent hover:bg-accent/10 font-semibold rounded-2xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300 px-3 py-2"
         >
           <Play className="w-4 h-4 mr-2" />
           {t('challenges.continue_program')}
@@ -97,49 +115,18 @@ const ProgramCardButtons = ({
     );
   }
 
-  // Not joined - show join/view buttons based on status
-  switch (buttonType) {
-    case 'open':
-      return (
-        <div className="flex flex-col sm:flex-row gap-2">
-          <Button
-            onClick={onNavigate}
-            variant="outline"
-            className="w-full font-semibold rounded-2xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300 px-3 py-2"
-          >
-            <Eye className="w-4 h-4 mr-2" />
-            {t('challenges.open_program')}
-          </Button>
-        </div>
-      );
-
-    case 'join':
-      return (
-        <div className="flex flex-col sm:flex-row gap-2">
-          <Button
-            onClick={onNavigate}
-            className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground font-semibold rounded-2xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300 px-3 py-2"
-          >
-            <Users className="w-4 h-4 mr-2" />
-            {t('challenges.join_challenge')}
-          </Button>
-        </div>
-      );
-
-    case 'view':
-    default:
-      return (
-        <div className="flex flex-col sm:flex-row gap-2">
-          <Button
-            onClick={onNavigate}
-            className="w-full bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 text-primary-foreground font-semibold rounded-2xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300 px-3 py-2"
-          >
-            <Eye className="w-4 h-4 mr-2" />
-            {t('challenges.view_challenge')}
-          </Button>
-        </div>
-      );
-  }
+  // Not joined - show Join button (primary gradient style)
+  return (
+    <div className="flex flex-col sm:flex-row gap-2">
+      <Button
+        onClick={onNavigate}
+        className="w-full bg-gradient-to-r from-[#0066FF] to-[#00CCFF] hover:from-[#0055DD] hover:to-[#00BBEE] text-white font-semibold rounded-2xl shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300 px-3 py-2"
+      >
+        <Users className="w-4 h-4 mr-2" />
+        {t('challenges.join_challenge')}
+      </Button>
+    </div>
+  );
 };
 
 export default ProgramCardButtons;
