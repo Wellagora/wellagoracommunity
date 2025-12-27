@@ -41,7 +41,7 @@ interface RoleSelectorProps {
 
 const RoleSelector = ({ onComplete }: RoleSelectorProps) => {
   const { t } = useLanguage();
-  const { user } = useAuth();
+  const { user, refreshProfile } = useAuth();
   const navigate = useNavigate();
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -93,6 +93,9 @@ const RoleSelector = ({ onComplete }: RoleSelectorProps) => {
         .eq('id', user.id);
 
       if (error) throw error;
+
+      // Refresh profile to update navigation
+      await refreshProfile();
 
       if (selectedRole === 'creator') {
         setShowExpertWelcome(true);
