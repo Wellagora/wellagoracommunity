@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import ChallengeDetail from "@/components/challenges/ChallengeDetail";
+import RelatedEvents from "@/components/challenges/RelatedEvents";
 import Navigation from "@/components/Navigation";
 import { Challenge } from "@/data/challenges";
 import { useAuth } from "@/contexts/AuthContext";
@@ -295,6 +296,13 @@ const ChallengeDetailPage = () => {
           onComplete={handleCompleteChallenge}
           onStepComplete={handleStepComplete}
         />
+
+        {/* Related Events Section */}
+        {challengeId && (
+          <div className="mt-8">
+            <RelatedEvents programId={challengeId} />
+          </div>
+        )}
       </div>
     </div>
   );

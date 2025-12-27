@@ -22,6 +22,9 @@ interface Event {
   village: string | null;
   current_participants: number | null;
   max_participants: number | null;
+  program_id: string | null;
+  program_title?: string | null;
+  status?: string;
 }
 
 interface EventRsvp {
@@ -53,11 +56,26 @@ export const EventsWidget = memo(() => {
         .select('*')
         .gte('start_date', new Date().toISOString())
         .eq('is_public', true)
+        .eq('status', 'published')
         .order('start_date', { ascending: true })
         .limit(5);
 
       if (error) throw error;
-      return data as Event[];
+      
+      // Fetch program titles for events with program_id
+      const eventsWithPrograms = await Promise.all((data || []).map(async (event: any) => {
+        if (event.program_id) {
+          const { data: programData } = await supabase
+            .from('challenge_definitions')
+            .select('title')
+            .eq('id', event.program_id)
+            .maybeSingle();
+          return { ...event, program_title: programData?.title };
+        }
+        return event;
+      }));
+      
+      return eventsWithPrograms as Event[];
     },
   });
 
@@ -234,6 +252,18 @@ export const EventsWidget = memo(() => {
                   )}
                 </div>
 
+                {/* Program badge */}
+                {event.program_id && event.program_title && (
+                  <Link to={`/challenges/${event.program_id}`} className="block mt-2">
+                    <Badge 
+                      variant="outline" 
+                      className="text-xs bg-primary/10 text-primary border-primary/30 hover:bg-primary/20 transition-colors"
+                    >
+                      {t('events.part_of_program') || 'Része a'}: {event.program_title}
+                    </Badge>
+                  </Link>
+                )}
+
                 <div className="flex items-center gap-2 mt-2">
                   {event.village && (
                     <Badge variant="outline" className={`text-xs ${villageColor}`}>
@@ -243,24 +273,27 @@ export const EventsWidget = memo(() => {
 
                   {user && (
                     <div className="flex gap-1 ml-auto">
-                      <Button
-                        variant={rsvpStatus === 'going' ? 'default' : 'outline'}
-                        size="sm"
-                        className="h-6 text-xs px-2"
-                        onClick={() => rsvpMutation.mutate({ eventId: event.id, status: 'going' })}
-                        disabled={rsvpMutation.isPending}
-                      >
-                        {t('events.going')}
-                      </Button>
-                      <Button
-                        variant={rsvpStatus === 'maybe' ? 'secondary' : 'ghost'}
-                        size="sm"
-                        className="h-6 text-xs px-2"
-                        onClick={() => rsvpMutation.mutate({ eventId: event.id, status: 'maybe' })}
-                        disabled={rsvpMutation.isPending}
-                      >
-                        {t('events.maybe')}
-                      </Button>
+                      {rsvpStatus === 'going' ? (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-6 text-xs px-2 border-destructive/50 text-destructive hover:bg-destructive/10"
+                          onClick={() => rsvpMutation.mutate({ eventId: event.id, status: 'not_going' })}
+                          disabled={rsvpMutation.isPending}
+                        >
+                          {t('events.cancel_rsvp') || 'Mégsem megyek'}
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="default"
+                          size="sm"
+                          className="h-6 text-xs px-2 bg-gradient-to-r from-[#0066FF] to-[#00CCFF]"
+                          onClick={() => rsvpMutation.mutate({ eventId: event.id, status: 'going' })}
+                          disabled={rsvpMutation.isPending}
+                        >
+                          {t('events.going') || 'Ott leszek'}
+                        </Button>
+                      )}
                     </div>
                   )}
                 </div>

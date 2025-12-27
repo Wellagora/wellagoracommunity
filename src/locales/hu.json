@@ -2682,9 +2682,12 @@
   "events.title": "Események",
   "events.upcoming": "Közelgő események",
   "events.rsvp": "Részvétel",
-  "events.going": "Megyek",
+  "events.going": "Ott leszek",
+  "events.cancel_rsvp": "Mégsem megyek",
   "events.maybe": "Talán",
   "events.not_going": "Nem megyek",
+  "events.part_of_program": "Része a programnak",
+  "events.related_events": "Kapcsolódó események",
   "events.location": "Helyszín",
   "events.date_time": "Időpont",
   "events.participants": "Résztvevők",
@@ -2707,5 +2710,11 @@
   "events.validation_error": "Kérjük, töltsd ki a kötelező mezőket",
   "events.location_placeholder": "Esemény helyszíne",
   "events.spots_left": "szabad hely",
-  "dashboard.activity_hint": "Böngéssz a programok között eseményekért"
+  "dashboard.activity_hint": "Böngéssz a programok között eseményekért",
+  "nearby.title": "Keresés a közelemben",
+  "nearby.partners": "Közeli partnerek",
+  "nearby.events": "Közelgő események",
+  "nearby.location_denied": "Helymeghatározás nem engedélyezett",
+  "nearby.location_not_supported": "Helymeghatározás nem támogatott",
+  "nearby.no_results": "Nincs közeli partner vagy esemény"
 }

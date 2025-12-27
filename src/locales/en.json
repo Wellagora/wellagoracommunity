@@ -2720,9 +2720,12 @@
   "events.title": "Events",
   "events.upcoming": "Upcoming Events",
   "events.rsvp": "RSVP",
-  "events.going": "Going",
+  "events.going": "I'm going",
+  "events.cancel_rsvp": "Cancel RSVP",
   "events.maybe": "Maybe",
   "events.not_going": "Not Going",
+  "events.part_of_program": "Part of program",
+  "events.related_events": "Related events",
   "events.location": "Location",
   "events.date_time": "Date & Time",
   "events.participants": "Participants",
@@ -2745,5 +2748,11 @@
   "events.validation_error": "Please fill in required fields",
   "events.location_placeholder": "Event location",
   "events.spots_left": "spots left",
-  "dashboard.activity_hint": "Browse programs for events"
+  "dashboard.activity_hint": "Browse programs for events",
+  "nearby.title": "Search nearby",
+  "nearby.partners": "Nearby partners",
+  "nearby.events": "Upcoming events",
+  "nearby.location_denied": "Location access denied",
+  "nearby.location_not_supported": "Location not supported",
+  "nearby.no_results": "No nearby partners or events"
 }

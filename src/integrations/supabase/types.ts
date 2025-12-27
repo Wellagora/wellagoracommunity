@@ -579,6 +579,7 @@ export type Database = {
           project_id: string | null
           recurrence: string | null
           start_date: string
+          status: string | null
           title: string
           updated_at: string | null
           village: string | null
@@ -603,6 +604,7 @@ export type Database = {
           project_id?: string | null
           recurrence?: string | null
           start_date: string
+          status?: string | null
           title: string
           updated_at?: string | null
           village?: string | null
@@ -627,6 +629,7 @@ export type Database = {
           project_id?: string | null
           recurrence?: string | null
           start_date?: string
+          status?: string | null
           title?: string
           updated_at?: string | null
           village?: string | null
@@ -651,6 +654,56 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expert_contents: {
+        Row: {
+          access_level: string | null
+          content_url: string | null
+          created_at: string | null
+          creator_id: string | null
+          description: string | null
+          id: string
+          is_published: boolean | null
+          price_huf: number | null
+          thumbnail_url: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          access_level?: string | null
+          content_url?: string | null
+          created_at?: string | null
+          creator_id?: string | null
+          description?: string | null
+          id?: string
+          is_published?: boolean | null
+          price_huf?: number | null
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          access_level?: string | null
+          content_url?: string | null
+          created_at?: string | null
+          creator_id?: string | null
+          description?: string | null
+          id?: string
+          is_published?: boolean | null
+          price_huf?: number | null
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_contents_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1088,6 +1141,7 @@ export type Database = {
           organization: string | null
           organization_id: string | null
           payout_enabled: boolean | null
+          payout_preference: string | null
           preferred_language: string | null
           preferred_stakeholder_types: string[] | null
           project_id: string | null
@@ -1098,12 +1152,15 @@ export type Database = {
           role: string
           seeking_partnerships: boolean | null
           stripe_account_id: string | null
+          stripe_connect_id: string | null
           stripe_onboarding_complete: boolean | null
           sustainability_goals: string[] | null
           updated_at: string
           user_role: Database["public"]["Enums"]["user_role"]
           visibility_radius_km: number | null
           website_url: string | null
+          wise_email: string | null
+          wise_iban: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -1127,6 +1184,7 @@ export type Database = {
           organization?: string | null
           organization_id?: string | null
           payout_enabled?: boolean | null
+          payout_preference?: string | null
           preferred_language?: string | null
           preferred_stakeholder_types?: string[] | null
           project_id?: string | null
@@ -1137,12 +1195,15 @@ export type Database = {
           role: string
           seeking_partnerships?: boolean | null
           stripe_account_id?: string | null
+          stripe_connect_id?: string | null
           stripe_onboarding_complete?: boolean | null
           sustainability_goals?: string[] | null
           updated_at?: string
           user_role?: Database["public"]["Enums"]["user_role"]
           visibility_radius_km?: number | null
           website_url?: string | null
+          wise_email?: string | null
+          wise_iban?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -1166,6 +1227,7 @@ export type Database = {
           organization?: string | null
           organization_id?: string | null
           payout_enabled?: boolean | null
+          payout_preference?: string | null
           preferred_language?: string | null
           preferred_stakeholder_types?: string[] | null
           project_id?: string | null
@@ -1176,12 +1238,15 @@ export type Database = {
           role?: string
           seeking_partnerships?: boolean | null
           stripe_account_id?: string | null
+          stripe_connect_id?: string | null
           stripe_onboarding_complete?: boolean | null
           sustainability_goals?: string[] | null
           updated_at?: string
           user_role?: Database["public"]["Enums"]["user_role"]
           visibility_radius_km?: number | null
           website_url?: string | null
+          wise_email?: string | null
+          wise_iban?: string | null
         }
         Relationships: [
           {
@@ -2867,6 +2932,11 @@ export type Database = {
         | "ngo"
         | "citizen"
         | "project_admin"
+      content_access_level:
+        | "free"
+        | "registered"
+        | "premium"
+        | "one_time_purchase"
       user_role: "citizen" | "business" | "government" | "ngo"
     }
     CompositeTypes: {
@@ -3011,6 +3081,12 @@ export const Constants = {
         "ngo",
         "citizen",
         "project_admin",
+      ],
+      content_access_level: [
+        "free",
+        "registered",
+        "premium",
+        "one_time_purchase",
       ],
       user_role: ["citizen", "business", "government", "ngo"],
     },
