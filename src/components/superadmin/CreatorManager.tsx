@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -35,6 +35,7 @@ import {
 } from '@/components/ui/sheet';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Separator } from '@/components/ui/separator';
 import {
   Search,
   Sparkles,
@@ -44,6 +45,7 @@ import {
   Eye,
   Ban,
   FileText,
+  AlertCircle,
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -53,6 +55,7 @@ interface Creator {
   last_name: string;
   email: string;
   avatar_url: string | null;
+  bio: string | null;
   created_at: string;
   is_verified_expert: boolean;
   stripe_onboarding_complete: boolean;
@@ -60,7 +63,8 @@ interface Creator {
   wise_email: string | null;
   wise_iban: string | null;
   suspended_at: string | null;
-  content_count: number;
+  total_content: number;
+  published_content: number;
 }
 
 interface ExpertContent {
@@ -70,6 +74,23 @@ interface ExpertContent {
   created_at: string;
   access_level: string | null;
   price_huf: number | null;
+}
+
+// Debounce hook
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
 }
 
 const CreatorManager = () => {
@@ -85,29 +106,40 @@ const CreatorManager = () => {
   const [creatorContents, setCreatorContents] = useState<ExpertContent[]>([]);
   const [sheetOpen, setSheetOpen] = useState(false);
 
+  // Debounced search (300ms)
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
   const loadCreators = async () => {
     setLoading(true);
     try {
-      // First get all creators
+      // Get all creators
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, first_name, last_name, email, avatar_url, bio, created_at, is_verified_expert, stripe_onboarding_complete, payout_preference, wise_email, wise_iban, suspended_at')
         .eq('user_role', 'creator')
         .order('created_at', { ascending: false });
 
       if (profilesError) throw profilesError;
 
-      // Then get content counts for each creator
+      // Get content counts for each creator (both total and published)
       const creatorsWithCounts = await Promise.all(
         (profiles || []).map(async (profile) => {
-          const { count } = await supabase
-            .from('expert_contents')
-            .select('*', { count: 'exact', head: true })
-            .eq('creator_id', profile.id);
+          const [totalRes, publishedRes] = await Promise.all([
+            supabase
+              .from('expert_contents')
+              .select('*', { count: 'exact', head: true })
+              .eq('creator_id', profile.id),
+            supabase
+              .from('expert_contents')
+              .select('*', { count: 'exact', head: true })
+              .eq('creator_id', profile.id)
+              .eq('is_published', true),
+          ]);
 
           return {
             ...profile,
-            content_count: count || 0,
+            total_content: totalRes.count || 0,
+            published_content: publishedRes.count || 0,
           } as Creator;
         })
       );
@@ -116,8 +148,8 @@ const CreatorManager = () => {
     } catch (error) {
       console.error('Error loading creators:', error);
       toast({
-        title: 'Hiba',
-        description: 'Nem sikerült betölteni a kreátorokat',
+        title: t('admin.error'),
+        description: t('admin.load_error'),
         variant: 'destructive',
       });
     } finally {
@@ -145,7 +177,7 @@ const CreatorManager = () => {
 
     if (error) {
       toast({
-        title: 'Hiba',
+        title: t('admin.error'),
         description: 'Nem sikerült frissíteni a státuszt',
         variant: 'destructive',
       });
@@ -169,7 +201,7 @@ const CreatorManager = () => {
 
     if (error) {
       toast({
-        title: 'Hiba',
+        title: t('admin.error'),
         description: 'Nem sikerült frissíteni a státuszt',
         variant: 'destructive',
       });
@@ -193,29 +225,42 @@ const CreatorManager = () => {
     loadCreators();
   }, []);
 
-  const filteredCreators = creators.filter(creator => {
-    const matchesSearch =
-      creator.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      creator.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      creator.email.toLowerCase().includes(searchQuery.toLowerCase());
+  // Filter with debounced search
+  const filteredCreators = useMemo(() => {
+    return creators.filter(creator => {
+      const matchesSearch =
+        creator.first_name.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+        creator.last_name.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+        creator.email.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
 
-    const matchesVerification =
-      verificationFilter === 'all' ||
-      (verificationFilter === 'verified' && creator.is_verified_expert) ||
-      (verificationFilter === 'not_verified' && !creator.is_verified_expert);
+      const matchesVerification =
+        verificationFilter === 'all' ||
+        (verificationFilter === 'verified' && creator.is_verified_expert) ||
+        (verificationFilter === 'not_verified' && !creator.is_verified_expert);
 
-    const matchesStripe =
-      stripeFilter === 'all' ||
-      (stripeFilter === 'connected' && creator.stripe_onboarding_complete) ||
-      (stripeFilter === 'not_connected' && !creator.stripe_onboarding_complete);
+      const matchesStripe =
+        stripeFilter === 'all' ||
+        (stripeFilter === 'connected' && creator.stripe_onboarding_complete) ||
+        (stripeFilter === 'not_connected' && !creator.stripe_onboarding_complete);
 
-    const matchesContent =
-      contentFilter === 'all' ||
-      (contentFilter === 'has_content' && creator.content_count > 0) ||
-      (contentFilter === 'no_content' && creator.content_count === 0);
+      const matchesContent =
+        contentFilter === 'all' ||
+        (contentFilter === 'has_content' && creator.total_content > 0) ||
+        (contentFilter === 'no_content' && creator.total_content === 0);
 
-    return matchesSearch && matchesVerification && matchesStripe && matchesContent;
-  });
+      return matchesSearch && matchesVerification && matchesStripe && matchesContent;
+    });
+  }, [creators, debouncedSearchQuery, verificationFilter, stripeFilter, contentFilter]);
+
+  // Active filter check for styling
+  const isFilterActive = (filter: string, value: string) => {
+    if (filter === 'verification') return verificationFilter === value;
+    if (filter === 'stripe') return stripeFilter === value;
+    if (filter === 'content') return contentFilter === value;
+    return false;
+  };
+
+  const isAllFiltersDefault = verificationFilter === 'all' && stripeFilter === 'all' && contentFilter === 'all';
 
   if (loading) {
     return (
@@ -241,30 +286,47 @@ const CreatorManager = () => {
       {/* Quick Filter Buttons */}
       <div className="flex flex-wrap gap-2">
         <Button
-          variant={verificationFilter === 'all' && stripeFilter === 'all' ? 'default' : 'outline'}
+          variant={isAllFiltersDefault ? 'default' : 'outline'}
           size="sm"
           onClick={() => { setVerificationFilter('all'); setStripeFilter('all'); setContentFilter('all'); }}
-          className={verificationFilter === 'all' && stripeFilter === 'all' ? 'bg-[#FFD700] text-black hover:bg-[#FFD700]/90' : ''}
+          className={isAllFiltersDefault 
+            ? 'bg-[#FFD700] text-black hover:bg-[#FFD700]/90 border-2 border-[#FFD700]' 
+            : 'border-border hover:border-[#FFD700]/50'}
         >
-          Összes
+          {t('admin.all_creators')}
         </Button>
         <Button
           variant={verificationFilter === 'verified' ? 'default' : 'outline'}
           size="sm"
           onClick={() => { setVerificationFilter('verified'); setStripeFilter('all'); setContentFilter('all'); }}
-          className={verificationFilter === 'verified' ? 'bg-emerald-500 hover:bg-emerald-600' : ''}
+          className={verificationFilter === 'verified' 
+            ? 'bg-emerald-500 hover:bg-emerald-600 border-2 border-emerald-500' 
+            : 'border-border hover:border-emerald-500/50'}
         >
           <CheckCircle className="h-3 w-3 mr-1" />
-          Csak hitelesített
+          {t('admin.verified_only')}
         </Button>
         <Button
           variant={stripeFilter === 'connected' ? 'default' : 'outline'}
           size="sm"
           onClick={() => { setVerificationFilter('all'); setStripeFilter('connected'); setContentFilter('all'); }}
-          className={stripeFilter === 'connected' ? 'bg-blue-500 hover:bg-blue-600' : ''}
+          className={stripeFilter === 'connected' 
+            ? 'bg-blue-500 hover:bg-blue-600 border-2 border-blue-500' 
+            : 'border-border hover:border-blue-500/50'}
         >
           <CreditCard className="h-3 w-3 mr-1" />
-          Csak Stripe-al rendelkező
+          {t('admin.stripe_active')}
+        </Button>
+        <Button
+          variant={contentFilter === 'no_content' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => { setVerificationFilter('all'); setStripeFilter('all'); setContentFilter('no_content'); }}
+          className={contentFilter === 'no_content' 
+            ? 'bg-orange-500 hover:bg-orange-600 border-2 border-orange-500' 
+            : 'border-border hover:border-orange-500/50'}
+        >
+          <AlertCircle className="h-3 w-3 mr-1" />
+          {t('admin.no_content')}
         </Button>
       </div>
 
@@ -284,33 +346,33 @@ const CreatorManager = () => {
               </div>
             </div>
             <Select value={verificationFilter} onValueChange={setVerificationFilter}>
-              <SelectTrigger className="w-[180px] bg-background/50">
+              <SelectTrigger className={`w-[180px] bg-background/50 ${verificationFilter !== 'all' ? 'border-[#FFD700]' : ''}`}>
                 <SelectValue placeholder="Hitelesítés" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Összes</SelectItem>
+                <SelectItem value="all">{t('admin.all_creators')}</SelectItem>
                 <SelectItem value="verified">{t('admin.verified')}</SelectItem>
                 <SelectItem value="not_verified">{t('admin.not_verified')}</SelectItem>
               </SelectContent>
             </Select>
             <Select value={stripeFilter} onValueChange={setStripeFilter}>
-              <SelectTrigger className="w-[180px] bg-background/50">
+              <SelectTrigger className={`w-[180px] bg-background/50 ${stripeFilter !== 'all' ? 'border-[#FFD700]' : ''}`}>
                 <SelectValue placeholder="Stripe státusz" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Összes</SelectItem>
+                <SelectItem value="all">{t('admin.all_creators')}</SelectItem>
                 <SelectItem value="connected">{t('admin.stripe_connected')}</SelectItem>
                 <SelectItem value="not_connected">{t('admin.stripe_not_connected')}</SelectItem>
               </SelectContent>
             </Select>
             <Select value={contentFilter} onValueChange={setContentFilter}>
-              <SelectTrigger className="w-[180px] bg-background/50">
+              <SelectTrigger className={`w-[180px] bg-background/50 ${contentFilter !== 'all' ? 'border-[#FFD700]' : ''}`}>
                 <SelectValue placeholder="Tartalom" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Összes</SelectItem>
+                <SelectItem value="all">{t('admin.all_creators')}</SelectItem>
                 <SelectItem value="has_content">Van tartalom</SelectItem>
-                <SelectItem value="no_content">Nincs tartalom</SelectItem>
+                <SelectItem value="no_content">{t('admin.no_content')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -329,7 +391,7 @@ const CreatorManager = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Kreátor</TableHead>
-                <TableHead>Regisztráció</TableHead>
+                <TableHead>{t('admin.registered')}</TableHead>
                 <TableHead>Hitelesítés</TableHead>
                 <TableHead>Stripe</TableHead>
                 <TableHead>Kifizetés</TableHead>
@@ -362,7 +424,7 @@ const CreatorManager = () => {
                     </div>
                   </TableCell>
                   <TableCell>
-                    {format(new Date(creator.created_at), 'yyyy.MM.dd')}
+                    {format(new Date(creator.created_at), 'yyyy. MM. dd.')}
                   </TableCell>
                   <TableCell>
                     {creator.is_verified_expert ? (
@@ -379,25 +441,27 @@ const CreatorManager = () => {
                   </TableCell>
                   <TableCell>
                     {creator.stripe_onboarding_complete ? (
-                      <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
+                      <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
                         <CreditCard className="h-3 w-3 mr-1" />
-                        Aktív
+                        Összekapcsolva
                       </Badge>
                     ) : (
-                      <Badge variant="outline" className="text-muted-foreground">
+                      <Badge variant="outline" className="text-orange-400 border-orange-500/30">
                         Nincs
                       </Badge>
                     )}
                   </TableCell>
                   <TableCell>
-                    <span className="text-sm capitalize">
+                    <span className="text-sm capitalize font-medium">
                       {creator.payout_preference || '-'}
                     </span>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
                       <FileText className="h-4 w-4 text-muted-foreground" />
-                      <span>{creator.content_count}</span>
+                      <span className="font-medium">
+                        {creator.published_content} / {creator.total_content}
+                      </span>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -406,8 +470,10 @@ const CreatorManager = () => {
                         variant="ghost"
                         size="sm"
                         onClick={() => openCreatorDetail(creator)}
+                        className="hover:bg-[#FFD700]/10"
                       >
-                        <Eye className="h-4 w-4" />
+                        <Eye className="h-4 w-4 mr-1" />
+                        {t('admin.view_details')}
                       </Button>
                       <Switch
                         checked={creator.is_verified_expert}
@@ -432,7 +498,7 @@ const CreatorManager = () => {
 
       {/* Creator Detail Sheet */}
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
+        <SheetContent className="w-full sm:max-w-lg overflow-y-auto bg-[#0a1929]">
           <SheetHeader>
             <SheetTitle className="flex items-center gap-3">
               {selectedCreator && (
@@ -465,31 +531,37 @@ const CreatorManager = () => {
           {selectedCreator && (
             <div className="mt-6 space-y-6">
               {/* Profile Info */}
-              <Card className="bg-[#112240]/50">
+              <Card className="bg-[#112240]/50 border-border/30">
                 <CardHeader>
                   <CardTitle className="text-sm">Profil információk</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Regisztráció</span>
-                    <span>{format(new Date(selectedCreator.created_at), 'yyyy.MM.dd HH:mm')}</span>
+                    <span className="text-muted-foreground">{t('admin.registered')}</span>
+                    <span>{format(new Date(selectedCreator.created_at), 'yyyy. MM. dd. HH:mm')}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Stripe státusz</span>
                     <span>{selectedCreator.stripe_onboarding_complete ? 'Összekapcsolva' : 'Nincs'}</span>
                   </div>
+                  {selectedCreator.bio && (
+                    <div className="pt-2">
+                      <span className="text-muted-foreground block mb-1">Bio</span>
+                      <p className="text-sm">{selectedCreator.bio}</p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
               {/* Payout Settings */}
-              <Card className="bg-[#112240]/50">
+              <Card className="bg-[#112240]/50 border-border/30">
                 <CardHeader>
                   <CardTitle className="text-sm">Kifizetési beállítások</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Preferencia</span>
-                    <span className="capitalize">{selectedCreator.payout_preference || '-'}</span>
+                    <span className="capitalize font-medium">{selectedCreator.payout_preference || '-'}</span>
                   </div>
                   {selectedCreator.payout_preference === 'wise' && (
                     <>
@@ -507,13 +579,16 @@ const CreatorManager = () => {
               </Card>
 
               {/* Verification Toggle */}
-              <Card className="bg-[#112240]/50">
-                <CardContent className="pt-4">
+              <Card className="bg-[#112240]/50 border-border/30">
+                <CardHeader>
+                  <CardTitle className="text-sm">Hitelesítés kezelése</CardTitle>
+                </CardHeader>
+                <CardContent>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium">{t('admin.verify_expert')}</p>
+                      <p className="font-medium">Szakértő hitelesítve</p>
                       <p className="text-sm text-muted-foreground">
-                        Hitelesített szakértő badge megjelenítése
+                        {selectedCreator.is_verified_expert ? 'A kreátor hitelesítve van' : 'A kreátor nincs hitelesítve'}
                       </p>
                     </div>
                     <Switch
@@ -525,16 +600,21 @@ const CreatorManager = () => {
                 </CardContent>
               </Card>
 
-              {/* Content List */}
-              <Card className="bg-[#112240]/50">
+              {/* Contents List */}
+              <Card className="bg-[#112240]/50 border-border/30">
                 <CardHeader>
-                  <CardTitle className="text-sm">
-                    Tartalmak ({creatorContents.length})
+                  <CardTitle className="text-sm flex items-center justify-between">
+                    <span>{t('admin.content_count')}</span>
+                    <Badge variant="outline">
+                      {selectedCreator.published_content} / {selectedCreator.total_content}
+                    </Badge>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   {creatorContents.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">Nincs tartalom</p>
+                    <p className="text-sm text-muted-foreground text-center py-4">
+                      Még nincs tartalom
+                    </p>
                   ) : (
                     <div className="space-y-2">
                       {creatorContents.map((content) => (
@@ -542,14 +622,17 @@ const CreatorManager = () => {
                           key={content.id}
                           className="flex items-center justify-between p-2 rounded bg-background/30"
                         >
-                          <div>
-                            <p className="font-medium text-sm">{content.title}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {content.access_level} • {content.price_huf ? `${content.price_huf} Ft` : 'Ingyenes'}
-                            </p>
+                          <div className="flex items-center gap-2">
+                            <FileText className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-sm font-medium truncate max-w-[200px]">
+                              {content.title}
+                            </span>
                           </div>
-                          <Badge variant={content.is_published ? 'default' : 'secondary'}>
-                            {content.is_published ? 'Publikált' : 'Vázlat'}
+                          <Badge
+                            variant={content.is_published ? 'default' : 'secondary'}
+                            className={content.is_published ? 'bg-emerald-500/20 text-emerald-400' : ''}
+                          >
+                            {content.is_published ? 'Publikált' : 'Draft'}
                           </Badge>
                         </div>
                       ))}
@@ -558,14 +641,16 @@ const CreatorManager = () => {
                 </CardContent>
               </Card>
 
-              {/* Suspend Button */}
+              <Separator />
+
+              {/* Suspend Action */}
               <Button
                 variant={selectedCreator.suspended_at ? 'default' : 'destructive'}
                 className="w-full"
                 onClick={() => suspendCreator(selectedCreator.id, !!selectedCreator.suspended_at)}
               >
                 <Ban className="h-4 w-4 mr-2" />
-                {selectedCreator.suspended_at ? 'Kreátor Aktiválása' : t('admin.suspend_creator')}
+                {selectedCreator.suspended_at ? 'Kreátor aktiválása' : 'Kreátor felfüggesztése'}
               </Button>
             </div>
           )}
