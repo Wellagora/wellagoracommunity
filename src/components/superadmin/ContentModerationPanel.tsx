@@ -6,8 +6,6 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -19,9 +17,23 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import {
   FileCheck,
   Eye,
@@ -33,6 +45,9 @@ import {
   Clock,
   CheckCircle2,
   AlertCircle,
+  ExternalLink,
+  RotateCcw,
+  AlertTriangle,
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -72,6 +87,13 @@ const ContentModerationPanel = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
+  
+  // Confirmation dialogs state
+  const [approveDialogOpen, setApproveDialogOpen] = useState(false);
+  const [unpublishDialogOpen, setUnpublishDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [contentToAction, setContentToAction] = useState<ContentItem | null>(null);
 
   const loadContents = async () => {
     setLoading(true);
@@ -126,15 +148,16 @@ const ContentModerationPanel = () => {
       });
     } else {
       toast({
-        title: 'Siker',
-        description: 'Tartalom jóváhagyva és közzétéve',
+        title: t('admin.content_approved') || 'Tartalom jóváhagyva és közzétéve!',
       });
       loadContents();
     }
+    setApproveDialogOpen(false);
+    setContentToAction(null);
   };
 
   const rejectContent = async () => {
-    if (!selectedContent || !rejectionReason.trim()) return;
+    if (!selectedContent || rejectionReason.trim().length < 10) return;
 
     const { error } = await supabase
       .from('expert_contents')
@@ -155,8 +178,7 @@ const ContentModerationPanel = () => {
       });
     } else {
       toast({
-        title: 'Tartalom elutasítva',
-        description: 'Az elutasítás oka mentve',
+        title: t('admin.content_rejected') || 'Tartalom elutasítva',
       });
       setRejectDialogOpen(false);
       setRejectionReason('');
@@ -168,7 +190,11 @@ const ContentModerationPanel = () => {
   const unpublishContent = async (contentId: string) => {
     const { error } = await supabase
       .from('expert_contents')
-      .update({ is_published: false })
+      .update({ 
+        is_published: false,
+        reviewed_by: null,
+        reviewed_at: null,
+      })
       .eq('id', contentId);
 
     if (error) {
@@ -179,10 +205,12 @@ const ContentModerationPanel = () => {
       });
     } else {
       toast({
-        title: 'Közzététel visszavonva',
+        title: t('admin.content_unpublished') || 'Közzététel visszavonva',
       });
       loadContents();
     }
+    setUnpublishDialogOpen(false);
+    setContentToAction(null);
   };
 
   const toggleFeatured = async (contentId: string, currentStatus: boolean) => {
@@ -198,16 +226,22 @@ const ContentModerationPanel = () => {
         variant: 'destructive',
       });
     } else {
-      toast({
-        title: !currentStatus ? 'Tartalom kiemelve' : 'Kiemelés visszavonva',
-      });
+      const featuredCount = contents.filter(c => c.is_published && c.is_featured && c.id !== contentId).length + (!currentStatus ? 1 : 0);
+      if (!currentStatus) {
+        toast({
+          title: t('admin.content_featured') || 'Tartalom kiemelve!',
+          description: `${t('admin.featured_count')?.replace('{count}', String(featuredCount)) || `Jelenleg ${featuredCount} tartalom van kiemelve`}`,
+        });
+      } else {
+        toast({
+          title: t('admin.content_unfeatured') || 'Kiemelés eltávolítva',
+        });
+      }
       loadContents();
     }
   };
 
   const deleteContent = async (contentId: string) => {
-    if (!confirm('Biztosan törölni szeretnéd ezt a tartalmat?')) return;
-
     const { error } = await supabase
       .from('expert_contents')
       .delete()
@@ -221,7 +255,35 @@ const ContentModerationPanel = () => {
       });
     } else {
       toast({
-        title: 'Tartalom törölve',
+        title: t('admin.content_deleted') || 'Tartalom törölve',
+      });
+      loadContents();
+    }
+    setDeleteDialogOpen(false);
+    setDeleteConfirmText('');
+    setContentToAction(null);
+  };
+
+  const reReviewContent = async (contentId: string) => {
+    const { error } = await supabase
+      .from('expert_contents')
+      .update({
+        rejected_at: null,
+        rejection_reason: null,
+        reviewed_by: null,
+        reviewed_at: null,
+      })
+      .eq('id', contentId);
+
+    if (error) {
+      toast({
+        title: 'Hiba',
+        description: 'Nem sikerült visszaállítani a tartalmat',
+        variant: 'destructive',
+      });
+    } else {
+      toast({
+        title: 'Tartalom visszahelyezve jóváhagyásra',
       });
       loadContents();
     }
@@ -250,13 +312,42 @@ const ContentModerationPanel = () => {
 
   const getAccessLevelBadge = (level: string | null) => {
     const levels: Record<string, { label: string; className: string }> = {
-      free: { label: 'Ingyenes', className: 'bg-green-500/20 text-green-400' },
-      registered: { label: 'Regisztrált', className: 'bg-blue-500/20 text-blue-400' },
-      premium: { label: 'Prémium', className: 'bg-amber-500/20 text-amber-400' },
-      one_time_purchase: { label: 'Egyszeri', className: 'bg-purple-500/20 text-purple-400' },
+      free: { label: t('admin.access_free') || 'Ingyenes', className: 'bg-green-500/20 text-green-400' },
+      registered: { label: t('admin.access_registered') || 'Regisztrált', className: 'bg-blue-500/20 text-blue-400' },
+      premium: { label: t('admin.access_premium') || 'Prémium', className: 'bg-amber-500/20 text-amber-400' },
+      one_time_purchase: { label: t('admin.access_purchase') || 'Egyszeri', className: 'bg-purple-500/20 text-purple-400' },
     };
     const config = levels[level || 'free'] || levels.free;
     return <Badge className={config.className}>{config.label}</Badge>;
+  };
+
+  const getEmptyStateMessage = () => {
+    switch (activeTab) {
+      case 'pending':
+        return t('admin.no_pending') || '🎉 Nincs jóváhagyásra váró tartalom';
+      case 'published':
+        return t('admin.no_published') || '📭 Még nincs közzétett tartalom';
+      case 'rejected':
+        return t('admin.no_rejected') || '✅ Nincs elutasított tartalom';
+      default:
+        return 'Nincs tartalom';
+    }
+  };
+
+  const handleApproveClick = (content: ContentItem) => {
+    setContentToAction(content);
+    setApproveDialogOpen(true);
+  };
+
+  const handleUnpublishClick = (content: ContentItem) => {
+    setContentToAction(content);
+    setUnpublishDialogOpen(true);
+  };
+
+  const handleDeleteClick = (content: ContentItem) => {
+    setContentToAction(content);
+    setDeleteConfirmText('');
+    setDeleteDialogOpen(true);
   };
 
   if (loading) {
@@ -277,7 +368,7 @@ const ContentModerationPanel = () => {
       <div>
         <h2 className="text-2xl font-bold flex items-center gap-2">
           <FileCheck className="h-6 w-6 text-amber-500" />
-          {t('admin.content_moderation')}
+          {t('admin.moderation') || 'Moderáció'}
         </h2>
         <p className="text-muted-foreground">
           Szakértői tartalmak moderálása és közzététel kezelése
@@ -292,7 +383,7 @@ const ContentModerationPanel = () => {
               <Clock className="h-8 w-8 text-amber-500" />
               <div>
                 <p className="text-2xl font-bold">{pendingContents.length}</p>
-                <p className="text-sm text-muted-foreground">{t('admin.pending_content')}</p>
+                <p className="text-sm text-muted-foreground">{t('admin.pending_tab') || 'Jóváhagyásra vár'}</p>
               </div>
             </div>
           </CardContent>
@@ -303,7 +394,7 @@ const ContentModerationPanel = () => {
               <CheckCircle2 className="h-8 w-8 text-emerald-500" />
               <div>
                 <p className="text-2xl font-bold">{publishedContents.length}</p>
-                <p className="text-sm text-muted-foreground">Közzétett</p>
+                <p className="text-sm text-muted-foreground">{t('admin.published_tab') || 'Közzétett'}</p>
               </div>
             </div>
           </CardContent>
@@ -314,7 +405,7 @@ const ContentModerationPanel = () => {
               <AlertCircle className="h-8 w-8 text-red-500" />
               <div>
                 <p className="text-2xl font-bold">{rejectedContents.length}</p>
-                <p className="text-sm text-muted-foreground">Elutasított</p>
+                <p className="text-sm text-muted-foreground">{t('admin.rejected_tab') || 'Elutasított'}</p>
               </div>
             </div>
           </CardContent>
@@ -323,18 +414,27 @@ const ContentModerationPanel = () => {
 
       {/* Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="bg-[#112240]">
-          <TabsTrigger value="pending" className="data-[state=active]:bg-amber-500/20">
+        <TabsList className="bg-[#0A1930] border border-border/50">
+          <TabsTrigger 
+            value="pending" 
+            className="data-[state=active]:bg-[#FFD700]/20 data-[state=active]:text-[#FFD700] data-[state=active]:border-b-2 data-[state=active]:border-[#FFD700]"
+          >
             <Clock className="h-4 w-4 mr-2" />
-            Jóváhagyásra vár ({pendingContents.length})
+            {t('admin.pending_tab') || 'Jóváhagyásra vár'} ({pendingContents.length})
           </TabsTrigger>
-          <TabsTrigger value="published" className="data-[state=active]:bg-emerald-500/20">
+          <TabsTrigger 
+            value="published" 
+            className="data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-400 data-[state=active]:border-b-2 data-[state=active]:border-emerald-400"
+          >
             <CheckCircle className="h-4 w-4 mr-2" />
-            Közzétett ({publishedContents.length})
+            {t('admin.published_tab') || 'Közzétett'} ({publishedContents.length})
           </TabsTrigger>
-          <TabsTrigger value="rejected" className="data-[state=active]:bg-red-500/20">
+          <TabsTrigger 
+            value="rejected" 
+            className="data-[state=active]:bg-red-500/20 data-[state=active]:text-red-400 data-[state=active]:border-b-2 data-[state=active]:border-red-400"
+          >
             <XCircle className="h-4 w-4 mr-2" />
-            Elutasított ({rejectedContents.length})
+            {t('admin.rejected_tab') || 'Elutasított'} ({rejectedContents.length})
           </TabsTrigger>
         </TabsList>
 
@@ -342,28 +442,52 @@ const ContentModerationPanel = () => {
           {getFilteredContents().length === 0 ? (
             <Card className="bg-[#112240] border-border/50">
               <CardContent className="py-12 text-center">
-                <p className="text-muted-foreground">Nincs tartalom ebben a kategóriában</p>
+                <p className="text-xl text-muted-foreground">{getEmptyStateMessage()}</p>
               </CardContent>
             </Card>
           ) : (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {getFilteredContents().map((content) => (
-                <Card key={content.id} className="bg-[#112240] border-border/50 overflow-hidden">
+                <Card 
+                  key={content.id} 
+                  className="bg-[#112240] border-border/50 overflow-hidden hover:border-[#FFD700]/50 transition-colors"
+                >
                   {/* Thumbnail */}
                   <div className="relative h-32 bg-gradient-to-br from-primary/20 to-primary/5">
-                    {content.thumbnail_url && (
+                    {content.thumbnail_url ? (
                       <img
                         src={content.thumbnail_url}
                         alt={content.title}
                         className="w-full h-full object-cover"
                       />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <FileCheck className="h-12 w-12 text-muted-foreground/30" />
+                      </div>
                     )}
                     {content.is_featured && (
-                      <Badge className="absolute top-2 right-2 bg-amber-500">
-                        <Star className="h-3 w-3 mr-1" />
+                      <Badge className="absolute top-2 right-2 bg-[#FFD700] text-black">
+                        <Star className="h-3 w-3 mr-1 fill-current" />
                         Kiemelt
                       </Badge>
                     )}
+                    {/* Status Badge */}
+                    <Badge 
+                      className={`absolute top-2 left-2 ${
+                        content.rejected_at 
+                          ? 'bg-red-500/90' 
+                          : content.is_published 
+                            ? 'bg-emerald-500/90' 
+                            : 'bg-amber-500/90'
+                      }`}
+                    >
+                      {content.rejected_at 
+                        ? (t('admin.rejected_tab') || 'Elutasított')
+                        : content.is_published 
+                          ? (t('admin.published_tab') || 'Közzétett')
+                          : (t('admin.pending_tab') || 'Várakozik')
+                      }
+                    </Badge>
                   </div>
 
                   <CardContent className="pt-4 space-y-3">
@@ -379,44 +503,51 @@ const ContentModerationPanel = () => {
                         {content.creator?.first_name} {content.creator?.last_name}
                       </span>
                       {content.creator?.is_verified_expert && (
-                        <CheckCircle className="h-3 w-3 text-emerald-400" />
+                        <CheckCircle className="h-3 w-3 text-[#FFD700]" />
                       )}
                     </div>
 
                     {/* Title */}
-                    <h3 className="font-semibold line-clamp-2">{content.title}</h3>
+                    <h3 className="font-bold line-clamp-2">{content.title}</h3>
 
                     {/* Meta Info */}
                     <div className="flex items-center gap-2 flex-wrap">
                       {getAccessLevelBadge(content.access_level)}
-                      {content.price_huf && (
-                        <Badge variant="outline">{content.price_huf} Ft</Badge>
-                      )}
+                      <Badge variant="outline">
+                        {content.price_huf && content.price_huf > 0 
+                          ? `${content.price_huf} Ft` 
+                          : (t('admin.access_free') || 'Ingyenes')
+                        }
+                      </Badge>
                     </div>
 
                     {/* Description */}
                     {content.description && (
                       <p className="text-sm text-muted-foreground line-clamp-2">
-                        {content.description}
+                        {content.description.length > 100 
+                          ? `${content.description.substring(0, 100)}...` 
+                          : content.description
+                        }
                       </p>
                     )}
 
                     {/* Rejection reason for rejected tab */}
                     {content.rejected_at && content.rejection_reason && (
                       <div className="p-2 rounded bg-red-500/10 border border-red-500/20">
-                        <p className="text-xs text-red-400">
-                          <strong>Elutasítás oka:</strong> {content.rejection_reason}
+                        <p className="text-xs text-muted-foreground italic">
+                          <strong className="text-red-400">{t('admin.rejection_reason') || 'Elutasítás oka'}:</strong>{' '}
+                          {content.rejection_reason}
                         </p>
                       </div>
                     )}
 
                     {/* Date */}
                     <p className="text-xs text-muted-foreground">
-                      {format(new Date(content.created_at), 'yyyy.MM.dd HH:mm')}
+                      {format(new Date(content.created_at), 'yyyy. MM. dd.')}
                     </p>
 
                     {/* Actions */}
-                    <div className="flex gap-2 pt-2">
+                    <div className="flex gap-2 pt-2 flex-wrap">
                       <Button
                         variant="ghost"
                         size="sm"
@@ -426,64 +557,92 @@ const ContentModerationPanel = () => {
                         }}
                       >
                         <Eye className="h-4 w-4 mr-1" />
-                        {t('admin.preview')}
+                        {t('admin.preview') || 'Előnézet'}
                       </Button>
 
                       {activeTab === 'pending' && (
                         <>
                           <Button
-                            variant="default"
                             size="sm"
-                            className="bg-emerald-600 hover:bg-emerald-700"
-                            onClick={() => approveContent(content.id)}
+                            className="bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white"
+                            onClick={() => handleApproveClick(content)}
                           >
                             <CheckCircle className="h-4 w-4 mr-1" />
-                            {t('admin.approve')}
+                            {t('admin.approve') || 'Jóváhagyás'}
                           </Button>
                           <Button
-                            variant="destructive"
+                            variant="outline"
                             size="sm"
+                            className="border-red-500/50 text-red-400 hover:bg-red-500/10"
                             onClick={() => {
                               setSelectedContent(content);
                               setRejectDialogOpen(true);
                             }}
                           >
                             <XCircle className="h-4 w-4 mr-1" />
-                            {t('admin.reject')}
+                            {t('admin.reject') || 'Elutasítás'}
                           </Button>
                         </>
                       )}
 
                       {activeTab === 'published' && (
                         <>
+                          <div className="flex items-center gap-2">
+                            <Switch
+                              id={`feature-${content.id}`}
+                              checked={content.is_featured}
+                              onCheckedChange={() => toggleFeatured(content.id, content.is_featured)}
+                              className="data-[state=checked]:bg-[#FFD700]"
+                            />
+                            <Label 
+                              htmlFor={`feature-${content.id}`}
+                              className={`text-sm cursor-pointer ${content.is_featured ? 'text-[#FFD700]' : 'text-muted-foreground'}`}
+                            >
+                              <Star className={`h-4 w-4 inline mr-1 ${content.is_featured ? 'fill-[#FFD700]' : ''}`} />
+                              {t('admin.feature') || 'Kiemelés'}
+                            </Label>
+                          </div>
                           <Button
-                            variant="outline"
+                            variant="ghost"
                             size="sm"
-                            onClick={() => toggleFeatured(content.id, content.is_featured)}
+                            onClick={() => handleUnpublishClick(content)}
                           >
-                            <Star className={`h-4 w-4 mr-1 ${content.is_featured ? 'fill-amber-500 text-amber-500' : ''}`} />
-                            {t('admin.feature_content')}
+                            <EyeOff className="h-4 w-4 mr-1" />
+                            {t('admin.unpublish') || 'Visszavonás'}
                           </Button>
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => unpublishContent(content.id)}
+                            className="text-red-400 hover:bg-red-500/10"
+                            onClick={() => handleDeleteClick(content)}
                           >
-                            <EyeOff className="h-4 w-4 mr-1" />
-                            {t('admin.unpublish')}
+                            <Trash2 className="h-4 w-4 mr-1" />
+                            {t('admin.delete_content') || 'Törlés'}
                           </Button>
                         </>
                       )}
 
                       {activeTab === 'rejected' && (
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => deleteContent(content.id)}
-                        >
-                          <Trash2 className="h-4 w-4 mr-1" />
-                          Törlés
-                        </Button>
+                        <>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="border-[#FFD700]/50 text-[#FFD700] hover:bg-[#FFD700]/10"
+                            onClick={() => reReviewContent(content.id)}
+                          >
+                            <RotateCcw className="h-4 w-4 mr-1" />
+                            {t('admin.re_review') || 'Újra áttekintés'}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-400 hover:bg-red-500/10"
+                            onClick={() => handleDeleteClick(content)}
+                          >
+                            <Trash2 className="h-4 w-4 mr-1" />
+                            {t('admin.delete_permanent') || 'Végleges törlés'}
+                          </Button>
+                        </>
                       )}
                     </div>
                   </CardContent>
@@ -498,17 +657,23 @@ const ContentModerationPanel = () => {
       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>{selectedContent?.title}</DialogTitle>
+            <DialogTitle className="text-xl">{selectedContent?.title}</DialogTitle>
           </DialogHeader>
           {selectedContent && (
             <div className="space-y-4">
-              {selectedContent.thumbnail_url && (
+              {selectedContent.thumbnail_url ? (
                 <img
                   src={selectedContent.thumbnail_url}
                   alt={selectedContent.title}
                   className="w-full h-48 object-cover rounded"
                 />
+              ) : (
+                <div className="w-full h-48 bg-muted rounded flex items-center justify-center">
+                  <FileCheck className="h-16 w-16 text-muted-foreground/30" />
+                </div>
               )}
+              
+              {/* Creator Info */}
               <div className="flex items-center gap-3">
                 <Avatar>
                   <AvatarImage src={selectedContent.creator?.avatar_url || undefined} />
@@ -516,29 +681,77 @@ const ContentModerationPanel = () => {
                     {selectedContent.creator?.first_name?.[0]}{selectedContent.creator?.last_name?.[0]}
                   </AvatarFallback>
                 </Avatar>
-                <div>
-                  <p className="font-medium">
-                    {selectedContent.creator?.first_name} {selectedContent.creator?.last_name}
-                  </p>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <p className="font-medium">
+                      {selectedContent.creator?.first_name} {selectedContent.creator?.last_name}
+                    </p>
+                    {selectedContent.creator?.is_verified_expert && (
+                      <Badge className="bg-[#FFD700] text-black">
+                        <CheckCircle className="h-3 w-3 mr-1" />
+                        Hitelesített
+                      </Badge>
+                    )}
+                  </div>
                   <p className="text-sm text-muted-foreground">{selectedContent.creator?.email}</p>
                 </div>
               </div>
-              <div className="flex gap-2">
+
+              {/* Meta Info */}
+              <div className="flex gap-2 flex-wrap">
                 {getAccessLevelBadge(selectedContent.access_level)}
-                {selectedContent.price_huf && (
-                  <Badge variant="outline">{selectedContent.price_huf} Ft</Badge>
-                )}
+                <Badge variant="outline">
+                  {selectedContent.price_huf && selectedContent.price_huf > 0 
+                    ? `${selectedContent.price_huf} Ft` 
+                    : (t('admin.access_free') || 'Ingyenes')
+                  }
+                </Badge>
+                <Badge variant="outline">
+                  {format(new Date(selectedContent.created_at), 'yyyy. MM. dd.')}
+                </Badge>
               </div>
-              <p className="text-muted-foreground">{selectedContent.description}</p>
+
+              {/* Description */}
+              <p className="text-muted-foreground">{selectedContent.description || 'Nincs leírás'}</p>
+              
+              {/* Content URL */}
               {selectedContent.content_url && (
                 <a
                   href={selectedContent.content_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary hover:underline"
+                  className="flex items-center gap-2 text-primary hover:underline"
                 >
-                  Tartalom megnyitása →
+                  <ExternalLink className="h-4 w-4" />
+                  Tartalom megnyitása
                 </a>
+              )}
+
+              {/* Quick Actions in Preview */}
+              {!selectedContent.is_published && !selectedContent.rejected_at && (
+                <DialogFooter className="gap-2">
+                  <Button
+                    className="bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600"
+                    onClick={() => {
+                      setPreviewOpen(false);
+                      handleApproveClick(selectedContent);
+                    }}
+                  >
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    {t('admin.approve') || 'Jóváhagyás'}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                    onClick={() => {
+                      setPreviewOpen(false);
+                      setRejectDialogOpen(true);
+                    }}
+                  >
+                    <XCircle className="h-4 w-4 mr-2" />
+                    {t('admin.reject') || 'Elutasítás'}
+                  </Button>
+                </DialogFooter>
               )}
             </div>
           )}
@@ -549,18 +762,23 @@ const ContentModerationPanel = () => {
       <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Tartalom elutasítása</DialogTitle>
+            <DialogTitle>{t('admin.reject') || 'Tartalom elutasítása'}</DialogTitle>
+            <DialogDescription>
+              Add meg az elutasítás okát a kreátor számára (minimum 10 karakter):
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <p className="text-muted-foreground">
-              Add meg az elutasítás okát a kreátor számára:
-            </p>
             <Textarea
-              placeholder="Elutasítás oka..."
+              placeholder={t('admin.rejection_reason_placeholder') || 'Add meg az elutasítás okát (min. 10 karakter)...'}
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value)}
               rows={4}
             />
+            {rejectionReason.length > 0 && rejectionReason.length < 10 && (
+              <p className="text-sm text-red-400">
+                Még {10 - rejectionReason.length} karakter szükséges
+              </p>
+            )}
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setRejectDialogOpen(false)}>
@@ -569,13 +787,100 @@ const ContentModerationPanel = () => {
             <Button
               variant="destructive"
               onClick={rejectContent}
-              disabled={!rejectionReason.trim()}
+              disabled={rejectionReason.trim().length < 10}
             >
-              Elutasítás
+              {t('admin.reject') || 'Elutasítás'}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Approve Confirmation Dialog */}
+      <AlertDialog open={approveDialogOpen} onOpenChange={setApproveDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {t('admin.approve_confirm_title') || 'Tartalom jóváhagyása'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('admin.approve_confirm_text') || 'Biztosan közzéteszed ezt a tartalmat?'}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Mégse</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-emerald-600 hover:bg-emerald-700"
+              onClick={() => contentToAction && approveContent(contentToAction.id)}
+            >
+              <CheckCircle className="h-4 w-4 mr-2" />
+              {t('admin.approve') || 'Jóváhagyás'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Unpublish Confirmation Dialog */}
+      <AlertDialog open={unpublishDialogOpen} onOpenChange={setUnpublishDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {t('admin.unpublish_confirm_title') || 'Közzététel visszavonása'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('admin.unpublish_confirm_text') || 'Biztosan visszavonod a közzétételt? A tartalom nem lesz látható a felhasználók számára.'}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Mégse</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-amber-600 hover:bg-amber-700"
+              onClick={() => contentToAction && unpublishContent(contentToAction.id)}
+            >
+              <EyeOff className="h-4 w-4 mr-2" />
+              {t('admin.unpublish') || 'Visszavonás'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Confirmation Dialog - Extra Safety */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent className="border-red-500/50">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-red-500">
+              <AlertTriangle className="h-5 w-5" />
+              {t('admin.delete_confirm_title') || '⚠️ Végleges törlés'}
+            </AlertDialogTitle>
+            <AlertDialogDescription className="space-y-3">
+              <p className="text-red-500 font-bold text-base">
+                {t('admin.delete_confirm_warning') || 'FIGYELEM: Ez a művelet NEM visszavonható! A tartalom véglegesen törlődik.'}
+              </p>
+              <p className="text-muted-foreground">
+                A törlés megerősítéséhez írd be: <span className="font-mono font-bold">TÖRLÉS</span>
+              </p>
+              <Input
+                placeholder={t('admin.delete_confirm_type') || 'Írd be: TÖRLÉS'}
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                className="border-red-500/30 focus:border-red-500"
+              />
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteConfirmText('')}>
+              Mégse
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-600 hover:bg-red-700"
+              disabled={deleteConfirmText !== 'TÖRLÉS'}
+              onClick={() => contentToAction && deleteContent(contentToAction.id)}
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              {t('admin.delete_permanent') || 'Végleges törlés'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
