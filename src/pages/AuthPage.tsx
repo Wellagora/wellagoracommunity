@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, CheckCircle, Leaf, Users, Target, Globe } from "lucide-react";
+import { Loader2, CheckCircle, Leaf, Users, Target, Globe, User, Sparkles, Building2, Landmark, Heart } from "lucide-react";
 import { z } from "zod";
 
 const AuthPage = () => {
@@ -36,7 +36,7 @@ const AuthPage = () => {
     confirmPassword: z.string(),
     firstName: z.string().min(1, t('auth.first_name_required')).max(50, t('auth.first_name_max')),
     lastName: z.string().min(1, t('auth.last_name_required')).max(50, t('auth.last_name_max')),
-    role: z.enum(["citizen", "business", "government", "ngo"], { 
+    role: z.enum(["citizen", "creator", "business", "government", "ngo"], { 
       message: t('auth.role_required') 
     }),
     organization: z.string().max(100, t('auth.organization_max')).optional(),
@@ -392,21 +392,43 @@ const AuthPage = () => {
                             required
                           />
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="role" className="text-foreground">Role</Label>
-                          <Select value={signupForm.role} onValueChange={(value) => setSignupForm({ ...signupForm, role: value })}>
-                            <SelectTrigger className="bg-background/50 backdrop-blur-sm border-border/50 text-foreground">
-                              <SelectValue placeholder="Select your role" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-card border-border/50">
-                              <SelectItem value="citizen">🏠 Magánszemély</SelectItem>
-                              <SelectItem value="business">🏢 Cég</SelectItem>
-                              <SelectItem value="government">🏛️ Önkormányzat</SelectItem>
-                              <SelectItem value="ngo">💚 Civil Szervezet</SelectItem>
-                            </SelectContent>
-                          </Select>
+                        {/* Visual Role Selector */}
+                        <div className="space-y-3">
+                          <Label className="text-foreground">{t('auth.select_role') || 'Válaszd ki a szerepköröd'}</Label>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {[
+                              { id: 'citizen', icon: User, label: t('auth.role_citizen') || 'Felhasználó', desc: t('auth.role_citizen_desc') || 'Közösségi tag', color: 'text-green-400' },
+                              { id: 'creator', icon: Sparkles, label: t('auth.role_creator') || 'Kreátor', desc: t('auth.role_creator_desc') || 'Szakértő, tartalomgyártó', color: 'text-[#00E5FF]' },
+                              { id: 'business', icon: Building2, label: t('auth.role_business') || 'Cég/Szervezet', desc: t('auth.role_business_desc') || 'Vállalkozás, szponzor', color: 'text-blue-400' },
+                              { id: 'government', icon: Landmark, label: t('auth.role_government') || 'Önkormányzat', desc: t('auth.role_government_desc') || 'Helyi önkormányzat', color: 'text-amber-400' },
+                              { id: 'ngo', icon: Heart, label: t('auth.role_ngo') || 'Civil szervezet', desc: t('auth.role_ngo_desc') || 'Non-profit szervezet', color: 'text-pink-400' },
+                            ].map((role) => {
+                              const Icon = role.icon;
+                              const isSelected = signupForm.role === role.id;
+                              return (
+                                <button
+                                  key={role.id}
+                                  type="button"
+                                  onClick={() => setSignupForm({ ...signupForm, role: role.id })}
+                                  className={`p-4 rounded-lg border text-left transition-all cursor-pointer ${
+                                    isSelected
+                                      ? 'bg-[#1a3a5c] border-[#00E5FF] shadow-[0_0_15px_rgba(0,229,255,0.3)]'
+                                      : 'bg-[#112240] border-border/50 hover:border-[#00E5FF]/50'
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <Icon className={`w-5 h-5 ${role.color}`} />
+                                    <div>
+                                      <p className="font-medium text-foreground text-sm">{role.label}</p>
+                                      <p className="text-xs text-muted-foreground">{role.desc}</p>
+                                    </div>
+                                  </div>
+                                </button>
+                              );
+                            })}
+                          </div>
                         </div>
-                        {(signupForm.role === "business" || signupForm.role === "government" || signupForm.role === "ngo") && (
+                        {(signupForm.role === "creator" || signupForm.role === "business" || signupForm.role === "government" || signupForm.role === "ngo") && (
                           <div className="space-y-2">
                             <Label htmlFor="organization" className="text-foreground">Szervezet neve</Label>
                             <Input

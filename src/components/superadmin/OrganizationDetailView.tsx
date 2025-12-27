@@ -36,7 +36,7 @@ interface OrganizationDetailViewProps {
 interface OrganizationData {
   id: string;
   name: string;
-  type: 'business' | 'citizen' | 'government' | 'ngo';
+  type: 'business' | 'citizen' | 'creator' | 'government' | 'ngo';
   location: string | null;
   description: string | null;
   website_url: string | null;

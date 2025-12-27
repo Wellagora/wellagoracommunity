@@ -2937,7 +2937,7 @@ export type Database = {
         | "registered"
         | "premium"
         | "one_time_purchase"
-      user_role: "citizen" | "business" | "government" | "ngo"
+      user_role: "citizen" | "business" | "government" | "ngo" | "creator"
     }
     CompositeTypes: {
       geometry_dump: {
@@ -3088,7 +3088,7 @@ export const Constants = {
         "premium",
         "one_time_purchase",
       ],
-      user_role: ["citizen", "business", "government", "ngo"],
+      user_role: ["citizen", "business", "government", "ngo", "creator"],
     },
   },
 } as const
