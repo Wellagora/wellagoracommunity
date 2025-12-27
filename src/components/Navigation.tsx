@@ -14,6 +14,7 @@ import {
   Heart,
   Eye,
   Calendar,
+  LayoutDashboard,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -120,6 +121,8 @@ const Navigation = () => {
     return "/dashboard";
   }, [user, profile, viewMode, isSuperAdmin]);
 
+  const isCreator = profile?.user_role === 'creator';
+
   const navItems = useMemo(
     () => [
       { path: "/", label: t("nav.home"), icon: Home },
@@ -127,10 +130,16 @@ const Navigation = () => {
       { path: "/events", label: t("nav.events"), icon: Calendar },
       { path: "/community", label: t("nav.community"), icon: UsersIcon },
       ...(user && profile && dashboardPath ? [{ path: dashboardPath, label: t("nav.dashboard"), icon: Home }] : []),
+      ...(user && isCreator ? [{ 
+        path: "/creator/dashboard", 
+        label: t("nav.creator_studio"), 
+        icon: LayoutDashboard,
+        iconColor: "#00E5FF"
+      }] : []),
       { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
       ...(!user ? [{ path: "/sponsor", label: t("nav.sponsors"), icon: Heart }] : []),
     ],
-    [user, profile, dashboardPath, t],
+    [user, profile, dashboardPath, t, isCreator],
   );
 
   return (
@@ -147,15 +156,23 @@ const Navigation = () => {
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.path);
+              const hasCustomColor = 'iconColor' in item && item.iconColor;
               return (
                 <Link
                   key={item.path}
                   to={item.path}
                   className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    active ? "text-primary-foreground bg-primary" : "text-foreground/90 hover:text-foreground hover:bg-accent/50"
+                    active 
+                      ? hasCustomColor 
+                        ? "bg-[#00E5FF]/20 text-[#00E5FF] shadow-[0_0_10px_rgba(0,229,255,0.3)]" 
+                        : "text-primary-foreground bg-primary" 
+                      : "text-foreground/90 hover:text-foreground hover:bg-accent/50"
                   }`}
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon 
+                    className="h-4 w-4" 
+                    style={hasCustomColor ? { color: item.iconColor } : undefined}
+                  />
                   {item.label}
                 </Link>
               );
@@ -326,6 +343,7 @@ const Navigation = () => {
                     {navItems.map((item) => {
                       const Icon = item.icon;
                       const active = isActive(item.path);
+                      const hasCustomColor = 'iconColor' in item && item.iconColor;
                       return (
                         <Link
                           key={item.path}
@@ -333,11 +351,16 @@ const Navigation = () => {
                           onClick={() => setIsMobileMenuOpen(false)}
                           className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors ${
                             active
-                              ? "text-primary-foreground bg-primary font-medium"
+                              ? hasCustomColor
+                                ? "bg-[#00E5FF]/20 text-[#00E5FF] font-medium shadow-[0_0_10px_rgba(0,229,255,0.3)]"
+                                : "text-primary-foreground bg-primary font-medium"
                               : "text-foreground/90 hover:text-foreground hover:bg-accent/50"
                           }`}
                         >
-                          <Icon className="h-5 w-5 shrink-0" />
+                          <Icon 
+                            className="h-5 w-5 shrink-0" 
+                            style={hasCustomColor ? { color: item.iconColor } : undefined}
+                          />
                           <span className="text-sm font-medium">{item.label}</span>
                         </Link>
                       );

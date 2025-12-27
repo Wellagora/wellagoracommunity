@@ -46,6 +46,7 @@ const SponsorLandingPage = lazy(() => import("@/pages/SponsorLandingPage"));
 const OrganizationRegisterPage = lazy(() => import("@/pages/OrganizationRegisterPage"));
 const JoinOrganizationPage = lazy(() => import("@/pages/JoinOrganizationPage"));
 const EventsPage = lazy(() => import("@/pages/EventsPage"));
+const CreatorDashboardPage = lazy(() => import("@/pages/CreatorDashboardPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function App() {
@@ -176,6 +177,14 @@ function App() {
                           <Route path="/sponsor" element={<SponsorLandingPage />} />
                           <Route path="/register/organization" element={<OrganizationRegisterPage />} />
                           <Route path="/join/org/:inviteCode" element={<JoinOrganizationPage />} />
+                          <Route
+                            path="/creator/dashboard"
+                            element={
+                              <ProtectedRoute allowedRoles={["creator"]}>
+                                <CreatorDashboardPage />
+                              </ProtectedRoute>
+                            }
+                          />
                           <Route path="*" element={<NotFound />} />
                         </Route>
                       </Routes>
