@@ -5,7 +5,6 @@ import {
   User,
   LogOut,
   Home,
-  Target,
   Users as UsersIcon,
   Bot,
   Inbox,
@@ -15,8 +14,9 @@ import {
   Eye,
   Calendar,
   LayoutDashboard,
-  GraduationCap,
-  BookOpen,
+  Bookmark,
+  Store,
+  Sparkles,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -128,21 +128,20 @@ const Navigation = () => {
   const navItems = useMemo(
     () => [
       { path: "/", label: t("nav.home"), icon: Home },
-      { path: "/programs", label: t("nav.programs"), icon: BookOpen },
-      { path: "/challenges", label: t("nav.challenges"), icon: Target },
-      { path: "/events", label: t("nav.events"), icon: Calendar },
+      { path: "/piactr", label: t("nav.marketplace"), icon: Store },
+      { path: "/elo-alkalmak", label: t("nav.live_sessions"), icon: Calendar },
       { path: "/community", label: t("nav.community"), icon: UsersIcon },
       ...(user && profile && dashboardPath ? [{ path: dashboardPath, label: t("nav.dashboard"), icon: Home }] : []),
       ...(user ? [{ 
-        path: "/my-learning", 
-        label: t("nav.my_learning"), 
-        icon: GraduationCap,
+        path: "/en-agoram", 
+        label: t("nav.my_agora"), 
+        icon: Bookmark,
         iconColor: "#00E5FF"
       }] : []),
       ...(user && isCreator ? [{ 
-        path: "/creator/dashboard", 
-        label: t("nav.creator_studio"), 
-        icon: LayoutDashboard,
+        path: "/szakertoi-studio", 
+        label: t("nav.expert_studio"), 
+        icon: Sparkles,
         iconColor: "#00E5FF"
       }] : []),
       { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
