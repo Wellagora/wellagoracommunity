@@ -17,6 +17,7 @@ import {
   Bookmark,
   Store,
   Sparkles,
+  Compass,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -29,6 +30,9 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -36,13 +40,15 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
+import { toast } from "sonner";
 import wellagoraLogo from "@/assets/wellagora-logo.png";
 import LanguageSelector from "./LanguageSelector";
 
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  const { user, profile, signOut } = useAuth();
+  const [isRoleSwitching, setIsRoleSwitching] = useState(false);
+  const { user, profile, signOut, refreshProfile } = useAuth();
   const { viewMode, setViewMode, isSuperAdmin, getEffectiveRole } = useViewMode();
   const { t } = useLanguage();
   const location = useLocation();
@@ -99,6 +105,36 @@ const Navigation = () => {
     await signOut();
     navigate("/");
   }, [signOut, navigate]);
+
+  // Role switching handler for regular users
+  const handleRoleSwitch = useCallback(async (newRole: 'citizen' | 'creator') => {
+    if (!user || isRoleSwitching) return;
+    
+    setIsRoleSwitching(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ user_role: newRole })
+        .eq('id', user.id);
+      
+      if (error) throw error;
+      
+      await refreshProfile();
+      
+      if (newRole === 'creator') {
+        toast.success(t('nav.switched_to_expert'));
+        navigate('/szakertoi-studio');
+      } else {
+        toast.success(t('nav.switched_to_explorer'));
+        navigate('/dashboard');
+      }
+    } catch (error) {
+      logger.error('Error switching role', error, 'Navigation');
+      toast.error(t('common.error'));
+    } finally {
+      setIsRoleSwitching(false);
+    }
+  }, [user, isRoleSwitching, refreshProfile, navigate, t]);
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -263,6 +299,53 @@ const Navigation = () => {
                         )}
                       </Link>
                     </DropdownMenuItem>
+                    
+                    {/* Role Switcher for regular users */}
+                    {!isSuperAdmin && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuLabel className="text-xs text-muted-foreground">
+                          {t('nav.switch_role')}
+                        </DropdownMenuLabel>
+                        <DropdownMenuItem
+                          onClick={() => handleRoleSwitch('citizen')}
+                          disabled={isRoleSwitching}
+                          className={`flex items-center gap-2 cursor-pointer ${
+                            profile?.user_role === 'citizen' ? 'bg-accent' : ''
+                          }`}
+                        >
+                          <Compass className="h-4 w-4" />
+                          {t('nav.role_explorer')}
+                          {profile?.user_role === 'citizen' && (
+                            <Badge variant="secondary" className="ml-auto text-xs">
+                              ✓
+                            </Badge>
+                          )}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleRoleSwitch('creator')}
+                          disabled={isRoleSwitching}
+                          className={`flex items-center gap-2 cursor-pointer ${
+                            profile?.user_role === 'creator' ? 'bg-[#00E5FF]/10' : ''
+                          }`}
+                        >
+                          <Sparkles className="h-4 w-4 text-[#00E5FF]" />
+                          <span className={profile?.user_role === 'creator' ? 'text-[#00E5FF]' : ''}>
+                            {t('nav.role_expert')}
+                          </span>
+                          {profile?.user_role === 'creator' ? (
+                            <Badge className="ml-auto text-xs bg-[#00E5FF] text-black">
+                              ✓
+                            </Badge>
+                          ) : (
+                            <Badge className="ml-auto text-xs bg-[#00E5FF] text-black">
+                              {t('common.new')}
+                            </Badge>
+                          )}
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                    
                     {isSuperAdmin && (
                       <>
                         <DropdownMenuSeparator />
