@@ -47,6 +47,8 @@ const OrganizationRegisterPage = lazy(() => import("@/pages/OrganizationRegister
 const JoinOrganizationPage = lazy(() => import("@/pages/JoinOrganizationPage"));
 const EventsPage = lazy(() => import("@/pages/EventsPage"));
 const CreatorDashboardPage = lazy(() => import("@/pages/CreatorDashboardPage"));
+const CreatorProgramNewPage = lazy(() => import("@/pages/CreatorProgramNewPage"));
+const CreatorProgramEditPage = lazy(() => import("@/pages/CreatorProgramEditPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function App() {
@@ -182,6 +184,22 @@ function App() {
                             element={
                               <ProtectedRoute allowedRoles={["creator"]}>
                                 <CreatorDashboardPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/creator/programs/new"
+                            element={
+                              <ProtectedRoute allowedRoles={["creator"]}>
+                                <CreatorProgramNewPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/creator/programs/:id/edit"
+                            element={
+                              <ProtectedRoute allowedRoles={["creator"]}>
+                                <CreatorProgramEditPage />
                               </ProtectedRoute>
                             }
                           />
