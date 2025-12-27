@@ -54,6 +54,7 @@ type MenuItem = {
   id: string;
   label: string;
   icon: any;
+  iconColor?: string;
 };
 
 const menuItems: MenuItem[] = [
@@ -61,9 +62,9 @@ const menuItems: MenuItem[] = [
   { id: 'projects', label: 'Projektek', icon: FolderKanban },
   { id: 'organizations', label: 'Szervezetek', icon: Building2 },
   { id: 'users', label: 'Felhasználók', icon: Users },
-  { id: 'creators', label: 'Kreátorok', icon: Sparkles },
-  { id: 'content-moderation', label: 'Tartalom Moderáció', icon: FileCheck },
-  { id: 'financial', label: 'Pénzügyi Áttekintés', icon: TrendingUp },
+  { id: 'creators', label: 'Kreátorok', icon: Sparkles, iconColor: '#FFD700' },
+  { id: 'content-moderation', label: 'Moderáció', icon: FileCheck },
+  { id: 'financial', label: 'Pénzügyek', icon: TrendingUp },
   { id: 'subscriptions', label: 'Előfizetések', icon: CreditCard },
   { id: 'invoices', label: 'Számlák', icon: Receipt },
   { id: 'programs', label: 'Programok', icon: Target },
@@ -94,7 +95,10 @@ const SuperAdminSidebar = ({ activeTab, onTabChange }: { activeTab: string; onTa
                       className={isActive ? "bg-accent text-accent-foreground" : ""}
                       tooltip={item.label}
                     >
-                      <Icon className="h-5 w-5" />
+                      <Icon 
+                        className="h-5 w-5" 
+                        style={item.iconColor ? { color: item.iconColor } : undefined}
+                      />
                       <span>{item.label}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
