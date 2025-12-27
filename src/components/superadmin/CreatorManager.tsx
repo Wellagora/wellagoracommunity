@@ -152,7 +152,7 @@ const CreatorManager = () => {
     } else {
       toast({
         title: 'Siker',
-        description: !currentStatus ? 'Kreátor hitelesítve' : 'Hitelesítés visszavonva',
+        description: !currentStatus ? 'Szakértő hitelesítve!' : 'Hitelesítés visszavonva',
       });
       loadCreators();
       if (selectedCreator?.id === creatorId) {
@@ -230,12 +230,42 @@ const CreatorManager = () => {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold flex items-center gap-2">
-          <Sparkles className="h-6 w-6 text-[#00E5FF]" />
+          <Sparkles className="h-6 w-6" style={{ color: '#FFD700' }} />
           {t('admin.creators_management')}
         </h2>
         <p className="text-muted-foreground">
           Kreátorok validálása és kezelése
         </p>
+      </div>
+
+      {/* Quick Filter Buttons */}
+      <div className="flex flex-wrap gap-2">
+        <Button
+          variant={verificationFilter === 'all' && stripeFilter === 'all' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => { setVerificationFilter('all'); setStripeFilter('all'); setContentFilter('all'); }}
+          className={verificationFilter === 'all' && stripeFilter === 'all' ? 'bg-[#FFD700] text-black hover:bg-[#FFD700]/90' : ''}
+        >
+          Összes
+        </Button>
+        <Button
+          variant={verificationFilter === 'verified' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => { setVerificationFilter('verified'); setStripeFilter('all'); setContentFilter('all'); }}
+          className={verificationFilter === 'verified' ? 'bg-emerald-500 hover:bg-emerald-600' : ''}
+        >
+          <CheckCircle className="h-3 w-3 mr-1" />
+          Csak hitelesített
+        </Button>
+        <Button
+          variant={stripeFilter === 'connected' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => { setVerificationFilter('all'); setStripeFilter('connected'); setContentFilter('all'); }}
+          className={stripeFilter === 'connected' ? 'bg-blue-500 hover:bg-blue-600' : ''}
+        >
+          <CreditCard className="h-3 w-3 mr-1" />
+          Csak Stripe-al rendelkező
+        </Button>
       </div>
 
       {/* Filters */}
