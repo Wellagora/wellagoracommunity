@@ -144,8 +144,8 @@ const EventsPage = () => {
         <div className="container mx-auto px-4 py-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">{t("live_sessions.title")}</h1>
-            <p className="text-muted-foreground">{t("live_sessions.subtitle")}</p>
+            <h1 className="text-3xl font-bold mb-2">{t("events.title")}</h1>
+            <p className="text-muted-foreground">{t("events.subtitle")}</p>
           </div>
 
           {/* Filters */}

@@ -114,8 +114,9 @@ function App() {
                           <Route path="/revolutionary" element={<Navigate to="/community" replace />} />
                           <Route path="/community" element={<CommunityPage />} />
                           <Route path="/ai-assistant" element={<AIAssistantPage />} />
-                          <Route path="/events" element={<Navigate to="/elo-alkalmak" replace />} />
-                          <Route path="/elo-alkalmak" element={<EventsPage />} />
+                          <Route path="/events" element={<Navigate to="/esemenyek" replace />} />
+                          <Route path="/elo-alkalmak" element={<Navigate to="/esemenyek" replace />} />
+                          <Route path="/esemenyek" element={<EventsPage />} />
                           
                           {/* Redirect challenges to marketplace */}
                           <Route path="/challenges" element={<Navigate to="/piactr" replace />} />
@@ -243,16 +244,9 @@ function App() {
                             }
                           />
                           
-                          {/* My Agora (Én Agorám) - new Hungarian route */}
-                          <Route
-                            path="/en-agoram"
-                            element={
-                              <ProtectedRoute>
-                                <MyLearningPage />
-                              </ProtectedRoute>
-                            }
-                          />
-                          <Route path="/my-learning" element={<Navigate to="/en-agoram" replace />} />
+                          {/* My Learning - redirects to dashboard */}
+                          <Route path="/en-agoram" element={<Navigate to="/dashboard" replace />} />
+                          <Route path="/my-learning" element={<Navigate to="/dashboard" replace />} />
                           
                           {/* Expert profiles (Szakértők) */}
                           <Route path="/szakertok/:id" element={<CreatorPublicProfilePage />} />

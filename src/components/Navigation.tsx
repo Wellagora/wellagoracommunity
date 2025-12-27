@@ -129,15 +129,9 @@ const Navigation = () => {
     () => [
       { path: "/", label: t("nav.home"), icon: Home },
       { path: "/piactr", label: t("nav.marketplace"), icon: Store },
-      { path: "/elo-alkalmak", label: t("nav.live_sessions"), icon: Calendar },
+      { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
       { path: "/community", label: t("nav.community"), icon: UsersIcon },
-      ...(user && profile && dashboardPath ? [{ path: dashboardPath, label: t("nav.dashboard"), icon: Home }] : []),
-      ...(user ? [{ 
-        path: "/en-agoram", 
-        label: t("nav.my_agora"), 
-        icon: Bookmark,
-        iconColor: "#00E5FF"
-      }] : []),
+      ...(user && profile && dashboardPath ? [{ path: dashboardPath, label: t("nav.dashboard"), icon: LayoutDashboard }] : []),
       ...(user && isCreator ? [{ 
         path: "/szakertoi-studio", 
         label: t("nav.expert_studio"), 
