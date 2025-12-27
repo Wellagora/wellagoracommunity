@@ -1913,6 +1913,64 @@ export type Database = {
           },
         ]
       }
+      transactions: {
+        Row: {
+          amount: number
+          buyer_id: string
+          content_id: string
+          created_at: string | null
+          creator_id: string
+          creator_revenue: number
+          id: string
+          platform_fee: number
+          status: string | null
+        }
+        Insert: {
+          amount: number
+          buyer_id: string
+          content_id: string
+          created_at?: string | null
+          creator_id: string
+          creator_revenue: number
+          id?: string
+          platform_fee: number
+          status?: string | null
+        }
+        Update: {
+          amount?: number
+          buyer_id?: string
+          content_id?: string
+          created_at?: string | null
+          creator_id?: string
+          creator_revenue?: number
+          id?: string
+          platform_fee?: number
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_buyer_id_fkey"
+            columns: ["buyer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           assigned_at: string | null

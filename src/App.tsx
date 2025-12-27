@@ -50,6 +50,8 @@ const CreatorDashboardPage = lazy(() => import("@/pages/CreatorDashboardPage"));
 const CreatorProgramNewPage = lazy(() => import("@/pages/CreatorProgramNewPage"));
 const CreatorProgramEditPage = lazy(() => import("@/pages/CreatorProgramEditPage"));
 const ProgramDetailPage = lazy(() => import("@/pages/ProgramDetailPage"));
+const ProgramLearnPage = lazy(() => import("@/pages/ProgramLearnPage"));
+const MyLearningPage = lazy(() => import("@/pages/MyLearningPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function App() {
@@ -205,6 +207,22 @@ function App() {
                             }
                           />
                           <Route path="/programs/:id" element={<ProgramDetailPage />} />
+                          <Route
+                            path="/programs/:id/learn"
+                            element={
+                              <ProtectedRoute>
+                                <ProgramLearnPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/my-learning"
+                            element={
+                              <ProtectedRoute>
+                                <MyLearningPage />
+                              </ProtectedRoute>
+                            }
+                          />
                           <Route path="*" element={<NotFound />} />
                         </Route>
                       </Routes>
