@@ -121,9 +121,9 @@ const CreatorDashboardPage = () => {
             <div className="p-2 rounded-lg bg-[#00E5FF]/10 border border-[#00E5FF]/30">
               <Sparkles className="h-6 w-6 text-[#00E5FF]" />
             </div>
-            <h1 className="text-3xl font-bold text-white">{t("creator.studio")}</h1>
+            <h1 className="text-3xl font-bold text-white">{t("expert_studio.title")}</h1>
           </div>
-          <p className="text-white/60">{t("creator.dashboard")}</p>
+          <p className="text-white/60">{t("expert_studio.subtitle")}</p>
         </div>
 
         {/* Payout Banner */}
@@ -157,7 +157,7 @@ const CreatorDashboardPage = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-white">0 Ft</p>
-                  <p className="text-sm text-white/60">{t("creator.stats_revenue")}</p>
+                  <p className="text-sm text-white/60">{t("expert_studio.stats_revenue")}</p>
                 </div>
               </div>
             </CardContent>
@@ -171,7 +171,7 @@ const CreatorDashboardPage = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-white">0</p>
-                  <p className="text-sm text-white/60">{t("creator.stats_students")}</p>
+                  <p className="text-sm text-white/60">{t("expert_studio.stats_explorers")}</p>
                 </div>
               </div>
             </CardContent>
@@ -185,7 +185,7 @@ const CreatorDashboardPage = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-white">{programs?.length ?? 0}</p>
-                  <p className="text-sm text-white/60">{t("creator.stats_programs")}</p>
+                  <p className="text-sm text-white/60">{t("expert_studio.stats_guides")}</p>
                 </div>
               </div>
             </CardContent>
@@ -212,9 +212,9 @@ const CreatorDashboardPage = () => {
             asChild
             className="h-auto py-4 bg-gradient-to-r from-[#00E5FF] to-[#00B8D4] hover:from-[#00E5FF]/90 hover:to-[#00B8D4]/90 text-[#0A1930] font-semibold"
           >
-            <Link to="/creator/programs/new">
+            <Link to="/szakertoi-studio/uj-utmutato">
               <Plus className="h-5 w-5 mr-2" />
-              {t("creator.new_program")}
+              {t("expert_studio.new_guide")}
             </Link>
           </Button>
           
@@ -243,10 +243,10 @@ const CreatorDashboardPage = () => {
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
               <FileText className="h-5 w-5 text-[#00E5FF]" />
-              {t("creator.my_programs")}
+              {t("expert_studio.my_guides")}
             </CardTitle>
             <CardDescription className="text-white/60">
-              {t("creator.dashboard")}
+              {t("expert_studio.subtitle")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -268,12 +268,12 @@ const CreatorDashboardPage = () => {
                 <div className="mx-auto w-24 h-24 mb-6 rounded-full bg-[#00E5FF]/10 flex items-center justify-center">
                   <BookOpen className="h-12 w-12 text-[#00E5FF]" />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-2">{t("creator.empty_title")}</h3>
-                <p className="text-white/60 mb-6">{t("creator.empty_desc")}</p>
+                <h3 className="text-xl font-semibold text-white mb-2">{t("expert_studio.empty")}</h3>
+                <p className="text-white/60 mb-6">{t("expert_studio.create_first")}</p>
                 <Button asChild className="bg-gradient-to-r from-[#00E5FF] to-[#00B8D4] hover:from-[#00E5FF]/90 hover:to-[#00B8D4]/90 text-[#0A1930] font-semibold">
-                  <Link to="/creator/programs/new">
+                  <Link to="/szakertoi-studio/uj-utmutato">
                     <Plus className="h-5 w-5 mr-2" />
-                    {t("creator.first_program")}
+                    {t("expert_studio.new_guide")}
                   </Link>
                 </Button>
               </div>
@@ -327,7 +327,7 @@ const CreatorDashboardPage = () => {
                             variant="ghost" 
                             className="text-[#00E5FF] hover:text-[#00E5FF] hover:bg-[#00E5FF]/10"
                           >
-                            <Link to={`/creator/programs/${program.id}/edit`}>
+                            <Link to={`/szakertoi-studio/utmutato/${program.id}`}>
                               {t("creator.edit_program")}
                             </Link>
                           </Button>
