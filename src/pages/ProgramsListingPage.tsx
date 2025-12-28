@@ -1,8 +1,10 @@
 import { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,9 +26,12 @@ import {
   Star,
   BookOpen,
   Gift,
+  PlayCircle,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import StarRating from "@/components/reviews/StarRating";
+import DummyPaymentModal from "@/components/marketplace/DummyPaymentModal";
+import SponsorshipModal from "@/components/marketplace/SponsorshipModal";
 
 const CATEGORIES = [
   { id: "all", labelKey: "marketplace.all_categories", icon: Grid },
@@ -44,15 +49,26 @@ interface Program {
   description: string | null;
   thumbnail_url: string | null;
   access_level: string | null;
+  access_type: string | null;
   price_huf: number | null;
   category: string | null;
   is_featured: boolean | null;
   creator_id: string | null;
   created_at: string | null;
+  sponsor_id: string | null;
+  sponsor_name: string | null;
+  sponsor_logo_url: string | null;
+  total_licenses: number | null;
+  used_licenses: number | null;
   creator?: {
     id: string;
     first_name: string;
     last_name: string;
+    avatar_url: string | null;
+  } | null;
+  sponsor?: {
+    id: string;
+    organization: string | null;
     avatar_url: string | null;
   } | null;
   avg_rating?: number;
@@ -61,11 +77,17 @@ interface Program {
 
 const ProgramsListingPage = () => {
   const { t } = useLanguage();
+  const { user, profile } = useAuth();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [paymentModal, setPaymentModal] = useState<Program | null>(null);
+  const [sponsorshipModal, setSponsorshipModal] = useState<Program | null>(null);
+
+  const isSponsor = profile?.user_role && ['business', 'government', 'ngo'].includes(profile.user_role);
 
   // Fetch all published programs
-  const { data: programs, isLoading } = useQuery({
+  const { data: programs, isLoading, refetch } = useQuery({
     queryKey: ["allPrograms"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -74,6 +96,9 @@ const ProgramsListingPage = () => {
           *,
           creator:profiles!expert_contents_creator_id_fkey (
             id, first_name, last_name, avatar_url
+          ),
+          sponsor:profiles!expert_contents_sponsor_id_fkey (
+            id, organization, avatar_url
           )
         `)
         .eq("is_published", true)
@@ -82,6 +107,21 @@ const ProgramsListingPage = () => {
       if (error) throw error;
       return data as Program[];
     },
+  });
+
+  // Fetch user's content access
+  const { data: userAccess } = useQuery({
+    queryKey: ["userContentAccess", user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from("content_access")
+        .select("content_id")
+        .eq("user_id", user.id);
+      if (error) throw error;
+      return data.map(a => a.content_id);
+    },
+    enabled: !!user,
   });
 
   // Fetch ratings for all programs
@@ -105,19 +145,62 @@ const ProgramsListingPage = () => {
     enabled: !!programs && programs.length > 0,
   });
 
+  const hasAccess = (contentId: string) => userAccess?.includes(contentId);
+
+  // Handle free/sponsored content access
+  const handleFreeAccess = async (program: Program) => {
+    if (!user) {
+      toast.error(t('auth.login_required'));
+      navigate('/auth');
+      return;
+    }
+
+    try {
+      // For sponsored content, check if licenses are available
+      if (program.access_type === 'sponsored') {
+        const usedLicenses = program.used_licenses || 0;
+        const totalLicenses = program.total_licenses || 0;
+        
+        if (usedLicenses >= totalLicenses) {
+          toast.error(t('marketplace.licenses_exhausted'));
+          return;
+        }
+
+        // Increment used_licenses
+        await supabase
+          .from('expert_contents')
+          .update({ used_licenses: usedLicenses + 1 })
+          .eq('id', program.id);
+      }
+
+      // Record access
+      await supabase.from('content_access').insert({
+        user_id: user.id,
+        content_id: program.id,
+        access_type: program.access_type === 'sponsored' ? 'sponsored' : 'purchase',
+        amount_paid: 0,
+      });
+
+      toast.success(t('marketplace.access_granted'));
+      refetch();
+      navigate(`/piacer/${program.id}/learn`);
+    } catch (error) {
+      console.error('Access error:', error);
+      toast.error(t('common.error'));
+    }
+  };
+
   // Filter programs based on search and category
   const filteredPrograms = useMemo(() => {
     if (!programs) return [];
     
     return programs.filter((program) => {
-      // Search filter
       const matchesSearch =
         !searchQuery ||
         program.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (program.description &&
           program.description.toLowerCase().includes(searchQuery.toLowerCase()));
 
-      // Category filter
       const matchesCategory =
         selectedCategory === "all" || program.category === selectedCategory;
 
@@ -125,37 +208,128 @@ const ProgramsListingPage = () => {
     });
   }, [programs, searchQuery, selectedCategory]);
 
-  const getAccessBadge = (accessLevel: string | null) => {
-    switch (accessLevel) {
-      case "free":
-        return (
-          <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
-            {t("program.free_access")}
-          </Badge>
-        );
-      case "registered":
-        return (
-          <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
-            {t("common.registered")}
-          </Badge>
-        );
-      case "premium":
-        return (
-          <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30">
-            <Crown className="w-3 h-3 mr-1" />
-            Premium
-          </Badge>
-        );
-      case "one_time_purchase":
-        return (
-          <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">
-            <ShoppingCart className="w-3 h-3 mr-1" />
-            {t("program.purchase")}
-          </Badge>
-        );
-      default:
-        return null;
+  const getAccessBadge = (program: Program) => {
+    const accessType = program.access_type || program.access_level;
+    
+    // Sponsored content
+    if (accessType === 'sponsored' || program.sponsor_id) {
+      return (
+        <div className="flex items-center gap-2 bg-[#FFD700]/20 border border-[#FFD700]/30 px-2 py-1 rounded-full">
+          {program.sponsor_logo_url ? (
+            <img 
+              src={program.sponsor_logo_url} 
+              alt={program.sponsor_name || 'Sponsor'}
+              className="h-4 w-4 rounded-full object-contain bg-white"
+            />
+          ) : (
+            <Gift className="w-3 h-3 text-[#FFD700]" />
+          )}
+          <span className="text-xs text-[#FFD700] font-medium">
+            {t('marketplace.sponsored')}
+          </span>
+        </div>
+      );
     }
+
+    // Paid content
+    if (accessType === 'paid' || accessType === 'one_time_purchase' || accessType === 'premium') {
+      return (
+        <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
+          <ShoppingCart className="w-3 h-3 mr-1" />
+          {program.price_huf?.toLocaleString() || 0} Ft
+        </Badge>
+      );
+    }
+
+    // Free content
+    return (
+      <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+        {t("marketplace.free")}
+      </Badge>
+    );
+  };
+
+  const getActionButton = (program: Program) => {
+    const accessType = program.access_type || program.access_level;
+    const alreadyHasAccess = hasAccess(program.id);
+
+    // Already has access
+    if (alreadyHasAccess) {
+      return (
+        <Button 
+          size="sm"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            navigate(`/piacer/${program.id}/learn`);
+          }}
+          className="bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/30"
+        >
+          <PlayCircle className="w-4 h-4 mr-1" />
+          {t('marketplace.continue')}
+        </Button>
+      );
+    }
+
+    // Free or sponsored content
+    if (accessType === 'free' || accessType === 'sponsored' || program.sponsor_id) {
+      return (
+        <Button 
+          size="sm"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleFreeAccess(program);
+          }}
+          className="bg-emerald-500 hover:bg-emerald-600 text-white"
+        >
+          {t('marketplace.get_access')}
+        </Button>
+      );
+    }
+
+    // Paid content - show different buttons for sponsors vs regular users
+    if (accessType === 'paid' || accessType === 'one_time_purchase' || accessType === 'premium') {
+      // Sponsor can sponsor this content
+      if (isSponsor) {
+        return (
+          <Button 
+            size="sm"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setSponsorshipModal(program);
+            }}
+            className="bg-[#FFD700] text-black hover:bg-[#FFD700]/80"
+          >
+            <Gift className="w-4 h-4 mr-1" />
+            {t('sponsor.sponsor_button')}
+          </Button>
+        );
+      }
+
+      // Regular user can buy
+      return (
+        <Button 
+          size="sm"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!user) {
+              toast.error(t('auth.login_required'));
+              navigate('/auth');
+              return;
+            }
+            setPaymentModal(program);
+          }}
+          className="bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--cyan))] hover:opacity-90 text-white"
+        >
+          {t('marketplace.buy_button')}
+        </Button>
+      );
+    }
+
+    return null;
   };
 
   return (
@@ -273,7 +447,7 @@ const ProgramsListingPage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                 >
-                  <Link to={`/piactr/${program.id}`}>
+                  <Link to={`/piacer/${program.id}`}>
                     <Card className="bg-[#112240] border-[hsl(var(--cyan))]/10 hover:border-[hsl(var(--cyan))]/30 transition-all duration-300 hover:shadow-lg hover:shadow-[hsl(var(--cyan))]/5 overflow-hidden h-full">
                       <CardContent className="p-0">
                         <div className="aspect-video bg-gradient-to-br from-[hsl(var(--cyan))]/10 to-[hsl(var(--primary))]/10 relative">
@@ -289,11 +463,14 @@ const ProgramsListingPage = () => {
                             </div>
                           )}
                           {program.is_featured && (
-                            <Badge className="absolute top-2 right-2 bg-amber-500/90 text-white">
+                            <Badge className="absolute top-2 left-2 bg-amber-500/90 text-white">
                               <Star className="w-3 h-3 mr-1" />
                               {t("program.featured")}
                             </Badge>
                           )}
+                          <div className="absolute top-2 right-2">
+                            {getAccessBadge(program)}
+                          </div>
                         </div>
                         <div className="p-4">
                           <h3 className="font-semibold text-foreground mb-2 line-clamp-2">
@@ -302,13 +479,16 @@ const ProgramsListingPage = () => {
 
                           {/* Creator */}
                           {program.creator && (
-                            <Link
-                              to={`/szakertok/${program.creator.id}`}
-                              onClick={(e) => e.stopPropagation()}
-                              className="text-sm text-muted-foreground hover:text-[hsl(var(--cyan))] transition-colors mb-3 block"
-                            >
+                            <p className="text-sm text-muted-foreground mb-3">
                               {program.creator.first_name} {program.creator.last_name}
-                            </Link>
+                            </p>
+                          )}
+
+                          {/* Sponsor info for sponsored content */}
+                          {(program.access_type === 'sponsored' || program.sponsor_id) && program.sponsor_name && (
+                            <p className="text-xs text-[#FFD700] mb-2">
+                              {t('marketplace.sponsored')} - {program.sponsor_name}
+                            </p>
                           )}
 
                           {/* Rating */}
@@ -321,8 +501,7 @@ const ProgramsListingPage = () => {
                             </div>
                           )}
 
-                          <div className="flex items-center gap-2 flex-wrap">
-                            {getAccessBadge(program.access_level)}
+                          <div className="flex items-center justify-between mt-3">
                             {program.category && (
                               <Badge
                                 variant="outline"
@@ -331,12 +510,7 @@ const ProgramsListingPage = () => {
                                 {t(`marketplace.category_${program.category}`)}
                               </Badge>
                             )}
-                            {program.access_level === "one_time_purchase" &&
-                              program.price_huf && (
-                                <span className="text-sm font-semibold text-foreground ml-auto">
-                                  {program.price_huf.toLocaleString()} Ft
-                                </span>
-                              )}
+                            {getActionButton(program)}
                           </div>
                         </div>
                       </CardContent>
@@ -348,6 +522,44 @@ const ProgramsListingPage = () => {
           </div>
         )}
       </div>
+
+      {/* Payment Modal */}
+      {paymentModal && (
+        <DummyPaymentModal
+          content={{
+            id: paymentModal.id,
+            title: paymentModal.title,
+            price_huf: paymentModal.price_huf || 0,
+            creator_id: paymentModal.creator_id || '',
+            creator: paymentModal.creator,
+          }}
+          open={!!paymentModal}
+          onOpenChange={(open) => !open && setPaymentModal(null)}
+          onSuccess={() => {
+            refetch();
+            setPaymentModal(null);
+          }}
+        />
+      )}
+
+      {/* Sponsorship Modal */}
+      {sponsorshipModal && (
+        <SponsorshipModal
+          content={{
+            id: sponsorshipModal.id,
+            title: sponsorshipModal.title,
+            price_huf: sponsorshipModal.price_huf || 0,
+            creator_id: sponsorshipModal.creator_id || '',
+            creator: sponsorshipModal.creator,
+          }}
+          open={!!sponsorshipModal}
+          onOpenChange={(open) => !open && setSponsorshipModal(null)}
+          onSuccess={() => {
+            refetch();
+            setSponsorshipModal(null);
+          }}
+        />
+      )}
     </div>
   );
 };
