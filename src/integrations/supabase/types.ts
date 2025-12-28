@@ -1270,6 +1270,8 @@ export type Database = {
           longitude: number | null
           organization: string | null
           organization_id: string | null
+          organization_logo_url: string | null
+          organization_name: string | null
           payout_enabled: boolean | null
           payout_preference: string | null
           preferred_language: string | null
@@ -1320,6 +1322,8 @@ export type Database = {
           longitude?: number | null
           organization?: string | null
           organization_id?: string | null
+          organization_logo_url?: string | null
+          organization_name?: string | null
           payout_enabled?: boolean | null
           payout_preference?: string | null
           preferred_language?: string | null
@@ -1370,6 +1374,8 @@ export type Database = {
           longitude?: number | null
           organization?: string | null
           organization_id?: string | null
+          organization_logo_url?: string | null
+          organization_name?: string | null
           payout_enabled?: boolean | null
           payout_preference?: string | null
           preferred_language?: string | null

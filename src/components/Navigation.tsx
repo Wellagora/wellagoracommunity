@@ -435,6 +435,38 @@ const Navigation = () => {
                       );
                     })}
 
+                    {/* Szakértői Stúdió - Mobile (Cyan) */}
+                    {user && isCreator && (
+                      <Link
+                        to="/szakertoi-studio"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors ${
+                          isActive("/szakertoi-studio")
+                            ? "bg-[#00E5FF]/20 text-[#00E5FF] font-medium shadow-[0_0_10px_rgba(0,229,255,0.3)]"
+                            : "text-[#00E5FF] hover:bg-[#00E5FF]/10"
+                        }`}
+                      >
+                        <Sparkles className="h-5 w-5 shrink-0 text-[#00E5FF]" />
+                        <span className="text-sm font-medium">{t("nav.expert_studio")}</span>
+                      </Link>
+                    )}
+
+                    {/* Támogató Panel - Mobile (Gold) */}
+                    {user && isSponsor && (
+                      <Link
+                        to="/tamogato-panel"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors ${
+                          isActive("/tamogato-panel")
+                            ? "bg-[#FFD700]/20 text-[#FFD700] font-medium shadow-[0_0_10px_rgba(255,215,0,0.3)]"
+                            : "text-[#FFD700] hover:bg-[#FFD700]/10"
+                        }`}
+                      >
+                        <Building2 className="h-5 w-5 shrink-0 text-[#FFD700]" />
+                        <span className="text-sm font-medium">{t("nav.supporter_panel")}</span>
+                      </Link>
+                    )}
+
                     {user && (
                       <>
                         <Link
