@@ -3,7 +3,7 @@ import { useAuth } from './AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
-type ViewMode = 'super_admin' | 'business' | 'citizen';
+type ViewMode = 'super_admin' | 'sponsor' | 'user';
 
 interface ViewModeContextType {
   viewMode: ViewMode;
@@ -18,7 +18,7 @@ const STORAGE_KEY = 'wellagora_view_mode';
 
 export const ViewModeProvider = ({ children }: { children: ReactNode }) => {
   const { user, profile } = useAuth();
-  const [viewMode, setViewModeState] = useState<ViewMode>('super_admin');
+  const [viewMode, setViewModeState] = useState<ViewMode>('user');
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
   // Check if user is super admin
@@ -26,7 +26,7 @@ export const ViewModeProvider = ({ children }: { children: ReactNode }) => {
     const checkSuperAdmin = async () => {
       if (!user) {
         setIsSuperAdmin(false);
-        setViewModeState('citizen');
+        setViewModeState('user');
         return;
       }
 
@@ -42,7 +42,7 @@ export const ViewModeProvider = ({ children }: { children: ReactNode }) => {
 
         // If not super admin, reset view mode to citizen
         if (!data) {
-          setViewModeState('citizen');
+          setViewModeState('user');
           localStorage.removeItem(STORAGE_KEY);
         }
       } catch (error) {
@@ -58,7 +58,7 @@ export const ViewModeProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (isSuperAdmin) {
       const savedMode = localStorage.getItem(STORAGE_KEY) as ViewMode;
-      if (savedMode && ['super_admin', 'business', 'citizen'].includes(savedMode)) {
+      if (savedMode && ['super_admin', 'sponsor', 'user'].includes(savedMode)) {
         setViewModeState(savedMode);
       }
     }
@@ -74,18 +74,18 @@ export const ViewModeProvider = ({ children }: { children: ReactNode }) => {
   const getEffectiveRole = (): string => {
     // If not super admin, return actual profile role
     if (!isSuperAdmin) {
-      return profile?.user_role || 'citizen';
+      return profile?.user_role || 'user';
     }
 
     // If super admin, return simulated role based on view mode
     switch (viewMode) {
-      case 'business':
-        return 'business';
-      case 'citizen':
-        return 'citizen';
+      case 'sponsor':
+        return 'sponsor';
+      case 'user':
+        return 'user';
       case 'super_admin':
       default:
-        return profile?.user_role || 'citizen';
+        return profile?.user_role || 'user';
     }
   };
 

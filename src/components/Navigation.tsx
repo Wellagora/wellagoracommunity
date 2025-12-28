@@ -103,7 +103,7 @@ const Navigation = () => {
   }, [signOut, navigate]);
 
   // Role switching handler for regular users
-  const handleRoleSwitch = useCallback(async (newRole: 'citizen' | 'creator') => {
+  const handleRoleSwitch = useCallback(async (newRole: 'citizen' | 'creator' | 'business') => {
     if (!user || isRoleSwitching) return;
     
     setIsRoleSwitching(true);
@@ -120,6 +120,9 @@ const Navigation = () => {
       if (newRole === 'creator') {
         toast.success(t('nav.switched_to_expert'));
         navigate('/szakertoi-studio');
+      } else if (newRole === 'business') {
+        toast.success(t('nav.switched_to_supporter'));
+        navigate('/tamogato-panel');
       } else {
         toast.success(t('nav.switched_to_member'));
         navigate('/dashboard');
@@ -142,20 +145,21 @@ const Navigation = () => {
 
     // For super admin, use viewMode to determine path
     if (isSuperAdmin) {
-      if (viewMode === "citizen") return "/dashboard";
-      if (viewMode === "business") return "/organization";
+      if (viewMode === "user") return "/dashboard";
+      if (viewMode === "sponsor") return "/tamogato-panel";
       // super_admin mode - go to super admin page
       return "/super-admin";
     }
 
     // For regular users, use their actual role
     if (["business", "government", "ngo"].includes(profile.user_role)) {
-      return "/organization";
+      return "/tamogato-panel";
     }
     return "/dashboard";
   }, [user, profile, viewMode, isSuperAdmin]);
 
   const isCreator = profile?.user_role === 'creator';
+  const isSponsor = ['business', 'government', 'ngo'].includes(profile?.user_role || '');
 
   const navItems = useMemo(
     () => [
@@ -164,7 +168,7 @@ const Navigation = () => {
       { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
       { path: "/community", label: t("nav.community"), icon: UsersIcon },
       ...(user && profile && dashboardPath ? [{ path: dashboardPath, label: t("nav.dashboard"), icon: LayoutDashboard }] : []),
-      ...(user && isCreator && viewMode === 'citizen' ? [{ 
+      ...(user && isCreator && viewMode === 'user' ? [{ 
         path: "/szakertoi-studio", 
         label: t("nav.expert_studio"), 
         icon: Sparkles,
@@ -307,17 +311,23 @@ const Navigation = () => {
                           </Badge>
                         )}
                       </DropdownMenuItem>
-                      {['business', 'government', 'ngo'].includes(profile?.user_role || '') && (
-                        <DropdownMenuItem
-                          className="flex items-center gap-2 cursor-default bg-[#FFD700]/10"
-                        >
-                          <Building2 className="h-4 w-4 text-[#FFD700]" />
-                          <span className="text-[#FFD700]">{t('nav.role_supporter')}</span>
+                      <DropdownMenuItem
+                        onClick={() => handleRoleSwitch('business')}
+                        disabled={isRoleSwitching}
+                        className={`flex items-center gap-2 cursor-pointer ${
+                          isSponsor ? 'bg-[#FFD700]/10' : ''
+                        }`}
+                      >
+                        <Building2 className="h-4 w-4 text-[#FFD700]" />
+                        <span className={isSponsor ? 'text-[#FFD700]' : ''}>
+                          {t('nav.role_supporter')}
+                        </span>
+                        {isSponsor && (
                           <Badge className="ml-auto text-xs bg-[#FFD700] text-black">
                             ✓
                           </Badge>
-                        </DropdownMenuItem>
-                      )}
+                        )}
+                      </DropdownMenuItem>
                     </>
                     
                     {isSuperAdmin && (
