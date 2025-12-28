@@ -174,29 +174,28 @@ const WorkshopSecretsSlider = () => {
                 <Link to={`/piacer/${program.id}`}>
                   <Card className="h-full bg-card hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 border-border/50 group overflow-hidden">
                     <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 relative overflow-hidden">
-                      {program.thumbnail_url ? (
-                        <img
-                          src={program.thumbnail_url}
-                          alt={program.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <BookOpen className="w-10 h-10 text-muted-foreground/30" />
-                        </div>
-                      )}
+                      <img
+                        src={program.thumbnail_url || 'https://images.unsplash.com/photo-1518005020251-58296d8f8b4d?w=800&q=80'}
+                        alt={program.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          e.currentTarget.src = 'https://images.unsplash.com/photo-1518005020251-58296d8f8b4d?w=800&q=80';
+                        }}
+                      />
                       {/* Sponsor overlay */}
-                      {program.sponsor_name && (
-                        <div className="absolute bottom-2 left-2 right-2 bg-[#FFD700]/90 text-black text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                          {program.sponsor_logo_url && (
+                      {(program.access_type === 'sponsored' || program.sponsor_name) && (
+                        <div className="absolute top-2 right-2 flex items-center gap-1.5 px-2.5 py-1.5 bg-[#FFD700]/20 border border-[#FFD700]/50 rounded-full backdrop-blur-sm">
+                          {program.sponsor_logo_url ? (
                             <img
                               src={program.sponsor_logo_url}
-                              alt={program.sponsor_name}
-                              className="w-4 h-4 rounded-full object-contain bg-white"
+                              alt={program.sponsor_name || 'Sponsor'}
+                              className="h-5 w-5 rounded-full object-contain bg-white p-0.5"
                             />
+                          ) : (
+                            <Gift className="h-4 w-4 text-[#FFD700]" />
                           )}
-                          <span className="truncate">
-                            {t("content.free")} • {program.sponsor_name}
+                          <span className="text-xs text-[#FFD700] font-medium">
+                            {program.sponsor_name || t("content.sponsored")}
                           </span>
                         </div>
                       )}

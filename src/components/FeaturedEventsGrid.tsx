@@ -119,17 +119,14 @@ const FeaturedEventsGrid = () => {
                   <Card className="h-full hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 group overflow-hidden">
                     {/* Event Image */}
                     <div className="aspect-video bg-gradient-to-br from-primary/10 to-accent/10 relative overflow-hidden">
-                      {event.image_url ? (
-                        <img
-                          src={event.image_url}
-                          alt={event.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">
-                          <Calendar className="w-12 h-12 text-primary/40" />
-                        </div>
-                      )}
+                      <img
+                        src={event.image_url || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80'}
+                        alt={event.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          e.currentTarget.src = 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80';
+                        }}
+                      />
                       {/* Date overlay */}
                       <div className="absolute top-3 left-3 bg-background/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg">
                         <div className="text-2xl font-bold text-primary leading-none">{dateInfo.day}</div>
