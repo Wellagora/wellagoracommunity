@@ -211,21 +211,21 @@ const ProgramsListingPage = () => {
   const getAccessBadge = (program: Program) => {
     const accessType = program.access_type || program.access_level;
     
-    // Sponsored content
+    // Sponsored content - gold border badge with sponsor name
     if (accessType === 'sponsored' || program.sponsor_id) {
       return (
-        <div className="flex items-center gap-2 bg-[#FFD700]/20 border border-[#FFD700]/30 px-2 py-1 rounded-full">
+        <div className="flex items-center gap-2 bg-gradient-to-r from-[#FFD700]/30 to-[#FFA500]/20 border-2 border-[#FFD700] px-3 py-1.5 rounded-full shadow-lg shadow-[#FFD700]/20">
           {program.sponsor_logo_url ? (
             <img 
               src={program.sponsor_logo_url} 
               alt={program.sponsor_name || 'Sponsor'}
-              className="h-4 w-4 rounded-full object-contain bg-white"
+              className="h-5 w-5 rounded-full object-contain bg-white ring-1 ring-[#FFD700]"
             />
           ) : (
-            <Gift className="w-3 h-3 text-[#FFD700]" />
+            <Gift className="w-4 h-4 text-[#FFD700]" />
           )}
-          <span className="text-xs text-[#FFD700] font-medium">
-            {t('marketplace.sponsored')}
+          <span className="text-xs text-[#FFD700] font-semibold">
+            {t('content.free')} • {program.sponsor_name || t('marketplace.sponsored')}
           </span>
         </div>
       );
@@ -450,8 +450,24 @@ const ProgramsListingPage = () => {
                   transition={{ delay: index * 0.05 }}
                 >
                   <Link to={`/piacer/${program.id}`}>
-                    <Card className="bg-[#112240] border-[hsl(var(--cyan))]/10 hover:border-[hsl(var(--cyan))]/30 transition-all duration-300 hover:shadow-lg hover:shadow-[hsl(var(--cyan))]/5 overflow-hidden h-full">
+                    <Card className={`bg-[#112240] hover:border-[hsl(var(--cyan))]/30 transition-all duration-300 hover:shadow-lg hover:shadow-[hsl(var(--cyan))]/5 overflow-hidden h-full ${
+                      (program.access_type === 'sponsored' || program.sponsor_id) 
+                        ? 'border-2 border-[#FFD700]/50 ring-1 ring-[#FFD700]/20' 
+                        : 'border-[hsl(var(--cyan))]/10'
+                    }`}>
                       <CardContent className="p-0">
+                        {/* Sponsor logo in corner for sponsored content */}
+                        {(program.access_type === 'sponsored' || program.sponsor_id) && program.sponsor_logo_url && (
+                          <div className="absolute top-3 left-3 z-20">
+                            <div className="w-10 h-10 rounded-full bg-white shadow-lg ring-2 ring-[#FFD700] flex items-center justify-center overflow-hidden">
+                              <img 
+                                src={program.sponsor_logo_url} 
+                                alt={program.sponsor_name || 'Sponsor'}
+                                className="w-8 h-8 object-contain"
+                              />
+                            </div>
+                          </div>
+                        )}
                         <div className="aspect-video bg-gradient-to-br from-[hsl(var(--cyan))]/10 to-[hsl(var(--primary))]/10 relative">
                           {program.thumbnail_url ? (
                             <img
@@ -504,14 +520,22 @@ const ProgramsListingPage = () => {
                           )}
 
                           <div className="flex items-center justify-between mt-3">
-                            {program.category && (
-                              <Badge
-                                variant="outline"
-                                className="border-[hsl(var(--cyan))]/30 text-muted-foreground"
-                              >
-                                {t(`marketplace.category_${program.category}`)}
-                              </Badge>
-                            )}
+                            {program.category && (() => {
+                              const cat = CATEGORIES.find(c => c.id === program.category);
+                              if (!cat) return null;
+                              const CatIcon = cat.icon;
+                              return (
+                                <Badge
+                                  variant="outline"
+                                  className="border-[hsl(var(--cyan))]/30 text-muted-foreground flex items-center gap-1.5"
+                                >
+                                  <div className={`p-0.5 rounded ${cat.bgColor}`}>
+                                    <CatIcon className={`w-2.5 h-2.5 ${cat.iconColor}`} />
+                                  </div>
+                                  <span>{t(`marketplace.category_${program.category}`).replace(/^[^\w]+/, '')}</span>
+                                </Badge>
+                              );
+                            })()}
                             {getActionButton(program)}
                           </div>
                         </div>
