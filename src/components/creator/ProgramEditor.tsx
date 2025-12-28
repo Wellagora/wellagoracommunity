@@ -245,6 +245,10 @@ const ProgramEditor = ({ programId, mode }: ProgramEditorProps) => {
       const thumbnailUrl = await uploadThumbnail();
 
       if (mode === "create") {
+        // Determine access_type based on price
+        const priceHuf = values.access_level === "one_time_purchase" ? values.price_huf : 0;
+        const accessType = priceHuf && priceHuf > 0 ? 'paid' : 'free';
+        
         const { error } = await supabase.from("expert_contents").insert({
           creator_id: user?.id,
           title: values.title,
@@ -252,12 +256,17 @@ const ProgramEditor = ({ programId, mode }: ProgramEditorProps) => {
           thumbnail_url: thumbnailUrl,
           content_url: values.content_url || null,
           access_level: values.access_level,
-          price_huf: values.access_level === "one_time_purchase" ? values.price_huf : null,
+          price_huf: priceHuf || null,
+          access_type: accessType,
           is_published: false,
         });
 
         if (error) throw error;
       } else if (programId) {
+        // Determine access_type based on price
+        const priceHuf = values.access_level === "one_time_purchase" ? values.price_huf : 0;
+        const accessType = priceHuf && priceHuf > 0 ? 'paid' : 'free';
+        
         const { error } = await supabase
           .from("expert_contents")
           .update({
@@ -266,7 +275,14 @@ const ProgramEditor = ({ programId, mode }: ProgramEditorProps) => {
             thumbnail_url: thumbnailUrl,
             content_url: values.content_url || null,
             access_level: values.access_level,
-            price_huf: values.access_level === "one_time_purchase" ? values.price_huf : null,
+            price_huf: priceHuf || null,
+            access_type: accessType,
+            // If price is 0, clear sponsored status
+            ...((!priceHuf || priceHuf === 0) && { 
+              sponsor_id: null, 
+              total_licenses: 0, 
+              used_licenses: 0 
+            }),
             updated_at: new Date().toISOString(),
           })
           .eq("id", programId)
@@ -296,6 +312,10 @@ const ProgramEditor = ({ programId, mode }: ProgramEditorProps) => {
       const thumbnailUrl = await uploadThumbnail();
 
       if (mode === "create") {
+        // Determine access_type based on price
+        const priceHuf = values.access_level === "one_time_purchase" ? values.price_huf : 0;
+        const accessType = priceHuf && priceHuf > 0 ? 'paid' : 'free';
+        
         const { error } = await supabase.from("expert_contents").insert({
           creator_id: user?.id,
           title: values.title,
@@ -303,7 +323,8 @@ const ProgramEditor = ({ programId, mode }: ProgramEditorProps) => {
           thumbnail_url: thumbnailUrl,
           content_url: values.content_url || null,
           access_level: values.access_level,
-          price_huf: values.access_level === "one_time_purchase" ? values.price_huf : null,
+          price_huf: priceHuf || null,
+          access_type: accessType,
           is_published: false,
           // reviewed_at stays null to indicate pending review
         });
@@ -311,6 +332,10 @@ const ProgramEditor = ({ programId, mode }: ProgramEditorProps) => {
         if (error) throw error;
         toast.success(t("creator.program_submitted"));
       } else if (programId) {
+        // Determine access_type based on price
+        const priceHuf = values.access_level === "one_time_purchase" ? values.price_huf : 0;
+        const accessType = priceHuf && priceHuf > 0 ? 'paid' : 'free';
+        
         // For edits, clear rejection if resubmitting
         const updateData: Record<string, unknown> = {
           title: values.title,
@@ -318,9 +343,17 @@ const ProgramEditor = ({ programId, mode }: ProgramEditorProps) => {
           thumbnail_url: thumbnailUrl,
           content_url: values.content_url || null,
           access_level: values.access_level,
-          price_huf: values.access_level === "one_time_purchase" ? values.price_huf : null,
+          price_huf: priceHuf || null,
+          access_type: accessType,
           updated_at: new Date().toISOString(),
         };
+
+        // If price is 0, clear sponsored status
+        if (!priceHuf || priceHuf === 0) {
+          updateData.sponsor_id = null;
+          updateData.total_licenses = 0;
+          updateData.used_licenses = 0;
+        }
 
         // If was rejected, clear rejection fields for resubmission
         if (existingStatus === "rejected") {
@@ -581,20 +614,26 @@ const ProgramEditor = ({ programId, mode }: ProgramEditorProps) => {
                 <div className="space-y-2 mt-4 pt-4 border-t border-[#1E3A5F]">
                   <Label htmlFor="price" className="text-white flex items-center gap-2">
                     <DollarSign className="h-4 w-4 text-[#00E5FF]" />
-                    {t("creator.program_price")}
+                    {t("expert.set_price")}
                   </Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    min={500}
-                    placeholder={t("creator.program_price_placeholder")}
-                    {...form.register("price_huf", { valueAsNumber: true })}
-                    className="bg-[#0A1930] border-border/50 text-white placeholder:text-white/40 focus:border-[#00E5FF] focus:ring-[#00E5FF]/20"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="price"
+                      type="number"
+                      min={500}
+                      step={500}
+                      placeholder={t("creator.program_price_placeholder")}
+                      {...form.register("price_huf", { valueAsNumber: true })}
+                      className="bg-[#0A1930] border-border/50 text-white placeholder:text-white/40 focus:border-[#00E5FF] focus:ring-[#00E5FF]/20 pr-12"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                      Ft
+                    </span>
+                  </div>
                   {form.formState.errors.price_huf && (
                     <p className="text-red-400 text-sm">{form.formState.errors.price_huf.message}</p>
                   )}
-                  <p className="text-xs text-white/40">{t("creator.validation_price_min")}</p>
+                  <p className="text-xs text-white/40">{t("expert.price_hint")} {t("expert.earnings_info")}</p>
                 </div>
               )}
             </CardContent>

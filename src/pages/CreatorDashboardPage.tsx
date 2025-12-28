@@ -72,6 +72,26 @@ const CreatorDashboardPage = () => {
     enabled: !!user && profile?.user_role === "creator",
   });
 
+  // Fetch creator's earnings from transactions
+  const { data: earnings } = useQuery({
+    queryKey: ["creatorEarnings", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("transactions")
+        .select("amount_creator, transaction_type, created_at")
+        .eq("creator_id", user?.id);
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user && profile?.user_role === "creator",
+  });
+
+  // Calculate earnings stats
+  const totalEarnings = earnings?.reduce((sum, t) => sum + (t.amount_creator || 0), 0) || 0;
+  const purchaseCount = earnings?.filter(t => t.transaction_type === 'purchase').length || 0;
+  const sponsorshipCount = earnings?.filter(t => t.transaction_type === 'sponsorship').length || 0;
+
   // Determine content status
   const getContentStatus = (content: ExpertContent): "draft" | "pending" | "published" | "rejected" => {
     if (content.rejection_reason) return "rejected";
@@ -152,12 +172,12 @@ const CreatorDashboardPage = () => {
           <Card className="bg-[#112240] border-[#1E3A5F] backdrop-blur-sm">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
-                <div className="p-3 rounded-lg bg-[#00E5FF]/10">
-                  <DollarSign className="h-6 w-6 text-[#00E5FF]" />
+                <div className="p-3 rounded-lg bg-green-500/10">
+                  <DollarSign className="h-6 w-6 text-green-400" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-white">0 Ft</p>
-                  <p className="text-sm text-white/60">{t("expert_studio.stats_revenue")}</p>
+                  <p className="text-2xl font-bold text-white">{totalEarnings.toLocaleString()} Ft</p>
+                  <p className="text-sm text-white/60">{t("expert_studio.revenue")}</p>
                 </div>
               </div>
             </CardContent>
@@ -166,12 +186,26 @@ const CreatorDashboardPage = () => {
           <Card className="bg-[#112240] border-[#1E3A5F] backdrop-blur-sm">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
-                <div className="p-3 rounded-lg bg-[#00E5FF]/10">
-                  <Users className="h-6 w-6 text-[#00E5FF]" />
+                <div className="p-3 rounded-lg bg-blue-500/10">
+                  <Users className="h-6 w-6 text-blue-400" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-white">0</p>
-                  <p className="text-sm text-white/60">{t("expert_studio.stats_explorers")}</p>
+                  <p className="text-2xl font-bold text-white">{purchaseCount}</p>
+                  <p className="text-sm text-white/60">{t("expert_studio.sales")}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-[#112240] border-[#1E3A5F] backdrop-blur-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-lg bg-[#FFD700]/10">
+                  <Star className="h-6 w-6 text-[#FFD700]" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-white">{sponsorshipCount}</p>
+                  <p className="text-sm text-white/60">{t("expert_studio.sponsorships")}</p>
                 </div>
               </div>
             </CardContent>
@@ -186,20 +220,6 @@ const CreatorDashboardPage = () => {
                 <div>
                   <p className="text-2xl font-bold text-white">{programs?.length ?? 0}</p>
                   <p className="text-sm text-white/60">{t("expert_studio.stats_guides")}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-[#112240] border-[#1E3A5F] backdrop-blur-sm">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 rounded-lg bg-[#00E5FF]/10">
-                  <Star className="h-6 w-6 text-[#00E5FF]" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-white">0.0</p>
-                  <p className="text-sm text-white/60">{t("creator.stats_rating")}</p>
                 </div>
               </div>
             </CardContent>
