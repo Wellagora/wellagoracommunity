@@ -13,6 +13,7 @@ interface Program {
   id: string;
   title: string;
   description: string | null;
+  image_url: string | null;
   thumbnail_url: string | null;
   access_type: string | null;
   price_huf: number | null;
@@ -35,7 +36,7 @@ const WorkshopSecretsSlider = () => {
       const { data, error } = await supabase
         .from("expert_contents")
         .select(`
-          id, title, description, thumbnail_url, access_type, price_huf,
+          id, title, description, image_url, thumbnail_url, access_type, price_huf,
           sponsor_name, sponsor_logo_url,
           creator:profiles!expert_contents_creator_id_fkey (
             first_name, last_name, avatar_url
@@ -175,7 +176,7 @@ const WorkshopSecretsSlider = () => {
                   <Card className="h-full bg-card hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 border-border/50 group overflow-hidden">
                     <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 relative overflow-hidden">
                       <img
-                        src={program.thumbnail_url || 'https://images.unsplash.com/photo-1518005020251-58296d8f8b4d?w=800&q=80'}
+                        src={program.image_url || program.thumbnail_url || 'https://images.unsplash.com/photo-1518005020251-58296d8f8b4d?w=800&q=80'}
                         alt={program.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         onError={(e) => {

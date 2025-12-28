@@ -47,6 +47,7 @@ interface Program {
   id: string;
   title: string;
   description: string | null;
+  image_url: string | null;
   thumbnail_url: string | null;
   access_level: string | null;
   access_type: string | null;

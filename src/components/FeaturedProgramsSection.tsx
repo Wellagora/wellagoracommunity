@@ -15,7 +15,7 @@ const FeaturedProgramsSection = () => {
     queryFn: async () => {
       const { data } = await supabase
         .from('expert_contents')
-        .select('id, title, thumbnail_url, access_level, price_huf')
+        .select('id, title, image_url, thumbnail_url, access_level, price_huf')
         .eq('is_published', true)
         .eq('is_featured', true)
         .limit(6);
