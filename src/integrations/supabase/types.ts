@@ -754,6 +754,7 @@ export type Database = {
           creator_id: string | null
           description: string | null
           id: string
+          image_url: string | null
           is_featured: boolean | null
           is_published: boolean | null
           is_sponsored: boolean | null
@@ -780,6 +781,7 @@ export type Database = {
           creator_id?: string | null
           description?: string | null
           id?: string
+          image_url?: string | null
           is_featured?: boolean | null
           is_published?: boolean | null
           is_sponsored?: boolean | null
@@ -806,6 +808,7 @@ export type Database = {
           creator_id?: string | null
           description?: string | null
           id?: string
+          image_url?: string | null
           is_featured?: boolean | null
           is_published?: boolean | null
           is_sponsored?: boolean | null
