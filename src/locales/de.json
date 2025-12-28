@@ -2858,5 +2858,41 @@
   "creator.save_settings": "Änderungen speichern",
   "creator.settings_saved": "Einstellungen gespeichert",
   "creator.settings_saved_desc": "Ersteller-Kontoeinstellungen erfolgreich gespeichert.",
-  "creator.save_error": "Einstellungen konnten nicht gespeichert werden."
+  "creator.save_error": "Einstellungen konnten nicht gespeichert werden.",
+  
+  "marketplace.free": "Kostenlos",
+  "marketplace.paid": "Kostenpflichtig",
+  "marketplace.sponsored": "Gesponsert",
+  "marketplace.buy_button": "Kaufen",
+  "marketplace.get_access": "Zugang erhalten",
+  "marketplace.continue": "Fortsetzen",
+  "marketplace.licenses_exhausted": "Gesponserte Lizenzen aufgebraucht",
+  "marketplace.access_granted": "Zugang gewährt!",
+  "marketplace.original_price": "Originalpreis",
+  "marketplace.per_person": "Person",
+  
+  "payment.title": "Kauf bestätigen",
+  "payment.processing": "Verarbeitung...",
+  "payment.pay": "Bezahlen",
+  "payment.success": "Kauf erfolgreich!",
+  "payment.card_number": "Kartennummer",
+  "payment.expiry": "Ablauf",
+  "payment.transparency": "85% Ihres Kaufs gehen direkt an den Experten, 15% unterstützen den Plattformbetrieb.",
+  "payment.test_mode": "Dies ist eine Testzahlung, es fallen keine echten Gebühren an.",
+  
+  "sponsor.sponsor_button": "Sponsern",
+  "sponsor.new_sponsorship": "Neues Sponsoring",
+  "sponsor.license_count": "Anzahl der Lizenzen",
+  "sponsor.licenses": "Lizenzen",
+  "sponsor.total_cost": "Gesamtkosten",
+  "sponsor.confirm_sponsorship": "Sponsoring bestätigen",
+  "sponsor.sponsorship_success": "Sponsoring erfolgreich!",
+  "sponsor.impact_preview": "Diese Personen erhalten KOSTENLOSEN Zugang dank Ihrer Unterstützung!",
+  
+  "expert.expert": "Experte",
+  "expert.set_price": "Inhaltspreis",
+  "expert.price_hint": "Bei 0 ist der Inhalt kostenlos.",
+  "expert.earnings_info": "Bei kostenpflichtigen Inhalten erhalten Sie 85% der Einnahmen.",
+  "expert_studio.sales": "Verkäufe",
+  "expert_studio.sponsorships": "Sponsorings"
 }

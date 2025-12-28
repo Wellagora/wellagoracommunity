@@ -3123,5 +3123,41 @@
   "creator.save_settings": "Save Changes",
   "creator.settings_saved": "Settings saved",
   "creator.settings_saved_desc": "Creator account settings saved successfully.",
-  "creator.save_error": "Failed to save settings."
+  "creator.save_error": "Failed to save settings.",
+  
+  "marketplace.free": "Free",
+  "marketplace.paid": "Paid",
+  "marketplace.sponsored": "Sponsored",
+  "marketplace.buy_button": "Purchase",
+  "marketplace.get_access": "Get Access",
+  "marketplace.continue": "Continue",
+  "marketplace.licenses_exhausted": "Sponsored licenses exhausted",
+  "marketplace.access_granted": "Access granted!",
+  "marketplace.original_price": "Original price",
+  "marketplace.per_person": "person",
+  
+  "payment.title": "Confirm Purchase",
+  "payment.processing": "Processing...",
+  "payment.pay": "Pay",
+  "payment.success": "Purchase successful!",
+  "payment.card_number": "Card Number",
+  "payment.expiry": "Expiry",
+  "payment.transparency": "85% of your purchase goes directly to the Expert, 15% supports platform operations.",
+  "payment.test_mode": "This is a test payment, no real charges will occur.",
+  
+  "sponsor.sponsor_button": "Sponsor",
+  "sponsor.new_sponsorship": "New Sponsorship",
+  "sponsor.license_count": "Number of licenses",
+  "sponsor.licenses": "licenses",
+  "sponsor.total_cost": "Total cost",
+  "sponsor.confirm_sponsorship": "Confirm Sponsorship",
+  "sponsor.sponsorship_success": "Sponsorship successful!",
+  "sponsor.impact_preview": "These people will get FREE access to this knowledge thanks to you!",
+  
+  "expert.expert": "Expert",
+  "expert.set_price": "Content price",
+  "expert.price_hint": "If you set 0, the content will be free.",
+  "expert.earnings_info": "For paid content, you receive 85% of the revenue.",
+  "expert_studio.sales": "Sales",
+  "expert_studio.sponsorships": "Sponsorships"
 }

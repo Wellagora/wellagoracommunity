@@ -436,6 +436,7 @@ export type Database = {
       }
       content_access: {
         Row: {
+          access_type: string | null
           amount_paid: number | null
           content_id: string
           created_at: string
@@ -445,6 +446,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          access_type?: string | null
           amount_paid?: number | null
           content_id: string
           created_at?: string
@@ -454,6 +456,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          access_type?: string | null
           amount_paid?: number | null
           content_id?: string
           created_at?: string
@@ -744,6 +747,7 @@ export type Database = {
       expert_contents: {
         Row: {
           access_level: string | null
+          access_type: string | null
           category: string | null
           content_url: string | null
           created_at: string | null
@@ -763,10 +767,13 @@ export type Database = {
           sponsor_name: string | null
           thumbnail_url: string | null
           title: string
+          total_licenses: number | null
           updated_at: string | null
+          used_licenses: number | null
         }
         Insert: {
           access_level?: string | null
+          access_type?: string | null
           category?: string | null
           content_url?: string | null
           created_at?: string | null
@@ -786,10 +793,13 @@ export type Database = {
           sponsor_name?: string | null
           thumbnail_url?: string | null
           title: string
+          total_licenses?: number | null
           updated_at?: string | null
+          used_licenses?: number | null
         }
         Update: {
           access_level?: string | null
+          access_type?: string | null
           category?: string | null
           content_url?: string | null
           created_at?: string | null
@@ -809,7 +819,9 @@ export type Database = {
           sponsor_name?: string | null
           thumbnail_url?: string | null
           title?: string
+          total_licenses?: number | null
           updated_at?: string | null
+          used_licenses?: number | null
         }
         Relationships: [
           {
@@ -1992,36 +2004,51 @@ export type Database = {
       transactions: {
         Row: {
           amount: number
+          amount_creator: number | null
+          amount_platform: number | null
           buyer_id: string
           content_id: string
           created_at: string | null
           creator_id: string
           creator_revenue: number
           id: string
+          license_count: number | null
           platform_fee: number
+          sponsor_id: string | null
           status: string | null
+          transaction_type: string | null
         }
         Insert: {
           amount: number
+          amount_creator?: number | null
+          amount_platform?: number | null
           buyer_id: string
           content_id: string
           created_at?: string | null
           creator_id: string
           creator_revenue: number
           id?: string
+          license_count?: number | null
           platform_fee: number
+          sponsor_id?: string | null
           status?: string | null
+          transaction_type?: string | null
         }
         Update: {
           amount?: number
+          amount_creator?: number | null
+          amount_platform?: number | null
           buyer_id?: string
           content_id?: string
           created_at?: string | null
           creator_id?: string
           creator_revenue?: number
           id?: string
+          license_count?: number | null
           platform_fee?: number
+          sponsor_id?: string | null
           status?: string | null
+          transaction_type?: string | null
         }
         Relationships: [
           {
@@ -2041,6 +2068,13 @@ export type Database = {
           {
             foreignKeyName: "transactions_creator_id_fkey"
             columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_sponsor_id_fkey"
+            columns: ["sponsor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]

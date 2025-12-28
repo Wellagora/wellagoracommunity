@@ -3093,5 +3093,41 @@
   "creator.save_settings": "Változtatások mentése",
   "creator.settings_saved": "Beállítások mentve",
   "creator.settings_saved_desc": "A kreátor fiók beállításai sikeresen mentve.",
-  "creator.save_error": "Nem sikerült menteni a beállításokat."
+  "creator.save_error": "Nem sikerült menteni a beállításokat.",
+  
+  "marketplace.free": "Ingyenes",
+  "marketplace.paid": "Fizetős",
+  "marketplace.sponsored": "Szponzorált",
+  "marketplace.buy_button": "Vásárlás",
+  "marketplace.get_access": "Hozzáférés",
+  "marketplace.continue": "Folytatás",
+  "marketplace.licenses_exhausted": "A szponzorált licencek elfogytak",
+  "marketplace.access_granted": "Hozzáférés biztosítva!",
+  "marketplace.original_price": "Eredeti ár",
+  "marketplace.per_person": "fő",
+  
+  "payment.title": "Vásárlás megerősítése",
+  "payment.processing": "Feldolgozás...",
+  "payment.pay": "Fizetés",
+  "payment.success": "Sikeres vásárlás!",
+  "payment.card_number": "Kártyaszám",
+  "payment.expiry": "Lejárat",
+  "payment.transparency": "A vásárlás összegéből 85% közvetlenül a Szakértőhöz kerül, 15% a platform működtetését támogatja.",
+  "payment.test_mode": "Ez egy teszt fizetés, valódi terhelés nem történik.",
+  
+  "sponsor.sponsor_button": "Szponzorálás",
+  "sponsor.new_sponsorship": "Új szponzoráció",
+  "sponsor.license_count": "Licencek száma",
+  "sponsor.licenses": "licenc",
+  "sponsor.total_cost": "Teljes összeg",
+  "sponsor.confirm_sponsorship": "Szponzorálás megerősítése",
+  "sponsor.sponsorship_success": "Sikeres szponzoráció!",
+  "sponsor.impact_preview": "Ezek az emberek INGYEN férnek hozzá ehhez a tudáshoz a te támogatásoddal!",
+  
+  "expert.expert": "Szakértő",
+  "expert.set_price": "Tartalom ára",
+  "expert.price_hint": "Ha 0 Ft-ot adsz meg, a tartalom ingyenesen elérhető lesz.",
+  "expert.earnings_info": "Fizetős tartalomnál te kapod a bevétel 85%-át.",
+  "expert_studio.sales": "Eladások",
+  "expert_studio.sponsorships": "Szponzorációk"
 }
