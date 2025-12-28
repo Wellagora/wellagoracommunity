@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { CitizenProfileForm } from "@/components/profile/CitizenProfileForm";
 import { OrganizationProfileForm } from "@/components/profile/OrganizationProfileForm";
+import { SupporterOrganizationForm } from "@/components/profile/SupporterOrganizationForm";
 import { CreatorAccountSection } from "@/components/profile/CreatorAccountSection";
 import { 
   Loader2, 
@@ -162,6 +163,8 @@ const ProfilePage = () => {
     email: profile?.email || "",
     public_display_name: profile?.public_display_name || "",
     organization: profile?.organization || "",
+    organization_name: "",
+    organization_logo_url: "",
     location: "",
     sustainability_goals: [] as string[],
     industry: "",
@@ -184,6 +187,8 @@ const ProfilePage = () => {
         email: profile.email || "",
         public_display_name: profile.public_display_name || "",
         organization: profile.organization || "",
+        organization_name: extendedProfile.organization_name || "",
+        organization_logo_url: extendedProfile.organization_logo_url || "",
         location: extendedProfile.location || "",
         sustainability_goals: extendedProfile.sustainability_goals || [],
         industry: extendedProfile.industry || "",
@@ -268,33 +273,61 @@ const ProfilePage = () => {
   const handleLogoUpload = async (file: File) => {
     if (!user || !profile) return;
 
+    // Validation
+    if (file.size > 2 * 1024 * 1024) {
+      toast({
+        title: t('common.error'),
+        description: t('profile.logo_too_large'),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)) {
+      toast({
+        title: t('common.error'),
+        description: t('profile.logo_invalid_format'),
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLogoUploading(true);
     try {
       const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}/logo.${fileExt}`;
-      const filePath = `${fileName}`;
+      // Cache-busting: timestamp in filename
+      const fileName = `${user.id}-logo-${Date.now()}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
         .from('organization-logos')
-        .upload(filePath, file, { upsert: true });
+        .upload(fileName, file, { upsert: true });
 
       if (uploadError) throw uploadError;
 
       const { data: { publicUrl } } = supabase.storage
         .from('organization-logos')
-        .getPublicUrl(filePath);
+        .getPublicUrl(fileName);
+
+      // Update profile with new logo URL
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ organization_logo_url: publicUrl })
+        .eq('id', user.id);
+
+      if (updateError) throw updateError;
 
       // Update form with new logo URL
-      setProfileForm(prev => ({ ...prev, org_logo_url: publicUrl }));
+      setProfileForm(prev => ({ ...prev, organization_logo_url: publicUrl, org_logo_url: publicUrl }));
 
       toast({
-        title: "Siker!",
-        description: "A logó sikeresen feltöltve",
+        title: t('common.success') || "Success!",
+        description: t('profile.logo_uploaded'),
       });
     } catch (error) {
+      console.error('Logo upload error:', error);
       toast({
-        title: "Hiba",
-        description: "A logó feltöltése sikertelen",
+        title: t('common.error'),
+        description: t('profile.logo_upload_error'),
         variant: "destructive",
       });
     } finally {
@@ -327,7 +360,8 @@ const ProfilePage = () => {
         ...(profileForm.industry && { industry: profileForm.industry.trim() }),
         ...(profileForm.company_size && { company_size: profileForm.company_size.trim() }),
         ...(normalizedUrl && { website_url: normalizedUrl }),
-        ...(profileForm.bio && { bio: profileForm.bio.trim() })
+        ...(profileForm.bio && { bio: profileForm.bio.trim() }),
+        ...(profileForm.organization_name && { organization_name: profileForm.organization_name.trim() }),
       } as any);
 
       if (error) {
@@ -445,6 +479,15 @@ const ProfilePage = () => {
               <CitizenProfileForm
                 formData={profileForm}
                 onChange={handleFormChange}
+              />
+            )}
+
+            {/* Supporter Organization Form - show for sponsor/business/government/ngo roles */}
+            {['business', 'government', 'ngo', 'sponsor'].includes(profile.user_role) && (
+              <SupporterOrganizationForm
+                formData={profileForm}
+                onChange={handleFormChange}
+                logoUploading={logoUploading}
               />
             )}
 
