@@ -51,8 +51,8 @@ const RoleSelector = ({ onComplete }: RoleSelectorProps) => {
     {
       role: 'citizen',
       icon: Compass,
-      titleKey: 'onboarding.role_explorer_title',
-      descKey: 'onboarding.role_explorer_desc',
+      titleKey: 'onboarding.role_member_title',
+      descKey: 'onboarding.role_member_desc',
       accent: null,
       badge: null,
       disabled: false,
@@ -67,13 +67,13 @@ const RoleSelector = ({ onComplete }: RoleSelectorProps) => {
       disabled: false,
     },
     {
-      role: 'sponsor',
+      role: 'business',
       icon: Building2,
-      titleKey: 'onboarding.role_sponsor_title',
-      descKey: 'onboarding.role_sponsor_desc',
+      titleKey: 'onboarding.role_supporter_title',
+      descKey: 'onboarding.role_supporter_desc',
       accent: '#FFD700',
-      badge: t('onboarding.coming_soon'),
-      disabled: true,
+      badge: null,
+      disabled: false,
     },
   ];
 
@@ -99,8 +99,12 @@ const RoleSelector = ({ onComplete }: RoleSelectorProps) => {
 
       if (selectedRole === 'creator') {
         setShowExpertWelcome(true);
+      } else if (selectedRole === 'business') {
+        toast.success(t('onboarding.welcome_supporter'));
+        onComplete?.();
+        navigate('/tamogato-panel');
       } else {
-        toast.success(t('common.success'));
+        toast.success(t('onboarding.welcome_member'));
         onComplete?.();
         navigate('/dashboard');
       }

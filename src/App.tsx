@@ -31,7 +31,7 @@ const HandprintPage = lazy(() => import("@/pages/HandprintPage"));
 const PublicOrganizationPage = lazy(() => import("@/pages/PublicOrganizationPage"));
 const AdminDashboardPage = lazy(() => import("@/pages/AdminDashboardPage"));
 const HandprintCalculatorPage = lazy(() => import("@/pages/HandprintCalculatorPage"));
-const SponsorDashboardPage = lazy(() => import("@/pages/SponsorDashboardPage"));
+const SponsorDashboardPage = lazy(() => import("@/pages/SupporterDashboardPage"));
 const ProjectAdminPage = lazy(() => import("@/pages/ProjectAdminPage"));
 const JoinProjectPage = lazy(() => import("@/pages/JoinProjectPage"));
 const ProjectsListPage = lazy(() => import("@/pages/ProjectsListPage"));
@@ -140,13 +140,22 @@ function App() {
                             }
                           />
                           <Route path="/organization/:organizationId" element={<PublicOrganizationPage />} />
+                          {/* Támogató Panel - Supporter Dashboard */}
                           <Route
-                            path="/sponsor-dashboard"
+                            path="/tamogato-panel"
                             element={
                               <ProtectedRoute allowedRoles={["business", "government", "ngo"]}>
                                 <SponsorDashboardPage />
                               </ProtectedRoute>
                             }
+                          />
+                          <Route
+                            path="/sponsor-dashboard"
+                            element={<Navigate to="/tamogato-panel" replace />}
+                          />
+                          <Route
+                            path="/business-dashboard"
+                            element={<Navigate to="/tamogato-panel" replace />}
                           />
                           <Route path="/browse-programs" element={<Navigate to="/piacer" replace />} />
                           <Route
