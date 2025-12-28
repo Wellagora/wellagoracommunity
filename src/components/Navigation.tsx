@@ -3,21 +3,19 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Menu,
   User,
+  Users as UsersIcon,
   LogOut,
   Home,
-  Users as UsersIcon,
   Bot,
   Inbox,
   ChevronDown,
   ShieldCheck,
   Heart,
-  Eye,
   Calendar,
   LayoutDashboard,
-  Bookmark,
   Store,
   Sparkles,
-  Compass,
+  Building2,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -35,8 +33,6 @@ import {
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
@@ -125,7 +121,7 @@ const Navigation = () => {
         toast.success(t('nav.switched_to_expert'));
         navigate('/szakertoi-studio');
       } else {
-        toast.success(t('nav.switched_to_explorer'));
+        toast.success(t('nav.switched_to_member'));
         navigate('/dashboard');
       }
     } catch (error) {
@@ -219,34 +215,7 @@ const Navigation = () => {
 
           {/* Desktop Actions - Right */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* Super Admin View Mode Switcher */}
-            {isSuperAdmin && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-1.5 px-2 py-1 bg-purple-500/10 border border-purple-500/30 rounded-lg">
-                      <Eye className="h-3.5 w-3.5 text-purple-500" />
-                      <Select
-                        value={viewMode}
-                        onValueChange={(value: "super_admin" | "business" | "citizen") => setViewMode(value)}
-                      >
-                        <SelectTrigger className="w-[110px] h-7 text-xs border-0 bg-transparent p-0 focus:ring-0 text-purple-600 dark:text-purple-400">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="super_admin">Super Admin</SelectItem>
-                          <SelectItem value="business">Cég nézet</SelectItem>
-                          <SelectItem value="citizen">Felhasználó</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Tesztelési nézet váltás</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
+            {/* Language Selector is next - Super Admin view switcher removed, role switch is in profile dropdown */}
 
             {/* Language Selector */}
             <LanguageSelector />
@@ -313,8 +282,8 @@ const Navigation = () => {
                           profile?.user_role === 'citizen' ? 'bg-accent' : ''
                         }`}
                       >
-                        <Compass className="h-4 w-4" />
-                        {t('nav.role_explorer')}
+                        <User className="h-4 w-4" />
+                        {t('nav.role_member')}
                         {profile?.user_role === 'citizen' && (
                           <Badge variant="secondary" className="ml-auto text-xs">
                             ✓
@@ -332,16 +301,23 @@ const Navigation = () => {
                         <span className={profile?.user_role === 'creator' ? 'text-[#00E5FF]' : ''}>
                           {t('nav.role_expert')}
                         </span>
-                        {profile?.user_role === 'creator' ? (
+                        {profile?.user_role === 'creator' && (
                           <Badge className="ml-auto text-xs bg-[#00E5FF] text-black">
                             ✓
                           </Badge>
-                        ) : (
-                          <Badge className="ml-auto text-xs bg-[#00E5FF] text-black">
-                            {t('common.new')}
-                          </Badge>
                         )}
                       </DropdownMenuItem>
+                      {['business', 'government', 'ngo'].includes(profile?.user_role || '') && (
+                        <DropdownMenuItem
+                          className="flex items-center gap-2 cursor-default bg-[#FFD700]/10"
+                        >
+                          <Building2 className="h-4 w-4 text-[#FFD700]" />
+                          <span className="text-[#FFD700]">{t('nav.role_supporter')}</span>
+                          <Badge className="ml-auto text-xs bg-[#FFD700] text-black">
+                            ✓
+                          </Badge>
+                        </DropdownMenuItem>
+                      )}
                     </>
                     
                     {isSuperAdmin && (
@@ -485,36 +461,7 @@ const Navigation = () => {
                       </>
                     )}
                   </div>
-                  {/* Super Admin View Mode Switcher - Mobile */}
-                  {isSuperAdmin && (
-                    <div className="pt-4 border-t border-border">
-                      <p className="text-xs text-foreground/70 mb-2 px-3">Tesztelési nézet</p>
-                      <div className="px-3">
-                        <div className="flex items-center gap-2 p-2 bg-purple-500/10 border border-purple-500/30 rounded-lg">
-                          <Eye className="h-4 w-4 text-purple-500" />
-                          <Select
-                            value={viewMode}
-                            onValueChange={(value: "super_admin" | "business" | "citizen") => {
-                              setViewMode(value);
-                              setIsMobileMenuOpen(false);
-                              // Navigate to appropriate dashboard based on new view mode
-                              const newPath = value === "citizen" ? "/dashboard" : value === "business" ? "/organization" : "/super-admin";
-                              navigate(newPath);
-                            }}
-                          >
-                            <SelectTrigger className="flex-1 h-8 text-sm border-0 bg-transparent focus:ring-0 text-purple-600 dark:text-purple-400">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="super_admin">Super Admin</SelectItem>
-                              <SelectItem value="business">Cég nézet</SelectItem>
-                              <SelectItem value="citizen">Felhasználó</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                  {/* Super Admin view switcher removed - role switching is in profile dropdown */}
                   {/* Language Selector - Mobile */}
                   <div className="pt-4 border-t border-border">
                     <p className="text-xs text-foreground/70 mb-2 px-3">{t("nav.language") || "Language"}</p>
