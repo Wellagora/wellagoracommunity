@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -44,6 +44,7 @@ interface Event {
   current_participants: number | null;
   max_participants: number | null;
   created_by: string | null;
+  image_url: string | null;
 }
 
 interface EventRsvp {
@@ -66,7 +67,7 @@ const EventsPage = () => {
     queryFn: async () => {
       let query = supabase
         .from("events")
-        .select("*")
+        .select("*, image_url")
         .gte("start_date", new Date().toISOString())
         .eq("is_public", true)
         .order("start_date", { ascending: true });
@@ -196,31 +197,40 @@ const EventsPage = () => {
                 const villageColor = event.village ? villageColors[event.village] : "bg-muted text-muted-foreground";
 
                 return (
-                  <Card key={event.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex-shrink-0 w-16 h-16 rounded-lg bg-primary/10 flex flex-col items-center justify-center text-center">
-                          <span className="text-2xl font-bold text-primary leading-none">
-                            {dateInfo.day}
-                          </span>
-                          <span className="text-xs text-primary/80 uppercase">{dateInfo.month}</span>
+                  <Card key={event.id} className="overflow-hidden hover:shadow-lg transition-shadow group">
+                    {/* Event Image */}
+                    <div className="relative h-40 overflow-hidden">
+                      <img
+                        src={event.image_url || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80'}
+                        alt={event.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          e.currentTarget.src = 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80';
+                        }}
+                      />
+                      {/* Date badge overlay */}
+                      <div className="absolute top-3 left-3 bg-background/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg">
+                        <div className="text-2xl font-bold text-primary leading-none">{dateInfo.day}</div>
+                        <div className="text-xs text-muted-foreground uppercase">{dateInfo.month}</div>
+                      </div>
+                      {/* RSVP indicator */}
+                      {rsvpStatus === "going" && (
+                        <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-success/90 backdrop-blur-sm flex items-center justify-center shadow-lg">
+                          <Check className="w-4 h-4 text-white" />
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <CardTitle className="text-lg leading-tight mb-1">{event.title}</CardTitle>
-                          {event.village && (
-                            <Badge variant="outline" className={`text-xs ${villageColor}`}>
-                              {event.village}
-                            </Badge>
-                          )}
-                        </div>
-                        {rsvpStatus === "going" && (
-                          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-success/20 flex items-center justify-center">
-                            <Check className="w-4 h-4 text-success" />
-                          </div>
+                      )}
+                    </div>
+
+                    <CardContent className="p-4 space-y-3">
+                      <div>
+                        <CardTitle className="text-lg leading-tight mb-2">{event.title}</CardTitle>
+                        {event.village && (
+                          <Badge variant="outline" className={`text-xs ${villageColor}`}>
+                            {event.village}
+                          </Badge>
                         )}
                       </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
+
                       {event.description && (
                         <p className="text-sm text-muted-foreground line-clamp-2">{event.description}</p>
                       )}
