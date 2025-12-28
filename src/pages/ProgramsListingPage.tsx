@@ -18,15 +18,15 @@ import {
   Leaf,
   Heart,
   Users,
-  Flower2,
   Apple,
-  Sun,
   Crown,
   ShoppingCart,
   Star,
   BookOpen,
   Gift,
   PlayCircle,
+  Hammer,
+  Briefcase,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import StarRating from "@/components/reviews/StarRating";
@@ -34,13 +34,13 @@ import DummyPaymentModal from "@/components/marketplace/DummyPaymentModal";
 import SponsorshipModal from "@/components/marketplace/SponsorshipModal";
 
 const CATEGORIES = [
-  { id: "all", labelKey: "marketplace.all_categories", icon: Grid },
-  { id: "sustainability", labelKey: "marketplace.category_sustainability", icon: Leaf },
-  { id: "health", labelKey: "marketplace.category_health", icon: Heart },
-  { id: "community", labelKey: "marketplace.category_community", icon: Users },
-  { id: "gardening", labelKey: "marketplace.category_gardening", icon: Flower2 },
-  { id: "food", labelKey: "marketplace.category_food", icon: Apple },
-  { id: "lifestyle", labelKey: "marketplace.category_lifestyle", icon: Sun },
+  { id: "all", labelKey: "marketplace.all_categories", icon: Grid, bgColor: "bg-slate-500", iconColor: "text-white" },
+  { id: "sustainability", labelKey: "marketplace.category_sustainability", icon: Leaf, bgColor: "bg-emerald-500", iconColor: "text-white" },
+  { id: "workshop", labelKey: "marketplace.category_workshop", icon: Hammer, bgColor: "bg-orange-500", iconColor: "text-white" },
+  { id: "gastronomy", labelKey: "marketplace.category_gastronomy", icon: Apple, bgColor: "bg-rose-500", iconColor: "text-white" },
+  { id: "community", labelKey: "marketplace.category_community", icon: Users, bgColor: "bg-blue-500", iconColor: "text-white" },
+  { id: "wellness", labelKey: "marketplace.category_wellness", icon: Heart, bgColor: "bg-pink-500", iconColor: "text-white" },
+  { id: "business", labelKey: "marketplace.category_business", icon: Briefcase, bgColor: "bg-purple-500", iconColor: "text-white" },
 ];
 
 interface Program {
@@ -385,7 +385,9 @@ const ProgramsListingPage = () => {
                     : "bg-[#112240] border border-[hsl(var(--cyan))]/20 text-muted-foreground hover:border-[hsl(var(--cyan))]/40 hover:text-foreground"
                 }`}
               >
-                <Icon className="w-4 h-4" />
+                <div className={`p-1 rounded-md ${category.bgColor}`}>
+                  <Icon className={`w-3 h-3 ${category.iconColor}`} />
+                </div>
                 <span className="text-sm font-medium">{t(category.labelKey)}</span>
               </button>
             );
