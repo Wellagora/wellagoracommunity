@@ -14,11 +14,13 @@ import {
   Newspaper,
   Calendar,
   ChevronRight,
-  Store,
   Bot,
   ArrowRight,
   Compass,
+  Lightbulb,
+  HelpCircle,
 } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { hu, de, enUS } from "date-fns/locale";
 
@@ -340,64 +342,92 @@ const ControlPanelPage = () => {
 
           {/* Right: WellBot Widget (1/3) */}
           <div className="lg:col-span-1 animate-fade-in">
-            <Card className="bg-gradient-to-br from-primary/20 via-primary/10 to-background border-primary/20 sticky top-24">
-              <CardContent className="pt-6">
-                <div className="text-center mb-6">
-                  <div className="inline-flex p-4 rounded-full bg-primary/20 mb-4 shadow-lg">
-                    <Bot className="h-8 w-8 text-primary" />
-                  </div>
-                  <h3 className="font-bold text-xl mb-1">WellBot</h3>
-                  <p className="text-sm text-muted-foreground">{t('wellbot.greeting')}</p>
-                </div>
-
-                <div className="space-y-2 mb-6">
-                  <Button 
-                    variant="outline"
-                    onClick={() => navigate('/piacer')}
-                    className="w-full justify-start border-primary/50 text-primary hover:bg-primary/10"
-                  >
-                    <Compass className="h-4 w-4 mr-3" />
-                    {t('wellbot.find_workshop_secret')}
-                  </Button>
-                  
-                  <Button 
-                    variant="outline"
-                    onClick={() => {
-                      const section = document.getElementById('my-secrets');
-                      section?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="w-full justify-start border-primary/50 text-primary hover:bg-primary/10"
-                  >
-                    <BookOpen className="h-4 w-4 mr-3" />
-                    {t('wellbot.my_collection')}
-                  </Button>
-                  
-                  <Button 
-                    variant="outline"
-                    onClick={() => {
-                      const section = document.getElementById('kali-news');
-                      section?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="w-full justify-start border-accent/50 text-accent hover:bg-accent/10"
-                  >
-                    <Newspaper className="h-4 w-4 mr-3" />
-                    {t('wellbot.news_from_kali')}
-                  </Button>
-                </div>
-
-                <Button 
-                  onClick={() => navigate('/ai-assistant')}
-                  className="w-full"
-                >
-                  {t('wellbot.full_assistant')}
-                  <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
-              </CardContent>
-            </Card>
+            <WellBotWidget navigate={navigate} t={t} />
           </div>
         </div>
       </main>
     </div>
+  );
+};
+
+// WellBot Widget Component
+const WellBotWidget = ({ navigate, t }: { navigate: (path: string) => void; t: (key: string) => string }) => {
+  const tips = [
+    t('wellbot.tip_1'),
+    t('wellbot.tip_2'),
+    t('wellbot.tip_3'),
+    t('wellbot.tip_4'),
+    t('wellbot.tip_5'),
+  ];
+  
+  const [dailyTip] = useState(() => tips[Math.floor(Math.random() * tips.length)]);
+
+  return (
+    <Card className="bg-gradient-to-br from-primary/20 via-primary/10 to-background border-primary/20 sticky top-24">
+      <CardContent className="pt-6">
+        <div className="text-center mb-6">
+          {/* Animated Avatar */}
+          <div className="relative w-20 h-20 mx-auto mb-4">
+            <div className="absolute inset-0 rounded-full bg-primary/20 animate-pulse" />
+            <div className="relative w-full h-full rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/30">
+              <Bot className="h-10 w-10 text-white" />
+            </div>
+          </div>
+          <h3 className="font-bold text-xl mb-1">WellBot</h3>
+          <p className="text-sm text-muted-foreground">{t('wellbot.greeting')}</p>
+        </div>
+
+        <div className="space-y-2 mb-6">
+          {/* Explore Marketplace */}
+          <Button 
+            variant="outline"
+            onClick={() => navigate('/piacer')}
+            className="w-full justify-start border-primary/50 text-primary hover:bg-primary/10"
+          >
+            <Compass className="h-4 w-4 mr-3" />
+            {t('wellbot.find_workshop_secret')}
+          </Button>
+          
+          {/* Daily Tip - Popover */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button 
+                variant="outline"
+                className="w-full justify-start border-accent/50 text-accent hover:bg-accent/10"
+              >
+                <Lightbulb className="h-4 w-4 mr-3" />
+                {t('wellbot.daily_tip')}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="bg-card border-border p-4 w-72">
+              <div className="flex items-start gap-3">
+                <Lightbulb className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-foreground">{dailyTip}</p>
+              </div>
+            </PopoverContent>
+          </Popover>
+          
+          {/* Need Help */}
+          <Button 
+            variant="outline"
+            onClick={() => navigate('/ai-assistant')}
+            className="w-full justify-start border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
+          >
+            <HelpCircle className="h-4 w-4 mr-3" />
+            {t('wellbot.need_help')}
+          </Button>
+        </div>
+
+        {/* Main CTA */}
+        <Button 
+          onClick={() => navigate('/ai-assistant')}
+          className="w-full bg-gradient-to-r from-primary to-accent text-white hover:opacity-90"
+        >
+          {t('wellbot.chat_with_me')}
+          <ArrowRight className="h-4 w-4 ml-2" />
+        </Button>
+      </CardContent>
+    </Card>
   );
 };
 
