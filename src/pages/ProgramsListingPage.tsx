@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Store,
   Search,
@@ -27,11 +28,13 @@ import {
   PlayCircle,
   Hammer,
   Briefcase,
+  ArrowLeft,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import StarRating from "@/components/reviews/StarRating";
 import DummyPaymentModal from "@/components/marketplace/DummyPaymentModal";
 import SponsorshipModal from "@/components/marketplace/SponsorshipModal";
+import ExpertProfileModal from "@/components/creator/ExpertProfileModal";
 
 const CATEGORIES = [
   { id: "all", labelKey: "marketplace.all_categories", icon: Grid, bgColor: "bg-slate-500", iconColor: "text-white" },
@@ -66,6 +69,7 @@ interface Program {
     first_name: string;
     last_name: string;
     avatar_url: string | null;
+    expert_title?: string | null;
   } | null;
   sponsor?: {
     id: string;
@@ -80,29 +84,56 @@ const ProgramsListingPage = () => {
   const { t } = useLanguage();
   const { user, profile } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [paymentModal, setPaymentModal] = useState<Program | null>(null);
   const [sponsorshipModal, setSponsorshipModal] = useState<Program | null>(null);
+  const [selectedExpertId, setSelectedExpertId] = useState<string | null>(null);
+
+  // Creator filter from URL
+  const creatorFilter = searchParams.get("creator");
 
   const isSponsor = profile?.user_role && ['business', 'government', 'ngo'].includes(profile.user_role);
 
+  // Fetch creator info if filtering
+  const { data: filteredCreator } = useQuery({
+    queryKey: ["filteredCreator", creatorFilter],
+    queryFn: async () => {
+      if (!creatorFilter) return null;
+      const { data } = await supabase
+        .from("profiles")
+        .select("id, first_name, last_name, avatar_url, expert_title")
+        .eq("id", creatorFilter)
+        .single();
+      return data;
+    },
+    enabled: !!creatorFilter,
+  });
+
   // Fetch all published programs
   const { data: programs, isLoading, refetch } = useQuery({
-    queryKey: ["allPrograms"],
+    queryKey: ["allPrograms", creatorFilter],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("expert_contents")
         .select(`
           *,
           creator:profiles!expert_contents_creator_id_fkey (
-            id, first_name, last_name, avatar_url
+            id, first_name, last_name, avatar_url, expert_title
           ),
           sponsor:profiles!expert_contents_sponsor_id_fkey (
             id, organization, avatar_url
           )
         `)
-        .eq("is_published", true)
+        .eq("is_published", true);
+      
+      // Apply creator filter if present
+      if (creatorFilter) {
+        query = query.eq("creator_id", creatorFilter);
+      }
+      
+      const { data, error } = await query
         .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -338,17 +369,55 @@ const ProgramsListingPage = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 rounded-xl bg-[hsl(var(--cyan))]/20">
-              <Store className="w-6 h-6 text-[hsl(var(--cyan))]" />
+          {/* Creator filter header */}
+          {creatorFilter && filteredCreator && (
+            <div className="mb-6">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSearchParams({})}
+                className="mb-4 text-muted-foreground hover:text-foreground"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                {t("marketplace.back_to_all")}
+              </Button>
+              <div className="flex items-center gap-4 p-4 rounded-lg bg-[#112240] border border-[hsl(var(--cyan))]/20">
+                <Avatar className="h-16 w-16 border-2 border-primary">
+                  <AvatarImage src={filteredCreator.avatar_url || undefined} />
+                  <AvatarFallback className="bg-primary/20 text-primary text-lg">
+                    {filteredCreator.first_name?.[0]}{filteredCreator.last_name?.[0]}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <h2 className="text-xl font-bold text-foreground">
+                    {filteredCreator.first_name} {filteredCreator.last_name}
+                  </h2>
+                  {filteredCreator.expert_title && (
+                    <p className="text-primary">{filteredCreator.expert_title}</p>
+                  )}
+                  <p className="text-sm text-muted-foreground">
+                    {t("marketplace.showing_creator_contents").replace("{{count}}", String(filteredPrograms.length))}
+                  </p>
+                </div>
+              </div>
             </div>
-            <h1 className="text-3xl font-bold text-foreground">
-              {t("marketplace.title")}
-            </h1>
-          </div>
-          <p className="text-muted-foreground">
-            {t("marketplace.subtitle")}
-          </p>
+          )}
+
+          {!creatorFilter && (
+            <>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-3 rounded-xl bg-[hsl(var(--cyan))]/20">
+                  <Store className="w-6 h-6 text-[hsl(var(--cyan))]" />
+                </div>
+                <h1 className="text-3xl font-bold text-foreground">
+                  {t("marketplace.title")}
+                </h1>
+              </div>
+              <p className="text-muted-foreground">
+                {t("marketplace.subtitle")}
+              </p>
+            </>
+          )}
         </div>
 
         {/* Search Bar */}
@@ -496,11 +565,18 @@ const ProgramsListingPage = () => {
                             {program.title}
                           </h3>
 
-                          {/* Creator */}
+                          {/* Creator - clickable */}
                           {program.creator && (
-                            <p className="text-sm text-muted-foreground mb-3">
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setSelectedExpertId(program.creator!.id);
+                              }}
+                              className="text-sm text-muted-foreground hover:text-primary transition-colors text-left"
+                            >
                               {program.creator.first_name} {program.creator.last_name}
-                            </p>
+                            </button>
                           )}
 
                           {/* Sponsor info for sponsored content */}
@@ -587,6 +663,13 @@ const ProgramsListingPage = () => {
           }}
         />
       )}
+
+      {/* Expert Profile Modal */}
+      <ExpertProfileModal
+        expertId={selectedExpertId}
+        isOpen={!!selectedExpertId}
+        onClose={() => setSelectedExpertId(null)}
+      />
     </div>
   );
 };

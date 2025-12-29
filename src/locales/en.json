@@ -124,7 +124,10 @@
   "marketplace.category_lifestyle": "Lifestyle",
   "marketplace.results_count": "results",
   "marketplace.showing_results": "results shown",
+  "marketplace.back_to_all": "← Back to all Workshop Secrets",
+  "marketplace.showing_creator_contents": "{{count}} Workshop Secrets from this Master",
   "marketplace.filters": "Filters",
+  "expert_studio.view_all_contents": "View all {{count}} Workshop Secrets →",
 
   "content.guide": "Workshop Secret",
   "content.workshop_secret": "Workshop Secret",

@@ -39,6 +39,7 @@ import {
   Share,
 } from "lucide-react";
 import { toast } from "sonner";
+import ExpertProfileModal from "@/components/creator/ExpertProfileModal";
 
 interface Creation {
   id: string;
@@ -46,6 +47,7 @@ interface Creation {
   caption: string | null;
   rating: number | null;
   created_at: string;
+  user_id?: string;
   user?: {
     first_name: string | null;
     last_name: string | null;
@@ -54,6 +56,7 @@ interface Creation {
   content?: {
     id: string;
     title: string;
+    creator_id?: string;
   } | null;
 }
 
@@ -69,11 +72,13 @@ interface Question {
   content?: {
     id: string;
     title: string;
+    creator_id?: string;
   } | null;
   answers?: {
     id: string;
     answer: string;
     created_at: string;
+    expert_id?: string;
     expert?: {
       first_name: string | null;
       last_name: string | null;
