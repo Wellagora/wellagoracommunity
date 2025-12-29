@@ -1,4 +1,7 @@
 {
+  "wizard.video_preview_loading": "Vorschau wird geladen...",
+  "wizard.video_preview_error": "Videovorschau konnte nicht geladen werden. Bitte überprüfe den Link!",
+  "wizard.video_link_recognized": "Video-Link erkannt",
   "reviews.title": "Bewertungen",
   "reviews.write": "Bewertung schreiben",
   "reviews.edit": "Bewertung bearbeiten",

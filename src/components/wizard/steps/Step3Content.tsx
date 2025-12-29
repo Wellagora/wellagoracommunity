@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,12 +15,163 @@ import {
   Lightbulb,
   AlertTriangle,
   HardDrive,
+  Play,
+  CheckCircle,
+  AlertCircle,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { WizardFormData, Milestone, FILE_LIMITS, validateImageFile, isYouTubeOrVimeo } from "../WorkshopSecretWizard";
+
+// ============ Video Helper Functions ============
+
+const getYouTubeVideoId = (url: string): string | null => {
+  if (!url) return null;
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)([^&\n?#]+)/,
+  ];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match && match[1]) return match[1];
+  }
+  return null;
+};
+
+const getVimeoVideoId = (url: string): string | null => {
+  if (!url) return null;
+  const patterns = [/vimeo\.com\/(\d+)/, /player\.vimeo\.com\/video\/(\d+)/];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match && match[1]) return match[1];
+  }
+  return null;
+};
+
+const getVideoThumbnail = (url: string): { type: "youtube" | "vimeo" | null; thumbnailUrl: string | null; videoId: string | null } => {
+  const youtubeId = getYouTubeVideoId(url);
+  if (youtubeId) {
+    return {
+      type: "youtube",
+      videoId: youtubeId,
+      thumbnailUrl: `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`,
+    };
+  }
+  const vimeoId = getVimeoVideoId(url);
+  if (vimeoId) {
+    return { type: "vimeo", videoId: vimeoId, thumbnailUrl: null };
+  }
+  return { type: null, thumbnailUrl: null, videoId: null };
+};
+
+// ============ Video Preview Component ============
+
+const VideoPreview = ({ url }: { url: string }) => {
+  const { t } = useLanguage();
+  const [vimeoThumbnail, setVimeoThumbnail] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  const videoInfo = getVideoThumbnail(url);
+
+  useEffect(() => {
+    const fetchVimeoThumbnail = async () => {
+      const vimeoId = getVimeoVideoId(url);
+      if (!vimeoId) return;
+
+      setIsLoading(true);
+      setHasError(false);
+
+      try {
+        const response = await fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${vimeoId}`);
+        if (!response.ok) throw new Error("Vimeo API error");
+        const data = await response.json();
+        setVimeoThumbnail(data.thumbnail_url);
+      } catch {
+        setHasError(true);
+        setVimeoThumbnail(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (url?.includes("vimeo.com")) {
+      fetchVimeoThumbnail();
+    } else {
+      setVimeoThumbnail(null);
+      setHasError(false);
+    }
+  }, [url]);
+
+  // No valid video link
+  if (!videoInfo.type) return null;
+
+  // Loading state (Vimeo)
+  if (isLoading) {
+    return (
+      <div className="mt-2 h-24 bg-muted rounded-lg flex items-center justify-center">
+        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  // Error state
+  if (hasError && videoInfo.type === "vimeo") {
+    return (
+      <div className="mt-2 p-3 bg-destructive/10 border border-destructive/30 rounded-lg">
+        <p className="text-xs text-destructive flex items-center gap-1">
+          <AlertCircle className="h-4 w-4" />
+          {t("wizard.video_preview_error")}
+        </p>
+      </div>
+    );
+  }
+
+  const thumbnailUrl = videoInfo.type === "youtube" ? videoInfo.thumbnailUrl : vimeoThumbnail;
+
+  if (!thumbnailUrl) return null;
+
+  return (
+    <div className="mt-2 relative group">
+      <div className="relative aspect-video rounded-lg overflow-hidden border border-border">
+        <img
+          src={thumbnailUrl}
+          alt="Video preview"
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).style.display = "none";
+          }}
+        />
+        {/* Play icon overlay */}
+        <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
+          <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center">
+            <Play className="h-6 w-6 text-black ml-1" />
+          </div>
+        </div>
+        {/* Platform badge */}
+        <div className="absolute top-2 left-2">
+          <Badge
+            className={`text-xs ${
+              videoInfo.type === "youtube" ? "bg-red-500 text-white hover:bg-red-600" : "bg-blue-500 text-white hover:bg-blue-600"
+            }`}
+          >
+            <Video className="h-3 w-3 mr-1" />
+            {videoInfo.type === "youtube" ? "YouTube" : "Vimeo"}
+          </Badge>
+        </div>
+      </div>
+      {/* Success message */}
+      <p className="text-xs text-green-500 mt-1 flex items-center gap-1">
+        <CheckCircle className="h-3 w-3" />
+        {t("wizard.video_link_recognized")}
+      </p>
+    </div>
+  );
+};
+
+// ============ Main Component ============
 
 interface Step3ContentProps {
   formData: WizardFormData;
@@ -118,6 +269,8 @@ export const Step3Content = ({ formData, setFormData }: Step3ContentProps) => {
     </div>
   );
 };
+
+// ============ Milestone Card ============
 
 interface MilestoneCardProps {
   milestone: Milestone;
@@ -255,6 +408,11 @@ const MilestoneCard = ({ milestone, index, onUpdate, onRemove }: MilestoneCardPr
                 placeholder="YouTube vagy Vimeo link"
                 className="bg-card border-border text-sm"
               />
+
+              {/* Video Preview */}
+              {milestone.video_url && isYouTubeOrVimeo(milestone.video_url) && (
+                <VideoPreview url={milestone.video_url} />
+              )}
 
               {milestone.video_url && !isYouTubeOrVimeo(milestone.video_url) && (
                 <div className="p-2 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
