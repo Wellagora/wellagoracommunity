@@ -49,6 +49,7 @@ const EventsPage = lazy(() => import("@/pages/EventsPage"));
 const CreatorDashboardPage = lazy(() => import("@/pages/CreatorDashboardPage"));
 const CreatorProgramNewPage = lazy(() => import("@/pages/CreatorProgramNewPage"));
 const CreatorProgramEditPage = lazy(() => import("@/pages/CreatorProgramEditPage"));
+const WorkshopSecretWizard = lazy(() => import("@/components/wizard/WorkshopSecretWizard"));
 const ProgramDetailPage = lazy(() => import("@/pages/ProgramDetailPage"));
 const ProgramLearnPage = lazy(() => import("@/pages/ProgramLearnPage"));
 const MyLearningPage = lazy(() => import("@/pages/MyLearningPage"));
@@ -209,20 +210,24 @@ function App() {
                             }
                           />
                           <Route
-                            path="/szakertoi-studio/uj-utmutato"
+                            path="/szakertoi-studio/uj"
                             element={
                               <ProtectedRoute allowedRoles={["creator"]}>
-                                <CreatorProgramNewPage />
+                                <WorkshopSecretWizard />
                               </ProtectedRoute>
                             }
                           />
                           <Route
-                            path="/szakertoi-studio/utmutato/:id"
+                            path="/szakertoi-studio/:id/szerkesztes"
                             element={
                               <ProtectedRoute allowedRoles={["creator"]}>
-                                <CreatorProgramEditPage />
+                                <WorkshopSecretWizard />
                               </ProtectedRoute>
                             }
+                          />
+                          <Route
+                            path="/szakertoi-studio/uj-utmutato"
+                            element={<Navigate to="/szakertoi-studio/uj" replace />}
                           />
                           
                           {/* Redirects from old creator routes */}
