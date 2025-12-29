@@ -26,7 +26,9 @@ import {
   ShoppingCart,
   X,
   Play,
+  ChevronRight,
 } from "lucide-react";
+import ExpertProfileModal from "@/components/creator/ExpertProfileModal";
 
 // Helper functions for video ID extraction
 const getYouTubeVideoId = (url: string): string | null => {
@@ -153,35 +155,62 @@ const WorkshopHeader = ({
 // Master Card Component
 const MasterCard = ({ creator }: { creator: any }) => {
   const { t } = useLanguage();
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   if (!creator) return null;
 
   return (
-    <Card className="bg-card border-border p-5">
-      <div className="flex items-center gap-4 mb-4">
-        <Avatar className="h-16 w-16 border-2 border-primary">
-          <AvatarImage src={creator.avatar_url} />
-          <AvatarFallback className="bg-primary/20 text-primary text-xl">
-            {creator.first_name?.[0]}
-            {creator.last_name?.[0]}
-          </AvatarFallback>
-        </Avatar>
-        <div>
-          <Badge className="bg-primary/20 text-primary border-primary/30 mb-1">
-            <Sparkles className="h-3 w-3 mr-1" />
-            {t("workshop.your_master")}
-          </Badge>
-          <h3 className="font-semibold text-lg">
-            {creator.first_name} {creator.last_name}
-          </h3>
-        </div>
-      </div>
-      {creator.bio && (
-        <p className="text-sm text-muted-foreground line-clamp-3">
-          {creator.bio}
-        </p>
-      )}
-    </Card>
+    <>
+      <Card className="bg-card border-border p-5">
+        {/* Clickable avatar and name */}
+        <button 
+          onClick={() => setIsProfileModalOpen(true)}
+          className="flex items-center gap-4 mb-4 w-full text-left hover:opacity-80 transition-opacity"
+        >
+          <Avatar className="h-16 w-16 border-2 border-primary cursor-pointer">
+            <AvatarImage src={creator.avatar_url} />
+            <AvatarFallback className="bg-primary/20 text-primary text-xl">
+              {creator.first_name?.[0]}
+              {creator.last_name?.[0]}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <Badge className="bg-primary/20 text-primary border-primary/30 mb-1">
+              <Sparkles className="h-3 w-3 mr-1" />
+              {t("workshop.your_master")}
+            </Badge>
+            <h3 className="font-semibold text-lg hover:text-primary transition-colors">
+              {creator.first_name} {creator.last_name}
+            </h3>
+            {creator.expert_title && (
+              <p className="text-sm text-muted-foreground">{creator.expert_title}</p>
+            )}
+          </div>
+        </button>
+        
+        {creator.bio && (
+          <p className="text-sm text-muted-foreground line-clamp-3">
+            {creator.bio}
+          </p>
+        )}
+
+        {/* "View full profile" link */}
+        <button
+          onClick={() => setIsProfileModalOpen(true)}
+          className="mt-3 text-sm text-primary hover:underline flex items-center gap-1"
+        >
+          {t('workshop.view_full_profile')}
+          <ChevronRight className="h-4 w-4" />
+        </button>
+      </Card>
+
+      {/* Profile Modal */}
+      <ExpertProfileModal
+        expertId={creator.id}
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+      />
+    </>
   );
 };
 

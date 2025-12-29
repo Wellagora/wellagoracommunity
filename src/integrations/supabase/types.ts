@@ -1453,6 +1453,8 @@ export type Database = {
           district: string | null
           email: string
           employee_count: number | null
+          expert_bio_long: string | null
+          expert_title: string | null
           expertise_areas: string[] | null
           first_name: string
           id: string
@@ -1463,6 +1465,7 @@ export type Database = {
           last_name: string
           latitude: number | null
           location: string | null
+          location_city: string | null
           location_point: unknown
           longitude: number | null
           organization: string | null
@@ -1476,11 +1479,13 @@ export type Database = {
           premium_until: string | null
           project_id: string | null
           public_display_name: string | null
+          references_links: Json | null
           referral_code: string | null
           region: string | null
           region_type: string | null
           role: string
           seeking_partnerships: boolean | null
+          social_links: Json | null
           stripe_account_id: string | null
           stripe_connect_id: string | null
           stripe_onboarding_complete: boolean | null
@@ -1505,6 +1510,8 @@ export type Database = {
           district?: string | null
           email: string
           employee_count?: number | null
+          expert_bio_long?: string | null
+          expert_title?: string | null
           expertise_areas?: string[] | null
           first_name: string
           id: string
@@ -1515,6 +1522,7 @@ export type Database = {
           last_name: string
           latitude?: number | null
           location?: string | null
+          location_city?: string | null
           location_point?: unknown
           longitude?: number | null
           organization?: string | null
@@ -1528,11 +1536,13 @@ export type Database = {
           premium_until?: string | null
           project_id?: string | null
           public_display_name?: string | null
+          references_links?: Json | null
           referral_code?: string | null
           region?: string | null
           region_type?: string | null
           role: string
           seeking_partnerships?: boolean | null
+          social_links?: Json | null
           stripe_account_id?: string | null
           stripe_connect_id?: string | null
           stripe_onboarding_complete?: boolean | null
@@ -1557,6 +1567,8 @@ export type Database = {
           district?: string | null
           email?: string
           employee_count?: number | null
+          expert_bio_long?: string | null
+          expert_title?: string | null
           expertise_areas?: string[] | null
           first_name?: string
           id?: string
@@ -1567,6 +1579,7 @@ export type Database = {
           last_name?: string
           latitude?: number | null
           location?: string | null
+          location_city?: string | null
           location_point?: unknown
           longitude?: number | null
           organization?: string | null
@@ -1580,11 +1593,13 @@ export type Database = {
           premium_until?: string | null
           project_id?: string | null
           public_display_name?: string | null
+          references_links?: Json | null
           referral_code?: string | null
           region?: string | null
           region_type?: string | null
           role?: string
           seeking_partnerships?: boolean | null
+          social_links?: Json | null
           stripe_account_id?: string | null
           stripe_connect_id?: string | null
           stripe_onboarding_complete?: boolean | null

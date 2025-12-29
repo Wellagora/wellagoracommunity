@@ -21,7 +21,8 @@ import {
   FileText,
   Pencil,
   Tag,
-  MessageCircle
+  MessageCircle,
+  UserCog
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,6 +32,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useIsMobile } from "@/hooks/use-mobile";
 import CommunityInteractionsTab from "@/components/creator/CommunityInteractionsTab";
+import ExpertProfileEditor from "@/components/creator/ExpertProfileEditor";
 
 interface ExpertContent {
   id: string;
@@ -271,7 +273,7 @@ const CreatorDashboardPage = () => {
 
         {/* Tabs Section */}
         <Tabs defaultValue="contents" className="space-y-6">
-          <TabsList className="bg-[#112240] border border-[#1E3A5F]">
+          <TabsList className="bg-[#112240] border border-[#1E3A5F] grid w-full grid-cols-3">
             <TabsTrigger value="contents" className="data-[state=active]:bg-[#00E5FF]/20 data-[state=active]:text-[#00E5FF]">
               <FileText className="h-4 w-4 mr-2" />
               {t("expert_studio.my_guides")}
@@ -284,6 +286,10 @@ const CreatorDashboardPage = () => {
                   {unreadCount}
                 </Badge>
               )}
+            </TabsTrigger>
+            <TabsTrigger value="profile" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400">
+              <UserCog className="h-4 w-4 mr-2" />
+              {t("expert_studio.profile_tab")}
             </TabsTrigger>
           </TabsList>
 
@@ -509,6 +515,11 @@ const CreatorDashboardPage = () => {
                 <CommunityInteractionsTab onUnreadCountChange={setUnreadCount} />
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Profile Tab */}
+          <TabsContent value="profile">
+            <ExpertProfileEditor />
           </TabsContent>
         </Tabs>
       </div>
