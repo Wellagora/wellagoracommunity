@@ -434,6 +434,108 @@ export type Database = {
           },
         ]
       }
+      community_answers: {
+        Row: {
+          answer: string
+          created_at: string | null
+          expert_id: string
+          id: string
+          question_id: string
+        }
+        Insert: {
+          answer: string
+          created_at?: string | null
+          expert_id: string
+          id?: string
+          question_id: string
+        }
+        Update: {
+          answer?: string
+          created_at?: string | null
+          expert_id?: string
+          id?: string
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "community_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_creations: {
+        Row: {
+          caption: string | null
+          content_id: string | null
+          created_at: string | null
+          id: string
+          image_url: string
+          rating: number | null
+          user_id: string
+        }
+        Insert: {
+          caption?: string | null
+          content_id?: string | null
+          created_at?: string | null
+          id?: string
+          image_url: string
+          rating?: number | null
+          user_id: string
+        }
+        Update: {
+          caption?: string | null
+          content_id?: string | null
+          created_at?: string | null
+          id?: string
+          image_url?: string
+          rating?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_creations_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_questions: {
+        Row: {
+          content_id: string | null
+          created_at: string | null
+          id: string
+          question: string
+          user_id: string
+        }
+        Insert: {
+          content_id?: string | null
+          created_at?: string | null
+          id?: string
+          question: string
+          user_id: string
+        }
+        Update: {
+          content_id?: string | null
+          created_at?: string | null
+          id?: string
+          question?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_questions_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       content_access: {
         Row: {
           access_type: string | null
@@ -1021,6 +1123,39 @@ export type Database = {
           translations?: Json
           updated_at?: string
           updated_by?: string | null
+        }
+        Relationships: []
+      }
+      local_partners: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          logo_url: string | null
+          name: string
+          website_url: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          name: string
+          website_url?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          name?: string
+          website_url?: string | null
         }
         Relationships: []
       }

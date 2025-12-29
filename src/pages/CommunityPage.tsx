@@ -1,11 +1,13 @@
-import UnifiedCommunityHub from "@/components/community/UnifiedCommunityHub";
-import { StoryOfTheWeek } from "@/components/StoryOfTheWeek";
+import Navigation from "@/components/Navigation";
+import CommunityHubNew from "@/components/community/CommunityHubNew";
 
 const CommunityPage = () => {
   return (
     <div className="min-h-screen bg-background">
-      <UnifiedCommunityHub />
-      <StoryOfTheWeek />
+      <Navigation />
+      <div className="pt-16">
+        <CommunityHubNew />
+      </div>
     </div>
   );
 };
