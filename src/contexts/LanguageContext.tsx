@@ -48,22 +48,25 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const t = (key: string): string => {
-    const langTranslations = translations[language] || {};
+    const langTranslations = translations[language] || translations['hu'] || {};
 
-    // First try flat key lookup (e.g., "nav.home")
-    if (langTranslations && typeof langTranslations[key] === 'string') {
-      return langTranslations[key] as string;
+    // Try flat key lookup first (e.g., "nav.home")
+    if (langTranslations && key in langTranslations) {
+      const value = langTranslations[key];
+      if (typeof value === 'string') {
+        return value;
+      }
     }
 
-    // Then try nested object lookup (e.g., { nav: { home: "..." } })
+    // Fallback: try nested object lookup (e.g., { nav: { home: "..." } })
     const segments = key.split('.');
-    let value: Record<string, unknown> | string | undefined = langTranslations as Record<string, unknown>;
+    let value: any = langTranslations;
 
     for (const segment of segments) {
       if (value && typeof value === 'object' && segment in value) {
-        value = (value as Record<string, unknown>)[segment] as Record<string, unknown> | string | undefined;
+        value = value[segment];
       } else {
-        logger.debug('Translation missing', { key, language }, 'Language');
+        // Key not found - return the key itself
         return key;
       }
     }
