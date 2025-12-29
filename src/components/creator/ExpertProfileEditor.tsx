@@ -58,13 +58,22 @@ interface FormData {
   references_links: ReferenceLink[];
 }
 
+interface ExpertProfilePreviewProps {
+  formData: FormData;
+  isModal?: boolean;
+  expertId?: string;
+  contentCount?: number;
+  onViewAllContents?: () => void;
+}
+
 // Reusable preview component
 export const ExpertProfilePreview = ({ 
   formData, 
-  isModal = false 
-}: { 
-  formData: FormData; 
-  isModal?: boolean;
+  isModal = false,
+  expertId,
+  contentCount = 0,
+  onViewAllContents,
+}: ExpertProfilePreviewProps & {
 }) => {
   const { t } = useLanguage();
 
@@ -177,6 +186,21 @@ export const ExpertProfilePreview = ({
                   </li>
                 ))}
               </ul>
+            </div>
+          )}
+
+          {/* View all Workshop Secrets link - only in modal with expertId */}
+          {isModal && expertId && contentCount > 0 && onViewAllContents && (
+            <div className="mt-6 pt-4 border-t border-border">
+              <button
+                onClick={onViewAllContents}
+                className="w-full flex items-center justify-between p-3 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors group"
+              >
+                <span className="text-sm font-medium text-primary flex items-center gap-2">
+                  📚 {t("expert_studio.view_all_contents").replace("{{count}}", String(contentCount))}
+                </span>
+                <span className="text-primary group-hover:translate-x-1 transition-transform">→</span>
+              </button>
             </div>
           )}
         </div>

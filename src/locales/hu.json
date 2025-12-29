@@ -192,8 +192,11 @@
   "marketplace.category_lifestyle": "Életmód",
   "marketplace.results_count": "találat",
   "marketplace.showing_results": "találat megjelenítve",
+  "marketplace.back_to_all": "← Vissza az összes Műhelytitokhoz",
+  "marketplace.showing_creator_contents": "{{count}} Műhelytitok ettől a Mestertől",
   "marketplace.all_results": "Minden találat",
   "marketplace.filters": "Szűrők",
+  "expert_studio.view_all_contents": "Nézd meg az összes {{count}} Műhelytitokát →",
 
   "content.guide": "Műhelytitok",
   "content.workshop_secret": "Műhelytitok",

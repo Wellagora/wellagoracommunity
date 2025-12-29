@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -36,7 +37,9 @@ interface ExpertProfileModalProps {
 
 const ExpertProfileModal = ({ expertId, isOpen, onClose }: ExpertProfileModalProps) => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [contentCount, setContentCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -44,13 +47,22 @@ const ExpertProfileModal = ({ expertId, isOpen, onClose }: ExpertProfileModalPro
       if (!expertId || !isOpen) return;
       setIsLoading(true);
 
-      const { data } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', expertId)
-        .single();
+      // Fetch profile and content count in parallel
+      const [profileRes, contentRes] = await Promise.all([
+        supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', expertId)
+          .single(),
+        supabase
+          .from('expert_contents')
+          .select('id', { count: 'exact' })
+          .eq('creator_id', expertId)
+          .eq('is_published', true),
+      ]);
 
-      if (data) {
+      if (profileRes.data) {
+        const data = profileRes.data;
         const socialLinks = (data.social_links as unknown as SocialLinks) || {};
         const referencesLinks = (data.references_links as unknown as ReferenceLink[]) || [];
         
@@ -66,11 +78,18 @@ const ExpertProfileModal = ({ expertId, isOpen, onClose }: ExpertProfileModalPro
           references_links: referencesLinks,
         });
       }
+      
+      setContentCount(contentRes.count || 0);
       setIsLoading(false);
     };
 
     loadExpertProfile();
   }, [expertId, isOpen]);
+
+  const handleViewAllContents = () => {
+    onClose();
+    navigate(`/piacer?creator=${expertId}`);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -86,7 +105,13 @@ const ExpertProfileModal = ({ expertId, isOpen, onClose }: ExpertProfileModalPro
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         ) : profile ? (
-          <ExpertProfilePreview formData={profile} isModal={true} />
+          <ExpertProfilePreview 
+            formData={profile} 
+            isModal={true}
+            expertId={expertId || undefined}
+            contentCount={contentCount}
+            onViewAllContents={handleViewAllContents}
+          />
         ) : (
           <p className="text-center text-muted-foreground py-8">
             {t('expert_studio.profile_not_found')}
