@@ -1,4 +1,7 @@
 {
+  "wizard.video_preview_loading": "Loading preview...",
+  "wizard.video_preview_error": "Could not load video preview. Please check the link!",
+  "wizard.video_link_recognized": "Video link recognized",
   "reviews.title": "Reviews",
   "reviews.write": "Write a review",
   "reviews.edit": "Edit review",
