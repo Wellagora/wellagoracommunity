@@ -18,13 +18,16 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  FileText
+  FileText,
+  Pencil,
+  Tag
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ExpertContent {
   id: string;
@@ -36,12 +39,16 @@ interface ExpertContent {
   created_at: string;
   rejection_reason: string | null;
   reviewed_at: string | null;
+  image_url: string | null;
+  thumbnail_url: string | null;
+  category: string | null;
 }
 
 const CreatorDashboardPage = () => {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const isMobile = useIsMobile();
 
   // Route guard - redirect if not creator
   useEffect(() => {
@@ -298,65 +305,166 @@ const CreatorDashboardPage = () => {
                 </Button>
               </div>
             ) : (
-              /* Programs List */
-              <div className="space-y-4">
-                <TooltipProvider>
+              /* Programs List - Mobile Cards or Desktop List */
+              isMobile ? (
+                /* Mobile Card View */
+                <div className="space-y-4">
                   {programs.map((program) => {
                     const status = getContentStatus(program);
+                    const imageUrl = program.image_url || program.thumbnail_url;
                     return (
-                      <div 
+                      <Card 
                         key={program.id} 
-                        className="flex items-center gap-4 p-4 rounded-lg bg-[#0A1930]/50 hover:bg-[#0A1930] transition-colors border border-transparent hover:border-[#00E5FF]/20"
+                        className="bg-[#0A1930]/50 border-[#1E3A5F] overflow-hidden"
                       >
-                        <div className="p-3 rounded-lg bg-[#00E5FF]/10">
-                          {status === "published" ? (
-                            <CheckCircle className="h-6 w-6 text-green-400" />
-                          ) : status === "pending" ? (
-                            <Clock className="h-6 w-6 text-orange-400" />
-                          ) : status === "rejected" ? (
-                            <XCircle className="h-6 w-6 text-red-400" />
-                          ) : (
-                            <FileText className="h-6 w-6 text-gray-400" />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-medium text-white truncate">{program.title}</h4>
-                            {program.is_featured && (
-                              <Star className="h-4 w-4 text-[#FFD700] fill-[#FFD700]" />
+                        <div className="p-4">
+                          {/* Image + Title + Category */}
+                          <div className="flex gap-4 mb-4">
+                            {imageUrl ? (
+                              <img
+                                src={imageUrl}
+                                alt={program.title}
+                                className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
+                                onError={(e) => {
+                                  e.currentTarget.src = 'https://images.unsplash.com/photo-1518005020251-58296d8f8b4d?w=200&q=80';
+                                }}
+                              />
+                            ) : (
+                              <div className="w-20 h-20 rounded-lg bg-[#1E3A5F] flex items-center justify-center flex-shrink-0">
+                                <BookOpen className="h-8 w-8 text-white/40" />
+                              </div>
                             )}
+                            
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-semibold text-white text-lg leading-tight mb-1 line-clamp-2">
+                                {program.title}
+                              </h3>
+                              {program.category && (
+                                <p className="text-sm text-white/60">
+                                  {program.category}
+                                </p>
+                              )}
+                              {program.is_featured && (
+                                <div className="flex items-center gap-1 mt-1">
+                                  <Star className="h-3 w-3 text-[#FFD700] fill-[#FFD700]" />
+                                  <span className="text-xs text-[#FFD700]">{t("creator.status_featured")}</span>
+                                </div>
+                              )}
+                            </div>
                           </div>
-                          <p className="text-sm text-white/60 truncate">{program.description}</p>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          {getStatusBadge(status)}
+
+                          {/* Status + Metrics */}
+                          <div className="flex items-center justify-between mb-4">
+                            {getStatusBadge(status)}
+                            <div className="flex items-center gap-4 text-sm text-white/60">
+                              <span className="flex items-center gap-1">
+                                <Tag className="h-4 w-4" />
+                                {program.price_huf === 0 || !program.price_huf
+                                  ? t('content.free')
+                                  : `${program.price_huf?.toLocaleString()} Ft`
+                                }
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Rejection reason */}
                           {status === "rejected" && program.rejection_reason && (
-                            <Tooltip>
-                              <TooltipTrigger>
-                                <AlertTriangle className="h-4 w-4 text-red-400" />
-                              </TooltipTrigger>
-                              <TooltipContent className="bg-[#112240] border-[#1E3A5F] text-white max-w-xs">
-                                <p className="text-xs font-medium mb-1">{t("creator.rejection_reason")}:</p>
-                                <p className="text-xs text-white/80">{program.rejection_reason}</p>
-                              </TooltipContent>
-                            </Tooltip>
+                            <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                              <p className="text-xs text-red-400 font-medium mb-1">{t("creator.rejection_reason")}:</p>
+                              <p className="text-xs text-white/80">{program.rejection_reason}</p>
+                            </div>
                           )}
-                          <Button 
+
+                          {/* Edit button - full width, touch-friendly */}
+                          <Button
                             asChild
-                            size="sm" 
-                            variant="ghost" 
-                            className="text-[#00E5FF] hover:text-[#00E5FF] hover:bg-[#00E5FF]/10"
+                            className="w-full bg-[#00E5FF]/20 text-[#00E5FF] hover:bg-[#00E5FF]/30 border border-[#00E5FF]/50"
+                            size="lg"
                           >
                             <Link to={`/szakertoi-studio/utmutato/${program.id}`}>
+                              <Pencil className="h-4 w-4 mr-2" />
                               {t("creator.edit_program")}
                             </Link>
                           </Button>
                         </div>
-                      </div>
+                      </Card>
                     );
                   })}
-                </TooltipProvider>
-              </div>
+                </div>
+              ) : (
+                /* Desktop List View */
+                <div className="space-y-4">
+                  <TooltipProvider>
+                    {programs.map((program) => {
+                      const status = getContentStatus(program);
+                      const imageUrl = program.image_url || program.thumbnail_url;
+                      return (
+                        <div 
+                          key={program.id} 
+                          className="flex items-center gap-4 p-4 rounded-lg bg-[#0A1930]/50 hover:bg-[#0A1930] transition-colors border border-transparent hover:border-[#00E5FF]/20"
+                        >
+                          {/* Thumbnail */}
+                          {imageUrl ? (
+                            <img
+                              src={imageUrl}
+                              alt={program.title}
+                              className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                              onError={(e) => {
+                                e.currentTarget.src = 'https://images.unsplash.com/photo-1518005020251-58296d8f8b4d?w=200&q=80';
+                              }}
+                            />
+                          ) : (
+                            <div className="p-3 rounded-lg bg-[#00E5FF]/10">
+                              {status === "published" ? (
+                                <CheckCircle className="h-6 w-6 text-green-400" />
+                              ) : status === "pending" ? (
+                                <Clock className="h-6 w-6 text-orange-400" />
+                              ) : status === "rejected" ? (
+                                <XCircle className="h-6 w-6 text-red-400" />
+                              ) : (
+                                <FileText className="h-6 w-6 text-gray-400" />
+                              )}
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-medium text-white truncate">{program.title}</h4>
+                              {program.is_featured && (
+                                <Star className="h-4 w-4 text-[#FFD700] fill-[#FFD700]" />
+                              )}
+                            </div>
+                            <p className="text-sm text-white/60 truncate">{program.description}</p>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            {getStatusBadge(status)}
+                            {status === "rejected" && program.rejection_reason && (
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <AlertTriangle className="h-4 w-4 text-red-400" />
+                                </TooltipTrigger>
+                                <TooltipContent className="bg-[#112240] border-[#1E3A5F] text-white max-w-xs">
+                                  <p className="text-xs font-medium mb-1">{t("creator.rejection_reason")}:</p>
+                                  <p className="text-xs text-white/80">{program.rejection_reason}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            )}
+                            <Button 
+                              asChild
+                              size="sm" 
+                              variant="ghost" 
+                              className="text-[#00E5FF] hover:text-[#00E5FF] hover:bg-[#00E5FF]/10"
+                            >
+                              <Link to={`/szakertoi-studio/utmutato/${program.id}`}>
+                                {t("creator.edit_program")}
+                              </Link>
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </TooltipProvider>
+                </div>
+              )
             )}
           </CardContent>
         </Card>
