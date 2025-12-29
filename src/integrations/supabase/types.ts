@@ -475,6 +475,47 @@ export type Database = {
           },
         ]
       }
+      content_milestones: {
+        Row: {
+          content: string | null
+          content_id: string
+          created_at: string | null
+          id: string
+          image_url: string | null
+          order_index: number | null
+          title: string
+          video_url: string | null
+        }
+        Insert: {
+          content?: string | null
+          content_id: string
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          order_index?: number | null
+          title: string
+          video_url?: string | null
+        }
+        Update: {
+          content?: string | null
+          content_id?: string
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          order_index?: number | null
+          title?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_milestones_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       content_reviews: {
         Row: {
           comment: string | null
