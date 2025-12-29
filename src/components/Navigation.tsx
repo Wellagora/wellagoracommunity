@@ -139,46 +139,57 @@ const Navigation = () => {
     return location.pathname === path;
   };
 
-  // Compute dashboard path based on view mode (use viewMode directly for reactivity)
-  const dashboardPath = useMemo(() => {
-    if (!user || !profile) return null;
-
-    // For super admin, use viewMode to determine path
-    if (isSuperAdmin) {
-      if (viewMode === "user") return "/dashboard";
-      if (viewMode === "sponsor") return "/tamogato-panel";
-      // super_admin mode - go to super admin page
-      return "/super-admin";
-    }
-
-    // For regular users, use their actual role
-    if (["business", "government", "ngo"].includes(profile.user_role)) {
-      return "/tamogato-panel";
-    }
-    return "/dashboard";
-  }, [user, profile, viewMode, isSuperAdmin]);
-
+  // Compute paths based on role
   const isCreator = profile?.user_role === 'creator';
   const isSponsor = ['business', 'government', 'ngo'].includes(profile?.user_role || '');
 
-  const navItems = useMemo(
-    () => [
+  // Build nav items based on user role
+  const navItems = useMemo(() => {
+    const baseItems = [
       { path: "/", label: t("nav.home"), icon: Home },
       { path: "/piacer", label: t("nav.marketplace"), icon: Store },
       { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
       { path: "/community", label: t("nav.community"), icon: UsersIcon },
-      ...(user && profile && dashboardPath ? [{ path: dashboardPath, label: t("nav.dashboard"), icon: LayoutDashboard }] : []),
-      ...(user && isCreator && viewMode === 'user' ? [{ 
-        path: "/szakertoi-studio", 
-        label: t("nav.expert_studio"), 
-        icon: Sparkles,
-        iconColor: "#00E5FF"
-      }] : []),
+    ];
+
+    if (!user || !profile) {
+      return [
+        ...baseItems,
+        { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
+        { path: "/sponsor", label: t("nav.sponsors"), icon: Heart },
+      ];
+    }
+
+    // Creator/Expert: show Expert Studio, hide Control Panel
+    if (isCreator) {
+      return [
+        ...baseItems,
+        { 
+          path: "/szakertoi-studio", 
+          label: t("nav.expert_studio"), 
+          icon: Sparkles,
+          iconColor: "#00E5FF"
+        },
+        { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
+      ];
+    }
+
+    // Supporter: show Control Panel
+    if (isSponsor) {
+      return [
+        ...baseItems,
+        { path: "/iranyitopult", label: t("nav.control_panel"), icon: LayoutDashboard },
+        { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
+      ];
+    }
+
+    // Regular user (citizen): show Control Panel
+    return [
+      ...baseItems,
+      { path: "/iranyitopult", label: t("nav.control_panel"), icon: LayoutDashboard },
       { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
-      ...(!user ? [{ path: "/sponsor", label: t("nav.sponsors"), icon: Heart }] : []),
-    ],
-    [user, profile, dashboardPath, t, isCreator],
-  );
+    ];
+  }, [user, profile, t, isCreator, isSponsor]);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-[100] w-full bg-background/80 backdrop-blur-md border-b border-border">

@@ -51,6 +51,7 @@ const CreatorProgramNewPage = lazy(() => import("@/pages/CreatorProgramNewPage")
 const CreatorProgramEditPage = lazy(() => import("@/pages/CreatorProgramEditPage"));
 const WorkshopSecretWizard = lazy(() => import("@/components/wizard/WorkshopSecretWizard"));
 const WorkshopSecretViewPage = lazy(() => import("@/pages/WorkshopSecretViewPage"));
+const ControlPanelPage = lazy(() => import("@/pages/ControlPanelPage"));
 const ProgramDetailPage = lazy(() => import("@/pages/ProgramDetailPage"));
 const ProgramLearnPage = lazy(() => import("@/pages/ProgramLearnPage"));
 const MyLearningPage = lazy(() => import("@/pages/MyLearningPage"));
@@ -91,7 +92,17 @@ function App() {
                           <Route path="/" element={<Index />} />
                           <Route path="/dashboard/handprint" element={<HandprintPage />} />
                           <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
-                          <Route path="/dashboard" element={<DashboardPage />} />
+                          <Route path="/dashboard" element={<Navigate to="/iranyitopult" replace />} />
+                          
+                          {/* Control Panel (Irányítópult) - new primary dashboard route */}
+                          <Route
+                            path="/iranyitopult"
+                            element={
+                              <ProtectedRoute>
+                                <ControlPanelPage />
+                              </ProtectedRoute>
+                            }
+                          />
                           <Route
                             path="/admin"
                             element={
@@ -271,9 +282,9 @@ function App() {
                             }
                           />
                           
-                          {/* My Learning - redirects to dashboard */}
-                          <Route path="/en-agoram" element={<Navigate to="/dashboard" replace />} />
-                          <Route path="/my-learning" element={<Navigate to="/dashboard" replace />} />
+                          {/* My Learning - redirects to control panel */}
+                          <Route path="/en-agoram" element={<Navigate to="/iranyitopult" replace />} />
+                          <Route path="/my-learning" element={<Navigate to="/iranyitopult" replace />} />
                           
                           {/* Expert profiles (Szakértők) */}
                           <Route path="/szakertok/:id" element={<CreatorPublicProfilePage />} />
