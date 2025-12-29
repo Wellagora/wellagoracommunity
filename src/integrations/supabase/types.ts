@@ -483,6 +483,7 @@ export type Database = {
           id: string
           image_url: string | null
           order_index: number | null
+          tip: string | null
           title: string
           video_url: string | null
         }
@@ -493,6 +494,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           order_index?: number | null
+          tip?: string | null
           title: string
           video_url?: string | null
         }
@@ -503,6 +505,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           order_index?: number | null
+          tip?: string | null
           title?: string
           video_url?: string | null
         }
@@ -809,6 +812,7 @@ export type Database = {
           sponsor_name: string | null
           thumbnail_url: string | null
           title: string
+          tools_needed: string | null
           total_licenses: number | null
           updated_at: string | null
           used_licenses: number | null
@@ -836,6 +840,7 @@ export type Database = {
           sponsor_name?: string | null
           thumbnail_url?: string | null
           title: string
+          tools_needed?: string | null
           total_licenses?: number | null
           updated_at?: string | null
           used_licenses?: number | null
@@ -863,6 +868,7 @@ export type Database = {
           sponsor_name?: string | null
           thumbnail_url?: string | null
           title?: string
+          tools_needed?: string | null
           total_licenses?: number | null
           updated_at?: string | null
           used_licenses?: number | null
