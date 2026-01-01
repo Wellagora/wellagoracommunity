@@ -77,7 +77,8 @@ export const VoucherSection = ({
 
     setIsGenerating(true);
     try {
-      const code = `WA-${new Date().getFullYear()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+      // Generate UPPERCASE code
+      const code = `WA-${new Date().getFullYear()}-${Math.random().toString(36).substring(2, 6)}`.toUpperCase();
       
       // Determine pickup location
       let pickupLocation = creatorLocation || null;

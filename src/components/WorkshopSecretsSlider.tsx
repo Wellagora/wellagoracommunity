@@ -9,6 +9,20 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Sparkles, BookOpen, Gift, ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
 
+interface Sponsor {
+  id: string;
+  name: string;
+  logo_url: string | null;
+}
+
+interface Sponsorship {
+  id: string;
+  total_licenses: number;
+  used_licenses: number | null;
+  is_active: boolean | null;
+  sponsor: Sponsor | null;
+}
+
 interface Program {
   id: string;
   title: string;
@@ -24,6 +38,7 @@ interface Program {
     last_name: string;
     avatar_url: string | null;
   } | null;
+  sponsorship?: Sponsorship[] | null;
 }
 
 const WorkshopSecretsSlider = () => {
@@ -40,6 +55,10 @@ const WorkshopSecretsSlider = () => {
           sponsor_name, sponsor_logo_url,
           creator:profiles!expert_contents_creator_id_fkey (
             first_name, last_name, avatar_url
+          ),
+          sponsorship:content_sponsorships(
+            id, total_licenses, used_licenses, is_active,
+            sponsor:sponsors(id, name, logo_url)
           )
         `)
         .eq("is_published", true)
@@ -61,25 +80,32 @@ const WorkshopSecretsSlider = () => {
   };
 
   const getAccessBadge = (program: Program) => {
-    if (program.access_type === "sponsored" || program.sponsor_name) {
+    const sponsorship = program.sponsorship?.[0];
+    const hasActiveSponsorship = sponsorship?.is_active && 
+      (sponsorship.used_licenses || 0) < (sponsorship.total_licenses || 0);
+    
+    // Támogatott tartalom - elsődleges prioritás
+    if (hasActiveSponsorship) {
       return (
-        <Badge className="bg-[#FFD700]/20 text-[#FFD700] border-[#FFD700]/30">
+        <Badge className="bg-green-600 text-white border-0">
           <Gift className="w-3 h-3 mr-1" />
-          {t("content.free")}
+          {t("marketplace.supported")} • {sponsorship.sponsor?.name}
         </Badge>
       );
     }
-    if (program.access_type === "paid" && program.price_huf) {
+    // Fizetős tartalom
+    if (program.access_type === "paid" && program.price_huf && program.price_huf > 0) {
       return (
-        <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
+        <Badge className="bg-slate-800 text-white border-0">
           <ShoppingCart className="w-3 h-3 mr-1" />
           {program.price_huf.toLocaleString()} Ft
         </Badge>
       );
     }
+    // Szabad hozzáférés (valóban ingyenes)
     return (
-      <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
-        {t("content.free")}
+      <Badge className="bg-blue-600 text-white border-0">
+        {t("marketplace.open_access")}
       </Badge>
     );
   };
@@ -183,23 +209,32 @@ const WorkshopSecretsSlider = () => {
                           e.currentTarget.src = 'https://images.unsplash.com/photo-1518005020251-58296d8f8b4d?w=800&q=80';
                         }}
                       />
-                      {/* Sponsor overlay */}
-                      {(program.access_type === 'sponsored' || program.sponsor_name) && (
-                        <div className="absolute top-2 right-2 flex items-center gap-1.5 px-2.5 py-1.5 bg-[#FFD700]/20 border border-[#FFD700]/50 rounded-full backdrop-blur-sm">
-                          {program.sponsor_logo_url ? (
-                            <img
-                              src={program.sponsor_logo_url}
-                              alt={program.sponsor_name || 'Sponsor'}
-                              className="h-5 w-5 rounded-full object-contain bg-white p-0.5"
-                            />
-                          ) : (
-                            <Gift className="h-4 w-4 text-[#FFD700]" />
-                          )}
-                          <span className="text-xs text-[#FFD700] font-medium">
-                            {program.sponsor_name || t("content.sponsored")}
-                          </span>
-                        </div>
-                      )}
+                      {/* Támogató overlay - csak ha aktív szponzoráció van */}
+                      {(() => {
+                        const sponsorship = program.sponsorship?.[0];
+                        const hasActiveSponsorship = sponsorship?.is_active && 
+                          (sponsorship.used_licenses || 0) < (sponsorship.total_licenses || 0);
+                        
+                        if (hasActiveSponsorship) {
+                          return (
+                            <div className="absolute top-2 right-2 flex items-center gap-1.5 px-2.5 py-1.5 bg-green-600 text-white rounded-full shadow-lg">
+                              {sponsorship.sponsor?.logo_url ? (
+                                <img
+                                  src={sponsorship.sponsor.logo_url}
+                                  alt={sponsorship.sponsor.name}
+                                  className="h-5 w-5 rounded-full object-contain bg-white p-0.5"
+                                />
+                              ) : (
+                                <Gift className="h-4 w-4" />
+                              )}
+                              <span className="text-xs font-medium">
+                                {t("marketplace.supported")}
+                              </span>
+                            </div>
+                          );
+                        }
+                        return null;
+                      })()}
                     </div>
                     <CardContent className="p-4">
                       <h3 className="font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
