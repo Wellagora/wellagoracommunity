@@ -111,10 +111,10 @@ const WorkshopSecretsSlider = () => {
       );
     }
     
-    // 3. UTOLSÓ: Valóban ingyenes (nincs szponzor, price = 0)
+    // 3. UTOLSÓ: Nyílt tartalom (NEM "Ingyenes"!)
     return (
       <Badge className="bg-blue-600 text-white border-0">
-        {t("marketplace.truly_free")}
+        {t("marketplace.open_content") || "Nyílt tartalom"}
       </Badge>
     );
   };
