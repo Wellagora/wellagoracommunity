@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Progress } from "@/components/ui/progress";
 import {
   ArrowLeft,
   Loader2,
@@ -27,6 +28,7 @@ import {
   X,
   Play,
   ChevronRight,
+  Bell,
 } from "lucide-react";
 import ExpertProfileModal from "@/components/creator/ExpertProfileModal";
 import { VoucherSection } from "@/components/voucher/VoucherSection";
@@ -227,7 +229,7 @@ const SponsorCard = ({ sponsor }: { sponsor: any }) => {
       <div className="flex items-center gap-3 mb-3">
         <Gift className="h-5 w-5 text-accent" />
         <span className="text-sm font-medium text-accent">
-          {t("workshop.sponsored_content")}
+          {t("workshop.supported_content")}
         </span>
       </div>
       <div className="flex items-center gap-3">
@@ -244,7 +246,7 @@ const SponsorCard = ({ sponsor }: { sponsor: any }) => {
         )}
         <div>
           <p className="text-sm text-muted-foreground">
-            {t("workshop.made_free_by")}
+            {t("workshop.made_available_by")}
           </p>
           <p className="font-semibold text-foreground">
             {sponsor.organization_name || t("workshop.anonymous_sponsor")}
@@ -255,30 +257,44 @@ const SponsorCard = ({ sponsor }: { sponsor: any }) => {
   );
 };
 
-// Sponsor Banner Component
-const SponsorBanner = ({ sponsorship, t }: { sponsorship: any; t: any }) => {
+// Partner Banner Component - Enhanced with license counter
+const PartnerBanner = ({ sponsorship, t }: { sponsorship: any; t: any }) => {
   const hasActiveSponsorship = sponsorship?.is_active && 
     (sponsorship.used_licenses || 0) < (sponsorship.total_licenses || 0);
+  const remaining = sponsorship ? (sponsorship.total_licenses || 0) - (sponsorship.used_licenses || 0) : 0;
 
   if (!sponsorship || !hasActiveSponsorship) return null;
 
   return (
-    <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 mb-4 flex items-center gap-4">
-      {sponsorship.sponsor?.logo_url && (
-        <img 
-          src={sponsorship.sponsor.logo_url} 
-          alt={sponsorship.sponsor.name}
-          className="h-14 w-14 rounded-lg object-contain bg-white p-1" 
-        />
-      )}
-      <div>
-        <Badge className="bg-green-500/20 text-green-600 border-green-500/30">
-          <Gift className="h-3 w-3 mr-1" />
-          {t('workshop.sponsored_content')}
-        </Badge>
-        <p className="font-bold text-green-700 mt-1">{sponsorship.sponsor?.name}</p>
-        <p className="text-sm text-green-600">
-          {t('workshop.made_free_by_sponsor').replace('{{name}}', sponsorship.sponsor?.name || '')}
+    <div className="bg-gradient-to-r from-primary/10 to-primary/5 border-2 border-primary/30 rounded-xl p-5 my-6">
+      <div className="flex items-center gap-4">
+        {sponsorship.sponsor?.logo_url && (
+          <img 
+            src={sponsorship.sponsor.logo_url} 
+            alt={sponsorship.sponsor.name}
+            className="h-16 w-16 rounded-xl object-contain bg-white p-2 shadow-sm" 
+          />
+        )}
+        <div className="flex-1">
+          <Badge className="bg-primary/20 text-primary border-primary/30 mb-1">
+            {t('workshop.supported_content')}
+          </Badge>
+          <p className="font-bold text-lg">{sponsorship.sponsor?.name}</p>
+          <p className="text-sm text-muted-foreground">
+            {t('workshop.made_available_by').replace('{{name}}', sponsorship.sponsor?.name || '')}
+          </p>
+        </div>
+      </div>
+      
+      {/* License counter */}
+      <div className="mt-4 p-3 bg-background/50 rounded-lg">
+        <div className="flex justify-between text-sm mb-2">
+          <span>{t('workshop.sponsor_quota')}</span>
+          <span className="font-medium">{sponsorship.used_licenses || 0} / {sponsorship.total_licenses}</span>
+        </div>
+        <Progress value={((sponsorship.used_licenses || 0) / sponsorship.total_licenses) * 100} className="h-2" />
+        <p className="text-xs text-primary mt-2">
+          {t('marketplace.slots_remaining').replace('{{count}}', String(remaining))}
         </p>
       </div>
     </div>
@@ -302,8 +318,8 @@ const WorkshopHero = ({ content, sponsorship, t }: { content: any; sponsorship: 
         </div>
       )}
       
-      {/* Sponsor Banner */}
-      <SponsorBanner sponsorship={sponsorship} t={t} />
+      {/* Partner Banner */}
+      <PartnerBanner sponsorship={sponsorship} t={t} />
       
       <div className="space-y-4">
         <Badge className="bg-primary/20 text-primary border-primary/30">
@@ -648,7 +664,7 @@ const WorkshopSecretViewPage = () => {
         return;
       }
 
-      // Load content with sponsorship data
+      // Load content with enhanced sponsorship data
       const { data: contentData } = await supabase
         .from("expert_contents")
         .select(
@@ -659,6 +675,8 @@ const WorkshopSecretViewPage = () => {
           ),
           sponsorship:content_sponsorships(
             id, total_licenses, used_licenses, is_active,
+            discount_type, discount_value, discount_description, 
+            redemption_location, is_chain_partner, sponsorship_benefit,
             sponsor:sponsors(id, name, logo_url)
           )
         `
@@ -719,34 +737,46 @@ const WorkshopSecretViewPage = () => {
           <aside className="hidden lg:block lg:w-80 flex-shrink-0">
             <div className="sticky top-24 space-y-6">
               <MasterCard creator={content?.creator} />
+              {/* Supporter Card with value-based pricing */}
               {sponsorship && hasActiveSponsorship && (
-                <Card className="bg-green-500/10 border-green-500/30 p-5">
-                  <div className="flex items-center gap-3 mb-3">
-                    <Gift className="h-5 w-5 text-green-500" />
-                    <span className="text-sm font-medium text-green-600">
-                      {t("workshop.sponsored_content")}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    {sponsorship.sponsor?.logo_url ? (
-                      <img
-                        src={sponsorship.sponsor.logo_url}
-                        alt={sponsorship.sponsor.name}
-                        className="h-12 w-12 rounded-lg object-contain bg-white p-1"
-                      />
-                    ) : (
-                      <div className="h-12 w-12 rounded-lg bg-green-500/20 flex items-center justify-center">
-                        <Building2 className="h-6 w-6 text-green-500" />
+                <Card className="p-5 border-primary/30 bg-primary/5">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      {sponsorship.sponsor?.logo_url ? (
+                        <img
+                          src={sponsorship.sponsor.logo_url}
+                          alt={sponsorship.sponsor.name}
+                          className="h-14 w-14 rounded-xl object-contain bg-white p-2 shadow-sm"
+                        />
+                      ) : (
+                        <div className="h-14 w-14 rounded-xl bg-primary/20 flex items-center justify-center">
+                          <Building2 className="h-7 w-7 text-primary" />
+                        </div>
+                      )}
+                      <div>
+                        <Badge className="bg-primary/20 text-primary border-primary/30 mb-1">
+                          {t("workshop.supported_content")}
+                        </Badge>
+                        <p className="font-semibold text-foreground">
+                          {sponsorship.sponsor?.name || t("workshop.anonymous_sponsor")}
+                        </p>
                       </div>
-                    )}
-                    <div>
-                      <p className="text-sm text-muted-foreground">
-                        {t("workshop.made_free_by")}
-                      </p>
-                      <p className="font-semibold text-foreground">
-                        {sponsorship.sponsor?.name || t("workshop.anonymous_sponsor")}
+                    </div>
+
+                    <div className="text-center p-3 bg-background/50 rounded-lg">
+                      <p className="text-sm text-muted-foreground">{t('marketplace.value_label')}</p>
+                      <p className="text-3xl font-bold">{content?.price_huf?.toLocaleString()} Ft</p>
+                    </div>
+                    
+                    <div className="p-3 bg-primary/10 rounded-lg text-center">
+                      <p className="text-sm text-primary font-medium">
+                        {t('marketplace.available_from_sponsor').replace('{{name}}', sponsorship.sponsor?.name || '')}
                       </p>
                     </div>
+
+                    <p className="text-xs text-center text-muted-foreground">
+                      {t('marketplace.slots_remaining').replace('{{count}}', String(remaining))}
+                    </p>
                   </div>
                 </Card>
               )}
@@ -755,6 +785,8 @@ const WorkshopSecretViewPage = () => {
                 contentId={id || ''} 
                 hasAccess={hasAccess || false}
                 creatorLocation={content?.creator?.location_city}
+                sponsorship={sponsorship}
+                priceHuf={content?.price_huf}
               />
               {/* Expert Services */}
               {content?.creator?.id && (
@@ -771,12 +803,14 @@ const WorkshopSecretViewPage = () => {
             <div className="lg:hidden space-y-4 mb-8">
               <MasterCard creator={content?.creator} />
               {sponsorship && hasActiveSponsorship && (
-                <SponsorBanner sponsorship={sponsorship} t={t} />
+                <PartnerBanner sponsorship={sponsorship} t={t} />
               )}
               <VoucherSection 
                 contentId={id || ''} 
                 hasAccess={hasAccess || false}
                 creatorLocation={content?.creator?.location_city}
+                sponsorship={sponsorship}
+                priceHuf={content?.price_huf}
               />
               {content?.creator?.id && (
                 <ExpertServicesSection expertId={content.creator.id} />

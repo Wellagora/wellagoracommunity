@@ -680,27 +680,45 @@ export type Database = {
         Row: {
           content_id: string
           created_at: string | null
+          discount_description: string | null
+          discount_type: string | null
+          discount_value: string | null
           id: string
           is_active: boolean | null
+          is_chain_partner: boolean | null
+          redemption_location: string | null
           sponsor_id: string
+          sponsorship_benefit: string | null
           total_licenses: number
           used_licenses: number | null
         }
         Insert: {
           content_id: string
           created_at?: string | null
+          discount_description?: string | null
+          discount_type?: string | null
+          discount_value?: string | null
           id?: string
           is_active?: boolean | null
+          is_chain_partner?: boolean | null
+          redemption_location?: string | null
           sponsor_id: string
+          sponsorship_benefit?: string | null
           total_licenses?: number
           used_licenses?: number | null
         }
         Update: {
           content_id?: string
           created_at?: string | null
+          discount_description?: string | null
+          discount_type?: string | null
+          discount_value?: string | null
           id?: string
           is_active?: boolean | null
+          is_chain_partner?: boolean | null
+          redemption_location?: string | null
           sponsor_id?: string
+          sponsorship_benefit?: string | null
           total_licenses?: number
           used_licenses?: number | null
         }
