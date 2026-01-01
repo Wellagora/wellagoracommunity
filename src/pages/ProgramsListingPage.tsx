@@ -266,27 +266,27 @@ const ProgramsListingPage = () => {
   const getAccessBadge = (program: Program) => {
     const accessType = program.access_type || program.access_level;
     
-    // Sponsored content - gold border badge with sponsor name
+    // Sponsored content - badge with sponsor name (no "Ingyenes")
     if (accessType === 'sponsored' || program.sponsor_id) {
       return (
-        <div className="flex items-center gap-2 bg-gradient-to-r from-[#FFD700]/30 to-[#FFA500]/20 border-2 border-[#FFD700] px-3 py-1.5 rounded-full shadow-lg shadow-[#FFD700]/20">
+        <div className="flex items-center gap-2 bg-gradient-to-r from-primary/30 to-primary/20 border-2 border-primary px-3 py-1.5 rounded-full shadow-lg shadow-primary/20">
           {program.sponsor_logo_url ? (
             <img 
               src={program.sponsor_logo_url} 
               alt={program.sponsor_name || 'Sponsor'}
-              className="h-5 w-5 rounded-full object-contain bg-white ring-1 ring-[#FFD700]"
+              className="h-5 w-5 rounded-full object-contain bg-white ring-1 ring-primary"
             />
           ) : (
-            <Gift className="w-4 h-4 text-[#FFD700]" />
+            <Gift className="w-4 h-4 text-primary" />
           )}
-          <span className="text-xs text-[#FFD700] font-semibold">
-            {t('content.free')} • {program.sponsor_name || t('marketplace.sponsored')}
+          <span className="text-xs text-primary font-semibold">
+            {t('marketplace.supported')} • {program.sponsor_name || ''}
           </span>
         </div>
       );
     }
 
-    // Paid content
+    // Paid content - show value
     if (accessType === 'paid' || accessType === 'one_time_purchase' || accessType === 'premium') {
       return (
         <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
@@ -296,10 +296,10 @@ const ProgramsListingPage = () => {
       );
     }
 
-    // Free content
+    // Free content - don't show "Ingyenes", just a simple badge
     return (
       <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
-        {t("marketplace.free")}
+        {t("marketplace.open_access")}
       </Badge>
     );
   };
@@ -603,18 +603,26 @@ const ProgramsListingPage = () => {
                   <Link to={`/piacer/${program.id}`}>
                     <Card className={`bg-[#112240] hover:border-[hsl(var(--cyan))]/30 transition-all duration-300 hover:shadow-lg hover:shadow-[hsl(var(--cyan))]/5 overflow-hidden h-full ${
                       hasSponsorship || isExhausted
-                        ? 'border-2 border-[#FFD700]/50 ring-1 ring-[#FFD700]/20' 
+                        ? 'border-2 border-primary/50 ring-1 ring-primary/20' 
                         : (program.access_type === 'sponsored' || program.sponsor_id) 
-                          ? 'border-2 border-[#FFD700]/50 ring-1 ring-[#FFD700]/20' 
+                          ? 'border-2 border-primary/50 ring-1 ring-primary/20' 
                           : 'border-[hsl(var(--cyan))]/10'
                     }`}>
+                      {/* Supported Badge at top */}
+                      {hasSponsorship && (
+                        <div className="absolute top-3 left-3 z-20 bg-primary text-white px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg">
+                          <Gift className="h-3.5 w-3.5" />
+                          <span className="text-xs font-semibold">{t('marketplace.supported')}</span>
+                        </div>
+                      )}
+                      
                       {/* Sponsor Banner */}
                       {sponsorship && (
-                        <div className="bg-gradient-to-r from-green-500/20 to-emerald-500/10 px-4 py-2 flex items-center gap-2">
-                          <Gift className="h-4 w-4 text-green-500" />
-                          <span className="text-xs text-green-600 font-medium">
+                        <div className="bg-gradient-to-r from-primary/20 to-primary/10 px-4 py-2 flex items-center gap-2">
+                          <Gift className="h-4 w-4 text-primary" />
+                          <span className="text-xs text-primary font-medium">
                             {hasSponsorship 
-                              ? `${t('marketplace.sponsored')} • ${sponsorship.sponsor?.name || ''}`
+                              ? `${t('marketplace.supported')} • ${sponsorship.sponsor?.name || ''}`
                               : t('marketplace.was_sponsored_by').replace('{{name}}', sponsorship.sponsor?.name || '')
                             }
                           </span>
@@ -624,8 +632,8 @@ const ProgramsListingPage = () => {
                       <CardContent className="p-0">
                         {/* Sponsor logo in corner for sponsored content */}
                         {(hasSponsorship || isExhausted) && sponsorship?.sponsor?.logo_url && (
-                          <div className="absolute top-3 left-3 z-20">
-                            <div className="w-10 h-10 rounded-full bg-white shadow-lg ring-2 ring-[#FFD700] flex items-center justify-center overflow-hidden">
+                          <div className="absolute top-3 right-3 z-20">
+                            <div className="w-10 h-10 rounded-full bg-white shadow-lg ring-2 ring-primary flex items-center justify-center overflow-hidden">
                               <img 
                                 src={sponsorship.sponsor.logo_url} 
                                 alt={sponsorship.sponsor.name || 'Sponsor'}
@@ -687,29 +695,38 @@ const ProgramsListingPage = () => {
                             </div>
                           )}
 
-                          {/* SPONSORED - HAS SPOTS */}
+                          {/* SUPPORTED - HAS SPOTS (value-based) */}
                           {hasSponsorship && (
                             <div className="space-y-3 mt-3">
-                              <div className="space-y-1">
-                                <div className="flex justify-between text-xs">
-                                  <span className="text-green-600 font-medium">
-                                    {t('marketplace.slots_left').replace('{{count}}', String(remaining))}
-                                  </span>
-                                  <span className="text-muted-foreground">
-                                    {sponsorship.used_licenses}/{sponsorship.total_licenses}
-                                  </span>
+                              {/* Value display */}
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <p className="text-xs text-muted-foreground">{t('marketplace.value_label')}</p>
+                                  <p className="font-bold">{program.price_huf?.toLocaleString()} Ft</p>
                                 </div>
+                                <div className="text-right">
+                                  <p className="text-xs text-primary font-medium">{sponsorship.sponsor?.name}</p>
+                                  <p className="text-xs text-muted-foreground">{t('marketplace.from_quota')}</p>
+                                </div>
+                              </div>
+
+                              {/* Scarcity - Progress bar */}
+                              <div>
                                 <Progress 
                                   value={((sponsorship.used_licenses || 0) / (sponsorship.total_licenses || 1)) * 100} 
-                                  className="h-2" 
+                                  className="h-1.5" 
                                 />
+                                <p className="text-xs text-center text-muted-foreground mt-1">
+                                  {t('marketplace.slots_remaining').replace('{{count}}', String(remaining))}
+                                </p>
                               </div>
+
                               <Button 
-                                className="w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white" 
+                                className="w-full" 
                                 onClick={handleClaimSponsored}
                               >
-                                <Gift className="h-4 w-4 mr-2" />
-                                {t('marketplace.open_sponsored')}
+                                <Gift className="h-4 w-4 mr-1" />
+                                {t('marketplace.open_from_sponsor')}
                               </Button>
                             </div>
                           )}
@@ -727,20 +744,25 @@ const ProgramsListingPage = () => {
                                   </p>
                                 )}
                               </div>
-                              <div className="grid grid-cols-2 gap-2">
+                              <div className="flex gap-2">
                                 <Button 
                                   variant="outline" 
+                                  size="sm"
                                   onClick={handleJoinWaitlist} 
-                                  className="border-amber-500/50 text-amber-600"
+                                  className="flex-1 border-amber-500/50 text-amber-600"
                                 >
-                                  <Bell className="h-4 w-4 mr-1" />
-                                  {t('marketplace.notify_me')}
+                                  <Bell className="h-3 w-3 mr-1" />
+                                  {t('marketplace.notify_when_available')}
                                 </Button>
-                                <Button onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  navigate(`/muhelytitok/${program.id}`);
-                                }}>
+                                <Button 
+                                  size="sm"
+                                  className="flex-1"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    navigate(`/muhelytitok/${program.id}`);
+                                  }}
+                                >
                                   {program.price_huf?.toLocaleString()} Ft
                                 </Button>
                               </div>
