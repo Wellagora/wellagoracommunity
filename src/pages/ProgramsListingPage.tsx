@@ -11,6 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Progress } from "@/components/ui/progress";
 import {
   Store,
   Search,
@@ -29,6 +30,7 @@ import {
   Hammer,
   Briefcase,
   ArrowLeft,
+  Bell,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import StarRating from "@/components/reviews/StarRating";
@@ -45,6 +47,20 @@ const CATEGORIES = [
   { id: "wellness", labelKey: "marketplace.category_wellness", icon: Heart, bgColor: "bg-pink-500", iconColor: "text-white" },
   { id: "business", labelKey: "marketplace.category_business", icon: Briefcase, bgColor: "bg-purple-500", iconColor: "text-white" },
 ];
+
+interface Sponsor {
+  id: string;
+  name: string;
+  logo_url: string | null;
+}
+
+interface Sponsorship {
+  id: string;
+  total_licenses: number;
+  used_licenses: number;
+  is_active: boolean;
+  sponsor: Sponsor | null;
+}
 
 interface Program {
   id: string;
@@ -76,6 +92,8 @@ interface Program {
     organization: string | null;
     avatar_url: string | null;
   } | null;
+  sponsorship?: Sponsorship[];
+  waitlist?: { count: number }[];
   avg_rating?: number;
   review_count?: number;
 }
@@ -111,7 +129,7 @@ const ProgramsListingPage = () => {
     enabled: !!creatorFilter,
   });
 
-  // Fetch all published programs
+  // Fetch all published programs with sponsorship data
   const { data: programs, isLoading, refetch } = useQuery({
     queryKey: ["allPrograms", creatorFilter],
     queryFn: async () => {
@@ -124,7 +142,12 @@ const ProgramsListingPage = () => {
           ),
           sponsor:profiles!expert_contents_sponsor_id_fkey (
             id, organization, avatar_url
-          )
+          ),
+          sponsorship:content_sponsorships(
+            id, total_licenses, used_licenses, is_active,
+            sponsor:sponsors(id, name, logo_url)
+          ),
+          waitlist:content_waitlist(count)
         `)
         .eq("is_published", true);
       
@@ -512,6 +535,64 @@ const ProgramsListingPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredPrograms.map((program, index) => {
               const rating = ratingsMap?.[program.id];
+              
+              // Sponsorship logic
+              const sponsorship = program.sponsorship?.[0];
+              const hasSponsorship = sponsorship?.is_active && (sponsorship.used_licenses || 0) < (sponsorship.total_licenses || 0);
+              const remaining = sponsorship ? (sponsorship.total_licenses || 0) - (sponsorship.used_licenses || 0) : 0;
+              const isExhausted = sponsorship?.is_active && remaining <= 0;
+              const waitlistCount = program.waitlist?.[0]?.count || 0;
+
+              const handleClaimSponsored = async (e: React.MouseEvent) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!user) {
+                  toast.error(t('auth.login_required'));
+                  navigate('/auth');
+                  return;
+                }
+                
+                try {
+                  await supabase.from('content_sponsorships')
+                    .update({ used_licenses: (sponsorship?.used_licenses || 0) + 1 })
+                    .eq('id', sponsorship!.id);
+                    
+                  await supabase.from('content_access')
+                    .insert({ 
+                      user_id: user.id, 
+                      content_id: program.id, 
+                      access_type: 'sponsored', 
+                      sponsorship_id: sponsorship!.id 
+                    });
+                    
+                  toast.success(t('marketplace.access_granted'));
+                  refetch();
+                  navigate(`/muhelytitok/${program.id}`);
+                } catch (error) {
+                  console.error('Error claiming sponsored access:', error);
+                  toast.error(t('common.error'));
+                }
+              };
+
+              const handleJoinWaitlist = async (e: React.MouseEvent) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!user) {
+                  toast.error(t('auth.login_required'));
+                  navigate('/auth');
+                  return;
+                }
+                
+                try {
+                  await supabase.from('content_waitlist')
+                    .upsert({ user_id: user.id, content_id: program.id });
+                  toast.success(t('marketplace.waitlist_joined'));
+                  refetch();
+                } catch (error) {
+                  console.error('Error joining waitlist:', error);
+                }
+              };
+
               return (
                 <motion.div
                   key={program.id}
@@ -521,18 +602,33 @@ const ProgramsListingPage = () => {
                 >
                   <Link to={`/piacer/${program.id}`}>
                     <Card className={`bg-[#112240] hover:border-[hsl(var(--cyan))]/30 transition-all duration-300 hover:shadow-lg hover:shadow-[hsl(var(--cyan))]/5 overflow-hidden h-full ${
-                      (program.access_type === 'sponsored' || program.sponsor_id) 
+                      hasSponsorship || isExhausted
                         ? 'border-2 border-[#FFD700]/50 ring-1 ring-[#FFD700]/20' 
-                        : 'border-[hsl(var(--cyan))]/10'
+                        : (program.access_type === 'sponsored' || program.sponsor_id) 
+                          ? 'border-2 border-[#FFD700]/50 ring-1 ring-[#FFD700]/20' 
+                          : 'border-[hsl(var(--cyan))]/10'
                     }`}>
+                      {/* Sponsor Banner */}
+                      {sponsorship && (
+                        <div className="bg-gradient-to-r from-green-500/20 to-emerald-500/10 px-4 py-2 flex items-center gap-2">
+                          <Gift className="h-4 w-4 text-green-500" />
+                          <span className="text-xs text-green-600 font-medium">
+                            {hasSponsorship 
+                              ? t('marketplace.sponsored_by').replace('{{name}}', sponsorship.sponsor?.name || '')
+                              : t('marketplace.was_sponsored_by').replace('{{name}}', sponsorship.sponsor?.name || '')
+                            }
+                          </span>
+                        </div>
+                      )}
+
                       <CardContent className="p-0">
                         {/* Sponsor logo in corner for sponsored content */}
-                        {(program.access_type === 'sponsored' || program.sponsor_id) && program.sponsor_logo_url && (
+                        {(hasSponsorship || isExhausted) && sponsorship?.sponsor?.logo_url && (
                           <div className="absolute top-3 left-3 z-20">
                             <div className="w-10 h-10 rounded-full bg-white shadow-lg ring-2 ring-[#FFD700] flex items-center justify-center overflow-hidden">
                               <img 
-                                src={program.sponsor_logo_url} 
-                                alt={program.sponsor_name || 'Sponsor'}
+                                src={sponsorship.sponsor.logo_url} 
+                                alt={sponsorship.sponsor.name || 'Sponsor'}
                                 className="w-8 h-8 object-contain"
                               />
                             </div>
@@ -556,9 +652,11 @@ const ProgramsListingPage = () => {
                               {t("program.featured")}
                             </Badge>
                           )}
-                          <div className="absolute top-2 right-2">
-                            {getAccessBadge(program)}
-                          </div>
+                          {!sponsorship && (
+                            <div className="absolute top-2 right-2">
+                              {getAccessBadge(program)}
+                            </div>
+                          )}
                         </div>
                         <div className="p-4">
                           <h3 className="font-semibold text-foreground mb-2 line-clamp-2">
@@ -579,13 +677,6 @@ const ProgramsListingPage = () => {
                             </button>
                           )}
 
-                          {/* Sponsor info for sponsored content */}
-                          {(program.access_type === 'sponsored' || program.sponsor_id) && program.sponsor_name && (
-                            <p className="text-xs text-[#FFD700] mb-2">
-                              {t('marketplace.sponsored')} - {program.sponsor_name}
-                            </p>
-                          )}
-
                           {/* Rating */}
                           {rating && rating.count > 0 && (
                             <div className="flex items-center gap-2 mb-3">
@@ -596,25 +687,88 @@ const ProgramsListingPage = () => {
                             </div>
                           )}
 
-                          <div className="flex items-center justify-between mt-3">
-                            {program.category && (() => {
-                              const cat = CATEGORIES.find(c => c.id === program.category);
-                              if (!cat) return null;
-                              const CatIcon = cat.icon;
-                              return (
-                                <Badge
-                                  variant="outline"
-                                  className="border-[hsl(var(--cyan))]/30 text-muted-foreground flex items-center gap-1.5"
+                          {/* SPONSORED - HAS SPOTS */}
+                          {hasSponsorship && (
+                            <div className="space-y-3 mt-3">
+                              <div className="space-y-1">
+                                <div className="flex justify-between text-xs">
+                                  <span className="text-green-600 font-medium">
+                                    {t('marketplace.slots_left').replace('{{count}}', String(remaining))}
+                                  </span>
+                                  <span className="text-muted-foreground">
+                                    {sponsorship.used_licenses}/{sponsorship.total_licenses}
+                                  </span>
+                                </div>
+                                <Progress 
+                                  value={((sponsorship.used_licenses || 0) / (sponsorship.total_licenses || 1)) * 100} 
+                                  className="h-2" 
+                                />
+                              </div>
+                              <Button 
+                                className="w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white" 
+                                onClick={handleClaimSponsored}
+                              >
+                                <Gift className="h-4 w-4 mr-2" />
+                                {t('marketplace.claim_free')}
+                              </Button>
+                            </div>
+                          )}
+
+                          {/* EXHAUSTED - WAITLIST */}
+                          {isExhausted && (
+                            <div className="space-y-3 mt-3">
+                              <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3">
+                                <p className="text-sm text-amber-600">
+                                  {t('marketplace.sponsor_exhausted').replace('{{name}}', sponsorship?.sponsor?.name || '')}
+                                </p>
+                                {waitlistCount > 0 && (
+                                  <p className="text-xs text-amber-500 mt-1">
+                                    {t('marketplace.waitlist_count').replace('{{count}}', String(waitlistCount))}
+                                  </p>
+                                )}
+                              </div>
+                              <div className="grid grid-cols-2 gap-2">
+                                <Button 
+                                  variant="outline" 
+                                  onClick={handleJoinWaitlist} 
+                                  className="border-amber-500/50 text-amber-600"
                                 >
-                                  <div className={`p-0.5 rounded ${cat.bgColor}`}>
-                                    <CatIcon className={`w-2.5 h-2.5 ${cat.iconColor}`} />
-                                  </div>
-                                  <span>{t(`marketplace.category_${program.category}`).replace(/^[^\w]+/, '')}</span>
-                                </Badge>
-                              );
-                            })()}
-                            {getActionButton(program)}
-                          </div>
+                                  <Bell className="h-4 w-4 mr-1" />
+                                  {t('marketplace.notify_me')}
+                                </Button>
+                                <Button onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  navigate(`/muhelytitok/${program.id}`);
+                                }}>
+                                  {program.price_huf?.toLocaleString()} Ft
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* NO SPONSORSHIP - REGULAR */}
+                          {!sponsorship && (
+                            <div className="flex items-center justify-between mt-3">
+                              {program.category && (() => {
+                                const cat = CATEGORIES.find(c => c.id === program.category);
+                                if (!cat) return null;
+                                const CatIcon = cat.icon;
+                                return (
+                                  <Badge
+                                    variant="outline"
+                                    className="border-[hsl(var(--cyan))]/30 text-muted-foreground flex items-center gap-1.5"
+                                  >
+                                    <div className={`p-0.5 rounded ${cat.bgColor}`}>
+                                      <CatIcon className={`w-2.5 h-2.5 ${cat.iconColor}`} />
+                                    </div>
+                                    <span>{t(`marketplace.category_${program.category}`).replace(/^[^\w]+/, '')}</span>
+                                  </Badge>
+                                );
+                              })()}
+                              {getActionButton(program)}
+                            </div>
+                          )}
                         </div>
                       </CardContent>
                     </Card>

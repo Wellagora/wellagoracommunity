@@ -1,10 +1,19 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Building2, Plus } from 'lucide-react';
+import { Building2, Users, Lightbulb } from 'lucide-react';
 import { AdminStatsCards } from './AdminStatsCards';
 import { CreateProjectDialog } from './CreateProjectDialog';
 import type { Project, AdminStats } from '@/hooks/useAdminDashboard';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useEffect, useState } from 'react';
+
+interface WaitlistContent {
+  id: string;
+  title: string;
+  count: number;
+}
 
 interface ProjectsTabProps {
   projects: Project[];
@@ -23,10 +32,95 @@ export const ProjectsTab = ({
   onToggleProjectStatus,
   onRefresh,
 }: ProjectsTabProps) => {
+  const { t } = useLanguage();
+  const [totalWaitlist, setTotalWaitlist] = useState(0);
+  const [topWaitlistContents, setTopWaitlistContents] = useState<WaitlistContent[]>([]);
+
+  useEffect(() => {
+    const loadWaitlistData = async () => {
+      // Total waitlist count
+      const { count } = await supabase
+        .from('content_waitlist')
+        .select('*', { count: 'exact', head: true });
+      setTotalWaitlist(count || 0);
+
+      // Top contents with waitlist
+      const { data } = await supabase
+        .from('content_waitlist')
+        .select('content_id');
+      
+      if (data && data.length > 0) {
+        // Group by content_id
+        const counts = data.reduce((acc: Record<string, number>, item) => {
+          acc[item.content_id] = (acc[item.content_id] || 0) + 1;
+          return acc;
+        }, {});
+
+        // Sort and get top 5
+        const topIds = Object.entries(counts)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5)
+          .map(([id, count]) => ({ id, count }));
+
+        if (topIds.length > 0) {
+          // Fetch titles
+          const { data: contents } = await supabase
+            .from('expert_contents')
+            .select('id, title')
+            .in('id', topIds.map(t => t.id));
+
+          const result = topIds.map(t => ({
+            id: t.id,
+            count: t.count,
+            title: contents?.find(c => c.id === t.id)?.title || 'Ismeretlen'
+          }));
+
+          setTopWaitlistContents(result);
+        }
+      }
+    };
+
+    loadWaitlistData();
+  }, []);
+
   return (
     <div className="space-y-6">
       {/* Stats Cards */}
-      <AdminStatsCards stats={stats} />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2">
+          <AdminStatsCards stats={stats} />
+        </div>
+        
+        {/* Waitlist Stats Card */}
+        <Card className="p-5 border-amber-500/50 bg-amber-500/5">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
+              <Users className="h-5 w-5 text-amber-500" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold">{totalWaitlist}</p>
+              <p className="text-sm text-muted-foreground">{t('admin.total_waitlist')}</p>
+            </div>
+          </div>
+          
+          {topWaitlistContents.length > 0 && (
+            <div className="space-y-2 mt-4">
+              <p className="text-xs font-medium text-amber-600">{t('admin.top_waitlist')}</p>
+              {topWaitlistContents.map(c => (
+                <div key={c.id} className="flex justify-between text-sm">
+                  <span className="truncate flex-1 mr-2">{c.title}</span>
+                  <Badge variant="outline" className="text-amber-600">{c.count}</Badge>
+                </div>
+              ))}
+            </div>
+          )}
+          
+          <p className="text-xs text-amber-600 mt-4 flex items-center">
+            <Lightbulb className="h-3 w-3 inline mr-1" />
+            {t('admin.waitlist_sponsor_hint')}
+          </p>
+        </Card>
+      </div>
 
       {/* Projects List */}
       <div className="space-y-4">
