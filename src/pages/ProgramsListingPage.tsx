@@ -614,7 +614,7 @@ const ProgramsListingPage = () => {
                           <Gift className="h-4 w-4 text-green-500" />
                           <span className="text-xs text-green-600 font-medium">
                             {hasSponsorship 
-                              ? t('marketplace.sponsored_by').replace('{{name}}', sponsorship.sponsor?.name || '')
+                              ? `${t('marketplace.sponsored')} • ${sponsorship.sponsor?.name || ''}`
                               : t('marketplace.was_sponsored_by').replace('{{name}}', sponsorship.sponsor?.name || '')
                             }
                           </span>
@@ -709,7 +709,7 @@ const ProgramsListingPage = () => {
                                 onClick={handleClaimSponsored}
                               >
                                 <Gift className="h-4 w-4 mr-2" />
-                                {t('marketplace.claim_free')}
+                                {t('marketplace.open_sponsored')}
                               </Button>
                             </div>
                           )}

@@ -255,21 +255,56 @@ const SponsorCard = ({ sponsor }: { sponsor: any }) => {
   );
 };
 
+// Sponsor Banner Component
+const SponsorBanner = ({ sponsorship, t }: { sponsorship: any; t: any }) => {
+  const hasActiveSponsorship = sponsorship?.is_active && 
+    (sponsorship.used_licenses || 0) < (sponsorship.total_licenses || 0);
+
+  if (!sponsorship || !hasActiveSponsorship) return null;
+
+  return (
+    <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 mb-4 flex items-center gap-4">
+      {sponsorship.sponsor?.logo_url && (
+        <img 
+          src={sponsorship.sponsor.logo_url} 
+          alt={sponsorship.sponsor.name}
+          className="h-14 w-14 rounded-lg object-contain bg-white p-1" 
+        />
+      )}
+      <div>
+        <Badge className="bg-green-500/20 text-green-600 border-green-500/30">
+          <Gift className="h-3 w-3 mr-1" />
+          {t('workshop.sponsored_content')}
+        </Badge>
+        <p className="font-bold text-green-700 mt-1">{sponsorship.sponsor?.name}</p>
+        <p className="text-sm text-green-600">
+          {t('workshop.made_free_by_sponsor').replace('{{name}}', sponsorship.sponsor?.name || '')}
+        </p>
+      </div>
+    </div>
+  );
+};
+
 // Workshop Hero Component
-const WorkshopHero = ({ content }: { content: any }) => {
+const WorkshopHero = ({ content, sponsorship, t }: { content: any; sponsorship: any; t: any }) => {
   if (!content) return null;
 
   return (
     <div className="mb-8">
       {content.image_url && (
-        <div className="aspect-video rounded-2xl overflow-hidden mb-6">
+        <div className="relative max-h-[400px] overflow-hidden rounded-xl mb-6">
           <img
             src={content.image_url}
             alt={content.title}
-            className="w-full h-full object-cover"
+            className="w-full object-cover max-h-[400px]"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
         </div>
       )}
+      
+      {/* Sponsor Banner */}
+      <SponsorBanner sponsorship={sponsorship} t={t} />
+      
       <div className="space-y-4">
         <Badge className="bg-primary/20 text-primary border-primary/30">
           {content.category}
@@ -595,6 +630,7 @@ const WorkshopSecretViewPage = () => {
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
   const [accessReason, setAccessReason] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
+  const [sponsorship, setSponsorship] = useState<any>(null);
 
   useEffect(() => {
     const loadContent = async () => {
@@ -612,17 +648,18 @@ const WorkshopSecretViewPage = () => {
         return;
       }
 
-      // Load content
+      // Load content with sponsorship data
       const { data: contentData } = await supabase
         .from("expert_contents")
         .select(
           `
           *,
           creator:profiles!creator_id(
-            id, first_name, last_name, avatar_url, bio
+            id, first_name, last_name, avatar_url, bio, location_city, expert_title
           ),
-          sponsor:profiles!sponsor_id(
-            id, organization_name, organization_logo_url
+          sponsorship:content_sponsorships(
+            id, total_licenses, used_licenses, is_active,
+            sponsor:sponsors(id, name, logo_url)
           )
         `
         )
@@ -631,6 +668,10 @@ const WorkshopSecretViewPage = () => {
 
       if (contentData) {
         setContent(contentData);
+        
+        // Set sponsorship info
+        const activeSponsorship = contentData.sponsorship?.[0];
+        setSponsorship(activeSponsorship);
 
         // Load milestones
         const { data: milestonesData } = await supabase
@@ -647,6 +688,10 @@ const WorkshopSecretViewPage = () => {
 
     loadContent();
   }, [id, user]);
+
+  const hasActiveSponsorship = sponsorship?.is_active && 
+    (sponsorship.used_licenses || 0) < (sponsorship.total_licenses || 0);
+  const remaining = sponsorship ? (sponsorship.total_licenses || 0) - (sponsorship.used_licenses || 0) : 0;
 
   // Loading state
   if (isLoading) {
@@ -674,8 +719,36 @@ const WorkshopSecretViewPage = () => {
           <aside className="hidden lg:block lg:w-80 flex-shrink-0">
             <div className="sticky top-24 space-y-6">
               <MasterCard creator={content?.creator} />
-              {content?.access_type === "sponsored" && content?.sponsor && (
-                <SponsorCard sponsor={content.sponsor} />
+              {sponsorship && hasActiveSponsorship && (
+                <Card className="bg-green-500/10 border-green-500/30 p-5">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Gift className="h-5 w-5 text-green-500" />
+                    <span className="text-sm font-medium text-green-600">
+                      {t("workshop.sponsored_content")}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {sponsorship.sponsor?.logo_url ? (
+                      <img
+                        src={sponsorship.sponsor.logo_url}
+                        alt={sponsorship.sponsor.name}
+                        className="h-12 w-12 rounded-lg object-contain bg-white p-1"
+                      />
+                    ) : (
+                      <div className="h-12 w-12 rounded-lg bg-green-500/20 flex items-center justify-center">
+                        <Building2 className="h-6 w-6 text-green-500" />
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-sm text-muted-foreground">
+                        {t("workshop.made_free_by")}
+                      </p>
+                      <p className="font-semibold text-foreground">
+                        {sponsorship.sponsor?.name || t("workshop.anonymous_sponsor")}
+                      </p>
+                    </div>
+                  </div>
+                </Card>
               )}
               {/* Voucher Section */}
               <VoucherSection 
@@ -692,13 +765,13 @@ const WorkshopSecretViewPage = () => {
 
           {/* Main content */}
           <main className="flex-1 max-w-3xl">
-            <WorkshopHero content={content} />
+            <WorkshopHero content={content} sponsorship={sponsorship} t={t} />
 
             {/* Mobile: Master, Sponsor, Voucher cards */}
             <div className="lg:hidden space-y-4 mb-8">
               <MasterCard creator={content?.creator} />
-              {content?.access_type === "sponsored" && content?.sponsor && (
-                <SponsorCard sponsor={content.sponsor} />
+              {sponsorship && hasActiveSponsorship && (
+                <SponsorBanner sponsorship={sponsorship} t={t} />
               )}
               <VoucherSection 
                 contentId={id || ''} 
