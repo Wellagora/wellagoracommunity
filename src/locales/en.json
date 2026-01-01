@@ -84,6 +84,8 @@
   "marketplace.buy_now": "Buy now",
   "marketplace.free": "Free",
   "marketplace.sponsored": "Sponsored",
+  "marketplace.open_sponsored": "Open (Sponsored)",
+  "workshop.made_free_by_sponsor": "This content is free thanks to {{name}}",
   "voucher.title": "Material Kit Voucher",
   "voucher.subtitle": "Pick up from the Master!",
   "voucher.generate_btn": "Download Voucher",
