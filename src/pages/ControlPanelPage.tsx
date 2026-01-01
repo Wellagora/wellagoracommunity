@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Progress } from "@/components/ui/progress";
 import {
   Loader2,
   BookOpen,
@@ -19,6 +20,8 @@ import {
   Compass,
   Lightbulb,
   HelpCircle,
+  Gift,
+  PlusCircle,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
@@ -46,6 +49,23 @@ interface NewsItem {
   } | null;
 }
 
+interface SponsorshipItem {
+  id: string;
+  content_id: string;
+  total_licenses: number;
+  used_licenses: number;
+  is_active: boolean;
+  content?: {
+    id: string;
+    title: string;
+    image_url: string | null;
+  };
+  sponsor?: {
+    name: string;
+    logo_url: string | null;
+  };
+}
+
 const ControlPanelPage = () => {
   const navigate = useNavigate();
   const { user, profile, loading } = useAuth();
@@ -53,6 +73,10 @@ const ControlPanelPage = () => {
   const [loadingData, setLoadingData] = useState(true);
   const [myContents, setMyContents] = useState<ContentItem[]>([]);
   const [news, setNews] = useState<NewsItem[]>([]);
+  const [mySponsorships, setMySponsorships] = useState<SponsorshipItem[]>([]);
+
+  // Check if user is a supporter (sponsor role)
+  const isSponsor = profile?.user_role && ['sponsor', 'business', 'government', 'ngo'].includes(profile.user_role);
 
   const dateLocale = language === "hu" ? hu : language === "de" ? de : enUS;
 
@@ -109,6 +133,22 @@ const ControlPanelPage = () => {
           setMyContents(contents);
         }
 
+        // Load sponsor's sponsorships if they are a sponsor
+        if (profile?.user_role && ['sponsor', 'business', 'government', 'ngo'].includes(profile.user_role)) {
+          const { data: sponsorshipsData } = await supabase
+            .from('content_sponsorships')
+            .select(`
+              id, content_id, total_licenses, used_licenses, is_active,
+              content:expert_contents!content_sponsorships_content_id_fkey(id, title, image_url),
+              sponsor:sponsors!content_sponsorships_sponsor_id_fkey(name, logo_url)
+            `)
+            .eq('is_active', true);
+            
+          if (sponsorshipsData) {
+            setMySponsorships(sponsorshipsData as unknown as SponsorshipItem[]);
+          }
+        }
+
         // Load news (latest events and contents)
         const { data: events } = await supabase
           .from('events')
@@ -151,7 +191,7 @@ const ControlPanelPage = () => {
     if (user && !loading) {
       loadData();
     }
-  }, [user, loading]);
+  }, [user, loading, profile?.user_role]);
 
   const getTimeAgo = (date: string) => {
     const now = new Date();
@@ -204,76 +244,161 @@ const ControlPanelPage = () => {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left: Main Content (2/3) */}
           <div className="lg:col-span-2 space-y-8">
-            {/* My Workshop Secrets Section */}
-            <section id="my-secrets">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h2 className="text-2xl font-bold flex items-center gap-2">
-                    <BookOpen className="h-6 w-6 text-primary" />
-                    {t('control_panel.my_workshop_secrets')}
-                  </h2>
-                  <p className="text-muted-foreground text-sm mt-1">
-                    {t('control_panel.my_collection_subtitle')}
-                  </p>
-                </div>
-                <Button variant="outline" onClick={() => navigate('/piacer')}>
-                  {t('control_panel.browse_more')}
-                </Button>
-              </div>
-
-              {loadingData ? (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {[1, 2, 3].map((i) => (
-                    <Skeleton key={i} className="h-64 w-full rounded-xl" />
-                  ))}
-                </div>
-              ) : myContents.length > 0 ? (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {myContents.map((content) => (
-                    <Card 
-                      key={content.id} 
-                      className="bg-card border-border overflow-hidden hover:border-primary/50 transition-all group cursor-pointer"
-                      onClick={() => navigate(`/muhelytitok/${content.id}`)}
-                    >
-                      <div className="aspect-video overflow-hidden">
-                        <img
-                          src={content.image_url || 'https://images.unsplash.com/photo-1518005020251-58296d8f8b4d?w=400&q=80'}
-                          alt={content.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                        />
-                      </div>
-                      <CardContent className="p-4">
-                        <h3 className="font-semibold text-foreground line-clamp-2 mb-2">
-                          {content.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground mb-4">
-                          {content.creator?.first_name} {content.creator?.last_name}
-                        </p>
-                        <Button
-                          variant="outline"
-                          className="w-full border-primary/50 text-primary hover:bg-primary/10"
-                        >
-                          {t('control_panel.open')}
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                <Card className="bg-card border-border p-8 text-center">
-                  <BookOpen className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="font-semibold text-lg mb-2">
-                    {t('control_panel.empty_collection_title')}
-                  </h3>
-                  <p className="text-muted-foreground mb-4">
-                    {t('control_panel.empty_collection_hint')}
-                  </p>
-                  <Button onClick={() => navigate('/piacer')} className="bg-primary text-primary-foreground">
-                    {t('control_panel.explore_marketplace')}
+            {/* SPONSOR VIEW: My Sponsorships */}
+            {isSponsor ? (
+              <section id="my-sponsorships">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h2 className="text-2xl font-bold flex items-center gap-2">
+                      <Gift className="h-6 w-6 text-primary" />
+                      {t('control_panel.my_sponsorships')}
+                    </h2>
+                    <p className="text-muted-foreground text-sm mt-1">
+                      {t('control_panel.my_sponsorships_subtitle')}
+                    </p>
+                  </div>
+                  <Button onClick={() => navigate('/piacer')} className="gap-2">
+                    <PlusCircle className="h-4 w-4" />
+                    {t('control_panel.new_sponsorship')}
                   </Button>
-                </Card>
-              )}
-            </section>
+                </div>
+
+                {loadingData ? (
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {[1, 2, 3].map((i) => (
+                      <Skeleton key={i} className="h-64 w-full rounded-xl" />
+                    ))}
+                  </div>
+                ) : mySponsorships.length > 0 ? (
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {mySponsorships.map((sponsorship) => {
+                      const remaining = sponsorship.total_licenses - (sponsorship.used_licenses || 0);
+                      const usedPercent = ((sponsorship.used_licenses || 0) / sponsorship.total_licenses) * 100;
+                      return (
+                        <Card 
+                          key={sponsorship.id} 
+                          className="bg-card border-primary/30 overflow-hidden hover:border-primary/50 transition-all group cursor-pointer"
+                          onClick={() => navigate(`/muhelytitok/${sponsorship.content_id}`)}
+                        >
+                          <div className="aspect-video overflow-hidden relative">
+                            <img
+                              src={sponsorship.content?.image_url || 'https://images.unsplash.com/photo-1518005020251-58296d8f8b4d?w=400&q=80'}
+                              alt={sponsorship.content?.title || ''}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                            />
+                            <Badge className="absolute top-2 right-2 bg-green-600 text-white">
+                              <Gift className="h-3 w-3 mr-1" />
+                              {t('control_panel.active')}
+                            </Badge>
+                          </div>
+                          <CardContent className="p-4">
+                            <h3 className="font-semibold text-foreground line-clamp-2 mb-3">
+                              {sponsorship.content?.title}
+                            </h3>
+                            
+                            {/* License counter */}
+                            <div className="space-y-2">
+                              <div className="flex justify-between text-sm">
+                                <span className="text-muted-foreground">{t('control_panel.licenses_used')}</span>
+                                <span className="font-medium">{sponsorship.used_licenses || 0} / {sponsorship.total_licenses}</span>
+                              </div>
+                              <Progress value={usedPercent} className="h-2" />
+                              <p className="text-xs text-primary">
+                                {t('control_panel.licenses_remaining').replace('{{count}}', String(remaining))}
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <Card className="bg-card border-border p-8 text-center">
+                    <Gift className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                    <h3 className="font-semibold text-lg mb-2">
+                      {t('control_panel.no_sponsorships_title')}
+                    </h3>
+                    <p className="text-muted-foreground mb-4">
+                      {t('control_panel.no_sponsorships_hint')}
+                    </p>
+                    <Button onClick={() => navigate('/piacer')} className="bg-primary text-primary-foreground">
+                      {t('control_panel.start_sponsoring')}
+                    </Button>
+                  </Card>
+                )}
+              </section>
+            ) : (
+              /* MEMBER VIEW: My Workshop Secrets */
+              <section id="my-secrets">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h2 className="text-2xl font-bold flex items-center gap-2">
+                      <BookOpen className="h-6 w-6 text-primary" />
+                      {t('control_panel.my_workshop_secrets')}
+                    </h2>
+                    <p className="text-muted-foreground text-sm mt-1">
+                      {t('control_panel.my_collection_subtitle')}
+                    </p>
+                  </div>
+                  <Button variant="outline" onClick={() => navigate('/piacer')}>
+                    {t('control_panel.browse_more')}
+                  </Button>
+                </div>
+
+                {loadingData ? (
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {[1, 2, 3].map((i) => (
+                      <Skeleton key={i} className="h-64 w-full rounded-xl" />
+                    ))}
+                  </div>
+                ) : myContents.length > 0 ? (
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {myContents.map((content) => (
+                      <Card 
+                        key={content.id} 
+                        className="bg-card border-border overflow-hidden hover:border-primary/50 transition-all group cursor-pointer"
+                        onClick={() => navigate(`/muhelytitok/${content.id}`)}
+                      >
+                        <div className="aspect-video overflow-hidden">
+                          <img
+                            src={content.image_url || 'https://images.unsplash.com/photo-1518005020251-58296d8f8b4d?w=400&q=80'}
+                            alt={content.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                          />
+                        </div>
+                        <CardContent className="p-4">
+                          <h3 className="font-semibold text-foreground line-clamp-2 mb-2">
+                            {content.title}
+                          </h3>
+                          <p className="text-sm text-muted-foreground mb-4">
+                            {content.creator?.first_name} {content.creator?.last_name}
+                          </p>
+                          <Button
+                            variant="outline"
+                            className="w-full border-primary/50 text-primary hover:bg-primary/10"
+                          >
+                            {t('common.view')}
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <Card className="bg-card border-border p-8 text-center">
+                    <BookOpen className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                    <h3 className="font-semibold text-lg mb-2">
+                      {t('control_panel.empty_collection_title')}
+                    </h3>
+                    <p className="text-muted-foreground mb-4">
+                      {t('control_panel.empty_collection_hint')}
+                    </p>
+                    <Button onClick={() => navigate('/piacer')} className="bg-primary text-primary-foreground">
+                      {t('control_panel.explore_marketplace')}
+                    </Button>
+                  </Card>
+                )}
+              </section>
+            )}
 
             {/* Káli News Section */}
             <section id="kali-news">
