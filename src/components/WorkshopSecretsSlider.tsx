@@ -87,10 +87,17 @@ const WorkshopSecretsSlider = () => {
     
     if (hasActiveSponsorship) {
       return (
-        <Badge className="bg-green-600 text-white border-0">
-          <Gift className="w-3 h-3 mr-1" />
-          {t("marketplace.supported")} • {sponsorship.sponsor?.name}
-        </Badge>
+        <div className="flex flex-col gap-1">
+          <Badge className="bg-green-600 text-white border-0">
+            <Gift className="w-3 h-3 mr-1" />
+            {t("marketplace.supported")} • {sponsorship.sponsor?.name}
+          </Badge>
+          {program.price_huf && program.price_huf > 0 && (
+            <span className="text-xs text-muted-foreground">
+              {t("marketplace.value_label")}: {program.price_huf.toLocaleString()} Ft — {t("marketplace.paid_by_sponsor")}
+            </span>
+          )}
+        </div>
       );
     }
     
@@ -104,10 +111,10 @@ const WorkshopSecretsSlider = () => {
       );
     }
     
-    // 3. UTOLSÓ: Valóban szabad hozzáférés (nincs szponzor, nincs ár)
+    // 3. UTOLSÓ: Valóban ingyenes (nincs szponzor, price = 0)
     return (
       <Badge className="bg-blue-600 text-white border-0">
-        {t("marketplace.open_access")}
+        {t("marketplace.truly_free")}
       </Badge>
     );
   };
