@@ -22,7 +22,8 @@ import {
   Pencil,
   Tag,
   MessageCircle,
-  UserCog
+  UserCog,
+  Ticket
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,6 +34,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useIsMobile } from "@/hooks/use-mobile";
 import CommunityInteractionsTab from "@/components/creator/CommunityInteractionsTab";
 import ExpertProfileEditor from "@/components/creator/ExpertProfileEditor";
+import { VoucherRedemptionTab } from "@/components/creator/VoucherRedemptionTab";
+import { WaitlistSection } from "@/components/creator/WaitlistSection";
 
 interface ExpertContent {
   id: string;
@@ -273,23 +276,27 @@ const CreatorDashboardPage = () => {
 
         {/* Tabs Section */}
         <Tabs defaultValue="contents" className="space-y-6">
-          <TabsList className="bg-[#112240] border border-[#1E3A5F] grid w-full grid-cols-3">
+          <TabsList className="bg-[#112240] border border-[#1E3A5F] grid w-full grid-cols-4">
             <TabsTrigger value="contents" className="data-[state=active]:bg-[#00E5FF]/20 data-[state=active]:text-[#00E5FF]">
               <FileText className="h-4 w-4 mr-2" />
-              {t("expert_studio.my_guides")}
+              <span className="hidden sm:inline">{t("expert_studio.my_guides")}</span>
             </TabsTrigger>
             <TabsTrigger value="interactions" className="data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400">
               <MessageCircle className="h-4 w-4 mr-2" />
-              {t("expert_studio.community_interactions")}
+              <span className="hidden sm:inline">{t("expert_studio.community_interactions")}</span>
               {unreadCount > 0 && (
-                <Badge className="ml-2 bg-red-500 text-white text-xs px-1.5 py-0">
+                <Badge className="ml-1 bg-red-500 text-white text-xs px-1.5 py-0">
                   {unreadCount}
                 </Badge>
               )}
             </TabsTrigger>
+            <TabsTrigger value="vouchers" className="data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400">
+              <Ticket className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">{t("expert_studio.vouchers_tab")}</span>
+            </TabsTrigger>
             <TabsTrigger value="profile" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400">
               <UserCog className="h-4 w-4 mr-2" />
-              {t("expert_studio.profile_tab")}
+              <span className="hidden sm:inline">{t("expert_studio.profile_tab")}</span>
             </TabsTrigger>
           </TabsList>
 
@@ -501,18 +508,41 @@ const CreatorDashboardPage = () => {
 
           {/* Community Interactions Tab */}
           <TabsContent value="interactions">
+            <div className="space-y-6">
+              {/* Waitlist Section */}
+              <WaitlistSection />
+              
+              <Card className="bg-[#112240] border-[#1E3A5F] backdrop-blur-sm">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <MessageCircle className="h-5 w-5 text-purple-500" />
+                    {t("expert_studio.community_interactions")}
+                  </CardTitle>
+                  <CardDescription className="text-white/60">
+                    {t("expert_studio.questions_from_community")}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <CommunityInteractionsTab onUnreadCountChange={setUnreadCount} />
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Vouchers Tab */}
+          <TabsContent value="vouchers">
             <Card className="bg-[#112240] border-[#1E3A5F] backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
-                  <MessageCircle className="h-5 w-5 text-purple-500" />
-                  {t("expert_studio.community_interactions")}
+                  <Ticket className="h-5 w-5 text-amber-500" />
+                  {t("expert_studio.vouchers_tab")}
                 </CardTitle>
                 <CardDescription className="text-white/60">
-                  {t("expert_studio.questions_from_community")}
+                  {t("voucher.redeem_hint")}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <CommunityInteractionsTab onUnreadCountChange={setUnreadCount} />
+                <VoucherRedemptionTab />
               </CardContent>
             </Card>
           </TabsContent>

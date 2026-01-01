@@ -29,6 +29,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import ExpertProfileModal from "@/components/creator/ExpertProfileModal";
+import { VoucherSection } from "@/components/voucher/VoucherSection";
+import { ExpertServicesSection } from "@/components/creator/ExpertServicesSection";
 
 // Helper functions for video ID extraction
 const getYouTubeVideoId = (url: string): string | null => {
@@ -675,6 +677,16 @@ const WorkshopSecretViewPage = () => {
               {content?.access_type === "sponsored" && content?.sponsor && (
                 <SponsorCard sponsor={content.sponsor} />
               )}
+              {/* Voucher Section */}
+              <VoucherSection 
+                contentId={id || ''} 
+                hasAccess={hasAccess || false}
+                creatorLocation={content?.creator?.location_city}
+              />
+              {/* Expert Services */}
+              {content?.creator?.id && (
+                <ExpertServicesSection expertId={content.creator.id} />
+              )}
             </div>
           </aside>
 
@@ -682,11 +694,19 @@ const WorkshopSecretViewPage = () => {
           <main className="flex-1 max-w-3xl">
             <WorkshopHero content={content} />
 
-            {/* Mobile: Master and Sponsor cards */}
+            {/* Mobile: Master, Sponsor, Voucher cards */}
             <div className="lg:hidden space-y-4 mb-8">
               <MasterCard creator={content?.creator} />
               {content?.access_type === "sponsored" && content?.sponsor && (
                 <SponsorCard sponsor={content.sponsor} />
+              )}
+              <VoucherSection 
+                contentId={id || ''} 
+                hasAccess={hasAccess || false}
+                creatorLocation={content?.creator?.location_city}
+              />
+              {content?.creator?.id && (
+                <ExpertServicesSection expertId={content.creator.id} />
               )}
             </div>
 

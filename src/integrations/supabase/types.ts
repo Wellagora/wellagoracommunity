@@ -545,6 +545,7 @@ export type Database = {
           id: string
           payment_reference: string | null
           purchased_at: string
+          sponsorship_id: string | null
           user_id: string
         }
         Insert: {
@@ -555,6 +556,7 @@ export type Database = {
           id?: string
           payment_reference?: string | null
           purchased_at?: string
+          sponsorship_id?: string | null
           user_id: string
         }
         Update: {
@@ -565,6 +567,7 @@ export type Database = {
           id?: string
           payment_reference?: string | null
           purchased_at?: string
+          sponsorship_id?: string | null
           user_id?: string
         }
         Relationships: [
@@ -573,6 +576,13 @@ export type Database = {
             columns: ["content_id"]
             isOneToOne: false
             referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_access_sponsorship_id_fkey"
+            columns: ["sponsorship_id"]
+            isOneToOne: false
+            referencedRelation: "content_sponsorships"
             referencedColumns: ["id"]
           },
         ]
@@ -662,6 +672,80 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_sponsorships: {
+        Row: {
+          content_id: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          sponsor_id: string
+          total_licenses: number
+          used_licenses: number | null
+        }
+        Insert: {
+          content_id: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          sponsor_id: string
+          total_licenses?: number
+          used_licenses?: number | null
+        }
+        Update: {
+          content_id?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          sponsor_id?: string
+          total_licenses?: number
+          used_licenses?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_sponsorships_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_sponsorships_sponsor_id_fkey"
+            columns: ["sponsor_id"]
+            isOneToOne: false
+            referencedRelation: "sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_waitlist: {
+        Row: {
+          content_id: string
+          created_at: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          content_id: string
+          created_at?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          content_id?: string
+          created_at?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_waitlist_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
             referencedColumns: ["id"]
           },
         ]
@@ -995,6 +1079,53 @@ export type Database = {
             columns: ["sponsor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expert_services: {
+        Row: {
+          content_id: string | null
+          created_at: string | null
+          description: string | null
+          duration_minutes: number | null
+          expert_id: string
+          id: string
+          is_active: boolean | null
+          price_huf: number
+          service_type: string | null
+          title: string
+        }
+        Insert: {
+          content_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          expert_id: string
+          id?: string
+          is_active?: boolean | null
+          price_huf: number
+          service_type?: string | null
+          title: string
+        }
+        Update: {
+          content_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          expert_id?: string
+          id?: string
+          is_active?: boolean | null
+          price_huf?: number
+          service_type?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_services_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
             referencedColumns: ["id"]
           },
         ]
@@ -1922,6 +2053,45 @@ export type Database = {
           },
         ]
       }
+      sponsors: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          is_verified: boolean | null
+          location_city: string | null
+          logo_url: string | null
+          name: string
+          slug: string | null
+          website_url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          location_city?: string | null
+          logo_url?: string | null
+          name: string
+          slug?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          location_city?: string | null
+          logo_url?: string | null
+          name?: string
+          slug?: string | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       subscription_plans: {
         Row: {
           billing_interval: string | null
@@ -2304,6 +2474,47 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      vouchers: {
+        Row: {
+          code: string
+          content_id: string
+          created_at: string | null
+          id: string
+          pickup_location: string | null
+          redeemed_at: string | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          code: string
+          content_id: string
+          created_at?: string | null
+          id?: string
+          pickup_location?: string | null
+          redeemed_at?: string | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          code?: string
+          content_id?: string
+          created_at?: string | null
+          id?: string
+          pickup_location?: string | null
+          redeemed_at?: string | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vouchers_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
