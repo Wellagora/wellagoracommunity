@@ -267,41 +267,33 @@ const ProgramsListingPage = () => {
   }, [programs, searchQuery, selectedCategory]);
 
   const getAccessBadge = (program: Program) => {
-    const accessType = program.access_type || program.access_level;
+    // 1. PRIORITÁS: Aktív szponzoráció ellenőrzése
+    const sponsorship = program.sponsorship?.[0];
+    const hasActiveSponsorship = sponsorship?.is_active && 
+      (sponsorship.used_licenses || 0) < (sponsorship.total_licenses || 0);
     
-    // Sponsored content - badge with sponsor name (no "Ingyenes")
-    if (accessType === 'sponsored' || program.sponsor_id) {
+    if (hasActiveSponsorship) {
       return (
-        <div className="flex items-center gap-2 bg-gradient-to-r from-primary/30 to-primary/20 border-2 border-primary px-3 py-1.5 rounded-full shadow-lg shadow-primary/20">
-          {program.sponsor_logo_url ? (
-            <img 
-              src={program.sponsor_logo_url} 
-              alt={program.sponsor_name || 'Sponsor'}
-              className="h-5 w-5 rounded-full object-contain bg-white ring-1 ring-primary"
-            />
-          ) : (
-            <Gift className="w-4 h-4 text-primary" />
-          )}
-          <span className="text-xs text-primary font-semibold">
-            {t('marketplace.supported')} • {program.sponsor_name || ''}
-          </span>
-        </div>
+        <Badge className="bg-green-600 text-white border-0">
+          <Gift className="w-3 h-3 mr-1" />
+          {t('marketplace.supported')} • {sponsorship.sponsor?.name}
+        </Badge>
       );
     }
 
-    // Paid content - show value
-    if (accessType === 'paid' || accessType === 'one_time_purchase' || accessType === 'premium') {
+    // 2. PRIORITÁS: Fizetős tartalom (ár > 0)
+    if (program.price_huf && program.price_huf > 0) {
       return (
-        <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
+        <Badge className="bg-slate-700 text-white border-0">
           <ShoppingCart className="w-3 h-3 mr-1" />
           {program.price_huf?.toLocaleString() || 0} Ft
         </Badge>
       );
     }
 
-    // Free content - don't show "Ingyenes", just a simple badge
+    // 3. UTOLSÓ: Valóban szabad hozzáférés (nincs szponzor, nincs ár)
     return (
-      <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+      <Badge className="bg-blue-600 text-white border-0">
         {t("marketplace.open_access")}
       </Badge>
     );
@@ -640,40 +632,26 @@ const ProgramsListingPage = () => {
                           ? 'border-2 border-primary/50 ring-1 ring-primary/20' 
                           : 'border-[hsl(var(--cyan))]/10'
                     }`}>
-                      {/* Supported Badge at top */}
+                      {/* Sponsor Banner - csak ha van aktív szponzoráció */}
                       {hasSponsorship && (
-                        <div className="absolute top-3 left-3 z-20 bg-primary text-white px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg">
-                          <Gift className="h-3.5 w-3.5" />
-                          <span className="text-xs font-semibold">{t('marketplace.supported')}</span>
-                        </div>
-                      )}
-                      
-                      {/* Sponsor Banner */}
-                      {sponsorship && (
-                        <div className="bg-gradient-to-r from-primary/20 to-primary/10 px-4 py-2 flex items-center gap-2">
-                          <Gift className="h-4 w-4 text-primary" />
-                          <span className="text-xs text-primary font-medium">
-                            {hasSponsorship 
-                              ? `${t('marketplace.supported')} • ${sponsorship.sponsor?.name || ''}`
-                              : t('marketplace.was_sponsored_by').replace('{{name}}', sponsorship.sponsor?.name || '')
-                            }
+                        <div className="bg-gradient-to-r from-green-600/20 to-green-600/10 px-4 py-2 flex items-center gap-2">
+                          {sponsorship?.sponsor?.logo_url ? (
+                            <img 
+                              src={sponsorship.sponsor.logo_url} 
+                              alt={sponsorship.sponsor.name || 'Sponsor'}
+                              className="h-5 w-5 rounded-full object-contain bg-white"
+                            />
+                          ) : (
+                            <Gift className="h-4 w-4 text-green-600" />
+                          )}
+                          <span className="text-xs text-green-600 font-medium">
+                            {t('marketplace.supported')} • {sponsorship?.sponsor?.name || ''}
                           </span>
                         </div>
                       )}
 
                       <CardContent className="p-0">
-                        {/* Sponsor logo in corner for sponsored content */}
-                        {(hasSponsorship || isExhausted) && sponsorship?.sponsor?.logo_url && (
-                          <div className="absolute top-3 right-3 z-20">
-                            <div className="w-10 h-10 rounded-full bg-white shadow-lg ring-2 ring-primary flex items-center justify-center overflow-hidden">
-                              <img 
-                                src={sponsorship.sponsor.logo_url} 
-                                alt={sponsorship.sponsor.name || 'Sponsor'}
-                                className="w-8 h-8 object-contain"
-                              />
-                            </div>
-                          </div>
-                        )}
+                        {/* Kép rész - NINCS badge rajta */}
                         <div className="aspect-video bg-gradient-to-br from-[hsl(var(--cyan))]/10 to-[hsl(var(--primary))]/10 relative">
                           {program.thumbnail_url ? (
                             <img
@@ -686,16 +664,12 @@ const ProgramsListingPage = () => {
                               <BookOpen className="w-12 h-12 text-muted-foreground/30" />
                             </div>
                           )}
+                          {/* Csak a Featured badge marad a képen */}
                           {program.is_featured && (
                             <Badge className="absolute top-2 left-2 bg-amber-500/90 text-white">
                               <Star className="w-3 h-3 mr-1" />
                               {t("program.featured")}
                             </Badge>
-                          )}
-                          {!sponsorship && (
-                            <div className="absolute top-2 right-2">
-                              {getAccessBadge(program)}
-                            </div>
                           )}
                         </div>
                         <div className="p-4">
@@ -803,24 +777,30 @@ const ProgramsListingPage = () => {
 
                           {/* NO SPONSORSHIP - REGULAR */}
                           {!sponsorship && (
-                            <div className="flex items-center justify-between mt-3">
-                              {program.category && (() => {
-                                const cat = CATEGORIES.find(c => c.id === program.category);
-                                if (!cat) return null;
-                                const CatIcon = cat.icon;
-                                return (
-                                  <Badge
-                                    variant="outline"
-                                    className="border-[hsl(var(--cyan))]/30 text-muted-foreground flex items-center gap-1.5"
-                                  >
-                                    <div className={`p-0.5 rounded ${cat.bgColor}`}>
-                                      <CatIcon className={`w-2.5 h-2.5 ${cat.iconColor}`} />
-                                    </div>
-                                    <span>{t(`marketplace.category_${program.category}`).replace(/^[^\w]+/, '')}</span>
-                                  </Badge>
-                                );
-                              })()}
-                              {getActionButton(program)}
+                            <div className="space-y-3 mt-3">
+                              {/* Badge - a sötét kártya részén, jól olvasható */}
+                              <div>
+                                {getAccessBadge(program)}
+                              </div>
+                              <div className="flex items-center justify-between">
+                                {program.category && (() => {
+                                  const cat = CATEGORIES.find(c => c.id === program.category);
+                                  if (!cat) return null;
+                                  const CatIcon = cat.icon;
+                                  return (
+                                    <Badge
+                                      variant="outline"
+                                      className="border-[hsl(var(--cyan))]/30 text-muted-foreground flex items-center gap-1.5"
+                                    >
+                                      <div className={`p-0.5 rounded ${cat.bgColor}`}>
+                                        <CatIcon className={`w-2.5 h-2.5 ${cat.iconColor}`} />
+                                      </div>
+                                      <span>{t(`marketplace.category_${program.category}`).replace(/^[^\w]+/, '')}</span>
+                                    </Badge>
+                                  );
+                                })()}
+                                {getActionButton(program)}
+                              </div>
                             </div>
                           )}
                         </div>
