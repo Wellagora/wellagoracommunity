@@ -120,15 +120,18 @@ export const VoucherRedemptionTab = () => {
 
     setIsRedeeming(true);
     try {
-      // Find the voucher
+      // CASE-INSENSITIVE: Always convert to uppercase
+      const normalizedCode = code.trim().toUpperCase();
+      
+      // Find the voucher with normalized code
       const { data: voucher, error: findError } = await supabase
         .from('vouchers')
         .select('id, status, content_id')
-        .eq('code', code.toUpperCase())
+        .eq('code', normalizedCode)
         .single();
 
       if (findError || !voucher) {
-        toast.error(t('voucher.not_found'));
+        toast.error(t('expert_studio.voucher_not_found'));
         return;
       }
 
@@ -140,12 +143,12 @@ export const VoucherRedemptionTab = () => {
         .single();
 
       if (content?.creator_id !== user.id) {
-        toast.error(t('voucher.not_yours'));
+        toast.error(t('expert_studio.voucher_not_yours'));
         return;
       }
 
       if (voucher.status === 'used') {
-        toast.error(t('voucher.already_used'));
+        toast.error(t('expert_studio.voucher_already_used'));
         return;
       }
 
@@ -160,12 +163,12 @@ export const VoucherRedemptionTab = () => {
 
       if (updateError) throw updateError;
 
-      toast.success(t('voucher.redeem_success'));
+      toast.success(t('expert_studio.voucher_redeemed'));
       setCode('');
       loadData();
     } catch (error) {
       console.error('Error redeeming voucher:', error);
-      toast.error(t('voucher.redeem_error'));
+      toast.error(t('common.error'));
     } finally {
       setIsRedeeming(false);
     }

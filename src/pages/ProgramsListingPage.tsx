@@ -60,6 +60,8 @@ interface Sponsorship {
   used_licenses: number;
   is_active: boolean;
   sponsor: Sponsor | null;
+  is_chain_partner?: boolean;
+  redemption_location?: string;
 }
 
 interface Program {
@@ -86,6 +88,7 @@ interface Program {
     last_name: string;
     avatar_url: string | null;
     expert_title?: string | null;
+    location_city?: string | null;
   } | null;
   sponsor?: {
     id: string;
@@ -138,13 +141,13 @@ const ProgramsListingPage = () => {
         .select(`
           *,
           creator:profiles!expert_contents_creator_id_fkey (
-            id, first_name, last_name, avatar_url, expert_title
+            id, first_name, last_name, avatar_url, expert_title, location_city
           ),
           sponsor:profiles!expert_contents_sponsor_id_fkey (
             id, organization, avatar_url
           ),
           sponsorship:content_sponsorships(
-            id, total_licenses, used_licenses, is_active,
+            id, total_licenses, used_licenses, is_active, is_chain_partner, redemption_location,
             sponsor:sponsors(id, name, logo_url)
           ),
           waitlist:content_waitlist(count)
@@ -553,16 +556,45 @@ const ProgramsListingPage = () => {
                 }
                 
                 try {
+                  // 1. Check if still available
+                  const { data: current } = await supabase
+                    .from('content_sponsorships')
+                    .select('used_licenses, total_licenses')
+                    .eq('id', sponsorship!.id)
+                    .single();
+                  
+                  if (current && current.used_licenses >= current.total_licenses) {
+                    toast.error(t('marketplace.sponsor_exhausted').replace('{{name}}', sponsorship?.sponsor?.name || ''));
+                    refetch();
+                    return;
+                  }
+
+                  // 2. Update license count
                   await supabase.from('content_sponsorships')
-                    .update({ used_licenses: (sponsorship?.used_licenses || 0) + 1 })
+                    .update({ used_licenses: (current?.used_licenses || 0) + 1 })
                     .eq('id', sponsorship!.id);
                     
+                  // 3. Grant access
                   await supabase.from('content_access')
                     .insert({ 
                       user_id: user.id, 
                       content_id: program.id, 
                       access_type: 'sponsored', 
                       sponsorship_id: sponsorship!.id 
+                    });
+
+                  // 4. Generate voucher with UPPERCASE code
+                  const voucherCode = `WA-${new Date().getFullYear()}-${Math.random().toString(36).substring(2, 6)}`.toUpperCase();
+                  
+                  await supabase.from('vouchers')
+                    .insert({
+                      code: voucherCode,
+                      user_id: user.id,
+                      content_id: program.id,
+                      status: 'active',
+                      pickup_location: sponsorship?.is_chain_partner 
+                        ? `Bármely ${sponsorship.sponsor?.name} egységben`
+                        : sponsorship?.redemption_location || program.creator?.location_city || 'A Mesternél'
                     });
                     
                   toast.success(t('marketplace.access_granted'));
