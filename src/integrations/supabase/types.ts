@@ -2493,6 +2493,24 @@ export type Database = {
         }
         Relationships: []
       }
+      user_view_state: {
+        Row: {
+          active_view: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active_view?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active_view?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       vouchers: {
         Row: {
           code: string
@@ -2707,6 +2725,10 @@ export type Database = {
             }
             Returns: string
           }
+      can_use_view: {
+        Args: { _user_id: string; _view: string }
+        Returns: boolean
+      }
       check_content_access: {
         Args: { p_content_id: string; p_user_id: string }
         Returns: boolean
@@ -2863,6 +2885,7 @@ export type Database = {
       }
       geomfromewkt: { Args: { "": string }; Returns: unknown }
       get_admin_platform_stats: { Args: never; Returns: Json }
+      get_available_views: { Args: { _user_id: string }; Returns: string[] }
       get_community_impact_stats: {
         Args: { p_project_id?: string }
         Returns: Json

@@ -16,8 +16,9 @@ import {
   Store,
   Sparkles,
   Building2,
+  Check,
 } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth, ActiveView } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useViewMode } from "@/contexts/ViewModeContext";
 import { Badge } from "@/components/ui/badge";
@@ -29,8 +30,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -43,13 +42,13 @@ import LanguageSelector from "./LanguageSelector";
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [isRoleSwitching, setIsRoleSwitching] = useState(false);
-  const { user, profile, signOut, refreshProfile } = useAuth();
-  const { viewMode, setViewMode, isSuperAdmin, getEffectiveRole } = useViewMode();
+  const [isViewSwitching, setIsViewSwitching] = useState(false);
+  const { user, profile, signOut, activeView, availableViews, setActiveView } = useAuth();
+  const { isSuperAdmin } = useViewMode();
   const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
-  const effectiveRole = getEffectiveRole();
+
   // Load unread message count
   useEffect(() => {
     const loadUnreadCount = async () => {
@@ -102,48 +101,42 @@ const Navigation = () => {
     navigate("/");
   }, [signOut, navigate]);
 
-  // Role switching handler for regular users
-  const handleRoleSwitch = useCallback(async (newRole: 'citizen' | 'creator' | 'business') => {
-    if (!user || isRoleSwitching) return;
+  // View switching handler - persists to database via AuthContext
+  const handleViewSwitch = useCallback(async (newView: ActiveView) => {
+    if (isViewSwitching || activeView === newView) return;
     
-    setIsRoleSwitching(true);
+    setIsViewSwitching(true);
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ user_role: newRole })
-        .eq('id', user.id);
+      await setActiveView(newView);
       
-      if (error) throw error;
-      
-      await refreshProfile();
-      
-      if (newRole === 'creator') {
+      // Navigate to appropriate dashboard
+      if (newView === 'expert') {
         toast.success(t('nav.switched_to_expert'));
         navigate('/szakertoi-studio');
-      } else if (newRole === 'business') {
+      } else if (newView === 'sponsor') {
         toast.success(t('nav.switched_to_supporter'));
-        navigate('/tamogato-panel');
+        navigate('/iranyitopult');
       } else {
         toast.success(t('nav.switched_to_member'));
-        navigate('/dashboard');
+        navigate('/iranyitopult');
       }
     } catch (error) {
-      logger.error('Error switching role', error, 'Navigation');
+      logger.error('Error switching view', error, 'Navigation');
       toast.error(t('common.error'));
     } finally {
-      setIsRoleSwitching(false);
+      setIsViewSwitching(false);
     }
-  }, [user, isRoleSwitching, refreshProfile, navigate, t]);
+  }, [activeView, isViewSwitching, setActiveView, navigate, t]);
 
   const isActive = (path: string) => {
     return location.pathname === path;
   };
 
-  // Compute paths based on role
-  const isCreator = profile?.user_role === 'creator';
-  const isSponsor = ['business', 'government', 'ngo'].includes(profile?.user_role || '');
+  // Compute paths based on active view
+  const isExpertView = activeView === 'expert';
+  const isSponsorView = activeView === 'sponsor';
 
-  // Build nav items based on user role
+  // Build nav items based on active view
   const navItems = useMemo(() => {
     const baseItems = [
       { path: "/", label: t("nav.home"), icon: Home },
@@ -160,8 +153,8 @@ const Navigation = () => {
       ];
     }
 
-    // Creator/Expert: show Expert Studio, hide Control Panel
-    if (isCreator) {
+    // Expert view: show Expert Studio
+    if (isExpertView) {
       return [
         ...baseItems,
         { 
@@ -174,22 +167,20 @@ const Navigation = () => {
       ];
     }
 
-    // Supporter: show Control Panel
-    if (isSponsor) {
-      return [
-        ...baseItems,
-        { path: "/iranyitopult", label: t("nav.control_panel"), icon: LayoutDashboard },
-        { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
-      ];
-    }
-
-    // Regular user (citizen): show Control Panel
+    // Sponsor or Member view: show Control Panel
     return [
       ...baseItems,
       { path: "/iranyitopult", label: t("nav.control_panel"), icon: LayoutDashboard },
       { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
     ];
-  }, [user, profile, t, isCreator, isSponsor]);
+  }, [user, profile, t, isExpertView]);
+
+  // View options for the switcher
+  const viewOptions = useMemo(() => [
+    { value: 'member' as ActiveView, label: t('nav.role_member'), icon: User, color: undefined },
+    { value: 'expert' as ActiveView, label: t('nav.role_expert'), icon: Sparkles, color: '#00E5FF' },
+    { value: 'sponsor' as ActiveView, label: t('nav.role_supporter'), icon: Building2, color: '#FFD700' },
+  ], [t]);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-[100] w-full bg-background/80 backdrop-blur-md border-b border-border">
@@ -230,8 +221,6 @@ const Navigation = () => {
 
           {/* Desktop Actions - Right */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* Language Selector is next - Super Admin view switcher removed, role switch is in profile dropdown */}
-
             {/* Language Selector */}
             <LanguageSelector />
 
@@ -284,62 +273,42 @@ const Navigation = () => {
                       </Link>
                     </DropdownMenuItem>
                     
-                    {/* Role Switcher - available for all logged-in users */}
-                    <>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuLabel className="text-xs text-muted-foreground">
-                        {t('nav.switch_role')}
-                      </DropdownMenuLabel>
-                      <DropdownMenuItem
-                        onClick={() => handleRoleSwitch('citizen')}
-                        disabled={isRoleSwitching}
-                        className={`flex items-center gap-2 cursor-pointer ${
-                          profile?.user_role === 'citizen' ? 'bg-accent' : ''
-                        }`}
-                      >
-                        <User className="h-4 w-4" />
-                        {t('nav.role_member')}
-                        {profile?.user_role === 'citizen' && (
-                          <Badge variant="secondary" className="ml-auto text-xs">
-                            ✓
-                          </Badge>
-                        )}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => handleRoleSwitch('creator')}
-                        disabled={isRoleSwitching}
-                        className={`flex items-center gap-2 cursor-pointer ${
-                          profile?.user_role === 'creator' ? 'bg-[#00E5FF]/10' : ''
-                        }`}
-                      >
-                        <Sparkles className="h-4 w-4 text-[#00E5FF]" />
-                        <span className={profile?.user_role === 'creator' ? 'text-[#00E5FF]' : ''}>
-                          {t('nav.role_expert')}
-                        </span>
-                        {profile?.user_role === 'creator' && (
-                          <Badge className="ml-auto text-xs bg-[#00E5FF] text-black">
-                            ✓
-                          </Badge>
-                        )}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => handleRoleSwitch('business')}
-                        disabled={isRoleSwitching}
-                        className={`flex items-center gap-2 cursor-pointer ${
-                          isSponsor ? 'bg-[#FFD700]/10' : ''
-                        }`}
-                      >
-                        <Building2 className="h-4 w-4 text-[#FFD700]" />
-                        <span className={isSponsor ? 'text-[#FFD700]' : ''}>
-                          {t('nav.role_supporter')}
-                        </span>
-                        {isSponsor && (
-                          <Badge className="ml-auto text-xs bg-[#FFD700] text-black">
-                            ✓
-                          </Badge>
-                        )}
-                      </DropdownMenuItem>
-                    </>
+                    {/* View Switcher - only show if user has multiple views available */}
+                    {availableViews.length > 1 && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuLabel className="text-xs text-muted-foreground">
+                          {t('nav.switch_role')}
+                        </DropdownMenuLabel>
+                        {viewOptions
+                          .filter(option => availableViews.includes(option.value))
+                          .map(option => {
+                            const Icon = option.icon;
+                            const isCurrentView = activeView === option.value;
+                            return (
+                              <DropdownMenuItem
+                                key={option.value}
+                                onClick={() => handleViewSwitch(option.value)}
+                                disabled={isViewSwitching}
+                                className={`flex items-center gap-2 cursor-pointer ${
+                                  isCurrentView ? (option.color ? `bg-[${option.color}]/10` : 'bg-accent') : ''
+                                }`}
+                              >
+                                <Icon 
+                                  className="h-4 w-4" 
+                                  style={option.color ? { color: option.color } : undefined}
+                                />
+                                <span style={isCurrentView && option.color ? { color: option.color } : undefined}>
+                                  {option.label}
+                                </span>
+                                {isCurrentView && (
+                                  <Check className="h-4 w-4 ml-auto" style={option.color ? { color: option.color } : undefined} />
+                                )}
+                              </DropdownMenuItem>
+                            );
+                          })}
+                      </>
+                    )}
                     
                     {isSuperAdmin && (
                       <>
@@ -413,9 +382,60 @@ const Navigation = () => {
                         <p className="text-sm font-semibold truncate">
                           {profile.first_name} {profile.last_name}
                         </p>
-                        <p className="text-xs text-foreground/70 capitalize truncate">{profile.user_role}</p>
+                        <p className="text-xs text-foreground/70 capitalize truncate">
+                          {activeView === 'expert' ? t('nav.role_expert') : 
+                           activeView === 'sponsor' ? t('nav.role_supporter') : 
+                           t('nav.role_member')}
+                        </p>
                       </div>
                     </Link>
+                  )}
+
+                  {/* View Switcher - Mobile */}
+                  {user && availableViews.length > 1 && (
+                    <div className="space-y-1 p-2 bg-muted/50 rounded-lg">
+                      <p className="text-xs text-muted-foreground px-2 mb-2">{t('nav.switch_role')}</p>
+                      {viewOptions
+                        .filter(option => availableViews.includes(option.value))
+                        .map(option => {
+                          const Icon = option.icon;
+                          const isCurrentView = activeView === option.value;
+                          return (
+                            <button
+                              key={option.value}
+                              onClick={() => {
+                                handleViewSwitch(option.value);
+                                setIsMobileMenuOpen(false);
+                              }}
+                              disabled={isViewSwitching}
+                              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                                isCurrentView 
+                                  ? option.color 
+                                    ? `bg-[${option.color}]/20` 
+                                    : 'bg-accent' 
+                                  : 'hover:bg-accent/50'
+                              }`}
+                            >
+                              <Icon 
+                                className="h-5 w-5" 
+                                style={option.color ? { color: option.color } : undefined}
+                              />
+                              <span 
+                                className="font-medium"
+                                style={isCurrentView && option.color ? { color: option.color } : undefined}
+                              >
+                                {option.label}
+                              </span>
+                              {isCurrentView && (
+                                <Check 
+                                  className="h-4 w-4 ml-auto" 
+                                  style={option.color ? { color: option.color } : undefined}
+                                />
+                              )}
+                            </button>
+                          );
+                        })}
+                    </div>
                   )}
 
                   {/* Navigation Links - Mobile */}
@@ -441,111 +461,69 @@ const Navigation = () => {
                             className="h-5 w-5 shrink-0" 
                             style={hasCustomColor ? { color: item.iconColor } : undefined}
                           />
-                          <span className="text-sm font-medium">{item.label}</span>
+                          {item.label}
                         </Link>
                       );
                     })}
+                  </div>
 
-                    {/* Szakértői Stúdió - Mobile (Cyan) */}
-                    {user && isCreator && (
-                      <Link
-                        to="/szakertoi-studio"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors ${
-                          isActive("/szakertoi-studio")
-                            ? "bg-[#00E5FF]/20 text-[#00E5FF] font-medium shadow-[0_0_10px_rgba(0,229,255,0.3)]"
-                            : "text-[#00E5FF] hover:bg-[#00E5FF]/10"
-                        }`}
-                      >
-                        <Sparkles className="h-5 w-5 shrink-0 text-[#00E5FF]" />
-                        <span className="text-sm font-medium">{t("nav.expert_studio")}</span>
-                      </Link>
-                    )}
-
-                    {/* Támogató Panel - Mobile (Gold) */}
-                    {user && isSponsor && (
-                      <Link
-                        to="/tamogato-panel"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors ${
-                          isActive("/tamogato-panel")
-                            ? "bg-[#FFD700]/20 text-[#FFD700] font-medium shadow-[0_0_10px_rgba(255,215,0,0.3)]"
-                            : "text-[#FFD700] hover:bg-[#FFD700]/10"
-                        }`}
-                      >
-                        <Building2 className="h-5 w-5 shrink-0 text-[#FFD700]" />
-                        <span className="text-sm font-medium">{t("nav.supporter_panel")}</span>
-                      </Link>
-                    )}
-
-                    {user && (
+                  {/* Language & Actions - Mobile */}
+                  <div className="mt-auto pt-4 border-t border-border space-y-2">
+                    <LanguageSelector />
+                    
+                    {user ? (
                       <>
                         <Link
                           to="/inbox"
                           onClick={() => setIsMobileMenuOpen(false)}
-                          className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors ${
-                            isActive("/inbox")
-                              ? "text-primary-foreground bg-primary font-medium"
-                              : "text-foreground/90 hover:text-foreground hover:bg-accent/50"
-                          }`}
+                          className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-accent/50 transition-colors"
                         >
-                          <Inbox className="h-5 w-5 shrink-0" />
-                          <span className="text-sm font-medium flex-1">{t("nav.messages")}</span>
+                          <Inbox className="h-5 w-5" />
+                          {t("nav.messages")}
                           {unreadCount > 0 && (
-                            <Badge variant="destructive" className="h-5 min-w-5 text-xs">
+                            <Badge variant="destructive" className="ml-auto">
                               {unreadCount > 9 ? "9+" : unreadCount}
                             </Badge>
                           )}
                         </Link>
+                        
                         {isSuperAdmin && (
                           <Link
                             to="/super-admin"
                             onClick={() => setIsMobileMenuOpen(false)}
-                            className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors ${
-                              isActive("/super-admin")
-                                ? "text-primary bg-accent font-medium"
-                                : "text-purple-600 dark:text-purple-400 hover:bg-accent/50"
-                            }`}
+                            className="flex items-center gap-3 px-3 py-3 rounded-lg text-purple-600 dark:text-purple-400 hover:bg-purple-500/10 transition-colors"
                           >
-                            <ShieldCheck className="h-5 w-5 shrink-0" />
-                            <span className="text-sm font-medium">Super Admin</span>
+                            <ShieldCheck className="h-5 w-5" />
+                            Super Admin
                           </Link>
                         )}
+                        
+                        <button
+                          onClick={() => {
+                            handleSignOut();
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-destructive hover:bg-destructive/10 transition-colors"
+                        >
+                          <LogOut className="h-5 w-5" />
+                          {t("nav.sign_out")}
+                        </button>
                       </>
+                    ) : (
+                      <div className="space-y-2">
+                        <Button variant="outline" className="w-full" asChild>
+                          <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
+                            {t("nav.sign_in")}
+                          </Link>
+                        </Button>
+                        <Button className="w-full" asChild>
+                          <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
+                            {t("nav.join_community")}
+                          </Link>
+                        </Button>
+                      </div>
                     )}
                   </div>
-                  {/* Super Admin view switcher removed - role switching is in profile dropdown */}
-                  {/* Language Selector - Mobile */}
-                  <div className="pt-4 border-t border-border">
-                    <p className="text-xs text-foreground/70 mb-2 px-3">{t("nav.language") || "Language"}</p>
-                    <LanguageSelector />
-                  </div>
-
-                  {/* Auth Actions - Mobile */}
-                  {user ? (
-                    <div className="pt-4 border-t border-border">
-                      <Button
-                        variant="ghost"
-                        onClick={() => {
-                          handleSignOut();
-                          setIsMobileMenuOpen(false);
-                        }}
-                        className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
-                      >
-                        <LogOut className="h-5 w-5 mr-3" />
-                        {t("nav.sign_out")}
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="pt-4 border-t border-border space-y-2">
-                      <Button asChild className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
-                        <Link to="/auth">{t("nav.join_community")}</Link>
-                      </Button>
-                      <Button asChild variant="outline" className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
-                        <Link to="/auth">{t("nav.sign_in")}</Link>
-                      </Button>
-                    </div>
-                  )}
                 </div>
               </SheetContent>
             </Sheet>

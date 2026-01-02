@@ -3,6 +3,8 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
+export type ActiveView = 'member' | 'expert' | 'sponsor';
+
 interface Profile {
   id: string;
   first_name: string;
@@ -26,6 +28,9 @@ interface AuthContextType {
   profile: Profile | null;
   session: Session | null;
   loading: boolean;
+  activeView: ActiveView;
+  availableViews: ActiveView[];
+  setActiveView: (view: ActiveView) => Promise<void>;
   signUp: (data: {
     email: string;
     password: string;
@@ -56,6 +61,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [activeView, setActiveViewState] = useState<ActiveView>('member');
+  const [availableViews, setAvailableViews] = useState<ActiveView[]>(['member']);
 
   // Helper function to fetch profile data
   const fetchProfileData = async (userId: string) => {
@@ -107,6 +114,106 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Fetch available views from database function
+  const fetchAvailableViews = async (userId: string): Promise<ActiveView[]> => {
+    try {
+      const { data, error } = await supabase.rpc('get_available_views', { _user_id: userId });
+      
+      if (error) {
+        logger.error('Error fetching available views', error, 'Auth');
+        return ['member'];
+      }
+      
+      return (data as ActiveView[]) || ['member'];
+    } catch (err) {
+      logger.error('Available views fetch error', err, 'Auth');
+      return ['member'];
+    }
+  };
+
+  // Fetch current view state from database
+  const fetchViewState = async (userId: string): Promise<ActiveView> => {
+    try {
+      const { data, error } = await supabase
+        .from('user_view_state')
+        .select('active_view')
+        .eq('user_id', userId)
+        .maybeSingle();
+      
+      if (error && error.code !== 'PGRST116') {
+        logger.error('Error fetching view state', error, 'Auth');
+        return 'member';
+      }
+      
+      return (data?.active_view as ActiveView) || 'member';
+    } catch (err) {
+      logger.error('View state fetch error', err, 'Auth');
+      return 'member';
+    }
+  };
+
+  // Set active view with database persistence
+  const setActiveView = async (view: ActiveView): Promise<void> => {
+    if (!user) return;
+    
+    // Optimistic update
+    setActiveViewState(view);
+    
+    try {
+      const { error } = await supabase
+        .from('user_view_state')
+        .upsert(
+          { user_id: user.id, active_view: view, updated_at: new Date().toISOString() },
+          { onConflict: 'user_id' }
+        );
+      
+      if (error) {
+        logger.error('Error saving view state', error, 'Auth');
+        // Rollback on error - refetch actual state
+        const actualView = await fetchViewState(user.id);
+        setActiveViewState(actualView);
+        throw error;
+      }
+      
+      logger.debug('View state saved', { view }, 'Auth');
+    } catch (err) {
+      logger.error('Set active view error', err, 'Auth');
+      throw err;
+    }
+  };
+
+  // Load all auth-related data for a user
+  const loadUserData = async (userId: string) => {
+    logger.debug('Loading user data', { userId }, 'Auth');
+    
+    try {
+      // Fetch profile, available views, and current view state in parallel
+      const [profileData, views, currentView] = await Promise.all([
+        fetchProfileData(userId),
+        fetchAvailableViews(userId),
+        fetchViewState(userId)
+      ]);
+      
+      setProfile(profileData);
+      setAvailableViews(views);
+      
+      // Validate that current view is still available
+      const validView = views.includes(currentView) ? currentView : 'member';
+      setActiveViewState(validView);
+      
+      logger.debug('User data loaded', { 
+        hasProfile: !!profileData, 
+        views, 
+        activeView: validView 
+      }, 'Auth');
+    } catch (err) {
+      logger.error('User data load error', err, 'Auth');
+      setProfile(null);
+      setAvailableViews(['member']);
+      setActiveViewState('member');
+    }
+  };
+
   useEffect(() => {
     logger.debug('Setting up auth state listener', null, 'Auth');
     
@@ -119,23 +226,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Defer profile fetch with setTimeout to prevent deadlock
+        // Defer data loading with setTimeout to prevent deadlock
         if (session?.user) {
-          logger.debug('User detected, deferring profile fetch', null, 'Auth');
+          logger.debug('User detected, deferring data load', null, 'Auth');
           setTimeout(() => {
-            fetchProfileData(session.user.id).then(profile => {
-              logger.debug('Profile fetched successfully', { hasProfile: !!profile }, 'Auth');
-              setProfile(profile);
-              setLoading(false);
-            }).catch(err => {
-              logger.error('Profile fetch failed', err, 'Auth');
-              setProfile(null);
+            loadUserData(session.user.id).finally(() => {
               setLoading(false);
             });
           }, 0);
         } else {
-          logger.debug('No user, clearing profile', null, 'Auth');
+          logger.debug('No user, clearing data', null, 'Auth');
           setProfile(null);
+          setAvailableViews(['member']);
+          setActiveViewState('member');
           setLoading(false);
         }
       }
@@ -150,13 +253,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       if (session?.user) {
         setTimeout(() => {
-          fetchProfileData(session.user.id).then(profile => {
-            logger.debug('Initial profile fetched', { hasProfile: !!profile }, 'Auth');
-            setProfile(profile);
-            setLoading(false);
-          }).catch(err => {
-            logger.error('Initial profile fetch failed', err, 'Auth');
-            setProfile(null);
+          loadUserData(session.user.id).finally(() => {
             setLoading(false);
           });
         }, 0);
@@ -226,10 +323,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const refreshProfile = async () => {
     if (!user) return;
-    const profileData = await fetchProfileData(user.id);
-    if (profileData) {
-      setProfile(profileData);
-    }
+    await loadUserData(user.id);
   };
 
   const value: AuthContextType = {
@@ -237,6 +331,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     profile,
     session,
     loading,
+    activeView,
+    availableViews,
+    setActiveView,
     signUp,
     signIn,
     signOut,
