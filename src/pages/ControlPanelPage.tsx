@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -66,25 +66,65 @@ interface SponsorshipItem {
   };
 }
 
+// Loading skeleton component
+const ControlPanelSkeleton = () => (
+  <div className="min-h-screen bg-background">
+    <Navigation />
+    <main className="max-w-7xl mx-auto px-4 py-8 pt-24">
+      {/* Header skeleton */}
+      <div className="mb-8">
+        <Skeleton className="h-9 w-64 mb-2" />
+        <Skeleton className="h-5 w-48" />
+      </div>
+      
+      <div className="grid lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-8">
+          {/* Content section skeleton */}
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <Skeleton className="h-8 w-48" />
+              <Skeleton className="h-10 w-32" />
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-64 w-full rounded-xl" />
+              ))}
+            </div>
+          </div>
+          
+          {/* News section skeleton */}
+          <div>
+            <Skeleton className="h-8 w-48 mb-6" />
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-16 w-full" />
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        {/* Sidebar skeleton */}
+        <div>
+          <Skeleton className="h-96 w-full rounded-xl" />
+        </div>
+      </div>
+    </main>
+  </div>
+);
+
 const ControlPanelPage = () => {
   const navigate = useNavigate();
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading, activeView } = useAuth();
   const { t, language } = useLanguage();
   const [loadingData, setLoadingData] = useState(true);
   const [myContents, setMyContents] = useState<ContentItem[]>([]);
   const [news, setNews] = useState<NewsItem[]>([]);
   const [mySponsorships, setMySponsorships] = useState<SponsorshipItem[]>([]);
 
-  // Check if user is a supporter (sponsor role)
-  const isSponsor = profile?.user_role && ['sponsor', 'business', 'government', 'ngo'].includes(profile.user_role);
+  // Use activeView from context (not profile.user_role) - NO FLICKER!
+  const isSponsor = activeView === 'sponsor';
 
   const dateLocale = language === "hu" ? hu : language === "de" ? de : enUS;
-
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate("/auth");
-    }
-  }, [user, loading, navigate]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -133,8 +173,8 @@ const ControlPanelPage = () => {
           setMyContents(contents);
         }
 
-        // Load sponsor's sponsorships if they are a sponsor
-        if (profile?.user_role && ['sponsor', 'business', 'government', 'ngo'].includes(profile.user_role)) {
+        // Load sponsor's sponsorships if they are viewing as sponsor
+        if (isSponsor) {
           const { data: sponsorshipsData } = await supabase
             .from('content_sponsorships')
             .select(`
@@ -191,7 +231,7 @@ const ControlPanelPage = () => {
     if (user && !loading) {
       loadData();
     }
-  }, [user, loading, profile?.user_role]);
+  }, [user, loading, isSponsor]);
 
   const getTimeAgo = (date: string) => {
     const now = new Date();
@@ -212,16 +252,14 @@ const ControlPanelPage = () => {
     }
   };
 
+  // Show skeleton while auth is loading - prevents flicker!
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <ControlPanelSkeleton />;
   }
 
+  // Redirect if not authenticated
   if (!user) {
-    return null;
+    return <Navigate to="/auth" replace />;
   }
 
   const firstName = profile?.first_name || t('control_panel.member');
@@ -440,20 +478,15 @@ const ControlPanelPage = () => {
                         <p className="font-medium text-foreground truncate group-hover:text-primary transition-colors">
                           {item.title}
                         </p>
-                        <p className="text-sm text-muted-foreground">
-                          {item.type === 'event' 
-                            ? t('news.new_event') 
-                            : `${t('news.new_workshop_secret')} ${item.creator?.first_name || ''}`
-                          }
+                        <p className="text-xs text-muted-foreground">
+                          {item.type === 'content' && item.creator?.first_name && (
+                            <span>{item.creator.first_name} • </span>
+                          )}
+                          {getTimeAgo(item.created_at)}
                         </p>
                       </div>
                       
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <span className="text-xs text-muted-foreground">
-                          {getTimeAgo(item.created_at)}
-                        </span>
-                        <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                      </div>
+                      <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
                     </button>
                   ))
                 ) : (
@@ -466,93 +499,74 @@ const ControlPanelPage = () => {
           </div>
 
           {/* Right: WellBot Widget (1/3) */}
-          <div className="lg:col-span-1 animate-fade-in">
-            <WellBotWidget navigate={navigate} t={t} />
+          <div className="lg:col-span-1">
+            <Card className="bg-gradient-to-br from-primary/10 to-secondary/10 border-primary/20 sticky top-24">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
+                    <Bot className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-foreground">WellBot</h3>
+                    <p className="text-xs text-muted-foreground">{t('control_panel.wellbot_subtitle')}</p>
+                  </div>
+                </div>
+                
+                <p className="text-sm text-muted-foreground mb-4">
+                  {t('control_panel.wellbot_description')}
+                </p>
+                
+                <div className="space-y-2 mb-4">
+                  <button 
+                    onClick={() => navigate('/piacer')}
+                    className="w-full flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background transition-colors text-left"
+                  >
+                    <Compass className="h-5 w-5 text-primary" />
+                    <span className="text-sm font-medium">{t('control_panel.explore_marketplace')}</span>
+                    <ArrowRight className="h-4 w-4 ml-auto text-muted-foreground" />
+                  </button>
+                  
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="w-full flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background transition-colors text-left">
+                        <Lightbulb className="h-5 w-5 text-amber-500" />
+                        <span className="text-sm font-medium">{t('control_panel.daily_tip')}</span>
+                        <ArrowRight className="h-4 w-4 ml-auto text-muted-foreground" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80">
+                      <div className="space-y-2">
+                        <h4 className="font-medium">{t('control_panel.tip_title')}</h4>
+                        <p className="text-sm text-muted-foreground">
+                          {t('control_panel.tip_content')}
+                        </p>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  
+                  <button 
+                    onClick={() => navigate('/help')}
+                    className="w-full flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background transition-colors text-left"
+                  >
+                    <HelpCircle className="h-5 w-5 text-blue-500" />
+                    <span className="text-sm font-medium">{t('control_panel.help')}</span>
+                    <ArrowRight className="h-4 w-4 ml-auto text-muted-foreground" />
+                  </button>
+                </div>
+                
+                <Button 
+                  onClick={() => navigate('/ai-assistant')}
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                >
+                  <Bot className="h-4 w-4 mr-2" />
+                  {t('control_panel.chat_with_wellbot')}
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>
     </div>
-  );
-};
-
-// WellBot Widget Component
-const WellBotWidget = ({ navigate, t }: { navigate: (path: string) => void; t: (key: string) => string }) => {
-  const tips = [
-    t('wellbot.tip_1'),
-    t('wellbot.tip_2'),
-    t('wellbot.tip_3'),
-    t('wellbot.tip_4'),
-    t('wellbot.tip_5'),
-  ];
-  
-  const [dailyTip] = useState(() => tips[Math.floor(Math.random() * tips.length)]);
-
-  return (
-    <Card className="bg-gradient-to-br from-primary/20 via-primary/10 to-background border-primary/20 sticky top-24">
-      <CardContent className="pt-6">
-        <div className="text-center mb-6">
-          {/* Animated Avatar */}
-          <div className="relative w-20 h-20 mx-auto mb-4">
-            <div className="absolute inset-0 rounded-full bg-primary/20 animate-pulse" />
-            <div className="relative w-full h-full rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/30">
-              <Bot className="h-10 w-10 text-white" />
-            </div>
-          </div>
-          <h3 className="font-bold text-xl mb-1">WellBot</h3>
-          <p className="text-sm text-muted-foreground">{t('wellbot.greeting')}</p>
-        </div>
-
-        <div className="space-y-2 mb-6">
-          {/* Explore Marketplace */}
-          <Button 
-            variant="outline"
-            onClick={() => navigate('/piacer')}
-            className="w-full justify-start border-primary/50 text-primary hover:bg-primary/10"
-          >
-            <Compass className="h-4 w-4 mr-3" />
-            {t('wellbot.find_workshop_secret')}
-          </Button>
-          
-          {/* Daily Tip - Popover */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button 
-                variant="outline"
-                className="w-full justify-start border-accent/50 text-accent hover:bg-accent/10"
-              >
-                <Lightbulb className="h-4 w-4 mr-3" />
-                {t('wellbot.daily_tip')}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="bg-card border-border p-4 w-72">
-              <div className="flex items-start gap-3">
-                <Lightbulb className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-foreground">{dailyTip}</p>
-              </div>
-            </PopoverContent>
-          </Popover>
-          
-          {/* Need Help */}
-          <Button 
-            variant="outline"
-            onClick={() => navigate('/ai-assistant')}
-            className="w-full justify-start border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
-          >
-            <HelpCircle className="h-4 w-4 mr-3" />
-            {t('wellbot.need_help')}
-          </Button>
-        </div>
-
-        {/* Main CTA */}
-        <Button 
-          onClick={() => navigate('/ai-assistant')}
-          className="w-full bg-gradient-to-r from-primary to-accent text-white hover:opacity-90"
-        >
-          {t('wellbot.chat_with_me')}
-          <ArrowRight className="h-4 w-4 ml-2" />
-        </Button>
-      </CardContent>
-    </Card>
   );
 };
 
