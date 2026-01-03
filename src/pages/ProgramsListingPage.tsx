@@ -277,7 +277,7 @@ const ProgramsListingPage = () => {
         <div className="flex flex-col gap-1">
           <Badge className="bg-green-600 text-white border-0">
             <Gift className="w-3 h-3 mr-1" />
-            {t('marketplace.supported')} • {sponsorship.sponsor?.name}
+            {t('nav.role_supporter')} • {sponsorship.sponsor?.name}
           </Badge>
           {program.price_huf && program.price_huf > 0 && (
             <span className="text-xs text-muted-foreground">
