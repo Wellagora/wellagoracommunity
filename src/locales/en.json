@@ -89,7 +89,7 @@
   "marketplace.truly_free": "Free",
   "marketplace.sponsor": "Sponsor",
   "marketplace.sponsor_badge": "Sponsor • {{name}}",
-  "marketplace.supported": "Sponsored",
+  "marketplace.supported": "Sponsor",
   "marketplace.open_sponsored": "Open from support quota",
   "marketplace.open_from_sponsor": "Open from support quota",
   "marketplace.value_label": "Value",

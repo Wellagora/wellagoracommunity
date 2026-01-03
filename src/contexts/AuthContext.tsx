@@ -167,6 +167,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const setActiveView = async (view: ActiveView): Promise<void> => {
     if (!user) return;
     
+    // Super Admin can switch to ANY view, others need it in availableViews
+    const canSwitch = availableViews.length === 3 || availableViews.includes(view);
+    if (!canSwitch) {
+      logger.warn('Cannot switch to view', { view, availableViews }, 'Auth');
+      return;
+    }
+    
     // 1. Optimistic update - immediate
     setActiveViewState(view);
     
@@ -219,9 +226,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setProfile(profileData);
       setAvailableViews(views);
       
-      // Validate: prefer DB, fallback to localStorage, then member
-      const validView = views.includes(dbView) ? dbView : 
-                        (savedView && views.includes(savedView)) ? savedView : 'member';
+      // Validate: prefer localStorage FIRST, then DB, then member
+      // localStorage takes priority because user just switched manually
+      const validView = (savedView && views.includes(savedView)) ? savedView :
+                        views.includes(dbView) ? dbView : 'member';
       setActiveViewState(validView);
       localStorage.setItem(ACTIVE_VIEW_KEY, validView);
       
