@@ -33,7 +33,7 @@ const FeaturedEventsGrid = () => {
         .gte("start_date", new Date().toISOString())
         .eq("is_public", true)
         .order("start_date", { ascending: true })
-        .limit(3);
+        .limit(6);
 
       if (error) throw error;
       return data as Event[];
