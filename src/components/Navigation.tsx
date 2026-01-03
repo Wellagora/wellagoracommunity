@@ -273,15 +273,15 @@ const Navigation = () => {
                       </Link>
                     </DropdownMenuItem>
                     
-                    {/* View Switcher - only show if user has multiple views available */}
-                    {availableViews.length > 1 && (
+                    {/* View Switcher - Super Admin sees ALL, others see their available views */}
+                    {(isSuperAdmin || availableViews.length > 1) && (
                       <>
                         <DropdownMenuSeparator />
                         <DropdownMenuLabel className="text-xs text-muted-foreground">
                           {t('nav.switch_role')}
                         </DropdownMenuLabel>
                         {viewOptions
-                          .filter(option => availableViews.includes(option.value))
+                          .filter(option => isSuperAdmin || availableViews.includes(option.value))
                           .map(option => {
                             const Icon = option.icon;
                             const isCurrentView = activeView === option.value;
@@ -391,12 +391,12 @@ const Navigation = () => {
                     </Link>
                   )}
 
-                  {/* View Switcher - Mobile */}
-                  {user && availableViews.length > 1 && (
+                  {/* View Switcher - Mobile: Super Admin sees ALL */}
+                  {user && (isSuperAdmin || availableViews.length > 1) && (
                     <div className="space-y-1 p-2 bg-muted/50 rounded-lg">
                       <p className="text-xs text-muted-foreground px-2 mb-2">{t('nav.switch_role')}</p>
                       {viewOptions
-                        .filter(option => availableViews.includes(option.value))
+                        .filter(option => isSuperAdmin || availableViews.includes(option.value))
                         .map(option => {
                           const Icon = option.icon;
                           const isCurrentView = activeView === option.value;

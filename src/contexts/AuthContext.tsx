@@ -5,6 +5,8 @@ import { logger } from '@/lib/logger';
 
 export type ActiveView = 'member' | 'expert' | 'sponsor';
 
+const ACTIVE_VIEW_KEY = 'wellagora_active_view';
+
 interface Profile {
   id: string;
   first_name: string;
@@ -61,7 +63,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeView, setActiveViewState] = useState<ActiveView>('member');
+  // Initialize from localStorage for instant no-flicker load
+  const [activeView, setActiveViewState] = useState<ActiveView>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(ACTIVE_VIEW_KEY);
+      if (saved && ['member', 'expert', 'sponsor'].includes(saved)) {
+        return saved as ActiveView;
+      }
+    }
+    return 'member';
+  });
   const [availableViews, setAvailableViews] = useState<ActiveView[]>(['member']);
 
   // Helper function to fetch profile data
@@ -152,14 +163,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Set active view with database persistence
+  // Set active view with database + localStorage persistence
   const setActiveView = async (view: ActiveView): Promise<void> => {
     if (!user) return;
     
-    // Optimistic update
+    // 1. Optimistic update - immediate
     setActiveViewState(view);
     
+    // 2. localStorage update - immediate, survives F5
+    localStorage.setItem(ACTIVE_VIEW_KEY, view);
+    
     try {
+      // 3. Database persistence
       const { error } = await supabase
         .from('user_view_state')
         .upsert(
@@ -172,6 +187,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Rollback on error - refetch actual state
         const actualView = await fetchViewState(user.id);
         setActiveViewState(actualView);
+        localStorage.setItem(ACTIVE_VIEW_KEY, actualView);
         throw error;
       }
       
@@ -187,8 +203,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     logger.debug('Loading user data', { userId }, 'Auth');
     
     try {
+      // Get localStorage value immediately (no flicker)
+      const savedView = localStorage.getItem(ACTIVE_VIEW_KEY) as ActiveView | null;
+      if (savedView && ['member', 'expert', 'sponsor'].includes(savedView)) {
+        setActiveViewState(savedView);
+      }
+      
       // Fetch profile, available views, and current view state in parallel
-      const [profileData, views, currentView] = await Promise.all([
+      const [profileData, views, dbView] = await Promise.all([
         fetchProfileData(userId),
         fetchAvailableViews(userId),
         fetchViewState(userId)
@@ -197,9 +219,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setProfile(profileData);
       setAvailableViews(views);
       
-      // Validate that current view is still available
-      const validView = views.includes(currentView) ? currentView : 'member';
+      // Validate: prefer DB, fallback to localStorage, then member
+      const validView = views.includes(dbView) ? dbView : 
+                        (savedView && views.includes(savedView)) ? savedView : 'member';
       setActiveViewState(validView);
+      localStorage.setItem(ACTIVE_VIEW_KEY, validView);
       
       logger.debug('User data loaded', { 
         hasProfile: !!profileData, 
@@ -303,6 +327,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signOut = async () => {
+    // Clear localStorage on sign out
+    localStorage.removeItem(ACTIVE_VIEW_KEY);
     await supabase.auth.signOut();
   };
 
