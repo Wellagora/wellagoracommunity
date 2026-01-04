@@ -8,25 +8,30 @@ Clean, professional light theme with Apple Blue accent (#007AFF)
 
 @layer base {
   :root {
-    /* Apple Minimalist Palette */
-    --background: 0 0% 100%;                    /* #FFFFFF */
+    /* Organic Premium Palette */
+    --background: 240 5% 96%;                   /* #F5F5F7 Light Gray */
     --foreground: 215 25% 15%;                  /* Dark slate for text */
 
-    /* Secondary Background: Apple Light Gray #F5F5F7 */
-    --secondary-bg: 240 5% 96%;
+    /* Secondary Background */
+    --secondary-bg: 0 0% 100%;
 
-    /* Card: White with Apple-style glassmorphism */
+    /* Card: White with glassmorphism */
     --card: 0 0% 100%;
     --card-foreground: 215 25% 15%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 215 25% 15%;
 
-    /* Primary: Apple Blue #007AFF */
-    --primary: 211 100% 50%;
+    /* Primary: Fresh Green #34C759 */
+    --primary: 142 71% 45%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 211 100% 60%;
-    --primary-dark: 211 100% 45%;
+    --primary-glow: 142 71% 55%;
+    --primary-dark: 142 71% 38%;
+
+    /* Accent: Sky Blue for contrast */
+    --accent: 199 89% 48%;
+    --accent-foreground: 0 0% 100%;
+    --accent-light: 199 89% 58%;
 
     /* Secondary: Neutral Gray */
     --secondary: 215 20% 96%;
@@ -36,22 +41,17 @@ Clean, professional light theme with Apple Blue accent (#007AFF)
     --muted: 240 5% 96%;
     --muted-foreground: 215 15% 45%;
 
-    /* Accent: Apple Blue for consistency */
-    --accent: 211 100% 50%;
-    --accent-foreground: 0 0% 100%;
-    --accent-light: 211 100% 60%;
-
-    /* Success - Apple Green */
-    --success: 142 76% 36%;
+    /* Success - Fresh Green (same as primary) */
+    --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
-    --success-light: 142 70% 45%;
+    --success-light: 142 71% 55%;
 
     /* Warning - Apple Orange */
     --warning: 38 92% 50%;
     --warning-foreground: 215 25% 15%;
 
-    /* Info - Apple Blue */
-    --info: 211 100% 50%;
+    /* Info - Sky Blue */
+    --info: 199 89% 48%;
     --info-foreground: 0 0% 100%;
 
     /* Destructive - Apple Red */
@@ -61,25 +61,27 @@ Clean, professional light theme with Apple Blue accent (#007AFF)
     /* Border and Input */
     --border: 215 20% 88%;
     --input: 215 20% 94%;
-    --ring: 211 100% 50%;
+    --ring: 142 71% 45%;
 
     --radius: 0.75rem;
 
-    /* Apple-style Gradients */
-    --gradient-primary: linear-gradient(to right, hsl(211 100% 50%), hsl(211 100% 60%));
-    --gradient-vibrant: linear-gradient(135deg, hsl(211 100% 50%) 0%, hsl(211 100% 60%) 100%);
+    /* Organic Premium Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(142 71% 45%), hsl(142 71% 55%));
+    --gradient-hero-mesh: linear-gradient(135deg, hsl(199 89% 95%) 0%, hsl(166 76% 95%) 50%, hsl(142 71% 95%) 100%);
+    --gradient-pastel-icon: linear-gradient(135deg, hsl(166 76% 77%) 0%, hsl(199 89% 70%) 100%);
     --gradient-nature: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(240 5% 96%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(240 5% 97%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(199 89% 97%) 0%, hsl(166 76% 97%) 50%, hsl(142 71% 97%) 100%);
     --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(240 5% 96%) 100%);
-    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.7) 0%, hsl(240 5% 97% / 0.7) 100%);
-    --gradient-button: linear-gradient(to right, hsl(211 100% 50%), hsl(211 100% 55%));
+    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.8) 0%, hsl(240 5% 97% / 0.8) 100%);
+    --gradient-button: linear-gradient(135deg, hsl(142 71% 45%), hsl(142 71% 50%));
 
-    /* Apple-style Shadows */
-    --shadow-card: 0 20px 50px -10px rgba(0, 0, 0, 0.05);
-    --shadow-premium: 0 10px 40px -10px hsl(211 100% 50% / 0.15);
+    /* Organic Premium Shadows */
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 20px 50px -10px rgba(0, 0, 0, 0.08);
+    --shadow-premium: 0 10px 40px -10px hsl(142 71% 45% / 0.15);
     --shadow-float: 0 20px 50px -15px hsl(215 25% 15% / 0.1);
-    --shadow-button: 0 4px 15px -3px hsl(211 100% 50% / 0.25);
-    --shadow-glow: 0 0 20px hsl(211 100% 50% / 0.15);
+    --shadow-button: 0 4px 15px -3px hsl(142 71% 45% / 0.25);
+    --shadow-glow: 0 0 20px hsl(142 71% 45% / 0.15);
+    --shadow-3d: 0 1px 2px rgba(0, 0, 0, 0.05), 0 20px 50px -10px rgba(0, 0, 0, 0.08);
 
     /* Smooth animation system */
     --transition-smooth: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -93,12 +95,12 @@ Clean, professional light theme with Apple Blue accent (#007AFF)
     /* Sidebar - Light Theme */
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 215 25% 15%;
-    --sidebar-primary: 211 100% 50%;
+    --sidebar-primary: 142 71% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 5% 96%;
     --sidebar-accent-foreground: 215 25% 15%;
     --sidebar-border: 215 20% 88%;
-    --sidebar-ring: 211 100% 50%;
+    --sidebar-ring: 142 71% 45%;
   }
 
   /* Dark mode option */
@@ -180,30 +182,40 @@ Clean, professional light theme with Apple Blue accent (#007AFF)
     text-wrap: balance;
   }
 
-  /* Apple-style Glass Morphism for Cards */
+  /* Organic Premium Glass Morphism for Cards */
   .bg-glass {
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 20px 50px -10px rgba(0, 0, 0, 0.08);
   }
 
   .bg-glass-strong {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(24px) saturate(200%);
     -webkit-backdrop-filter: blur(24px) saturate(200%);
     border: 1px solid rgba(255, 255, 255, 0.5);
-    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 20px 50px -10px rgba(0, 0, 0, 0.08);
   }
 
-  /* Apple-style Card (standard) */
-  .card-apple {
-    background: rgba(255, 255, 255, 0.7);
+  /* Organic Premium Card (3D effect) */
+  .card-organic {
+    background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 20px 50px -10px rgba(0, 0, 0, 0.08);
+    border-radius: 1rem;
+  }
+
+  /* Legacy card class */
+  .card-apple {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 20px 50px -10px rgba(0, 0, 0, 0.08);
     border-radius: 1rem;
   }
 
