@@ -2033,6 +2033,36 @@ export type Database = {
           },
         ]
       }
+      regions: {
+        Row: {
+          country_code: string | null
+          created_at: string | null
+          currency: string | null
+          id: string
+          is_active: boolean | null
+          locale: string | null
+          name: string
+        }
+        Insert: {
+          country_code?: string | null
+          created_at?: string | null
+          currency?: string | null
+          id: string
+          is_active?: boolean | null
+          locale?: string | null
+          name: string
+        }
+        Update: {
+          country_code?: string | null
+          created_at?: string | null
+          currency?: string | null
+          id?: string
+          is_active?: boolean | null
+          locale?: string | null
+          name?: string
+        }
+        Relationships: []
+      }
       security_audit_log: {
         Row: {
           action: string
