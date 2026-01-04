@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { Users, Sparkles, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
 
@@ -16,12 +15,10 @@ const HeroSection = () => {
       description: t('landing.card_member_desc_short'),
       cta: t('landing.card_member_cta'),
       link: '/auth?role=member',
-      cardBg: 'bg-gradient-to-br from-cyan-50 to-white',
-      borderColor: 'border-cyan-200',
-      hoverBorder: 'hover:border-cyan-400',
-      hoverShadow: 'hover:shadow-lg hover:shadow-cyan-100/50',
-      iconGradient: 'bg-gradient-to-br from-cyan-400 to-cyan-600',
-      buttonBg: 'bg-cyan-500 hover:bg-cyan-600',
+      gradient: 'from-cyan-400 to-cyan-600',
+      shadowColor: 'shadow-cyan-500/10 hover:shadow-cyan-500/20',
+      buttonGradient: 'from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700',
+      buttonShadow: 'shadow-cyan-500/30',
     },
     {
       id: 'expert',
@@ -30,12 +27,10 @@ const HeroSection = () => {
       description: t('landing.card_expert_desc_short'),
       cta: t('landing.card_expert_cta'),
       link: '/auth?role=expert',
-      cardBg: 'bg-gradient-to-br from-purple-50 to-white',
-      borderColor: 'border-purple-200',
-      hoverBorder: 'hover:border-purple-400',
-      hoverShadow: 'hover:shadow-lg hover:shadow-purple-100/50',
-      iconGradient: 'bg-gradient-to-br from-purple-400 to-purple-600',
-      buttonBg: 'bg-purple-500 hover:bg-purple-600',
+      gradient: 'from-purple-400 to-purple-600',
+      shadowColor: 'shadow-purple-500/10 hover:shadow-purple-500/20',
+      buttonGradient: 'from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700',
+      buttonShadow: 'shadow-purple-500/30',
     },
     {
       id: 'sponsor',
@@ -44,29 +39,36 @@ const HeroSection = () => {
       description: t('landing.card_sponsor_desc_short'),
       cta: t('landing.card_sponsor_cta'),
       link: '/auth?role=sponsor',
-      cardBg: 'bg-gradient-to-br from-amber-50 to-white',
-      borderColor: 'border-amber-200',
-      hoverBorder: 'hover:border-amber-400',
-      hoverShadow: 'hover:shadow-lg hover:shadow-amber-100/50',
-      iconGradient: 'bg-gradient-to-br from-amber-400 to-amber-600',
-      buttonBg: 'bg-amber-500 hover:bg-amber-600',
+      gradient: 'from-amber-400 to-amber-600',
+      shadowColor: 'shadow-amber-500/10 hover:shadow-amber-500/20',
+      buttonGradient: 'from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700',
+      buttonShadow: 'shadow-amber-500/30',
     },
   ];
 
   return (
-    <section className="relative min-h-screen bg-gradient-hero overflow-hidden flex flex-col items-center justify-center">
-      {/* Subtle Background Elements */}
+    <section className="relative min-h-screen overflow-hidden flex flex-col items-center justify-center bg-white">
+      {/* Subtle dot pattern background */}
+      <div 
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: `radial-gradient(circle, #64748b 1px, transparent 1px)`,
+          backgroundSize: '24px 24px'
+        }}
+      />
+      
+      {/* Gradient orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-cyan-100/40 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-100/30 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 right-1/4 w-64 h-64 bg-amber-100/30 rounded-full blur-3xl" />
+        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-gradient-to-br from-cyan-100/50 to-cyan-50/30 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-gradient-to-br from-purple-100/40 to-purple-50/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-gradient-to-br from-amber-100/30 to-amber-50/20 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative z-10 flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 pt-20 pb-16">
-        <div className="max-w-4xl mx-auto text-center">
+      <div className="relative z-10 flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 pt-24 pb-20">
+        <div className="max-w-5xl mx-auto text-center">
           {/* Main Headline */}
           <motion.h1 
-            className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 leading-tight text-slate-900"
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-slate-900 font-inter"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -79,7 +81,7 @@ const HeroSection = () => {
 
           {/* Subtitle */}
           <motion.p 
-            className="text-xl text-slate-600 mb-10 max-w-2xl mx-auto"
+            className="text-xl text-slate-600 mb-12 max-w-2xl mx-auto font-inter"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -87,8 +89,8 @@ const HeroSection = () => {
             {t('landing.hero_subtitle')}
           </motion.p>
 
-          {/* Registration Cards - Integrated in Hero */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+          {/* Premium Registration Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {registrationPaths.map((path, index) => {
               const Icon = path.icon;
               return (
@@ -97,37 +99,56 @@ const HeroSection = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
+                  whileHover={{ y: -4 }}
                   className="group"
                 >
-                  <Card
-                    className={`relative overflow-hidden border-2 ${path.cardBg} ${path.borderColor} ${path.hoverBorder} ${path.hoverShadow} transition-all duration-300 hover:-translate-y-1 rounded-2xl`}
+                  <div
+                    className={`
+                      relative overflow-hidden
+                      bg-white/80 backdrop-blur-sm
+                      border border-slate-200/50
+                      shadow-xl ${path.shadowColor}
+                      rounded-2xl p-6
+                      hover:shadow-2xl
+                      transition-all duration-300
+                      cursor-pointer
+                    `}
                   >
-                    <CardContent className="p-6 flex flex-col items-center text-center">
-                      {/* Icon */}
-                      <div className={`w-16 h-16 rounded-2xl ${path.iconGradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                        <Icon className="w-8 h-8 text-white" />
-                      </div>
-                      
-                      {/* Title */}
-                      <h3 className="text-xl font-bold text-slate-900 mb-1">
-                        {path.title}
-                      </h3>
-                      
-                      {/* Description */}
-                      <p className="text-slate-600 text-sm mb-5">
-                        {path.description}
-                      </p>
-                      
-                      {/* CTA Button */}
-                      <Link to={path.link} className="w-full">
-                        <Button 
-                          className={`w-full text-white ${path.buttonBg}`}
-                        >
-                          {path.cta}
-                        </Button>
-                      </Link>
-                    </CardContent>
-                  </Card>
+                    {/* Gradient icon container */}
+                    <div className={`
+                      w-14 h-14 rounded-xl mx-auto
+                      bg-gradient-to-br ${path.gradient}
+                      flex items-center justify-center
+                      group-hover:scale-110 transition-transform duration-300
+                      shadow-lg ${path.buttonShadow}
+                    `}>
+                      <Icon className="h-7 w-7 text-white" />
+                    </div>
+                    
+                    {/* Title */}
+                    <h3 className="text-xl font-bold text-slate-900 mt-4 font-inter">
+                      {path.title}
+                    </h3>
+                    
+                    {/* Description */}
+                    <p className="text-slate-600 text-sm mt-1 font-inter">
+                      {path.description}
+                    </p>
+                    
+                    {/* CTA Button */}
+                    <Link to={path.link} className="block mt-5">
+                      <Button 
+                        className={`
+                          w-full text-white font-medium
+                          bg-gradient-to-r ${path.buttonGradient}
+                          shadow-lg ${path.buttonShadow}
+                          transition-all duration-300
+                        `}
+                      >
+                        {path.cta}
+                      </Button>
+                    </Link>
+                  </div>
                 </motion.div>
               );
             })}
@@ -136,7 +157,7 @@ const HeroSection = () => {
       </div>
 
       {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent"></div>
     </section>
   );
 };
