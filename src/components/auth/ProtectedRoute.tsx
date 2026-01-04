@@ -53,10 +53,10 @@ export const ProtectedRoute = ({
     return <Navigate to={redirectTo || "/auth"} state={{ from: location }} replace />;
   }
 
-  // Get is_super_admin from profile
+  // Get is_super_admin from profile - Super Admin ALWAYS has full access
   const isSuperAdmin = profile?.is_super_admin === true;
 
-  // Super Admin ALWAYS has access to everything
+  // Super Admin bypasses ALL restrictions - can access any route regardless of allowedRoles
   if (isSuperAdmin) {
     return <>{children}</>;
   }

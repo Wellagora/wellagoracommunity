@@ -69,10 +69,57 @@ const ExpertGallery = () => {
     );
   }
 
-  // Don't render if no experts
-  if (!experts || experts.length === 0) {
-    return null;
-  }
+  // Dummy data for MVP visualization
+  const DUMMY_EXPERTS: Expert[] = [
+    {
+      id: "dummy-1",
+      first_name: "Kovács",
+      last_name: "János",
+      avatar_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
+      expert_title: "Sajtmester",
+      location_city: "Káli-medence",
+      is_verified_expert: true,
+    },
+    {
+      id: "dummy-2",
+      first_name: "Bécsi",
+      last_name: "Anna",
+      avatar_url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&crop=face",
+      expert_title: "Restaurátor",
+      location_city: "Budapest",
+      is_verified_expert: true,
+    },
+    {
+      id: "dummy-3",
+      first_name: "Nagy",
+      last_name: "Péter",
+      avatar_url: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face",
+      expert_title: "Asztalosmester",
+      location_city: "Tihany",
+      is_verified_expert: true,
+    },
+    {
+      id: "dummy-4",
+      first_name: "Szabó",
+      last_name: "Eszter",
+      avatar_url: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face",
+      expert_title: "Permakultúra szakértő",
+      location_city: "Balaton-felvidék",
+      is_verified_expert: false,
+    },
+    {
+      id: "dummy-5",
+      first_name: "Tóth",
+      last_name: "Gábor",
+      avatar_url: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=face",
+      expert_title: "Pálinkafőző mester",
+      location_city: "Tokaj",
+      is_verified_expert: true,
+    },
+  ];
+
+  // Use real experts if available, otherwise show dummy data
+  const displayExperts = experts && experts.length > 0 ? experts : DUMMY_EXPERTS;
 
   return (
     <section className="py-16 bg-[#F5F5F7]">
@@ -119,7 +166,7 @@ const ExpertGallery = () => {
           className="flex gap-8 overflow-x-auto scrollbar-hide pb-4 -mx-4 px-4"
           style={{ scrollSnapType: "x mandatory" }}
         >
-          {experts.map((expert, index) => (
+          {displayExperts.map((expert, index) => (
             <motion.div
               key={expert.id}
               initial={{ opacity: 0, y: 20 }}
