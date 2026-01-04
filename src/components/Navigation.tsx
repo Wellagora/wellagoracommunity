@@ -159,20 +159,23 @@ const Navigation = () => {
 
   // Build nav items based on user role
   const navItems = useMemo(() => {
+    // Simplified navigation for logged-out users
+    if (!user || !profile) {
+      return [
+        { path: "/", label: t("nav.home"), icon: Home },
+        { path: "/piacer", label: t("nav.marketplace"), icon: Store },
+        { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
+        { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
+      ];
+    }
+
+    // Full navigation for logged-in users
     const baseItems = [
       { path: "/", label: t("nav.home"), icon: Home },
       { path: "/piacer", label: t("nav.marketplace"), icon: Store },
       { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
       { path: "/community", label: t("nav.community"), icon: UsersIcon },
     ];
-
-    if (!user || !profile) {
-      return [
-        ...baseItems,
-        { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
-        { path: "/sponsor", label: t("nav.sponsors"), icon: Heart },
-      ];
-    }
 
     // Expert: show Expert Studio link
     if (effectiveRole === 'expert') {

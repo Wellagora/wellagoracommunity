@@ -12,8 +12,6 @@ import WorkshopSecretsSlider from "@/components/WorkshopSecretsSlider";
 import CTABanner from "@/components/CTABanner";
 import { UpcomingEventsSection } from "@/components/events/UpcomingEventsSection";
 import { RegionalImpactGarden } from "@/components/RegionalImpactGarden";
-import { StoryOfTheWeek } from "@/components/StoryOfTheWeek";
-import CreatorLandingSection from "@/components/landing/CreatorLandingSection";
 import RegistrationCards from "@/components/landing/RegistrationCards";
 import Footer from "@/components/Footer";
 import { StatsBarSkeleton } from "@/components/ui/skeletons";
@@ -137,7 +135,7 @@ const Index = () => {
       <div className="min-h-screen bg-background flex flex-col">
         <Navigation />
         <main className="pt-2 md:pt-4 flex-1">
-          {/* 1. HERO SECTION - Full viewport with hero image */}
+          {/* 1. HERO SECTION - Full viewport with integrated registration cards */}
           <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden">
             {/* Hero Background Image */}
             <div className="absolute inset-0 z-0">
@@ -146,59 +144,44 @@ const Index = () => {
                 alt="Hero background"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/40"></div>
+              <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/70 to-background/50"></div>
             </div>
 
-            {/* Hero Content */}
-            <div className="container mx-auto px-4 py-20 relative z-10">
+            {/* Hero Content with Registration Cards */}
+            <div className="container mx-auto px-4 py-12 relative z-10">
               <motion.div
                 className="text-center max-w-4xl mx-auto"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
               >
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight">
                   {t("landing.hero_title") || "Helyi Szaktudás. Vállalati Támogatás. Közösségi Érték."}
                 </h1>
-                <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto">
+                <p className="text-lg md:text-xl text-muted-foreground mb-6 max-w-2xl mx-auto">
                   {t("landing.hero_subtitle") || "Csatlakozz a regionális tudásmegosztó ökoszisztémához"}
                 </p>
+                
+                {/* Registration Cards - Integrated into Hero */}
+                <RegistrationCards />
               </motion.div>
             </div>
 
             {/* Scroll Indicator */}
             <motion.div
-              className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
+              className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10"
               animate={{ y: [0, 10, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              <ArrowDown className="h-8 w-8 text-muted-foreground/60" />
+              <ArrowDown className="h-6 w-6 text-muted-foreground/60" />
             </motion.div>
           </section>
-
-          {/* 2. REGISTRATION CARDS - 3 Paths */}
-          <RegistrationCards />
 
           {/* 2. KIEMELT ESEMÉNYEK - Fixed 3-column grid */}
           <FeaturedEventsGrid />
 
           {/* 3. MŰHELYTITOK AJÁNLÓ - Horizontal slider */}
           <WorkshopSecretsSlider />
-
-          {/* 4. CTA BANNER */}
-          <CTABanner />
-
-          {/* 5. KÖZELGŐ ESEMÉNYEK */}
-          <UpcomingEventsSection />
-
-          {/* 6. REGIONÁLIS HATÁSKERT */}
-          <RegionalImpactGarden />
-
-          {/* Story of the Week */}
-          <StoryOfTheWeek />
-
-          {/* CREATOR LANDING SECTION */}
-          <CreatorLandingSection />
         </main>
       </div>
 
