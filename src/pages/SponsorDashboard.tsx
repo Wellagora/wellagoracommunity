@@ -187,7 +187,7 @@ const SponsorDashboard = () => {
               Szponzorált tartalmak
             </CardTitle>
             <CardDescription>
-              A szervezeted által támogatott műhelytitkok
+              {t("sponsor_dashboard.sponsored_contents_desc") || "A szervezeted által támogatott műhelytitkok"}
             </CardDescription>
           </CardHeader>
           <CardContent>

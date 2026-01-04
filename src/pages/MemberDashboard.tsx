@@ -248,7 +248,7 @@ const MemberDashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-amber-500" />
-              Támogatott Műhelytitkok
+              {t("member_dashboard.sponsored_contents") || "Támogatott Műhelytitkok"}
             </CardTitle>
           </CardHeader>
           <CardContent>
