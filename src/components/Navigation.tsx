@@ -16,6 +16,7 @@ import {
   Store,
   Sparkles,
   Building2,
+  Eye,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -46,6 +47,7 @@ const getEffectiveRole = (userRole: string | undefined): 'member' | 'expert' | '
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [activeView, setActiveView] = useState<'member' | 'expert' | 'sponsor' | null>(null);
   const { user, profile, signOut } = useAuth();
   const { t } = useLanguage();
   const location = useLocation();
@@ -54,6 +56,37 @@ const Navigation = () => {
   // Determine user's role from profile
   const effectiveRole = getEffectiveRole(profile?.user_role);
   const isSuperAdmin = profile?.is_super_admin === true;
+
+  // Load activeView from localStorage on mount (only for super admins)
+  useEffect(() => {
+    if (isSuperAdmin) {
+      const savedView = localStorage.getItem('adminActiveView') as 'member' | 'expert' | 'sponsor' | null;
+      if (savedView && ['member', 'expert', 'sponsor'].includes(savedView)) {
+        setActiveView(savedView);
+      }
+    } else {
+      setActiveView(null);
+    }
+  }, [isSuperAdmin]);
+
+  // Handle view change for super admins
+  const handleViewChange = (view: 'member' | 'expert' | 'sponsor') => {
+    setActiveView(view);
+    localStorage.setItem('adminActiveView', view);
+  };
+
+  // Get display label for current view
+  const getViewLabel = (view: 'member' | 'expert' | 'sponsor' | null): string => {
+    switch (view) {
+      case 'member': return 'Felfedező (Tag)';
+      case 'expert': return 'Szakértő';
+      case 'sponsor': return 'Támogató';
+      default: return 'Admin';
+    }
+  };
+
+  // The role to use for routing/navigation (activeView takes precedence for super admins)
+  const displayRole = (isSuperAdmin && activeView) ? activeView : effectiveRole;
 
   // Load unread message count
   useEffect(() => {
@@ -111,12 +144,14 @@ const Navigation = () => {
     return location.pathname === path;
   };
 
-  // Get dashboard route based on user's role
+  // Get dashboard route based on user's role (or activeView for super admins)
   const getDashboardRoute = useCallback((): string => {
     if (!user) return '/auth';
-    if (isSuperAdmin) return '/super-admin';
     
-    switch (effectiveRole) {
+    // For super admins with activeView, route to the corresponding dashboard
+    const roleToUse = (isSuperAdmin && activeView) ? activeView : effectiveRole;
+    
+    switch (roleToUse) {
       case 'expert':
         return '/szakertoi-studio';
       case 'sponsor':
@@ -125,14 +160,15 @@ const Navigation = () => {
       default:
         return '/iranyitopult';
     }
-  }, [user, isSuperAdmin, effectiveRole]);
+  }, [user, isSuperAdmin, activeView, effectiveRole]);
 
   // Get dashboard label based on role
   const getDashboardLabel = useCallback((): string => {
     if (!user) return t('nav.sign_in');
-    if (isSuperAdmin) return 'Admin';
     
-    switch (effectiveRole) {
+    const roleToUse = (isSuperAdmin && activeView) ? activeView : effectiveRole;
+    
+    switch (roleToUse) {
       case 'expert':
         return t('nav.expert_studio');
       case 'sponsor':
@@ -141,10 +177,13 @@ const Navigation = () => {
       default:
         return t('nav.control_panel');
     }
-  }, [user, isSuperAdmin, effectiveRole, t]);
+  }, [user, isSuperAdmin, activeView, effectiveRole, t]);
 
   // Get role display text
   const getRoleDisplayText = (): string => {
+    if (isSuperAdmin && activeView) {
+      return `Super Admin (${getViewLabel(activeView)})`;
+    }
     if (isSuperAdmin) return 'Super Admin';
     switch (effectiveRole) {
       case 'expert':
@@ -177,8 +216,9 @@ const Navigation = () => {
       { path: "/community", label: t("nav.community"), icon: UsersIcon },
     ];
 
+    // Use displayRole (which considers activeView for super admins)
     // Expert: show Expert Studio link
-    if (effectiveRole === 'expert') {
+    if (displayRole === 'expert') {
       return [
         ...baseItems,
         { 
@@ -192,7 +232,7 @@ const Navigation = () => {
     }
 
     // Sponsor: show Sponsor Center link
-    if (effectiveRole === 'sponsor') {
+    if (displayRole === 'sponsor') {
       return [
         ...baseItems,
         { 
@@ -211,7 +251,7 @@ const Navigation = () => {
       { path: "/iranyitopult", label: t("nav.control_panel"), icon: LayoutDashboard },
       { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
     ];
-  }, [user, profile, t, effectiveRole]);
+  }, [user, profile, t, displayRole]);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-[100] w-full bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
@@ -252,6 +292,40 @@ const Navigation = () => {
 
           {/* Desktop Actions - Right */}
           <div className="hidden md:flex items-center space-x-4">
+            {/* Super Admin View Switcher */}
+            {isSuperAdmin && user && (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors text-sm font-medium">
+                  <Eye className="h-4 w-4" />
+                  <span>Nézet: {getViewLabel(activeView)}</span>
+                  <ChevronDown className="h-4 w-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem 
+                    onClick={() => handleViewChange('member')}
+                    className={activeView === 'member' ? 'bg-cyan-50 text-cyan-700' : ''}
+                  >
+                    <UsersIcon className="h-4 w-4 mr-2 text-cyan-600" />
+                    Felfedező (Tag)
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => handleViewChange('expert')}
+                    className={activeView === 'expert' ? 'bg-violet-50 text-violet-700' : ''}
+                  >
+                    <Sparkles className="h-4 w-4 mr-2 text-violet-600" />
+                    Szakértő
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => handleViewChange('sponsor')}
+                    className={activeView === 'sponsor' ? 'bg-amber-50 text-amber-700' : ''}
+                  >
+                    <Building2 className="h-4 w-4 mr-2 text-amber-600" />
+                    Támogató
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+
             {/* Language Selector */}
             <LanguageSelector />
 
@@ -431,6 +505,42 @@ const Navigation = () => {
                       );
                     })}
                   </div>
+
+                  {/* Super Admin View Switcher - Mobile */}
+                  {isSuperAdmin && (
+                    <div className="px-3 py-2 space-y-2">
+                      <p className="text-xs font-medium text-slate-500 uppercase">Nézet váltás</p>
+                      <div className="flex flex-col gap-1">
+                        <button
+                          onClick={() => handleViewChange('member')}
+                          className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-left ${
+                            activeView === 'member' ? 'bg-cyan-100 text-cyan-700' : 'hover:bg-slate-100'
+                          }`}
+                        >
+                          <UsersIcon className="h-4 w-4 text-cyan-600" />
+                          <span className="text-sm">Felfedező (Tag)</span>
+                        </button>
+                        <button
+                          onClick={() => handleViewChange('expert')}
+                          className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-left ${
+                            activeView === 'expert' ? 'bg-violet-100 text-violet-700' : 'hover:bg-slate-100'
+                          }`}
+                        >
+                          <Sparkles className="h-4 w-4 text-violet-600" />
+                          <span className="text-sm">Szakértő</span>
+                        </button>
+                        <button
+                          onClick={() => handleViewChange('sponsor')}
+                          className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-left ${
+                            activeView === 'sponsor' ? 'bg-amber-100 text-amber-700' : 'hover:bg-slate-100'
+                          }`}
+                        >
+                          <Building2 className="h-4 w-4 text-amber-600" />
+                          <span className="text-sm">Támogató</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Super Admin link - Mobile */}
                   {isSuperAdmin && (
