@@ -649,11 +649,11 @@ const ProgramsListingPage = () => {
                               className="h-5 w-5 rounded-full object-contain bg-white"
                             />
                           ) : (
-                            <Gift className="h-4 w-4 text-green-600" />
+                            <Gift className="h-4 w-4 text-green-400" />
                           )}
-                          <span className="text-xs text-green-600 font-medium">
-                            {t('marketplace.supported')} • {sponsorship?.sponsor?.name || ''}
-                          </span>
+                          <Badge className="bg-green-500/20 text-green-400 border border-green-500/30">
+                            Támogató • {sponsorship?.sponsor?.name || 'Partner'}
+                          </Badge>
                         </div>
                       )}
 

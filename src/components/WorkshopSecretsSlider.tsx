@@ -86,11 +86,12 @@ const WorkshopSecretsSlider = () => {
       (sponsorship.used_licenses || 0) < (sponsorship.total_licenses || 0);
     
     if (hasActiveSponsorship) {
+      const sponsorName = sponsorship.sponsor?.name || 'Partner';
       return (
         <div className="flex flex-col gap-1">
-          <Badge className="bg-green-600 text-white border-0">
+          <Badge className="bg-green-500/20 text-green-400 border border-green-500/30">
             <Gift className="w-3 h-3 mr-1" />
-            {t("nav.role_supporter")} • {sponsorship.sponsor?.name}
+            Támogató • {sponsorName}
           </Badge>
           {program.price_huf && program.price_huf > 0 && (
             <span className="text-xs text-muted-foreground">
