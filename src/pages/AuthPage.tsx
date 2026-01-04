@@ -175,40 +175,34 @@ const AuthPage = () => {
       id: 'member', 
       icon: Users, 
       label: t('auth.role_member') || 'Tagként csatlakozom', 
-      desc: t('landing.card_member_desc_short') || 'Kuponok és helyi kincsek',
-      cardBg: 'bg-gradient-to-br from-cyan-50 to-white',
-      borderColor: 'border-cyan-200',
-      hoverBorder: 'hover:border-cyan-400',
-      hoverShadow: 'hover:shadow-lg hover:shadow-cyan-100/50',
-      selectedBg: 'bg-gradient-to-br from-cyan-50 to-cyan-100/50',
+      desc: t('auth.role_member_desc') || 'Kuponok, események, közösség',
+      gradient: 'from-cyan-400 to-cyan-600',
+      shadowColor: 'shadow-cyan-500/10 hover:shadow-cyan-500/20',
+      selectedBg: 'bg-cyan-50',
       selectedBorder: 'border-cyan-500',
-      iconGradient: 'bg-gradient-to-br from-cyan-400 to-cyan-600',
+      buttonShadow: 'shadow-cyan-500/30',
     },
     { 
       id: 'expert', 
       icon: Sparkles, 
       label: t('auth.role_expert') || 'Szakértőként csatlakozom', 
-      desc: t('landing.card_expert_desc_short') || 'A tudásom és tapasztalatom',
-      cardBg: 'bg-gradient-to-br from-purple-50 to-white',
-      borderColor: 'border-purple-200',
-      hoverBorder: 'hover:border-purple-400',
-      hoverShadow: 'hover:shadow-lg hover:shadow-purple-100/50',
-      selectedBg: 'bg-gradient-to-br from-purple-50 to-purple-100/50',
+      desc: t('auth.role_expert_desc') || 'Tudásmegosztás, tiszteletdíj',
+      gradient: 'from-purple-400 to-purple-600',
+      shadowColor: 'shadow-purple-500/10 hover:shadow-purple-500/20',
+      selectedBg: 'bg-purple-50',
       selectedBorder: 'border-purple-500',
-      iconGradient: 'bg-gradient-to-br from-purple-400 to-purple-600',
+      buttonShadow: 'shadow-purple-500/30',
     },
     { 
       id: 'sponsor', 
       icon: Building2, 
       label: t('auth.role_sponsor') || 'Támogatóként csatlakozom', 
-      desc: t('landing.card_sponsor_desc_short') || 'A közösséget és a helyi értékeket',
-      cardBg: 'bg-gradient-to-br from-amber-50 to-white',
-      borderColor: 'border-amber-200',
-      hoverBorder: 'hover:border-amber-400',
-      hoverShadow: 'hover:shadow-lg hover:shadow-amber-100/50',
-      selectedBg: 'bg-gradient-to-br from-amber-50 to-amber-100/50',
+      desc: t('auth.role_sponsor_desc') || 'Értékteremtés, ESG hatás',
+      gradient: 'from-amber-400 to-amber-600',
+      shadowColor: 'shadow-amber-500/10 hover:shadow-amber-500/20',
+      selectedBg: 'bg-amber-50',
       selectedBorder: 'border-amber-500',
-      iconGradient: 'bg-gradient-to-br from-amber-400 to-amber-600',
+      buttonShadow: 'shadow-amber-500/30',
     },
   ];
 
@@ -224,12 +218,21 @@ const AuthPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Subtle Background Elements */}
+    <div className="min-h-screen bg-white relative overflow-hidden">
+      {/* Subtle dot pattern background */}
+      <div 
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: `radial-gradient(circle, #64748b 1px, transparent 1px)`,
+          backgroundSize: '24px 24px'
+        }}
+      />
+      
+      {/* Gradient orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-cyan-100/30 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-100/30 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 right-1/4 w-64 h-64 bg-amber-100/20 rounded-full blur-3xl" />
+        <div className="absolute -top-40 -right-40 w-[400px] h-[400px] bg-gradient-to-br from-cyan-100/50 to-cyan-50/30 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-[400px] h-[400px] bg-gradient-to-br from-purple-100/40 to-purple-50/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 right-1/4 w-[300px] h-[300px] bg-gradient-to-br from-amber-100/30 to-amber-50/20 rounded-full blur-3xl" />
       </div>
 
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-12">
@@ -342,8 +345,8 @@ const AuthPage = () => {
                     </p>
                   </div>
 
-                  {/* Role Selection Cards */}
-                  <div className="grid grid-cols-1 gap-3 mb-6">
+                  {/* Premium Role Selection Cards */}
+                  <div className="grid grid-cols-1 gap-4 mb-6">
                     {roleOptions.map((role) => {
                       const Icon = role.icon;
                       const isSelected = signupForm.role === role.id;
@@ -352,22 +355,38 @@ const AuthPage = () => {
                           key={role.id}
                           type="button"
                           onClick={() => setSignupForm({ ...signupForm, role: role.id })}
-                          className={`p-4 rounded-2xl border-2 text-left transition-all duration-300 group ${
-                            isSelected
-                              ? `${role.selectedBg} ${role.selectedBorder} shadow-md`
-                              : `${role.cardBg} ${role.borderColor} ${role.hoverBorder} ${role.hoverShadow}`
-                          }`}
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
+                          className={`
+                            relative p-5 rounded-2xl border-2 text-left transition-all duration-300 group
+                            bg-white/80 backdrop-blur-sm
+                            ${isSelected
+                              ? `${role.selectedBg} ${role.selectedBorder} shadow-xl ${role.shadowColor}`
+                              : `border-slate-200/50 hover:border-slate-300 shadow-lg ${role.shadowColor} hover:shadow-xl`
+                            }
+                          `}
+                          whileHover={{ y: -2, scale: 1.01 }}
+                          whileTap={{ scale: 0.99 }}
                         >
                           <div className="flex items-center gap-4">
-                            <div className={`w-14 h-14 rounded-xl ${role.iconGradient} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                            <div className={`
+                              w-14 h-14 rounded-xl 
+                              bg-gradient-to-br ${role.gradient}
+                              flex items-center justify-center 
+                              group-hover:scale-110 transition-transform duration-300
+                              shadow-lg ${role.buttonShadow}
+                            `}>
                               <Icon className="w-7 h-7 text-white" />
                             </div>
-                            <div>
-                              <p className="font-bold text-slate-900 text-lg">{role.label}</p>
-                              <p className="text-sm text-slate-600">{role.desc}</p>
+                            <div className="flex-1">
+                              <p className="font-bold text-slate-900 text-lg font-inter">{role.label}</p>
+                              <p className="text-sm text-slate-600 font-inter">{role.desc}</p>
                             </div>
+                            {isSelected && (
+                              <div className={`w-6 h-6 rounded-full bg-gradient-to-br ${role.gradient} flex items-center justify-center`}>
+                                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                </svg>
+                              </div>
+                            )}
                           </div>
                         </motion.button>
                       );
