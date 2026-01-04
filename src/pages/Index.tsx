@@ -156,10 +156,10 @@ const Index = () => {
                 transition={{ duration: 0.8 }}
               >
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight">
-                  {t("landing.hero_title") || "Helyi Szaktudás. Vállalati Támogatás. Közösségi Érték."}
+                  {t("landing.hero_title")}
                 </h1>
                 <p className="text-lg md:text-xl text-muted-foreground mb-6 max-w-2xl mx-auto">
-                  {t("landing.hero_subtitle") || "Csatlakozz a regionális tudásmegosztó ökoszisztémához"}
+                  {t("landing.hero_subtitle")}
                 </p>
                 
                 {/* Registration Cards - Integrated into Hero */}
