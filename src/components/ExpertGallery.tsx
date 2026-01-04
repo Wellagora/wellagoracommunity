@@ -65,12 +65,12 @@ const ExpertGallery = () => {
   };
 
   return (
-    <section className="py-16 bg-[#F5F5F7]">
+    <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-10">
           <div>
-            <h2 className="text-3xl font-bold text-slate-900 tracking-tight">
+            <h2 className="text-3xl font-bold text-slate-900 tracking-wide" style={{ letterSpacing: '0.02em' }}>
               Szakértőink
             </h2>
             <p className="text-slate-600 mt-1">
@@ -82,7 +82,7 @@ const ExpertGallery = () => {
               variant="ghost"
               size="icon"
               onClick={() => scroll("left")}
-              className="rounded-full bg-white shadow-sm hover:shadow-md transition-shadow"
+              className="rounded-full bg-white shadow-sm hover:shadow-md transition-shadow border border-slate-100"
             >
               <ChevronLeft className="h-5 w-5" />
             </Button>
@@ -90,12 +90,12 @@ const ExpertGallery = () => {
               variant="ghost"
               size="icon"
               onClick={() => scroll("right")}
-              className="rounded-full bg-white shadow-sm hover:shadow-md transition-shadow"
+              className="rounded-full bg-white shadow-sm hover:shadow-md transition-shadow border border-slate-100"
             >
               <ChevronRight className="h-5 w-5" />
             </Button>
             <Link to="/piacer" className="ml-4">
-              <Button variant="ghost" className="gap-2 text-[#007AFF] hover:text-[#0056b3] hover:bg-blue-50 font-medium">
+              <Button variant="ghost" className="gap-2 text-[#34C759] hover:text-[#2DB14E] hover:bg-green-50 font-medium">
                 Mind megtekintése
                 <ArrowRight className="h-4 w-4" />
               </Button>
@@ -121,23 +121,28 @@ const ExpertGallery = () => {
                 to={`/piacer?creator=${expert.id}`}
                 className="flex flex-col items-center text-center group w-48 flex-shrink-0"
               >
-                {/* Circular Portrait with shadow */}
+                {/* Circular Portrait with 2px white border and 3D shadow */}
                 <div className="relative">
-                  <Avatar className="w-36 h-36 border-4 border-white shadow-md group-hover:shadow-lg transition-all duration-300">
+                  <Avatar 
+                    className="w-36 h-36 border-2 border-white group-hover:scale-105 transition-all duration-300"
+                    style={{
+                      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 20px 50px -10px rgba(0, 0, 0, 0.12)',
+                    }}
+                  >
                     <AvatarImage 
                       src={expert.avatar_url} 
                       alt={`${expert.first_name} ${expert.last_name}`}
                       className="object-cover"
                     />
-                    <AvatarFallback className="bg-gradient-to-br from-[#007AFF] to-[#00C7BE] text-white text-2xl font-semibold">
+                    <AvatarFallback className="bg-gradient-to-br from-emerald-400 to-teal-500 text-white text-2xl font-semibold">
                       {expert.first_name?.[0]}
                       {expert.last_name?.[0]}
                     </AvatarFallback>
                   </Avatar>
                   
-                  {/* Verified badge */}
+                  {/* Verified badge with green */}
                   {expert.is_verified_expert && (
-                    <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-[#007AFF] rounded-full flex items-center justify-center border-2 border-white shadow-md">
+                    <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-[#34C759] rounded-full flex items-center justify-center border-2 border-white shadow-md">
                       <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
@@ -146,7 +151,7 @@ const ExpertGallery = () => {
                 </div>
 
                 {/* Name */}
-                <h3 className="mt-4 font-semibold text-slate-900 group-hover:text-[#007AFF] transition-colors">
+                <h3 className="mt-4 font-semibold text-slate-900 group-hover:text-[#34C759] transition-colors">
                   {expert.first_name} {expert.last_name}
                 </h3>
 
@@ -162,7 +167,7 @@ const ExpertGallery = () => {
         {/* Mobile: View All button */}
         <div className="mt-6 text-center md:hidden">
           <Link to="/piacer">
-            <Button className="gap-2 bg-[#007AFF] hover:bg-[#0056b3] text-white">
+            <Button className="gap-2 bg-[#34C759] hover:bg-[#2DB14E] text-white shadow-lg">
               Összes szakértő
               <ArrowRight className="h-4 w-4" />
             </Button>
