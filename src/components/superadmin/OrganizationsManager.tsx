@@ -38,7 +38,7 @@ import OrganizationDetailView from "./OrganizationDetailView";
 type OrganizationWithSubscription = {
   id: string;
   name: string;
-  type: "business" | "citizen" | "creator" | "government" | "ngo";
+  type: "business" | "citizen" | "creator" | "government" | "ngo" | "member" | "expert" | "sponsor";
   location: string | null;
   logo_url: string | null;
   description: string | null;
@@ -88,7 +88,7 @@ const OrganizationsManager = () => {
   // Edit form state
   const [editForm, setEditForm] = useState<{
     name: string;
-    type: "business" | "citizen" | "creator" | "government" | "ngo";
+    type: "business" | "citizen" | "creator" | "government" | "ngo" | "member" | "expert" | "sponsor";
     location: string;
     description: string;
     website_url: string;

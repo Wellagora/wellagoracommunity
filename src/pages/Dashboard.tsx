@@ -37,7 +37,7 @@ const DashboardSkeleton = () => (
 );
 
 const Dashboard = () => {
-  const { user, profile, loading, activeView } = useAuth();
+  const { user, profile, loading } = useAuth();
   const { t } = useLanguage();
 
   // Show loading skeleton while auth is loading
@@ -50,8 +50,12 @@ const Dashboard = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  // Show Sponsor Dashboard for sponsor view
-  if (activeView === 'sponsor') {
+  // Determine role from profile
+  const userRole = profile?.user_role || 'member';
+  const isSponsor = ['sponsor', 'business', 'government', 'ngo'].includes(userRole);
+
+  // Show Sponsor Dashboard for sponsor users
+  if (isSponsor) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <Navigation />

@@ -60,7 +60,7 @@ export const useNearbyStakeholders = ({
       const transformedData: NearbyStakeholder[] = (data || []).map((item: {
         id: string;
         name: string;
-        user_role: UserRole;
+        user_role: string;
         organization: string | null;
         distance_meters: number;
         avatar_url: string | null;
@@ -70,7 +70,7 @@ export const useNearbyStakeholders = ({
       }) => ({
         id: item.id,
         name: item.name,
-        user_role: item.user_role,
+        user_role: item.user_role as UserRole,
         organization: item.organization,
         distance_meters: item.distance_meters,
         avatar_url: item.avatar_url,

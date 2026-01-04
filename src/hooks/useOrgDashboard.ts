@@ -246,11 +246,16 @@ export const useOrgDashboard = () => {
       try {
         setCreatingOrg(true);
 
+        // Map user_role to organization type
+        const orgType = ['sponsor', 'business'].includes(profile.user_role) ? 'business' as const :
+                        profile.user_role === 'government' ? 'government' as const :
+                        profile.user_role === 'ngo' ? 'ngo' as const : 'business' as const;
+
         const { data: orgData, error: orgError } = await supabase
           .from('organizations')
           .insert({
-            name: profile.organization,
-            type: profile.user_role,
+            name: profile.organization!,
+            type: orgType,
             is_public: true,
           })
           .select()

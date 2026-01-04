@@ -147,7 +147,7 @@ function App() {
                           <Route
                             path="/organization"
                             element={
-                              <ProtectedRoute allowedRoles={["business", "government", "ngo"]}>
+                              <ProtectedRoute allowedRoles={["sponsor"]}>
                                 <OrganizationDashboard />
                               </ProtectedRoute>
                             }
@@ -157,18 +157,26 @@ function App() {
                           <Route
                             path="/tamogato-panel"
                             element={
-                              <ProtectedRoute allowedRoles={["business", "government", "ngo"]}>
+                              <ProtectedRoute allowedRoles={["sponsor"]}>
+                                <SponsorDashboardPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/tamogatoi-kozpont"
+                            element={
+                              <ProtectedRoute allowedRoles={["sponsor"]}>
                                 <SponsorDashboardPage />
                               </ProtectedRoute>
                             }
                           />
                           <Route
                             path="/sponsor-dashboard"
-                            element={<Navigate to="/tamogato-panel" replace />}
+                            element={<Navigate to="/tamogatoi-kozpont" replace />}
                           />
                           <Route
                             path="/business-dashboard"
-                            element={<Navigate to="/tamogato-panel" replace />}
+                            element={<Navigate to="/tamogatoi-kozpont" replace />}
                           />
                           <Route path="/browse-programs" element={<Navigate to="/piacer" replace />} />
                           <Route
@@ -216,7 +224,7 @@ function App() {
                           <Route
                             path="/szakertoi-studio"
                             element={
-                              <ProtectedRoute allowedRoles={["creator"]}>
+                              <ProtectedRoute allowedRoles={["expert"]}>
                                 <CreatorDashboardPage />
                               </ProtectedRoute>
                             }
@@ -224,7 +232,7 @@ function App() {
                           <Route
                             path="/szakertoi-studio/uj"
                             element={
-                              <ProtectedRoute allowedRoles={["creator"]}>
+                              <ProtectedRoute allowedRoles={["expert"]}>
                                 <WorkshopSecretWizard />
                               </ProtectedRoute>
                             }
@@ -232,7 +240,7 @@ function App() {
                           <Route
                             path="/szakertoi-studio/:id/szerkesztes"
                             element={
-                              <ProtectedRoute allowedRoles={["creator"]}>
+                              <ProtectedRoute allowedRoles={["expert"]}>
                                 <WorkshopSecretWizard />
                               </ProtectedRoute>
                             }
