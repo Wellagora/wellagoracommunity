@@ -219,6 +219,22 @@ Clean, professional light theme with Apple Blue accent (#007AFF)
     border-radius: 1rem;
   }
 
+  /* 3D Card with hover lift effect */
+  .card-3d-premium {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 10px 30px -5px rgba(0,0,0,0.1), 0 4px 10px -2px rgba(0,0,0,0.05);
+    border-radius: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-3d-premium:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15), 0 10px 20px -5px rgba(0,0,0,0.08);
+  }
+
   /* Hover effects */
   .hover-lift {
     @apply transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-premium;

@@ -504,7 +504,13 @@ const ProgramsListingPage = () => {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Card key={i} className="bg-white border-slate-200 overflow-hidden shadow-sm">
+              <Card 
+                key={i} 
+                className="bg-white/95 backdrop-blur-md border border-white/40 rounded-2xl overflow-hidden"
+                style={{
+                  boxShadow: '0 10px 30px -5px rgba(0,0,0,0.1), 0 4px 10px -2px rgba(0,0,0,0.05)',
+                }}
+              >
                 <Skeleton className="aspect-video w-full bg-slate-100" />
                 <CardContent className="p-4">
                   <Skeleton className="h-5 w-3/4 mb-2 bg-slate-100" />
@@ -638,26 +644,25 @@ const ProgramsListingPage = () => {
                   transition={{ delay: index * 0.05 }}
                 >
                   <Link to={`/piacer/${program.id}`}>
-                    <Card className={`bg-white hover:border-[#007AFF]/30 transition-all duration-300 hover:shadow-lg overflow-hidden h-full ${
-                      hasSponsorship || isExhausted
-                        ? 'border-2 border-green-500/50 ring-1 ring-green-500/20' 
-                        : (program.access_type === 'sponsored' || program.sponsor_id) 
-                          ? 'border-2 border-green-500/50 ring-1 ring-green-500/20' 
-                          : 'border-slate-200 shadow-sm'
-                    }`}>
-                      {/* Sponsor Banner - csak ha van aktív szponzoráció */}
+                    <Card 
+                      className="bg-white/95 backdrop-blur-md border border-white/40 rounded-2xl overflow-hidden h-full transition-all duration-300 hover:-translate-y-2 group"
+                      style={{
+                        boxShadow: '0 10px 30px -5px rgba(0,0,0,0.1), 0 4px 10px -2px rgba(0,0,0,0.05)',
+                      }}
+                    >
+                      {/* Sponsor Banner - subtle top indicator */}
                       {hasSponsorship && (
-                        <div className="bg-gradient-to-r from-green-600/20 to-green-600/10 px-4 py-2 flex items-center gap-2">
+                        <div className="bg-gradient-to-r from-[#34C759]/10 to-[#34C759]/5 px-4 py-2 flex items-center gap-2 border-b border-[#34C759]/20">
                           {sponsorship?.sponsor?.logo_url ? (
                             <img 
                               src={sponsorship.sponsor.logo_url} 
                               alt={sponsorship.sponsor.name || 'Sponsor'}
-                              className="h-5 w-5 rounded-full object-contain bg-white"
+                              className="h-5 w-5 rounded-full object-contain bg-white shadow-sm"
                             />
                           ) : (
-                            <Gift className="h-4 w-4 text-green-400" />
+                            <Gift className="h-4 w-4 text-[#34C759]" />
                           )}
-                          <Badge className="bg-green-500/20 text-green-400 border border-green-500/30">
+                          <Badge className="bg-[#34C759]/15 text-[#34C759] border-0 font-medium">
                             Támogató • {sponsorship?.sponsor?.name || 'Partner'}
                           </Badge>
                         </div>
