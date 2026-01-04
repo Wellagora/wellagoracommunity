@@ -1006,11 +1006,15 @@ export type Database = {
           is_featured: boolean | null
           is_published: boolean | null
           is_sponsored: boolean | null
+          og_image_url: string | null
           price_huf: number | null
+          region_id: string | null
           rejected_at: string | null
           rejection_reason: string | null
           reviewed_at: string | null
           reviewed_by: string | null
+          seo_description: string | null
+          seo_title: string | null
           sponsor_id: string | null
           sponsor_logo_url: string | null
           sponsor_name: string | null
@@ -1034,11 +1038,15 @@ export type Database = {
           is_featured?: boolean | null
           is_published?: boolean | null
           is_sponsored?: boolean | null
+          og_image_url?: string | null
           price_huf?: number | null
+          region_id?: string | null
           rejected_at?: string | null
           rejection_reason?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
+          seo_description?: string | null
+          seo_title?: string | null
           sponsor_id?: string | null
           sponsor_logo_url?: string | null
           sponsor_name?: string | null
@@ -1062,11 +1070,15 @@ export type Database = {
           is_featured?: boolean | null
           is_published?: boolean | null
           is_sponsored?: boolean | null
+          og_image_url?: string | null
           price_huf?: number | null
+          region_id?: string | null
           rejected_at?: string | null
           rejection_reason?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
+          seo_description?: string | null
+          seo_title?: string | null
           sponsor_id?: string | null
           sponsor_logo_url?: string | null
           sponsor_name?: string | null
@@ -1466,6 +1478,67 @@ export type Database = {
           },
         ]
       }
+      organization_members: {
+        Row: {
+          accepted_at: string | null
+          email: string
+          expires_at: string | null
+          id: string
+          invited_at: string | null
+          invited_by: string | null
+          organization_id: string
+          role: string | null
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          email: string
+          expires_at?: string | null
+          id?: string
+          invited_at?: string | null
+          invited_by?: string | null
+          organization_id: string
+          role?: string | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          accepted_at?: string | null
+          email?: string
+          expires_at?: string | null
+          id?: string
+          invited_at?: string | null
+          invited_by?: string | null
+          organization_id?: string
+          role?: string | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_members_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organization_members_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organization_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organization_subscriptions: {
         Row: {
           cancel_at_period_end: boolean | null
@@ -1627,6 +1700,7 @@ export type Database = {
           preferred_language: string | null
           preferred_stakeholder_types: string[] | null
           premium_until: string | null
+          primary_region: string | null
           project_id: string | null
           public_display_name: string | null
           references_links: Json | null
@@ -1685,6 +1759,7 @@ export type Database = {
           preferred_language?: string | null
           preferred_stakeholder_types?: string[] | null
           premium_until?: string | null
+          primary_region?: string | null
           project_id?: string | null
           public_display_name?: string | null
           references_links?: Json | null
@@ -1743,6 +1818,7 @@ export type Database = {
           preferred_language?: string | null
           preferred_stakeholder_types?: string[] | null
           premium_until?: string | null
+          primary_region?: string | null
           project_id?: string | null
           public_display_name?: string | null
           references_links?: Json | null
@@ -2551,6 +2627,7 @@ export type Database = {
           id: string
           pickup_location: string | null
           redeemed_at: string | null
+          redeemed_by: string | null
           status: string | null
           user_id: string
         }
@@ -2561,6 +2638,7 @@ export type Database = {
           id?: string
           pickup_location?: string | null
           redeemed_at?: string | null
+          redeemed_by?: string | null
           status?: string | null
           user_id: string
         }
@@ -2571,6 +2649,7 @@ export type Database = {
           id?: string
           pickup_location?: string | null
           redeemed_at?: string | null
+          redeemed_by?: string | null
           status?: string | null
           user_id?: string
         }
@@ -2580,6 +2659,13 @@ export type Database = {
             columns: ["content_id"]
             isOneToOne: false
             referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vouchers_redeemed_by_fkey"
+            columns: ["redeemed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
+import TeamMembersSection from "@/components/profile/TeamMembersSection";
 import { 
   Loader2, 
   Building2, 
@@ -29,7 +30,6 @@ import {
   Users,
   FileText,
   Link as LinkIcon,
-  UserPlus,
   Eye,
   EyeOff
 } from "lucide-react";
@@ -658,29 +658,7 @@ const ProfilePage = () => {
                 </Card>
 
                 {/* Team Members */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Users className="w-5 h-5 text-primary" />
-                      Csapattagok
-                    </CardTitle>
-                    <CardDescription>
-                      Hívd meg kollégáidat a szervezetbe
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-center py-6">
-                      <Users className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                      <p className="text-muted-foreground mb-4">
-                        Még nincsenek meghívott kollégák
-                      </p>
-                      <Button variant="outline">
-                        <UserPlus className="w-4 h-4 mr-2" />
-                        Kolléga meghívása
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                <TeamMembersSection />
 
                 {/* Billing */}
                 <Card>
