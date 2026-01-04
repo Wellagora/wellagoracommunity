@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, CheckCircle, Leaf, Users, Target, Globe, User, Sparkles, Building2, Landmark, Heart } from "lucide-react";
+import { Loader2, Users, Sparkles, Building2, ArrowLeft } from "lucide-react";
 import { z } from "zod";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const AuthPage = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const AuthPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  
   // Get role and referral code from URL parameters
   const roleFromUrl = searchParams.get('role');
   const refCodeFromUrl = searchParams.get('ref');
@@ -51,7 +53,6 @@ const AuthPage = () => {
   useEffect(() => {
     if (refCodeFromUrl) {
       localStorage.setItem('referral_code', refCodeFromUrl);
-      console.log('Referral code stored:', refCodeFromUrl);
     }
   }, [refCodeFromUrl]);
 
@@ -92,7 +93,6 @@ const AuthPage = () => {
     setError(null);
     setSuccess(null);
 
-    // Validate input
     try {
       loginSchema.parse(loginForm);
     } catch (err) {
@@ -127,7 +127,6 @@ const AuthPage = () => {
     setError(null);
     setSuccess(null);
 
-    // Validate input
     try {
       signupSchema.parse(signupForm);
     } catch (err) {
@@ -162,12 +161,8 @@ const AuthPage = () => {
     } else {
       setSuccess(t('auth.account_created'));
       
-      // Process referral after successful registration
       const storedRefCode = localStorage.getItem('referral_code');
       if (storedRefCode) {
-        // The referral processing will happen via a database trigger or hook
-        // For now, just log it - the useReferral hook will handle tracking
-        console.log('User registered via referral code:', storedRefCode);
         localStorage.removeItem('referral_code');
       }
     }
@@ -175,35 +170,51 @@ const AuthPage = () => {
     setIsLoading(false);
   };
 
-  const features = [
-    {
-      icon: CheckCircle,
-      title: t('auth.feature_track_impact') || "Kövesd a fenntartható hatásodat",
-      description: t('auth.feature_track_desc') || "Figyeld a szénlábnyom csökkentésedet"
+  const roleOptions = [
+    { 
+      id: 'member', 
+      icon: Users, 
+      label: t('auth.role_member') || 'Tag', 
+      desc: t('landing.card_member_desc_short') || 'Kuponok és kincsek',
+      borderColor: 'border-cyan-200',
+      hoverBorder: 'hover:border-cyan-500',
+      selectedBg: 'bg-cyan-50',
+      selectedBorder: 'border-cyan-500',
+      iconBg: 'bg-cyan-100',
+      iconColor: 'text-cyan-600',
     },
-    {
-      icon: Users,
-      title: t('auth.feature_join_community') || "Csatlakozz az élénk közösséghez",
-      description: t('auth.feature_community_desc') || "Kapcsolódj hasonló gondolkodású fenntarthatósági támogatókhoz"
+    { 
+      id: 'expert', 
+      icon: Sparkles, 
+      label: t('auth.role_expert') || 'Szakértő', 
+      desc: t('landing.card_expert_desc_short') || 'Tudásmegosztás és tiszteletdíj',
+      borderColor: 'border-purple-200',
+      hoverBorder: 'hover:border-purple-500',
+      selectedBg: 'bg-purple-50',
+      selectedBorder: 'border-purple-500',
+      iconBg: 'bg-purple-100',
+      iconColor: 'text-purple-600',
     },
-    {
-      icon: Target,
-      title: t('auth.feature_set_goals') || "Állíts be és érj el zöld célokat",
-      description: t('auth.feature_goals_desc') || "Hozz létre személyre szabott fenntarthatósági célokat"
+    { 
+      id: 'sponsor', 
+      icon: Building2, 
+      label: t('auth.role_sponsor') || 'Támogató', 
+      desc: t('landing.card_sponsor_desc_short') || 'Értékteremtés és közösség',
+      borderColor: 'border-amber-200',
+      hoverBorder: 'hover:border-amber-500',
+      selectedBg: 'bg-amber-50',
+      selectedBorder: 'border-amber-500',
+      iconBg: 'bg-amber-100',
+      iconColor: 'text-amber-600',
     },
-    {
-      icon: Globe,
-      title: t('auth.feature_make_difference') || "Tégy globális különbséget",
-      description: t('auth.feature_difference_desc') || "Járulj hozzá világméretű környezetvédelmi kezdeményezésekhez"
-    }
   ];
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center modern-tech bg-gradient-hero">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex items-center space-x-2">
-          <Loader2 className="h-4 w-4 animate-spin text-primary-glow" />
-          <span className="text-foreground">Loading...</span>
+          <Loader2 className="h-4 w-4 animate-spin text-primary" />
+          <span className="text-foreground">Betöltés...</span>
         </div>
       </div>
     );
@@ -211,331 +222,308 @@ const AuthPage = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Geometric background elements */}
+      {/* Subtle Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-accent/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
-        
-        {/* Geometric lines */}
-        <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-accent/20 via-accent/10 to-transparent transform skew-y-1" />
-        <div className="absolute bottom-0 right-0 w-full h-40 bg-gradient-to-t from-primary/20 via-primary/10 to-transparent transform -skew-y-2" />
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-cyan-100/30 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-100/30 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 right-1/4 w-64 h-64 bg-amber-100/20 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative z-10 flex flex-col lg:flex-row min-h-screen">
-        {/* Left side - Features */}
-        <div className="hidden lg:flex flex-1 flex-col justify-center px-6 sm:px-8 lg:px-12 xl:px-20 2xl:px-24">
-          <div className="max-w-lg xl:max-w-xl">
-            {/* Logo and brand */}
-            <div className="flex items-center mb-8">
-              <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center mr-4 border border-primary/30">
-                <Leaf className="w-6 h-6 text-primary-glow" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-foreground">Káli medence</h1>
-                <p className="text-xs text-muted-foreground uppercase tracking-wide">{t('auth.community_building') || 'Közösség Építés'}</p>
-              </div>
-            </div>
-
-            <h2 className="text-4xl xl:text-5xl font-bold text-foreground mb-6 xl:mb-8 leading-tight">
-              {t('auth.join_future') || 'Csatlakozz a fenntartható élet jövőjéhez'}
-            </h2>
-
-            {/* Features list */}
-            <div className="space-y-4 mb-8">
-              {features.map((feature, index) => {
-                const Icon = feature.icon;
-                return (
-                  <div key={index} className="flex items-start space-x-3 group">
-                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-success/20 flex items-center justify-center mt-0.5">
-                      <Icon className="w-3.5 h-3.5 text-success" />
-                    </div>
-                    <div>
-                      <p className="text-foreground font-medium group-hover:text-primary-glow transition-colors">
-                        {feature.title}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {feature.description}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <p className="text-sm text-muted-foreground">
-              {t('auth.trusted_by') || 'Több mint'} <span className="text-primary-glow font-semibold">1,500+</span> {t('auth.sustainability_advocates') || 'fenntarthatósági támogató világszerte'}
-            </p>
-          </div>
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-12">
+        {/* Back to Home */}
+        <div className="absolute top-4 left-4">
+          <Link 
+            to="/" 
+            className="flex items-center text-slate-600 hover:text-slate-900 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            {t('auth.back_home') || 'Vissza a főoldalra'}
+          </Link>
         </div>
 
-        {/* Right side - Auth form */}
-        <div className="flex-shrink-0 w-full max-w-md xl:max-w-lg p-4 sm:p-6 lg:p-12 xl:p-16">
-          <div className="flex flex-col justify-center min-h-full">
-            <div className="w-full">
-              {/* Auth form header */}
-              <div className="text-center mb-8 xl:mb-10">
-                <div className="w-16 h-16 xl:w-20 xl:h-20 mx-auto mb-4 xl:mb-6 bg-card/80 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-border/50">
-                  <Users className="w-8 h-8 xl:w-10 xl:h-10 text-primary-glow" />
-                </div>
-                <h3 className="text-2xl xl:text-3xl font-bold text-foreground mb-2">{t('auth.welcome_back') || 'Üdvözlünk vissza!'}</h3>
-                <p className="text-sm xl:text-base text-muted-foreground">{t('auth.enter_details') || 'Kérlek add meg az adataidat'}</p>
-              </div>
+        <div className="w-full max-w-lg">
+          {error && (
+            <Alert className="mb-6 bg-red-50 border-red-200">
+              <AlertDescription className="text-red-700">{error}</AlertDescription>
+            </Alert>
+          )}
 
-              {error && (
-                <Alert className="mb-6 bg-destructive/10 border-destructive/30">
-                  <AlertDescription className="text-destructive-foreground">{error}</AlertDescription>
-                </Alert>
-              )}
+          {success && (
+            <Alert className="mb-6 bg-green-50 border-green-200">
+              <AlertDescription className="text-green-700">{success}</AlertDescription>
+            </Alert>
+          )}
 
-              {success && (
-                <Alert className="mb-6 bg-success/10 border-success/30">
-                  <AlertDescription className="text-success-foreground">{success}</AlertDescription>
-                </Alert>
-              )}
+          <Tabs defaultValue="signup" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 bg-slate-100 border border-slate-200 mb-6">
+              <TabsTrigger 
+                value="login" 
+                className="data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-600"
+              >
+                {t('auth.sign_in') || 'Bejelentkezés'}
+              </TabsTrigger>
+              <TabsTrigger 
+                value="signup" 
+                className="data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-600"
+              >
+                {t('auth.sign_up') || 'Regisztráció'}
+              </TabsTrigger>
+            </TabsList>
 
-              <Tabs defaultValue="login" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 bg-card/50 backdrop-blur-sm border border-border/50">
-                  <TabsTrigger value="login" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    {t('auth.sign_in') || 'Bejelentkezés'}
-                  </TabsTrigger>
-                  <TabsTrigger value="signup" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    {t('auth.sign_up') || 'Regisztráció'}
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="login">
-                  <Card className="bg-card/80 backdrop-blur-sm border-border/50">
-                    <CardContent className="p-6">
-                      <form onSubmit={handleLogin} className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="login-email" className="text-foreground">{t('auth.email_address') || 'E-mail'}</Label>
-                          <Input
-                            id="login-email"
-                            type="email"
-                            placeholder={t('auth.email_placeholder') || 'pelda@email.hu'}
-                            value={loginForm.email}
-                            onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
-                            className="bg-background/50 backdrop-blur-sm border-border/50 text-foreground placeholder:text-muted-foreground"
-                            required
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="login-password" className="text-foreground">{t('auth.password') || 'Jelszó'}</Label>
-                          <Input
-                            id="login-password"
-                            type="password"
-                            placeholder={t('auth.password_placeholder') || 'Add meg a jelszavad'}
-                            value={loginForm.password}
-                            onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
-                            className="bg-background/50 backdrop-blur-sm border-border/50 text-foreground placeholder:text-muted-foreground"
-                            required
-                          />
-                        </div>
-                        <Button 
-                          type="submit" 
-                          className="w-full bg-accent hover:bg-accent-light text-accent-foreground font-semibold py-3 rounded-lg transition-all duration-200 hover:shadow-glow" 
-                          disabled={isLoading}
-                        >
-                          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                          {t('auth.continue') || 'Folytatás'}
-                        </Button>
-                      </form>
-                    </CardContent>
-                  </Card>
+            {/* LOGIN TAB */}
+            <TabsContent value="login">
+              <Card className="bg-white border border-slate-200 shadow-sm">
+                <CardContent className="p-6">
+                  <div className="text-center mb-6">
+                    <h2 className="text-2xl font-bold text-slate-900 mb-2">
+                      {t('auth.welcome_back') || 'Üdvözlünk vissza!'}
+                    </h2>
+                    <p className="text-slate-600">
+                      {t('auth.enter_details') || 'Kérlek add meg az adataidat'}
+                    </p>
+                  </div>
                   
-                  <p className="text-center text-sm text-muted-foreground mt-4">
-                    {t('auth.no_account') || 'Még nincs fiókod?'}{" "}
-                    <button
-                      onClick={() => {
-                        const signupTab = document.querySelector('[data-value="signup"]') as HTMLElement;
-                        signupTab?.click();
-                      }}
-                      className="text-primary-glow hover:text-primary transition-colors font-medium"
+                  <form onSubmit={handleLogin} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="login-email" className="text-slate-700">
+                        {t('auth.email_address') || 'E-mail'}
+                      </Label>
+                      <Input
+                        id="login-email"
+                        type="email"
+                        placeholder={t('auth.email_placeholder') || 'pelda@email.hu'}
+                        value={loginForm.email}
+                        onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
+                        className="bg-white border-slate-300 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="login-password" className="text-slate-700">
+                        {t('auth.password') || 'Jelszó'}
+                      </Label>
+                      <Input
+                        id="login-password"
+                        type="password"
+                        placeholder={t('auth.password_placeholder') || 'Add meg a jelszavad'}
+                        value={loginForm.password}
+                        onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+                        className="bg-white border-slate-300 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                        required
+                      />
+                    </div>
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold" 
+                      disabled={isLoading}
                     >
-                      {t('auth.sign_up_here') || 'Regisztrálj itt'}
-                    </button>
-                  </p>
-                </TabsContent>
+                      {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      {t('auth.continue') || 'Bejelentkezés'}
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-                <TabsContent value="signup">
-                  <Card className="bg-card/80 backdrop-blur-sm border-border/50">
-                    <CardContent className="p-6">
-                      <form onSubmit={handleSignup} className="space-y-4">
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="firstName" className="text-foreground">First Name</Label>
-                            <Input
-                              id="firstName"
-                              placeholder="John"
-                              value={signupForm.firstName}
-                              onChange={(e) => setSignupForm({ ...signupForm, firstName: e.target.value })}
-                              className="bg-background/50 backdrop-blur-sm border-border/50 text-foreground placeholder:text-muted-foreground"
-                              required
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="lastName" className="text-foreground">Last Name</Label>
-                            <Input
-                              id="lastName"
-                              placeholder="Doe"
-                              value={signupForm.lastName}
-                              onChange={(e) => setSignupForm({ ...signupForm, lastName: e.target.value })}
-                              className="bg-background/50 backdrop-blur-sm border-border/50 text-foreground placeholder:text-muted-foreground"
-                              required
-                            />
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="signup-email" className="text-foreground">Email</Label>
-                          <Input
-                            id="signup-email"
-                            type="email"
-                            placeholder="your.email@gmail.com"
-                            value={signupForm.email}
-                            onChange={(e) => setSignupForm({ ...signupForm, email: e.target.value })}
-                            className="bg-background/50 backdrop-blur-sm border-border/50 text-foreground placeholder:text-muted-foreground"
-                            required
-                          />
-                        </div>
-                        {/* Visual Role Selector - 3 PATHS */}
-                        <div className="space-y-3">
-                          <Label className="text-foreground">{t('auth.select_role') || 'Válaszd ki a szerepköröd'}</Label>
-                          <div className="grid grid-cols-1 gap-3">
-                            {[
-                              { id: 'member', icon: User, label: t('auth.role_member') || 'Tag', desc: t('auth.role_member_desc') || 'Kuponok használata, tartalmak felfedezése', color: 'text-cyan-400', borderColor: 'border-cyan-500/50' },
-                              { id: 'expert', icon: Sparkles, label: t('auth.role_expert') || 'Szakértő', desc: t('auth.role_expert_desc') || 'Műhelytitkok megosztása, tiszteletdíj', color: 'text-purple-400', borderColor: 'border-purple-500/50' },
-                              { id: 'sponsor', icon: Building2, label: t('auth.role_sponsor') || 'Támogató', desc: t('auth.role_sponsor_desc') || 'Közösség támogatása, kampányok', color: 'text-amber-400', borderColor: 'border-amber-500/50' },
-                            ].map((role) => {
-                              const Icon = role.icon;
-                              const isSelected = signupForm.role === role.id;
-                              return (
-                                <button
-                                  key={role.id}
-                                  type="button"
-                                  onClick={() => setSignupForm({ ...signupForm, role: role.id })}
-                                  className={`p-4 rounded-lg border-2 text-left transition-all cursor-pointer ${
-                                    isSelected
-                                      ? `bg-card/80 ${role.borderColor} shadow-lg`
-                                      : 'bg-card/30 border-border/50 hover:border-border'
-                                  }`}
-                                >
-                                  <div className="flex items-center gap-3">
-                                    <Icon className={`w-6 h-6 ${role.color}`} />
-                                    <div>
-                                      <p className="font-medium text-foreground">{role.label}</p>
-                                      <p className="text-sm text-muted-foreground">{role.desc}</p>
-                                    </div>
-                                  </div>
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
+            {/* SIGNUP TAB */}
+            <TabsContent value="signup">
+              <Card className="bg-white border border-slate-200 shadow-sm">
+                <CardContent className="p-6">
+                  {/* Role Selection Header */}
+                  <div className="text-center mb-6">
+                    <h2 className="text-2xl font-bold text-slate-900 mb-2">
+                      {t('auth.how_to_join') || 'Hogyan szeretnél csatlakozni?'}
+                    </h2>
+                    <p className="text-slate-600">
+                      {t('auth.select_role_desc') || 'Válaszd ki a szerepköröd'}
+                    </p>
+                  </div>
 
-                        {/* Expert-specific fields */}
-                        {signupForm.role === "expert" && (
-                          <div className="space-y-2">
-                            <Label htmlFor="bio" className="text-foreground">{t('auth.bio') || 'Rövid bemutatkozás'}</Label>
-                            <Input
-                              id="bio"
-                              value={signupForm.bio}
-                              onChange={(e) => setSignupForm({ ...signupForm, bio: e.target.value })}
-                              placeholder={t('auth.bio_placeholder') || "Miben vagy szakértő?"}
-                              className="bg-background/50 backdrop-blur-sm border-border/50 text-foreground placeholder:text-muted-foreground"
-                            />
+                  {/* Role Selection Cards */}
+                  <div className="grid grid-cols-1 gap-3 mb-6">
+                    {roleOptions.map((role) => {
+                      const Icon = role.icon;
+                      const isSelected = signupForm.role === role.id;
+                      return (
+                        <motion.button
+                          key={role.id}
+                          type="button"
+                          onClick={() => setSignupForm({ ...signupForm, role: role.id })}
+                          className={`p-4 rounded-xl border-2 text-left transition-all duration-300 ${
+                            isSelected
+                              ? `${role.selectedBg} ${role.selectedBorder} shadow-md`
+                              : `bg-white ${role.borderColor} ${role.hoverBorder}`
+                          }`}
+                          whileHover={{ scale: 1.01 }}
+                          whileTap={{ scale: 0.99 }}
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className={`w-12 h-12 rounded-xl ${role.iconBg} flex items-center justify-center`}>
+                              <Icon className={`w-6 h-6 ${role.iconColor}`} />
+                            </div>
+                            <div>
+                              <p className="font-bold text-slate-900">{role.label}</p>
+                              <p className="text-sm text-slate-600">{role.desc}</p>
+                            </div>
                           </div>
-                        )}
+                        </motion.button>
+                      );
+                    })}
+                  </div>
 
-                        {/* Sponsor-specific fields */}
-                        {signupForm.role === "sponsor" && (
-                          <>
+                  {/* Form Fields - Appear after role selection */}
+                  <AnimatePresence>
+                    {signupForm.role && (
+                      <motion.form
+                        onSubmit={handleSignup}
+                        className="space-y-4"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <div className="border-t border-slate-200 pt-6">
+                          {/* Name Fields */}
+                          <div className="grid grid-cols-2 gap-4 mb-4">
                             <div className="space-y-2">
-                              <Label htmlFor="organization" className="text-foreground">{t('auth.organization_name') || 'Szervezet neve'}</Label>
+                              <Label htmlFor="firstName" className="text-slate-700">
+                                {t('auth.first_name') || 'Keresztnév'}
+                              </Label>
                               <Input
-                                id="organization"
-                                value={signupForm.organization}
-                                onChange={(e) => setSignupForm({ ...signupForm, organization: e.target.value })}
-                                placeholder={t('auth.organization_placeholder') || "Pl. Green Tech Kft."}
-                                className="bg-background/50 backdrop-blur-sm border-border/50 text-foreground placeholder:text-muted-foreground"
+                                id="firstName"
+                                placeholder="János"
+                                value={signupForm.firstName}
+                                onChange={(e) => setSignupForm({ ...signupForm, firstName: e.target.value })}
+                                className="bg-white border-slate-300 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-cyan-500"
                                 required
                               />
                             </div>
                             <div className="space-y-2">
-                              <Label htmlFor="industry" className="text-foreground">{t('auth.industry') || 'Iparág'}</Label>
+                              <Label htmlFor="lastName" className="text-slate-700">
+                                {t('auth.last_name') || 'Vezetéknév'}
+                              </Label>
                               <Input
-                                id="industry"
-                                value={signupForm.industry}
-                                onChange={(e) => setSignupForm({ ...signupForm, industry: e.target.value })}
-                                placeholder={t('auth.industry_placeholder') || "Pl. Technológia, Vendéglátás"}
-                                className="bg-background/50 backdrop-blur-sm border-border/50 text-foreground placeholder:text-muted-foreground"
+                                id="lastName"
+                                placeholder="Kovács"
+                                value={signupForm.lastName}
+                                onChange={(e) => setSignupForm({ ...signupForm, lastName: e.target.value })}
+                                className="bg-white border-slate-300 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-cyan-500"
+                                required
                               />
                             </div>
-                          </>
-                        )}
-                        <div className="space-y-2">
-                          <Label htmlFor="signup-password" className="text-foreground">Password</Label>
-                          <Input
-                            id="signup-password"
-                            type="password"
-                            placeholder="Create a password"
-                            value={signupForm.password}
-                            onChange={(e) => setSignupForm({ ...signupForm, password: e.target.value })}
-                            className="bg-background/50 backdrop-blur-sm border-border/50 text-foreground placeholder:text-muted-foreground"
-                            required
-                            minLength={6}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="confirmPassword" className="text-foreground">Confirm Password</Label>
-                          <Input
-                            id="confirmPassword"
-                            type="password"
-                            placeholder="Confirm your password"
-                            value={signupForm.confirmPassword}
-                            onChange={(e) => setSignupForm({ ...signupForm, confirmPassword: e.target.value })}
-                            className="bg-background/50 backdrop-blur-sm border-border/50 text-foreground placeholder:text-muted-foreground"
-                            required
-                            minLength={6}
-                          />
-                        </div>
-                        <Button 
-                          type="submit" 
-                          className="w-full bg-accent hover:bg-accent-light text-accent-foreground font-semibold py-3 rounded-lg transition-all duration-200 hover:shadow-glow" 
-                          disabled={isLoading}
-                        >
-                          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                          Create Account
-                        </Button>
-                      </form>
-                    </CardContent>
-                  </Card>
-                  
-                  <p className="text-center text-sm text-muted-foreground mt-4">
-                    Already have an account?{" "}
-                    <button
-                      onClick={() => {
-                        const loginTab = document.querySelector('[data-value="login"]') as HTMLElement;
-                        loginTab?.click();
-                      }}
-                      className="text-primary-glow hover:text-primary transition-colors font-medium"
-                    >
-                      Sign in
-                    </button>
-                  </p>
-                </TabsContent>
-              </Tabs>
+                          </div>
 
-              <div className="text-center mt-8">
-                <a 
-                  href="/" 
-                  className="text-sm text-muted-foreground hover:text-primary-glow transition-colors inline-flex items-center"
-                >
-                  ← Back to home
-                </a>
-              </div>
-            </div>
-          </div>
+                          {/* Email */}
+                          <div className="space-y-2 mb-4">
+                            <Label htmlFor="signup-email" className="text-slate-700">
+                              {t('auth.email_address') || 'E-mail'}
+                            </Label>
+                            <Input
+                              id="signup-email"
+                              type="email"
+                              placeholder="pelda@email.hu"
+                              value={signupForm.email}
+                              onChange={(e) => setSignupForm({ ...signupForm, email: e.target.value })}
+                              className="bg-white border-slate-300 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-cyan-500"
+                              required
+                            />
+                          </div>
+
+                          {/* Expert-specific fields */}
+                          {signupForm.role === "expert" && (
+                            <div className="space-y-2 mb-4">
+                              <Label htmlFor="bio" className="text-slate-700">
+                                {t('auth.bio') || 'Rövid bemutatkozás'}
+                              </Label>
+                              <Input
+                                id="bio"
+                                value={signupForm.bio}
+                                onChange={(e) => setSignupForm({ ...signupForm, bio: e.target.value })}
+                                placeholder={t('auth.bio_placeholder') || "Miben vagy szakértő?"}
+                                className="bg-white border-slate-300 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-purple-500"
+                              />
+                            </div>
+                          )}
+
+                          {/* Sponsor-specific fields */}
+                          {signupForm.role === "sponsor" && (
+                            <>
+                              <div className="space-y-2 mb-4">
+                                <Label htmlFor="organization" className="text-slate-700">
+                                  {t('auth.organization_name') || 'Szervezet neve'} *
+                                </Label>
+                                <Input
+                                  id="organization"
+                                  value={signupForm.organization}
+                                  onChange={(e) => setSignupForm({ ...signupForm, organization: e.target.value })}
+                                  placeholder={t('auth.organization_placeholder') || "Pl. Green Tech Kft."}
+                                  className="bg-white border-slate-300 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-amber-500"
+                                  required
+                                />
+                              </div>
+                              <div className="space-y-2 mb-4">
+                                <Label htmlFor="industry" className="text-slate-700">
+                                  {t('auth.industry') || 'Iparág'}
+                                </Label>
+                                <Input
+                                  id="industry"
+                                  value={signupForm.industry}
+                                  onChange={(e) => setSignupForm({ ...signupForm, industry: e.target.value })}
+                                  placeholder={t('auth.industry_placeholder') || "Pl. Technológia, Vendéglátás"}
+                                  className="bg-white border-slate-300 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-amber-500"
+                                />
+                              </div>
+                            </>
+                          )}
+
+                          {/* Password Fields */}
+                          <div className="space-y-2 mb-4">
+                            <Label htmlFor="signup-password" className="text-slate-700">
+                              {t('auth.password') || 'Jelszó'}
+                            </Label>
+                            <Input
+                              id="signup-password"
+                              type="password"
+                              placeholder={t('auth.password_create') || 'Hozz létre jelszót'}
+                              value={signupForm.password}
+                              onChange={(e) => setSignupForm({ ...signupForm, password: e.target.value })}
+                              className="bg-white border-slate-300 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-cyan-500"
+                              required
+                              minLength={6}
+                            />
+                          </div>
+                          <div className="space-y-2 mb-4">
+                            <Label htmlFor="confirmPassword" className="text-slate-700">
+                              {t('auth.confirm_password') || 'Jelszó megerősítése'}
+                            </Label>
+                            <Input
+                              id="confirmPassword"
+                              type="password"
+                              placeholder={t('auth.password_confirm') || 'Erősítsd meg a jelszavad'}
+                              value={signupForm.confirmPassword}
+                              onChange={(e) => setSignupForm({ ...signupForm, confirmPassword: e.target.value })}
+                              className="bg-white border-slate-300 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-cyan-500"
+                              required
+                              minLength={6}
+                            />
+                          </div>
+
+                          <Button 
+                            type="submit" 
+                            className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold" 
+                            disabled={isLoading}
+                          >
+                            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            {t('auth.create_account') || 'Fiók létrehozása'}
+                          </Button>
+                        </div>
+                      </motion.form>
+                    )}
+                  </AnimatePresence>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>

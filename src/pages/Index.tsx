@@ -5,14 +5,14 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCommunityStats } from "@/hooks/useCommunityStats";
 import { motion } from "framer-motion";
-import { Users, Award, TrendingUp, ChevronRight, ArrowDown } from "lucide-react";
+import { Users, Award, TrendingUp, ChevronRight } from "lucide-react";
 
+import HeroSection from "@/components/HeroSection";
 import FeaturedEventsGrid from "@/components/FeaturedEventsGrid";
 import WorkshopSecretsSlider from "@/components/WorkshopSecretsSlider";
 import CTABanner from "@/components/CTABanner";
 import { UpcomingEventsSection } from "@/components/events/UpcomingEventsSection";
 import { RegionalImpactGarden } from "@/components/RegionalImpactGarden";
-import RegistrationCards from "@/components/landing/RegistrationCards";
 import Footer from "@/components/Footer";
 import { StatsBarSkeleton } from "@/components/ui/skeletons";
 
@@ -43,7 +43,7 @@ const Index = () => {
           <Navigation />
           <main className="pt-2 md:pt-4 flex-1">
             {/* 1. SIMPLIFIED HERO - Welcome + Single CTA */}
-            <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5">
+            <section className="relative overflow-hidden bg-gradient-to-br from-cyan-50 via-purple-50/30 to-amber-50/30">
               <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
               <div className="container mx-auto px-4 py-4 sm:py-8 relative z-10">
                 <motion.div
@@ -52,14 +52,14 @@ const Index = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6 }}
                 >
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3">
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-3">
                     {t("index.welcome_back")}, {profile.first_name}! 👋
                   </h1>
-                  <p className="text-base sm:text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
+                  <p className="text-base sm:text-lg text-slate-600 mb-6 max-w-2xl mx-auto">
                     {t("index.ready_to_make_impact")}
                   </p>
                   <Link to="/piacer">
-                    <Button size="lg" className="min-w-[200px] gap-2">
+                    <Button size="lg" className="min-w-[200px] gap-2 bg-cyan-500 hover:bg-cyan-600 text-white">
                       {t("index.go_to_marketplace")}
                       <ChevronRight className="w-5 h-5" />
                     </Button>
@@ -84,37 +84,37 @@ const Index = () => {
             <RegionalImpactGarden />
 
             {/* 7. COMMUNITY STATS - Compact horizontal bar */}
-            <section className="py-8 bg-card/30">
+            <section className="py-8 bg-slate-50">
               <div className="container mx-auto px-4">
                 {statsLoading ? (
                   <StatsBarSkeleton />
                 ) : (
                   <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Users className="w-5 h-5 text-primary" />
+                      <div className="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center">
+                        <Users className="w-5 h-5 text-cyan-600" />
                       </div>
                       <div>
-                        <div className="text-xl font-bold text-foreground">{communityStats.members}</div>
-                        <div className="text-xs text-muted-foreground">{t("index.stat_members")}</div>
+                        <div className="text-xl font-bold text-slate-900">{communityStats.members}</div>
+                        <div className="text-xs text-slate-600">{t("index.stat_members")}</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
-                        <Award className="w-5 h-5 text-accent" />
+                      <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                        <Award className="w-5 h-5 text-amber-600" />
                       </div>
                       <div>
-                        <div className="text-xl font-bold text-foreground">{communityStats.completions}</div>
-                        <div className="text-xs text-muted-foreground">{t("index.stat_completions")}</div>
+                        <div className="text-xl font-bold text-slate-900">{communityStats.completions}</div>
+                        <div className="text-xs text-slate-600">{t("index.stat_completions")}</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center">
-                        <TrendingUp className="w-5 h-5 text-success" />
+                      <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                        <TrendingUp className="w-5 h-5 text-green-600" />
                       </div>
                       <div>
-                        <div className="text-xl font-bold text-foreground">{communityStats.points.toLocaleString()}</div>
-                        <div className="text-xs text-muted-foreground">{t("index.stat_points")}</div>
+                        <div className="text-xl font-bold text-slate-900">{communityStats.points.toLocaleString()}</div>
+                        <div className="text-xs text-slate-600">{t("index.stat_points")}</div>
                       </div>
                     </div>
                   </div>
@@ -134,48 +134,9 @@ const Index = () => {
     <>
       <div className="min-h-screen bg-background flex flex-col">
         <Navigation />
-        <main className="pt-2 md:pt-4 flex-1">
+        <main className="flex-1">
           {/* 1. HERO SECTION - Full viewport with integrated registration cards */}
-          <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden">
-            {/* Hero Background Image */}
-            <div className="absolute inset-0 z-0">
-              <img
-                src="/lovable-uploads/89cff010-b0aa-4aa1-b97e-999c469cae09.png"
-                alt="Hero background"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/70 to-background/50"></div>
-            </div>
-
-            {/* Hero Content with Registration Cards */}
-            <div className="container mx-auto px-4 py-12 relative z-10">
-              <motion.div
-                className="text-center max-w-4xl mx-auto"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-              >
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight">
-                  {t("landing.hero_title")}
-                </h1>
-                <p className="text-lg md:text-xl text-muted-foreground mb-6 max-w-2xl mx-auto">
-                  {t("landing.hero_subtitle")}
-                </p>
-                
-                {/* Registration Cards - Integrated into Hero */}
-                <RegistrationCards />
-              </motion.div>
-            </div>
-
-            {/* Scroll Indicator */}
-            <motion.div
-              className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10"
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              <ArrowDown className="h-6 w-6 text-muted-foreground/60" />
-            </motion.div>
-          </section>
+          <HeroSection />
 
           {/* 2. KIEMELT ESEMÉNYEK - Fixed 3-column grid */}
           <FeaturedEventsGrid />

@@ -2,111 +2,109 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Káli medence - Közösség Építés Design System
-Természetes színpaletta és elegáns tipográfia a közösség építés támogatásához
+/* WellAgora - Light Theme Design System
+Clean, professional light theme with role-specific accent colors
 */
 
 @layer base {
   :root {
-    /* Wellagora - Bimanu Inspired Deep Blue Design System */
-    /* Professional deep blue with vibrant gradients and turquoise accents */
-    
-    /* Main Background: #0A1930 */
-    --background: 216 71% 11%;
-    --foreground: 0 0% 100%;
+    /* Light Theme - Clean White/Gray Background */
+    --background: 0 0% 100%;
+    --foreground: 215 25% 15%;
 
-    /* Card Background: #112240 */
-    --card: 218 60% 16%;
-    --card-foreground: 0 0% 100%;
+    /* Card: White with subtle shadow */
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 15%;
 
-    --popover: 218 60% 16%;
-    --popover-foreground: 0 0% 100%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 15%;
 
-    /* Primary Blue: #0066FF */
-    --primary: 216 100% 50%;
+    /* Primary: Cyan #06b6d4 */
+    --primary: 186 100% 43%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 195 100% 50%;
-    --primary-dark: 216 71% 11%;
+    --primary-glow: 186 80% 50%;
+    --primary-dark: 186 100% 35%;
 
-    /* Secondary Ocean Blue */
-    --secondary: 200 100% 45%;
+    /* Secondary: Purple #a855f7 */
+    --secondary: 271 91% 65%;
     --secondary-foreground: 0 0% 100%;
 
-    /* Muted: Light blue-gray #B0C4DE */
-    --muted: 218 50% 22%;
-    --muted-foreground: 214 41% 78%;
+    /* Muted: Light gray */
+    --muted: 215 20% 96%;
+    --muted-foreground: 215 15% 45%;
 
-    /* Turquoise Accent: #00E5FF */
-    --accent: 186 100% 50%;
-    --accent-foreground: 216 71% 11%;
-    --accent-light: 186 100% 65%;
+    /* Accent: Amber #f59e0b */
+    --accent: 38 92% 50%;
+    --accent-foreground: 0 0% 100%;
+    --accent-light: 38 92% 60%;
 
-    /* Success - Teal */
-    --success: 170 80% 45%;
+    /* Success - Green */
+    --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
-    --success-light: 170 70% 55%;
+    --success-light: 142 70% 45%;
 
     /* Warning - Amber */
-    --warning: 38 90% 55%;
-    --warning-foreground: 216 71% 11%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 215 25% 15%;
 
     /* Info - Cyan */
-    --info: 195 100% 50%;
-    --info-foreground: 216 71% 11%;
+    --info: 186 100% 43%;
+    --info-foreground: 0 0% 100%;
 
     /* Destructive */
-    --destructive: 0 70% 55%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 218 50% 25%;
-    --input: 218 55% 20%;
-    --ring: 186 100% 50%;
+    /* Border and Input */
+    --border: 215 20% 88%;
+    --input: 215 20% 94%;
+    --ring: 186 100% 43%;
 
-    --radius: 1.25rem;
+    --radius: 0.75rem;
 
-    /* Bimanu-style Gradients */
-    --gradient-primary: linear-gradient(to right, hsl(216 100% 50%), hsl(195 100% 50%));
-    --gradient-vibrant: linear-gradient(135deg, hsl(216 100% 50%) 0%, hsl(195 100% 50%) 50%, hsl(186 100% 50%) 100%);
-    --gradient-nature: linear-gradient(180deg, hsl(216 71% 14%) 0%, hsl(216 71% 11%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(216 71% 11%) 0%, hsl(218 60% 16%) 40%, hsl(216 100% 35%) 75%, hsl(195 100% 45%) 100%);
-    --gradient-wave: linear-gradient(135deg, hsl(218 60% 16%) 0%, hsl(216 80% 25%) 50%, hsl(200 90% 40%) 100%);
-    --gradient-atmospheric: linear-gradient(180deg, hsl(216 71% 14%) 0%, hsl(218 60% 18%) 50%, hsl(216 70% 25%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(216 71% 11%) 0%, hsl(218 60% 16%) 100%);
-    --gradient-aqua: linear-gradient(to right, hsl(216 100% 50%), hsl(186 100% 50%));
-    --gradient-depth: linear-gradient(135deg, hsl(216 71% 11%) 0%, hsl(218 60% 20%) 50%, hsl(216 100% 40%) 100%);
-    --gradient-tech: linear-gradient(135deg, hsl(218 60% 16%) 0%, hsl(216 100% 50%) 50%, hsl(195 100% 50%) 100%);
-    --gradient-glass: linear-gradient(135deg, hsl(218 60% 16% / 0.8) 0%, hsl(218 55% 20% / 0.6) 100%);
-    --gradient-button: linear-gradient(to right, hsl(216 100% 50%), hsl(186 100% 50%));
+    /* Light Theme Gradients */
+    --gradient-primary: linear-gradient(to right, hsl(186 100% 43%), hsl(186 80% 50%));
+    --gradient-vibrant: linear-gradient(135deg, hsl(186 100% 43%) 0%, hsl(271 91% 65%) 50%, hsl(38 92% 50%) 100%);
+    --gradient-nature: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(215 20% 98%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(215 20% 98%) 40%, hsl(186 20% 95%) 100%);
+    --gradient-wave: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(186 30% 97%) 50%, hsl(186 20% 95%) 100%);
+    --gradient-atmospheric: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(215 20% 98%) 50%, hsl(186 10% 96%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(215 20% 98%) 100%);
+    --gradient-aqua: linear-gradient(to right, hsl(186 100% 43%), hsl(186 80% 50%));
+    --gradient-depth: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(215 20% 98%) 50%, hsl(186 15% 95%) 100%);
+    --gradient-tech: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(186 20% 97%) 50%, hsl(186 30% 95%) 100%);
+    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.9) 0%, hsl(215 20% 98% / 0.8) 100%);
+    --gradient-button: linear-gradient(to right, hsl(186 100% 43%), hsl(186 80% 50%));
 
-    /* Premium Shadows with Blue Glow */
-    --shadow-eco: 0 10px 40px -6px hsl(216 100% 50% / 0.25);
-    --shadow-glow: 0 0 30px hsl(195 100% 50% / 0.3), 0 0 60px hsl(186 100% 50% / 0.15);
-    --shadow-card: 0 8px 32px -6px hsl(216 71% 5% / 0.7);
-    --shadow-premium: 0 20px 60px -12px hsl(216 100% 50% / 0.3);
-    --shadow-float: 0 25px 60px -18px hsl(195 100% 50% / 0.35);
-    --shadow-button: 0 8px 24px -4px hsl(216 100% 50% / 0.4);
+    /* Light Theme Shadows */
+    --shadow-eco: 0 4px 20px -4px hsl(186 100% 43% / 0.15);
+    --shadow-glow: 0 0 20px hsl(186 100% 43% / 0.2), 0 0 40px hsl(186 80% 50% / 0.1);
+    --shadow-card: 0 2px 10px -2px hsl(215 25% 15% / 0.08);
+    --shadow-premium: 0 10px 40px -10px hsl(186 100% 43% / 0.2);
+    --shadow-float: 0 20px 50px -15px hsl(215 25% 15% / 0.15);
+    --shadow-button: 0 4px 15px -3px hsl(186 100% 43% / 0.3);
 
     /* Smooth animation system */
     --transition-smooth: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.45s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-    /* Premium Typography */
-    --font-heading: 'Playfair Display', 'Georgia', serif;
+    /* Typography */
+    --font-heading: 'Inter', 'system-ui', sans-serif;
     --font-body: 'Inter', 'system-ui', sans-serif;
 
-    /* Dark Sidebar - Matching Deep Blue Theme */
-    --sidebar-background: 216 71% 8%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 186 100% 50%;
-    --sidebar-primary-foreground: 216 71% 11%;
-    --sidebar-accent: 218 55% 20%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 218 50% 22%;
-    --sidebar-ring: 186 100% 50%;
+    /* Sidebar - Light Theme */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 215 25% 15%;
+    --sidebar-primary: 186 100% 43%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 215 20% 96%;
+    --sidebar-accent-foreground: 215 25% 15%;
+    --sidebar-border: 215 20% 88%;
+    --sidebar-ring: 186 100% 43%;
   }
 
-  /* Dark mode - megtartjuk opcióként */
+  /* Dark mode option */
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
@@ -117,7 +115,7 @@ Természetes színpaletta és elegáns tipográfia a közösség építés támo
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 142 69% 58%;
+    --primary: 186 100% 50%;
     --primary-foreground: 222.2 84% 4.9%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -126,7 +124,7 @@ Természetes színpaletta és elegáns tipográfia a közösség építés támo
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 142 69% 58%;
+    --accent: 38 92% 50%;
     --accent-foreground: 222.2 84% 4.9%;
 
     --destructive: 0 62.8% 30.6%;
@@ -134,15 +132,16 @@ Természetes színpaletta és elegáns tipográfia a közösség építés támo
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 142 69% 58%;
+    --ring: 186 100% 50%;
+    
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 142 69% 58%;
+    --sidebar-primary: 186 100% 50%;
     --sidebar-primary-foreground: 240 5.9% 10%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 142 69% 58%;
+    --sidebar-ring: 186 100% 50%;
   }
 }
 
@@ -168,7 +167,7 @@ Természetes színpaletta és elegáns tipográfia a közösség építés támo
 
   /* Enhanced typography */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading;
+    @apply font-heading font-bold;
   }
 
   /* Prevent horizontal scroll on all elements */
@@ -176,38 +175,33 @@ Természetes színpaletta és elegáns tipográfia a közösség építés támo
     box-sizing: border-box;
   }
 
-  /* Custom utilities and 3D effects */
+  /* Custom utilities */
   .text-balance {
     text-wrap: balance;
   }
 
-  /* Enhanced white text styling for dark backgrounds */
-  .text-white-elegant {
-    @apply text-foreground font-medium tracking-wide drop-shadow-sm;
-  }
-
-  /* Elegant Deep-Blue Glass Morphism - Premium Quality */
+  /* Light Glass Morphism */
   .bg-glass {
-    background: linear-gradient(135deg, hsl(220 60% 18% / 0.7), hsl(218 55% 22% / 0.5));
+    background: linear-gradient(135deg, hsl(0 0% 100% / 0.9), hsl(215 20% 98% / 0.8));
     backdrop-filter: blur(20px) saturate(120%);
-    border: 1px solid hsl(214 70% 55% / 0.12);
-    box-shadow: 0 8px 32px 0 hsl(220 70% 8% / 0.5), inset 0 1px 0 hsl(214 75% 60% / 0.08);
+    border: 1px solid hsl(215 20% 88% / 0.5);
+    box-shadow: 0 4px 20px 0 hsl(215 25% 15% / 0.06);
   }
 
   .bg-glass-strong {
-    background: linear-gradient(135deg, hsl(220 60% 18% / 0.9), hsl(218 55% 22% / 0.8));
+    background: linear-gradient(135deg, hsl(0 0% 100% / 0.95), hsl(215 20% 98% / 0.9));
     backdrop-filter: blur(24px) saturate(140%);
-    border: 1px solid hsl(214 70% 55% / 0.18);
-    box-shadow: 0 16px 48px 0 hsl(220 70% 8% / 0.6), inset 0 1px 0 hsl(214 75% 60% / 0.1);
+    border: 1px solid hsl(215 20% 88% / 0.6);
+    box-shadow: 0 8px 32px 0 hsl(215 25% 15% / 0.08);
   }
 
-  /* Inspiring 3D hover effects */
+  /* Hover effects */
   .hover-lift {
-    @apply transition-all duration-500 ease-out hover:-translate-y-3 hover:shadow-premium;
+    @apply transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-premium;
   }
 
   .hover-lift-3d {
-    @apply transition-all duration-500 ease-out hover:-translate-y-4 hover:scale-[1.03] hover:shadow-float;
+    @apply transition-all duration-500 ease-out hover:-translate-y-3 hover:scale-[1.02] hover:shadow-float;
   }
 
   .hover-glow {
@@ -215,10 +209,10 @@ Természetes színpaletta és elegáns tipográfia a közösség építés támo
   }
 
   .card-float {
-    @apply transform transition-all duration-700 ease-out hover:-translate-y-2 hover:shadow-float hover:scale-[1.02];
+    @apply transform transition-all duration-700 ease-out hover:-translate-y-1 hover:shadow-float hover:scale-[1.01];
   }
 
-  /* Enhanced animations */
+  /* Animations */
   .animate-fade-up {
     animation: fadeUp 0.8s ease-out;
   }
@@ -244,7 +238,7 @@ Természetes színpaletta és elegáns tipográfia a közösség építés támo
     transform: translateZ(2px);
   }
 
-  /* Enhanced keyframes */
+  /* Keyframes */
   @keyframes fadeUp {
     from {
       opacity: 0;
@@ -280,10 +274,10 @@ Természetes színpaletta és elegáns tipográfia a közösség építés támo
 
   /* Logo enhancement */
   .logo-glow {
-    filter: drop-shadow(0 0 8px hsl(var(--primary) / 0.5));
+    filter: drop-shadow(0 0 8px hsl(var(--primary) / 0.3));
   }
 
   .logo-enhanced {
-    filter: brightness(1.1) contrast(1.1) drop-shadow(0 2px 8px hsl(var(--primary) / 0.3));
+    filter: brightness(1.05) contrast(1.05) drop-shadow(0 2px 8px hsl(var(--primary) / 0.2));
   }
 }
