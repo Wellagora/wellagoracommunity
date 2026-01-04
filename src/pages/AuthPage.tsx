@@ -36,10 +36,12 @@ const AuthPage = () => {
     confirmPassword: z.string(),
     firstName: z.string().min(1, t('auth.first_name_required')).max(50, t('auth.first_name_max')),
     lastName: z.string().min(1, t('auth.last_name_required')).max(50, t('auth.last_name_max')),
-    role: z.enum(["citizen", "creator", "business", "government", "ngo"], { 
+    role: z.enum(["member", "expert", "sponsor"], { 
       message: t('auth.role_required') 
     }),
     organization: z.string().max(100, t('auth.organization_max')).optional(),
+    bio: z.string().max(500).optional(),
+    industry: z.string().max(100).optional(),
   }).refine((data) => data.password === data.confirmPassword, {
     message: t('auth.password_match'),
     path: ["confirmPassword"],
@@ -73,6 +75,8 @@ const AuthPage = () => {
     lastName: "",
     role: roleFromUrl || "",
     organization: "",
+    bio: "",
+    industry: "",
   });
 
   // Update role if URL parameter changes
@@ -141,6 +145,8 @@ const AuthPage = () => {
       lastName: signupForm.lastName.trim(),
       role: signupForm.role,
       organization: signupForm.organization?.trim() || undefined,
+      bio: signupForm.bio?.trim() || undefined,
+      industry: signupForm.industry?.trim() || undefined,
     });
 
     if (error) {
@@ -392,16 +398,14 @@ const AuthPage = () => {
                             required
                           />
                         </div>
-                        {/* Visual Role Selector */}
+                        {/* Visual Role Selector - 3 PATHS */}
                         <div className="space-y-3">
                           <Label className="text-foreground">{t('auth.select_role') || 'Válaszd ki a szerepköröd'}</Label>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div className="grid grid-cols-1 gap-3">
                             {[
-                              { id: 'citizen', icon: User, label: t('auth.role_citizen') || 'Felhasználó', desc: t('auth.role_citizen_desc') || 'Közösségi tag', color: 'text-green-400' },
-                              { id: 'creator', icon: Sparkles, label: t('auth.role_creator') || 'Kreátor', desc: t('auth.role_creator_desc') || 'Szakértő, tartalomgyártó', color: 'text-[#00E5FF]' },
-                              { id: 'business', icon: Building2, label: t('auth.role_business') || 'Cég/Szervezet', desc: t('auth.role_business_desc') || 'Vállalkozás, szponzor', color: 'text-blue-400' },
-                              { id: 'government', icon: Landmark, label: t('auth.role_government') || 'Önkormányzat', desc: t('auth.role_government_desc') || 'Helyi önkormányzat', color: 'text-amber-400' },
-                              { id: 'ngo', icon: Heart, label: t('auth.role_ngo') || 'Civil szervezet', desc: t('auth.role_ngo_desc') || 'Non-profit szervezet', color: 'text-pink-400' },
+                              { id: 'member', icon: User, label: t('auth.role_member') || 'Tag', desc: t('auth.role_member_desc') || 'Kuponok használata, tartalmak felfedezése', color: 'text-cyan-400', borderColor: 'border-cyan-500/50' },
+                              { id: 'expert', icon: Sparkles, label: t('auth.role_expert') || 'Szakértő', desc: t('auth.role_expert_desc') || 'Műhelytitkok megosztása, tiszteletdíj', color: 'text-purple-400', borderColor: 'border-purple-500/50' },
+                              { id: 'sponsor', icon: Building2, label: t('auth.role_sponsor') || 'Támogató', desc: t('auth.role_sponsor_desc') || 'Közösség támogatása, kampányok', color: 'text-amber-400', borderColor: 'border-amber-500/50' },
                             ].map((role) => {
                               const Icon = role.icon;
                               const isSelected = signupForm.role === role.id;
@@ -410,17 +414,17 @@ const AuthPage = () => {
                                   key={role.id}
                                   type="button"
                                   onClick={() => setSignupForm({ ...signupForm, role: role.id })}
-                                  className={`p-4 rounded-lg border text-left transition-all cursor-pointer ${
+                                  className={`p-4 rounded-lg border-2 text-left transition-all cursor-pointer ${
                                     isSelected
-                                      ? 'bg-[#1a3a5c] border-[#00E5FF] shadow-[0_0_15px_rgba(0,229,255,0.3)]'
-                                      : 'bg-[#112240] border-border/50 hover:border-[#00E5FF]/50'
+                                      ? `bg-card/80 ${role.borderColor} shadow-lg`
+                                      : 'bg-card/30 border-border/50 hover:border-border'
                                   }`}
                                 >
                                   <div className="flex items-center gap-3">
-                                    <Icon className={`w-5 h-5 ${role.color}`} />
+                                    <Icon className={`w-6 h-6 ${role.color}`} />
                                     <div>
-                                      <p className="font-medium text-foreground text-sm">{role.label}</p>
-                                      <p className="text-xs text-muted-foreground">{role.desc}</p>
+                                      <p className="font-medium text-foreground">{role.label}</p>
+                                      <p className="text-sm text-muted-foreground">{role.desc}</p>
                                     </div>
                                   </div>
                                 </button>
@@ -428,21 +432,46 @@ const AuthPage = () => {
                             })}
                           </div>
                         </div>
-                        {(signupForm.role === "creator" || signupForm.role === "business" || signupForm.role === "government" || signupForm.role === "ngo") && (
+
+                        {/* Expert-specific fields */}
+                        {signupForm.role === "expert" && (
                           <div className="space-y-2">
-                            <Label htmlFor="organization" className="text-foreground">Szervezet neve</Label>
+                            <Label htmlFor="bio" className="text-foreground">{t('auth.bio') || 'Rövid bemutatkozás'}</Label>
                             <Input
-                              id="organization"
-                              value={signupForm.organization}
-                              onChange={(e) => setSignupForm({ ...signupForm, organization: e.target.value })}
-                              placeholder={
-                                signupForm.role === "business" ? "Pl. Green Tech Kft." :
-                                signupForm.role === "government" ? "Pl. Budapest IV. kerület" :
-                                "Pl. Greenpeace Magyarország"
-                              }
+                              id="bio"
+                              value={signupForm.bio}
+                              onChange={(e) => setSignupForm({ ...signupForm, bio: e.target.value })}
+                              placeholder={t('auth.bio_placeholder') || "Miben vagy szakértő?"}
                               className="bg-background/50 backdrop-blur-sm border-border/50 text-foreground placeholder:text-muted-foreground"
                             />
                           </div>
+                        )}
+
+                        {/* Sponsor-specific fields */}
+                        {signupForm.role === "sponsor" && (
+                          <>
+                            <div className="space-y-2">
+                              <Label htmlFor="organization" className="text-foreground">{t('auth.organization_name') || 'Szervezet neve'}</Label>
+                              <Input
+                                id="organization"
+                                value={signupForm.organization}
+                                onChange={(e) => setSignupForm({ ...signupForm, organization: e.target.value })}
+                                placeholder={t('auth.organization_placeholder') || "Pl. Green Tech Kft."}
+                                className="bg-background/50 backdrop-blur-sm border-border/50 text-foreground placeholder:text-muted-foreground"
+                                required
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="industry" className="text-foreground">{t('auth.industry') || 'Iparág'}</Label>
+                              <Input
+                                id="industry"
+                                value={signupForm.industry}
+                                onChange={(e) => setSignupForm({ ...signupForm, industry: e.target.value })}
+                                placeholder={t('auth.industry_placeholder') || "Pl. Technológia, Vendéglátás"}
+                                className="bg-background/50 backdrop-blur-sm border-border/50 text-foreground placeholder:text-muted-foreground"
+                              />
+                            </div>
+                          </>
                         )}
                         <div className="space-y-2">
                           <Label htmlFor="signup-password" className="text-foreground">Password</Label>

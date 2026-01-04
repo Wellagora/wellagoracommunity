@@ -14,6 +14,7 @@ import { UpcomingEventsSection } from "@/components/events/UpcomingEventsSection
 import { RegionalImpactGarden } from "@/components/RegionalImpactGarden";
 import { StoryOfTheWeek } from "@/components/StoryOfTheWeek";
 import CreatorLandingSection from "@/components/landing/CreatorLandingSection";
+import RegistrationCards from "@/components/landing/RegistrationCards";
 import Footer from "@/components/Footer";
 import { StatsBarSkeleton } from "@/components/ui/skeletons";
 
@@ -156,26 +157,12 @@ const Index = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
               >
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
-                  {t("index.hero_main_title")}
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
+                  {t("landing.hero_title") || "Helyi Szaktudás. Vállalati Támogatás. Közösségi Érték."}
                 </h1>
-                <p className="text-xl md:text-2xl text-muted-foreground mb-8">{t("index.hero_main_subtitle")}</p>
-                <p className="text-lg text-muted-foreground/80 mb-12 max-w-2xl mx-auto">{t("index.hero_description")}</p>
-
-                {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-                  <Link to="/piacer">
-                    <Button size="lg" className="w-full sm:w-auto min-w-[200px] gap-2">
-                      {t("index.go_to_marketplace")}
-                      <ChevronRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </Link>
-                  <Link to="/auth">
-                    <Button size="lg" variant="outline" className="w-full sm:w-auto min-w-[200px]">
-                      {t("index.cta_join_now")}
-                    </Button>
-                  </Link>
-                </div>
+                <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto">
+                  {t("landing.hero_subtitle") || "Csatlakozz a regionális tudásmegosztó ökoszisztémához"}
+                </p>
               </motion.div>
             </div>
 
@@ -188,6 +175,9 @@ const Index = () => {
               <ArrowDown className="h-8 w-8 text-muted-foreground/60" />
             </motion.div>
           </section>
+
+          {/* 2. REGISTRATION CARDS - 3 Paths */}
+          <RegistrationCards />
 
           {/* 2. KIEMELT ESEMÉNYEK - Fixed 3-column grid */}
           <FeaturedEventsGrid />
