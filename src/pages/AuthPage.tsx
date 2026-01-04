@@ -174,38 +174,41 @@ const AuthPage = () => {
     { 
       id: 'member', 
       icon: Users, 
-      label: t('auth.role_member') || 'Tag', 
-      desc: t('landing.card_member_desc_short') || 'Kuponok és kincsek',
+      label: t('auth.role_member') || 'Tagként csatlakozom', 
+      desc: t('landing.card_member_desc_short') || 'Kuponok és helyi kincsek',
+      cardBg: 'bg-gradient-to-br from-cyan-50 to-white',
       borderColor: 'border-cyan-200',
-      hoverBorder: 'hover:border-cyan-500',
-      selectedBg: 'bg-cyan-50',
+      hoverBorder: 'hover:border-cyan-400',
+      hoverShadow: 'hover:shadow-lg hover:shadow-cyan-100/50',
+      selectedBg: 'bg-gradient-to-br from-cyan-50 to-cyan-100/50',
       selectedBorder: 'border-cyan-500',
-      iconBg: 'bg-cyan-100',
-      iconColor: 'text-cyan-600',
+      iconGradient: 'bg-gradient-to-br from-cyan-400 to-cyan-600',
     },
     { 
       id: 'expert', 
       icon: Sparkles, 
-      label: t('auth.role_expert') || 'Szakértő', 
-      desc: t('landing.card_expert_desc_short') || 'Tudásmegosztás és tiszteletdíj',
+      label: t('auth.role_expert') || 'Szakértőként csatlakozom', 
+      desc: t('landing.card_expert_desc_short') || 'A tudásom és tapasztalatom',
+      cardBg: 'bg-gradient-to-br from-purple-50 to-white',
       borderColor: 'border-purple-200',
-      hoverBorder: 'hover:border-purple-500',
-      selectedBg: 'bg-purple-50',
+      hoverBorder: 'hover:border-purple-400',
+      hoverShadow: 'hover:shadow-lg hover:shadow-purple-100/50',
+      selectedBg: 'bg-gradient-to-br from-purple-50 to-purple-100/50',
       selectedBorder: 'border-purple-500',
-      iconBg: 'bg-purple-100',
-      iconColor: 'text-purple-600',
+      iconGradient: 'bg-gradient-to-br from-purple-400 to-purple-600',
     },
     { 
       id: 'sponsor', 
       icon: Building2, 
-      label: t('auth.role_sponsor') || 'Támogató', 
-      desc: t('landing.card_sponsor_desc_short') || 'Értékteremtés és közösség',
+      label: t('auth.role_sponsor') || 'Támogatóként csatlakozom', 
+      desc: t('landing.card_sponsor_desc_short') || 'A közösséget és a helyi értékeket',
+      cardBg: 'bg-gradient-to-br from-amber-50 to-white',
       borderColor: 'border-amber-200',
-      hoverBorder: 'hover:border-amber-500',
-      selectedBg: 'bg-amber-50',
+      hoverBorder: 'hover:border-amber-400',
+      hoverShadow: 'hover:shadow-lg hover:shadow-amber-100/50',
+      selectedBg: 'bg-gradient-to-br from-amber-50 to-amber-100/50',
       selectedBorder: 'border-amber-500',
-      iconBg: 'bg-amber-100',
-      iconColor: 'text-amber-600',
+      iconGradient: 'bg-gradient-to-br from-amber-400 to-amber-600',
     },
   ];
 
@@ -349,20 +352,20 @@ const AuthPage = () => {
                           key={role.id}
                           type="button"
                           onClick={() => setSignupForm({ ...signupForm, role: role.id })}
-                          className={`p-4 rounded-xl border-2 text-left transition-all duration-300 ${
+                          className={`p-4 rounded-2xl border-2 text-left transition-all duration-300 group ${
                             isSelected
                               ? `${role.selectedBg} ${role.selectedBorder} shadow-md`
-                              : `bg-white ${role.borderColor} ${role.hoverBorder}`
+                              : `${role.cardBg} ${role.borderColor} ${role.hoverBorder} ${role.hoverShadow}`
                           }`}
-                          whileHover={{ scale: 1.01 }}
-                          whileTap={{ scale: 0.99 }}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
                         >
                           <div className="flex items-center gap-4">
-                            <div className={`w-12 h-12 rounded-xl ${role.iconBg} flex items-center justify-center`}>
-                              <Icon className={`w-6 h-6 ${role.iconColor}`} />
+                            <div className={`w-14 h-14 rounded-xl ${role.iconGradient} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                              <Icon className="w-7 h-7 text-white" />
                             </div>
                             <div>
-                              <p className="font-bold text-slate-900">{role.label}</p>
+                              <p className="font-bold text-slate-900 text-lg">{role.label}</p>
                               <p className="text-sm text-slate-600">{role.desc}</p>
                             </div>
                           </div>
