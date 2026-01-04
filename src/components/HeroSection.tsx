@@ -16,11 +16,11 @@ const HeroSection = () => {
       description: t('landing.card_member_desc_short'),
       cta: t('landing.card_member_cta'),
       link: '/auth?role=member',
+      cardBg: 'bg-gradient-to-br from-cyan-50 to-white',
       borderColor: 'border-cyan-200',
-      hoverBorder: 'hover:border-cyan-500',
-      selectedBorder: 'border-cyan-500',
-      iconBg: 'bg-cyan-100',
-      iconColor: 'text-cyan-600',
+      hoverBorder: 'hover:border-cyan-400',
+      hoverShadow: 'hover:shadow-lg hover:shadow-cyan-100/50',
+      iconGradient: 'bg-gradient-to-br from-cyan-400 to-cyan-600',
       buttonBg: 'bg-cyan-500 hover:bg-cyan-600',
     },
     {
@@ -30,11 +30,11 @@ const HeroSection = () => {
       description: t('landing.card_expert_desc_short'),
       cta: t('landing.card_expert_cta'),
       link: '/auth?role=expert',
+      cardBg: 'bg-gradient-to-br from-purple-50 to-white',
       borderColor: 'border-purple-200',
-      hoverBorder: 'hover:border-purple-500',
-      selectedBorder: 'border-purple-500',
-      iconBg: 'bg-purple-100',
-      iconColor: 'text-purple-600',
+      hoverBorder: 'hover:border-purple-400',
+      hoverShadow: 'hover:shadow-lg hover:shadow-purple-100/50',
+      iconGradient: 'bg-gradient-to-br from-purple-400 to-purple-600',
       buttonBg: 'bg-purple-500 hover:bg-purple-600',
     },
     {
@@ -44,11 +44,11 @@ const HeroSection = () => {
       description: t('landing.card_sponsor_desc_short'),
       cta: t('landing.card_sponsor_cta'),
       link: '/auth?role=sponsor',
+      cardBg: 'bg-gradient-to-br from-amber-50 to-white',
       borderColor: 'border-amber-200',
-      hoverBorder: 'hover:border-amber-500',
-      selectedBorder: 'border-amber-500',
-      iconBg: 'bg-amber-100',
-      iconColor: 'text-amber-600',
+      hoverBorder: 'hover:border-amber-400',
+      hoverShadow: 'hover:shadow-lg hover:shadow-amber-100/50',
+      iconGradient: 'bg-gradient-to-br from-amber-400 to-amber-600',
       buttonBg: 'bg-amber-500 hover:bg-amber-600',
     },
   ];
@@ -71,7 +71,10 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            {t('landing.hero_title')}
+            Helyi értékek. Átadott tudás.{' '}
+            <span className="bg-gradient-to-r from-cyan-500 via-purple-500 to-amber-500 bg-clip-text text-transparent">
+              Élő közösség.
+            </span>
           </motion.h1>
 
           {/* Subtitle */}
@@ -94,30 +97,30 @@ const HeroSection = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
+                  className="group"
                 >
                   <Card
-                    className={`relative overflow-hidden border-2 ${path.borderColor} ${path.hoverBorder} bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1`}
+                    className={`relative overflow-hidden border-2 ${path.cardBg} ${path.borderColor} ${path.hoverBorder} ${path.hoverShadow} transition-all duration-300 hover:-translate-y-1 rounded-2xl`}
                   >
-                    <CardContent className="p-4 flex flex-col items-center text-center">
+                    <CardContent className="p-6 flex flex-col items-center text-center">
                       {/* Icon */}
-                      <div className={`w-12 h-12 rounded-xl ${path.iconBg} flex items-center justify-center mb-3`}>
-                        <Icon className={`w-6 h-6 ${path.iconColor}`} />
+                      <div className={`w-16 h-16 rounded-2xl ${path.iconGradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                        <Icon className="w-8 h-8 text-white" />
                       </div>
                       
                       {/* Title */}
-                      <h3 className="text-lg font-bold text-slate-900 mb-1">
+                      <h3 className="text-xl font-bold text-slate-900 mb-1">
                         {path.title}
                       </h3>
                       
                       {/* Description */}
-                      <p className="text-slate-600 text-sm mb-4">
+                      <p className="text-slate-600 text-sm mb-5">
                         {path.description}
                       </p>
                       
                       {/* CTA Button */}
                       <Link to={path.link} className="w-full">
                         <Button 
-                          size="sm"
                           className={`w-full text-white ${path.buttonBg}`}
                         >
                           {path.cta}
