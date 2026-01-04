@@ -68,7 +68,10 @@ const Index = () => {
               </div>
             </section>
 
-            {/* 2. KIEMELT ESEMÉNYEK - Fixed 3-column grid */}
+            {/* 2. SZAKÉRTŐI ARCKÉPCSARNOK - Expert Portrait Gallery */}
+            <ExpertGallery />
+
+            {/* 3. KIEMELT ESEMÉNYEK - Fixed 3-column grid */}
             <FeaturedEventsGrid />
 
             {/* 3. MŰHELYTITOK AJÁNLÓ - Horizontal slider */}
