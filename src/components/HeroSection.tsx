@@ -14,9 +14,9 @@ const HeroSection = () => {
       description: t('landing.card_member_desc_short'),
       cta: t('landing.card_member_cta'),
       link: '/auth?role=member',
-      iconBg: 'bg-cyan-50',
-      iconColor: 'text-cyan-600',
-      buttonClass: 'bg-cyan-600 hover:bg-cyan-700',
+      iconBg: 'bg-[#007AFF]/10',
+      iconColor: 'text-[#007AFF]',
+      buttonClass: 'bg-[#007AFF] hover:bg-[#0056b3]',
     },
     {
       id: 'expert',
@@ -25,9 +25,9 @@ const HeroSection = () => {
       description: t('landing.card_expert_desc_short'),
       cta: t('landing.card_expert_cta'),
       link: '/auth?role=expert',
-      iconBg: 'bg-violet-50',
-      iconColor: 'text-violet-600',
-      buttonClass: 'bg-violet-600 hover:bg-violet-700',
+      iconBg: 'bg-[#007AFF]/10',
+      iconColor: 'text-[#007AFF]',
+      buttonClass: 'bg-[#007AFF] hover:bg-[#0056b3]',
     },
     {
       id: 'sponsor',
@@ -36,14 +36,14 @@ const HeroSection = () => {
       description: t('landing.card_sponsor_desc_short'),
       cta: t('landing.card_sponsor_cta'),
       link: '/auth?role=sponsor',
-      iconBg: 'bg-amber-50',
-      iconColor: 'text-amber-600',
-      buttonClass: 'bg-amber-600 hover:bg-amber-700',
+      iconBg: 'bg-[#007AFF]/10',
+      iconColor: 'text-[#007AFF]',
+      buttonClass: 'bg-[#007AFF] hover:bg-[#0056b3]',
     },
   ];
 
   return (
-    <section className="min-h-screen bg-gradient-to-b from-slate-50 to-white flex items-center justify-center py-20">
+    <section className="min-h-screen bg-white flex items-center justify-center py-20">
       <div className="max-w-5xl mx-auto px-4 text-center">
         {/* Clean headline */}
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight">
@@ -63,7 +63,7 @@ const HeroSection = () => {
             return (
               <div
                 key={path.id}
-                className="bg-white border border-slate-200 shadow-lg hover:shadow-xl rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 group"
+                className="bg-white/70 backdrop-blur-xl border border-white/40 shadow-[0_20px_50px_rgba(0,0,0,0.05)] hover:shadow-[0_25px_60px_rgba(0,0,0,0.1)] rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 group"
               >
                 {/* Icon container */}
                 <div className={`w-14 h-14 rounded-2xl ${path.iconBg} flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300`}>
