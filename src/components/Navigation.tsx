@@ -214,7 +214,7 @@ const Navigation = () => {
   }, [user, profile, t, effectiveRole]);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[100] w-full bg-background/80 backdrop-blur-md border-b border-border">
+    <nav className="fixed top-0 left-0 right-0 z-[100] w-full bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -235,9 +235,9 @@ const Navigation = () => {
                   className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
                     active 
                       ? hasCustomColor 
-                        ? "bg-[#00E5FF]/20 text-[#00E5FF] shadow-[0_0_10px_rgba(0,229,255,0.3)]" 
-                        : "text-primary-foreground bg-primary" 
-                      : "text-foreground/90 hover:text-foreground hover:bg-accent/50"
+                        ? "bg-cyan-100 text-cyan-700" 
+                        : "text-white bg-cyan-500" 
+                      : "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
                   }`}
                 >
                   <Icon 
@@ -346,10 +346,10 @@ const Navigation = () => {
               </>
             ) : (
               <div className="flex items-center gap-2">
-                <Button variant="outline" asChild>
+                <Button variant="outline" asChild className="border-slate-300 text-slate-700 hover:bg-slate-100">
                   <Link to="/auth">{t("nav.sign_in")}</Link>
                 </Button>
-                <Button asChild>
+                <Button asChild className="bg-cyan-500 hover:bg-cyan-600 text-white">
                   <Link to="/auth">{t("nav.join_community")}</Link>
                 </Button>
               </div>
@@ -365,7 +365,7 @@ const Navigation = () => {
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-80 bg-background/95 backdrop-blur-md">
+              <SheetContent side="right" className="w-80 bg-white/95 backdrop-blur-md">
                 <SheetHeader>
                   <SheetTitle className="flex items-center gap-2">
                     <img src={wellagoraLogo} alt="WellAgora" className="h-8 w-auto" />
