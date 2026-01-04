@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { Users, Award, TrendingUp, ChevronRight } from "lucide-react";
 
 import HeroSection from "@/components/HeroSection";
+import ExpertGallery from "@/components/ExpertGallery";
 import FeaturedEventsGrid from "@/components/FeaturedEventsGrid";
 import WorkshopSecretsSlider from "@/components/WorkshopSecretsSlider";
 import CTABanner from "@/components/CTABanner";
@@ -43,8 +44,7 @@ const Index = () => {
           <Navigation />
           <main className="pt-2 md:pt-4 flex-1">
             {/* 1. SIMPLIFIED HERO - Welcome + Single CTA */}
-            <section className="relative overflow-hidden bg-gradient-to-br from-cyan-50 via-purple-50/30 to-amber-50/30">
-              <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+            <section className="relative overflow-hidden bg-[#F5F5F7]">
               <div className="container mx-auto px-4 py-4 sm:py-8 relative z-10">
                 <motion.div
                   className="max-w-4xl mx-auto text-center"
@@ -52,14 +52,14 @@ const Index = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6 }}
                 >
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-3">
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-3 tracking-tight">
                     {t("index.welcome_back")}, {profile.first_name}! 👋
                   </h1>
                   <p className="text-base sm:text-lg text-slate-600 mb-6 max-w-2xl mx-auto">
                     {t("index.ready_to_make_impact")}
                   </p>
                   <Link to="/piacer">
-                    <Button size="lg" className="min-w-[200px] gap-2 bg-cyan-500 hover:bg-cyan-600 text-white">
+                    <Button size="lg" className="min-w-[200px] gap-2 bg-[#007AFF] hover:bg-[#0056b3] text-white">
                       {t("index.go_to_marketplace")}
                       <ChevronRight className="w-5 h-5" />
                     </Button>
@@ -84,7 +84,7 @@ const Index = () => {
             <RegionalImpactGarden />
 
             {/* 7. COMMUNITY STATS - Compact horizontal bar */}
-            <section className="py-8 bg-slate-50">
+            <section className="py-8 bg-[#F5F5F7]">
               <div className="container mx-auto px-4">
                 {statsLoading ? (
                   <StatsBarSkeleton />
@@ -138,10 +138,13 @@ const Index = () => {
           {/* 1. HERO SECTION - Full viewport with integrated registration cards */}
           <HeroSection />
 
-          {/* 2. KIEMELT ESEMÉNYEK - Fixed 3-column grid */}
+          {/* 2. SZAKÉRTŐI ARCKÉPCSARNOK - Expert Portrait Gallery */}
+          <ExpertGallery />
+
+          {/* 3. KIEMELT ESEMÉNYEK - Fixed 3-column grid */}
           <FeaturedEventsGrid />
 
-          {/* 3. MŰHELYTITOK AJÁNLÓ - Horizontal slider */}
+          {/* 4. MŰHELYTITOK AJÁNLÓ - Horizontal slider */}
           <WorkshopSecretsSlider />
         </main>
       </div>

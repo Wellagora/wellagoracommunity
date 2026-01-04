@@ -10,13 +10,11 @@ import {
   Inbox,
   ChevronDown,
   ShieldCheck,
-  Heart,
   Calendar,
   LayoutDashboard,
   Store,
   Sparkles,
   Building2,
-  Eye,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -306,38 +304,40 @@ const Navigation = () => {
 
           {/* Desktop Actions - Right */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* Super Admin View Switcher */}
+            {/* Super Admin View Switcher - Apple iOS Segmented Control */}
             {isSuperAdmin && user && (
-              <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors text-sm font-medium">
-                  <Eye className="h-4 w-4" />
-                  <span>Nézet: {getViewLabel(activeView)}</span>
-                  <ChevronDown className="h-4 w-4" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem 
-                    onClick={() => handleViewChange('member')}
-                    className={activeView === 'member' ? 'bg-cyan-50 text-cyan-700' : ''}
-                  >
-                    <UsersIcon className="h-4 w-4 mr-2 text-cyan-600" />
-                    Felfedező (Tag)
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    onClick={() => handleViewChange('expert')}
-                    className={activeView === 'expert' ? 'bg-violet-50 text-violet-700' : ''}
-                  >
-                    <Sparkles className="h-4 w-4 mr-2 text-violet-600" />
-                    Szakértő
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    onClick={() => handleViewChange('sponsor')}
-                    className={activeView === 'sponsor' ? 'bg-amber-50 text-amber-700' : ''}
-                  >
-                    <Building2 className="h-4 w-4 mr-2 text-amber-600" />
-                    Támogató
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <div className="flex items-center bg-[#F5F5F7] rounded-lg p-1 shadow-sm">
+                <button
+                  onClick={() => handleViewChange('member')}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
+                    activeView === 'member'
+                      ? 'bg-white text-[#007AFF] shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Felfedező
+                </button>
+                <button
+                  onClick={() => handleViewChange('expert')}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
+                    activeView === 'expert'
+                      ? 'bg-white text-[#007AFF] shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Szakértő
+                </button>
+                <button
+                  onClick={() => handleViewChange('sponsor')}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
+                    activeView === 'sponsor'
+                      ? 'bg-white text-[#007AFF] shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Támogató
+                </button>
+              </div>
             )}
 
             {/* Language Selector */}
@@ -437,7 +437,7 @@ const Navigation = () => {
                 <Button variant="outline" asChild className="border-slate-300 text-slate-700 hover:bg-slate-100">
                   <Link to="/auth">{t("nav.sign_in")}</Link>
                 </Button>
-                <Button asChild className="bg-cyan-500 hover:bg-cyan-600 text-white">
+                <Button asChild className="bg-[#007AFF] hover:bg-[#0056b3] text-white">
                   <Link to="/auth">{t("nav.join_community")}</Link>
                 </Button>
               </div>
@@ -520,37 +520,40 @@ const Navigation = () => {
                     })}
                   </div>
 
-                  {/* Super Admin View Switcher - Mobile */}
+                  {/* Super Admin View Switcher - Mobile iOS Segmented Control */}
                   {isSuperAdmin && (
-                    <div className="px-3 py-2 space-y-2">
-                      <p className="text-xs font-medium text-slate-500 uppercase">Nézet váltás</p>
-                      <div className="flex flex-col gap-1">
+                    <div className="px-3 py-4">
+                      <p className="text-xs font-medium text-slate-500 uppercase mb-3">Nézet váltás</p>
+                      <div className="flex bg-[#F5F5F7] rounded-lg p-1">
                         <button
                           onClick={() => handleViewChange('member')}
-                          className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-left ${
-                            activeView === 'member' ? 'bg-cyan-100 text-cyan-700' : 'hover:bg-slate-100'
+                          className={`flex-1 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                            activeView === 'member'
+                              ? 'bg-white text-[#007AFF] shadow-sm'
+                              : 'text-slate-600'
                           }`}
                         >
-                          <UsersIcon className="h-4 w-4 text-cyan-600" />
-                          <span className="text-sm">Felfedező (Tag)</span>
+                          Felfedező
                         </button>
                         <button
                           onClick={() => handleViewChange('expert')}
-                          className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-left ${
-                            activeView === 'expert' ? 'bg-violet-100 text-violet-700' : 'hover:bg-slate-100'
+                          className={`flex-1 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                            activeView === 'expert'
+                              ? 'bg-white text-[#007AFF] shadow-sm'
+                              : 'text-slate-600'
                           }`}
                         >
-                          <Sparkles className="h-4 w-4 text-violet-600" />
-                          <span className="text-sm">Szakértő</span>
+                          Szakértő
                         </button>
                         <button
                           onClick={() => handleViewChange('sponsor')}
-                          className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-left ${
-                            activeView === 'sponsor' ? 'bg-amber-100 text-amber-700' : 'hover:bg-slate-100'
+                          className={`flex-1 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                            activeView === 'sponsor'
+                              ? 'bg-white text-[#007AFF] shadow-sm'
+                              : 'text-slate-600'
                           }`}
                         >
-                          <Building2 className="h-4 w-4 text-amber-600" />
-                          <span className="text-sm">Támogató</span>
+                          Támogató
                         </button>
                       </div>
                     </div>
@@ -561,7 +564,7 @@ const Navigation = () => {
                     <Link
                       to="/super-admin"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2 rounded-lg text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/20 transition-colors"
+                      className="flex items-center gap-3 px-3 py-2 rounded-lg text-[#007AFF] hover:bg-blue-50 transition-colors"
                     >
                       <ShieldCheck className="h-5 w-5" />
                       <span className="font-medium">Super Admin</span>
