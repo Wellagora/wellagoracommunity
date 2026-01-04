@@ -114,15 +114,16 @@ const ControlPanelSkeleton = () => (
 
 const ControlPanelPage = () => {
   const navigate = useNavigate();
-  const { user, profile, loading, activeView } = useAuth();
+  const { user, profile, loading } = useAuth();
   const { t, language } = useLanguage();
   const [loadingData, setLoadingData] = useState(true);
   const [myContents, setMyContents] = useState<ContentItem[]>([]);
   const [news, setNews] = useState<NewsItem[]>([]);
   const [mySponsorships, setMySponsorships] = useState<SponsorshipItem[]>([]);
 
-  // Use activeView from context (not profile.user_role) - NO FLICKER!
-  const isSponsor = activeView === 'sponsor';
+  // Determine if user is sponsor based on user_role
+  const userRole = profile?.user_role || 'member';
+  const isSponsor = ['sponsor', 'business', 'government', 'ngo'].includes(userRole);
 
   const dateLocale = language === "hu" ? hu : language === "de" ? de : enUS;
 

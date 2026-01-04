@@ -16,11 +16,9 @@ import {
   Store,
   Sparkles,
   Building2,
-  Check,
 } from "lucide-react";
-import { useAuth, ActiveView } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useViewMode } from "@/contexts/ViewModeContext";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -29,25 +27,33 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-import { toast } from "sonner";
 import wellagoraLogo from "@/assets/wellagora-logo.png";
 import LanguageSelector from "./LanguageSelector";
+
+// Helper to determine effective role from database user_role
+const getEffectiveRole = (userRole: string | undefined): 'member' | 'expert' | 'sponsor' => {
+  if (!userRole) return 'member';
+  if (['expert', 'creator'].includes(userRole)) return 'expert';
+  if (['sponsor', 'business', 'government', 'ngo'].includes(userRole)) return 'sponsor';
+  return 'member';
+};
 
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [isViewSwitching, setIsViewSwitching] = useState(false);
-  const { user, profile, signOut, activeView, availableViews, setActiveView } = useAuth();
-  const { isSuperAdmin } = useViewMode();
+  const { user, profile, signOut } = useAuth();
   const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Determine user's role from profile
+  const effectiveRole = getEffectiveRole(profile?.user_role);
+  const isSuperAdmin = profile?.is_super_admin === true;
 
   // Load unread message count
   useEffect(() => {
@@ -101,42 +107,57 @@ const Navigation = () => {
     navigate("/");
   }, [signOut, navigate]);
 
-  // View switching handler - persists to database via AuthContext
-  const handleViewSwitch = useCallback(async (newView: ActiveView) => {
-    if (isViewSwitching || activeView === newView) return;
-    
-    setIsViewSwitching(true);
-    try {
-      await setActiveView(newView);
-      
-      // Navigate to appropriate dashboard
-      if (newView === 'expert') {
-        toast.success(t('nav.switched_to_expert'));
-        navigate('/szakertoi-studio');
-      } else if (newView === 'sponsor') {
-        toast.success(t('nav.switched_to_supporter'));
-        navigate('/iranyitopult');
-      } else {
-        toast.success(t('nav.switched_to_member'));
-        navigate('/iranyitopult');
-      }
-    } catch (error) {
-      logger.error('Error switching view', error, 'Navigation');
-      toast.error(t('common.error'));
-    } finally {
-      setIsViewSwitching(false);
-    }
-  }, [activeView, isViewSwitching, setActiveView, navigate, t]);
-
   const isActive = (path: string) => {
     return location.pathname === path;
   };
 
-  // Compute paths based on active view
-  const isExpertView = activeView === 'expert';
-  const isSponsorView = activeView === 'sponsor';
+  // Get dashboard route based on user's role
+  const getDashboardRoute = useCallback((): string => {
+    if (!user) return '/auth';
+    if (isSuperAdmin) return '/super-admin';
+    
+    switch (effectiveRole) {
+      case 'expert':
+        return '/szakertoi-studio';
+      case 'sponsor':
+        return '/tamogatoi-kozpont';
+      case 'member':
+      default:
+        return '/iranyitopult';
+    }
+  }, [user, isSuperAdmin, effectiveRole]);
 
-  // Build nav items based on active view
+  // Get dashboard label based on role
+  const getDashboardLabel = useCallback((): string => {
+    if (!user) return t('nav.sign_in');
+    if (isSuperAdmin) return 'Admin';
+    
+    switch (effectiveRole) {
+      case 'expert':
+        return t('nav.expert_studio');
+      case 'sponsor':
+        return t('nav.sponsor_center');
+      case 'member':
+      default:
+        return t('nav.control_panel');
+    }
+  }, [user, isSuperAdmin, effectiveRole, t]);
+
+  // Get role display text
+  const getRoleDisplayText = (): string => {
+    if (isSuperAdmin) return 'Super Admin';
+    switch (effectiveRole) {
+      case 'expert':
+        return t('nav.role_expert');
+      case 'sponsor':
+        return t('nav.role_supporter');
+      case 'member':
+      default:
+        return t('nav.role_member');
+    }
+  };
+
+  // Build nav items based on user role
   const navItems = useMemo(() => {
     const baseItems = [
       { path: "/", label: t("nav.home"), icon: Home },
@@ -153,8 +174,8 @@ const Navigation = () => {
       ];
     }
 
-    // Expert view: show Expert Studio
-    if (isExpertView) {
+    // Expert: show Expert Studio link
+    if (effectiveRole === 'expert') {
       return [
         ...baseItems,
         { 
@@ -167,20 +188,27 @@ const Navigation = () => {
       ];
     }
 
-    // Sponsor or Member view: show Control Panel
+    // Sponsor: show Sponsor Center link
+    if (effectiveRole === 'sponsor') {
+      return [
+        ...baseItems,
+        { 
+          path: "/tamogatoi-kozpont", 
+          label: t("nav.sponsor_center"), 
+          icon: Building2,
+          iconColor: "#FFD700"
+        },
+        { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
+      ];
+    }
+
+    // Member: show Control Panel link
     return [
       ...baseItems,
       { path: "/iranyitopult", label: t("nav.control_panel"), icon: LayoutDashboard },
       { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
     ];
-  }, [user, profile, t, isExpertView]);
-
-  // View options for the switcher
-  const viewOptions = useMemo(() => [
-    { value: 'member' as ActiveView, label: t('nav.role_member'), icon: User, color: undefined },
-    { value: 'expert' as ActiveView, label: t('nav.role_expert'), icon: Sparkles, color: '#00E5FF' },
-    { value: 'sponsor' as ActiveView, label: t('nav.role_supporter'), icon: Building2, color: '#FFD700' },
-  ], [t]);
+  }, [user, profile, t, effectiveRole]);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-[100] w-full bg-background/80 backdrop-blur-md border-b border-border">
@@ -255,6 +283,12 @@ const Navigation = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
+                    {/* User info header */}
+                    <div className="px-2 py-1.5 border-b mb-1">
+                      <p className="font-medium text-sm">{profile?.first_name} {profile?.last_name}</p>
+                      <p className="text-xs text-muted-foreground">{getRoleDisplayText()}</p>
+                    </div>
+                    
                     <DropdownMenuItem asChild>
                       <Link to="/profile" className="flex items-center gap-2 cursor-pointer">
                         <User className="h-4 w-4" />
@@ -273,43 +307,15 @@ const Navigation = () => {
                       </Link>
                     </DropdownMenuItem>
                     
-                    {/* View Switcher - Super Admin sees ALL, others see their available views */}
-                    {(isSuperAdmin || availableViews.length > 1) && (
-                      <>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuLabel className="text-xs text-muted-foreground">
-                          {t('nav.switch_role')}
-                        </DropdownMenuLabel>
-                        {viewOptions
-                          .filter(option => isSuperAdmin || availableViews.includes(option.value))
-                          .map(option => {
-                            const Icon = option.icon;
-                            const isCurrentView = activeView === option.value;
-                            return (
-                              <DropdownMenuItem
-                                key={option.value}
-                                onClick={() => handleViewSwitch(option.value)}
-                                disabled={isViewSwitching}
-                                className={`flex items-center gap-2 cursor-pointer ${
-                                  isCurrentView ? (option.color ? `bg-[${option.color}]/10` : 'bg-accent') : ''
-                                }`}
-                              >
-                                <Icon 
-                                  className="h-4 w-4" 
-                                  style={option.color ? { color: option.color } : undefined}
-                                />
-                                <span style={isCurrentView && option.color ? { color: option.color } : undefined}>
-                                  {option.label}
-                                </span>
-                                {isCurrentView && (
-                                  <Check className="h-4 w-4 ml-auto" style={option.color ? { color: option.color } : undefined} />
-                                )}
-                              </DropdownMenuItem>
-                            );
-                          })}
-                      </>
-                    )}
+                    {/* Dashboard shortcut */}
+                    <DropdownMenuItem asChild>
+                      <Link to={getDashboardRoute()} className="flex items-center gap-2 cursor-pointer">
+                        <LayoutDashboard className="h-4 w-4" />
+                        {getDashboardLabel()}
+                      </Link>
+                    </DropdownMenuItem>
                     
+                    {/* Super Admin link */}
                     {isSuperAdmin && (
                       <>
                         <DropdownMenuSeparator />
@@ -383,62 +389,18 @@ const Navigation = () => {
                           {profile.first_name} {profile.last_name}
                         </p>
                         <p className="text-xs text-foreground/70 capitalize truncate">
-                          {activeView === 'expert' ? t('nav.role_expert') : 
-                           activeView === 'sponsor' ? t('nav.role_supporter') : 
-                           t('nav.role_member')}
+                          {getRoleDisplayText()}
                         </p>
                       </div>
                     </Link>
                   )}
 
-                  {/* View Switcher - Mobile: Super Admin sees ALL */}
-                  {user && (isSuperAdmin || availableViews.length > 1) && (
-                    <div className="space-y-1 p-2 bg-muted/50 rounded-lg">
-                      <p className="text-xs text-muted-foreground px-2 mb-2">{t('nav.switch_role')}</p>
-                      {viewOptions
-                        .filter(option => isSuperAdmin || availableViews.includes(option.value))
-                        .map(option => {
-                          const Icon = option.icon;
-                          const isCurrentView = activeView === option.value;
-                          return (
-                            <button
-                              key={option.value}
-                              onClick={() => {
-                                handleViewSwitch(option.value);
-                                setIsMobileMenuOpen(false);
-                              }}
-                              disabled={isViewSwitching}
-                              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                                isCurrentView 
-                                  ? option.color 
-                                    ? `bg-[${option.color}]/20` 
-                                    : 'bg-accent' 
-                                  : 'hover:bg-accent/50'
-                              }`}
-                            >
-                              <Icon 
-                                className="h-5 w-5" 
-                                style={option.color ? { color: option.color } : undefined}
-                              />
-                              <span 
-                                className="font-medium"
-                                style={isCurrentView && option.color ? { color: option.color } : undefined}
-                              >
-                                {option.label}
-                              </span>
-                              {isCurrentView && (
-                                <Check 
-                                  className="h-4 w-4 ml-auto" 
-                                  style={option.color ? { color: option.color } : undefined}
-                                />
-                              )}
-                            </button>
-                          );
-                        })}
-                    </div>
-                  )}
+                  {/* Language Selector - Mobile */}
+                  <div className="px-3">
+                    <LanguageSelector />
+                  </div>
 
-                  {/* Navigation Links - Mobile */}
+                  {/* Navigation Links */}
                   <div className="space-y-1">
                     {navItems.map((item) => {
                       const Icon = item.icon;
@@ -449,74 +411,73 @@ const Navigation = () => {
                           key={item.path}
                           to={item.path}
                           onClick={() => setIsMobileMenuOpen(false)}
-                          className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors ${
+                          className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
                             active
                               ? hasCustomColor
-                                ? "bg-[#00E5FF]/20 text-[#00E5FF] font-medium shadow-[0_0_10px_rgba(0,229,255,0.3)]"
-                                : "text-primary-foreground bg-primary font-medium"
-                              : "text-foreground/90 hover:text-foreground hover:bg-accent/50"
+                                ? "bg-[#00E5FF]/20 text-[#00E5FF]"
+                                : "bg-primary text-primary-foreground"
+                              : "hover:bg-accent/50"
                           }`}
                         >
-                          <Icon 
-                            className="h-5 w-5 shrink-0" 
+                          <Icon
+                            className="h-5 w-5"
                             style={hasCustomColor ? { color: item.iconColor } : undefined}
                           />
-                          {item.label}
+                          <span className="font-medium">{item.label}</span>
                         </Link>
                       );
                     })}
                   </div>
 
-                  {/* Language & Actions - Mobile */}
-                  <div className="mt-auto pt-4 border-t border-border space-y-2">
-                    <LanguageSelector />
-                    
+                  {/* Super Admin link - Mobile */}
+                  {isSuperAdmin && (
+                    <Link
+                      to="/super-admin"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-3 py-2 rounded-lg text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/20 transition-colors"
+                    >
+                      <ShieldCheck className="h-5 w-5" />
+                      <span className="font-medium">Super Admin</span>
+                    </Link>
+                  )}
+
+                  {/* Auth Actions - Mobile */}
+                  <div className="pt-4 border-t space-y-2 mt-auto">
                     {user ? (
                       <>
                         <Link
                           to="/inbox"
                           onClick={() => setIsMobileMenuOpen(false)}
-                          className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-accent/50 transition-colors"
+                          className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-accent/50 transition-colors"
                         >
                           <Inbox className="h-5 w-5" />
-                          {t("nav.messages")}
+                          <span className="font-medium">{t("nav.messages")}</span>
                           {unreadCount > 0 && (
                             <Badge variant="destructive" className="ml-auto">
                               {unreadCount > 9 ? "9+" : unreadCount}
                             </Badge>
                           )}
                         </Link>
-                        
-                        {isSuperAdmin && (
-                          <Link
-                            to="/super-admin"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className="flex items-center gap-3 px-3 py-3 rounded-lg text-purple-600 dark:text-purple-400 hover:bg-purple-500/10 transition-colors"
-                          >
-                            <ShieldCheck className="h-5 w-5" />
-                            Super Admin
-                          </Link>
-                        )}
-                        
-                        <button
+                        <Button
+                          variant="destructive"
+                          className="w-full"
                           onClick={() => {
                             handleSignOut();
                             setIsMobileMenuOpen(false);
                           }}
-                          className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-destructive hover:bg-destructive/10 transition-colors"
                         >
-                          <LogOut className="h-5 w-5" />
+                          <LogOut className="h-4 w-4 mr-2" />
                           {t("nav.sign_out")}
-                        </button>
+                        </Button>
                       </>
                     ) : (
                       <div className="space-y-2">
-                        <Button variant="outline" className="w-full" asChild>
+                        <Button asChild variant="outline" className="w-full">
                           <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
                             {t("nav.sign_in")}
                           </Link>
                         </Button>
-                        <Button className="w-full" asChild>
+                        <Button asChild className="w-full">
                           <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
                             {t("nav.join_community")}
                           </Link>

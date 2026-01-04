@@ -1610,6 +1610,7 @@ export type Database = {
           industry: string | null
           is_premium: boolean | null
           is_public_profile: boolean | null
+          is_super_admin: boolean | null
           is_verified_expert: boolean | null
           last_name: string
           latitude: number | null
@@ -1667,6 +1668,7 @@ export type Database = {
           industry?: string | null
           is_premium?: boolean | null
           is_public_profile?: boolean | null
+          is_super_admin?: boolean | null
           is_verified_expert?: boolean | null
           last_name: string
           latitude?: number | null
@@ -1724,6 +1726,7 @@ export type Database = {
           industry?: string | null
           is_premium?: boolean | null
           is_public_profile?: boolean | null
+          is_super_admin?: boolean | null
           is_verified_expert?: boolean | null
           last_name?: string
           latitude?: number | null
@@ -2463,6 +2466,35 @@ export type Database = {
           {
             foreignKeyName: "transactions_sponsor_id_fkey"
             columns: ["sponsor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_permissions: {
+        Row: {
+          created_at: string | null
+          id: string
+          permission: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          permission: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          permission?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_permissions_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -3659,7 +3691,15 @@ export type Database = {
         | "registered"
         | "premium"
         | "one_time_purchase"
-      user_role: "citizen" | "business" | "government" | "ngo" | "creator"
+      user_role:
+        | "citizen"
+        | "business"
+        | "government"
+        | "ngo"
+        | "creator"
+        | "member"
+        | "expert"
+        | "sponsor"
     }
     CompositeTypes: {
       geometry_dump: {
@@ -3810,7 +3850,16 @@ export const Constants = {
         "premium",
         "one_time_purchase",
       ],
-      user_role: ["citizen", "business", "government", "ngo", "creator"],
+      user_role: [
+        "citizen",
+        "business",
+        "government",
+        "ngo",
+        "creator",
+        "member",
+        "expert",
+        "sponsor",
+      ],
     },
   },
 } as const

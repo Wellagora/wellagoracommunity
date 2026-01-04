@@ -3,17 +3,19 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
-export type ActiveView = 'member' | 'expert' | 'sponsor';
-
-const ACTIVE_VIEW_KEY = 'wellagora_active_view';
+// User roles - simplified to 3 main roles
+export type UserRole = 'member' | 'expert' | 'sponsor';
 
 interface Profile {
   id: string;
   first_name: string;
   last_name: string;
   email: string;
-  user_role: 'citizen' | 'business' | 'government' | 'ngo' | 'creator';
+  user_role: string;  // Database can have legacy values
+  is_super_admin: boolean;
   organization?: string;
+  organization_name?: string;
+  organization_logo_url?: string;
   avatar_url?: string;
   created_at: string;
   updated_at: string;
@@ -30,9 +32,6 @@ interface AuthContextType {
   profile: Profile | null;
   session: Session | null;
   loading: boolean;
-  activeView: ActiveView;
-  availableViews: ActiveView[];
-  setActiveView: (view: ActiveView) => Promise<void>;
   signUp: (data: {
     email: string;
     password: string;
@@ -63,23 +62,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  // Initialize from localStorage for instant no-flicker load
-  const [activeView, setActiveViewState] = useState<ActiveView>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem(ACTIVE_VIEW_KEY);
-      if (saved && ['member', 'expert', 'sponsor'].includes(saved)) {
-        return saved as ActiveView;
-      }
-    }
-    return 'member';
-  });
-  const [availableViews, setAvailableViews] = useState<ActiveView[]>(['member']);
 
   // Helper function to fetch profile data
   const fetchProfileData = async (userId: string) => {
     logger.debug('Fetching profile', { userId }, 'Auth');
     try {
-      const { data: profile, error } = await supabase
+      const { data: profileData, error } = await supabase
         .from('profiles')
         .select(`
           id,
@@ -87,8 +75,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           last_name,
           email,
           user_role,
+          is_super_admin,
           organization,
           organization_id,
+          organization_name,
+          organization_logo_url,
           avatar_url,
           created_at,
           updated_at,
@@ -107,101 +98,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .eq('id', userId)
         .maybeSingle();
       
-      logger.debug('Profile query result', { hasData: !!profile, hasError: !!error }, 'Auth');
+      logger.debug('Profile query result', { hasData: !!profileData, hasError: !!error }, 'Auth');
       
       if (error && error.code !== 'PGRST116') {
         logger.error('Error fetching profile', error, 'Auth');
         return null;
       }
       
-      if (!profile) {
+      if (!profileData) {
         logger.warn('No profile found', { userId }, 'Auth');
+        return null;
       }
       
-      return profile as Profile;
+      // Ensure is_super_admin has a default value
+      return {
+        ...profileData,
+        is_super_admin: profileData.is_super_admin ?? false
+      } as Profile;
     } catch (err) {
       logger.error('Profile fetch error', err, 'Auth');
       return null;
-    }
-  };
-
-  // Fetch available views from database function
-  const fetchAvailableViews = async (userId: string): Promise<ActiveView[]> => {
-    try {
-      const { data, error } = await supabase.rpc('get_available_views', { _user_id: userId });
-      
-      if (error) {
-        logger.error('Error fetching available views', error, 'Auth');
-        return ['member'];
-      }
-      
-      return (data as ActiveView[]) || ['member'];
-    } catch (err) {
-      logger.error('Available views fetch error', err, 'Auth');
-      return ['member'];
-    }
-  };
-
-  // Fetch current view state from database
-  const fetchViewState = async (userId: string): Promise<ActiveView> => {
-    try {
-      const { data, error } = await supabase
-        .from('user_view_state')
-        .select('active_view')
-        .eq('user_id', userId)
-        .maybeSingle();
-      
-      if (error && error.code !== 'PGRST116') {
-        logger.error('Error fetching view state', error, 'Auth');
-        return 'member';
-      }
-      
-      return (data?.active_view as ActiveView) || 'member';
-    } catch (err) {
-      logger.error('View state fetch error', err, 'Auth');
-      return 'member';
-    }
-  };
-
-  // Set active view with database + localStorage persistence
-  const setActiveView = async (view: ActiveView): Promise<void> => {
-    if (!user) return;
-    
-    // Super Admin can switch to ANY view, others need it in availableViews
-    const canSwitch = availableViews.length === 3 || availableViews.includes(view);
-    if (!canSwitch) {
-      logger.warn('Cannot switch to view', { view, availableViews }, 'Auth');
-      return;
-    }
-    
-    // 1. Optimistic update - immediate
-    setActiveViewState(view);
-    
-    // 2. localStorage update - immediate, survives F5
-    localStorage.setItem(ACTIVE_VIEW_KEY, view);
-    
-    try {
-      // 3. Database persistence
-      const { error } = await supabase
-        .from('user_view_state')
-        .upsert(
-          { user_id: user.id, active_view: view, updated_at: new Date().toISOString() },
-          { onConflict: 'user_id' }
-        );
-      
-      if (error) {
-        logger.error('Error saving view state', error, 'Auth');
-        // Rollback on error - refetch actual state
-        const actualView = await fetchViewState(user.id);
-        setActiveViewState(actualView);
-        localStorage.setItem(ACTIVE_VIEW_KEY, actualView);
-        throw error;
-      }
-      
-      logger.debug('View state saved', { view }, 'Auth');
-    } catch (err) {
-      logger.error('Set active view error', err, 'Auth');
-      throw err;
     }
   };
 
@@ -210,39 +126,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     logger.debug('Loading user data', { userId }, 'Auth');
     
     try {
-      // Get localStorage value immediately (no flicker)
-      const savedView = localStorage.getItem(ACTIVE_VIEW_KEY) as ActiveView | null;
-      if (savedView && ['member', 'expert', 'sponsor'].includes(savedView)) {
-        setActiveViewState(savedView);
-      }
-      
-      // Fetch profile, available views, and current view state in parallel
-      const [profileData, views, dbView] = await Promise.all([
-        fetchProfileData(userId),
-        fetchAvailableViews(userId),
-        fetchViewState(userId)
-      ]);
-      
+      const profileData = await fetchProfileData(userId);
       setProfile(profileData);
-      setAvailableViews(views);
-      
-      // Validate: prefer localStorage FIRST, then DB, then member
-      // localStorage takes priority because user just switched manually
-      const validView = (savedView && views.includes(savedView)) ? savedView :
-                        views.includes(dbView) ? dbView : 'member';
-      setActiveViewState(validView);
-      localStorage.setItem(ACTIVE_VIEW_KEY, validView);
       
       logger.debug('User data loaded', { 
         hasProfile: !!profileData, 
-        views, 
-        activeView: validView 
+        user_role: profileData?.user_role,
+        is_super_admin: profileData?.is_super_admin
       }, 'Auth');
     } catch (err) {
       logger.error('User data load error', err, 'Auth');
       setProfile(null);
-      setAvailableViews(['member']);
-      setActiveViewState('member');
     }
   };
 
@@ -269,8 +163,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } else {
           logger.debug('No user, clearing data', null, 'Auth');
           setProfile(null);
-          setAvailableViews(['member']);
-          setActiveViewState('member');
           setLoading(false);
         }
       }
@@ -335,8 +227,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signOut = async () => {
-    // Clear localStorage on sign out
-    localStorage.removeItem(ACTIVE_VIEW_KEY);
     await supabase.auth.signOut();
   };
 
@@ -345,7 +235,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const { error } = await supabase
       .from('profiles')
-      .update(updates)
+      .update(updates as Record<string, unknown>)
       .eq('id', user.id);
 
     if (!error && profile) {
@@ -365,9 +255,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     profile,
     session,
     loading,
-    activeView,
-    availableViews,
-    setActiveView,
     signUp,
     signIn,
     signOut,
