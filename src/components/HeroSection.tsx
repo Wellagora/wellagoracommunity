@@ -59,11 +59,11 @@ const HeroSection = () => {
       />
 
       <div className="max-w-5xl mx-auto px-4 text-center relative z-10">
-        {/* Clean headline */}
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight tracking-tight">
-          Helyi értékek. Átadott tudás.
-          <br />
-          Élő közösség.
+        {/* Clean headline - 3 impactful lines */}
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 leading-[1.1] tracking-tight">
+          <span className="block">Helyi értékek.</span>
+          <span className="block">Átadott tudás.</span>
+          <span className="block">Élő közösség.</span>
         </h1>
 
         <p className="text-xl text-slate-600 mt-6 max-w-2xl mx-auto">
