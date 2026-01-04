@@ -31,7 +31,9 @@ const HandprintPage = lazy(() => import("@/pages/HandprintPage"));
 const PublicOrganizationPage = lazy(() => import("@/pages/PublicOrganizationPage"));
 const AdminDashboardPage = lazy(() => import("@/pages/AdminDashboardPage"));
 const HandprintCalculatorPage = lazy(() => import("@/pages/HandprintCalculatorPage"));
-const SponsorDashboardPage = lazy(() => import("@/pages/SupporterDashboardPage"));
+const SponsorDashboardPage = lazy(() => import("@/pages/SponsorDashboard"));
+const MemberDashboard = lazy(() => import("@/pages/MemberDashboard"));
+const ExpertStudio = lazy(() => import("@/pages/ExpertStudio"));
 const ProjectAdminPage = lazy(() => import("@/pages/ProjectAdminPage"));
 const JoinProjectPage = lazy(() => import("@/pages/JoinProjectPage"));
 const ProjectsListPage = lazy(() => import("@/pages/ProjectsListPage"));
@@ -94,12 +96,12 @@ function App() {
                           <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
                           <Route path="/dashboard" element={<Navigate to="/iranyitopult" replace />} />
                           
-                          {/* Control Panel (Irányítópult) - new primary dashboard route */}
+                          {/* Control Panel (Irányítópult) - Member Dashboard */}
                           <Route
                             path="/iranyitopult"
                             element={
-                              <ProtectedRoute>
-                                <ControlPanelPage />
+                              <ProtectedRoute allowedRoles={["member"]}>
+                                <MemberDashboard />
                               </ProtectedRoute>
                             }
                           />
@@ -225,7 +227,7 @@ function App() {
                             path="/szakertoi-studio"
                             element={
                               <ProtectedRoute allowedRoles={["expert"]}>
-                                <CreatorDashboardPage />
+                                <ExpertStudio />
                               </ProtectedRoute>
                             }
                           />

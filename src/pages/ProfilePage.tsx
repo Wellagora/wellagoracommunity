@@ -7,18 +7,31 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
-import { CitizenProfileForm } from "@/components/profile/CitizenProfileForm";
-import { OrganizationProfileForm } from "@/components/profile/OrganizationProfileForm";
-import { SupporterOrganizationForm } from "@/components/profile/SupporterOrganizationForm";
-import { CreatorAccountSection } from "@/components/profile/CreatorAccountSection";
 import { 
   Loader2, 
   Building2, 
   MapPin, 
   Globe,
-  Save
+  Save,
+  User,
+  Mail,
+  Bell,
+  Sparkles,
+  Wallet,
+  CreditCard,
+  Users,
+  FileText,
+  Link as LinkIcon,
+  UserPlus,
+  Eye,
+  EyeOff
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -27,7 +40,6 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { userId: paramUserId } = useParams<{ userId: string }>();
-  // Support both /profile/:userId and /profile?userId=xxx
   const viewingUserId = paramUserId || searchParams.get('userId');
   const { user, profile, updateProfile, loading: authLoading } = useAuth();
   const { t } = useLanguage();
@@ -39,6 +51,38 @@ const ProfilePage = () => {
   const [viewedProfile, setViewedProfile] = useState<any>(null);
   const { toast } = useToast();
 
+  // Derive user role from profile
+  const userRole = profile?.user_role || 'member';
+
+  // Form state
+  const [profileForm, setProfileForm] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    public_display_name: "",
+    bio: "",
+    location: "",
+    is_public_profile: false,
+    // Expert fields
+    expert_title: "",
+    expertise_areas: [] as string[],
+    payout_preference: "stripe",
+    stripe_connected: false,
+    wise_email: "",
+    wise_iban: "",
+    // Sponsor fields
+    organization_name: "",
+    organization_logo_url: "",
+    organization_industry: "",
+    organization_website: "",
+    billing_company_name: "",
+    billing_tax_number: "",
+    billing_address: "",
+    // Notification preferences (member only)
+    notifications_email: true,
+    notifications_push: true,
+  });
+
   // Fetch profile if viewing another user
   useEffect(() => {
     if (viewingUserId && viewingUserId !== user?.id) {
@@ -46,15 +90,12 @@ const ProfilePage = () => {
         setIsLoading(true);
         const { data, error } = await supabase
           .from('profiles')
-          .select(`
-            *,
-            organizations(*)
-          `)
+          .select('*')
           .eq('id', viewingUserId)
           .eq('is_public_profile', true)
           .maybeSingle();
         
-        if (error) {
+        if (error || !data) {
           toast({
             title: t('common.error'),
             description: t('profile.not_found_or_private'),
@@ -70,14 +111,48 @@ const ProfilePage = () => {
     }
   }, [viewingUserId, user, navigate, toast, t]);
 
-  // Redirect if not authenticated and not viewing another profile
+  // Redirect if not authenticated
   useEffect(() => {
     if (!authLoading && !user && !viewingUserId) {
       navigate("/auth");
     }
   }, [user, authLoading, navigate, viewingUserId]);
 
-  // If viewing another user's profile, show public view
+  // Sync form with profile data
+  useEffect(() => {
+    if (profile) {
+      const extProfile = profile as any;
+      setProfileForm({
+        first_name: profile.first_name || "",
+        last_name: profile.last_name || "",
+        email: profile.email || "",
+        public_display_name: profile.public_display_name || "",
+        bio: extProfile.bio || "",
+        location: extProfile.location || "",
+        is_public_profile: profile.is_public_profile || false,
+        // Expert fields
+        expert_title: extProfile.expert_title || "",
+        expertise_areas: extProfile.expertise_areas || [],
+        payout_preference: extProfile.payout_preference || "stripe",
+        stripe_connected: extProfile.stripe_onboarding_complete || false,
+        wise_email: extProfile.wise_email || "",
+        wise_iban: extProfile.wise_iban || "",
+        // Sponsor fields
+        organization_name: extProfile.organization_name || profile.organization || "",
+        organization_logo_url: extProfile.organization_logo_url || "",
+        organization_industry: extProfile.industry || "",
+        organization_website: extProfile.website_url || "",
+        billing_company_name: extProfile.billing_company_name || "",
+        billing_tax_number: extProfile.billing_tax_number || "",
+        billing_address: extProfile.billing_address || "",
+        // Notifications
+        notifications_email: true,
+        notifications_push: true,
+      });
+    }
+  }, [profile]);
+
+  // Public profile view
   if (viewingUserId && viewingUserId !== user?.id) {
     if (isLoading) {
       return (
@@ -90,9 +165,7 @@ const ProfilePage = () => {
       );
     }
 
-    if (!viewedProfile) {
-      return null;
-    }
+    if (!viewedProfile) return null;
 
     return (
       <div className="min-h-screen bg-background">
@@ -106,12 +179,6 @@ const ProfilePage = () => {
                   <AvatarFallback>{viewedProfile.first_name?.[0]}{viewedProfile.last_name?.[0]}</AvatarFallback>
                 </Avatar>
                 <div className="text-center sm:text-left flex-1">
-                  {viewedProfile.organization && (
-                    <div className="flex items-center gap-2 mb-2 text-muted-foreground">
-                      <Building2 className="w-4 h-4" />
-                      <span className="text-lg font-semibold text-foreground">{viewedProfile.organization}</span>
-                    </div>
-                  )}
                   <CardTitle className="text-xl sm:text-2xl">
                     {viewedProfile.public_display_name || `${viewedProfile.first_name} ${viewedProfile.last_name}`}
                   </CardTitle>
@@ -122,32 +189,14 @@ const ProfilePage = () => {
             <CardContent className="space-y-4">
               {viewedProfile.bio && (
                 <div>
-                  <h3 className="font-semibold mb-2 text-sm sm:text-base">{t('profile.bio_section')}</h3>
-                  <p className="text-muted-foreground text-sm sm:text-base">{viewedProfile.bio}</p>
+                  <h3 className="font-semibold mb-2">Bemutatkozás</h3>
+                  <p className="text-muted-foreground">{viewedProfile.bio}</p>
                 </div>
               )}
               {viewedProfile.location && (
-                <div className="flex items-center gap-2 text-sm sm:text-base">
-                  <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" />
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-muted-foreground" />
                   <span>{viewedProfile.location}</span>
-                </div>
-              )}
-              {viewedProfile.website_url && (
-                <div className="flex items-center gap-2 text-sm sm:text-base">
-                  <Globe className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" />
-                  <a href={viewedProfile.website_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline break-all">
-                    {viewedProfile.website_url}
-                  </a>
-                </div>
-              )}
-              {viewedProfile.sustainability_goals && viewedProfile.sustainability_goals.length > 0 && (
-                <div>
-                  <h3 className="font-semibold mb-2 text-sm sm:text-base">{t('profile.sustainability_goals')}</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {viewedProfile.sustainability_goals.map((goal: string, idx: number) => (
-                      <Badge key={idx} variant="outline" className="text-xs">{goal}</Badge>
-                    ))}
-                  </div>
                 </div>
               )}
             </CardContent>
@@ -157,73 +206,6 @@ const ProfilePage = () => {
     );
   }
 
-  const [profileForm, setProfileForm] = useState({
-    first_name: profile?.first_name || "",
-    last_name: profile?.last_name || "",
-    email: profile?.email || "",
-    public_display_name: profile?.public_display_name || "",
-    organization: profile?.organization || "",
-    organization_name: "",
-    organization_logo_url: "",
-    location: "",
-    sustainability_goals: [] as string[],
-    industry: "",
-    company_size: "",
-    website_url: "",
-    is_public_profile: profile?.is_public_profile || false,
-    bio: "",
-    org_description: "",
-    org_logo_url: "",
-    org_logo_file: undefined as File | undefined
-  });
-
-  // Sync form with profile data
-  useEffect(() => {
-    if (profile) {
-      const extendedProfile = profile as any;
-      setProfileForm({
-        first_name: profile.first_name || "",
-        last_name: profile.last_name || "",
-        email: profile.email || "",
-        public_display_name: profile.public_display_name || "",
-        organization: profile.organization || "",
-        organization_name: extendedProfile.organization_name || "",
-        organization_logo_url: extendedProfile.organization_logo_url || "",
-        location: extendedProfile.location || "",
-        sustainability_goals: extendedProfile.sustainability_goals || [],
-        industry: extendedProfile.industry || "",
-        company_size: extendedProfile.company_size || "",
-        website_url: extendedProfile.website_url || "",
-        is_public_profile: profile.is_public_profile || false,
-        bio: extendedProfile.bio || "",
-        org_description: "",
-        org_logo_url: "",
-        org_logo_file: undefined
-      });
-
-      // Fetch organization data if user has organization_id
-      if (extendedProfile.organization_id) {
-        const fetchOrgData = async () => {
-          const { data, error } = await supabase
-            .from('organizations')
-            .select('description, logo_url, website_url')
-            .eq('id', extendedProfile.organization_id)
-            .maybeSingle();
-          
-          if (!error && data) {
-            setProfileForm(prev => ({
-              ...prev,
-              org_description: data.description || "",
-              org_logo_url: data.logo_url || "",
-              website_url: data.website_url || prev.website_url
-            }));
-          }
-        };
-        fetchOrgData();
-      }
-    }
-  }, [profile]);
-
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !user) return;
@@ -232,72 +214,33 @@ const ProfilePage = () => {
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${user.id}/avatar.${fileExt}`;
-      const filePath = `${fileName}`;
-
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(filePath, file, { upsert: true });
+        .upload(fileName, file, { upsert: true });
 
       if (uploadError) throw uploadError;
 
       const { data: { publicUrl } } = supabase.storage
         .from('avatars')
-        .getPublicUrl(filePath);
+        .getPublicUrl(fileName);
 
       await updateProfile({ avatar_url: publicUrl } as any);
-
-      toast({
-        title: "Siker!",
-        description: "A profilkép sikeresen feltöltve",
-      });
+      toast({ title: "Siker!", description: "Profilkép feltöltve" });
     } catch (error) {
-      toast({
-        title: "Hiba",
-        description: "A profilkép feltöltése sikertelen",
-        variant: "destructive",
-      });
+      toast({ title: "Hiba", description: "Feltöltés sikertelen", variant: "destructive" });
     } finally {
       setAvatarUploading(false);
     }
   };
 
-  const handleFormChange = (field: string, value: any) => {
-    setProfileForm(prev => ({ ...prev, [field]: value }));
-    
-    // If logo file is uploaded, upload it immediately
-    if (field === 'org_logo_file' && value instanceof File) {
-      handleLogoUpload(value);
-    }
-  };
-
-  const handleLogoUpload = async (file: File) => {
-    if (!user || !profile) return;
-
-    // Validation
-    if (file.size > 2 * 1024 * 1024) {
-      toast({
-        title: t('common.error'),
-        description: t('profile.logo_too_large'),
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)) {
-      toast({
-        title: t('common.error'),
-        description: t('profile.logo_invalid_format'),
-        variant: "destructive",
-      });
-      return;
-    }
+  const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !user) return;
 
     setLogoUploading(true);
     try {
       const fileExt = file.name.split('.').pop();
-      // Cache-busting: timestamp in filename
       const fileName = `${user.id}-logo-${Date.now()}.${fileExt}`;
-
       const { error: uploadError } = await supabase.storage
         .from('organization-logos')
         .upload(fileName, file, { upsert: true });
@@ -308,28 +251,10 @@ const ProfilePage = () => {
         .from('organization-logos')
         .getPublicUrl(fileName);
 
-      // Update profile with new logo URL
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ organization_logo_url: publicUrl })
-        .eq('id', user.id);
-
-      if (updateError) throw updateError;
-
-      // Update form with new logo URL
-      setProfileForm(prev => ({ ...prev, organization_logo_url: publicUrl, org_logo_url: publicUrl }));
-
-      toast({
-        title: t('common.success') || "Success!",
-        description: t('profile.logo_uploaded'),
-      });
+      setProfileForm(prev => ({ ...prev, organization_logo_url: publicUrl }));
+      toast({ title: "Siker!", description: "Logo feltöltve" });
     } catch (error) {
-      console.error('Logo upload error:', error);
-      toast({
-        title: t('common.error'),
-        description: t('profile.logo_upload_error'),
-        variant: "destructive",
-      });
+      toast({ title: "Hiba", description: "Feltöltés sikertelen", variant: "destructive" });
     } finally {
       setLogoUploading(false);
     }
@@ -342,76 +267,48 @@ const ProfilePage = () => {
     setSuccess(null);
 
     try {
-      // Normalize website URL - add https:// if missing protocol
-      let normalizedUrl = profileForm.website_url.trim();
-      if (normalizedUrl && !normalizedUrl.match(/^https?:\/\//i)) {
-        normalizedUrl = `https://${normalizedUrl}`;
-      }
-
-      // Update profile
-      const { error } = await updateProfile({
+      const updates: Record<string, any> = {
         first_name: profileForm.first_name.trim(),
         last_name: profileForm.last_name.trim(),
         public_display_name: profileForm.public_display_name.trim() || null,
-        organization: profileForm.organization.trim() || null,
+        bio: profileForm.bio.trim() || null,
+        location: profileForm.location.trim() || null,
         is_public_profile: profileForm.is_public_profile,
-        ...(profileForm.location && { location: profileForm.location.trim() }),
-        ...(profileForm.sustainability_goals.length > 0 && { sustainability_goals: profileForm.sustainability_goals }),
-        ...(profileForm.industry && { industry: profileForm.industry.trim() }),
-        ...(profileForm.company_size && { company_size: profileForm.company_size.trim() }),
-        ...(normalizedUrl && { website_url: normalizedUrl }),
-        ...(profileForm.bio && { bio: profileForm.bio.trim() }),
-        ...(profileForm.organization_name && { organization_name: profileForm.organization_name.trim() }),
-      } as any);
+      };
 
+      // Role-specific fields
+      if (userRole === 'expert') {
+        updates.expert_title = profileForm.expert_title.trim() || null;
+        updates.expertise_areas = profileForm.expertise_areas;
+        updates.payout_preference = profileForm.payout_preference;
+        updates.wise_email = profileForm.payout_preference === 'wise' ? profileForm.wise_email : null;
+        updates.wise_iban = profileForm.payout_preference === 'wise' ? profileForm.wise_iban : null;
+      }
+
+      if (userRole === 'sponsor') {
+        updates.organization_name = profileForm.organization_name.trim() || null;
+        updates.organization_logo_url = profileForm.organization_logo_url || null;
+        updates.industry = profileForm.organization_industry.trim() || null;
+        updates.website_url = profileForm.organization_website.trim() || null;
+        updates.billing_company_name = profileForm.billing_company_name.trim() || null;
+        updates.billing_tax_number = profileForm.billing_tax_number.trim() || null;
+        updates.billing_address = profileForm.billing_address.trim() || null;
+      }
+
+      const { error } = await updateProfile(updates as any);
       if (error) {
-        setError("Hiba történt a profil mentése során: " + error.message);
+        setError("Hiba történt a mentés során");
         return;
       }
 
-      // Update organization if user has organization_id
-      if ((profile as any)?.organization_id) {
-        const { error: orgError } = await supabase
-          .from('organizations')
-          .update({
-            description: profileForm.org_description.trim() || null,
-            logo_url: profileForm.org_logo_url.trim() || null,
-            website_url: normalizedUrl || null
-          })
-          .eq('id', (profile as any).organization_id);
-
-        if (orgError) {
-          setError("A profil mentve, de a szervezeti adatok mentése sikertelen: " + orgError.message);
-          return;
-        }
-
-        // Reload organization data after successful save
-        const { data: orgData } = await supabase
-          .from('organizations')
-          .select('description, logo_url, website_url')
-          .eq('id', (profile as any).organization_id)
-          .maybeSingle();
-
-        if (orgData) {
-          setProfileForm(prev => ({
-            ...prev,
-            org_description: orgData.description || "",
-            org_logo_url: orgData.logo_url || "",
-            website_url: orgData.website_url || prev.website_url
-          }));
-        }
-      }
-      
-      setSuccess("A profil és a szervezeti adatok sikeresen mentve!");
+      setSuccess("Profil sikeresen mentve!");
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
-      setError("Hiba történt a profil mentése során");
+      setError("Hiba történt a mentés során");
     } finally {
       setIsLoading(false);
     }
   };
-
-  const isOrganization = profile?.user_role !== "citizen";
 
   if (authLoading) {
     return (
@@ -421,20 +318,8 @@ const ProfilePage = () => {
     );
   }
 
-  if (!user) {
-    navigate('/auth');
+  if (!user || !profile) {
     return null;
-  }
-
-  if (!profile) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">Profil betöltése...</p>
-        </div>
-      </div>
-    );
   }
 
   return (
@@ -457,55 +342,421 @@ const ProfilePage = () => {
           {/* Success/Error Messages */}
           {error && (
             <Alert className="mb-6 bg-destructive/10 border-destructive/30">
-              <AlertDescription className="text-destructive-foreground">{error}</AlertDescription>
+              <AlertDescription className="text-destructive">{error}</AlertDescription>
             </Alert>
           )}
-
           {success && (
-            <Alert className="mb-6 bg-success/10 border-success/30">
-              <AlertDescription className="text-success-foreground">{success}</AlertDescription>
+            <Alert className="mb-6 bg-green-500/10 border-green-500/30">
+              <AlertDescription className="text-green-600">{success}</AlertDescription>
             </Alert>
           )}
 
-          {/* Profile Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
-            {isOrganization ? (
-              <OrganizationProfileForm
-                formData={profileForm}
-                onChange={handleFormChange}
-                logoUploading={logoUploading}
-              />
-            ) : (
-              <CitizenProfileForm
-                formData={profileForm}
-                onChange={handleFormChange}
-              />
+            {/* ===== SECTION: Personal Data (ALL USERS) ===== */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <User className="w-5 h-5 text-primary" />
+                  Személyes adatok
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="first_name">Keresztnév *</Label>
+                    <Input
+                      id="first_name"
+                      value={profileForm.first_name}
+                      onChange={(e) => setProfileForm(prev => ({ ...prev, first_name: e.target.value }))}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="last_name">Vezetéknév *</Label>
+                    <Input
+                      id="last_name"
+                      value={profileForm.last_name}
+                      onChange={(e) => setProfileForm(prev => ({ ...prev, last_name: e.target.value }))}
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <div className="relative">
+                    <Input
+                      id="email"
+                      type="email"
+                      value={profileForm.email}
+                      disabled
+                      className="pl-10"
+                    />
+                    <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  </div>
+                  <p className="text-xs text-muted-foreground">Az email cím nem módosítható</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="public_display_name">Megjelenített név (opcionális)</Label>
+                  <Input
+                    id="public_display_name"
+                    value={profileForm.public_display_name}
+                    onChange={(e) => setProfileForm(prev => ({ ...prev, public_display_name: e.target.value }))}
+                    placeholder="Ha üres, a teljes név jelenik meg"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="location">Helyszín</Label>
+                  <div className="relative">
+                    <Input
+                      id="location"
+                      value={profileForm.location}
+                      onChange={(e) => setProfileForm(prev => ({ ...prev, location: e.target.value }))}
+                      placeholder="Város, Ország"
+                      className="pl-10"
+                    />
+                    <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="bio">Bemutatkozás</Label>
+                  <Textarea
+                    id="bio"
+                    value={profileForm.bio}
+                    onChange={(e) => setProfileForm(prev => ({ ...prev, bio: e.target.value }))}
+                    placeholder="Rövid bemutatkozás..."
+                    className="min-h-[100px]"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* ===== SECTION: Notification Preferences (MEMBER ONLY) ===== */}
+            {userRole === 'member' && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Bell className="w-5 h-5 text-primary" />
+                    Értesítési beállítások
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                    <div>
+                      <div className="font-medium">Email értesítések</div>
+                      <div className="text-sm text-muted-foreground">
+                        Kapj értesítést új tartalmakról emailben
+                      </div>
+                    </div>
+                    <Switch
+                      checked={profileForm.notifications_email}
+                      onCheckedChange={(checked) => setProfileForm(prev => ({ ...prev, notifications_email: checked }))}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                    <div>
+                      <div className="font-medium">Push értesítések</div>
+                      <div className="text-sm text-muted-foreground">
+                        Böngésző push értesítések
+                      </div>
+                    </div>
+                    <Switch
+                      checked={profileForm.notifications_push}
+                      onCheckedChange={(checked) => setProfileForm(prev => ({ ...prev, notifications_push: checked }))}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
             )}
 
-            {/* Supporter Organization Form - show for sponsor/business/government/ngo roles */}
-            {['business', 'government', 'ngo', 'sponsor'].includes(profile.user_role) && (
-              <SupporterOrganizationForm
-                formData={profileForm}
-                onChange={handleFormChange}
-                logoUploading={logoUploading}
-              />
+            {/* ===== SECTION: Expert Profile (EXPERT ONLY) ===== */}
+            {userRole === 'expert' && (
+              <>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-cyan-500" />
+                      Szakértői profil
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="expert_title">Szakmai cím</Label>
+                      <Input
+                        id="expert_title"
+                        value={profileForm.expert_title}
+                        onChange={(e) => setProfileForm(prev => ({ ...prev, expert_title: e.target.value }))}
+                        placeholder="pl. Fenntarthatósági tanácsadó"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Szakterületek</Label>
+                      <div className="flex flex-wrap gap-2">
+                        {['Fenntarthatóság', 'Energia', 'Kertészet', 'DIY', 'Táplálkozás', 'Wellness'].map((area) => (
+                          <Badge
+                            key={area}
+                            variant={profileForm.expertise_areas.includes(area) ? "default" : "outline"}
+                            className="cursor-pointer"
+                            onClick={() => {
+                              setProfileForm(prev => ({
+                                ...prev,
+                                expertise_areas: prev.expertise_areas.includes(area)
+                                  ? prev.expertise_areas.filter(a => a !== area)
+                                  : [...prev.expertise_areas, area]
+                              }));
+                            }}
+                          >
+                            {area}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Payout Settings */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Wallet className="w-5 h-5 text-green-500" />
+                      Kifizetési beállítások
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-3">
+                      <Label>Kifizetési mód</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        {[
+                          { value: 'stripe', label: 'Stripe', icon: CreditCard },
+                          { value: 'wise', label: 'Wise', icon: Globe },
+                          { value: 'bank_transfer', label: 'Banki átutalás', icon: Building2 }
+                        ].map((option) => (
+                          <div
+                            key={option.value}
+                            className={`p-4 rounded-lg border cursor-pointer transition-colors ${
+                              profileForm.payout_preference === option.value
+                                ? 'border-primary bg-primary/5'
+                                : 'border-border hover:border-primary/50'
+                            }`}
+                            onClick={() => setProfileForm(prev => ({ ...prev, payout_preference: option.value }))}
+                          >
+                            <option.icon className="w-5 h-5 mb-2 text-primary" />
+                            <div className="font-medium">{option.label}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {profileForm.payout_preference === 'wise' && (
+                      <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
+                        <div className="space-y-2">
+                          <Label htmlFor="wise_email">Wise Email</Label>
+                          <Input
+                            id="wise_email"
+                            type="email"
+                            value={profileForm.wise_email}
+                            onChange={(e) => setProfileForm(prev => ({ ...prev, wise_email: e.target.value }))}
+                            placeholder="email@example.com"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="wise_iban">IBAN</Label>
+                          <Input
+                            id="wise_iban"
+                            value={profileForm.wise_iban}
+                            onChange={(e) => setProfileForm(prev => ({ ...prev, wise_iban: e.target.value }))}
+                            placeholder="HU42 1234 5678 9012 3456 7890 1234"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </>
             )}
 
-            {/* Creator Account Section */}
-            {user && profile && (
-              <CreatorAccountSection 
-                userId={user.id} 
-                profile={profile}
-              />
+            {/* ===== SECTION: Organization (SPONSOR ONLY) ===== */}
+            {userRole === 'sponsor' && (
+              <>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Building2 className="w-5 h-5 text-amber-500" />
+                      Szervezet
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="organization_name">Szervezet neve *</Label>
+                        <Input
+                          id="organization_name"
+                          value={profileForm.organization_name}
+                          onChange={(e) => setProfileForm(prev => ({ ...prev, organization_name: e.target.value }))}
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="organization_industry">Iparág</Label>
+                        <Input
+                          id="organization_industry"
+                          value={profileForm.organization_industry}
+                          onChange={(e) => setProfileForm(prev => ({ ...prev, organization_industry: e.target.value }))}
+                          placeholder="pl. Technológia"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="organization_website">Weboldal</Label>
+                      <div className="relative">
+                        <Input
+                          id="organization_website"
+                          value={profileForm.organization_website}
+                          onChange={(e) => setProfileForm(prev => ({ ...prev, organization_website: e.target.value }))}
+                          placeholder="https://example.com"
+                          className="pl-10"
+                        />
+                        <LinkIcon className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Szervezet logója</Label>
+                      <div className="flex items-center gap-4">
+                        {profileForm.organization_logo_url ? (
+                          <img
+                            src={profileForm.organization_logo_url}
+                            alt="Logo"
+                            className="w-16 h-16 rounded-lg object-cover border"
+                          />
+                        ) : (
+                          <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center">
+                            <Building2 className="w-8 h-8 text-muted-foreground" />
+                          </div>
+                        )}
+                        <label>
+                          <Button variant="outline" asChild>
+                            <span>
+                              {logoUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Logo feltöltése"}
+                            </span>
+                          </Button>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handleLogoUpload}
+                            disabled={logoUploading}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Team Members */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="w-5 h-5 text-primary" />
+                      Csapattagok
+                    </CardTitle>
+                    <CardDescription>
+                      Hívd meg kollégáidat a szervezetbe
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center py-6">
+                      <Users className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                      <p className="text-muted-foreground mb-4">
+                        Még nincsenek meghívott kollégák
+                      </p>
+                      <Button variant="outline">
+                        <UserPlus className="w-4 h-4 mr-2" />
+                        Kolléga meghívása
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Billing */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-amber-500" />
+                      Számlázási adatok
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="billing_company_name">Cégnév</Label>
+                      <Input
+                        id="billing_company_name"
+                        value={profileForm.billing_company_name}
+                        onChange={(e) => setProfileForm(prev => ({ ...prev, billing_company_name: e.target.value }))}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="billing_tax_number">Adószám</Label>
+                      <Input
+                        id="billing_tax_number"
+                        value={profileForm.billing_tax_number}
+                        onChange={(e) => setProfileForm(prev => ({ ...prev, billing_tax_number: e.target.value }))}
+                        placeholder="12345678-1-23"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="billing_address">Számlázási cím</Label>
+                      <Textarea
+                        id="billing_address"
+                        value={profileForm.billing_address}
+                        onChange={(e) => setProfileForm(prev => ({ ...prev, billing_address: e.target.value }))}
+                        placeholder="Utca, házszám, város, irányítószám"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Visibility */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      {profileForm.is_public_profile ? (
+                        <Eye className="w-5 h-5 text-primary" />
+                      ) : (
+                        <EyeOff className="w-5 h-5 text-muted-foreground" />
+                      )}
+                      Láthatóság
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                      <div>
+                        <div className="font-medium">Publikus profil</div>
+                        <div className="text-sm text-muted-foreground">
+                          A szervezeted megjelenik a közösségi oldalon
+                        </div>
+                      </div>
+                      <Switch
+                        checked={profileForm.is_public_profile}
+                        onCheckedChange={(checked) => setProfileForm(prev => ({ ...prev, is_public_profile: checked }))}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </>
             )}
 
             {/* Save Button */}
-            <div className="flex justify-end pt-6">
+            <div className="flex justify-end pt-4">
               <Button 
                 type="submit" 
                 size="lg"
                 disabled={isLoading}
-                className="bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity min-w-[200px]"
+                className="min-w-[200px]"
               >
                 {isLoading ? (
                   <>
@@ -515,7 +766,7 @@ const ProfilePage = () => {
                 ) : (
                   <>
                     <Save className="w-5 h-5 mr-2" />
-                    Változtatások Mentése
+                    Változtatások mentése
                   </>
                 )}
               </Button>
