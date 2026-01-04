@@ -69,10 +69,24 @@ const Navigation = () => {
     }
   }, [isSuperAdmin]);
 
-  // Handle view change for super admins
+  // Handle view change for super admins and redirect to corresponding dashboard
   const handleViewChange = (view: 'member' | 'expert' | 'sponsor') => {
     setActiveView(view);
     localStorage.setItem('adminActiveView', view);
+    
+    // Redirect to the corresponding dashboard
+    switch (view) {
+      case 'expert':
+        navigate('/szakertoi-studio');
+        break;
+      case 'sponsor':
+        navigate('/tamogatoi-kozpont');
+        break;
+      case 'member':
+      default:
+        navigate('/iranyitopult');
+        break;
+    }
   };
 
   // Get display label for current view

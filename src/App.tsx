@@ -6,6 +6,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { ProjectProvider } from "@/contexts/ProjectContext";
 import { ViewModeProvider } from "@/contexts/ViewModeContext";
+import { RegionProvider } from "@/contexts/RegionContext";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { initSentry } from "@/lib/sentry";
@@ -31,7 +32,7 @@ const HandprintPage = lazy(() => import("@/pages/HandprintPage"));
 const PublicOrganizationPage = lazy(() => import("@/pages/PublicOrganizationPage"));
 const AdminDashboardPage = lazy(() => import("@/pages/AdminDashboardPage"));
 const HandprintCalculatorPage = lazy(() => import("@/pages/HandprintCalculatorPage"));
-const SponsorDashboardPage = lazy(() => import("@/pages/SponsorDashboard"));
+const SponsorDashboardPage = lazy(() => import("@/pages/SponsorDashboardPage"));
 const MemberDashboard = lazy(() => import("@/pages/MemberDashboard"));
 const ExpertStudio = lazy(() => import("@/pages/ExpertStudio"));
 const ProjectAdminPage = lazy(() => import("@/pages/ProjectAdminPage"));
@@ -83,7 +84,8 @@ function App() {
             <ViewModeProvider>
               <SubscriptionProvider>
                 <ProjectProvider>
-                  <BrowserRouter>
+                  <RegionProvider>
+                    <BrowserRouter>
                     <Suspense fallback={<LoadingFallback />}>
                       <Routes>
                         {/* Auth page intentionally without global nav */}
@@ -307,6 +309,7 @@ function App() {
                     <Toaster />
                     <SonnerToaster />
                   </BrowserRouter>
+                  </RegionProvider>
                 </ProjectProvider>
               </SubscriptionProvider>
             </ViewModeProvider>
