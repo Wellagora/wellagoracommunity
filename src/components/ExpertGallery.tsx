@@ -44,32 +44,7 @@ const ExpertGallery = () => {
     }
   };
 
-  // Loading skeleton
-  if (isLoading) {
-    return (
-      <section className="py-16 bg-[#F5F5F7]">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <div className="h-8 w-48 bg-white/50 rounded-lg animate-pulse" />
-              <div className="h-4 w-64 bg-white/30 rounded-lg animate-pulse mt-2" />
-            </div>
-          </div>
-          <div className="flex gap-6 overflow-hidden">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="flex-shrink-0 w-48 flex flex-col items-center">
-                <div className="w-32 h-32 rounded-full bg-white/50 animate-pulse" />
-                <div className="h-4 w-24 bg-white/50 rounded animate-pulse mt-4" />
-                <div className="h-3 w-32 bg-white/30 rounded animate-pulse mt-2" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  // Dummy data for MVP visualization
+  // Dummy data for MVP visualization - always available
   const DUMMY_EXPERTS: Expert[] = [
     {
       id: "dummy-1",
@@ -118,8 +93,9 @@ const ExpertGallery = () => {
     },
   ];
 
-  // Use real experts if available, otherwise show dummy data
+  // Always use real experts if available, otherwise show dummy data (including during loading)
   const displayExperts = experts && experts.length > 0 ? experts : DUMMY_EXPERTS;
+
 
   return (
     <section className="py-16 bg-[#F5F5F7]">
@@ -180,7 +156,7 @@ const ExpertGallery = () => {
               >
                 {/* Circular Portrait */}
                 <div className="relative">
-                  <Avatar className="w-32 h-32 border-4 border-white shadow-lg group-hover:shadow-xl transition-shadow">
+                  <Avatar className="w-36 h-36 border-4 border-white shadow-md group-hover:shadow-lg transition-all duration-300">
                     <AvatarImage 
                       src={expert.avatar_url || undefined} 
                       alt={`${expert.first_name} ${expert.last_name}`}
