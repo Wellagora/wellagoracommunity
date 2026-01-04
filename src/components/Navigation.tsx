@@ -266,7 +266,7 @@ const Navigation = () => {
   }, [user, profile, t, displayRole]);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[100] w-full bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <nav className="fixed top-0 left-0 right-0 z-[100] w-full bg-white/70 backdrop-blur-xl border-b border-[#E5E5E7] shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -287,8 +287,8 @@ const Navigation = () => {
                   className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
                     active 
                       ? hasCustomColor 
-                        ? "bg-cyan-100 text-cyan-700" 
-                        : "text-white bg-cyan-500" 
+                        ? "bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700" 
+                        : "text-white bg-gradient-to-r from-emerald-500 to-teal-500" 
                       : "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
                   }`}
                 >
@@ -311,7 +311,7 @@ const Navigation = () => {
                   onClick={() => handleViewChange('member')}
                   className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
                     activeView === 'member'
-                      ? 'bg-white text-[#007AFF] shadow-sm'
+                      ? 'bg-white text-[#34C759] shadow-sm'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -331,7 +331,7 @@ const Navigation = () => {
                   onClick={() => handleViewChange('sponsor')}
                   className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
                     activeView === 'sponsor'
-                      ? 'bg-white text-[#007AFF] shadow-sm'
+                      ? 'bg-white text-amber-600 shadow-sm'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -437,7 +437,7 @@ const Navigation = () => {
                 <Button variant="outline" asChild className="border-slate-300 text-slate-700 hover:bg-slate-100">
                   <Link to="/auth">{t("nav.sign_in")}</Link>
                 </Button>
-                <Button asChild className="bg-[#007AFF] hover:bg-[#0056b3] text-white">
+                <Button asChild className="bg-[#34C759] hover:bg-[#2DB14E] text-white">
                   <Link to="/auth">{t("nav.join_community")}</Link>
                 </Button>
               </div>

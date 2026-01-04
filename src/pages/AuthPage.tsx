@@ -13,7 +13,8 @@ import { Loader2, Users, Sparkles, Building2, ArrowLeft, Check } from "lucide-re
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Apple Blue accent color
+// Accent colors
+const FRESH_GREEN = "#34C759";
 const APPLE_BLUE = "#007AFF";
 
 const AuthPage = () => {
@@ -217,7 +218,22 @@ const AuthPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Mesh Gradient Background - Blue to Green */}
+      <div 
+        className="absolute inset-0 -z-10"
+        style={{
+          background: 'linear-gradient(135deg, hsl(199 89% 96%) 0%, hsl(166 76% 96%) 40%, hsl(142 71% 96%) 100%)',
+        }}
+      />
+      <div 
+        className="absolute inset-0 -z-10 opacity-40"
+        style={{
+          backgroundImage: `radial-gradient(circle at 20% 30%, hsl(199 89% 85% / 0.5) 0%, transparent 50%),
+                            radial-gradient(circle at 80% 70%, hsl(166 76% 85% / 0.5) 0%, transparent 50%),
+                            radial-gradient(circle at 50% 50%, hsl(142 71% 85% / 0.4) 0%, transparent 60%)`,
+        }}
+      />
       <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
         {/* Back to Home */}
         <div className="absolute top-6 left-6">
@@ -313,7 +329,7 @@ const AuthPage = () => {
                     <Button
                       type="submit"
                       className="w-full h-12 text-white font-semibold rounded-xl text-base"
-                      style={{ backgroundColor: APPLE_BLUE }}
+                      style={{ backgroundColor: FRESH_GREEN }}
                       disabled={isLoading}
                     >
                       {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -528,7 +544,7 @@ const AuthPage = () => {
                         <Button
                           type="submit"
                           className="w-full h-12 text-white font-semibold rounded-xl text-base hover:opacity-90 transition-opacity"
-                          style={{ backgroundColor: APPLE_BLUE }}
+                          style={{ backgroundColor: FRESH_GREEN }}
                           disabled={isLoading}
                         >
                           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

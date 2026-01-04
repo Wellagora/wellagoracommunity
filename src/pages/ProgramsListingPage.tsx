@@ -390,7 +390,7 @@ const ProgramsListingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#F5F5F7]">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -445,7 +445,7 @@ const ProgramsListingPage = () => {
           )}
         </div>
 
-        {/* Search Bar */}
+        {/* Search Bar - 3D Card Style */}
         <div className="relative mb-6">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
           <Input
@@ -453,7 +453,10 @@ const ProgramsListingPage = () => {
             placeholder={t("marketplace.search")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-12 pr-12 py-6 bg-white border-slate-200 focus:border-[#007AFF] text-slate-900 placeholder:text-slate-400 shadow-sm"
+            className="pl-12 pr-12 py-6 bg-white/90 backdrop-blur-md border border-white/60 focus:border-[#34C759] text-slate-900 placeholder:text-slate-400 rounded-2xl"
+            style={{
+              boxShadow: '0 8px 30px rgb(0,0,0,0.04), 0 20px 50px rgba(0,0,0,0.04)',
+            }}
           />
           {searchQuery && (
             <button
@@ -465,7 +468,7 @@ const ProgramsListingPage = () => {
           )}
         </div>
 
-        {/* Category Pills */}
+        {/* Category Pills - 3D Card Style */}
         <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
           {CATEGORIES.map((category) => {
             const Icon = category.icon;
@@ -476,9 +479,12 @@ const ProgramsListingPage = () => {
                 onClick={() => setSelectedCategory(category.id)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap transition-all ${
                   isActive
-                    ? "bg-[#007AFF] text-white shadow-md"
-                    : "bg-[#F5F5F7] border border-slate-200 text-slate-600 hover:border-[#007AFF] hover:text-[#007AFF]"
+                    ? "bg-[#34C759] text-white shadow-md"
+                    : "bg-white/90 backdrop-blur-md border border-white/60 text-slate-600 hover:border-[#34C759] hover:text-[#34C759]"
                 }`}
+                style={!isActive ? {
+                  boxShadow: '0 8px 30px rgb(0,0,0,0.04), 0 20px 50px rgba(0,0,0,0.04)',
+                } : undefined}
               >
                 <div className={`p-1 rounded-md ${category.bgColor}`}>
                   <Icon className={`w-3 h-3 ${category.iconColor}`} />
