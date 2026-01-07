@@ -89,11 +89,9 @@ const RecommendedProgramsSlider = () => {
 
   // Placeholder for missing images
   const ImagePlaceholder = () => (
-    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
-      <div className="text-center">
-        <div className="w-16 h-16 mx-auto mb-2 rounded-full bg-gradient-to-br from-primary/20 to-emerald-500/20 flex items-center justify-center">
-          <Leaf className="w-8 h-8 text-primary/70" />
-        </div>
+    <div className="w-full h-full flex items-center justify-center bg-muted">
+      <div className="w-16 h-16 rounded-2xl bg-background/60 backdrop-blur flex items-center justify-center shadow-sm border border-border/50">
+        <Leaf className="w-10 h-10 text-muted-foreground" />
       </div>
     </div>
   );
