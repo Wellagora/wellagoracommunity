@@ -1,4 +1,7 @@
 {
+  "landing.hero_line1": "Helyi értékek.",
+  "landing.hero_line2": "Átadott tudás.",
+  "landing.hero_line3": "Élő közösség.",
   "landing.hero_title": "Helyi értékek. Átadott tudás. Élő közösség.",
   "landing.hero_subtitle": "Csatlakozz a régió értékőrző közösségéhez!",
   "landing.card_member_title": "Csatlakozom",
@@ -289,6 +292,8 @@
   "expert_profile.coming_soon_desc": "Hamarosan új Műhelytitkok kerülnek megosztásra. Látogass vissza később!",
   "expert_studio.new_secret": "Új Műhelytitok",
   "expert_studio.new_secret_desc": "Oszd meg a tudásodat a közösséggel",
+  "expert_studio.voucher_validator": "Kupon Beváltó",
+  "expert_studio.validator_desc": "Olvasd be vagy írd be a Tag kuponkódját",
   "expert_studio.my_secrets": "Műhelytitkaim",
   "expert_studio.my_secrets_desc": "A létrehozott Műhelytitkok listája",
   "expert_studio.workshop_secrets": "Műhelytitok",
@@ -311,7 +316,7 @@
   "expert_studio.payout_settings_hint": "A kifizetési beállításokat a Profilban módosíthatod",
   "expert_studio.stats_coming_soon": "Hamarosan részletes statisztikák",
   "expert_studio.licenses": "Licencek",
-  "expert_studio.title": "Szakértői Stúdió",
+  "expert_studio.title": "Mester Stúdió",
   "expert_studio.tab_validator": "Kupon Validátor",
   "expert_studio.voucher_success": "Kupon sikeresen beváltva!",
   "expert_studio.voucher_invalid": "Érvénytelen vagy már felhasznált kupon!",
@@ -543,7 +548,7 @@
   "nav.switched_to_supporter": "Sikeresen váltottál Támogató módba!",
   "nav.supporter_panel": "Hatásközpont",
   "nav.sponsor_center": "Hatásközpont",
-
+  "nav.wellbot": "TudásBot",
   "control_panel.hello": "Szia",
   "control_panel.member": "Tag",
   "control_panel.welcome_subtitle": "Üdv a személyes központodban!",
@@ -602,7 +607,7 @@
   "supporter.access_denied": "Hozzáférés megtagadva",
   "supporter.sponsor_only": "Ez az oldal csak Támogatók számára elérhető.",
 
-  "expert_studio.title": "Szakértői Stúdió",
+  "expert_studio.title": "Mester Stúdió",
   "expert_studio.subtitle": "Hozz létre és kezelj Műhelytitkokat",
   "expert_studio.new_guide": "Új Műhelytitok",
   "expert_studio.my_guides": "Műhelytitkaim",

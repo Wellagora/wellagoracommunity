@@ -216,7 +216,7 @@ const Navigation = () => {
         { path: "/", label: t("nav.home"), icon: Home },
         { path: "/piacer", label: t("nav.marketplace"), icon: Store },
         { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
-        { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
+        { path: "/ai-assistant", label: t("nav.wellbot"), icon: Bot },
       ];
     }
 
@@ -239,7 +239,7 @@ const Navigation = () => {
           icon: Sparkles,
           iconColor: "#00E5FF"
         },
-        { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
+        { path: "/ai-assistant", label: t("nav.wellbot"), icon: Bot },
       ];
     }
 
@@ -253,7 +253,7 @@ const Navigation = () => {
           icon: Building2,
           iconColor: "#FFD700"
         },
-        { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
+        { path: "/ai-assistant", label: t("nav.wellbot"), icon: Bot },
       ];
     }
 
@@ -261,7 +261,7 @@ const Navigation = () => {
     return [
       ...baseItems,
       { path: "/iranyitopult", label: t("nav.control_panel"), icon: LayoutDashboard },
-      { path: "/ai-assistant", label: "WellBot AI", icon: Bot },
+      { path: "/ai-assistant", label: t("nav.wellbot"), icon: Bot },
     ];
   }, [user, profile, t, displayRole]);
 

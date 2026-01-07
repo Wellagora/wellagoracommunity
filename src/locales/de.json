@@ -1,4 +1,7 @@
 {
+  "landing.hero_line1": "Lokale Werte.",
+  "landing.hero_line2": "Geteiltes Wissen.",
+  "landing.hero_line3": "Lebendige Gemeinschaft.",
   "landing.hero_title": "Lokale Werte. Geteiltes Wissen. Lebendige Gemeinschaft.",
   "landing.hero_subtitle": "Treten Sie der wertebewahrenden Gemeinschaft der Region bei!",
   "landing.card_member_title": "Beitreten",
@@ -217,6 +220,7 @@
   "nav.switched_to_supporter": "Erfolgreich in den Unterstützermodus gewechselt!",
   "nav.supporter_panel": "Wirkungszentrum",
   "nav.sponsor_center": "Wirkungszentrum",
+  "nav.wellbot": "WissensBot",
 
   "sponsor_dashboard.title": "Wirkungszentrum",
   "sponsor_dashboard.overview": "Übersicht",
@@ -499,6 +503,8 @@
   "expert_profile.coming_soon_desc": "Neue Werkstattgeheimnisse werden bald geteilt. Schau später wieder vorbei!",
   "expert_studio.new_secret": "Neues Werkstattgeheimnis",
   "expert_studio.new_secret_desc": "Teile dein Wissen mit der Gemeinschaft",
+  "expert_studio.voucher_validator": "Gutschein-Validator",
+  "expert_studio.validator_desc": "Scanne oder gib den Gutscheincode des Mitglieds ein",
   "expert_studio.my_secrets": "Meine Geheimnisse",
   "expert_studio.my_secrets_desc": "Deine erstellten Werkstattgeheimnisse",
   "expert_studio.workshop_secrets": "Werkstattgeheimnisse",
@@ -521,7 +527,7 @@
   "expert_studio.payout_settings_hint": "Du kannst die Auszahlungseinstellungen in deinem Profil ändern",
   "expert_studio.stats_coming_soon": "Detaillierte Statistiken kommen bald",
   "expert_studio.licenses": "Lizenzen",
-  "expert_studio.title": "Experten-Studio",
+  "expert_studio.title": "Meister-Studio",
   "expert_studio.subtitle": "Erstelle und verwalte deine Werkstattgeheimnisse",
   "expert_studio.new_guide": "Neues Werkstattgeheimnis",
   "expert_studio.my_guides": "Meine Werkstattgeheimnisse",

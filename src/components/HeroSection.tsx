@@ -60,13 +60,13 @@ const HeroSection = () => {
 
       <div className="max-w-5xl mx-auto px-4 text-center relative z-10">
         {/* Clean headline - 3 impactful lines */}
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 leading-[1.1] tracking-tight">
-          <span className="block">Helyi értékek.</span>
-          <span className="block">Átadott tudás.</span>
-          <span className="block">Élő közösség.</span>
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-[1.1] tracking-tight">
+          <span className="block">{t('landing.hero_line1')}</span>
+          <span className="block">{t('landing.hero_line2')}</span>
+          <span className="block">{t('landing.hero_line3')}</span>
         </h1>
 
-        <p className="text-xl text-slate-600 mt-6 max-w-2xl mx-auto">
+        <p className="text-xl text-muted-foreground mt-6 max-w-2xl mx-auto">
           {t('landing.hero_subtitle')}
         </p>
 

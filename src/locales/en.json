@@ -1,4 +1,7 @@
 {
+  "landing.hero_line1": "Local Values.",
+  "landing.hero_line2": "Shared Knowledge.",
+  "landing.hero_line3": "Living Community.",
   "landing.hero_title": "Local Values. Shared Knowledge. Living Community.",
   "landing.hero_subtitle": "Join the region's value-preserving community!",
   "landing.card_member_title": "Join",
@@ -202,6 +205,8 @@
   "expert_profile.coming_soon_desc": "New Workshop Secrets will be shared soon. Check back later!",
   "expert_studio.new_secret": "New Workshop Secret",
   "expert_studio.new_secret_desc": "Share your knowledge with the community",
+  "expert_studio.voucher_validator": "Voucher Validator",
+  "expert_studio.validator_desc": "Scan or enter the member's voucher code",
   "expert_studio.my_secrets": "My Secrets",
   "expert_studio.my_secrets_desc": "Your created Workshop Secrets",
   "expert_studio.workshop_secrets": "Workshop Secrets",
@@ -224,7 +229,7 @@
   "expert_studio.payout_settings_hint": "You can modify payout settings in your Profile",
   "expert_studio.stats_coming_soon": "Detailed statistics coming soon",
   "expert_studio.licenses": "Licenses",
-  "expert_studio.title": "Expert Studio",
+  "expert_studio.title": "Master Studio",
   "expert_studio.tab_validator": "Voucher Validator",
   "expert_studio.voucher_success": "Voucher redeemed successfully!",
   "expert_studio.voucher_invalid": "Invalid or already used voucher!",
@@ -465,6 +470,7 @@
   "nav.switched_to_member": "Successfully switched to Member mode!",
   "nav.switched_to_supporter": "Successfully switched to Supporter mode!",
   "nav.supporter_panel": "Impact Center",
+  "nav.wellbot": "WellBot AI",
   "nav.sponsor_center": "Impact Center",
 
   "control_panel.hello": "Hi",
@@ -514,7 +520,7 @@
   "supporter.access_denied": "Access Denied",
   "supporter.sponsor_only": "This page is only available to Supporters.",
 
-  "expert_studio.title": "Expert Studio",
+  "expert_studio.title": "Master Studio",
   "expert_studio.subtitle": "Create and manage your Workshop Secrets",
   "expert_studio.new_guide": "New Workshop Secret",
   "expert_studio.my_guides": "My Workshop Secrets",
