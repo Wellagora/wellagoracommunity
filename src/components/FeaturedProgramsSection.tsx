@@ -55,21 +55,21 @@ const FeaturedProgramsSection = () => {
     sponsor_name?: string | null;
     price_huf?: number | null;
   }) => {
+    // SINGLE elegant badge for sponsored content
     if (program.is_sponsored && program.sponsor_name) {
       return (
         <div className="flex flex-col gap-1">
-          <Badge className="bg-primary/15 text-primary border border-primary/30 text-xs">
+          <Badge className="bg-primary/15 text-primary border border-primary/30 text-xs font-medium">
             {t("marketplace.sponsored_by_label")}: {program.sponsor_name}
           </Badge>
-          <Badge className="bg-primary text-primary-foreground border-0 text-xs">
-            <Gift className="w-3 h-3 mr-1" />
-            {t("marketplace.free_via_sponsor")}
-          </Badge>
-          {program.price_huf && program.price_huf > 0 && (
-            <span className="text-[10px] text-muted-foreground">
-              {t("marketplace.value_label")}: {program.price_huf.toLocaleString()} Ft
-            </span>
-          )}
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-bold text-primary">0 Ft</span>
+            {program.price_huf && program.price_huf > 0 && (
+              <span className="text-xs text-muted-foreground line-through">
+                {program.price_huf.toLocaleString()} Ft
+              </span>
+            )}
+          </div>
         </div>
       );
     }
