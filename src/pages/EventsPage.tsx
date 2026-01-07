@@ -280,13 +280,74 @@ const EventsPage = () => {
               })}
             </div>
           ) : (
-            <Card>
-              <CardContent className="p-12 text-center">
-                <Calendar className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">{t("events.no_events")}</h3>
-                <p className="text-muted-foreground">{t("dashboard.activity_hint")}</p>
-              </CardContent>
-            </Card>
+            /* High-fidelity "Coming Soon" placeholder cards */
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {[
+                {
+                  title: "Helyi Termelői Piac",
+                  titleKey: "events.coming_soon_market",
+                  desc: "Friss helyi termékek a régióból",
+                  descKey: "events.coming_soon_market_desc",
+                  image: "https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800&q=80",
+                  icon: "🥕",
+                  color: "from-emerald-500/20 to-green-500/20",
+                },
+                {
+                  title: "Közösségi Reggeli",
+                  titleKey: "events.coming_soon_breakfast",
+                  desc: "Kötetlen beszélgetés és ismerkedés",
+                  descKey: "events.coming_soon_breakfast_desc",
+                  image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80",
+                  icon: "☕",
+                  color: "from-amber-500/20 to-orange-500/20",
+                },
+                {
+                  title: "Mesterkurzus",
+                  titleKey: "events.coming_soon_masterclass",
+                  desc: "Tanulj a régió legjobb szakértőitől",
+                  descKey: "events.coming_soon_masterclass_desc",
+                  image: "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&q=80",
+                  icon: "🎓",
+                  color: "from-purple-500/20 to-indigo-500/20",
+                },
+              ].map((event, index) => (
+                <Card 
+                  key={index} 
+                  className="overflow-hidden bg-white/80 backdrop-blur-md border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] opacity-90"
+                >
+                  {/* Event Image with gradient overlay */}
+                  <div className="relative h-40 overflow-hidden">
+                    <img
+                      src={event.image}
+                      alt={event.title}
+                      className="w-full h-full object-cover filter grayscale-[30%]"
+                    />
+                    <div className={`absolute inset-0 bg-gradient-to-br ${event.color}`} />
+                    {/* Coming Soon badge */}
+                    <Badge className="absolute top-3 right-3 bg-slate-900/80 text-white backdrop-blur-sm border-0">
+                      {t("events.coming_soon")}
+                    </Badge>
+                    {/* Icon */}
+                    <div className="absolute bottom-3 left-3 text-4xl drop-shadow-lg">
+                      {event.icon}
+                    </div>
+                  </div>
+
+                  <CardContent className="p-4">
+                    <CardTitle className="text-lg mb-2 text-slate-700">
+                      {t(event.titleKey) || event.title}
+                    </CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      {t(event.descKey) || event.desc}
+                    </p>
+                    <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+                      <Clock className="w-4 h-4" />
+                      <span>{t("events.date_tba")}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           )}
         </div>
       </main>
