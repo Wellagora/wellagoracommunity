@@ -92,7 +92,7 @@ const FeaturedProgramsSection = () => {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <Link to={`/programs/${program.id}`}>
+                <Link to={`/piacer/${program.id}`}>
                   <Card className="bg-card border-border/50 hover:border-[hsl(var(--cyan))]/30 transition-all duration-300 hover:shadow-lg hover:shadow-[hsl(var(--cyan))]/5 overflow-hidden group">
                     <CardContent className="p-0">
                       {/* Thumbnail */}
