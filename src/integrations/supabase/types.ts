@@ -1001,6 +1001,8 @@ export type Database = {
           created_at: string | null
           creator_id: string | null
           description: string | null
+          description_de: string | null
+          description_en: string | null
           id: string
           image_url: string | null
           is_featured: boolean | null
@@ -1020,6 +1022,8 @@ export type Database = {
           sponsor_name: string | null
           thumbnail_url: string | null
           title: string
+          title_de: string | null
+          title_en: string | null
           tools_needed: string | null
           total_licenses: number | null
           updated_at: string | null
@@ -1033,6 +1037,8 @@ export type Database = {
           created_at?: string | null
           creator_id?: string | null
           description?: string | null
+          description_de?: string | null
+          description_en?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean | null
@@ -1052,6 +1058,8 @@ export type Database = {
           sponsor_name?: string | null
           thumbnail_url?: string | null
           title: string
+          title_de?: string | null
+          title_en?: string | null
           tools_needed?: string | null
           total_licenses?: number | null
           updated_at?: string | null
@@ -1065,6 +1073,8 @@ export type Database = {
           created_at?: string | null
           creator_id?: string | null
           description?: string | null
+          description_de?: string | null
+          description_en?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean | null
@@ -1084,6 +1094,8 @@ export type Database = {
           sponsor_name?: string | null
           thumbnail_url?: string | null
           title?: string
+          title_de?: string | null
+          title_en?: string | null
           tools_needed?: string | null
           total_licenses?: number | null
           updated_at?: string | null
@@ -1668,6 +1680,8 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bio: string | null
+          bio_de: string | null
+          bio_en: string | null
           city: string | null
           company_size: string | null
           country: string | null
@@ -1677,6 +1691,8 @@ export type Database = {
           employee_count: number | null
           expert_bio_long: string | null
           expert_title: string | null
+          expert_title_de: string | null
+          expert_title_en: string | null
           expertise_areas: string[] | null
           first_name: string
           id: string
@@ -1695,6 +1711,8 @@ export type Database = {
           organization_id: string | null
           organization_logo_url: string | null
           organization_name: string | null
+          organization_name_de: string | null
+          organization_name_en: string | null
           payout_enabled: boolean | null
           payout_preference: string | null
           preferred_language: string | null
@@ -1727,6 +1745,8 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           bio?: string | null
+          bio_de?: string | null
+          bio_en?: string | null
           city?: string | null
           company_size?: string | null
           country?: string | null
@@ -1736,6 +1756,8 @@ export type Database = {
           employee_count?: number | null
           expert_bio_long?: string | null
           expert_title?: string | null
+          expert_title_de?: string | null
+          expert_title_en?: string | null
           expertise_areas?: string[] | null
           first_name: string
           id: string
@@ -1754,6 +1776,8 @@ export type Database = {
           organization_id?: string | null
           organization_logo_url?: string | null
           organization_name?: string | null
+          organization_name_de?: string | null
+          organization_name_en?: string | null
           payout_enabled?: boolean | null
           payout_preference?: string | null
           preferred_language?: string | null
@@ -1786,6 +1810,8 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           bio?: string | null
+          bio_de?: string | null
+          bio_en?: string | null
           city?: string | null
           company_size?: string | null
           country?: string | null
@@ -1795,6 +1821,8 @@ export type Database = {
           employee_count?: number | null
           expert_bio_long?: string | null
           expert_title?: string | null
+          expert_title_de?: string | null
+          expert_title_en?: string | null
           expertise_areas?: string[] | null
           first_name?: string
           id?: string
@@ -1813,6 +1841,8 @@ export type Database = {
           organization_id?: string | null
           organization_logo_url?: string | null
           organization_name?: string | null
+          organization_name_de?: string | null
+          organization_name_en?: string | null
           payout_enabled?: boolean | null
           payout_preference?: string | null
           preferred_language?: string | null

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-// Hard-coded expert data - always visible on homepage
+// Hard-coded expert data with translations - always visible on homepage
 const EXPERTS = [
   {
     id: "expert-1",
@@ -14,6 +14,8 @@ const EXPERTS = [
     last_name: "János",
     avatar_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
     expert_title: "Sajtmester",
+    expert_title_en: "Cheese Master",
+    expert_title_de: "Käsemeister",
     location_city: "Káli-medence",
     is_verified_expert: true,
   },
@@ -23,6 +25,8 @@ const EXPERTS = [
     last_name: "Anna",
     avatar_url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face",
     expert_title: "Restaurátor",
+    expert_title_en: "Restorer",
+    expert_title_de: "Restauratorin",
     location_city: "Budapest",
     is_verified_expert: true,
   },
@@ -32,6 +36,8 @@ const EXPERTS = [
     last_name: "Péter",
     avatar_url: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
     expert_title: "Asztalosmester",
+    expert_title_en: "Master Carpenter",
+    expert_title_de: "Tischlermeister",
     location_city: "Tihany",
     is_verified_expert: true,
   },
@@ -41,6 +47,8 @@ const EXPERTS = [
     last_name: "Eszter",
     avatar_url: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
     expert_title: "Permakultúra szakértő",
+    expert_title_en: "Permaculture Expert",
+    expert_title_de: "Permakultur-Expertin",
     location_city: "Balaton-felvidék",
     is_verified_expert: false,
   },
@@ -50,6 +58,8 @@ const EXPERTS = [
     last_name: "Gábor",
     avatar_url: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face",
     expert_title: "Pálinkafőző mester",
+    expert_title_en: "Pálinka Distiller",
+    expert_title_de: "Pálinka-Brennmeister",
     location_city: "Tokaj",
     is_verified_expert: true,
   },
@@ -57,13 +67,20 @@ const EXPERTS = [
 
 const ExpertGallery = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
       const scrollAmount = direction === "left" ? -280 : 280;
       scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
+  };
+
+  // Get localized expert title
+  const getExpertTitle = (expert: typeof EXPERTS[0]) => {
+    if (language === 'en' && expert.expert_title_en) return expert.expert_title_en;
+    if (language === 'de' && expert.expert_title_de) return expert.expert_title_de;
+    return expert.expert_title;
   };
 
   return (
@@ -157,9 +174,9 @@ const ExpertGallery = () => {
                   {expert.first_name} {expert.last_name}
                 </h3>
 
-                {/* Specialty / Title */}
+                {/* Specialty / Title - Localized */}
                 <p className="text-sm text-slate-500 mt-1 line-clamp-2">
-                  {expert.expert_title || expert.location_city || "Szakértő"}
+                  {getExpertTitle(expert) || expert.location_city || t('roles.expert')}
                 </p>
               </Link>
             </motion.div>
