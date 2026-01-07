@@ -395,6 +395,7 @@
   "home.experts_title": "Unsere Experten",
   "home.experts_subtitle": "Lernen Sie die Meister unserer Gemeinschaft kennen",
   "home.view_all": "Alle anzeigen",
+  "home.all_experts": "Alle Experten",
   "home.go_to_marketplace": "Zum Marktplatz",
 
   "control_panel.hello": "Hallo",
@@ -652,6 +653,10 @@
   "roles.business": "Unternehmen",
   "roles.ngo": "NGO",
   "roles.government": "Gemeinde",
+  "roles.explorer": "Entdecker",
+  "roles.expert": "Experte",
+  "roles.sponsor": "Unterstützer",
+  "roles.member": "Mitglied",
   "impact_counter.badge": "Live-Auswirkung",
   "impact_counter.title": "Unsere Gemeinschaft in Zahlen",
   "impact_counter.subtitle": "Sehen Sie die kollektive Kraft unserer engagierten Gemeinschaftsmitglieder, die zusammenarbeiten",

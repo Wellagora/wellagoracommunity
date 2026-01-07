@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // Hard-coded expert data - always visible on homepage
 const EXPERTS = [
@@ -56,6 +57,7 @@ const EXPERTS = [
 
 const ExpertGallery = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -71,10 +73,10 @@ const ExpertGallery = () => {
         <div className="flex items-center justify-between mb-10">
           <div>
             <h2 className="text-3xl font-bold text-slate-900 tracking-wide" style={{ letterSpacing: '0.02em' }}>
-              Szakértőink
+              {t('home.experts_title')}
             </h2>
             <p className="text-slate-600 mt-1">
-              Ismerd meg a közösségünk mestereit
+              {t('home.experts_subtitle')}
             </p>
           </div>
           <div className="hidden md:flex items-center gap-2">
@@ -96,7 +98,7 @@ const ExpertGallery = () => {
             </Button>
             <Link to="/piacer" className="ml-4">
               <Button variant="ghost" className="gap-2 text-[#34C759] hover:text-[#2DB14E] hover:bg-green-50 font-medium">
-                Mind megtekintése
+                {t('home.view_all')}
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
@@ -168,7 +170,7 @@ const ExpertGallery = () => {
         <div className="mt-6 text-center md:hidden">
           <Link to="/piacer">
             <Button className="gap-2 bg-[#34C759] hover:bg-[#2DB14E] text-white shadow-lg">
-              Összes szakértő
+              {t('home.all_experts')}
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>

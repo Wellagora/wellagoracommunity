@@ -90,9 +90,9 @@ const Navigation = () => {
   // Get display label for current view
   const getViewLabel = (view: 'member' | 'expert' | 'sponsor' | null): string => {
     switch (view) {
-      case 'member': return 'Felfedező (Tag)';
-      case 'expert': return 'Szakértő';
-      case 'sponsor': return 'Támogató';
+      case 'member': return t('roles.explorer');
+      case 'expert': return t('roles.expert');
+      case 'sponsor': return t('roles.sponsor');
       default: return 'Admin';
     }
   };
@@ -315,7 +315,7 @@ const Navigation = () => {
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  Felfedező
+                  {t('roles.explorer')}
                 </button>
                 <button
                   onClick={() => handleViewChange('expert')}
@@ -325,7 +325,7 @@ const Navigation = () => {
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  Szakértő
+                  {t('roles.expert')}
                 </button>
                 <button
                   onClick={() => handleViewChange('sponsor')}
@@ -335,7 +335,7 @@ const Navigation = () => {
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  Támogató
+                  {t('roles.sponsor')}
                 </button>
               </div>
             )}
