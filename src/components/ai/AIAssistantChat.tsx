@@ -6,12 +6,12 @@ import { Badge } from "@/components/ui/badge";
 import { 
   Send, 
   Sparkles,
-  Calculator,
-  Users,
-  HelpCircle,
+  BookOpen,
+  Gift,
+  Star,
   Loader2,
   AlertCircle,
-  Zap
+  Compass
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -40,29 +40,24 @@ const AIAssistantChat = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Knowledge Guide quick-start chips
   const quickActions = [
     { 
-      icon: Calculator, 
-      title: t('wellbot.action_carbon'), 
-      query: t('wellbot.query_carbon')
+      icon: BookOpen, 
+      title: t('wellbot.chip_learn'), 
+      query: t('wellbot.query_learn')
     },
     { 
-      icon: Sparkles, 
-      title: t('wellbot.action_programs'), 
-      query: t('wellbot.query_programs')
+      icon: Gift, 
+      title: t('wellbot.chip_free'), 
+      query: t('wellbot.query_free')
     },
     { 
-      icon: Users, 
-      title: t('wellbot.action_community'), 
-      query: t('wellbot.query_community')
-    },
-    { 
-      icon: HelpCircle, 
-      title: t('wellbot.action_getstarted'), 
-      query: t('wellbot.query_getstarted')
+      icon: Star, 
+      title: t('wellbot.chip_popular'), 
+      query: t('wellbot.query_popular')
     }
   ];
-
   // Load conversation history on mount
   useEffect(() => {
     const loadConversationHistory = async () => {
@@ -228,44 +223,46 @@ const AIAssistantChat = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-3rem)] md:h-[calc(100vh-3.5rem)] max-w-3xl mx-auto">
-      {/* STICKY HEADER - Avatar, Title, Quick Actions */}
-      <div className="sticky top-0 z-20 bg-card border-b border-accent/20 px-4 py-4 shadow-card">
+    <div className="flex flex-col h-[calc(100vh-3rem)] md:h-[calc(100vh-3.5rem)] max-w-3xl mx-auto bg-[hsl(var(--background))]">
+      {/* STICKY HEADER - Knowledge Guide Header */}
+      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-white/40 px-4 py-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         {/* Avatar and Title */}
-        <div className="flex items-center gap-4 mb-4">
+        <div className="flex items-center gap-4 mb-5">
           <div className="relative flex-shrink-0">
-            <img 
-              src={robotAvatar} 
-              alt="WellBot" 
-              className="w-16 h-16 object-cover rounded-full shadow-lg border-2 border-accent/30"
-            />
-            <div className="absolute -top-1 -right-1 bg-gradient-to-r from-[hsl(216,100%,50%)] to-[hsl(186,100%,50%)] rounded-full p-1.5 shadow-md">
-              <Zap className="h-3 w-3 text-white" />
+            <div className="w-16 h-16 rounded-full bg-white/95 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/40 overflow-hidden">
+              <img 
+                src={robotAvatar} 
+                alt="Tudás-Kalauz" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="absolute -bottom-1 -right-1 bg-primary rounded-full p-1.5 shadow-md border-2 border-white">
+              <Compass className="h-3 w-3 text-white" />
             </div>
           </div>
           
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-2xl font-bold italic text-white">
-                WellBot
+              <h1 className="text-2xl font-bold text-slate-800">
+                {t('wellbot.knowledge_guide_title')}
               </h1>
               <div className="flex items-center gap-2">
-                <Badge className="text-xs bg-gradient-to-r from-[hsl(216,100%,50%)] to-[hsl(186,100%,50%)] text-white border-0">
+                <Badge className="text-xs bg-primary/10 text-primary border-primary/20">
                   {t('wellbot.available_24_7')}
                 </Badge>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
-                  <span className="text-xs text-accent">{t('wellbot.online')}</span>
+                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                  <span className="text-xs text-primary">{t('wellbot.online')}</span>
                 </div>
               </div>
             </div>
-            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-              {t('wellbot.description')}
+            <p className="text-sm text-slate-600 mt-1 line-clamp-2">
+              {t('wellbot.knowledge_guide_desc')}
             </p>
           </div>
         </div>
 
-        {/* Quick Action Buttons */}
+        {/* Quick-Start Chips */}
         <div className="flex flex-wrap gap-2">
           {quickActions.map((action, index) => (
             <Button
@@ -273,10 +270,12 @@ const AIAssistantChat = () => {
               variant="outline"
               size="sm"
               onClick={() => handleQuickAction(action)}
-              className="gap-1.5 text-xs hover:border-accent hover:text-accent"
+              className="gap-2 text-sm bg-white/80 backdrop-blur-sm border-slate-200 text-slate-700 
+                hover:bg-primary/5 hover:border-primary hover:text-primary 
+                shadow-[0_2px_8px_rgb(0,0,0,0.04)] transition-all duration-200"
               disabled={isTyping}
             >
-              <action.icon className="h-3.5 w-3.5" />
+              <action.icon className="h-4 w-4" />
               {action.title}
             </Button>
           ))}
@@ -284,17 +283,17 @@ const AIAssistantChat = () => {
       </div>
 
       {/* INPUT FIELD - Below header, sticky */}
-      <div className="sticky top-[168px] z-20 bg-card border-b border-accent/20 px-4 py-4">
+      <div className="sticky top-[180px] z-20 bg-white/80 backdrop-blur-md border-b border-white/40 px-4 py-4 shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
         {error && (
-          <Alert variant="destructive" className="mb-3">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription className="flex items-center justify-between">
+          <Alert variant="destructive" className="mb-3 bg-red-50 border-red-200">
+            <AlertCircle className="h-4 w-4 text-red-600" />
+            <AlertDescription className="flex items-center justify-between text-red-700">
               <span>{error}</span>
               <Button 
                 variant="ghost" 
                 size="sm"
                 onClick={() => setError(null)}
-                className="h-auto p-1"
+                className="h-auto p-1 text-red-600 hover:text-red-800"
               >
                 ✕
               </Button>
@@ -309,7 +308,9 @@ const AIAssistantChat = () => {
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={t('wellbot.input_placeholder')}
-            className="pr-12 resize-none min-h-[48px] max-h-[120px] bg-background border-accent/20 focus:border-accent text-white"
+            className="pr-14 resize-none min-h-[52px] max-h-[120px] bg-white/95 border-slate-200 
+              focus:border-primary focus:ring-2 focus:ring-primary/10 text-slate-800 
+              placeholder:text-slate-400 rounded-xl shadow-[0_2px_8px_rgb(0,0,0,0.04)]"
             rows={1}
             disabled={isTyping}
           />
@@ -317,7 +318,7 @@ const AIAssistantChat = () => {
             onClick={() => handleSendMessage(inputValue)}
             disabled={!inputValue.trim() || isTyping}
             size="icon"
-            className="absolute right-2 bottom-2"
+            className="absolute right-2 bottom-2 rounded-lg bg-primary hover:bg-primary/90 shadow-md"
           >
             {isTyping ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -326,26 +327,26 @@ const AIAssistantChat = () => {
             )}
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground mt-2">
+        <p className="text-xs text-slate-500 mt-2">
           {t('wellbot.input_hint')}
         </p>
       </div>
 
-      {/* SCROLLABLE MESSAGES AREA - Only this part scrolls */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
-        {/* Typing Indicator - Shows at TOP when AI is responding */}
+      {/* SCROLLABLE MESSAGES AREA - Chat bubbles with organic premium style */}
+      <div className="flex-1 overflow-y-auto px-4 py-5 space-y-4 bg-[hsl(var(--background))]">
+        {/* Typing Indicator */}
         {isTyping && (
           <div className="flex gap-3 items-start animate-fade-in">
-            <div className="bg-gradient-to-br from-accent/20 to-accent/10 rounded-full p-2 flex-shrink-0 shadow-md border border-accent/30">
-              <Sparkles className="h-5 w-5 text-accent animate-pulse" />
+            <div className="bg-primary/10 rounded-full p-2.5 flex-shrink-0 shadow-[0_4px_12px_rgb(0,0,0,0.06)] border border-primary/20">
+              <Sparkles className="h-5 w-5 text-primary animate-pulse" />
             </div>
-            <div className="bg-card border border-accent/20 p-3 rounded-xl rounded-tl-none shadow-card">
+            <div className="bg-white/95 backdrop-blur-sm border border-white/40 p-4 rounded-2xl rounded-tl-none shadow-[0_4px_16px_rgb(0,0,0,0.06)]">
               <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">{t('wellbot.typing')}</span>
+                <span className="text-sm text-slate-600">{t('wellbot.typing')}</span>
                 <div className="flex gap-1">
-                  <div className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce"></div>
-                  <div className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></div>
-                  <div className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
+                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></div>
+                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
                 </div>
               </div>
             </div>
@@ -354,26 +355,26 @@ const AIAssistantChat = () => {
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Loader2 className="h-5 w-5 animate-spin text-accent" />
+            <div className="flex items-center gap-3 text-slate-500">
+              <Loader2 className="h-5 w-5 animate-spin text-primary" />
               <span>{t('common.loading')}</span>
             </div>
           </div>
         ) : messages.length === 0 && !isTyping ? (
-          /* Empty State */
-          <div className="flex flex-col items-center justify-center text-center py-12 animate-fade-in">
-            <div className="bg-gradient-to-br from-[hsl(216,100%,50%)]/20 to-[hsl(186,100%,50%)]/10 rounded-full p-6 shadow-lg border border-accent/30 mb-4">
-              <Sparkles className="h-12 w-12 text-accent" />
+          /* Empty State - Knowledge Guide Welcome */
+          <div className="flex flex-col items-center justify-center text-center py-16 animate-fade-in">
+            <div className="bg-white/95 backdrop-blur-md rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-white/40 mb-6">
+              <Compass className="h-16 w-16 text-primary mx-auto mb-4" />
+              <h3 className="text-2xl font-bold mb-3 text-slate-800">
+                {t('wellbot.knowledge_guide_welcome')}
+              </h3>
+              <p className="text-slate-600 max-w-sm text-sm leading-relaxed">
+                {t('wellbot.knowledge_guide_hint')}
+              </p>
             </div>
-            <h3 className="text-xl font-semibold mb-2 text-white">
-              {t('wellbot.community_greeting')}
-            </h3>
-            <p className="text-muted-foreground max-w-md text-sm">
-              {t('wellbot.empty_state_hint')}
-            </p>
           </div>
         ) : (
-          /* Messages - Newest first (reverse chronological) */
+          /* Messages - Chat bubbles */
           messages.map((message) => (
             <div
               key={message.id}
@@ -383,26 +384,26 @@ const AIAssistantChat = () => {
             >
               {/* Bot Avatar */}
               {message.sender === "ai" && (
-                <div className="bg-gradient-to-br from-accent/20 to-accent/10 rounded-full p-2 flex-shrink-0 shadow-md border border-accent/30">
-                  <Sparkles className="h-5 w-5 text-accent" />
+                <div className="bg-primary/10 rounded-full p-2 flex-shrink-0 shadow-[0_4px_12px_rgb(0,0,0,0.06)] border border-primary/20">
+                  <Sparkles className="h-5 w-5 text-primary" />
                 </div>
               )}
               
               {/* Message Bubble */}
               <div className={`flex flex-col max-w-[80%] ${message.sender === "user" ? "items-end" : "items-start"}`}>
                 {message.sender === "ai" && (
-                  <span className="text-xs font-medium text-accent mb-1">WellBot</span>
+                  <span className="text-xs font-medium text-primary mb-1">{t('wellbot.knowledge_guide_title')}</span>
                 )}
                 <div
-                  className={`p-3 rounded-xl whitespace-pre-wrap break-words shadow-card text-sm ${
+                  className={`p-4 rounded-2xl whitespace-pre-wrap break-words text-sm leading-relaxed ${
                     message.sender === "user"
-                      ? "bg-gradient-to-r from-[hsl(216,100%,50%)] to-[hsl(186,100%,50%)] text-white rounded-tr-none"
-                      : "bg-card border border-accent/20 text-foreground rounded-tl-none"
+                      ? "bg-primary text-white rounded-tr-none shadow-[0_4px_16px_rgb(52,199,89,0.3)]"
+                      : "bg-white/95 backdrop-blur-sm border border-white/40 text-slate-700 rounded-tl-none shadow-[0_4px_16px_rgb(0,0,0,0.06)]"
                   }`}
                 >
                   {message.content}
                 </div>
-                <span className="text-xs text-muted-foreground mt-1">
+                <span className="text-xs text-slate-400 mt-1.5">
                   {format(message.timestamp, 'HH:mm')}
                 </span>
               </div>
