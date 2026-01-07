@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Building2, Mail, Users, Languages, Shield, Sparkles, CalendarPlus } from 'lucide-react';
+import { ArrowLeft, Building2, Mail, Users, Languages, Shield, Sparkles, CalendarPlus, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAdminDashboard } from '@/hooks/useAdminDashboard';
@@ -11,13 +11,14 @@ import MessagesManager from './MessagesManager';
 import AIAnalyticsDashboard from './AIAnalyticsDashboard';
 import LegalContentManager from './LegalContentManager';
 import ProjectDetailView from './ProjectDetailView';
+import TranslateAllButton from './TranslateAllButton';
 import { CreateEventDialog } from '@/components/events/CreateEventDialog';
 import { useState } from 'react';
 
 const AdminDashboard = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'projects' | 'messages' | 'users' | 'legal' | 'ai_analytics'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'messages' | 'users' | 'legal' | 'ai_analytics' | 'settings'>('projects');
 
   const {
     draftChallenges,
@@ -80,11 +81,11 @@ const AdminDashboard = () => {
       {/* Title */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+          <h1 className="text-3xl font-bold">{t('admin.dashboard_title')}</h1>
           <p className="text-muted-foreground">
             {selectedProject 
-              ? `${selectedProject.name} - Programok kezelése`
-              : 'Projektek és platform statisztikák'
+              ? `${selectedProject.name} - ${t('admin.programs_management')}`
+              : t('admin.projects_and_stats')
             }
           </p>
         </div>
@@ -101,26 +102,30 @@ const AdminDashboard = () => {
         />
       ) : (
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:w-[600px]">
+          <TabsList className="grid w-full grid-cols-6 lg:w-[750px]">
             <TabsTrigger value="projects">
               <Building2 className="w-4 h-4 mr-2" />
-              Projektek
+              {t('admin.tab_projects')}
             </TabsTrigger>
             <TabsTrigger value="messages">
               <Mail className="w-4 h-4 mr-2" />
-              Üzenetek
+              {t('admin.tab_messages')}
             </TabsTrigger>
             <TabsTrigger value="users">
               <Users className="w-4 h-4 mr-2" />
-              Felhasználók
+              {t('admin.tab_users')}
             </TabsTrigger>
             <TabsTrigger value="legal">
               <Shield className="w-4 h-4 mr-2" />
-              Legal
+              {t('admin.tab_legal')}
             </TabsTrigger>
             <TabsTrigger value="ai_analytics">
               <Sparkles className="w-4 h-4 mr-2" />
-              AI Analytics
+              {t('admin.tab_ai_analytics')}
+            </TabsTrigger>
+            <TabsTrigger value="settings">
+              <Settings className="w-4 h-4 mr-2" />
+              {t('admin.tab_settings')}
             </TabsTrigger>
           </TabsList>
 
@@ -149,6 +154,12 @@ const AdminDashboard = () => {
 
           <TabsContent value="ai_analytics">
             <AIAnalyticsDashboard />
+          </TabsContent>
+
+          <TabsContent value="settings">
+            <div className="max-w-2xl">
+              <TranslateAllButton />
+            </div>
           </TabsContent>
         </Tabs>
       )}

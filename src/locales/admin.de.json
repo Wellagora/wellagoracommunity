@@ -201,5 +201,20 @@
   "category.education": "Bildung",
   "difficulty.beginner": "Anfänger",
   "difficulty.intermediate": "Fortgeschritten",
-  "difficulty.advanced": "Experte"
+  "difficulty.advanced": "Experte",
+  "admin.dashboard_title": "Admin Dashboard",
+  "admin.programs_management": "Programmverwaltung",
+  "admin.projects_and_stats": "Projekte und Plattformstatistiken",
+  "admin.tab_projects": "Projekte",
+  "admin.tab_messages": "Nachrichten",
+  "admin.tab_users": "Benutzer",
+  "admin.tab_legal": "Rechtliches",
+  "admin.tab_ai_analytics": "KI-Analytik",
+  "admin.translate_all_title": "Inhaltsübersetzung",
+  "admin.translate_all_desc": "Alle nicht übersetzten Inhalte auf Englisch und Deutsch übersetzen",
+  "admin.translate_all_button": "Alle Inhalte übersetzen",
+  "admin.translating": "Übersetzung läuft...",
+  "admin.translation_success": "Übersetzt: {{contents}} Inhalte und {{profiles}} Profile",
+  "admin.translation_error": "Übersetzung fehlgeschlagen",
+  "admin.tab_settings": "Einstellungen"
 }
