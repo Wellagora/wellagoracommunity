@@ -88,7 +88,7 @@ export const JourneyTimeline = () => {
 
   if (isLoading) {
     return (
-      <Card className="card-3d-premium h-full">
+      <Card className="h-full">
         <CardContent className="flex items-center justify-center h-40">
           <Loader2 className="w-6 h-6 animate-spin text-primary" />
         </CardContent>
@@ -97,7 +97,7 @@ export const JourneyTimeline = () => {
   }
 
   return (
-    <Card className="card-3d-premium h-full overflow-hidden">
+    <Card className="h-full overflow-hidden">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center gap-2">
           <Calendar className="w-5 h-5 text-accent" />

@@ -2,9 +2,35 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("rounded-2xl border border-accent/15 bg-card text-card-foreground shadow-card hover:shadow-glow hover:border-accent/40 transition-all duration-300 backdrop-blur-sm", className)} {...props} />
-));
+/**
+ * Organic Premium 3D Card Component
+ * Uses glassmorphism with ultra-soft shadows and smooth hover lift effect
+ */
+const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        // Base: White with 80% opacity + backdrop blur
+        "bg-white/80 backdrop-blur-md",
+        // Border: Subtle white border for depth
+        "border border-white/40",
+        // Rounded corners: 2xl (16px) for premium feel
+        "rounded-2xl",
+        // Shadow: Ultra-soft 3D shadow
+        "shadow-[0_10px_40px_rgba(0,0,0,0.03)]",
+        // Text color
+        "text-card-foreground",
+        // Hover: Subtle lift effect
+        "transition-all duration-300 ease-out",
+        "hover:shadow-[0_12px_45px_rgba(0,0,0,0.05)]",
+        "hover:-translate-y-0.5",
+        className
+      )}
+      {...props}
+    />
+  )
+);
 Card.displayName = "Card";
 
 const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
@@ -16,7 +42,7 @@ CardHeader.displayName = "CardHeader";
 
 const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
   ({ className, ...props }, ref) => (
-    <h3 ref={ref} className={cn("text-2xl font-semibold leading-none tracking-tight", className)} {...props} />
+    <h3 ref={ref} className={cn("text-2xl font-semibold leading-none tracking-tight text-foreground", className)} {...props} />
   ),
 );
 CardTitle.displayName = "CardTitle";
