@@ -34,9 +34,10 @@
   "auth.organization_placeholder": "Vállalat Kft.",
   "auth.industry": "Iparág",
   "auth.industry_placeholder": "Pl. Technológia, Vendéglátás",
-  "voucher": {
+"voucher": {
     "title": "Anyagcsomag kupon",
     "subtitle": "Mutasd fel a Szakértőnél",
+    "at_expert": "A Szakértőnél",
     "partner_benefit": "Partneri Kedvezmény",
     "value_label": "A Voucher értéke",
     "thanks_sponsor": "Köszönjük a {{name}}-nak!",
@@ -253,7 +254,7 @@
   "member_dashboard.active_vouchers": "Aktív kuponjaim",
   "member_dashboard.redeemable": "Beváltható",
   "member_dashboard.opened_content": "Megnyitott tartalmak",
-  "member_dashboard.workshop_secrets": "Műhelytitkok",
+  "member_dashboard.workshop_secrets": "Programok",
   "member_dashboard.savings": "Megtakarítás",
   "member_dashboard.from_sponsor": "Támogatói keretből",
   "member_dashboard.new_voucher": "Új kupon",
@@ -643,8 +644,8 @@
   "supporter.access_denied": "Hozzáférés megtagadva",
   "supporter.sponsor_only": "Ez az oldal csak Támogatók számára elérhető.",
 
-  "expert_studio.title": "Mester Stúdió",
-  "expert_studio.subtitle": "Hozz létre és kezelj Műhelytitkokat",
+  "expert_studio.title": "Szakértő Stúdió",
+  "expert_studio.subtitle": "Hozz létre és kezelj programokat",
   "expert_studio.new_guide": "Új Műhelytitok",
   "expert_studio.my_guides": "Műhelytitkaim",
   "expert_studio.revenue": "Összes Bevétel",

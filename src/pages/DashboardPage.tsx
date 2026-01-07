@@ -146,9 +146,9 @@ const DashboardPage = () => {
           setVouchers(userVouchers.map((v: any) => ({
             id: v.id,
             code: `WA-${new Date(v.created_at).getFullYear()}-${v.id.slice(0, 4).toUpperCase()}`,
-            content_title: v.expert_contents?.title || 'Műhelytitok',
+            content_title: v.expert_contents?.title || 'Program',
             status: 'active' as const,
-            pickup_location: 'A Mesternél'
+            pickup_location: 'A Szakértőnél'
           })));
         } else {
           // Use mock vouchers for demo

@@ -28,6 +28,7 @@ import {
   getMockExpertById,
   getLocalizedExpertName,
   getLocalizedSponsorName,
+  formatPriceByLanguage,
 } from "@/data/mockData";
 
 const CATEGORIES = [
@@ -119,18 +120,21 @@ const ProgramsListingPage = () => {
   }, [creatorFilter, programs, searchQuery, selectedCategory]);
 
   const getAccessBadge = (program: (typeof programs)[number]) => {
+    const priceInfo = formatPriceByLanguage(program.price_huf || 0, language);
+    const sponsorLabel = language === 'de' ? 'Gesponsert von' : language === 'en' ? 'Sponsored by' : 'Támogató';
+    
     // SINGLE elegant badge for sponsored content
     if (program.is_sponsored && program.sponsor_name) {
       return (
         <div className="flex flex-col gap-1">
           <Badge className="bg-primary/15 text-primary border border-primary/30 text-xs font-medium">
-            {t("marketplace.sponsored_by_label")}: {program.sponsor_name}
+            {sponsorLabel}: {program.sponsor_name}
           </Badge>
           <div className="flex items-center gap-2">
-            <span className="text-sm font-bold text-primary">0 Ft</span>
+            <span className="text-sm font-bold text-primary">{language === 'hu' ? '0 Ft' : '0 €'}</span>
             {program.price_huf > 0 && (
               <span className="text-xs text-muted-foreground line-through">
-                {program.price_huf.toLocaleString()} Ft
+                {priceInfo.originalPrice}
               </span>
             )}
           </div>
@@ -142,7 +146,7 @@ const ProgramsListingPage = () => {
       return (
         <Badge className="bg-accent text-accent-foreground border-0 text-xs">
           <ShoppingCart className="w-3 h-3 mr-1" />
-          {program.price_huf.toLocaleString()} Ft
+          {priceInfo.price}
         </Badge>
       );
     }
