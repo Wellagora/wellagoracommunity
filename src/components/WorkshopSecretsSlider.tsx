@@ -8,20 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Sparkles, BookOpen, Gift, ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
-
-interface Sponsor {
-  id: string;
-  name: string;
-  logo_url: string | null;
-}
-
-interface Sponsorship {
-  id: string;
-  total_licenses: number;
-  used_licenses: number | null;
-  is_active: boolean | null;
-  sponsor: Sponsor | null;
-}
+import { MOCK_PROGRAMS, MOCK_EXPERTS } from "@/data/mockData";
 
 interface Program {
   id: string;
@@ -38,14 +25,14 @@ interface Program {
     last_name: string;
     avatar_url: string | null;
   } | null;
-  sponsorship?: Sponsorship[] | null;
+  is_sponsored?: boolean;
 }
 
 const WorkshopSecretsSlider = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const { data: programs, isLoading } = useQuery({
+  const { data: dbPrograms, isLoading } = useQuery({
     queryKey: ["workshopSecretsSlider"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -65,9 +52,37 @@ const WorkshopSecretsSlider = () => {
         .order("created_at", { ascending: false })
         .limit(10);
       if (error) throw error;
-      return data as Program[];
+      return data;
     },
   });
+
+  // Use mock data if database is empty
+  const programs: Program[] = (dbPrograms && dbPrograms.length > 0)
+    ? dbPrograms.map((p: any) => ({
+        ...p,
+        is_sponsored: p.sponsorship?.[0]?.is_active && 
+          (p.sponsorship[0].used_licenses || 0) < (p.sponsorship[0].total_licenses || 0)
+      }))
+    : MOCK_PROGRAMS.map(p => {
+        const creator = MOCK_EXPERTS.find(e => e.id === p.creator_id);
+        return {
+          id: p.id,
+          title: language === 'en' ? p.title_en : language === 'de' ? p.title_de : p.title,
+          description: language === 'en' ? p.description_en : language === 'de' ? p.description_de : p.description,
+          image_url: p.image_url,
+          thumbnail_url: p.thumbnail_url,
+          access_type: p.access_type,
+          price_huf: p.price_huf,
+          sponsor_name: p.sponsor_name,
+          sponsor_logo_url: p.sponsor_logo_url,
+          is_sponsored: p.is_sponsored,
+          creator: creator ? {
+            first_name: creator.first_name,
+            last_name: creator.last_name,
+            avatar_url: creator.avatar_url
+          } : null
+        };
+      });
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -80,22 +95,17 @@ const WorkshopSecretsSlider = () => {
   };
 
   const getAccessBadge = (program: Program) => {
-    // 1. PRIORITÁS: Aktív szponzoráció ellenőrzése
-    const sponsorship = program.sponsorship?.[0];
-    const hasActiveSponsorship = sponsorship?.is_active && 
-      (sponsorship.used_licenses || 0) < (sponsorship.total_licenses || 0);
-    
-    if (hasActiveSponsorship) {
-      const sponsorName = sponsorship.sponsor?.name || 'Partner';
+    // Check for sponsored content
+    if (program.is_sponsored || program.sponsor_name) {
       return (
         <div className="flex flex-col gap-1">
-          <Badge className="bg-green-500/20 text-green-400 border border-green-500/30">
+          <Badge className="bg-primary/20 text-primary border border-primary/30">
             <Gift className="w-3 h-3 mr-1" />
-            Támogató • {sponsorName}
+            {t('common.sponsor')} • {program.sponsor_name || 'Partner'}
           </Badge>
           {program.price_huf && program.price_huf > 0 && (
             <span className="text-xs text-muted-foreground">
-              {t("marketplace.value_label")}: {program.price_huf.toLocaleString()} Ft — {t("marketplace.paid_by_sponsor")}
+              {t("marketplace.value_label")}: {program.price_huf.toLocaleString()} Ft
             </span>
           )}
         </div>

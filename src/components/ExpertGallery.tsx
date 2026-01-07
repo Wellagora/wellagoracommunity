@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import { MOCK_EXPERTS } from "@/data/mockData";
 
 interface Expert {
   id: string;
@@ -21,19 +22,12 @@ interface Expert {
   is_verified_expert: boolean | null;
 }
 
-// Placeholder experts for when no real data exists
-const placeholderExperts: Expert[] = [
-  { id: 'placeholder-1', first_name: 'Hamarosan', last_name: '', avatar_url: null, expert_title: null, expert_title_en: null, expert_title_de: null, location_city: null, is_verified_expert: false },
-  { id: 'placeholder-2', first_name: 'Hamarosan', last_name: '', avatar_url: null, expert_title: null, expert_title_en: null, expert_title_de: null, location_city: null, is_verified_expert: false },
-  { id: 'placeholder-3', first_name: 'Hamarosan', last_name: '', avatar_url: null, expert_title: null, expert_title_en: null, expert_title_de: null, location_city: null, is_verified_expert: false },
-];
-
 const ExpertGallery = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { t, language } = useLanguage();
 
   // Fetch experts/creators from Supabase (relaxed filter for dev)
-  const { data: experts, isLoading } = useQuery({
+  const { data: dbExperts, isLoading } = useQuery({
     queryKey: ['homepage-experts'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -47,6 +41,21 @@ const ExpertGallery = () => {
       return data as Expert[];
     },
   });
+
+  // Use mock data if database is empty
+  const experts: Expert[] = (dbExperts && dbExperts.length > 0) 
+    ? dbExperts 
+    : MOCK_EXPERTS.map(e => ({
+        id: e.id,
+        first_name: e.first_name,
+        last_name: e.last_name,
+        avatar_url: e.avatar_url,
+        expert_title: e.expert_title,
+        expert_title_en: e.expert_title_en,
+        expert_title_de: e.expert_title_de,
+        location_city: e.location_city,
+        is_verified_expert: e.is_verified_expert
+      }));
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -87,9 +96,8 @@ const ExpertGallery = () => {
     );
   }
 
-  // Use real experts or fallback to placeholders
-  const displayExperts = experts && experts.length > 0 ? experts : placeholderExperts;
-  const isPlaceholder = !experts || experts.length === 0;
+  // Use experts directly (mock data already integrated above)
+  const isMockData = !dbExperts || dbExperts.length === 0;
 
   return (
     <section className="py-16 bg-white">
@@ -136,7 +144,7 @@ const ExpertGallery = () => {
           className="flex gap-8 overflow-x-auto scrollbar-hide pb-4 -mx-4 px-4"
           style={{ scrollSnapType: "x mandatory" }}
         >
-          {displayExperts.map((expert, index) => (
+          {experts.map((expert, index) => (
             <motion.div
               key={expert.id}
               initial={{ opacity: 0, y: 20 }}
@@ -144,51 +152,28 @@ const ExpertGallery = () => {
               transition={{ duration: 0.4, delay: index * 0.08 }}
               style={{ scrollSnapAlign: "start" }}
             >
-              {isPlaceholder ? (
-                // Placeholder card - not clickable
-                <div className="flex flex-col items-center text-center w-48 flex-shrink-0 opacity-60">
-                  <div className="relative">
-                    <Avatar 
-                      className="w-36 h-36 border-2 border-white"
-                      style={{
-                        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 20px 50px -10px rgba(0, 0, 0, 0.12)',
-                      }}
-                    >
-                      <AvatarFallback className="bg-gradient-to-br from-slate-200 to-slate-300 text-slate-500 text-2xl font-semibold">
-                        ?
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
-                  <h3 className="mt-4 font-semibold text-muted-foreground">
-                    {t('common.master_onboarding')}
-                  </h3>
-                  <p className="text-sm text-muted-foreground/60 mt-1">
-                    {t('common.coming_soon')}
-                  </p>
-                </div>
-              ) : (
-                // Real expert card - clickable
-                <Link
-                  to={`/szakertok/${expert.id}`}
-                  className="flex flex-col items-center text-center group w-48 flex-shrink-0"
-                >
-                  <div className="relative">
-                    <Avatar 
-                      className="w-36 h-36 border-2 border-white group-hover:scale-105 transition-all duration-300"
-                      style={{
-                        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 20px 50px -10px rgba(0, 0, 0, 0.12)',
-                      }}
-                    >
-                      <AvatarImage 
-                        src={expert.avatar_url || undefined} 
-                        alt={`${expert.first_name} ${expert.last_name}`}
-                        className="object-cover"
-                      />
-                      <AvatarFallback className="bg-gradient-to-br from-emerald-400 to-teal-500 text-white text-2xl font-semibold">
-                        {expert.first_name?.[0]}
-                        {expert.last_name?.[0]}
-                      </AvatarFallback>
-                    </Avatar>
+              {/* Expert card - always clickable (real or mock) */}
+              <Link
+                to={`/szakertok/${expert.id}`}
+                className="flex flex-col items-center text-center group w-48 flex-shrink-0"
+              >
+                <div className="relative">
+                  <Avatar 
+                    className="w-36 h-36 border-2 border-white group-hover:scale-105 transition-all duration-300"
+                    style={{
+                      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 20px 50px -10px rgba(0, 0, 0, 0.12)',
+                    }}
+                  >
+                    <AvatarImage 
+                      src={expert.avatar_url || undefined} 
+                      alt={`${expert.first_name} ${expert.last_name}`}
+                      className="object-cover"
+                    />
+                    <AvatarFallback className="bg-gradient-to-br from-emerald-400 to-teal-500 text-white text-2xl font-semibold">
+                      {expert.first_name?.[0]}
+                      {expert.last_name?.[0]}
+                    </AvatarFallback>
+                  </Avatar>
                     
                     {expert.is_verified_expert && (
                       <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-primary rounded-full flex items-center justify-center border-2 border-white shadow-md">
@@ -207,7 +192,6 @@ const ExpertGallery = () => {
                     {getExpertTitle(expert) || expert.location_city || t('roles.expert')}
                   </p>
                 </Link>
-              )}
             </motion.div>
           ))}
         </div>
