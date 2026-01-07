@@ -22,6 +22,7 @@ const ExploreRegionPage = lazy(() => import("./pages/ExploreRegionPage"));
 const Index = lazy(() => import("@/pages/Index"));
 const AuthPage = lazy(() => import("@/pages/AuthPage"));
 const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
+const MyHubPage = lazy(() => import("@/pages/MyHubPage"));
 const CommunityPage = lazy(() => import("@/pages/CommunityPage"));
 const AIAssistantPage = lazy(() => import("@/pages/AIAssistantPage"));
 const ChallengesPage = lazy(() => import("@/pages/ChallengesPage"));
@@ -98,12 +99,20 @@ function App() {
                           <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
                           <Route path="/dashboard" element={<Navigate to="/iranyitopult" replace />} />
                           
-                          {/* Control Panel (Irányítópult) - Member Dashboard */}
+                          {/* Control Panel (Irányítópult) - My Hub */}
                           <Route
                             path="/iranyitopult"
                             element={
                               <ProtectedRoute allowedRoles={["member"]}>
-                                <MemberDashboard />
+                                <MyHubPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/sajat-kozpont"
+                            element={
+                              <ProtectedRoute allowedRoles={["member"]}>
+                                <MyHubPage />
                               </ProtectedRoute>
                             }
                           />
