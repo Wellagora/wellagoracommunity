@@ -33,11 +33,14 @@ const FeaturedProgramsSection = () => {
     },
   });
 
-  // Get featured mock programs with localization
-  const mockFeaturedPrograms = MOCK_PROGRAMS
+  // FORCE MOCK DATA ONLY - no database records for clean preview mode
+  const featuredPrograms = MOCK_PROGRAMS
     .filter(p => p.is_featured)
     .map(mp => {
       const creator = getMockExpertById(mp.creator_id);
+      const localizedSponsorName = language === 'en' ? (mp.sponsor_name_en || mp.sponsor_name) 
+        : language === 'de' ? (mp.sponsor_name_de || mp.sponsor_name) 
+        : mp.sponsor_name;
       return {
         id: mp.id,
         title: getLocalizedField(mp as unknown as Record<string, unknown>, 'title'),
@@ -46,7 +49,7 @@ const FeaturedProgramsSection = () => {
         access_level: mp.access_level,
         price_huf: mp.price_huf,
         is_sponsored: mp.is_sponsored,
-        sponsor_name: mp.sponsor_name,
+        sponsor_name: localizedSponsorName,
         creator: creator ? {
           id: creator.id,
           first_name: creator.first_name,
@@ -54,16 +57,17 @@ const FeaturedProgramsSection = () => {
           avatar_url: creator.avatar_url
         } : null
       };
-    });
-
-  // Combine - prioritize mock data for clean slate
-  const featuredPrograms = [...mockFeaturedPrograms, ...(dbFeaturedPrograms || [])].slice(0, 6);
+    })
+    .slice(0, 6);
 
   const getAccessBadge = (program: { access_level: string | null; is_sponsored?: boolean; sponsor_name?: string | null; price_huf?: number | null }) => {
     if (program.is_sponsored && program.sponsor_name) {
       return (
-        <div className="flex flex-col gap-0.5">
-          <Badge className="bg-primary/20 text-primary border-primary/30 text-xs">
+        <div className="flex flex-col gap-1">
+          <Badge className="bg-primary/15 text-primary border border-primary/30 text-xs">
+            {t('marketplace.sponsored_by_label')}: {program.sponsor_name}
+          </Badge>
+          <Badge className="bg-primary text-white border-0 text-xs">
             <Gift className="w-3 h-3 mr-1" />
             {t('marketplace.free_via_sponsor')}
           </Badge>
