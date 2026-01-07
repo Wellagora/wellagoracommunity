@@ -137,7 +137,7 @@ const ExpertGallery = () => {
               style={{ scrollSnapAlign: "start" }}
             >
               <Link
-                to={`/piacer?creator=${expert.id}`}
+                to={`/szakertok/${expert.id}`}
                 className="flex flex-col items-center text-center group w-48 flex-shrink-0"
               >
                 {/* Circular Portrait with 2px white border and 3D shadow */}
