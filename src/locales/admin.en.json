@@ -170,5 +170,20 @@
   "handprint.view_all": "View All Activities",
   "handprint.keep_logging": "Keep logging your positive actions!",
   "handprint.start_logging": "Start logging your sustainability activities to build your handprint.",
-  "handprint.no_activities": "No activities yet"
+  "handprint.no_activities": "No activities yet",
+  "admin.dashboard_title": "Admin Dashboard",
+  "admin.programs_management": "Program Management",
+  "admin.projects_and_stats": "Projects and platform statistics",
+  "admin.tab_projects": "Projects",
+  "admin.tab_messages": "Messages",
+  "admin.tab_users": "Users",
+  "admin.tab_legal": "Legal",
+  "admin.tab_ai_analytics": "AI Analytics",
+  "admin.translate_all_title": "Content Translation",
+  "admin.translate_all_desc": "Translate all untranslated content to English and German",
+  "admin.translate_all_button": "Translate All Content",
+  "admin.translating": "Translating...",
+  "admin.translation_success": "Translated: {{contents}} contents and {{profiles}} profiles",
+  "admin.translation_error": "Translation failed",
+  "admin.tab_settings": "Settings"
 }

@@ -523,7 +523,7 @@ const Navigation = () => {
                   {/* Super Admin View Switcher - Mobile iOS Segmented Control */}
                   {isSuperAdmin && (
                     <div className="px-3 py-4">
-                      <p className="text-xs font-medium text-slate-500 uppercase mb-3">Nézet váltás</p>
+                      <p className="text-xs font-medium text-slate-500 uppercase mb-3">{t('nav.switch_role')}</p>
                       <div className="flex bg-[#F5F5F7] rounded-lg p-1">
                         <button
                           onClick={() => handleViewChange('member')}
@@ -533,7 +533,7 @@ const Navigation = () => {
                               : 'text-slate-600'
                           }`}
                         >
-                          Felfedező
+                          {t('roles.explorer')}
                         </button>
                         <button
                           onClick={() => handleViewChange('expert')}
@@ -543,7 +543,7 @@ const Navigation = () => {
                               : 'text-slate-600'
                           }`}
                         >
-                          Szakértő
+                          {t('roles.expert')}
                         </button>
                         <button
                           onClick={() => handleViewChange('sponsor')}
@@ -553,7 +553,7 @@ const Navigation = () => {
                               : 'text-slate-600'
                           }`}
                         >
-                          Támogató
+                          {t('roles.sponsor')}
                         </button>
                       </div>
                     </div>

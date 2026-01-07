@@ -201,5 +201,20 @@
   "category.education": "Oktatás",
   "difficulty.beginner": "Kezdő",
   "difficulty.intermediate": "Haladó",
-  "difficulty.advanced": "Haladó"
+  "difficulty.advanced": "Haladó",
+  "admin.dashboard_title": "Admin Dashboard",
+  "admin.programs_management": "Programok kezelése",
+  "admin.projects_and_stats": "Projektek és platform statisztikák",
+  "admin.tab_projects": "Projektek",
+  "admin.tab_messages": "Üzenetek",
+  "admin.tab_users": "Felhasználók",
+  "admin.tab_legal": "Jogi",
+  "admin.tab_ai_analytics": "AI Analitika",
+  "admin.translate_all_title": "Tartalom fordítás",
+  "admin.translate_all_desc": "Összes le nem fordított tartalom fordítása angolra és németre",
+  "admin.translate_all_button": "Összes tartalom fordítása",
+  "admin.translating": "Fordítás folyamatban...",
+  "admin.translation_success": "Lefordítva: {{contents}} tartalom és {{profiles}} profil",
+  "admin.translation_error": "Fordítási hiba",
+  "admin.tab_settings": "Beállítások"
 }
