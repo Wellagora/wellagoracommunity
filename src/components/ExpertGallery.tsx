@@ -2,60 +2,29 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { supabase } from "@/integrations/supabase/client";
-import { MOCK_EXPERTS } from "@/data/mockData";
-
-interface Expert {
-  id: string;
-  first_name: string;
-  last_name: string;
-  avatar_url: string | null;
-  expert_title: string | null;
-  expert_title_en: string | null;
-  expert_title_de: string | null;
-  location_city: string | null;
-  is_verified_expert: boolean | null;
-}
+import { MOCK_EXPERTS, getLocalizedExpertName } from "@/data/mockData";
 
 const ExpertGallery = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { t, language } = useLanguage();
 
-  // Fetch experts/creators from Supabase (relaxed filter for dev)
-  const { data: dbExperts, isLoading } = useQuery({
-    queryKey: ['homepage-experts'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, first_name, last_name, avatar_url, expert_title, expert_title_en, expert_title_de, location_city, is_verified_expert')
-        .or('user_role.eq.expert,user_role.eq.creator,is_verified_expert.eq.true')
-        .order('created_at', { ascending: false })
-        .limit(10);
-      
-      if (error) throw error;
-      return data as Expert[];
-    },
+  // FORCE MOCK DATA ONLY - for clean, consistent preview
+  const experts = MOCK_EXPERTS.map(e => {
+    const localizedName = getLocalizedExpertName(e, language);
+    return {
+      id: e.id,
+      first_name: localizedName.firstName,
+      last_name: localizedName.lastName,
+      avatar_url: e.avatar_url,
+      expert_title: language === 'en' ? e.expert_title_en : language === 'de' ? e.expert_title_de : e.expert_title,
+      location_city: e.location_city,
+      is_verified_expert: e.is_verified_expert
+    };
   });
-
-  // Use mock data if database is empty
-  const experts: Expert[] = (dbExperts && dbExperts.length > 0) 
-    ? dbExperts 
-    : MOCK_EXPERTS.map(e => ({
-        id: e.id,
-        first_name: e.first_name,
-        last_name: e.last_name,
-        avatar_url: e.avatar_url,
-        expert_title: e.expert_title,
-        expert_title_en: e.expert_title_en,
-        expert_title_de: e.expert_title_de,
-        location_city: e.location_city,
-        is_verified_expert: e.is_verified_expert
-      }));
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -63,41 +32,6 @@ const ExpertGallery = () => {
       scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   };
-
-  // Get localized expert title
-  const getExpertTitle = (expert: Expert) => {
-    if (language === 'en' && expert.expert_title_en) return expert.expert_title_en;
-    if (language === 'de' && expert.expert_title_de) return expert.expert_title_de;
-    return expert.expert_title;
-  };
-
-  // Loading skeleton
-  if (isLoading) {
-    return (
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between mb-10">
-            <div>
-              <Skeleton className="h-9 w-64 mb-2" />
-              <Skeleton className="h-5 w-48" />
-            </div>
-          </div>
-          <div className="flex gap-8 overflow-x-auto pb-4">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="flex flex-col items-center w-48 flex-shrink-0">
-                <Skeleton className="w-36 h-36 rounded-full" />
-                <Skeleton className="h-5 w-24 mt-4" />
-                <Skeleton className="h-4 w-20 mt-2" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  // Use experts directly (mock data already integrated above)
-  const isMockData = !dbExperts || dbExperts.length === 0;
 
   return (
     <section className="py-16 bg-white">
@@ -138,10 +72,10 @@ const ExpertGallery = () => {
           </div>
         </div>
 
-        {/* Expert Slider */}
+        {/* Expert Slider - CENTERED */}
         <div
           ref={scrollRef}
-          className="flex gap-8 overflow-x-auto scrollbar-hide pb-4 -mx-4 px-4"
+          className="flex gap-8 overflow-x-auto scrollbar-hide pb-4 -mx-4 px-4 justify-center md:justify-start"
           style={{ scrollSnapType: "x mandatory" }}
         >
           {experts.map((expert, index) => (
@@ -152,7 +86,6 @@ const ExpertGallery = () => {
               transition={{ duration: 0.4, delay: index * 0.08 }}
               style={{ scrollSnapAlign: "start" }}
             >
-              {/* Expert card - always clickable (real or mock) */}
               <Link
                 to={`/szakertok/${expert.id}`}
                 className="flex flex-col items-center text-center group w-48 flex-shrink-0"
@@ -175,23 +108,23 @@ const ExpertGallery = () => {
                     </AvatarFallback>
                   </Avatar>
                     
-                    {expert.is_verified_expert && (
-                      <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-primary rounded-full flex items-center justify-center border-2 border-white shadow-md">
-                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
+                  {expert.is_verified_expert && (
+                    <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-primary rounded-full flex items-center justify-center border-2 border-white shadow-md">
+                      <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
 
-                  <h3 className="mt-4 font-semibold text-foreground group-hover:text-primary transition-colors">
-                    {expert.first_name} {expert.last_name}
-                  </h3>
+                <h3 className="mt-4 font-semibold text-foreground group-hover:text-primary transition-colors">
+                  {expert.first_name} {expert.last_name}
+                </h3>
 
-                  <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                    {getExpertTitle(expert) || expert.location_city || t('roles.expert')}
-                  </p>
-                </Link>
+                <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                  {expert.expert_title || expert.location_city || t('roles.expert')}
+                </p>
+              </Link>
             </motion.div>
           ))}
         </div>

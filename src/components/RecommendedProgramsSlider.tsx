@@ -4,35 +4,21 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Sparkles, Gift, ShoppingCart } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ChevronLeft, ChevronRight, Sparkles, Gift, ShoppingCart, BookOpen, Leaf } from "lucide-react";
 import { motion } from "framer-motion";
-import { MOCK_PROGRAMS, MOCK_EXPERTS } from "@/data/mockData";
-
-interface Program {
-  id: string;
-  title: string;
-  description: string | null;
-  image_url: string | null;
-  thumbnail_url: string | null;
-  access_type: string | null;
-  price_huf: number | null;
-  sponsor_name: string | null;
-  sponsor_logo_url: string | null;
-  creator?: {
-    first_name: string;
-    last_name: string;
-    avatar_url: string | null;
-  } | null;
-  is_sponsored?: boolean;
-}
+import { MOCK_PROGRAMS, MOCK_EXPERTS, getLocalizedExpertName, getLocalizedSponsorName } from "@/data/mockData";
 
 const RecommendedProgramsSlider = () => {
   const { t, language } = useLanguage();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // FORCE MOCK DATA ONLY - no database fallback for clean preview mode
-  const programs: Program[] = MOCK_PROGRAMS.map(p => {
+  const programs = MOCK_PROGRAMS.map(p => {
     const creator = MOCK_EXPERTS.find(e => e.id === p.creator_id);
+    const localizedCreatorName = creator ? getLocalizedExpertName(creator, language) : null;
+    const localizedSponsorName = getLocalizedSponsorName(p, language);
+    
     return {
       id: p.id,
       title: language === 'en' ? p.title_en : language === 'de' ? p.title_de : p.title,
@@ -41,18 +27,16 @@ const RecommendedProgramsSlider = () => {
       thumbnail_url: p.thumbnail_url,
       access_type: p.access_type,
       price_huf: p.price_huf,
-      sponsor_name: p.sponsor_name,
+      sponsor_name: localizedSponsorName,
       sponsor_logo_url: p.sponsor_logo_url,
       is_sponsored: p.is_sponsored,
-      creator: creator ? {
-        first_name: creator.first_name,
-        last_name: creator.last_name,
+      creator: localizedCreatorName && creator ? {
+        first_name: localizedCreatorName.firstName,
+        last_name: localizedCreatorName.lastName,
         avatar_url: creator.avatar_url
       } : null
     };
   });
-
-  const isLoading = false;
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -64,12 +48,15 @@ const RecommendedProgramsSlider = () => {
     }
   };
 
-  const getAccessBadge = (program: Program) => {
-    // Check for sponsored content - new clear messaging
-    if (program.is_sponsored || program.sponsor_name) {
+  const getAccessBadge = (program: typeof programs[0]) => {
+    // Check for sponsored content - "Sponsored by: [Name]" logic
+    if (program.is_sponsored && program.sponsor_name) {
       return (
         <div className="flex flex-col gap-1">
-          <Badge className="bg-primary/20 text-primary border border-primary/30">
+          <Badge className="bg-primary/20 text-primary border border-primary/30 text-xs">
+            {t('marketplace.sponsored_by_label')}: {program.sponsor_name}
+          </Badge>
+          <Badge className="bg-primary text-white border-0 text-xs">
             <Gift className="w-3 h-3 mr-1" />
             {t('marketplace.free_via_sponsor')}
           </Badge>
@@ -100,31 +87,16 @@ const RecommendedProgramsSlider = () => {
     );
   };
 
-  if (isLoading) {
-    return (
-      <section className="py-12 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center gap-3 mb-6">
-            <Sparkles className="w-6 h-6 text-primary" />
-            <h2 className="text-2xl font-bold">{t("index.workshop_secrets_title")}</h2>
-          </div>
-          <div className="flex gap-4 overflow-hidden">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="w-[300px] flex-shrink-0">
-                <Card className="animate-pulse">
-                  <div className="aspect-video bg-muted" />
-                  <CardContent className="p-4">
-                    <div className="h-5 bg-muted rounded w-3/4 mb-2" />
-                    <div className="h-4 bg-muted rounded w-1/2" />
-                  </CardContent>
-                </Card>
-              </div>
-            ))}
-          </div>
+  // Placeholder for missing images
+  const ImagePlaceholder = () => (
+    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
+      <div className="text-center">
+        <div className="w-16 h-16 mx-auto mb-2 rounded-full bg-gradient-to-br from-primary/20 to-emerald-500/20 flex items-center justify-center">
+          <Leaf className="w-8 h-8 text-primary/70" />
         </div>
-      </section>
-    );
-  }
+      </div>
+    </div>
+  );
 
   if (!programs || programs.length === 0) {
     return null;
@@ -190,28 +162,47 @@ const RecommendedProgramsSlider = () => {
               >
                 <Link to={`/piacer/${program.id}`}>
                   <Card className="h-full bg-card hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 border-border/50 group overflow-hidden">
-                    {/* Kép - NINCS badge rajta */}
+                    {/* Image with fallback placeholder */}
                     <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 relative overflow-hidden">
-                      <img
-                        src={program.image_url || program.thumbnail_url || 'https://images.unsplash.com/photo-1518005020251-58296d8f8b4d?w=800&q=80'}
-                        alt={program.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        onError={(e) => {
-                          e.currentTarget.src = 'https://images.unsplash.com/photo-1518005020251-58296d8f8b4d?w=800&q=80';
-                        }}
-                      />
+                      {program.image_url || program.thumbnail_url ? (
+                        <img
+                          src={program.image_url || program.thumbnail_url || ''}
+                          alt={program.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          onError={(e) => {
+                            // Hide the broken image and show placeholder
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                          }}
+                        />
+                      ) : null}
+                      <div className={program.image_url || program.thumbnail_url ? 'hidden' : ''}>
+                        <ImagePlaceholder />
+                      </div>
                     </div>
-                    {/* Tartalom - badge IDE kerül a sötétkék kártya részre */}
+                    
+                    {/* Content */}
                     <CardContent className="p-4">
                       <h3 className="font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
                         {program.title}
                       </h3>
+                      
+                      {/* Expert Avatar + Name */}
                       {program.creator && (
-                        <p className="text-sm text-muted-foreground mb-3">
-                          {program.creator.first_name} {program.creator.last_name}
-                        </p>
+                        <div className="flex items-center gap-2 mb-3">
+                          <Avatar className="w-6 h-6">
+                            <AvatarImage src={program.creator.avatar_url || undefined} />
+                            <AvatarFallback className="bg-primary/20 text-primary text-xs">
+                              {program.creator.first_name?.[0]}{program.creator.last_name?.[0]}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="text-sm text-muted-foreground">
+                            {program.creator.first_name} {program.creator.last_name}
+                          </span>
+                        </div>
                       )}
-                      {/* Badge a sötét háttéren - jól olvasható */}
+                      
+                      {/* Badge */}
                       <div className="flex items-center justify-between">
                         {getAccessBadge(program)}
                         <Button size="sm" variant="secondary" className="ml-2">
