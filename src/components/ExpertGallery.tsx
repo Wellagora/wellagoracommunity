@@ -89,10 +89,10 @@ const ExpertGallery = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-10">
           <div>
-            <h2 className="text-3xl font-bold text-slate-900 tracking-wide" style={{ letterSpacing: '0.02em' }}>
+            <h2 className="text-3xl font-bold text-foreground tracking-wide" style={{ letterSpacing: '0.02em' }}>
               {t('home.experts_title')}
             </h2>
-            <p className="text-slate-600 mt-1">
+            <p className="text-muted-foreground mt-1">
               {t('home.experts_subtitle')}
             </p>
           </div>
@@ -170,12 +170,12 @@ const ExpertGallery = () => {
                 </div>
 
                 {/* Name */}
-                <h3 className="mt-4 font-semibold text-slate-900 group-hover:text-[#34C759] transition-colors">
+                <h3 className="mt-4 font-semibold text-foreground group-hover:text-primary transition-colors">
                   {expert.first_name} {expert.last_name}
                 </h3>
 
                 {/* Specialty / Title - Localized */}
-                <p className="text-sm text-slate-500 mt-1 line-clamp-2">
+                <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                   {getExpertTitle(expert) || expert.location_city || t('roles.expert')}
                 </p>
               </Link>
