@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useLocalizedContent } from "@/hooks/useLocalizedContent";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,7 @@ import StarRating from "@/components/reviews/StarRating";
 import DummyPaymentModal from "@/components/marketplace/DummyPaymentModal";
 import SponsorshipModal from "@/components/marketplace/SponsorshipModal";
 import ExpertProfileModal from "@/components/creator/ExpertProfileModal";
+import { MOCK_PROGRAMS, MOCK_EXPERTS, getMockExpertById } from "@/data/mockData";
 
 const CATEGORIES = [
   { id: "all", labelKey: "marketplace.all_categories", icon: Grid, bgColor: "bg-slate-500", iconColor: "text-white" },
@@ -102,7 +104,8 @@ interface Program {
 }
 
 const ProgramsListingPage = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const { getLocalizedField } = useLocalizedContent();
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -248,11 +251,67 @@ const ProgramsListingPage = () => {
     }
   };
 
+  // Convert mock programs to display format with localization
+  const mockProgramsForDisplay = useMemo(() => {
+    return MOCK_PROGRAMS.map(mp => {
+      const creator = getMockExpertById(mp.creator_id);
+      return {
+        id: mp.id,
+        title: getLocalizedField(mp as unknown as Record<string, unknown>, 'title'),
+        description: getLocalizedField(mp as unknown as Record<string, unknown>, 'description'),
+        image_url: mp.image_url,
+        thumbnail_url: mp.thumbnail_url,
+        access_level: mp.access_level,
+        access_type: mp.access_type,
+        price_huf: mp.price_huf,
+        category: mp.category,
+        is_featured: mp.is_featured,
+        creator_id: mp.creator_id,
+        created_at: mp.created_at,
+        sponsor_id: null,
+        sponsor_name: mp.sponsor_name,
+        sponsor_logo_url: mp.sponsor_logo_url,
+        total_licenses: mp.is_sponsored ? 50 : null,
+        used_licenses: mp.is_sponsored ? Math.floor(Math.random() * 40) : null,
+        creator: creator ? {
+          id: creator.id,
+          first_name: creator.first_name,
+          last_name: creator.last_name,
+          avatar_url: creator.avatar_url,
+          expert_title: getLocalizedField(creator as unknown as Record<string, unknown>, 'expert_title'),
+          location_city: creator.location_city
+        } : null,
+        sponsorship: mp.is_sponsored ? [{
+          id: `mock-sponsorship-${mp.id}`,
+          total_licenses: 50,
+          used_licenses: Math.floor(Math.random() * 40),
+          is_active: true,
+          sponsor: { id: 'mock-sponsor', name: mp.sponsor_name || 'Partner', logo_url: null }
+        }] : [],
+        waitlist: []
+      } as Program;
+    });
+  }, [language, getLocalizedField]);
+
+  // Combine mock and database programs - prioritize mock data for clean slate
+  const allPrograms = useMemo(() => {
+    // Use mock programs as primary data, append database programs that have full translations
+    const dbProgramsWithTranslations = (programs || []).filter(p => {
+      // Only include DB programs that have translations (not the old unlocalized ones)
+      return p.id && !p.id.startsWith('mock-');
+    });
+    
+    // Prioritize mock programs for a clean slate
+    return [...mockProgramsForDisplay, ...dbProgramsWithTranslations];
+  }, [mockProgramsForDisplay, programs]);
+
   // Filter programs based on search and category
   const filteredPrograms = useMemo(() => {
-    if (!programs) return [];
+    const programsToFilter = creatorFilter 
+      ? allPrograms.filter(p => p.creator_id === creatorFilter)
+      : allPrograms;
     
-    return programs.filter((program) => {
+    return programsToFilter.filter((program) => {
       const matchesSearch =
         !searchQuery ||
         program.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -264,7 +323,7 @@ const ProgramsListingPage = () => {
 
       return matchesSearch && matchesCategory;
     });
-  }, [programs, searchQuery, selectedCategory]);
+  }, [allPrograms, creatorFilter, searchQuery, selectedCategory]);
 
   const getAccessBadge = (program: Program) => {
     // 1. PRIORITÁS: Aktív szponzoráció ellenőrzése
