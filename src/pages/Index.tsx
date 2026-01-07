@@ -10,7 +10,7 @@ import { Users, Award, TrendingUp, ChevronRight } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
 import ExpertGallery from "@/components/ExpertGallery";
 import FeaturedEventsGrid from "@/components/FeaturedEventsGrid";
-import WorkshopSecretsSlider from "@/components/WorkshopSecretsSlider";
+import RecommendedProgramsSlider from "@/components/RecommendedProgramsSlider";
 import CTABanner from "@/components/CTABanner";
 import { UpcomingEventsSection } from "@/components/events/UpcomingEventsSection";
 import { RegionalImpactGarden } from "@/components/RegionalImpactGarden";
@@ -74,8 +74,8 @@ const Index = () => {
             {/* 3. KIEMELT ESEMÉNYEK - Fixed 3-column grid */}
             <FeaturedEventsGrid />
 
-            {/* 3. MŰHELYTITOK AJÁNLÓ - Horizontal slider */}
-            <WorkshopSecretsSlider />
+            {/* 3. AJÁNLOTT PROGRAMOK - Horizontal slider */}
+            <RecommendedProgramsSlider />
 
             {/* 4. CTA BANNER */}
             <CTABanner />
@@ -147,8 +147,8 @@ const Index = () => {
           {/* 3. KIEMELT ESEMÉNYEK - Fixed 3-column grid */}
           <FeaturedEventsGrid />
 
-          {/* 4. MŰHELYTITOK AJÁNLÓ - Horizontal slider */}
-          <WorkshopSecretsSlider />
+          {/* 4. AJÁNLOTT PROGRAMOK - Horizontal slider */}
+          <RecommendedProgramsSlider />
         </main>
       </div>
 
