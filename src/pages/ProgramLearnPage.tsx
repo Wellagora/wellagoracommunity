@@ -3,7 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useLocalizedContent } from "@/hooks/useLocalizedContent";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, ExternalLink, Download, Lock, PlayCircle } from "lucide-react";
 import { motion } from "framer-motion";
@@ -26,6 +28,7 @@ const ProgramLearnPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { t } = useLanguage();
+  const { getLocalizedField } = useLocalizedContent();
 
   // Fetch program
   const { data: program, isLoading: programLoading } = useQuery({
@@ -64,15 +67,17 @@ const ProgramLearnPage = () => {
   const renderContent = () => {
     if (!program?.content_url) {
       return (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <div className="text-6xl mb-4">📄</div>
-          <h3 className="text-xl font-semibold text-foreground mb-2">
-            {t("learning.no_content")}
-          </h3>
-          <p className="text-muted-foreground">
-            {t("learning.no_content_description")}
-          </p>
-        </div>
+        <Card className="bg-white/80 backdrop-blur-md">
+          <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="text-6xl mb-4">📄</div>
+            <h3 className="text-xl font-semibold text-foreground mb-2">
+              {t("learning.no_content")}
+            </h3>
+            <p className="text-muted-foreground">
+              {t("learning.no_content_description")}
+            </p>
+          </CardContent>
+        </Card>
       );
     }
 
@@ -82,10 +87,10 @@ const ProgramLearnPage = () => {
 
     if (youtubeId) {
       return (
-        <div className="aspect-video w-full rounded-lg overflow-hidden bg-black">
+        <div className="aspect-video w-full rounded-2xl overflow-hidden bg-black shadow-lg">
           <iframe
             src={`https://www.youtube.com/embed/${youtubeId}`}
-            title={program.title}
+            title={getLocalizedField(program, 'title')}
             className="w-full h-full"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -96,10 +101,10 @@ const ProgramLearnPage = () => {
 
     if (vimeoId) {
       return (
-        <div className="aspect-video w-full rounded-lg overflow-hidden bg-black">
+        <div className="aspect-video w-full rounded-2xl overflow-hidden bg-black shadow-lg">
           <iframe
             src={`https://player.vimeo.com/video/${vimeoId}`}
-            title={program.title}
+            title={getLocalizedField(program, 'title')}
             className="w-full h-full"
             allow="autoplay; fullscreen; picture-in-picture"
             allowFullScreen
@@ -110,53 +115,54 @@ const ProgramLearnPage = () => {
 
     // Generic URL - show download/open button
     return (
-      <div className="flex flex-col items-center justify-center py-16 bg-[#0A1930] rounded-lg">
-        <div className="w-20 h-20 rounded-full bg-[hsl(var(--cyan))]/20 flex items-center justify-center mb-6">
-          <PlayCircle className="w-10 h-10 text-[hsl(var(--cyan))]" />
-        </div>
-        <h3 className="text-xl font-semibold text-foreground mb-2">
-          {t("learning.external_content")}
-        </h3>
-        <p className="text-muted-foreground text-center mb-6 max-w-md">
-          {t("learning.external_content_description")}
-        </p>
-        <div className="flex gap-4">
-          <Button
-            onClick={() => window.open(contentUrl, "_blank")}
-            className="bg-gradient-to-r from-[hsl(var(--cyan))] to-[hsl(var(--primary))] hover:opacity-90 text-white"
-          >
-            <ExternalLink className="w-4 h-4 mr-2" />
-            {t("learning.open_content")}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => {
-              const link = document.createElement("a");
-              link.href = contentUrl;
-              link.download = "";
-              link.click();
-            }}
-            className="border-[hsl(var(--cyan))]/50 text-[hsl(var(--cyan))] hover:bg-[hsl(var(--cyan))]/10"
-          >
-            <Download className="w-4 h-4 mr-2" />
-            {t("learning.download")}
-          </Button>
-        </div>
-      </div>
+      <Card className="bg-white/80 backdrop-blur-md">
+        <CardContent className="flex flex-col items-center justify-center py-16">
+          <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mb-6">
+            <PlayCircle className="w-10 h-10 text-primary" />
+          </div>
+          <h3 className="text-xl font-semibold text-foreground mb-2">
+            {t("learning.external_content")}
+          </h3>
+          <p className="text-muted-foreground text-center mb-6 max-w-md">
+            {t("learning.external_content_description")}
+          </p>
+          <div className="flex gap-4">
+            <Button
+              onClick={() => window.open(contentUrl, "_blank")}
+              className="bg-primary hover:bg-primary/90 text-white"
+            >
+              <ExternalLink className="w-4 h-4 mr-2" />
+              {t("learning.open_content")}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                const link = document.createElement("a");
+                link.href = contentUrl;
+                link.download = "";
+                link.click();
+              }}
+            >
+              <Download className="w-4 h-4 mr-2" />
+              {t("learning.download")}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     );
   };
 
   if (programLoading || accessLoading) {
     return (
-      <div className="min-h-screen bg-[#0A1930]">
+      <div className="min-h-screen bg-background">
         <div className="flex">
-          <div className="w-64 bg-[#112240] border-r border-[hsl(var(--cyan))]/10 min-h-screen p-4">
+          <div className="w-64 bg-white/80 backdrop-blur-md border-r border-border min-h-screen p-4 hidden md:block">
             <Skeleton className="h-8 w-full mb-4" />
             <Skeleton className="h-4 w-3/4 mb-2" />
             <Skeleton className="h-4 w-1/2" />
           </div>
           <div className="flex-1 p-8">
-            <Skeleton className="aspect-video w-full rounded-lg" />
+            <Skeleton className="aspect-video w-full rounded-2xl" />
           </div>
         </div>
       </div>
@@ -166,53 +172,60 @@ const ProgramLearnPage = () => {
   // No access - redirect
   if (!accessStatus?.has_access) {
     return (
-      <div className="min-h-screen bg-[#0A1930] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
-            <Lock className="w-8 h-8 text-amber-400" />
-          </div>
-          <h1 className="text-2xl font-bold text-foreground mb-2">
-            {t("learning.access_denied")}
-          </h1>
-          <p className="text-muted-foreground mb-6">
-            {t("learning.access_denied_description")}
-          </p>
-          <Button onClick={() => navigate(`/piacer/${id}`)}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            {t("learning.back_to_program")}
-          </Button>
-        </div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="bg-white/80 backdrop-blur-md max-w-md">
+          <CardContent className="p-8 text-center">
+            <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
+              <Lock className="w-8 h-8 text-amber-500" />
+            </div>
+            <h1 className="text-2xl font-bold text-foreground mb-2">
+              {t("learning.access_denied")}
+            </h1>
+            <p className="text-muted-foreground mb-6">
+              {t("learning.access_denied_description")}
+            </p>
+            <Button onClick={() => navigate(`/piacer/${id}`)}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              {t("learning.back_to_program")}
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   if (!program) {
     return (
-      <div className="min-h-screen bg-[#0A1930] flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">
-            {t("program.not_found")}
-          </h1>
-          <Button variant="outline" onClick={() => navigate(-1)}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            {t("program.back")}
-          </Button>
-        </div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="bg-white/80 backdrop-blur-md">
+          <CardContent className="p-8 text-center">
+            <h1 className="text-2xl font-bold text-foreground mb-4">
+              {t("program.not_found")}
+            </h1>
+            <Button variant="outline" onClick={() => navigate(-1)}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              {t("program.back")}
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
+  const localizedTitle = getLocalizedField(program, 'title');
+  const localizedDescription = getLocalizedField(program, 'description') || program.description;
+
   return (
-    <div className="min-h-screen bg-[#0A1930]">
+    <div className="min-h-screen bg-background">
       <div className="flex">
         {/* Sidebar */}
         <motion.div
           initial={{ x: -20, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          className="w-64 bg-[#112240] border-r border-[hsl(var(--cyan))]/10 min-h-screen p-4 hidden md:block"
+          className="w-64 bg-white/80 backdrop-blur-md border-r border-border min-h-screen p-4 hidden md:block"
         >
           <h2 className="font-bold text-foreground text-lg mb-4 line-clamp-2">
-            {program.title}
+            {localizedTitle}
           </h2>
           <div className="space-y-2">
             <Link
@@ -245,22 +258,24 @@ const ProgramLearnPage = () => {
           >
             {/* Title - visible on mobile */}
             <h1 className="text-2xl font-bold text-foreground mb-6 md:hidden">
-              {program.title}
+              {localizedTitle}
             </h1>
 
             {/* Content Player */}
             {renderContent()}
 
             {/* Description below player */}
-            {program.description && (
-              <div className="mt-8 bg-[#112240] rounded-lg p-6">
-                <h3 className="font-semibold text-foreground mb-4">
-                  {t("learning.about_content")}
-                </h3>
-                <p className="text-muted-foreground whitespace-pre-wrap">
-                  {program.description}
-                </p>
-              </div>
+            {localizedDescription && (
+              <Card className="mt-8">
+                <CardContent className="p-6">
+                  <h3 className="font-semibold text-foreground mb-4">
+                    {t("learning.about_content")}
+                  </h3>
+                  <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                    {localizedDescription}
+                  </p>
+                </CardContent>
+              </Card>
             )}
           </motion.div>
         </div>

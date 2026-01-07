@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useLocalizedContent } from "@/hooks/useLocalizedContent";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,8 +17,8 @@ import {
   Lock, 
   Crown, 
   CheckCircle2,
-  User,
-  ShoppingCart
+  ShoppingCart,
+  Ticket
 } from "lucide-react";
 import { motion } from "framer-motion";
 import PurchaseModal from "@/components/PurchaseModal";
@@ -31,6 +32,7 @@ const ProgramDetailPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { t } = useLanguage();
+  const { getLocalizedField } = useLocalizedContent();
 
   // Fetch program with creator - use maybeSingle to avoid errors
   const { data: program, isLoading: programLoading } = useQuery({
@@ -77,7 +79,7 @@ const ProgramDetailPage = () => {
     queryFn: async () => {
       const { data } = await supabase
         .from('expert_contents')
-        .select('id, title, thumbnail_url, access_level, price_huf')
+        .select('id, title, title_en, title_de, thumbnail_url, access_level, price_huf')
         .eq('creator_id', program?.creator_id)
         .eq('is_published', true)
         .neq('id', id)
@@ -114,13 +116,15 @@ const ProgramDetailPage = () => {
   const getAccessBadge = (accessLevel: string | null) => {
     switch (accessLevel) {
       case 'free':
-        return <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">{t('program.free_access')}</Badge>;
+        return <Badge className="bg-emerald-500/20 text-emerald-600 border-emerald-500/30">{t('program.free_access')}</Badge>;
       case 'registered':
-        return <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">{t('common.registered')}</Badge>;
+        return <Badge className="bg-blue-500/20 text-blue-600 border-blue-500/30">{t('common.registered')}</Badge>;
       case 'premium':
-        return <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30"><Crown className="w-3 h-3 mr-1" />Premium</Badge>;
+        return <Badge className="bg-amber-500/20 text-amber-600 border-amber-500/30"><Crown className="w-3 h-3 mr-1" />Premium</Badge>;
       case 'one_time_purchase':
-        return <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30"><ShoppingCart className="w-3 h-3 mr-1" />{t('program.purchase')}</Badge>;
+        return <Badge className="bg-purple-500/20 text-purple-600 border-purple-500/30"><ShoppingCart className="w-3 h-3 mr-1" />{t('program.purchase')}</Badge>;
+      case 'sponsored':
+        return <Badge className="bg-primary/20 text-primary border-primary/30"><Ticket className="w-3 h-3 mr-1" />{t('common.sponsor')}</Badge>;
       default:
         return null;
     }
@@ -143,7 +147,7 @@ const ProgramDetailPage = () => {
         return (
           <Button 
             size="lg"
-            className="bg-gradient-to-r from-[hsl(var(--cyan))] to-[hsl(var(--primary))] hover:opacity-90 text-white font-semibold"
+            className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg"
             onClick={() => navigate(`/piacer/${id}/learn`)}
           >
             <PlayCircle className="w-5 h-5 mr-2" />
@@ -155,7 +159,7 @@ const ProgramDetailPage = () => {
           <Button 
             size="lg"
             variant="outline"
-            className="border-[hsl(var(--cyan))]/50 text-[hsl(var(--cyan))] hover:bg-[hsl(var(--cyan))]/10"
+            className="border-primary/50 text-primary hover:bg-primary/10"
             onClick={() => navigate('/auth')}
           >
             <Lock className="w-5 h-5 mr-2" />
@@ -178,7 +182,7 @@ const ProgramDetailPage = () => {
         return (
           <Button 
             size="lg"
-            className="bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--cyan))] hover:opacity-90 text-white font-semibold"
+            className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg"
             onClick={() => setIsPurchaseModalOpen(true)}
           >
             <ShoppingCart className="w-5 h-5 mr-2" />
@@ -192,13 +196,20 @@ const ProgramDetailPage = () => {
 
   if (programLoading) {
     return (
-      <div className="min-h-screen bg-[#0A1930]">
+      <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
           <Skeleton className="h-8 w-24 mb-6" />
-          <Skeleton className="h-64 w-full rounded-xl mb-6" />
-          <Skeleton className="h-12 w-3/4 mb-4" />
-          <Skeleton className="h-6 w-1/2 mb-8" />
-          <Skeleton className="h-32 w-full" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <Skeleton className="h-[400px] w-full rounded-2xl mb-6" />
+              <Skeleton className="h-12 w-3/4 mb-4" />
+              <Skeleton className="h-6 w-1/2 mb-8" />
+              <Skeleton className="h-32 w-full" />
+            </div>
+            <div>
+              <Skeleton className="h-64 w-full rounded-xl" />
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -214,9 +225,13 @@ const ProgramDetailPage = () => {
   }
 
   const creator = program.creator as { id: string; first_name: string; last_name: string; avatar_url: string | null; is_verified_expert: boolean } | null;
+  
+  // Get localized title and description
+  const localizedTitle = getLocalizedField(program, 'title');
+  const localizedDescription = getLocalizedField(program, 'description') || program.description || t('program.no_description');
 
   return (
-    <div className="min-h-screen bg-[#0A1930]">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* Back Button */}
         <Button 
@@ -233,36 +248,36 @@ const ProgramDetailPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          {/* Hero Section */}
-          <div className="bg-[#112240] rounded-xl overflow-hidden mb-8">
-            {/* Thumbnail */}
-            <div className="relative aspect-video bg-gradient-to-br from-[hsl(var(--cyan))]/20 to-[hsl(var(--primary))]/20">
-              {program.thumbnail_url ? (
-                <img 
-                  src={program.thumbnail_url} 
-                  alt={program.title}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="text-6xl opacity-30">📚</div>
-                </div>
-              )}
-            </div>
+          {/* Two-Column Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Column: Image + Description */}
+            <div className="lg:col-span-2">
+              {/* Hero Image - Max 400px height */}
+              <div className="relative max-h-[400px] rounded-2xl overflow-hidden mb-6 bg-gradient-to-br from-primary/10 to-accent/10">
+                {program.thumbnail_url || program.image_url ? (
+                  <img 
+                    src={program.thumbnail_url || program.image_url} 
+                    alt={localizedTitle}
+                    className="w-full h-full max-h-[400px] object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-64 flex items-center justify-center">
+                    <div className="text-6xl opacity-30">📚</div>
+                  </div>
+                )}
+              </div>
 
-            {/* Content */}
-            <div className="p-6 md:p-8">
               {/* Badges Row */}
               <div className="flex flex-wrap gap-2 mb-4">
                 {getAccessBadge(program.access_level)}
                 {program.is_featured && (
-                  <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30">
-                    <Star className="w-3 h-3 mr-1 fill-amber-400" />
+                  <Badge className="bg-amber-500/20 text-amber-600 border-amber-500/30">
+                    <Star className="w-3 h-3 mr-1 fill-amber-500" />
                     {t('creator.status_featured')}
                   </Badge>
                 )}
                 {program.access_level === 'one_time_purchase' && program.price_huf && (
-                  <Badge className="bg-[hsl(var(--cyan))]/20 text-[hsl(var(--cyan))] border-[hsl(var(--cyan))]/30">
+                  <Badge className="bg-primary/20 text-primary border-primary/30">
                     {program.price_huf.toLocaleString()} Ft
                   </Badge>
                 )}
@@ -270,7 +285,7 @@ const ProgramDetailPage = () => {
 
               {/* Title */}
               <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                {program.title}
+                {localizedTitle}
               </h1>
 
               {/* Rating Display */}
@@ -289,20 +304,20 @@ const ProgramDetailPage = () => {
                   to={`/szakertok/${creator.id}`}
                   className="flex items-center gap-3 mb-6 group"
                 >
-                  <Avatar className="h-12 w-12 border-2 border-[hsl(var(--cyan))]/30">
+                  <Avatar className="h-12 w-12 border-2 border-primary/30">
                     <AvatarImage src={creator.avatar_url || undefined} />
-                    <AvatarFallback className="bg-[hsl(var(--cyan))]/20 text-[hsl(var(--cyan))]">
+                    <AvatarFallback className="bg-primary/20 text-primary">
                       {creator.first_name?.[0]}{creator.last_name?.[0]}
                     </AvatarFallback>
                   </Avatar>
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-muted-foreground">{t('program.by_creator')}</span>
-                      <span className="font-semibold text-foreground group-hover:text-[hsl(var(--cyan))] transition-colors">
+                      <span className="font-semibold text-foreground group-hover:text-primary transition-colors">
                         {creator.first_name} {creator.last_name}
                       </span>
                       {creator.is_verified_expert && (
-                        <CheckCircle2 className="w-4 h-4 text-amber-400 fill-amber-400" />
+                        <CheckCircle2 className="w-4 h-4 text-primary fill-primary/20" />
                       )}
                     </div>
                   </div>
@@ -310,15 +325,63 @@ const ProgramDetailPage = () => {
               )}
 
               {/* Description */}
-              <div className="prose prose-invert max-w-none mb-8">
-                <p className="text-muted-foreground whitespace-pre-wrap">
-                  {program.description}
-                </p>
-              </div>
+              <Card className="mb-8">
+                <CardContent className="p-6">
+                  <h2 className="text-xl font-semibold text-foreground mb-4">{t('program.description')}</h2>
+                  <div className="prose prose-slate max-w-none">
+                    <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                      {localizedDescription}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
 
-              {/* CTA Button */}
-              <div className="flex justify-start">
-                {renderCTAButton()}
+              {/* Reviews Section */}
+              {id && <ReviewSection contentId={id} />}
+            </div>
+
+            {/* Right Column: Sticky Voucher/Action Card */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-24">
+                <Card className="bg-white/80 backdrop-blur-md border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                  <CardContent className="p-6">
+                    {/* Sponsor Info if available */}
+                    {program.is_sponsored && program.sponsor_name && (
+                      <div className="mb-4 p-3 rounded-lg bg-primary/5 border border-primary/20">
+                      <p className="text-sm text-muted-foreground">
+                          {t('voucher.thanks_sponsor').replace('{{name}}', program.sponsor_name || '')}
+                        </p>
+                        {program.price_huf && (
+                          <p className="text-sm font-medium text-primary mt-1">
+                            {t('common.value')}: {program.price_huf.toLocaleString()} Ft — {t('common.sponsored')}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Price Display */}
+                    {program.access_level === 'one_time_purchase' && program.price_huf && !program.is_sponsored && (
+                      <div className="mb-4">
+                        <p className="text-3xl font-bold text-foreground">
+                          {program.price_huf.toLocaleString()} Ft
+                        </p>
+                      </div>
+                    )}
+
+                    {/* CTA Button */}
+                    <div className="mb-6">
+                      {renderCTAButton()}
+                    </div>
+
+                    {/* Tools Needed */}
+                    {program.tools_needed && (
+                      <div className="pt-4 border-t border-border">
+                        <h4 className="text-sm font-medium text-foreground mb-2">{t('program.tools_needed')}</h4>
+                        <p className="text-sm text-muted-foreground">{program.tools_needed}</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>
@@ -332,13 +395,13 @@ const ProgramDetailPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {relatedPrograms.map((relProgram) => (
                   <Link key={relProgram.id} to={`/piacer/${relProgram.id}`}>
-                    <Card className="bg-[#112240] border-[hsl(var(--cyan))]/10 hover:border-[hsl(var(--cyan))]/30 transition-all duration-300 hover:shadow-lg hover:shadow-[hsl(var(--cyan))]/5">
+                    <Card className="hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                       <CardContent className="p-0">
-                        <div className="aspect-video bg-gradient-to-br from-[hsl(var(--cyan))]/10 to-[hsl(var(--primary))]/10 rounded-t-lg overflow-hidden">
+                        <div className="aspect-video bg-gradient-to-br from-primary/10 to-accent/10 rounded-t-lg overflow-hidden">
                           {relProgram.thumbnail_url ? (
                             <img 
                               src={relProgram.thumbnail_url} 
-                              alt={relProgram.title}
+                              alt={getLocalizedField(relProgram, 'title')}
                               className="w-full h-full object-cover"
                             />
                           ) : (
@@ -349,7 +412,7 @@ const ProgramDetailPage = () => {
                         </div>
                         <div className="p-4">
                           <h3 className="font-semibold text-foreground mb-2 line-clamp-2">
-                            {relProgram.title}
+                            {getLocalizedField(relProgram, 'title')}
                           </h3>
                           <div className="flex items-center gap-2">
                             {getAccessBadge(relProgram.access_level)}
@@ -367,9 +430,6 @@ const ProgramDetailPage = () => {
               </div>
             </div>
           )}
-
-          {/* Reviews Section */}
-          {id && <ReviewSection contentId={id} />}
         </motion.div>
 
         {/* Purchase Modal */}
@@ -379,7 +439,7 @@ const ProgramDetailPage = () => {
             onClose={() => setIsPurchaseModalOpen(false)}
             content={{
               id: program.id,
-              title: program.title,
+              title: localizedTitle,
               price_huf: program.price_huf || 0,
               creator_id: program.creator_id || '',
             }}

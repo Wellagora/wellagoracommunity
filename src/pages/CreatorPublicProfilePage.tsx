@@ -12,6 +12,7 @@ import {
   ArrowLeft,
   CheckCircle2,
   Users,
+  User,
   BookOpen,
   Calendar,
   Crown,
@@ -165,10 +166,25 @@ const CreatorPublicProfilePage = () => {
 
   if (!creator) {
     return (
-      <GracefulPlaceholder 
-        title={t("common.coming_soon")}
-        description={t("common.coming_soon_desc")}
-      />
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="bg-white/80 backdrop-blur-md max-w-md">
+          <CardContent className="p-8 text-center">
+            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
+              <User className="w-10 h-10 text-primary" />
+            </div>
+            <h1 className="text-2xl font-bold text-foreground mb-2">
+              {t("expert_profile.not_found")}
+            </h1>
+            <p className="text-muted-foreground mb-6">
+              {t("expert_profile.not_found_desc")}
+            </p>
+            <Button onClick={() => navigate(-1)}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              {t("program.back")}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
