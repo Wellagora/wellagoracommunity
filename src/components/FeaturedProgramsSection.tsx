@@ -62,10 +62,17 @@ const FeaturedProgramsSection = () => {
   const getAccessBadge = (program: { access_level: string | null; is_sponsored?: boolean; sponsor_name?: string | null; price_huf?: number | null }) => {
     if (program.is_sponsored && program.sponsor_name) {
       return (
-        <Badge className="bg-primary/20 text-primary border-primary/30 text-xs">
-          <Gift className="w-3 h-3 mr-1" />
-          {program.sponsor_name}
-        </Badge>
+        <div className="flex flex-col gap-0.5">
+          <Badge className="bg-primary/20 text-primary border-primary/30 text-xs">
+            <Gift className="w-3 h-3 mr-1" />
+            {t('marketplace.free_via_sponsor')}
+          </Badge>
+          {program.price_huf && program.price_huf > 0 && (
+            <span className="text-[10px] text-muted-foreground">
+              {t('marketplace.value_label')}: {program.price_huf.toLocaleString()} Ft
+            </span>
+          )}
+        </div>
       );
     }
     switch (program.access_level) {
@@ -78,7 +85,7 @@ const FeaturedProgramsSection = () => {
       case 'one_time_purchase':
         return <Badge className="bg-purple-500/20 text-purple-600 border-purple-500/30 text-xs"><ShoppingCart className="w-3 h-3 mr-1" />{t('program.purchase')}</Badge>;
       case 'sponsored':
-        return <Badge className="bg-primary/20 text-primary border-primary/30 text-xs"><Gift className="w-3 h-3 mr-1" />{t('common.sponsor')}</Badge>;
+        return <Badge className="bg-primary/20 text-primary border-primary/30 text-xs"><Gift className="w-3 h-3 mr-1" />{t('marketplace.free_via_sponsor')}</Badge>;
       default:
         return null;
     }
