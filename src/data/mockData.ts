@@ -437,7 +437,7 @@ export const MOCK_VOUCHERS: MockVoucher[] = [
     content_title: 'Kemenceépítés alapjai',
     status: 'active',
     created_at: '2026-01-05T10:00:00Z',
-    pickup_location: 'A Mesternél'
+    pickup_location: 'A Szakértőnél'
   },
   {
     id: 'mock-voucher-2',
@@ -446,7 +446,7 @@ export const MOCK_VOUCHERS: MockVoucher[] = [
     content_title: 'Gyógynövénygyűjtés túra',
     status: 'active',
     created_at: '2026-01-03T14:30:00Z',
-    pickup_location: 'A Mesternél'
+    pickup_location: 'A Szakértőnél'
   }
 ];
 
@@ -485,4 +485,37 @@ export const getLocalizedSponsorName = (program: MockProgram, language: string):
   if (language === 'en') return program.sponsor_name_en || program.sponsor_name;
   if (language === 'de') return program.sponsor_name_de || program.sponsor_name;
   return program.sponsor_name;
+};
+
+// Currency conversion rates (approximate)
+const HUF_TO_EUR_RATE = 400;
+
+// Helper to format price based on language/region
+export const formatPriceByLanguage = (priceHuf: number, language: string): { price: string; originalPrice?: string } => {
+  if (language === 'hu') {
+    return {
+      price: priceHuf === 0 ? '0 Ft' : `${priceHuf.toLocaleString('hu-HU')} Ft`,
+      originalPrice: priceHuf > 0 ? `${priceHuf.toLocaleString('hu-HU')} Ft` : undefined
+    };
+  }
+  // For EN/DE, convert to EUR
+  const priceEur = Math.round(priceHuf / HUF_TO_EUR_RATE);
+  return {
+    price: priceHuf === 0 ? '0 €' : `${priceEur} €`,
+    originalPrice: priceHuf > 0 ? `${priceEur} €` : undefined
+  };
+};
+
+// Helper to get localized program title
+export const getLocalizedProgramTitle = (program: MockProgram, language: string): string => {
+  if (language === 'en') return program.title_en || program.title;
+  if (language === 'de') return program.title_de || program.title;
+  return program.title;
+};
+
+// Helper to get localized program description
+export const getLocalizedProgramDescription = (program: MockProgram, language: string): string => {
+  if (language === 'en') return program.description_en || program.description;
+  if (language === 'de') return program.description_de || program.description;
+  return program.description;
 };

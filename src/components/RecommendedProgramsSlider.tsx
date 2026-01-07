@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronLeft, ChevronRight, Sparkles, Gift, ShoppingCart, BookOpen, Leaf } from "lucide-react";
 import { motion } from "framer-motion";
-import { MOCK_PROGRAMS, MOCK_EXPERTS, getLocalizedExpertName, getLocalizedSponsorName } from "@/data/mockData";
+import { MOCK_PROGRAMS, MOCK_EXPERTS, getLocalizedExpertName, getLocalizedSponsorName, formatPriceByLanguage } from "@/data/mockData";
 
 const RecommendedProgramsSlider = () => {
   const { t, language } = useLanguage();
@@ -49,18 +49,21 @@ const RecommendedProgramsSlider = () => {
   };
 
   const getAccessBadge = (program: typeof programs[0]) => {
+    const priceInfo = formatPriceByLanguage(program.price_huf || 0, language);
+    const sponsorLabel = language === 'de' ? 'Gesponsert von' : language === 'en' ? 'Sponsored by' : 'Támogató';
+    
     // SINGLE elegant badge for sponsored content - no redundant text
     if (program.is_sponsored && program.sponsor_name) {
       return (
         <div className="flex flex-col gap-1">
           <Badge className="bg-primary/15 text-primary border border-primary/30 text-xs font-medium">
-            {t('marketplace.sponsored_by_label')}: {program.sponsor_name}
+            {sponsorLabel}: {program.sponsor_name}
           </Badge>
           <div className="flex items-center gap-2">
-            <span className="text-sm font-bold text-primary">0 Ft</span>
+            <span className="text-sm font-bold text-primary">{language === 'hu' ? '0 Ft' : '0 €'}</span>
             {program.price_huf && program.price_huf > 0 && (
               <span className="text-xs text-muted-foreground line-through">
-                {program.price_huf.toLocaleString()} Ft
+                {priceInfo.originalPrice}
               </span>
             )}
           </div>
@@ -73,7 +76,7 @@ const RecommendedProgramsSlider = () => {
       return (
         <Badge className="bg-slate-600 text-white border-0">
           <ShoppingCart className="w-3 h-3 mr-1" />
-          {program.price_huf.toLocaleString()} Ft
+          {priceInfo.price}
         </Badge>
       );
     }

@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star, Crown, ShoppingCart, Gift, Leaf } from "lucide-react";
 import { motion } from "framer-motion";
-import { MOCK_PROGRAMS, getMockExpertById, getLocalizedExpertName, getLocalizedSponsorName } from "@/data/mockData";
+import { MOCK_PROGRAMS, getMockExpertById, getLocalizedExpertName, getLocalizedSponsorName, formatPriceByLanguage } from "@/data/mockData";
 
 const ImagePlaceholder = () => (
   <div className="w-full h-full flex items-center justify-center bg-muted">
@@ -55,18 +55,21 @@ const FeaturedProgramsSection = () => {
     sponsor_name?: string | null;
     price_huf?: number | null;
   }) => {
+    const priceInfo = formatPriceByLanguage(program.price_huf || 0, language);
+    const sponsorLabel = language === 'de' ? 'Gesponsert von' : language === 'en' ? 'Sponsored by' : 'Támogató';
+    
     // SINGLE elegant badge for sponsored content
     if (program.is_sponsored && program.sponsor_name) {
       return (
         <div className="flex flex-col gap-1">
           <Badge className="bg-primary/15 text-primary border border-primary/30 text-xs font-medium">
-            {t("marketplace.sponsored_by_label")}: {program.sponsor_name}
+            {sponsorLabel}: {program.sponsor_name}
           </Badge>
           <div className="flex items-center gap-2">
-            <span className="text-sm font-bold text-primary">0 Ft</span>
+            <span className="text-sm font-bold text-primary">{language === 'hu' ? '0 Ft' : '0 €'}</span>
             {program.price_huf && program.price_huf > 0 && (
               <span className="text-xs text-muted-foreground line-through">
-                {program.price_huf.toLocaleString()} Ft
+                {priceInfo.originalPrice}
               </span>
             )}
           </div>
