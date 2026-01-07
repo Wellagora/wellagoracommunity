@@ -60,10 +60,10 @@ const SponsorDashboardPage = () => {
 
   // Mock stats for clean UI
   const stats = [
-    { label: 'Aktív licencek', value: '248', icon: CreditCard, color: 'text-[#007AFF]' },
-    { label: 'Közösségi hatás', value: '1,240', icon: Users, color: 'text-emerald-500' },
-    { label: 'Beváltási arány', value: '67%', icon: TrendingUp, color: 'text-amber-500' },
-    { label: 'Márkaismertség', value: '+23%', icon: BarChart3, color: 'text-purple-500' },
+    { labelKey: 'sponsor_dashboard.active_licenses', value: '248', icon: CreditCard, color: 'text-[#007AFF]' },
+    { labelKey: 'sponsor_dashboard.community_impact', value: '1,240', icon: Users, color: 'text-emerald-500' },
+    { labelKey: 'sponsor_dashboard.redemption_rate', value: '67%', icon: TrendingUp, color: 'text-amber-500' },
+    { labelKey: 'sponsor_dashboard.brand_awareness', value: '+23%', icon: BarChart3, color: 'text-purple-500' },
   ];
 
   return (
@@ -81,10 +81,10 @@ const SponsorDashboardPage = () => {
               {t('common.back_to_dashboard')}
             </Button>
             <h1 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
-              Támogatói Központ
+              {t('sponsor_dashboard.title')}
             </h1>
             <p className="text-slate-600 mt-2">
-              Kövesd nyomon szponzorációid hatását és a közösségi elérést
+              {t('sponsor_dashboard.subtitle')}
             </p>
           </div>
           <div className="flex gap-3">
@@ -94,14 +94,14 @@ const SponsorDashboardPage = () => {
               className="border-slate-200 text-slate-700 hover:bg-slate-50"
             >
               <Search className="w-4 h-4 mr-2" />
-              Programok böngészése
+              {t('sponsor_dashboard.browse_programs')}
             </Button>
             <Button
               onClick={() => setShowPackages(true)}
               className="bg-[#007AFF] hover:bg-[#0056b3] text-white shadow-sm"
             >
               <ShoppingCart className="w-4 h-4 mr-2" />
-              Kredit vásárlás
+              {t('sponsor_dashboard.buy_credits')}
             </Button>
           </div>
         </div>
@@ -113,7 +113,7 @@ const SponsorDashboardPage = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-slate-500 mb-1">{stat.label}</p>
+                    <p className="text-sm text-slate-500 mb-1">{t(stat.labelKey)}</p>
                     <p className="text-2xl font-bold text-slate-900">{stat.value}</p>
                   </div>
                   <div className={`p-3 rounded-xl bg-slate-50 ${stat.color}`}>
@@ -146,13 +146,13 @@ const SponsorDashboardPage = () => {
         <DialogContent className="w-[95vw] max-w-6xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 bg-white">
           <DialogHeader>
             <DialogTitle className="text-xl sm:text-2xl font-bold text-slate-900">
-              Válassz csomagot
+              {t('sponsor_dashboard.select_package')}
             </DialogTitle>
           </DialogHeader>
           <div className="mt-4">
             <SubscriptionPlanSelector 
               onSelectPlan={(planId) => {
-                toast.success('Csomag kiválasztva! Stripe fizetés hamarosan elérhető.');
+                toast.success(t('sponsor_dashboard.package_selected'));
                 setShowPackages(false);
               }}
               currentPlanKey={currentSubscription?.plan?.plan_key}
