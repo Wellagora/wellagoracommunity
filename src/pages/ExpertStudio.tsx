@@ -213,17 +213,17 @@ const ExpertStudio = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-foreground">
-                Szakértői Stúdió
+                {t('expert_studio.title')}
               </h1>
               <p className="text-muted-foreground">
-                Kezeld a tartalmaidat és kuponjaidat
+                {t('expert_studio.subtitle')}
               </p>
             </div>
           </div>
           <Link to="/muhelytitok/uj">
             <Button className="bg-cyan-500 hover:bg-cyan-600 text-white">
               <Plus className="w-4 h-4 mr-2" />
-              Új Műhelytitok
+              {t('expert_studio.new_secret')}
             </Button>
           </Link>
         </div>
@@ -231,31 +231,31 @@ const ExpertStudio = () => {
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <KPICard
-            title="Publikált tartalmak"
+            title={t('expert_studio.published_contents')}
             value={stats.publishedContents}
             icon={BookOpen}
-            subtitle="Műhelytitkok"
+            subtitle={t('expert_studio.workshop_secrets')}
             iconColor="text-cyan-500"
           />
           <KPICard
-            title="Összes elérés"
+            title={t('expert_studio.total_reach')}
             value={stats.totalReach}
             icon={Users}
-            subtitle="Felhasználók"
+            subtitle={t('expert_studio.users')}
             iconColor="text-primary"
           />
           <KPICard
-            title="Beváltott kuponok"
+            title={t('expert_studio.redeemed_vouchers')}
             value={stats.redeemedVouchers}
             icon={Ticket}
-            subtitle="Összesen"
+            subtitle={t('expert_studio.total')}
             iconColor="text-amber-500"
           />
           <KPICard
-            title="Havi bevétel"
+            title={t('expert_studio.monthly_revenue')}
             value={`${stats.monthlyRevenue.toLocaleString()} Ft`}
             icon={Wallet}
-            subtitle="Tiszteletdíj"
+            subtitle={t('expert_studio.honorarium')}
             iconColor="text-green-500"
           />
         </div>
@@ -265,19 +265,19 @@ const ExpertStudio = () => {
           <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
             <TabsTrigger value="contents" className="flex items-center gap-2">
               <BookOpen className="w-4 h-4" />
-              Műhelytitkaim
+              {t('expert_studio.my_secrets')}
             </TabsTrigger>
             <TabsTrigger value="validator" className="flex items-center gap-2">
               <QrCode className="w-4 h-4" />
-              Kupon Validátor
+              {t('expert_studio.voucher_validator')}
             </TabsTrigger>
             <TabsTrigger value="revenue" className="flex items-center gap-2">
               <Wallet className="w-4 h-4" />
-              Tiszteletdíj
+              {t('expert_studio.honorarium')}
             </TabsTrigger>
             <TabsTrigger value="stats" className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4" />
-              Statisztikák
+              {t('expert_studio.statistics')}
             </TabsTrigger>
           </TabsList>
 
@@ -285,9 +285,9 @@ const ExpertStudio = () => {
           <TabsContent value="contents">
             <Card>
               <CardHeader>
-                <CardTitle>Műhelytitkaim</CardTitle>
+                <CardTitle>{t('expert_studio.my_secrets')}</CardTitle>
                 <CardDescription>
-                  A te által készített tartalmak listája
+                  {t('expert_studio.my_secrets_desc')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -301,10 +301,10 @@ const ExpertStudio = () => {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Cím</TableHead>
-                        <TableHead>Státusz</TableHead>
-                        <TableHead>Licencek</TableHead>
-                        <TableHead>Létrehozva</TableHead>
+                        <TableHead>{t('common.title')}</TableHead>
+                        <TableHead>{t('common.status')}</TableHead>
+                        <TableHead>{t('expert_studio.licenses')}</TableHead>
+                        <TableHead>{t('common.created_at')}</TableHead>
                         <TableHead></TableHead>
                       </TableRow>
                     </TableHeader>
@@ -314,7 +314,7 @@ const ExpertStudio = () => {
                           <TableCell className="font-medium">{content.title}</TableCell>
                           <TableCell>
                             <Badge variant={content.is_published ? "default" : "secondary"}>
-                              {content.is_published ? "Publikált" : "Vázlat"}
+                              {content.is_published ? t('common.published') : t('common.draft')}
                             </Badge>
                           </TableCell>
                           <TableCell>
@@ -326,7 +326,7 @@ const ExpertStudio = () => {
                           <TableCell>
                             <Link to={`/muhelytitok/${content.id}/szerkesztes`}>
                               <Button variant="ghost" size="sm">
-                                Szerkesztés
+                                {t('common.edit')}
                               </Button>
                             </Link>
                           </TableCell>
@@ -338,12 +338,12 @@ const ExpertStudio = () => {
                   <div className="text-center py-8">
                     <BookOpen className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
                     <p className="text-muted-foreground mb-4">
-                      Még nincs tartalmad
+                      {t('expert_studio.no_content')}
                     </p>
                     <Link to="/muhelytitok/uj">
                       <Button>
                         <Plus className="w-4 h-4 mr-2" />
-                        Első Műhelytitok létrehozása
+                        {t('expert_studio.create_first')}
                       </Button>
                     </Link>
                   </div>
@@ -360,10 +360,10 @@ const ExpertStudio = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <QrCode className="w-5 h-5 text-cyan-500" />
-                    Kupon Validátor
+                    {t('expert_studio.voucher_validator')}
                   </CardTitle>
                   <CardDescription>
-                    Olvasd be a QR kódot vagy add meg a kupon kódot manuálisan
+                    {t('expert_studio.validator_desc')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -378,7 +378,7 @@ const ExpertStudio = () => {
                           onClick={stopQRScanner}
                         >
                           <X className="w-4 h-4 mr-2" />
-                          Leállítás
+                          {t('common.stop')}
                         </Button>
                       </div>
                     ) : (
@@ -387,7 +387,7 @@ const ExpertStudio = () => {
                         onClick={startQRScanner}
                       >
                         <Camera className="w-4 h-4 mr-2" />
-                        QR Kód Beolvasása
+                        {t('expert_studio.scan_qr')}
                       </Button>
                     )}
                   </div>
@@ -398,7 +398,7 @@ const ExpertStudio = () => {
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
                       <span className="bg-card px-2 text-muted-foreground">
-                        vagy
+                        {t('common.or')}
                       </span>
                     </div>
                   </div>
@@ -424,7 +424,7 @@ const ExpertStudio = () => {
                       </Button>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Formátum: WA-ÉÉÉÉ-XXXX (pl. WA-2026-AB12)
+                      {t('expert_studio.code_format')}
                     </p>
                   </div>
                 </CardContent>
@@ -435,7 +435,7 @@ const ExpertStudio = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Clock className="w-5 h-5 text-amber-500" />
-                    Mai beváltások
+                    {t('expert_studio.today_redemptions')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -465,7 +465,7 @@ const ExpertStudio = () => {
                     <div className="text-center py-8">
                       <Ticket className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
                       <p className="text-muted-foreground">
-                        Ma még nem volt beváltás
+                        {t('expert_studio.no_redemptions_today')}
                       </p>
                     </div>
                   )}

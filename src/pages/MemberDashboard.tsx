@@ -147,34 +147,34 @@ const MemberDashboard = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">
-            Szia, {profile?.first_name || 'Tag'}! 👋
+            {t('member_dashboard.greeting').replace('{name}', profile?.first_name || t('common.member'))} 👋
           </h1>
           <p className="text-muted-foreground">
-            Üdvözlünk a WellAgora közösségben
+            {t('member_dashboard.welcome')}
           </p>
         </div>
 
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <KPICard
-            title="Aktív kuponjaim"
+            title={t('member_dashboard.active_vouchers')}
             value={stats.activeVouchers}
             icon={Ticket}
-            subtitle="Beváltható"
+            subtitle={t('member_dashboard.redeemable')}
             iconColor="text-primary"
           />
           <KPICard
-            title="Megnyitott tartalmak"
+            title={t('member_dashboard.opened_contents')}
             value={stats.openedContents}
             icon={BookOpen}
-            subtitle="Műhelytitkok"
+            subtitle={t('member_dashboard.workshop_secrets')}
             iconColor="text-cyan-500"
           />
           <KPICard
-            title="Megtakarítás"
+            title={t('member_dashboard.savings')}
             value={`${stats.totalSavings.toLocaleString()} Ft`}
             icon={PiggyBank}
-            subtitle="Támogatói keretből"
+            subtitle={t('member_dashboard.from_sponsor')}
             iconColor="text-green-500"
           />
         </div>
@@ -184,11 +184,11 @@ const MemberDashboard = () => {
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <Ticket className="w-5 h-5 text-primary" />
-              Aktív kuponjaim
+              {t('member_dashboard.active_vouchers')}
             </CardTitle>
             <Link to="/piac">
               <Button variant="ghost" size="sm">
-                Új kupon <ChevronRight className="w-4 h-4 ml-1" />
+                {t('member_dashboard.new_voucher')} <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
             </Link>
           </CardHeader>
@@ -213,7 +213,7 @@ const MemberDashboard = () => {
                       <div>
                         <p className="font-medium text-foreground">{voucher.content_title}</p>
                         <p className="text-sm text-muted-foreground">
-                          Támogató: {voucher.sponsor_name}
+                          {t('member_dashboard.sponsor_label')}: {voucher.sponsor_name}
                         </p>
                         <Badge variant="outline" className="mt-1 text-xs">
                           {voucher.code}
@@ -221,7 +221,7 @@ const MemberDashboard = () => {
                       </div>
                     </div>
                     <Button variant="outline" size="sm">
-                      QR megjelenítése
+                      {t('member_dashboard.show_qr')}
                     </Button>
                   </div>
                 ))}
@@ -230,12 +230,12 @@ const MemberDashboard = () => {
               <div className="text-center py-8">
                 <Ticket className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
                 <p className="text-muted-foreground mb-4">
-                  Még nincs aktív kuponod
+                  {t('member_dashboard.no_vouchers')}
                 </p>
                 <Link to="/piac">
                   <Button>
                     <Sparkles className="w-4 h-4 mr-2" />
-                    Fedezd fel a Piacteret
+                    {t('member_dashboard.explore_marketplace')}
                   </Button>
                 </Link>
               </div>
@@ -278,13 +278,13 @@ const MemberDashboard = () => {
                         />
                         <div className="p-4">
                           <Badge variant="secondary" className="mb-2 text-xs">
-                            {content.category || 'Műhelytitok'}
+                            {content.category || t('member_dashboard.workshop_secrets')}
                           </Badge>
                           <p className="font-medium text-foreground truncate">
                             {content.title}
                           </p>
                           <p className="text-sm text-muted-foreground truncate">
-                            Támogató: {content.sponsor_name}
+                            {t('member_dashboard.sponsor_label')}: {content.sponsor_name}
                           </p>
                         </div>
                       </div>
@@ -297,7 +297,7 @@ const MemberDashboard = () => {
               <div className="text-center py-8">
                 <BookOpen className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
                 <p className="text-muted-foreground">
-                  Hamarosan új tartalmak érkeznek
+                  {t('member_dashboard.coming_soon')}
                 </p>
               </div>
             )}
@@ -309,18 +309,18 @@ const MemberDashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Users className="w-5 h-5 text-primary" />
-              Közösségi hírek
+              {t('member_dashboard.community_news')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-center py-8">
               <Users className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
               <p className="text-muted-foreground mb-4">
-                Csatlakozz a közösséghez és oszd meg a tapasztalataidat
+                {t('member_dashboard.join_community')}
               </p>
               <Link to="/kozosseg">
                 <Button variant="outline">
-                  Közösség felfedezése
+                  {t('member_dashboard.explore_community')}
                 </Button>
               </Link>
             </div>
