@@ -5,6 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useLocalizedContent } from "@/hooks/useLocalizedContent";
+import { MOCK_PROGRAMS, getMockExpertById } from "@/data/mockData";
+import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -34,10 +36,31 @@ const ProgramDetailPage = () => {
   const { t } = useLanguage();
   const { getLocalizedField } = useLocalizedContent();
 
+  // Check if this is a mock program
+  const isMockProgram = id?.startsWith('mock-program-');
+
   // Fetch program with creator - use maybeSingle to avoid errors
   const { data: program, isLoading: programLoading } = useQuery({
     queryKey: ['program', id],
     queryFn: async () => {
+      // If mock program, return mock data
+      if (isMockProgram) {
+        const mockProgram = MOCK_PROGRAMS.find(p => p.id === id);
+        if (mockProgram) {
+          const mockCreator = getMockExpertById(mockProgram.creator_id);
+          return {
+            ...mockProgram,
+            creator: mockCreator ? {
+              id: mockCreator.id,
+              first_name: mockCreator.first_name,
+              last_name: mockCreator.last_name,
+              avatar_url: mockCreator.avatar_url,
+              is_verified_expert: mockCreator.is_verified_expert
+            } : null
+          };
+        }
+        return null;
+      }
       const { data, error } = await supabase
         .from('expert_contents')
         .select(`
@@ -130,7 +153,29 @@ const ProgramDetailPage = () => {
     }
   };
 
+  // Handler for mock voucher claim
+  const handleMockVoucherClaim = () => {
+    toast({
+      title: "Sikeres teszt igénylés! 🎉",
+      description: "Ez egy teszt kupon - valós adatokkal működik majd.",
+    });
+  };
+
   const renderCTAButton = () => {
+    // For mock programs, show a special test button
+    if (isMockProgram) {
+      return (
+        <Button 
+          size="lg"
+          className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg w-full"
+          onClick={handleMockVoucherClaim}
+        >
+          <Ticket className="w-5 h-5 mr-2" />
+          {t('voucher.generate_btn')}
+        </Button>
+      );
+    }
+
     if (accessLoading) {
       return <Skeleton className="h-12 w-48" />;
     }

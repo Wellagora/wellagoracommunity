@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import { MOCK_VOUCHERS } from "@/data/mockData";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -46,6 +47,14 @@ interface ProgramProgress {
   image_url?: string;
 }
 
+interface Voucher {
+  id: string;
+  code: string;
+  content_title: string;
+  status: 'active' | 'redeemed';
+  pickup_location: string;
+}
+
 const DashboardPage = () => {
   const navigate = useNavigate();
   const { user, profile, loading } = useAuth();
@@ -57,6 +66,7 @@ const DashboardPage = () => {
   });
   const [programs, setPrograms] = useState<ProgramProgress[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [vouchers, setVouchers] = useState<Voucher[]>([]);
 
   // Get locale for date-fns
   const dateLocale = language === "hu" ? hu : language === "de" ? de : enUS;
@@ -123,6 +133,33 @@ const DashboardPage = () => {
 
         // No mock activities - will be empty until real activity tracking
         setActivities([]);
+
+        // Fetch user vouchers, fallback to mock vouchers if empty
+        const { data: userVouchers } = await supabase
+          .from("content_access")
+          .select("id, content_id, created_at, expert_contents(title)")
+          .eq("user_id", user.id)
+          .eq("access_type", "voucher")
+          .limit(5);
+
+        if (userVouchers && userVouchers.length > 0) {
+          setVouchers(userVouchers.map((v: any) => ({
+            id: v.id,
+            code: `WA-${new Date(v.created_at).getFullYear()}-${v.id.slice(0, 4).toUpperCase()}`,
+            content_title: v.expert_contents?.title || 'Műhelytitok',
+            status: 'active' as const,
+            pickup_location: 'A Mesternél'
+          })));
+        } else {
+          // Use mock vouchers for demo
+          setVouchers(MOCK_VOUCHERS.map(v => ({
+            id: v.id,
+            code: v.code,
+            content_title: v.content_title,
+            status: v.status,
+            pickup_location: v.pickup_location
+          })));
+        }
       } catch (error) {
         logger.error('Error fetching dashboard data', error, 'Dashboard');
       } finally {
