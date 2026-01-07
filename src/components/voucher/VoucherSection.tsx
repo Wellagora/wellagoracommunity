@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -47,6 +48,7 @@ export const VoucherSection = ({
 }: VoucherSectionProps) => {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [voucher, setVoucher] = useState<Voucher | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -102,7 +104,10 @@ export const VoucherSection = ({
       if (error) throw error;
 
       setVoucher(data);
-      toast.success(t('voucher.generated'));
+      toast.success(t('voucher.claim_success'));
+      
+      // Navigate to dashboard after successful claim
+      navigate('/iranyitopult');
     } catch (error) {
       console.error('Error generating voucher:', error);
       toast.error(t('voucher.generate_error'));

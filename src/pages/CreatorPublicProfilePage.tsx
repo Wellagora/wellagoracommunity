@@ -23,6 +23,7 @@ import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { hu, enUS, de } from "date-fns/locale";
 import StarRating from "@/components/reviews/StarRating";
+import GracefulPlaceholder from "@/components/GracefulPlaceholder";
 
 const CreatorPublicProfilePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -32,7 +33,7 @@ const CreatorPublicProfilePage = () => {
 
   const dateLocales = { hu, en: enUS, de };
 
-  // Fetch creator profile with all localized fields
+  // Fetch creator profile with all localized fields - use maybeSingle to avoid errors
   const { data: creator, isLoading: creatorLoading } = useQuery({
     queryKey: ["creatorProfile", id],
     queryFn: async () => {
@@ -42,7 +43,7 @@ const CreatorPublicProfilePage = () => {
           "id, first_name, last_name, avatar_url, bio, bio_en, bio_de, expert_title, expert_title_en, expert_title_de, expert_bio_long, expertise_areas, is_verified_expert, created_at, location_city, social_links, references_links"
         )
         .eq("id", id)
-        .single();
+        .maybeSingle();
       if (error) throw error;
       return data;
     },
@@ -164,17 +165,10 @@ const CreatorPublicProfilePage = () => {
 
   if (!creator) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">
-            {t("creator.not_found")}
-          </h1>
-          <Button variant="outline" onClick={() => navigate(-1)}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            {t("program.back")}
-          </Button>
-        </div>
-      </div>
+      <GracefulPlaceholder 
+        title={t("common.coming_soon")}
+        description={t("common.coming_soon_desc")}
+      />
     );
   }
 

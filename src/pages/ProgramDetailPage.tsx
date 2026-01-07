@@ -23,6 +23,7 @@ import { motion } from "framer-motion";
 import PurchaseModal from "@/components/PurchaseModal";
 import ReviewSection from "@/components/reviews/ReviewSection";
 import StarRating from "@/components/reviews/StarRating";
+import GracefulPlaceholder from "@/components/GracefulPlaceholder";
 
 const ProgramDetailPage = () => {
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
@@ -31,7 +32,7 @@ const ProgramDetailPage = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
 
-  // Fetch program with creator
+  // Fetch program with creator - use maybeSingle to avoid errors
   const { data: program, isLoading: programLoading } = useQuery({
     queryKey: ['program', id],
     queryFn: async () => {
@@ -45,7 +46,7 @@ const ProgramDetailPage = () => {
         `)
         .eq('id', id)
         .eq('is_published', true)
-        .single();
+        .maybeSingle();
       if (error) throw error;
       return data;
     },
@@ -205,15 +206,10 @@ const ProgramDetailPage = () => {
 
   if (!program) {
     return (
-      <div className="min-h-screen bg-[#0A1930] flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">{t('program.not_found')}</h1>
-          <Button variant="outline" onClick={() => navigate(-1)}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            {t('program.back')}
-          </Button>
-        </div>
-      </div>
+      <GracefulPlaceholder 
+        title={t("common.coming_soon")}
+        description={t("common.coming_soon_desc")}
+      />
     );
   }
 
@@ -290,7 +286,7 @@ const ProgramDetailPage = () => {
               {/* Creator Section */}
               {creator && (
                 <Link 
-                  to={`/creators/${creator.id}`}
+                  to={`/szakertok/${creator.id}`}
                   className="flex items-center gap-3 mb-6 group"
                 >
                   <Avatar className="h-12 w-12 border-2 border-[hsl(var(--cyan))]/30">
