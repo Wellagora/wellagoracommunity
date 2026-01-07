@@ -1,12 +1,10 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Sparkles, BookOpen, Gift, ShoppingCart } from "lucide-react";
+import { ChevronLeft, ChevronRight, Sparkles, Gift, ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
 import { MOCK_PROGRAMS, MOCK_EXPERTS } from "@/data/mockData";
 
@@ -28,61 +26,33 @@ interface Program {
   is_sponsored?: boolean;
 }
 
-const WorkshopSecretsSlider = () => {
+const RecommendedProgramsSlider = () => {
   const { t, language } = useLanguage();
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const { data: dbPrograms, isLoading } = useQuery({
-    queryKey: ["workshopSecretsSlider"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("expert_contents")
-        .select(`
-          id, title, description, image_url, thumbnail_url, access_type, price_huf,
-          sponsor_name, sponsor_logo_url,
-          creator:profiles!expert_contents_creator_id_fkey (
-            first_name, last_name, avatar_url
-          ),
-          sponsorship:content_sponsorships(
-            id, total_licenses, used_licenses, is_active,
-            sponsor:sponsors(id, name, logo_url)
-          )
-        `)
-        .eq("is_published", true)
-        .order("created_at", { ascending: false })
-        .limit(10);
-      if (error) throw error;
-      return data;
-    },
+  // FORCE MOCK DATA ONLY - no database fallback for clean preview mode
+  const programs: Program[] = MOCK_PROGRAMS.map(p => {
+    const creator = MOCK_EXPERTS.find(e => e.id === p.creator_id);
+    return {
+      id: p.id,
+      title: language === 'en' ? p.title_en : language === 'de' ? p.title_de : p.title,
+      description: language === 'en' ? p.description_en : language === 'de' ? p.description_de : p.description,
+      image_url: p.image_url,
+      thumbnail_url: p.thumbnail_url,
+      access_type: p.access_type,
+      price_huf: p.price_huf,
+      sponsor_name: p.sponsor_name,
+      sponsor_logo_url: p.sponsor_logo_url,
+      is_sponsored: p.is_sponsored,
+      creator: creator ? {
+        first_name: creator.first_name,
+        last_name: creator.last_name,
+        avatar_url: creator.avatar_url
+      } : null
+    };
   });
 
-  // Use mock data if database is empty
-  const programs: Program[] = (dbPrograms && dbPrograms.length > 0)
-    ? dbPrograms.map((p: any) => ({
-        ...p,
-        is_sponsored: p.sponsorship?.[0]?.is_active && 
-          (p.sponsorship[0].used_licenses || 0) < (p.sponsorship[0].total_licenses || 0)
-      }))
-    : MOCK_PROGRAMS.map(p => {
-        const creator = MOCK_EXPERTS.find(e => e.id === p.creator_id);
-        return {
-          id: p.id,
-          title: language === 'en' ? p.title_en : language === 'de' ? p.title_de : p.title,
-          description: language === 'en' ? p.description_en : language === 'de' ? p.description_de : p.description,
-          image_url: p.image_url,
-          thumbnail_url: p.thumbnail_url,
-          access_type: p.access_type,
-          price_huf: p.price_huf,
-          sponsor_name: p.sponsor_name,
-          sponsor_logo_url: p.sponsor_logo_url,
-          is_sponsored: p.is_sponsored,
-          creator: creator ? {
-            first_name: creator.first_name,
-            last_name: creator.last_name,
-            avatar_url: creator.avatar_url
-          } : null
-        };
-      });
+  const isLoading = false;
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -260,4 +230,4 @@ const WorkshopSecretsSlider = () => {
   );
 };
 
-export default WorkshopSecretsSlider;
+export default RecommendedProgramsSlider;
