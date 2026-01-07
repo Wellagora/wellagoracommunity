@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -126,6 +127,30 @@ const CommunityHubNew = () => {
 
         {/* Section C: Local Partners */}
         <LocalPartnersSection />
+      </div>
+
+      {/* Floating 3D Action Button */}
+      <div className="fixed bottom-8 right-8 z-50">
+        <motion.button
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
+          whileHover={{ scale: 1.05, y: -4 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => {
+            // Scroll to top or show join modal
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className="group relative px-6 py-4 rounded-2xl bg-gradient-to-r from-primary to-emerald-500 text-white font-semibold shadow-[0_10px_40px_-10px_rgba(52,199,89,0.5)] hover:shadow-[0_20px_60px_-10px_rgba(52,199,89,0.6)] transition-shadow"
+        >
+          {/* Glow effect */}
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary to-emerald-500 blur-lg opacity-50 group-hover:opacity-70 transition-opacity" />
+          
+          <span className="relative flex items-center gap-2">
+            <Users className="w-5 h-5" />
+            {t('community.join_movement')}
+          </span>
+        </motion.button>
       </div>
     </div>
   );

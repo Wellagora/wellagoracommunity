@@ -669,7 +669,7 @@ const ProgramsListingPage = () => {
                       )}
 
                       <CardContent className="p-0">
-                        {/* Kép rész - NINCS badge rajta */}
+                        {/* Image section with status badges */}
                         <div className="aspect-video bg-gradient-to-br from-slate-100 to-slate-50 relative">
                           {program.thumbnail_url ? (
                             <img
@@ -682,13 +682,29 @@ const ProgramsListingPage = () => {
                               <BookOpen className="w-12 h-12 text-slate-300" />
                             </div>
                           )}
-                          {/* Csak a Featured badge marad a képen */}
+                          {/* Top-left: Featured badge */}
                           {program.is_featured && (
-                            <Badge className="absolute top-2 left-2 bg-amber-500/90 text-white">
+                            <Badge className="absolute top-2 left-2 bg-amber-500/90 text-white shadow-md">
                               <Star className="w-3 h-3 mr-1" />
                               {t("program.featured")}
                             </Badge>
                           )}
+                          {/* Top-right: Status badges */}
+                          <div className="absolute top-2 right-2 flex flex-col gap-1.5 items-end">
+                            {/* Sponsored gift badge */}
+                            {hasSponsorship && (
+                              <Badge className="bg-[#34C759] text-white shadow-md border-0 px-2.5 py-1">
+                                <Gift className="w-3 h-3 mr-1" />
+                                {t('marketplace.sponsor_gift')}
+                              </Badge>
+                            )}
+                            {/* Scarcity badge - only if sponsored and less than 5 spots */}
+                            {hasSponsorship && remaining > 0 && remaining <= 5 && (
+                              <Badge className="bg-orange-400/90 text-white shadow-md border-0 px-2.5 py-1">
+                                {t('marketplace.only_x_left').replace('{{count}}', String(remaining))}
+                              </Badge>
+                            )}
+                          </div>
                         </div>
                         <div className="p-4">
                           <h3 className="font-semibold text-slate-900 mb-2 line-clamp-2">
@@ -744,6 +760,18 @@ const ProgramsListingPage = () => {
                                   {t('marketplace.slots_remaining').replace('{{count}}', String(remaining))}
                                 </p>
                               </div>
+
+                              {/* Sponsor logo in footer if applicable */}
+                              {sponsorship?.sponsor?.logo_url && (
+                                <div className="flex items-center gap-2 py-2 border-t border-slate-100 mb-2">
+                                  <img 
+                                    src={sponsorship.sponsor.logo_url} 
+                                    alt={sponsorship.sponsor.name}
+                                    className="h-6 w-auto max-w-[80px] object-contain"
+                                  />
+                                  <span className="text-xs text-slate-400">{t('marketplace.made_possible_by')}</span>
+                                </div>
+                              )}
 
                               <Button 
                                 className="w-full bg-[#007AFF] hover:bg-[#0056b3] text-white" 
