@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useLocalizedContent } from "@/hooks/useLocalizedContent";
+import { getMockExpertById, getMockProgramsByExpert, type MockExpert, type MockProgram } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -34,10 +35,17 @@ const CreatorPublicProfilePage = () => {
 
   const dateLocales = { hu, en: enUS, de };
 
+  // Check if this is a mock expert
+  const isMockExpert = id?.startsWith('mock-expert-');
+
   // Fetch creator profile with all localized fields - use maybeSingle to avoid errors
   const { data: creator, isLoading: creatorLoading } = useQuery({
     queryKey: ["creatorProfile", id],
     queryFn: async () => {
+      // If mock expert, return mock data
+      if (isMockExpert) {
+        return getMockExpertById(id!) as MockExpert | null;
+      }
       const { data, error } = await supabase
         .from("profiles")
         .select(
@@ -55,6 +63,10 @@ const CreatorPublicProfilePage = () => {
   const { data: programs, isLoading: programsLoading } = useQuery({
     queryKey: ["creatorPrograms", id],
     queryFn: async () => {
+      // If mock expert, return mock programs
+      if (isMockExpert) {
+        return getMockProgramsByExpert(id!) as MockProgram[];
+      }
       const { data, error } = await supabase
         .from("expert_contents")
         .select("*, category, title_en, title_de, description_en, description_de")

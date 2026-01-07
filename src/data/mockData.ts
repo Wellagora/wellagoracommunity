@@ -16,6 +16,7 @@ export interface MockExpert {
   is_verified_expert: boolean;
   expertise_areas: string[];
   created_at: string;
+  [key: string]: unknown; // Index signature for LocalizedRecord compatibility
 }
 
 export interface MockProgram {
@@ -39,6 +40,8 @@ export interface MockProgram {
   sponsor_logo_url: string | null;
   is_sponsored: boolean;
   created_at: string;
+  tools_needed?: string | null;
+  [key: string]: unknown; // Index signature for LocalizedRecord compatibility
 }
 
 export interface MockVoucher {
