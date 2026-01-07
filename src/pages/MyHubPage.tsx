@@ -198,37 +198,42 @@ const MyHubPage = () => {
       <Navigation />
 
       <main className="max-w-5xl mx-auto px-4 py-8 pt-24">
-        {/* Header */}
+        {/* Header - Digital Portfolio Style */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-2xl md:text-3xl font-bold text-[#1E293B]">
-            {t("my_hub.title") || "Saját Központ"}
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            {t("my_hub.subtitle") || "Kuponjaid, regisztrációid és előzményeid"}
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 rounded-xl bg-primary/10">
+              <Sparkles className="w-6 h-6 text-primary" />
+            </div>
+            <h1 className="text-2xl md:text-3xl font-bold text-[#1E293B]">
+              {t("my_hub.title")}
+            </h1>
+          </div>
+          <p className="text-muted-foreground mt-1 ml-11">
+            {t("my_hub.subtitle")}
           </p>
         </motion.div>
 
-        {/* Tabs */}
+        {/* Tabs - Wallet Style */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6 bg-white/80 backdrop-blur-sm border border-white/40">
-            <TabsTrigger value="vouchers" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-3 mb-6 bg-white/90 backdrop-blur-md border border-white/40 shadow-sm rounded-xl p-1">
+            <TabsTrigger value="vouchers" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg transition-all">
               <Ticket className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("my_hub.active_programs") || "Aktív Programjaim"}</span>
-              <span className="sm:hidden">{t("my_hub.vouchers_short") || "Kuponok"}</span>
+              <span className="hidden sm:inline">{t("my_hub.active_codes")}</span>
+              <span className="sm:hidden">{t("my_hub.codes_short")}</span>
             </TabsTrigger>
-            <TabsTrigger value="registrations" className="flex items-center gap-2">
+            <TabsTrigger value="registrations" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg transition-all">
               <Calendar className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("my_hub.registrations") || "Regisztrációim"}</span>
-              <span className="sm:hidden">{t("my_hub.upcoming") || "Várható"}</span>
+              <span className="hidden sm:inline">{t("my_hub.registrations")}</span>
+              <span className="sm:hidden">{t("my_hub.upcoming")}</span>
             </TabsTrigger>
-            <TabsTrigger value="history" className="flex items-center gap-2">
+            <TabsTrigger value="history" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg transition-all">
               <History className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("my_hub.past") || "Múltbéli részvételek"}</span>
-              <span className="sm:hidden">{t("my_hub.history_short") || "Előzmény"}</span>
+              <span className="hidden sm:inline">{t("my_hub.history")}</span>
+              <span className="sm:hidden">{t("my_hub.history_short")}</span>
             </TabsTrigger>
           </TabsList>
 
@@ -239,12 +244,21 @@ const MyHubPage = () => {
                 {[1, 2].map((i) => <Skeleton key={i} className="h-40 w-full rounded-xl" />)}
               </div>
             ) : vouchers.filter(v => v.status === 'active').length === 0 ? (
-              <Card className="bg-white/80 backdrop-blur-md border-white/40">
-                <CardContent className="py-12 text-center">
-                  <Ticket className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">{t("my_hub.no_vouchers") || "Még nincs aktív kuponod"}</h3>
-                  <p className="text-muted-foreground mb-4">{t("my_hub.no_vouchers_hint") || "Fedezd fel a Piacteret!"}</p>
-                  <Button onClick={() => navigate("/piacer")}>{t("my_hub.explore") || "Piactér felfedezése"}</Button>
+              <Card className="bg-white/90 backdrop-blur-md border-white/40 shadow-lg">
+                <CardContent className="py-16 text-center">
+                  <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-primary/10 flex items-center justify-center">
+                    <Ticket className="h-10 w-10 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-bold text-[#1E293B] mb-2">{t("my_hub.no_vouchers")}</h3>
+                  <p className="text-muted-foreground mb-6 max-w-sm mx-auto">{t("my_hub.no_vouchers_hint")}</p>
+                  <Button 
+                    size="lg"
+                    onClick={() => navigate("/piacer")}
+                    className="bg-primary hover:bg-primary/90 text-white shadow-lg"
+                  >
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    {t("my_hub.explore")}
+                  </Button>
                 </CardContent>
               </Card>
             ) : (

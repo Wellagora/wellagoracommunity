@@ -96,10 +96,17 @@ const ProgramDetailPage = () => {
     enabled: !!id,
   });
 
-  // Fetch related programs from same creator
+  // Fetch related programs from same creator - use mock data for mock programs
   const { data: relatedPrograms } = useQuery({
     queryKey: ['relatedPrograms', program?.creator_id, id],
     queryFn: async () => {
+      // For mock programs, use getMockProgramsByExpert
+      if (isMockProgram && program?.creator_id) {
+        const mockRelated = MOCK_PROGRAMS
+          .filter(p => p.creator_id === program.creator_id && p.id !== id)
+          .slice(0, 3);
+        return mockRelated;
+      }
       const { data } = await supabase
         .from('expert_contents')
         .select('id, title, title_en, title_de, thumbnail_url, access_level, price_huf')
@@ -393,12 +400,15 @@ const ProgramDetailPage = () => {
                     {/* Sponsor Info if available */}
                     {program.is_sponsored && program.sponsor_name && (
                       <div className="mb-4 p-3 rounded-lg bg-primary/5 border border-primary/20">
-                      <p className="text-sm text-muted-foreground">
+                        <p className="text-sm font-medium text-primary">
+                          {t('marketplace.free_via_sponsor')}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
                           {t('voucher.thanks_sponsor').replace('{{name}}', program.sponsor_name || '')}
                         </p>
                         {program.price_huf && (
-                          <p className="text-sm font-medium text-primary mt-1">
-                            {t('common.value')}: {program.price_huf.toLocaleString()} Ft — {t('common.sponsored')}
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {t('marketplace.value_label')}: {program.price_huf.toLocaleString()} Ft
                           </p>
                         )}
                       </div>

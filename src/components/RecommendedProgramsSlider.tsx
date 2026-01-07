@@ -65,13 +65,13 @@ const RecommendedProgramsSlider = () => {
   };
 
   const getAccessBadge = (program: Program) => {
-    // Check for sponsored content
+    // Check for sponsored content - new clear messaging
     if (program.is_sponsored || program.sponsor_name) {
       return (
         <div className="flex flex-col gap-1">
           <Badge className="bg-primary/20 text-primary border border-primary/30">
             <Gift className="w-3 h-3 mr-1" />
-            {t('common.sponsor')} • {program.sponsor_name || 'Partner'}
+            {t('marketplace.free_via_sponsor')}
           </Badge>
           {program.price_huf && program.price_huf > 0 && (
             <span className="text-xs text-muted-foreground">
@@ -82,20 +82,20 @@ const RecommendedProgramsSlider = () => {
       );
     }
     
-    // 2. PRIORITÁS: Fizetős tartalom (price_huf > 0)
+    // Paid content
     if (program.price_huf && program.price_huf > 0) {
       return (
-        <Badge className="bg-slate-700 text-white border-0">
+        <Badge className="bg-slate-600 text-white border-0">
           <ShoppingCart className="w-3 h-3 mr-1" />
           {program.price_huf.toLocaleString()} Ft
         </Badge>
       );
     }
     
-    // 3. UTOLSÓ: Nyílt tartalom (NEM "Ingyenes"!)
+    // Open content
     return (
       <Badge className="bg-blue-600 text-white border-0">
-        {t("marketplace.open_content") || "Nyílt tartalom"}
+        {t("marketplace.open_content")}
       </Badge>
     );
   };
