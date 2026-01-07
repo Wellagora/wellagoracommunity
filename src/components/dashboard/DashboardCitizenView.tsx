@@ -86,16 +86,16 @@ export const DashboardCitizenView = memo(({ currentRole }: DashboardCitizenViewP
       </div>
 
       <Tabs defaultValue="programs" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3 bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-2">
-          <TabsTrigger value="programs" className="flex items-center justify-center space-x-2 text-sm">
+        <TabsList className="grid w-full grid-cols-3 bg-white/80 backdrop-blur-md border border-white/40 rounded-2xl p-2 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+          <TabsTrigger value="programs" className="flex items-center justify-center space-x-2 text-sm rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white">
             <Target className="w-4 h-4" />
             <span>{t('dashboard.tabs.my_programs')}</span>
           </TabsTrigger>
-          <TabsTrigger value="calendar" className="flex items-center justify-center space-x-2 text-sm">
+          <TabsTrigger value="calendar" className="flex items-center justify-center space-x-2 text-sm rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white">
             <Calendar className="w-4 h-4" />
             <span>{t('dashboard.tabs.calendar')}</span>
           </TabsTrigger>
-          <TabsTrigger value="activities" className="flex items-center justify-center space-x-2 text-sm">
+          <TabsTrigger value="activities" className="flex items-center justify-center space-x-2 text-sm rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white">
             <BarChart3 className="w-4 h-4" />
             <span>{t('dashboard.tabs.my_activities')}</span>
           </TabsTrigger>

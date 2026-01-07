@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { GhostCard } from "@/components/ui/GhostCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -100,7 +101,7 @@ export const MyEventsWidget = memo(() => {
 
   if (isLoading) {
     return (
-      <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+      <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
             <Calendar className="w-5 h-5 text-primary" />
@@ -111,10 +112,10 @@ export const MyEventsWidget = memo(() => {
           <div className="space-y-3">
             {[1, 2].map((i) => (
               <div key={i} className="animate-pulse flex gap-4">
-                <div className="w-12 h-12 bg-muted rounded-lg" />
+                <div className="w-12 h-12 bg-muted/50 rounded-lg" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-muted rounded w-3/4" />
-                  <div className="h-3 bg-muted rounded w-1/2" />
+                  <div className="h-4 bg-muted/50 rounded w-3/4" />
+                  <div className="h-3 bg-muted/50 rounded w-1/2" />
                 </div>
               </div>
             ))}
@@ -126,32 +127,16 @@ export const MyEventsWidget = memo(() => {
 
   if (!myEvents || myEvents.length === 0) {
     return (
-      <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-primary" />
-            {t("events.my_events")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center py-6">
-            <Calendar className="w-10 h-10 text-muted-foreground/50 mx-auto mb-3" />
-            <p className="text-sm text-muted-foreground mb-3">
-              {t("events.no_my_events") || "You haven't RSVP'd to any events yet"}
-            </p>
-            <Link to="/events">
-              <Button variant="outline" size="sm">
-                {t("events.view_all")}
-              </Button>
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
+      <GhostCard
+        icon={Calendar}
+        title={t("common.no_events_yet")}
+        description={t("common.no_events_yet_desc")}
+      />
     );
   }
 
   return (
-    <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+    <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg flex items-center gap-2">

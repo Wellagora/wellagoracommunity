@@ -136,7 +136,7 @@ export const NearbyWidget = () => {
   if (!user) return null;
 
   return (
-    <Card className="bg-[#112240] border-border/50 backdrop-blur-sm">
+    <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-lg flex items-center gap-2">
           <Navigation className="w-5 h-5 text-[#00E5FF]" />

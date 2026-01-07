@@ -9,14 +9,17 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-gradient-to-r from-[hsl(216,100%,50%)] to-[hsl(186,100%,50%)] text-white shadow-button hover:shadow-float hover:-translate-y-0.5 hover:scale-[1.02] transition-all",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-card hover:shadow-premium border border-destructive/25",
-        outline: "border border-accent/40 bg-card/50 text-accent hover:bg-accent/10 hover:border-accent hover:shadow-glow backdrop-blur-sm hover:text-white",
-        secondary: "bg-gradient-to-r from-[hsl(200,100%,45%)] to-[hsl(186,100%,50%)] text-white shadow-button hover:shadow-float hover:-translate-y-0.5 hover:scale-[1.02] transition-all",
-        ghost: "text-foreground hover:bg-accent/10 hover:text-accent border border-transparent hover:border-accent/20",
-        link: "text-accent underline-offset-4 hover:underline hover:text-accent-light",
-        premium: "bg-gradient-to-r from-[hsl(216,100%,50%)] via-[hsl(195,100%,50%)] to-[hsl(186,100%,50%)] text-white font-bold shadow-float hover:shadow-premium hover:-translate-y-1 hover:scale-[1.03] transition-all",
-        glass: "bg-card/60 backdrop-blur-xl border border-accent/20 text-foreground hover:bg-card/80 hover:border-accent/40 shadow-card hover:shadow-glow",
+        // Primary: Apple Green (#34C759) - Fresh Green gradient
+        default: "bg-primary text-primary-foreground shadow-[0_4px_15px_rgba(52,199,89,0.25)] hover:shadow-[0_6px_20px_rgba(52,199,89,0.35)] hover:-translate-y-0.5 hover:brightness-105 transition-all",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-[0_4px_15px_rgba(239,68,68,0.2)]",
+        outline: "border border-border bg-white/80 backdrop-blur-sm text-foreground hover:bg-white hover:border-primary/40 hover:text-primary shadow-[0_2px_8px_rgba(0,0,0,0.04)]",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]",
+        ghost: "text-foreground hover:bg-muted hover:text-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
+        // Premium: Gradient from primary to accent
+        premium: "bg-gradient-to-r from-primary to-accent text-white font-bold shadow-[0_6px_20px_rgba(52,199,89,0.3)] hover:shadow-[0_8px_25px_rgba(52,199,89,0.4)] hover:-translate-y-1 hover:scale-[1.02] transition-all",
+        // Glass: Subtle glassmorphism effect
+        glass: "bg-white/60 backdrop-blur-xl border border-white/40 text-foreground hover:bg-white/80 shadow-[0_4px_16px_rgba(0,0,0,0.04)]",
       },
       size: {
         default: "h-11 px-6 py-2",
