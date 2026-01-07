@@ -291,7 +291,7 @@ const ProgramsListingPage = () => {
     // 2. PRIORITÁS: Fizetős tartalom (ár > 0)
     if (program.price_huf && program.price_huf > 0) {
       return (
-        <Badge className="bg-[#007AFF] text-white border-0">
+        <Badge className="bg-accent text-accent-foreground border-0">
           <ShoppingCart className="w-3 h-3 mr-1" />
           {program.price_huf?.toLocaleString() || 0} Ft
         </Badge>
@@ -406,21 +406,21 @@ const ProgramsListingPage = () => {
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 {t("marketplace.back_to_all")}
               </Button>
-              <div className="flex items-center gap-4 p-4 rounded-lg bg-[#F5F5F7] border border-slate-200">
-                <Avatar className="h-16 w-16 border-2 border-[#007AFF]">
+              <div className="flex items-center gap-4 p-4 rounded-lg bg-secondary border border-border">
+                <Avatar className="h-16 w-16 border-2 border-primary">
                   <AvatarImage src={filteredCreator.avatar_url || undefined} />
-                  <AvatarFallback className="bg-[#007AFF]/10 text-[#007AFF] text-lg">
+                  <AvatarFallback className="bg-primary/10 text-primary text-lg">
                     {filteredCreator.first_name?.[0]}{filteredCreator.last_name?.[0]}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <h2 className="text-xl font-bold text-slate-900">
+                  <h2 className="text-xl font-bold text-foreground">
                     {filteredCreator.first_name} {filteredCreator.last_name}
                   </h2>
                   {filteredCreator.expert_title && (
-                    <p className="text-[#007AFF]">{filteredCreator.expert_title}</p>
+                    <p className="text-primary">{filteredCreator.expert_title}</p>
                   )}
-                  <p className="text-sm text-slate-500">
+                  <p className="text-sm text-muted-foreground">
                     {t("marketplace.showing_creator_contents").replace("{{count}}", String(filteredPrograms.length))}
                   </p>
                 </div>
@@ -431,14 +431,14 @@ const ProgramsListingPage = () => {
           {!creatorFilter && (
             <>
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-xl bg-[#007AFF]/10">
-                  <Store className="w-6 h-6 text-[#007AFF]" />
+                <div className="p-3 rounded-xl bg-primary/10">
+                  <Store className="w-6 h-6 text-primary" />
                 </div>
-                <h1 className="text-3xl font-bold text-slate-900">
+                <h1 className="text-3xl font-bold text-foreground">
                   {t("marketplace.title")}
                 </h1>
               </div>
-              <p className="text-slate-600">
+              <p className="text-muted-foreground">
                 {t("marketplace.subtitle")}
               </p>
             </>
@@ -447,13 +447,13 @@ const ProgramsListingPage = () => {
 
         {/* Search Bar - 3D Card Style */}
         <div className="relative mb-6">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
           <Input
             type="text"
             placeholder={t("marketplace.search")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-12 pr-12 py-6 bg-white/90 backdrop-blur-md border border-white/60 focus:border-[#34C759] text-slate-900 placeholder:text-slate-400 rounded-2xl"
+            className="pl-12 pr-12 py-6 bg-white/90 backdrop-blur-md border border-white/60 focus:border-primary text-foreground placeholder:text-muted-foreground rounded-2xl"
             style={{
               boxShadow: '0 8px 30px rgb(0,0,0,0.04), 0 20px 50px rgba(0,0,0,0.04)',
             }}
@@ -461,7 +461,7 @@ const ProgramsListingPage = () => {
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-900 transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -479,8 +479,8 @@ const ProgramsListingPage = () => {
                 onClick={() => setSelectedCategory(category.id)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap transition-all ${
                   isActive
-                    ? "bg-[#34C759] text-white shadow-md"
-                    : "bg-white/90 backdrop-blur-md border border-white/60 text-slate-600 hover:border-[#34C759] hover:text-[#34C759]"
+                    ? "bg-primary text-primary-foreground shadow-md"
+                    : "bg-white/90 backdrop-blur-md border border-white/60 text-muted-foreground hover:border-primary hover:text-primary"
                 }`}
                 style={!isActive ? {
                   boxShadow: '0 8px 30px rgb(0,0,0,0.04), 0 20px 50px rgba(0,0,0,0.04)',
@@ -496,7 +496,7 @@ const ProgramsListingPage = () => {
         </div>
 
         {/* Results Count */}
-        <div className="mb-6 text-slate-500">
+        <div className="mb-6 text-muted-foreground">
           {filteredPrograms.length} {t("marketplace.showing_results")}
         </div>
 
@@ -540,7 +540,7 @@ const ProgramsListingPage = () => {
                 setSearchQuery("");
                 setSelectedCategory("all");
               }}
-              className="border-[#007AFF] text-[#007AFF] hover:bg-[#007AFF]/5"
+              className="border-primary text-primary hover:bg-primary/5"
             >
               {t("marketplace.clear_filters")}
             </Button>
@@ -652,7 +652,7 @@ const ProgramsListingPage = () => {
                     >
                       {/* Sponsor Banner - subtle top indicator */}
                       {hasSponsorship && (
-                        <div className="bg-gradient-to-r from-[#34C759]/10 to-[#34C759]/5 px-4 py-2 flex items-center gap-2 border-b border-[#34C759]/20">
+                        <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-4 py-2 flex items-center gap-2 border-b border-primary/20">
                           {sponsorship?.sponsor?.logo_url ? (
                             <img 
                               src={sponsorship.sponsor.logo_url} 
@@ -660,10 +660,10 @@ const ProgramsListingPage = () => {
                               className="h-5 w-5 rounded-full object-contain bg-white shadow-sm"
                             />
                           ) : (
-                            <Gift className="h-4 w-4 text-[#34C759]" />
+                            <Gift className="h-4 w-4 text-primary" />
                           )}
-                          <Badge className="bg-[#34C759]/15 text-[#34C759] border-0 font-medium">
-                            Támogató • {sponsorship?.sponsor?.name || 'Partner'}
+                          <Badge className="bg-primary/15 text-primary border-0 font-medium">
+                            {t('common.sponsor')} • {sponsorship?.sponsor?.name || 'Partner'}
                           </Badge>
                         </div>
                       )}
@@ -693,7 +693,7 @@ const ProgramsListingPage = () => {
                           <div className="absolute top-2 right-2 flex flex-col gap-1.5 items-end">
                             {/* Sponsored gift badge */}
                             {hasSponsorship && (
-                              <Badge className="bg-[#34C759] text-white shadow-md border-0 px-2.5 py-1">
+                              <Badge className="bg-primary text-primary-foreground shadow-md border-0 px-2.5 py-1">
                                 <Gift className="w-3 h-3 mr-1" />
                                 {t('marketplace.sponsor_gift')}
                               </Badge>
@@ -707,11 +707,11 @@ const ProgramsListingPage = () => {
                           </div>
                         </div>
                         <div className="p-4">
-                          <h3 className="font-semibold text-slate-900 mb-2 line-clamp-2">
+                          <h3 className="font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
                             {program.title}
                           </h3>
 
-                          {/* Creator - clickable */}
+                          {/* Creator with Avatar - clickable */}
                           {program.creator && (
                             <button
                               onClick={(e) => {
@@ -719,9 +719,17 @@ const ProgramsListingPage = () => {
                                 e.stopPropagation();
                                 setSelectedExpertId(program.creator!.id);
                               }}
-                              className="text-sm text-slate-500 hover:text-[#007AFF] transition-colors text-left"
+                              className="flex items-center gap-2 mb-3 hover:opacity-80 transition-opacity"
                             >
-                              {program.creator.first_name} {program.creator.last_name}
+                              <Avatar className="w-6 h-6 border border-white shadow-sm">
+                                <AvatarImage src={program.creator.avatar_url || undefined} />
+                                <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                                  {program.creator.first_name?.[0]}{program.creator.last_name?.[0]}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                                {program.creator.first_name} {program.creator.last_name}
+                              </span>
                             </button>
                           )}
 
@@ -774,7 +782,7 @@ const ProgramsListingPage = () => {
                               )}
 
                               <Button 
-                                className="w-full bg-[#007AFF] hover:bg-[#0056b3] text-white" 
+                                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" 
                                 onClick={handleClaimSponsored}
                               >
                                 <Gift className="h-4 w-4 mr-1" />
