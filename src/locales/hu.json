@@ -290,6 +290,8 @@
   "expert_profile.my_secrets": "Műhelytitkaim",
   "expert_profile.coming_soon_title": "Hamarosan új titkok...",
   "expert_profile.coming_soon_desc": "Hamarosan új Műhelytitkok kerülnek megosztásra. Látogass vissza később!",
+  "expert_profile.not_found": "Mester nem található",
+  "expert_profile.not_found_desc": "A keresett Mester profilja nem elérhető vagy nem létezik.",
   "expert_studio.new_secret": "Új Műhelytitok",
   "expert_studio.new_secret_desc": "Oszd meg a tudásodat a közösséggel",
   "expert_studio.voucher_validator": "Kupon Beváltó",

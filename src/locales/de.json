@@ -501,6 +501,8 @@
   "expert_profile.my_secrets": "Meine Werkstattgeheimnisse",
   "expert_profile.coming_soon_title": "Neue Geheimnisse kommen bald...",
   "expert_profile.coming_soon_desc": "Neue Werkstattgeheimnisse werden bald geteilt. Schau später wieder vorbei!",
+  "expert_profile.not_found": "Meister nicht gefunden",
+  "expert_profile.not_found_desc": "Das Profil dieses Meisters ist nicht verfügbar oder existiert nicht.",
   "expert_studio.new_secret": "Neues Werkstattgeheimnis",
   "expert_studio.new_secret_desc": "Teile dein Wissen mit der Gemeinschaft",
   "expert_studio.voucher_validator": "Gutschein-Validator",
