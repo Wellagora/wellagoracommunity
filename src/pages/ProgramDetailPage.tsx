@@ -397,20 +397,20 @@ const ProgramDetailPage = () => {
               <div className="sticky top-24">
                 <Card className="bg-white/80 backdrop-blur-md border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                   <CardContent className="p-6">
-                    {/* Sponsor Info if available */}
+                    {/* Sponsor Info if available - SINGLE ELEGANT BADGE */}
                     {program.is_sponsored && program.sponsor_name && (
-                      <div className="mb-4 p-3 rounded-lg bg-primary/5 border border-primary/20">
-                        <p className="text-sm font-medium text-primary">
-                          {t('marketplace.free_via_sponsor')}
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {t('voucher.thanks_sponsor').replace('{{name}}', program.sponsor_name || '')}
-                        </p>
-                        {program.price_huf && (
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {t('marketplace.value_label')}: {program.price_huf.toLocaleString()} Ft
-                          </p>
-                        )}
+                      <div className="mb-4 p-4 rounded-lg bg-primary/5 border border-primary/20">
+                        <Badge className="bg-primary/15 text-primary border border-primary/30 text-sm font-medium mb-2">
+                          {t('marketplace.sponsored_by_label')}: {program.sponsor_name}
+                        </Badge>
+                        <div className="flex items-center gap-3 mt-2">
+                          <span className="text-xl font-bold text-primary">0 Ft</span>
+                          {program.price_huf && (
+                            <span className="text-muted-foreground line-through">
+                              {program.price_huf.toLocaleString()} Ft
+                            </span>
+                          )}
+                        </div>
                       </div>
                     )}
 
@@ -445,7 +445,7 @@ const ProgramDetailPage = () => {
           {relatedPrograms && relatedPrograms.length > 0 && (
             <div className="mt-12">
               <h2 className="text-2xl font-bold text-foreground mb-6">
-                {t('program.more_from_creator')}
+                {t('program.more_from_expert')}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {relatedPrograms.map((relProgram) => (
