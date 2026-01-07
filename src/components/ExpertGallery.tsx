@@ -75,7 +75,7 @@ const ExpertGallery = () => {
         {/* Expert Slider - CENTERED */}
         <div
           ref={scrollRef}
-          className="flex gap-8 overflow-x-auto scrollbar-hide pb-4 px-4 justify-center flex-wrap md:flex-nowrap"
+          className="flex gap-8 overflow-x-auto scrollbar-hide pb-4 px-4 justify-center items-center flex-wrap md:flex-nowrap"
           style={{ scrollSnapType: "x mandatory" }}
         >
           {experts.map((expert, index) => (
