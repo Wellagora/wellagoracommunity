@@ -7,7 +7,8 @@ import { ProgramCalendar } from "./ProgramCalendar";
 import Dashboard from "./Dashboard";
 import { ReferralWidget } from "@/components/referral/ReferralWidget";
 import { ShareImpactCard } from "@/components/referral/ShareImpactCard";
-import { PersonalImpactGarden } from "./PersonalImpactGarden";
+import { CommunityImpactProgress } from "./CommunityImpactProgress";
+import { JourneyTimeline } from "./JourneyTimeline";
 import { EventsWidget } from "./EventsWidget";
 import { MyEventsWidget } from "./MyEventsWidget";
 import { NearbyWidget } from "./NearbyWidget";
@@ -61,15 +62,20 @@ export const DashboardCitizenView = memo(({ currentRole }: DashboardCitizenViewP
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-      {/* Top widgets grid */}
+      {/* Top widgets grid - Gamified Layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        <PersonalImpactGarden />
-        <ReferralWidget />
+        <CommunityImpactProgress />
+        <JourneyTimeline />
         <ShareImpactCard 
           totalPoints={userStats?.totalPoints || 0}
           challengesCompleted={userStats?.challengesCompleted || 0}
           co2Saved={userStats?.co2Saved || 0}
         />
+      </div>
+
+      {/* Referral widget */}
+      <div className="mb-6">
+        <ReferralWidget />
       </div>
 
       {/* Events Section - Three columns: Upcoming Events + My Events + Nearby */}

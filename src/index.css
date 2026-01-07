@@ -8,19 +8,19 @@ Clean, professional light theme with Apple Blue accent (#007AFF)
 
 @layer base {
   :root {
-    /* Organic Premium Palette */
-    --background: 240 5% 96%;                   /* #F5F5F7 Light Gray */
-    --foreground: 215 25% 15%;                  /* Dark slate for text */
+    /* Organic Premium Palette - Soft Slate Gray Background */
+    --background: 210 40% 98%;                  /* #F8FAFC Soft Slate Gray */
+    --foreground: 215 28% 17%;                  /* #1E293B Deep Slate (NO pure black) */
 
     /* Secondary Background */
     --secondary-bg: 0 0% 100%;
 
-    /* Card: White with glassmorphism */
+    /* Card: White with glassmorphism - bg-white/80 effect */
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 15%;
+    --card-foreground: 215 28% 17%;             /* Deep Slate */
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 15%;
+    --popover-foreground: 215 28% 17%;          /* Deep Slate */
 
     /* Primary: Fresh Green #34C759 */
     --primary: 142 71% 45%;
@@ -35,11 +35,11 @@ Clean, professional light theme with Apple Blue accent (#007AFF)
 
     /* Secondary: Neutral Gray */
     --secondary: 215 20% 96%;
-    --secondary-foreground: 215 25% 15%;
+    --secondary-foreground: 215 28% 17%;        /* Deep Slate */
 
     /* Muted: Light gray */
-    --muted: 240 5% 96%;
-    --muted-foreground: 215 15% 45%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 20% 46%;            /* Softer muted */
 
     /* Success - Fresh Green (same as primary) */
     --success: 142 71% 45%;
@@ -75,13 +75,13 @@ Clean, professional light theme with Apple Blue accent (#007AFF)
     --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.8) 0%, hsl(240 5% 97% / 0.8) 100%);
     --gradient-button: linear-gradient(135deg, hsl(142 71% 45%), hsl(142 71% 50%));
 
-    /* Organic Premium Shadows */
-    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 20px 50px -10px rgba(0, 0, 0, 0.08);
+    /* Organic Premium Shadows - Ultra-soft 3D effect */
+    --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.04);
     --shadow-premium: 0 10px 40px -10px hsl(142 71% 45% / 0.15);
-    --shadow-float: 0 20px 50px -15px hsl(215 25% 15% / 0.1);
+    --shadow-float: 0 20px 50px -15px hsl(215 28% 17% / 0.08);
     --shadow-button: 0 4px 15px -3px hsl(142 71% 45% / 0.25);
     --shadow-glow: 0 0 20px hsl(142 71% 45% / 0.15);
-    --shadow-3d: 0 1px 2px rgba(0, 0, 0, 0.05), 0 20px 50px -10px rgba(0, 0, 0, 0.08);
+    --shadow-3d: 0 8px 30px rgba(0, 0, 0, 0.04);
 
     /* Smooth animation system */
     --transition-smooth: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -166,9 +166,10 @@ Clean, professional light theme with Apple Blue accent (#007AFF)
     line-height: 1.6;
   }
 
-  /* Enhanced typography - Apple style */
+  /* Enhanced typography - Deep Slate (NO pure black) */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading font-bold text-slate-900 tracking-tight;
+    @apply font-heading font-bold tracking-tight;
+    color: hsl(215 28% 17%); /* Deep Slate #1E293B */
     letter-spacing: -0.02em;
   }
 
@@ -182,57 +183,57 @@ Clean, professional light theme with Apple Blue accent (#007AFF)
     text-wrap: balance;
   }
 
-  /* Organic Premium Glass Morphism for Cards */
+  /* Premium 3D Glass Morphism for Cards - Ultra soft shadows */
   .bg-glass {
     background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 20px 50px -10px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
   }
 
   .bg-glass-strong {
     background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(24px) saturate(200%);
-    -webkit-backdrop-filter: blur(24px) saturate(200%);
+    backdrop-filter: blur(20px) saturate(200%);
+    -webkit-backdrop-filter: blur(20px) saturate(200%);
     border: 1px solid rgba(255, 255, 255, 0.5);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 20px 50px -10px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
   }
 
-  /* Organic Premium Card (3D effect) */
+  /* Premium Card (3D glassmorphism effect) */
   .card-organic {
     background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 20px 50px -10px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
     border-radius: 1rem;
   }
 
-  /* Legacy card class */
+  /* Premium card class with 3D effect */
   .card-apple {
     background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 20px 50px -10px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
     border-radius: 1rem;
   }
 
-  /* 3D Card with hover lift effect */
+  /* 3D Card with premium hover lift effect */
   .card-3d-premium {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 10px 30px -5px rgba(0,0,0,0.1), 0 4px 10px -2px rgba(0,0,0,0.05);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
     border-radius: 1rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .card-3d-premium:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15), 0 10px 20px -5px rgba(0,0,0,0.08);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
   }
 
   /* Hover effects */
