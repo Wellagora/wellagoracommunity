@@ -48,30 +48,49 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const t = (key: string): string => {
-    const langTranslations = translations[language] || translations['hu'] || {};
+    const langTranslations = translations[language] || {};
+    const fallbackTranslations = translations['en'] || {}; // English as fallback
+    const baseFallbackTranslations = translations['hu'] || {}; // Hungarian as final fallback
 
-    // Try flat key lookup first (e.g., "nav.home")
-    if (langTranslations && key in langTranslations) {
-      const value = langTranslations[key];
-      if (typeof value === 'string') {
-        return value;
+    // Helper function to find value in a translation object
+    const findValue = (obj: any, searchKey: string): string | undefined => {
+      // Try flat key lookup first (e.g., "nav.home")
+      if (obj && searchKey in obj) {
+        const val = obj[searchKey];
+        if (typeof val === 'string') {
+          return val;
+        }
       }
-    }
 
-    // Fallback: try nested object lookup (e.g., { nav: { home: "..." } })
-    const segments = key.split('.');
-    let value: any = langTranslations;
+      // Fallback: try nested object lookup (e.g., { nav: { home: "..." } })
+      const segments = searchKey.split('.');
+      let val: any = obj;
 
-    for (const segment of segments) {
-      if (value && typeof value === 'object' && segment in value) {
-        value = value[segment];
-      } else {
-        // Key not found - return the key itself
-        return key;
+      for (const segment of segments) {
+        if (val && typeof val === 'object' && segment in val) {
+          val = val[segment];
+        } else {
+          return undefined;
+        }
       }
-    }
 
-    return typeof value === 'string' ? value : key;
+      return typeof val === 'string' ? val : undefined;
+    };
+
+    // Try current language first
+    let result = findValue(langTranslations, key);
+    if (result) return result;
+
+    // Fallback to English
+    result = findValue(fallbackTranslations, key);
+    if (result) return result;
+
+    // Final fallback to Hungarian
+    result = findValue(baseFallbackTranslations, key);
+    if (result) return result;
+
+    // Key not found anywhere - return the key itself
+    return key;
   };
 
   return (
