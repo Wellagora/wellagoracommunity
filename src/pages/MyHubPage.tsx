@@ -3,7 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { MOCK_VOUCHERS, MOCK_PROGRAMS, getMockExpertById } from "@/data/mockData";
+import { 
+  MOCK_VOUCHERS, 
+  MOCK_PROGRAMS, 
+  MOCK_MEMBERS,
+  getMockExpertById,
+  formatPriceByLanguage 
+} from "@/data/mockData";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,6 +28,7 @@ import {
   Clock,
   ChevronRight,
   Sparkles,
+  PiggyBank,
 } from "lucide-react";
 import { format } from "date-fns";
 import { hu, de, enUS } from "date-fns/locale";
@@ -38,6 +45,9 @@ interface Voucher {
   expert_name?: string;
   expert_avatar?: string;
   program_image?: string;
+  sponsor_name?: string;
+  value_huf?: number;
+  expires_at?: string;
 }
 
 interface Registration {
@@ -89,82 +99,56 @@ const MyHubPage = () => {
       setLoadingData(true);
 
       try {
-        // Fetch vouchers
-        const { data: userVouchers } = await supabase
-          .from("content_access")
-          .select(`
-            id, 
-            content_id, 
-            created_at, 
-            access_type,
-            expert_contents(
-              id,
-              title,
-              thumbnail_url,
-              creator:profiles!expert_contents_creator_id_fkey(first_name, last_name, avatar_url)
-            )
-          `)
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false })
-          .limit(10);
-
-        if (userVouchers && userVouchers.length > 0) {
-          setVouchers(userVouchers.map((v: any) => ({
+        // For demo, use member-1 (Tóth Eszter) as default demo member
+        const demoMemberId = "member-1";
+        
+        // Get member's vouchers from mock data
+        const memberVouchers = MOCK_VOUCHERS.filter(v => v.member_id === demoMemberId);
+        
+        // Enrich vouchers with program and expert data
+        const enrichedVouchers: Voucher[] = memberVouchers.map(v => {
+          const program = MOCK_PROGRAMS.find(p => p.id === v.content_id);
+          const expert = program ? getMockExpertById(program.creator_id) : undefined;
+          
+          return {
             id: v.id,
-            code: `WA-${new Date(v.created_at).getFullYear()}-${v.id.slice(0, 4).toUpperCase()}`,
+            code: v.code,
             content_id: v.content_id,
-            content_title: v.expert_contents?.title || 'Program',
-            status: v.access_type === 'redeemed' ? 'redeemed' : 'active',
-            pickup_location: 'A Mesternél',
+            content_title: v.content_title,
+            status: v.status,
+            pickup_location: v.pickup_location,
             created_at: v.created_at,
-            expert_name: v.expert_contents?.creator 
-              ? `${v.expert_contents.creator.first_name} ${v.expert_contents.creator.last_name}`
-              : undefined,
-            expert_avatar: v.expert_contents?.creator?.avatar_url,
-            program_image: v.expert_contents?.thumbnail_url
-          })));
-        } else {
-          // Use mock vouchers with enhanced data
-          const mockVouchersWithData = MOCK_VOUCHERS.map(v => {
-            const program = MOCK_PROGRAMS.find(p => p.id === v.content_id);
-            const expert = program ? getMockExpertById(program.creator_id) : undefined;
-            return {
-              id: v.id,
-              code: v.code,
-              content_id: v.content_id,
-              content_title: v.content_title,
-              status: v.status,
-              pickup_location: v.pickup_location,
-              created_at: v.created_at,
-              expert_name: expert ? `${expert.first_name} ${expert.last_name}` : undefined,
-              expert_avatar: expert?.avatar_url,
-              program_image: program?.thumbnail_url
-            };
-          });
-          setVouchers(mockVouchersWithData);
-        }
+            expert_name: expert ? `${expert.first_name} ${expert.last_name}` : undefined,
+            expert_avatar: expert?.avatar_url,
+            program_image: program?.thumbnail_url,
+            sponsor_name: v.sponsor_name,
+            value_huf: v.value_huf,
+            expires_at: v.expires_at
+          };
+        });
+        
+        setVouchers(enrichedVouchers);
 
-        // Mock registrations for demo
+        // Mock registrations
         setRegistrations([
           {
             id: 'reg-1',
             program_title: 'Kemenceépítés Workshop',
             program_image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
-            event_date: '2026-01-15T10:00:00Z',
+            event_date: '2026-01-20T10:00:00Z',
             location: 'Köveskál',
-            expert_name: 'Hans Schmidt'
+            expert_name: language === 'hu' ? 'Kovács István' : language === 'de' ? 'Hans Schmidt' : 'Stephen Smith'
           }
         ]);
 
-        // Mock past participations
-        setPastParticipations([
-          {
-            id: 'past-1',
-            program_title: 'Gyógynövénygyűjtés túra',
-            completed_at: '2025-12-20T14:00:00Z',
-            voucher_code: 'WA-2025-X7KP'
-          }
-        ]);
+        // Mock past participations from redeemed vouchers
+        const redeemedVouchers = MOCK_VOUCHERS.filter(v => v.status === 'redeemed');
+        setPastParticipations(redeemedVouchers.map(v => ({
+          id: v.id,
+          program_title: v.content_title,
+          completed_at: v.redeemed_at || v.created_at,
+          voucher_code: v.code
+        })));
 
       } catch (error) {
         console.error('Error fetching hub data:', error);
@@ -176,7 +160,12 @@ const MyHubPage = () => {
     if (user && !loading) {
       fetchData();
     }
-  }, [user, loading]);
+  }, [user, loading, language]);
+
+  // Calculate total savings from member's vouchers
+  const memberData = MOCK_MEMBERS.find(m => m.id === "member-1");
+  const totalSavings = memberData?.total_savings || 0;
+  const activeVouchersCount = vouchers.filter(v => v.status === 'active').length;
 
   if (loading) {
     return (
@@ -204,17 +193,33 @@ const MyHubPage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-xl bg-primary/10">
-              <Sparkles className="w-6 h-6 text-primary" />
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2 rounded-xl bg-primary/10">
+                  <Sparkles className="w-6 h-6 text-primary" />
+                </div>
+                <h1 className="text-2xl md:text-3xl font-bold text-[#1E293B]">
+                  {t("my_hub.title")}
+                </h1>
+              </div>
+              <p className="text-muted-foreground mt-1 ml-11">
+                {t("my_hub.subtitle")}
+              </p>
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold text-[#1E293B]">
-              {t("my_hub.title")}
-            </h1>
+            {/* Savings Summary */}
+            <div className="hidden md:flex items-center gap-4">
+              <div className="text-right">
+                <p className="text-xs text-muted-foreground">{t("my_hub.total_savings") || "Megtakarításod"}</p>
+                <p className="text-xl font-bold text-emerald-600">
+                  {language === 'hu' ? `${totalSavings.toLocaleString('hu-HU')} Ft` : `${Math.round(totalSavings / 400)} €`}
+                </p>
+              </div>
+              <div className="p-3 rounded-xl bg-emerald-500/10">
+                <PiggyBank className="w-6 h-6 text-emerald-600" />
+              </div>
+            </div>
           </div>
-          <p className="text-muted-foreground mt-1 ml-11">
-            {t("my_hub.subtitle")}
-          </p>
         </motion.div>
 
         {/* Tabs - Wallet Style */}

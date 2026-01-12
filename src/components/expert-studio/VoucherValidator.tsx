@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Ticket, Check, X, Camera, PartyPopper } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
 import confetti from "canvas-confetti";
+import { MOCK_VOUCHERS, MOCK_PROGRAMS, getMockExpertById, findVoucherByCode, formatPriceByLanguage } from "@/data/mockData";
 
 interface Redemption {
   id: string;
@@ -24,13 +24,14 @@ interface VoucherValidatorProps {
 }
 
 const VoucherValidator = ({ userId, onBalanceUpdate, balance }: VoucherValidatorProps) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [voucherCode, setVoucherCode] = useState("");
   const [isValidating, setIsValidating] = useState(false);
   const [scannerActive, setScannerActive] = useState(false);
   const [recentRedemptions, setRecentRedemptions] = useState<Redemption[]>([]);
   const [todayCount, setTodayCount] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [redeemedCodes, setRedeemedCodes] = useState<Set<string>>(new Set());
   const scannerRef = useRef<any>(null);
 
   useEffect(() => {
@@ -43,11 +44,15 @@ const VoucherValidator = ({ userId, onBalanceUpdate, balance }: VoucherValidator
   }, [userId]);
 
   const loadRecentRedemptions = async () => {
-    // Load mock data for now - in production, fetch from content_access
-    const mockRedemptions: Redemption[] = [
-      { id: "1", programTitle: "Kemencés kenyérsütés", amount: 500, timeAgo: "2 perce", redeemedAt: new Date() },
-      { id: "2", programTitle: "Természetes kozmetikumok", amount: 750, timeAgo: "1 órája", redeemedAt: new Date() },
-    ];
+    // Load from mock data - redeemed vouchers
+    const redeemed = MOCK_VOUCHERS.filter(v => v.status === 'redeemed').slice(0, 5);
+    const mockRedemptions: Redemption[] = redeemed.map((v, i) => ({
+      id: v.id,
+      programTitle: v.content_title,
+      amount: Math.round(v.value_huf * 0.85), // Expert gets 85%
+      timeAgo: i === 0 ? "2 perce" : i === 1 ? "1 órája" : "Ma 14:30",
+      redeemedAt: new Date(v.redeemed_at || Date.now())
+    }));
     setRecentRedemptions(mockRedemptions);
     setTodayCount(mockRedemptions.length);
   };
@@ -68,7 +73,7 @@ const VoucherValidator = ({ userId, onBalanceUpdate, balance }: VoucherValidator
 
   const handleValidateVoucher = async () => {
     if (!voucherCode.trim()) {
-      toast.error(t("expert_studio.enter_code"));
+      toast.error(t("expert_studio.enter_code") || "Kérjük add meg a kódot!");
       return;
     }
 
@@ -76,41 +81,67 @@ const VoucherValidator = ({ userId, onBalanceUpdate, balance }: VoucherValidator
     
     // Validate format
     if (!normalizedCode.match(/^WA-\d{4}-[A-Z0-9]{4}$/)) {
-      toast.error(t("expert_studio.invalid_format"));
+      toast.error(t("expert_studio.invalid_format") || "Érvénytelen formátum! (WA-2026-XXXX)");
+      return;
+    }
+
+    // Check if already redeemed in this session
+    if (redeemedCodes.has(normalizedCode)) {
+      toast.error(t("expert_studio.already_redeemed") || "Ez a kupon már be lett váltva!");
+      return;
+    }
+
+    // Find voucher in mock data
+    const voucher = findVoucherByCode(normalizedCode);
+    
+    if (!voucher) {
+      toast.error(t("expert_studio.voucher_not_found") || "A kupon nem található!");
+      return;
+    }
+
+    if (voucher.status === 'redeemed') {
+      toast.error(t("expert_studio.already_redeemed") || "Ez a kupon már korábban be lett váltva!");
       return;
     }
 
     setIsValidating(true);
 
-    // 1. OPTIMISTIC UI UPDATE - instant feedback!
-    const voucherAmount = 500; // Default amount
+    // Calculate expert earnings (85% of value)
+    const voucherAmount = Math.round(voucher.value_huf * 0.85);
+    const formattedAmount = language === 'hu' ? `${voucherAmount.toLocaleString('hu-HU')} Ft` : `${Math.round(voucherAmount / 400)} €`;
+
     const newRedemption: Redemption = {
       id: Date.now().toString(),
-      programTitle: "Program",
+      programTitle: voucher.content_title,
       amount: voucherAmount,
-      timeAgo: t("expert_studio.just_now"),
+      timeAgo: t("expert_studio.just_now") || "Most",
       redeemedAt: new Date()
     };
 
-    // Update balance immediately
+    // 1. OPTIMISTIC UI UPDATE - instant feedback!
     onBalanceUpdate(balance + voucherAmount);
     setRecentRedemptions(prev => [newRedemption, ...prev.slice(0, 4)]);
     setTodayCount(prev => prev + 1);
+    setRedeemedCodes(prev => new Set(prev).add(normalizedCode));
     triggerSuccessAnimation();
     setVoucherCode("");
 
     try {
-      // 2. BACKGROUND: Validate on server
-      // In production, this would call an edge function to validate and mark as redeemed
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      // 2. BACKGROUND: Simulate server validation
+      await new Promise(resolve => setTimeout(resolve, 800));
       
-      toast.success(`${t("expert_studio.voucher_success")}: +${voucherAmount} Ft`);
+      toast.success(`${t("expert_studio.voucher_success") || "Sikeres beváltás!"}: +${formattedAmount}`);
     } catch (error) {
       // 3. ROLLBACK if server fails
       onBalanceUpdate(balance);
       setRecentRedemptions(prev => prev.slice(1));
       setTodayCount(prev => prev - 1);
-      toast.error(t("expert_studio.validation_error"));
+      setRedeemedCodes(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(normalizedCode);
+        return newSet;
+      });
+      toast.error(t("expert_studio.validation_error") || "Beváltási hiba történt");
     } finally {
       setIsValidating(false);
     }

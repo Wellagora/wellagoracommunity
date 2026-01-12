@@ -9,9 +9,11 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Users, Sparkles, Building2, ArrowLeft, Check } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Loader2, Users, Sparkles, Building2, ArrowLeft, Check, ChevronDown } from "lucide-react";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
+import { DEMO_ACCOUNTS } from "@/data/mockData";
 
 // Accent colors
 const FRESH_GREEN = "#34C759";
@@ -336,6 +338,35 @@ const AuthPage = () => {
                       {t('auth.continue') || 'Bejelentkezés'}
                     </Button>
                   </form>
+
+                  {/* Demo Login Panel */}
+                  <Collapsible className="mt-6 pt-6 border-t border-slate-200">
+                    <CollapsibleTrigger className="flex items-center justify-center gap-2 w-full text-sm text-slate-500 hover:text-slate-700 transition-colors">
+                      <span>🎭 Demo belépés</span>
+                      <ChevronDown className="w-4 h-4" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="mt-4">
+                      <div className="grid grid-cols-2 gap-2">
+                        {DEMO_ACCOUNTS.map((acc) => (
+                          <Button
+                            key={acc.role}
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="text-xs border-slate-200 hover:bg-slate-50"
+                            onClick={() => {
+                              setLoginForm({ email: acc.email, password: acc.password });
+                            }}
+                          >
+                            {acc.name}
+                          </Button>
+                        ))}
+                      </div>
+                      <p className="text-xs text-slate-400 text-center mt-3">
+                        Kattints, majd nyomd meg a "Bejelentkezés" gombot
+                      </p>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </CardContent>
               </Card>
             </TabsContent>

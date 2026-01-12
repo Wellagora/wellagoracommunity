@@ -429,25 +429,270 @@ export const MOCK_PROGRAMS: MockProgram[] = [
   }
 ];
 
-export const MOCK_VOUCHERS: MockVoucher[] = [
+// ===== MOCK SPONSORS =====
+export interface MockSponsor {
+  id: string;
+  organization_name: string;
+  organization_name_en: string;
+  organization_name_de: string;
+  contact_name: string;
+  email?: string;
+  user_role: 'sponsor';
+  total_credits: number;
+  used_credits: number;
+  available_credits: number;
+  sponsored_programs: number;
+  people_reached: number;
+}
+
+export const MOCK_SPONSORS: MockSponsor[] = [
   {
-    id: 'mock-voucher-1',
-    code: 'WA-2026-XK4M',
-    content_id: 'mock-program-1',
-    content_title: 'Kemenceépítés alapjai',
-    status: 'active',
-    created_at: '2026-01-05T10:00:00Z',
-    pickup_location: 'A Szakértőnél'
+    id: "sponsor-1",
+    organization_name: "Káli Panzió",
+    organization_name_en: "Káli Guesthouse",
+    organization_name_de: "Káli Pension",
+    contact_name: "Horváth Mária",
+    email: "maria@kalipanzio.hu",
+    user_role: "sponsor",
+    total_credits: 50000,
+    used_credits: 15000,
+    available_credits: 35000,
+    sponsored_programs: 4,
+    people_reached: 127
   },
   {
-    id: 'mock-voucher-2',
-    code: 'WA-2026-B7PQ',
-    content_id: 'mock-program-3',
-    content_title: 'Gyógynövénygyűjtés túra',
-    status: 'active',
-    created_at: '2026-01-03T14:30:00Z',
-    pickup_location: 'A Szakértőnél'
+    id: "sponsor-2",
+    organization_name: "Balaton Bio Kft.",
+    organization_name_en: "Balaton Bio Ltd.",
+    organization_name_de: "Balaton Bio GmbH",
+    contact_name: "Szabó Péter",
+    email: "peter@balatonbio.hu",
+    user_role: "sponsor",
+    total_credits: 100000,
+    used_credits: 45000,
+    available_credits: 55000,
+    sponsored_programs: 8,
+    people_reached: 312
+  },
+  {
+    id: "sponsor-3",
+    organization_name: "Köveskál Önkormányzat",
+    organization_name_en: "Köveskál Municipality",
+    organization_name_de: "Gemeinde Köveskál",
+    contact_name: "Dr. Kiss László",
+    email: "polgarmester@koveskal.hu",
+    user_role: "sponsor",
+    total_credits: 200000,
+    used_credits: 78000,
+    available_credits: 122000,
+    sponsored_programs: 12,
+    people_reached: 534
+  },
+  {
+    id: "sponsor-4",
+    organization_name: "Tapolca Takarék",
+    organization_name_en: "Tapolca Savings Bank",
+    organization_name_de: "Tapolca Sparkasse",
+    contact_name: "Nagy Katalin",
+    email: "info@tapolcatakarek.hu",
+    user_role: "sponsor",
+    total_credits: 150000,
+    used_credits: 62000,
+    available_credits: 88000,
+    sponsored_programs: 6,
+    people_reached: 245
+  },
+  {
+    id: "sponsor-5",
+    organization_name: "Badacsony Borászat",
+    organization_name_en: "Badacsony Winery",
+    organization_name_de: "Badacsony Weingut",
+    contact_name: "Varga István",
+    email: "info@badacsonyboraszat.hu",
+    user_role: "sponsor",
+    total_credits: 75000,
+    used_credits: 28000,
+    available_credits: 47000,
+    sponsored_programs: 5,
+    people_reached: 189
   }
+];
+
+// ===== MOCK MEMBERS =====
+export interface MockMember {
+  id: string;
+  full_name: string;
+  email: string;
+  user_role: 'member';
+  location_city: string;
+  active_vouchers: number;
+  redeemed_vouchers: number;
+  total_savings: number;
+}
+
+export const MOCK_MEMBERS: MockMember[] = [
+  {
+    id: "member-1",
+    full_name: "Tóth Eszter",
+    email: "demo-tag@wellagora.hu",
+    user_role: "member",
+    location_city: "Budapest",
+    active_vouchers: 3,
+    redeemed_vouchers: 5,
+    total_savings: 12500
+  },
+  {
+    id: "member-2",
+    full_name: "Molnár Gábor",
+    email: "gabor.molnar@example.com",
+    user_role: "member",
+    location_city: "Kővágóörs",
+    active_vouchers: 2,
+    redeemed_vouchers: 8,
+    total_savings: 24000
+  },
+  {
+    id: "member-3",
+    full_name: "Fekete Anna",
+    email: "anna.fekete@example.com",
+    user_role: "member",
+    location_city: "Tapolca",
+    active_vouchers: 1,
+    redeemed_vouchers: 12,
+    total_savings: 36500
+  },
+  {
+    id: "member-4",
+    full_name: "Varga Zoltán",
+    email: "zoltan.varga@example.com",
+    user_role: "member",
+    location_city: "Badacsonytomaj",
+    active_vouchers: 4,
+    redeemed_vouchers: 3,
+    total_savings: 8500
+  },
+  {
+    id: "member-5",
+    full_name: "Kiss Judit",
+    email: "judit.kiss@example.com",
+    user_role: "member",
+    location_city: "Révfülöp",
+    active_vouchers: 0,
+    redeemed_vouchers: 15,
+    total_savings: 45000
+  }
+];
+
+// ===== ENHANCED MOCK VOUCHERS =====
+export interface MockVoucher {
+  id: string;
+  code: string;
+  content_id: string;
+  content_title: string;
+  member_id: string;
+  sponsor_name: string;
+  status: 'active' | 'redeemed';
+  value_huf: number;
+  created_at: string;
+  pickup_location: string;
+  expires_at?: string;
+  redeemed_at?: string;
+}
+
+export const MOCK_VOUCHERS: MockVoucher[] = [
+  {
+    id: "voucher-1",
+    code: "WA-2026-K4L1",
+    content_id: "mock-program-2",
+    content_title: "Kovászkenyér mesterkurzus",
+    member_id: "member-1",
+    sponsor_name: "Káli Panzió",
+    status: "active",
+    value_huf: 3500,
+    created_at: "2026-01-10T10:00:00Z",
+    pickup_location: "A Szakértőnél",
+    expires_at: "2026-02-05"
+  },
+  {
+    id: "voucher-2",
+    code: "WA-2026-B1O2",
+    content_id: "mock-program-9",
+    content_title: "Méhészkedés alapjai",
+    member_id: "member-1",
+    sponsor_name: "Balaton Bio Kft.",
+    status: "active",
+    value_huf: 3500,
+    created_at: "2026-01-08T14:00:00Z",
+    pickup_location: "A Szakértőnél",
+    expires_at: "2026-01-20"
+  },
+  {
+    id: "voucher-3",
+    code: "WA-2026-K0V3",
+    content_id: "mock-program-3",
+    content_title: "Gyógynövénygyűjtés túra",
+    member_id: "member-1",
+    sponsor_name: "Köveskál Önkormányzat",
+    status: "active",
+    value_huf: 2990,
+    created_at: "2026-01-05T09:30:00Z",
+    pickup_location: "A Szakértőnél",
+    expires_at: "2026-02-15"
+  },
+  {
+    id: "voucher-4",
+    code: "WA-2026-R3D1",
+    content_id: "mock-program-1",
+    content_title: "Kemenceépítés alapjai",
+    member_id: "member-2",
+    sponsor_name: "Káli Panzió",
+    status: "redeemed",
+    value_huf: 4500,
+    created_at: "2025-12-28T10:00:00Z",
+    pickup_location: "A Szakértőnél",
+    redeemed_at: "2026-01-02"
+  },
+  {
+    id: "voucher-5",
+    code: "WA-2026-T4P1",
+    content_id: "mock-program-5",
+    content_title: "Borkóstoló és pincetúra",
+    member_id: "member-3",
+    sponsor_name: "Tapolca Takarék",
+    status: "redeemed",
+    value_huf: 3490,
+    created_at: "2025-12-20T15:00:00Z",
+    pickup_location: "A Szakértőnél",
+    redeemed_at: "2026-01-05"
+  },
+  {
+    id: "voucher-6",
+    code: "WA-2026-W8NE",
+    content_id: "mock-program-7",
+    content_title: "Kosárfonás kezdőknek",
+    member_id: "member-2",
+    sponsor_name: "Badacsony Borászat",
+    status: "active",
+    value_huf: 2800,
+    created_at: "2026-01-11T08:00:00Z",
+    pickup_location: "A Szakértőnél",
+    expires_at: "2026-02-20"
+  }
+];
+
+// ===== DEMO ACCOUNTS =====
+export interface DemoAccount {
+  email: string;
+  password: string;
+  role: 'member' | 'expert' | 'sponsor' | 'admin';
+  name: string;
+}
+
+export const DEMO_ACCOUNTS: DemoAccount[] = [
+  { email: "demo-tag@wellagora.hu", password: "Demo123!", role: "member", name: "Tag (Tóth Eszter)" },
+  { email: "demo-expert@wellagora.hu", password: "Demo123!", role: "expert", name: "Szakértő (Kovács J.)" },
+  { email: "demo-sponsor@wellagora.hu", password: "Demo123!", role: "sponsor", name: "Szponzor (Káli Panzió)" },
+  { email: "admin@wellagora.hu", password: "Admin123!", role: "admin", name: "Admin" }
 ];
 
 // Helper function to get programs by expert
@@ -487,6 +732,13 @@ export const getLocalizedSponsorName = (program: MockProgram, language: string):
   return program.sponsor_name;
 };
 
+// Helper to get localized organization name
+export const getLocalizedOrgName = (sponsor: MockSponsor, language: string): string => {
+  if (language === 'en') return sponsor.organization_name_en || sponsor.organization_name;
+  if (language === 'de') return sponsor.organization_name_de || sponsor.organization_name;
+  return sponsor.organization_name;
+};
+
 // Currency conversion rates (approximate)
 const HUF_TO_EUR_RATE = 400;
 
@@ -518,4 +770,24 @@ export const getLocalizedProgramDescription = (program: MockProgram, language: s
   if (language === 'en') return program.description_en || program.description;
   if (language === 'de') return program.description_de || program.description;
   return program.description;
+};
+
+// Helper to get vouchers for a specific member
+export const getMockVouchersForMember = (memberId: string): MockVoucher[] => {
+  return MOCK_VOUCHERS.filter(v => v.member_id === memberId);
+};
+
+// Helper to find voucher by code
+export const findVoucherByCode = (code: string): MockVoucher | undefined => {
+  return MOCK_VOUCHERS.find(v => v.code.toUpperCase() === code.toUpperCase());
+};
+
+// Helper to get sponsor by ID
+export const getMockSponsorById = (sponsorId: string): MockSponsor | undefined => {
+  return MOCK_SPONSORS.find(s => s.id === sponsorId);
+};
+
+// Helper to get demo account sponsor (for demo login)
+export const getDemoSponsorData = (): MockSponsor => {
+  return MOCK_SPONSORS[0]; // Káli Panzió
 };
