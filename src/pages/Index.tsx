@@ -3,9 +3,9 @@ import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { useCommunityStats } from "@/hooks/useCommunityStats";
+import { useCommunityStats, DEMO_STATS, DEMO_SPONSORS_COUNT } from "@/hooks/useCommunityStats";
 import { motion } from "framer-motion";
-import { Users, Award, TrendingUp, ChevronRight } from "lucide-react";
+import { Users, Award, TrendingUp, Heart, ChevronRight } from "lucide-react";
 
 import HeroSection from "@/components/HeroSection";
 import ExpertGallery from "@/components/ExpertGallery";
@@ -19,7 +19,7 @@ import { StatsBarSkeleton } from "@/components/ui/skeletons";
 
 const Index = () => {
   const { t } = useLanguage();
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading, isDemoMode } = useAuth();
   
   // Use the centralized hook for community stats
   const { stats: communityStats, loading: statsLoading } = useCommunityStats();
@@ -100,6 +100,15 @@ const Index = () => {
                       <div>
                         <div className="text-xl font-bold text-slate-900">{communityStats.members}</div>
                         <div className="text-xs text-slate-600">{t("index.stat_members")}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center">
+                        <Heart className="w-5 h-5 text-rose-600" />
+                      </div>
+                      <div>
+                        <div className="text-xl font-bold text-slate-900">{isDemoMode ? DEMO_SPONSORS_COUNT : communityStats.activeChallenges}</div>
+                        <div className="text-xs text-slate-600">{t("index.stat_sponsors")}</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
