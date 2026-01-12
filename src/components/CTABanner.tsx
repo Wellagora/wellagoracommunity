@@ -8,11 +8,11 @@ const CTABanner = () => {
   const { t } = useLanguage();
 
   return (
-    <section className="relative py-16 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 overflow-hidden">
+    <section className="relative py-16 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 overflow-hidden z-0">
       {/* Decorative elements */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-      <div className="absolute top-0 left-1/4 w-64 h-64 bg-primary/20 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-accent/20 rounded-full blur-3xl" />
+      <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-64 h-64 bg-primary/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-accent/20 rounded-full blur-3xl pointer-events-none" />
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
