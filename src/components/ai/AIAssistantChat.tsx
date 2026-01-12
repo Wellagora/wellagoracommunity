@@ -51,27 +51,30 @@ const AIAssistantChat = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Conversational response prefixes for humanization
-  const getConversationalPrefix = (): string => {
+  // Personal, intimate conversational prefixes - WellBot knows the experts personally
+  const getPersonalPrefix = (): string => {
     const prefixes = language === 'hu' 
       ? [
-          'Szerintem számodra ez érdekes lehet... ',
-          'A mi 127 tagunk közül sokan szeretik ezt... ',
+          'Ajánlom neked... ',
+          'Ismerem a tökéletes szakértőt! ',
+          'Beszélj vele személyesen... ',
           'Hadd mutassam be neked... ',
-          'Örömmel segítek! '
+          'Tudom, ki segíthet! '
         ]
       : language === 'de'
       ? [
-          'Ich denke, das könnte dich interessieren... ',
-          'Viele unserer 127 Mitglieder mögen das... ',
-          'Lass mich dir zeigen... ',
-          'Ich helfe dir gerne! '
+          'Ich empfehle dir... ',
+          'Ich kenne den perfekten Experten! ',
+          'Sprich persönlich mit... ',
+          'Lass mich dir vorstellen... ',
+          'Ich weiß, wer helfen kann! '
         ]
       : [
-          'I think this might interest you... ',
-          'Many of our 127 members love this... ',
-          'Let me show you... ',
-          'Happy to help! '
+          'I recommend... ',
+          'I know the perfect expert! ',
+          'Talk to them personally... ',
+          'Let me introduce you to... ',
+          'I know who can help! '
         ];
     return prefixes[Math.floor(Math.random() * prefixes.length)];
   };
@@ -125,28 +128,30 @@ const AIAssistantChat = () => {
   };
 
   // ===== PROACTIVE COMMUNITY CONCIERGE INTELLIGENCE =====
-  // Zero Rejection Rule: NEVER say "I don't have this"
-  // Always synthesize helpful recommendations from available data
+  // Zero Rejection Rule: NEVER say "Sajnálom", "nincs információm", or any apology
+  // Always synthesize helpful recommendations - WellBot KNOWS the experts personally
   const getDemoResponse = (userMessage: string): string => {
     const lowerMsg = userMessage.toLowerCase();
-    const prefix = getConversationalPrefix();
+    const prefix = getPersonalPrefix();
     
     // ===== COOKING / GASTRONOMY - Proactive Multi-Expert Matching =====
     if (lowerMsg.includes('főz') || lowerMsg.includes('cook') || lowerMsg.includes('koch') || 
         lowerMsg.includes('recept') || lowerMsg.includes('recipe') || lowerMsg.includes('rezept') ||
         lowerMsg.includes('konyha') || lowerMsg.includes('kitchen') || lowerMsg.includes('küche') ||
-        lowerMsg.includes('étel') || lowerMsg.includes('food') || lowerMsg.includes('essen')) {
+        lowerMsg.includes('étel') || lowerMsg.includes('food') || lowerMsg.includes('essen') ||
+        lowerMsg.includes('gasztro') || lowerMsg.includes('gastro')) {
       setAvatarMood("happy");
       const chef = MOCK_EXPERTS.find(e => e.id === 'mock-expert-6'); // Molnár Balázs
       const baker = MOCK_EXPERTS.find(e => e.id === 'mock-expert-1'); // Kovács István
       const herbalist = MOCK_EXPERTS.find(e => e.id === 'mock-expert-2'); // Nagy Éva
+      const cookingProgram = MOCK_PROGRAMS.find(p => p.id === 'mock-program-11'); // Közösségi Főzőtanfolyam
       const sponsor = findSponsor('Káli');
       
       return language === 'hu'
-        ? `${prefix}🍳 A főzés a közösségünk egyik leggazdagabb területe! Három szakértőnk is foglalkozik a gasztronómiával:\n\n👨‍🍳 **${chef ? getExpertName(chef) : 'Molnár Balázs'}** - ${chef ? getExpertTitle(chef) : 'Séf és Gasztro-szakértő'}\nA helyi konyha mestere, a "Közösségi Főzőtanfolyam" vezetője.\n\n🍞 **${baker ? getExpertName(baker) : 'Kovács István'}** - ${baker ? getExpertTitle(baker) : 'Kemencemester'}\nA kovászkenyér és kemencés ételek szakértője.\n\n🌿 **${herbalist ? getExpertName(herbalist) : 'Nagy Éva'}** - ${herbalist ? getExpertTitle(herbalist) : 'Gyógynövényszakértő'}\nA fűszerek és teakeverékek tudora.\n\n🏨 A ${sponsor?.organization_name || 'Káli Panzió'} szponzorációjával több program ingyenes!\n\n❓ **A főzésen belül mi érdekel jobban?**\n• A technikák és alapok?\n• Helyi alapanyagok beszerzése?\n• Hagyományos receptek?`
+        ? `${prefix}🍳 A főzés nálunk közösségi élmény! Személyesen ismerem a szakértőinket:\n\n👨‍🍳 **Beszélj Balázzsal!** - ${chef ? getExpertName(chef) : 'Molnár Balázs'} (${chef ? getExpertTitle(chef) : 'Séf'})\nA helyi konyha mestere. Ajánlom a "${cookingProgram ? getProgramTitle(cookingProgram) : 'Közösségi Főzőtanfolyam'}" programját!\n\n🍞 **Keresd Jánost!** - ${baker ? getExpertName(baker) : 'Kovács István'} (${baker ? getExpertTitle(baker) : 'Kemencemester'})\nA kemencés ételek és kovászkenyér tudora.\n\n🌿 **Szólj Évának!** - ${herbalist ? getExpertName(herbalist) : 'Nagy Éva'} (${herbalist ? getExpertTitle(herbalist) : 'Gyógynövényszakértő'})\nA fűszerek és ízesítés titkaiba avat be.\n\n🏨 A ${sponsor?.organization_name || 'Káli Panzió'} szponzorációjával Balázs programja **INGYENES**!\n\n❓ **Mit szeretnél pontosan tanulni?**\n• Alapvető főzési technikákat?\n• Helyi alapanyagok használatát?\n• Hagyományos magyar recepteket?`
         : language === 'de'
-        ? `${prefix}🍳 Kochen ist einer der reichsten Bereiche unserer Gemeinschaft! Drei unserer Experten beschäftigen sich mit Gastronomie:\n\n👨‍🍳 **${chef ? getExpertName(chef) : 'Bastian Meier'}** - ${chef ? getExpertTitle(chef) : 'Küchenchef'}\nMeister der lokalen Küche.\n\n🍞 **${baker ? getExpertName(baker) : 'Hans Schmidt'}** - ${baker ? getExpertTitle(baker) : 'Ofenbaumeister'}\nExperte für Sauerteigbrot.\n\n🌿 **${herbalist ? getExpertName(herbalist) : 'Anna Müller'}** - ${herbalist ? getExpertTitle(herbalist) : 'Kräuterexpertin'}\nKenner von Gewürzen und Teemischungen.\n\n🏨 Dank ${sponsor?.organization_name_de || 'Káli Pension'} sind viele Programme kostenlos!\n\n❓ **Was interessiert dich beim Kochen mehr?**\n• Techniken und Grundlagen?\n• Lokale Zutaten?\n• Traditionelle Rezepte?`
-        : `${prefix}🍳 Cooking is one of the richest areas of our community! Three of our experts work with gastronomy:\n\n👨‍🍳 **${chef ? getExpertName(chef) : 'Benjamin Miller'}** - ${chef ? getExpertTitle(chef) : 'Chef & Gastronomy Expert'}\nMaster of local cuisine.\n\n🍞 **${baker ? getExpertName(baker) : 'Stephen Smith'}** - ${baker ? getExpertTitle(baker) : 'Brick Oven Master'}\nSourdough and oven cooking expert.\n\n🌿 **${herbalist ? getExpertName(herbalist) : 'Eva Green'}** - ${herbalist ? getExpertTitle(herbalist) : 'Herbalist Expert'}\nMaster of spices and tea blends.\n\n🏨 Thanks to ${sponsor?.organization_name_en || 'Káli Guesthouse'} sponsorship, many programs are free!\n\n❓ **What interests you most about cooking?**\n• Techniques and basics?\n• Local ingredients?\n• Traditional recipes?`;
+        ? `${prefix}🍳 Kochen ist bei uns ein Gemeinschaftserlebnis! Ich kenne unsere Experten persönlich:\n\n👨‍🍳 **Sprich mit Bastian!** - ${chef ? getExpertName(chef) : 'Bastian Meier'} (${chef ? getExpertTitle(chef) : 'Küchenchef'})\nMeister der lokalen Küche.\n\n🍞 **Frag Hans!** - ${baker ? getExpertName(baker) : 'Hans Schmidt'} (${baker ? getExpertTitle(baker) : 'Ofenbaumeister'})\nExperte für Ofengerichte und Sauerteigbrot.\n\n🌿 **Kontaktiere Anna!** - ${herbalist ? getExpertName(herbalist) : 'Anna Müller'} (${herbalist ? getExpertTitle(herbalist) : 'Kräuterexpertin'})\nSie weiht dich in die Geheimnisse der Gewürze ein.\n\n🏨 Dank ${sponsor?.organization_name_de || 'Káli Pension'} ist Bastians Programm **KOSTENLOS**!\n\n❓ **Was möchtest du genau lernen?**`
+        : `${prefix}🍳 Cooking is a community experience here! I know our experts personally:\n\n👨‍🍳 **Talk to Benjamin!** - ${chef ? getExpertName(chef) : 'Benjamin Miller'} (${chef ? getExpertTitle(chef) : 'Chef'})\nMaster of local cuisine.\n\n🍞 **Ask Stephen!** - ${baker ? getExpertName(baker) : 'Stephen Smith'} (${baker ? getExpertTitle(baker) : 'Brick Oven Master'})\nExpert in oven dishes and sourdough bread.\n\n🌿 **Contact Eva!** - ${herbalist ? getExpertName(herbalist) : 'Eva Green'} (${herbalist ? getExpertTitle(herbalist) : 'Herbalist'})\nShe'll teach you the secrets of spices.\n\n🏨 Thanks to ${sponsor?.organization_name_en || 'Káli Guesthouse'} sponsorship, Benjamin's program is **FREE**!\n\n❓ **What would you like to learn specifically?**`;
     }
     
     // ===== BREAD / BAKING =====
