@@ -12,13 +12,18 @@ import SponsorActiveSponsorships from '@/components/sponsor/SponsorActiveSponsor
 import { SubscriptionPlanSelector } from '@/components/subscription/SubscriptionPlanSelector';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { toast } from 'sonner';
+import { getDemoSponsorData, getLocalizedOrgName, formatPriceByLanguage } from '@/data/mockData';
 
 const SponsorDashboardPage = () => {
   const navigate = useNavigate();
   const { user, profile } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { currentSubscription } = useSubscription();
   const [showPackages, setShowPackages] = useState(false);
+
+  // Get demo sponsor data for display
+  const sponsorData = getDemoSponsorData();
+  const orgName = getLocalizedOrgName(sponsorData, language);
 
   // Check if user is a business/sponsor type OR is Super Admin
   const isSponsor = profile?.user_role && ['business', 'government', 'ngo'].includes(profile.user_role);
@@ -58,11 +63,11 @@ const SponsorDashboardPage = () => {
     );
   }
 
-  // Mock stats for clean UI
+  // Use sponsor's actual data from mock
   const stats = [
-    { labelKey: 'sponsor_dashboard.active_licenses', value: '248', icon: CreditCard, color: 'text-[#007AFF]' },
-    { labelKey: 'sponsor_dashboard.community_impact', value: '1,240', icon: Users, color: 'text-emerald-500' },
-    { labelKey: 'sponsor_dashboard.redemption_rate', value: '67%', icon: TrendingUp, color: 'text-amber-500' },
+    { labelKey: 'sponsor_dashboard.active_licenses', value: sponsorData.sponsored_programs.toString(), icon: CreditCard, color: 'text-[#007AFF]' },
+    { labelKey: 'sponsor_dashboard.community_impact', value: sponsorData.people_reached.toString(), icon: Users, color: 'text-emerald-500' },
+    { labelKey: 'sponsor_dashboard.redemption_rate', value: `${Math.round((sponsorData.used_credits / sponsorData.total_credits) * 100)}%`, icon: TrendingUp, color: 'text-amber-500' },
     { labelKey: 'sponsor_dashboard.brand_awareness', value: '+23%', icon: BarChart3, color: 'text-purple-500' },
   ];
 
