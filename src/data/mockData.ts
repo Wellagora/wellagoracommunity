@@ -692,6 +692,116 @@ export const MOCK_VOUCHERS: MockVoucher[] = [
   }
 ];
 
+// ===== MOCK COMMUNITY Q&A =====
+export interface MockQuestion {
+  id: string;
+  question: string;
+  question_en: string;
+  question_de: string;
+  created_at: string;
+  user: {
+    first_name: string;
+    last_name: string;
+    avatar_url: string | null;
+  };
+  content?: {
+    id: string;
+    title: string;
+    title_en: string;
+    title_de: string;
+  };
+  answers: {
+    id: string;
+    answer: string;
+    answer_en: string;
+    answer_de: string;
+    expert: {
+      first_name: string;
+      last_name: string;
+      avatar_url: string | null;
+    };
+  }[];
+}
+
+export const MOCK_QA: MockQuestion[] = [
+  {
+    id: 'qa-1',
+    question: 'Hogyan kezdjek bele a kovászolásba? Sosem csináltam még.',
+    question_en: 'How do I start with sourdough? I have never done it before.',
+    question_de: 'Wie fange ich mit Sauerteig an? Ich habe es noch nie gemacht.',
+    created_at: '2026-01-10T08:30:00Z',
+    user: { first_name: 'Tóth', last_name: 'Eszter', avatar_url: null },
+    content: { id: 'mock-program-2', title: 'Kovászkenyér mesterkurzus', title_en: 'Sourdough Masterclass', title_de: 'Sauerteig-Meisterkurs' },
+    answers: [
+      {
+        id: 'ans-1',
+        answer: 'Nézd meg a programom videóját! A kezdéshez csak liszt és víz kell. Örömmel várlak a következő workshopon is!',
+        answer_en: 'Check out my program video! To start, you only need flour and water. I would be happy to see you at my next workshop!',
+        answer_de: 'Schau dir mein Programmvideo an! Zum Anfangen brauchst du nur Mehl und Wasser. Ich freue mich, dich beim nächsten Workshop zu sehen!',
+        expert: { first_name: 'István', last_name: 'Kovács', avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face' }
+      }
+    ]
+  },
+  {
+    id: 'qa-2',
+    question: 'Milyen gyógynövényeket gyűjthetek télen a környéken?',
+    question_en: 'What medicinal herbs can I forage in winter in the region?',
+    question_de: 'Welche Heilkräuter kann ich im Winter in der Region sammeln?',
+    created_at: '2026-01-08T14:20:00Z',
+    user: { first_name: 'Molnár', last_name: 'Gábor', avatar_url: null },
+    content: { id: 'mock-program-3', title: 'Gyógynövénygyűjtés túra', title_en: 'Herb Foraging Tour', title_de: 'Kräutersammelwanderung' },
+    answers: [
+      {
+        id: 'ans-2',
+        answer: 'Télen is sok mindent találsz! Csipkebogyó, fagyöngy, fekete bodza kérge. Gyere el a téli túrámra!',
+        answer_en: 'You can find plenty in winter too! Rosehip, mistletoe, elderberry bark. Join my winter tour!',
+        answer_de: 'Im Winter findest du auch viel! Hagebutte, Mistel, Holunderrinde. Komm zu meiner Wintertour!',
+        expert: { first_name: 'Éva', last_name: 'Nagy', avatar_url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face' }
+      }
+    ]
+  },
+  {
+    id: 'qa-3',
+    question: 'Melyik szőlőfajta illik legjobban a vulkáni talajhoz?',
+    question_en: 'Which grape variety is best suited for volcanic soil?',
+    question_de: 'Welche Rebsorte eignet sich am besten für vulkanischen Boden?',
+    created_at: '2026-01-05T11:45:00Z',
+    user: { first_name: 'Fekete', last_name: 'Anna', avatar_url: null },
+    answers: []
+  },
+  {
+    id: 'qa-4',
+    question: 'Hol vásárolhatok jó minőségű fűzfavesszőt kosárfonáshoz?',
+    question_en: 'Where can I buy good quality willow rods for basket weaving?',
+    question_de: 'Wo kann ich gute Weidenruten zum Korbflechten kaufen?',
+    created_at: '2026-01-03T16:00:00Z',
+    user: { first_name: 'Varga', last_name: 'Zoltán', avatar_url: null },
+    content: { id: 'mock-program-7', title: 'Kosárfonás kezdőknek', title_en: 'Basket Weaving for Beginners', title_de: 'Korbflechten für Anfänger' },
+    answers: [
+      {
+        id: 'ans-4',
+        answer: 'A programomon biztosítom az anyagot, de ha magadnak szeretnél, a helyi piacomon találsz. Üdv, Anna',
+        answer_en: 'I provide the materials in my program, but if you want your own, you can find them at my local market. Regards, Anna',
+        answer_de: 'Ich stelle die Materialien in meinem Programm zur Verfügung, aber wenn du eigene möchtest, findest du sie auf meinem lokalen Markt. Grüße, Anna',
+        expert: { first_name: 'Anna', last_name: 'Tóth', avatar_url: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face' }
+      }
+    ]
+  }
+];
+
+// Helper to get localized Q&A
+export const getLocalizedQuestion = (q: MockQuestion, language: string): string => {
+  if (language === 'en') return q.question_en || q.question;
+  if (language === 'de') return q.question_de || q.question;
+  return q.question;
+};
+
+export const getLocalizedAnswer = (a: MockQuestion['answers'][0], language: string): string => {
+  if (language === 'en') return a.answer_en || a.answer;
+  if (language === 'de') return a.answer_de || a.answer;
+  return a.answer;
+};
+
 // ===== DEMO ACCOUNTS =====
 export interface DemoAccount {
   email: string;
