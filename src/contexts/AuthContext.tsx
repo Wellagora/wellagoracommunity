@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
+import { DEMO_ACCOUNTS, MOCK_SPONSORS, MOCK_EXPERTS } from '@/data/mockData';
 
 // User roles - simplified to 3 main roles
 export type UserRole = 'member' | 'expert' | 'sponsor';
@@ -32,6 +33,7 @@ interface AuthContextType {
   profile: Profile | null;
   session: Session | null;
   loading: boolean;
+  isDemoMode: boolean;
   signUp: (data: {
     email: string;
     password: string;
@@ -42,7 +44,7 @@ interface AuthContextType {
     bio?: string;
     industry?: string;
   }) => Promise<{ error: Error | null }>;
-  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: Error | null; demoRole?: string }>;
   signOut: () => Promise<void>;
   updateProfile: (updates: Partial<Profile>) => Promise<{ error: Error | null }>;
   setProfile: React.Dispatch<React.SetStateAction<Profile | null>>;
@@ -64,6 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isDemoMode, setIsDemoMode] = useState(false);
 
   // Helper function to fetch profile data
   const fetchProfileData = async (userId: string) => {
@@ -145,6 +148,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     logger.debug('Setting up auth state listener', null, 'Auth');
     
+    // Check for demo session first
+    const demoSession = localStorage.getItem('wellagora_demo_session');
+    if (demoSession) {
+      try {
+        const { user: demoUser, profile: demoProfile } = JSON.parse(demoSession);
+        logger.debug('Restoring demo session', { role: demoProfile?.user_role }, 'Auth');
+        setUser(demoUser);
+        setProfile(demoProfile);
+        setIsDemoMode(true);
+        setLoading(false);
+        return; // Skip Supabase session check for demo mode
+      } catch (e) {
+        localStorage.removeItem('wellagora_demo_session');
+      }
+    }
+    
     // Set up auth state listener - MUST NOT be async!
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
@@ -224,17 +243,92 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { error };
   };
 
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+  const signIn = async (email: string, password: string): Promise<{ error: Error | null; demoRole?: string }> => {
+    // 1. CHECK FOR DEMO ACCOUNT FIRST
+    const demoAccount = DEMO_ACCOUNTS.find(
+      acc => acc.email.toLowerCase() === email.toLowerCase() && acc.password === password
+    );
 
-    return { error };
+    if (demoAccount) {
+      logger.debug('Demo mode activated', { role: demoAccount.role }, 'Auth');
+      
+      // Create mock user object (mimics Supabase user structure)
+      const mockUser = {
+        id: `demo-${demoAccount.role}-${Date.now()}`,
+        email: demoAccount.email,
+        user_metadata: { 
+          full_name: demoAccount.name,
+          role: demoAccount.role 
+        },
+        app_metadata: {},
+        aud: 'authenticated',
+        created_at: new Date().toISOString()
+      };
+
+      // Get role-specific data
+      const sponsorData = demoAccount.role === 'sponsor' ? MOCK_SPONSORS[0] : null;
+      const expertData = demoAccount.role === 'expert' ? MOCK_EXPERTS[0] : null;
+
+      // Create mock profile object
+      const mockProfile: Profile = {
+        id: mockUser.id,
+        first_name: demoAccount.role === 'sponsor' 
+          ? sponsorData?.contact_name?.split(' ')[1] || 'Mária'
+          : demoAccount.role === 'expert'
+            ? expertData?.first_name || 'János'
+            : 'Eszter',
+        last_name: demoAccount.role === 'sponsor' 
+          ? sponsorData?.contact_name?.split(' ')[0] || 'Horváth'
+          : demoAccount.role === 'expert'
+            ? expertData?.last_name || 'Kovács'
+            : 'Tóth',
+        email: demoAccount.email,
+        user_role: demoAccount.role === 'admin' ? 'member' : demoAccount.role,
+        is_super_admin: demoAccount.role === 'admin',
+        organization_name: sponsorData?.organization_name || null,
+        organization_logo_url: null,
+        avatar_url: expertData?.avatar_url || null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        is_verified_expert: demoAccount.role === 'expert',
+      };
+
+      // Set states
+      setUser(mockUser as unknown as User);
+      setProfile(mockProfile);
+      setIsDemoMode(true);
+      
+      // Store demo session in localStorage for persistence
+      localStorage.setItem('wellagora_demo_session', JSON.stringify({
+        user: mockUser,
+        profile: mockProfile,
+        role: demoAccount.role
+      }));
+
+      return { error: null, demoRole: demoAccount.role };
+    }
+
+    // 2. NORMAL SUPABASE LOGIN (for real accounts)
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      return { error };
+    } catch (error) {
+      return { error: error as Error };
+    }
   };
 
   const signOut = async () => {
+    // Clear demo session if exists
+    localStorage.removeItem('wellagora_demo_session');
+    setIsDemoMode(false);
+    
+    // Normal Supabase signout
     await supabase.auth.signOut();
+    setUser(null);
+    setProfile(null);
   };
 
   const updateProfile = async (updates: Partial<Profile>) => {
@@ -262,6 +356,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     profile,
     session,
     loading,
+    isDemoMode,
     signUp,
     signIn,
     signOut,

@@ -46,7 +46,7 @@ const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [activeView, setActiveView] = useState<'member' | 'expert' | 'sponsor' | null>(null);
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, signOut, isDemoMode } = useAuth();
   const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
@@ -266,13 +266,32 @@ const Navigation = () => {
   }, [user, profile, t, displayRole]);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[100] w-full bg-white/70 backdrop-blur-xl border-b border-[#E5E5E7] shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 shrink-0">
-            <img src={wellagoraLogo} alt="WellAgora" className="h-10 w-auto object-contain" />
-          </Link>
+    <>
+      {/* Demo Mode Banner */}
+      {isDemoMode && (
+        <div className="fixed top-0 left-0 right-0 z-[110] bg-gradient-to-r from-amber-400 to-orange-400 text-white py-1 px-4 flex items-center justify-center gap-3 text-sm font-medium shadow-md">
+          <span className="flex items-center gap-1">
+            🎭 Demo mód
+          </span>
+          <button
+            onClick={() => {
+              signOut();
+              navigate('/auth');
+            }}
+            className="bg-white/20 hover:bg-white/30 px-3 py-0.5 rounded-full text-xs font-semibold transition-colors"
+          >
+            Kilépés
+          </button>
+        </div>
+      )}
+      
+      <nav className={`fixed left-0 right-0 z-[100] w-full bg-white/70 backdrop-blur-xl border-b border-[#E5E5E7] shadow-sm ${isDemoMode ? 'top-8' : 'top-0'}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <Link to="/" className="flex items-center space-x-2 shrink-0">
+              <img src={wellagoraLogo} alt="WellAgora" className="h-10 w-auto object-contain" />
+            </Link>
 
           {/* Desktop Navigation - Center */}
           <div className="hidden md:flex items-center space-x-1 flex-1 justify-center">
@@ -621,7 +640,8 @@ const Navigation = () => {
           </div>
         </div>
       </div>
-    </nav>
+      </nav>
+    </>
   );
 };
 
