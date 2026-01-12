@@ -9,7 +9,8 @@ import {
   AlertCircle,
   HelpCircle,
   Users,
-  MapPin
+  MapPin,
+  ChefHat
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,6 +19,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import WellBotAvatar from "./WellBotAvatar";
+import { MOCK_EXPERTS, MOCK_PROGRAMS, MOCK_SPONSORS, DEMO_STATS } from "@/data/mockData";
 
 interface Message {
   id: string;
@@ -74,89 +76,238 @@ const AIAssistantChat = () => {
     return prefixes[Math.floor(Math.random() * prefixes.length)];
   };
 
-  // Community Concierge Intelligence - Enhanced demo responses with humanized tone
+  // Helper: Get localized expert name
+  const getExpertName = (expert: typeof MOCK_EXPERTS[0]): string => {
+    const firstName = language === 'de' ? expert.first_name_de : language === 'en' ? expert.first_name_en : expert.first_name;
+    const lastName = language === 'de' ? expert.last_name_de : language === 'en' ? expert.last_name_en : expert.last_name;
+    return `${firstName} ${lastName}`;
+  };
+
+  // Helper: Get localized expert title
+  const getExpertTitle = (expert: typeof MOCK_EXPERTS[0]): string => {
+    return language === 'de' ? expert.expert_title_de : language === 'en' ? expert.expert_title_en : expert.expert_title;
+  };
+
+  // Helper: Get localized program title
+  const getProgramTitle = (program: typeof MOCK_PROGRAMS[0]): string => {
+    return language === 'de' ? program.title_de : language === 'en' ? program.title_en : program.title;
+  };
+
+  // Helper: Search experts by keywords (proactive matching)
+  const findMatchingExperts = (keywords: string[]): typeof MOCK_EXPERTS => {
+    return MOCK_EXPERTS.filter(expert => {
+      const searchableText = [
+        expert.first_name, expert.last_name, expert.expert_title, expert.bio, expert.expert_bio_long,
+        ...(expert.expertise_areas || [])
+      ].join(' ').toLowerCase();
+      return keywords.some(kw => searchableText.includes(kw.toLowerCase()));
+    });
+  };
+
+  // Helper: Search programs by keywords
+  const findMatchingPrograms = (keywords: string[]): typeof MOCK_PROGRAMS => {
+    return MOCK_PROGRAMS.filter(program => {
+      const searchableText = [
+        program.title, program.title_en, program.title_de,
+        program.description, program.description_en, program.description_de,
+        program.category
+      ].join(' ').toLowerCase();
+      return keywords.some(kw => searchableText.includes(kw.toLowerCase()));
+    });
+  };
+
+  // Helper: Get sponsor by name
+  const findSponsor = (name: string): typeof MOCK_SPONSORS[0] | undefined => {
+    return MOCK_SPONSORS.find(s => 
+      s.organization_name.toLowerCase().includes(name.toLowerCase()) ||
+      s.organization_name_en.toLowerCase().includes(name.toLowerCase())
+    );
+  };
+
+  // ===== PROACTIVE COMMUNITY CONCIERGE INTELLIGENCE =====
+  // Zero Rejection Rule: NEVER say "I don't have this"
+  // Always synthesize helpful recommendations from available data
   const getDemoResponse = (userMessage: string): string => {
     const lowerMsg = userMessage.toLowerCase();
     const prefix = getConversationalPrefix();
     
-    // Expert recommendations based on topic
-    if (lowerMsg.includes('kenyér') || lowerMsg.includes('kovász') || lowerMsg.includes('bread') || lowerMsg.includes('baking') || lowerMsg.includes('brot')) {
+    // ===== COOKING / GASTRONOMY - Proactive Multi-Expert Matching =====
+    if (lowerMsg.includes('főz') || lowerMsg.includes('cook') || lowerMsg.includes('koch') || 
+        lowerMsg.includes('recept') || lowerMsg.includes('recipe') || lowerMsg.includes('rezept') ||
+        lowerMsg.includes('konyha') || lowerMsg.includes('kitchen') || lowerMsg.includes('küche') ||
+        lowerMsg.includes('étel') || lowerMsg.includes('food') || lowerMsg.includes('essen')) {
       setAvatarMood("happy");
-      return language === 'hu' 
-        ? `${prefix}🍞 Kovács János a mi kenyérsütő mesterünk! A közösség kedvence - 127 tagunk közül sokan már elvégezték a kovászkenyér kurzusát. A Káli Panzió szponzorációjának köszönhetően most ingyen kipróbálhatod!\n\n👉 Nézd meg a Programok oldalon!`
+      const chef = MOCK_EXPERTS.find(e => e.id === 'mock-expert-6'); // Molnár Balázs
+      const baker = MOCK_EXPERTS.find(e => e.id === 'mock-expert-1'); // Kovács István
+      const herbalist = MOCK_EXPERTS.find(e => e.id === 'mock-expert-2'); // Nagy Éva
+      const sponsor = findSponsor('Káli');
+      
+      return language === 'hu'
+        ? `${prefix}🍳 A főzés a közösségünk egyik leggazdagabb területe! Három szakértőnk is foglalkozik a gasztronómiával:\n\n👨‍🍳 **${chef ? getExpertName(chef) : 'Molnár Balázs'}** - ${chef ? getExpertTitle(chef) : 'Séf és Gasztro-szakértő'}\nA helyi konyha mestere, a "Közösségi Főzőtanfolyam" vezetője.\n\n🍞 **${baker ? getExpertName(baker) : 'Kovács István'}** - ${baker ? getExpertTitle(baker) : 'Kemencemester'}\nA kovászkenyér és kemencés ételek szakértője.\n\n🌿 **${herbalist ? getExpertName(herbalist) : 'Nagy Éva'}** - ${herbalist ? getExpertTitle(herbalist) : 'Gyógynövényszakértő'}\nA fűszerek és teakeverékek tudora.\n\n🏨 A ${sponsor?.organization_name || 'Káli Panzió'} szponzorációjával több program ingyenes!\n\n❓ **A főzésen belül mi érdekel jobban?**\n• A technikák és alapok?\n• Helyi alapanyagok beszerzése?\n• Hagyományos receptek?`
         : language === 'de'
-        ? `${prefix}🍞 János Kovács ist unser Brotback-Meister! Der Liebling der Gemeinschaft - viele unserer 127 Mitglieder haben seinen Kurs absolviert. Dank Káli Panzió kannst du ihn kostenlos ausprobieren!\n\n👉 Schau auf der Programm-Seite!`
-        : `${prefix}🍞 János Kovács is our bread baking master! A community favorite - many of our 127 members have completed his course. Thanks to Káli Panzió sponsorship, you can try it for free!\n\n👉 Check the Programs page!`;
+        ? `${prefix}🍳 Kochen ist einer der reichsten Bereiche unserer Gemeinschaft! Drei unserer Experten beschäftigen sich mit Gastronomie:\n\n👨‍🍳 **${chef ? getExpertName(chef) : 'Bastian Meier'}** - ${chef ? getExpertTitle(chef) : 'Küchenchef'}\nMeister der lokalen Küche.\n\n🍞 **${baker ? getExpertName(baker) : 'Hans Schmidt'}** - ${baker ? getExpertTitle(baker) : 'Ofenbaumeister'}\nExperte für Sauerteigbrot.\n\n🌿 **${herbalist ? getExpertName(herbalist) : 'Anna Müller'}** - ${herbalist ? getExpertTitle(herbalist) : 'Kräuterexpertin'}\nKenner von Gewürzen und Teemischungen.\n\n🏨 Dank ${sponsor?.organization_name_de || 'Káli Pension'} sind viele Programme kostenlos!\n\n❓ **Was interessiert dich beim Kochen mehr?**\n• Techniken und Grundlagen?\n• Lokale Zutaten?\n• Traditionelle Rezepte?`
+        : `${prefix}🍳 Cooking is one of the richest areas of our community! Three of our experts work with gastronomy:\n\n👨‍🍳 **${chef ? getExpertName(chef) : 'Benjamin Miller'}** - ${chef ? getExpertTitle(chef) : 'Chef & Gastronomy Expert'}\nMaster of local cuisine.\n\n🍞 **${baker ? getExpertName(baker) : 'Stephen Smith'}** - ${baker ? getExpertTitle(baker) : 'Brick Oven Master'}\nSourdough and oven cooking expert.\n\n🌿 **${herbalist ? getExpertName(herbalist) : 'Eva Green'}** - ${herbalist ? getExpertTitle(herbalist) : 'Herbalist Expert'}\nMaster of spices and tea blends.\n\n🏨 Thanks to ${sponsor?.organization_name_en || 'Káli Guesthouse'} sponsorship, many programs are free!\n\n❓ **What interests you most about cooking?**\n• Techniques and basics?\n• Local ingredients?\n• Traditional recipes?`;
     }
     
-    if (lowerMsg.includes('gyógynövény') || lowerMsg.includes('herb') || lowerMsg.includes('kräuter') || lowerMsg.includes('kert') || lowerMsg.includes('garden')) {
+    // ===== BREAD / BAKING =====
+    if (lowerMsg.includes('kenyér') || lowerMsg.includes('kovász') || lowerMsg.includes('bread') || lowerMsg.includes('baking') || lowerMsg.includes('brot') || lowerMsg.includes('backen')) {
       setAvatarMood("happy");
-      return language === 'hu'
-        ? `${prefix}🌿 Sophie Wagner a mi gyógynövény-szakértőnk! Imádják a tagjaink - különösen a balatoni táj növényvilágáról tud mesélni órákig. 5 szponzorunk támogatásával ingyenes túrákat is tart!\n\n👉 Ismerkedj meg vele a Szakértők galériában!`
+      const baker = MOCK_EXPERTS.find(e => e.id === 'mock-expert-1');
+      const programs = findMatchingPrograms(['kenyér', 'kovász', 'bread', 'brot']);
+      
+      return language === 'hu' 
+        ? `${prefix}🍞 **${baker ? getExpertName(baker) : 'Kovács István'}** a mi kenyérsütő mesterünk! A közösség kedvence - 127 tagunk közül sokan már elvégezték a kovászkenyér kurzusát.\n\n📚 Elérhető programjai:\n${programs.slice(0, 2).map(p => `• "${getProgramTitle(p)}" ${p.is_sponsored ? '(szponzorált - INGYENES!)' : `(${p.price_huf.toLocaleString()} Ft)`}`).join('\n')}\n\n🏨 A Káli Panzió szponzorációjának köszönhetően ingyen kipróbálhatod!\n\n👉 Nézd meg a Programok oldalon!`
         : language === 'de'
-        ? `${prefix}🌿 Sophie Wagner ist unsere Kräuter-Expertin! Unsere Mitglieder lieben sie - sie kann stundenlang über die Pflanzenwelt der Balaton-Region erzählen. Mit Unterstützung unserer 5 Sponsoren bietet sie kostenlose Touren!\n\n👉 Lerne sie in der Experten-Galerie kennen!`
-        : `${prefix}🌿 Sophie Wagner is our herbs expert! Our members love her - she can talk for hours about the plant life of the Balaton region. With support from our 5 sponsors, she offers free tours!\n\n👉 Meet her in the Experts Gallery!`;
+        ? `${prefix}🍞 **${baker ? getExpertName(baker) : 'Hans Schmidt'}** ist unser Brotback-Meister! Der Liebling der Gemeinschaft - viele unserer 127 Mitglieder haben seinen Kurs absolviert.\n\n📚 Verfügbare Programme:\n${programs.slice(0, 2).map(p => `• "${getProgramTitle(p)}" ${p.is_sponsored ? '(gesponsert - KOSTENLOS!)' : `(€${Math.round(p.price_huf / 400)})`}`).join('\n')}\n\n🏨 Dank Káli Pension kannst du es kostenlos ausprobieren!\n\n👉 Schau auf der Programm-Seite!`
+        : `${prefix}🍞 **${baker ? getExpertName(baker) : 'Stephen Smith'}** is our bread baking master! A community favorite - many of our 127 members have completed his course.\n\n📚 Available programs:\n${programs.slice(0, 2).map(p => `• "${getProgramTitle(p)}" ${p.is_sponsored ? '(sponsored - FREE!)' : `(€${Math.round(p.price_huf / 400)})`}`).join('\n')}\n\n🏨 Thanks to Káli Guesthouse sponsorship, you can try it for free!\n\n👉 Check the Programs page!`;
+    }
+    
+    // ===== HERBS / GARDENING =====
+    if (lowerMsg.includes('gyógynövény') || lowerMsg.includes('herb') || lowerMsg.includes('kräuter') || lowerMsg.includes('kert') || lowerMsg.includes('garden') || lowerMsg.includes('garten') || lowerMsg.includes('növény') || lowerMsg.includes('plant')) {
+      setAvatarMood("happy");
+      const herbalist = MOCK_EXPERTS.find(e => e.id === 'mock-expert-2');
+      const programs = findMatchingPrograms(['gyógynövény', 'herb', 'tea', 'kräuter']);
+      
+      return language === 'hu'
+        ? `${prefix}🌿 **${herbalist ? getExpertName(herbalist) : 'Nagy Éva'}** a mi gyógynövény-szakértőnk! Imádják a tagjaink - különösen a balatoni táj növényvilágáról tud mesélni órákig.\n\n📚 Elérhető programjai:\n${programs.slice(0, 2).map(p => `• "${getProgramTitle(p)}" ${p.is_sponsored ? '(szponzorált - INGYENES!)' : `(${p.price_huf.toLocaleString()} Ft)`}`).join('\n')}\n\n5 szponzorunk támogatásával ingyenes túrákat is tart!\n\n👉 Ismerkedj meg vele a Szakértők galériában!`
+        : language === 'de'
+        ? `${prefix}🌿 **${herbalist ? getExpertName(herbalist) : 'Anna Müller'}** ist unsere Kräuter-Expertin! Unsere Mitglieder lieben sie - sie kann stundenlang über die Pflanzenwelt der Balaton-Region erzählen.\n\n📚 Verfügbare Programme:\n${programs.slice(0, 2).map(p => `• "${getProgramTitle(p)}" ${p.is_sponsored ? '(gesponsert - KOSTENLOS!)' : `(€${Math.round(p.price_huf / 400)})`}`).join('\n')}\n\nMit Unterstützung unserer 5 Sponsoren bietet sie kostenlose Touren!\n\n👉 Lerne sie in der Experten-Galerie kennen!`
+        : `${prefix}🌿 **${herbalist ? getExpertName(herbalist) : 'Eva Green'}** is our herbs expert! Our members love her - she can talk for hours about the plant life of the Balaton region.\n\n📚 Available programs:\n${programs.slice(0, 2).map(p => `• "${getProgramTitle(p)}" ${p.is_sponsored ? '(sponsored - FREE!)' : `(€${Math.round(p.price_huf / 400)})`}`).join('\n')}\n\nWith support from our 5 sponsors, she offers free tours!\n\n👉 Meet her in the Experts Gallery!`;
     }
 
-    // Voucher/Coupon explanation
-    if (lowerMsg.includes('kupon') || lowerMsg.includes('voucher') || lowerMsg.includes('gutschein') || lowerMsg.includes('hogyan működik')) {
+    // ===== WINE =====
+    if (lowerMsg.includes('bor') || lowerMsg.includes('wine') || lowerMsg.includes('wein') || lowerMsg.includes('szőlő') || lowerMsg.includes('grape') || lowerMsg.includes('pince') || lowerMsg.includes('cellar')) {
       setAvatarMood("happy");
+      const winemaker = MOCK_EXPERTS.find(e => e.id === 'mock-expert-3');
+      const programs = findMatchingPrograms(['bor', 'wine', 'wein', 'szőlő', 'pince']);
+      
       return language === 'hu'
-        ? `${prefix}🎫 Ez az egyik kedvenc témám! A kuponrendszerünk összeköti a közösséget:\n\n🏨 **Szponzorok** (pl. Káli Panzió) krediteket vásárolnak\n👤 **Tagok** (mint Te!) ingyenes kuponokat kapnak\n🎓 **Szakértők** megkapják a programdíjat\n\nÍgy mindenki nyer - a tudás körforgásban marad a közösségben! 🌿\n\n👉 Nézd meg a "Szponzorált" programokat a Piactéren!`
+        ? `${prefix}🍷 **${winemaker ? getExpertName(winemaker) : 'Szabó Péter'}** a mi borkészítő mesterünk! Családi pincészetük harmadik generációs borásza.\n\n📚 Elérhető programjai:\n${programs.slice(0, 2).map(p => `• "${getProgramTitle(p)}" ${p.is_sponsored ? '(szponzorált - INGYENES!)' : `(${p.price_huf.toLocaleString()} Ft)`}`).join('\n')}\n\nA vulkanikus talaj egyedi borokat ad - próbáld ki!\n\n👉 Nézd meg a Programok oldalon!`
         : language === 'de'
-        ? `${prefix}🎫 Das ist eines meiner Lieblingsthemen! Unser Gutscheinsystem verbindet die Gemeinschaft:\n\n🏨 **Sponsoren** (z.B. Káli Panzió) kaufen Credits\n👤 **Mitglieder** (wie Du!) erhalten kostenlose Gutscheine\n🎓 **Experten** werden bezahlt\n\nSo gewinnt jeder - Wissen bleibt in der Gemeinschaft! 🌿\n\n👉 Schau dir die "Gesponsert"-Programme im Marktplatz an!`
-        : `${prefix}🎫 This is one of my favorite topics! Our voucher system connects the community:\n\n🏨 **Sponsors** (e.g. Káli Panzió) purchase credits\n👤 **Members** (like you!) receive free vouchers\n🎓 **Experts** get paid\n\nEveryone wins - knowledge stays in the community! 🌿\n\n👉 Check out "Sponsored" programs in the Marketplace!`;
+        ? `${prefix}🍷 **${winemaker ? getExpertName(winemaker) : 'Lukas Weber'}** ist unser Weinbaumeister! Winzer in dritter Generation unseres Familienweinguts.\n\n📚 Verfügbare Programme:\n${programs.slice(0, 2).map(p => `• "${getProgramTitle(p)}" ${p.is_sponsored ? '(gesponsert - KOSTENLOS!)' : `(€${Math.round(p.price_huf / 400)})`}`).join('\n')}\n\nDer vulkanische Boden bringt einzigartige Weine hervor!\n\n👉 Schau auf der Programm-Seite!`
+        : `${prefix}🍷 **${winemaker ? getExpertName(winemaker) : 'Peter Winemaker'}** is our winemaking master! Third generation winemaker of our family winery.\n\n📚 Available programs:\n${programs.slice(0, 2).map(p => `• "${getProgramTitle(p)}" ${p.is_sponsored ? '(sponsored - FREE!)' : `(€${Math.round(p.price_huf / 400)})`}`).join('\n')}\n\nThe volcanic soil produces unique wines - try it!\n\n👉 Check the Programs page!`;
     }
 
-    // Popular expert question
-    if (lowerMsg.includes('népszerű') || lowerMsg.includes('popular') || lowerMsg.includes('beliebt') || lowerMsg.includes('legjobb') || lowerMsg.includes('best')) {
+    // ===== VOUCHER/COUPON EXPLANATION =====
+    if (lowerMsg.includes('kupon') || lowerMsg.includes('voucher') || lowerMsg.includes('gutschein') || lowerMsg.includes('hogyan működik') || lowerMsg.includes('how does') || lowerMsg.includes('wie funktioniert')) {
       setAvatarMood("happy");
+      const totalSponsors = MOCK_SPONSORS.length;
+      const totalCredits = MOCK_SPONSORS.reduce((sum, s) => sum + s.total_credits, 0);
+      
       return language === 'hu'
-        ? `${prefix}⭐ A közösségünk kedvencei - a 127 tagunk szerint:\n\n🥇 **Kovács János** - Kovászkenyér mester (4.9⭐)\n🥈 **Sophie Wagner** - Gyógynövények (4.8⭐)\n🥉 **Nagy Éva** - Méhészkedés (4.7⭐)\n\nMind a hárman igazi kincsek! 5 szponzorunk támogatásával sok programjuk ingyenes.\n\n👉 Ismerkedj meg velük a Szakértők oldalon!`
+        ? `${prefix}🎫 Ez az egyik kedvenc témám! A kuponrendszerünk összeköti a közösséget:\n\n🏨 **Szponzorok** (${totalSponsors} partner, pl. Káli Panzió) krediteket vásárolnak\n👤 **Tagok** (${DEMO_STATS.members} tag, mint Te!) ingyenes kuponokat kapnak\n🎓 **Szakértők** (${DEMO_STATS.experts} mester) megkapják a programdíjat\n\n💰 Jelenleg **${totalCredits.toLocaleString()} kredit** érhető el a közösségben!\n\nÍgy mindenki nyer - a tudás körforgásban marad a közösségben! 🌿\n\n👉 Nézd meg a "Szponzorált" programokat a Piactéren!`
         : language === 'de'
-        ? `${prefix}⭐ Die Favoriten unserer Gemeinschaft - laut unseren 127 Mitgliedern:\n\n🥇 **János Kovács** - Sauerteig-Meister (4.9⭐)\n🥈 **Sophie Wagner** - Kräuter (4.8⭐)\n🥉 **Éva Nagy** - Imkerei (4.7⭐)\n\nAlle drei sind echte Schätze! Dank 5 Sponsoren sind viele Programme kostenlos.\n\n👉 Lerne sie auf der Experten-Seite kennen!`
-        : `${prefix}⭐ Our community favorites - according to our 127 members:\n\n🥇 **János Kovács** - Sourdough Master (4.9⭐)\n🥈 **Sophie Wagner** - Herbs Expert (4.8⭐)\n🥉 **Éva Nagy** - Beekeeping (4.7⭐)\n\nAll three are true treasures! Thanks to 5 sponsors, many programs are free.\n\n👉 Meet them on the Experts page!`;
+        ? `${prefix}🎫 Das ist eines meiner Lieblingsthemen! Unser Gutscheinsystem verbindet die Gemeinschaft:\n\n🏨 **Sponsoren** (${totalSponsors} Partner, z.B. Káli Pension) kaufen Credits\n👤 **Mitglieder** (${DEMO_STATS.members} Mitglieder, wie Du!) erhalten kostenlose Gutscheine\n🎓 **Experten** (${DEMO_STATS.experts} Meister) werden bezahlt\n\n💰 Aktuell sind **${totalCredits.toLocaleString()} Credits** in der Gemeinschaft verfügbar!\n\nSo gewinnt jeder - Wissen bleibt in der Gemeinschaft! 🌿\n\n👉 Schau dir die "Gesponsert"-Programme im Marktplatz an!`
+        : `${prefix}🎫 This is one of my favorite topics! Our voucher system connects the community:\n\n🏨 **Sponsors** (${totalSponsors} partners, e.g. Káli Guesthouse) purchase credits\n👤 **Members** (${DEMO_STATS.members} members, like you!) receive free vouchers\n🎓 **Experts** (${DEMO_STATS.experts} masters) get paid\n\n💰 Currently **${totalCredits.toLocaleString()} credits** available in the community!\n\nEveryone wins - knowledge stays in the community! 🌿\n\n👉 Check out "Sponsored" programs in the Marketplace!`;
     }
 
-    // Programs in a location
-    if (lowerMsg.includes('bécs') || lowerMsg.includes('vienna') || lowerMsg.includes('wien') || lowerMsg.includes('budapest') || lowerMsg.includes('balaton')) {
+    // ===== POPULAR EXPERT =====
+    if (lowerMsg.includes('népszerű') || lowerMsg.includes('popular') || lowerMsg.includes('beliebt') || lowerMsg.includes('legjobb') || lowerMsg.includes('best') || lowerMsg.includes('top')) {
+      setAvatarMood("happy");
+      const topExperts = MOCK_EXPERTS.slice(0, 3);
+      
+      return language === 'hu'
+        ? `${prefix}⭐ A közösségünk kedvencei - a ${DEMO_STATS.members} tagunk szerint:\n\n${topExperts.map((e, i) => `${['🥇', '🥈', '🥉'][i]} **${getExpertName(e)}** - ${getExpertTitle(e)} (${(4.9 - i * 0.1).toFixed(1)}⭐)`).join('\n')}\n\nMind a hárman igazi kincsek! ${MOCK_SPONSORS.length} szponzorunk támogatásával sok programjuk ingyenes.\n\n❓ **Melyik szakterület érdekel leginkább?**\n• Gasztronómia és főzés?\n• Kézművesség?\n• Természet és fenntarthatóság?`
+        : language === 'de'
+        ? `${prefix}⭐ Die Favoriten unserer Gemeinschaft - laut unseren ${DEMO_STATS.members} Mitgliedern:\n\n${topExperts.map((e, i) => `${['🥇', '🥈', '🥉'][i]} **${getExpertName(e)}** - ${getExpertTitle(e)} (${(4.9 - i * 0.1).toFixed(1)}⭐)`).join('\n')}\n\nAlle drei sind echte Schätze! Dank ${MOCK_SPONSORS.length} Sponsoren sind viele Programme kostenlos.\n\n❓ **Welcher Bereich interessiert dich am meisten?**\n• Gastronomie und Kochen?\n• Handwerk?\n• Natur und Nachhaltigkeit?`
+        : `${prefix}⭐ Our community favorites - according to our ${DEMO_STATS.members} members:\n\n${topExperts.map((e, i) => `${['🥇', '🥈', '🥉'][i]} **${getExpertName(e)}** - ${getExpertTitle(e)} (${(4.9 - i * 0.1).toFixed(1)}⭐)`).join('\n')}\n\nAll three are true treasures! Thanks to ${MOCK_SPONSORS.length} sponsors, many programs are free.\n\n❓ **Which area interests you most?**\n• Gastronomy and cooking?\n• Crafts?\n• Nature and sustainability?`;
+    }
+
+    // ===== LOCATION-BASED =====
+    if (lowerMsg.includes('bécs') || lowerMsg.includes('vienna') || lowerMsg.includes('wien') || lowerMsg.includes('budapest') || lowerMsg.includes('balaton') || lowerMsg.includes('köveskál')) {
       setAvatarMood("happy");
       const location = lowerMsg.includes('bécs') || lowerMsg.includes('vienna') || lowerMsg.includes('wien') ? 'Bécs/Wien' : 
-                       lowerMsg.includes('budapest') ? 'Budapest' : 'Balaton';
+                       lowerMsg.includes('budapest') ? 'Budapest' : 
+                       lowerMsg.includes('köveskál') ? 'Köveskál' : 'Balaton';
+      const locationExperts = MOCK_EXPERTS.filter(e => 
+        e.location_city.toLowerCase().includes(location.toLowerCase().split('/')[0]) ||
+        location.toLowerCase() === 'balaton'
+      );
+      const sponsoredPrograms = MOCK_PROGRAMS.filter(p => p.is_sponsored);
+      
       return language === 'hu'
-        ? `${prefix}📍 Remek választás! ${location} környékén jelenleg 3 aktív programunk van - és a legtöbb szponzorált, szóval ingyen csatlakozhatsz!\n\n👉 Nézd meg a Programok oldalt és szűrj helyszín szerint!`
+        ? `${prefix}📍 ${location} környékén ${locationExperts.length > 0 ? `${locationExperts.length} szakértőnk aktív` : 'számos programunk elérhető'}!\n\n🎁 **Szponzorált programok (INGYENES):**\n${sponsoredPrograms.slice(0, 3).map(p => `• "${getProgramTitle(p)}" - ${p.sponsor_name}`).join('\n')}\n\n❓ **Milyen típusú program érdekel?**\n• Workshop (kézműves, főzés)?\n• Túra (gyógynövény, bor)?\n• Családi program?\n\n👉 Szűrj helyszín szerint a Programok oldalon!`
         : language === 'de'
-        ? `${prefix}📍 Tolle Wahl! In der Nähe von ${location} haben wir 3 aktive Programme - die meisten sind gesponsert, also kannst du kostenlos teilnehmen!\n\n👉 Besuche die Programm-Seite und filtere nach Standort!`
-        : `${prefix}📍 Great choice! Near ${location}, we have 3 active programs - most are sponsored, so you can join for free!\n\n👉 Check the Programs page and filter by location!`;
+        ? `${prefix}📍 In der Nähe von ${location} ${locationExperts.length > 0 ? `sind ${locationExperts.length} unserer Experten aktiv` : 'sind viele Programme verfügbar'}!\n\n🎁 **Gesponserte Programme (KOSTENLOS):**\n${sponsoredPrograms.slice(0, 3).map(p => `• "${getProgramTitle(p)}" - ${p.sponsor_name_de || p.sponsor_name}`).join('\n')}\n\n❓ **Welche Art von Programm interessiert dich?**\n• Workshop (Handwerk, Kochen)?\n• Tour (Kräuter, Wein)?\n• Familienprogramm?\n\n👉 Filtere nach Standort auf der Programm-Seite!`
+        : `${prefix}📍 Near ${location}, ${locationExperts.length > 0 ? `${locationExperts.length} of our experts are active` : 'many programs are available'}!\n\n🎁 **Sponsored programs (FREE):**\n${sponsoredPrograms.slice(0, 3).map(p => `• "${getProgramTitle(p)}" - ${p.sponsor_name_en || p.sponsor_name}`).join('\n')}\n\n❓ **What type of program interests you?**\n• Workshop (crafts, cooking)?\n• Tour (herbs, wine)?\n• Family program?\n\n👉 Filter by location on the Programs page!`;
     }
 
-    // Learning/Programs general
-    if (lowerMsg.includes('tanul') || lowerMsg.includes('learn') || lowerMsg.includes('lernen') || lowerMsg.includes('program')) {
+    // ===== LEARNING / PROGRAMS GENERAL =====
+    if (lowerMsg.includes('tanul') || lowerMsg.includes('learn') || lowerMsg.includes('lernen') || lowerMsg.includes('program') || lowerMsg.includes('mit') || lowerMsg.includes('what')) {
       setAvatarMood("happy");
+      const categories = [...new Set(MOCK_PROGRAMS.map(p => p.category))];
+      const sponsoredCount = MOCK_PROGRAMS.filter(p => p.is_sponsored).length;
+      
       return language === 'hu' 
-        ? `${prefix}📚 A mi 12 szakértőnk fantasztikus programokat kínál: kovászkenyér sütés, gyógynövénygyűjtés, méhészkedés, hagyományos kézművesség... A lista hosszú!\n\n5 szponzorunk jóvoltából sok program ingyenes a 127 tagunknak.\n\n👉 Fedezd fel a Programok oldalon!`
+        ? `${prefix}📚 A mi ${DEMO_STATS.experts} szakértőnk fantasztikus programokat kínál!\n\n🎯 **Kategóriák:**\n${categories.map(c => `• ${c === 'workshop' ? 'Műhelymunka' : c === 'gastronomy' ? 'Gasztronómia' : c === 'wellness' ? 'Wellness' : c === 'sustainability' ? 'Fenntarthatóság' : c === 'community' ? 'Közösségi' : c}`).join('\n')}\n\n🎁 **${sponsoredCount} program szponzorált** - teljesen ingyenes a ${DEMO_STATS.members} tagunknak!\n\n❓ **Mi érdekel leginkább?**\n• Kézműves tevékenységek?\n• Gasztronómia és ételek?\n• Természet és egészség?\n\n👉 Fedezd fel a Programok oldalon!`
         : language === 'de'
-        ? `${prefix}📚 Unsere 12 Experten bieten fantastische Programme: Sauerteigbrot, Kräutersammeln, Imkerei, traditionelles Handwerk... Die Liste ist lang!\n\nDank 5 Sponsoren sind viele Programme für unsere 127 Mitglieder kostenlos.\n\n👉 Entdecke sie auf der Programm-Seite!`
-        : `${prefix}📚 Our 12 experts offer fantastic programs: sourdough baking, herb gathering, beekeeping, traditional crafts... The list goes on!\n\nThanks to 5 sponsors, many programs are free for our 127 members.\n\n👉 Discover them on the Programs page!`;
+        ? `${prefix}📚 Unsere ${DEMO_STATS.experts} Experten bieten fantastische Programme!\n\n🎯 **Kategorien:**\n${categories.map(c => `• ${c === 'workshop' ? 'Workshop' : c === 'gastronomy' ? 'Gastronomie' : c === 'wellness' ? 'Wellness' : c === 'sustainability' ? 'Nachhaltigkeit' : c === 'community' ? 'Gemeinschaft' : c}`).join('\n')}\n\n🎁 **${sponsoredCount} Programme sind gesponsert** - völlig kostenlos für unsere ${DEMO_STATS.members} Mitglieder!\n\n❓ **Was interessiert dich am meisten?**\n• Handwerkliche Aktivitäten?\n• Gastronomie und Essen?\n• Natur und Gesundheit?\n\n👉 Entdecke sie auf der Programm-Seite!`
+        : `${prefix}📚 Our ${DEMO_STATS.experts} experts offer fantastic programs!\n\n🎯 **Categories:**\n${categories.map(c => `• ${c.charAt(0).toUpperCase() + c.slice(1)}`).join('\n')}\n\n🎁 **${sponsoredCount} programs are sponsored** - completely free for our ${DEMO_STATS.members} members!\n\n❓ **What interests you most?**\n• Craft activities?\n• Gastronomy and food?\n• Nature and health?\n\n👉 Discover them on the Programs page!`;
     }
 
-    // Free programs
+    // ===== FREE PROGRAMS =====
     if (lowerMsg.includes('ingyenes') || lowerMsg.includes('free') || lowerMsg.includes('kostenlos') || lowerMsg.includes('gratis')) {
       setAvatarMood("happy");
+      const sponsoredPrograms = MOCK_PROGRAMS.filter(p => p.is_sponsored);
+      
       return language === 'hu'
-        ? `${prefix}🎉 Jó hírem van! 5 szponzorunk - köztük a Káli Panzió és helyi vállalkozások - lehetővé teszik, hogy a 127 tagunk ingyen tanulhasson a szakértőktől.\n\nKeresd a "Szponzorált" címkét!\n\n👉 Nézd meg a Piactéren!`
+        ? `${prefix}🎉 Jó hírem van! ${MOCK_SPONSORS.length} szponzorunk - köztük a Káli Panzió és helyi vállalkozások - lehetővé teszik, hogy a ${DEMO_STATS.members} tagunk ingyen tanulhasson a szakértőktől.\n\n🎁 **Ingyenes programok most:**\n${sponsoredPrograms.slice(0, 4).map(p => `• "${getProgramTitle(p)}" - ${p.sponsor_name}`).join('\n')}\n\n👉 Keresd a "Szponzorált" címkét a Piactéren!`
         : language === 'de'
-        ? `${prefix}🎉 Gute Nachrichten! Unsere 5 Sponsoren - darunter Káli Panzió - ermöglichen es unseren 127 Mitgliedern, kostenlos von Experten zu lernen.\n\nSuche nach dem "Gesponsert"-Label!\n\n👉 Schau im Marktplatz!`
-        : `${prefix}🎉 Good news! Our 5 sponsors - including Káli Panzió - make it possible for our 127 members to learn from experts for free.\n\nLook for the "Sponsored" label!\n\n👉 Check the Marketplace!`;
+        ? `${prefix}🎉 Gute Nachrichten! Unsere ${MOCK_SPONSORS.length} Sponsoren - darunter Káli Pension - ermöglichen es unseren ${DEMO_STATS.members} Mitgliedern, kostenlos von Experten zu lernen.\n\n🎁 **Kostenlose Programme jetzt:**\n${sponsoredPrograms.slice(0, 4).map(p => `• "${getProgramTitle(p)}" - ${p.sponsor_name_de || p.sponsor_name}`).join('\n')}\n\n👉 Suche nach dem "Gesponsert"-Label im Marktplatz!`
+        : `${prefix}🎉 Good news! Our ${MOCK_SPONSORS.length} sponsors - including Káli Guesthouse - make it possible for our ${DEMO_STATS.members} members to learn from experts for free.\n\n🎁 **Free programs now:**\n${sponsoredPrograms.slice(0, 4).map(p => `• "${getProgramTitle(p)}" - ${p.sponsor_name_en || p.sponsor_name}`).join('\n')}\n\n👉 Look for the "Sponsored" label in the Marketplace!`;
     }
 
-    // Default personalized welcome
+    // ===== BEEKEEPING / HONEY =====
+    if (lowerMsg.includes('méh') || lowerMsg.includes('méz') || lowerMsg.includes('bee') || lowerMsg.includes('honey') || lowerMsg.includes('biene') || lowerMsg.includes('honig')) {
+      setAvatarMood("happy");
+      const beekeeper = MOCK_EXPERTS.find(e => e.id === 'mock-expert-5');
+      const programs = findMatchingPrograms(['méh', 'méz', 'bee', 'honey']);
+      
+      return language === 'hu'
+        ? `${prefix}🐝 **${beekeeper ? getExpertName(beekeeper) : 'Kiss Gábor'}** a mi méhész mesterünk! A fenntartható méhészet és méztermelés szakértője.\n\n📚 Elérhető programjai:\n${programs.slice(0, 2).map(p => `• "${getProgramTitle(p)}" (${p.price_huf.toLocaleString()} Ft)`).join('\n')}\n\nA méhek csodálatos világába kalauzol!\n\n👉 Nézd meg a Programok oldalon!`
+        : language === 'de'
+        ? `${prefix}🐝 **${beekeeper ? getExpertName(beekeeper) : 'Thomas Fischer'}** ist unser Imkermeister! Experte für nachhaltige Imkerei und Honigproduktion.\n\n📚 Verfügbare Programme:\n${programs.slice(0, 2).map(p => `• "${getProgramTitle(p)}" (€${Math.round(p.price_huf / 400)})`).join('\n')}\n\nEr führt dich in die wunderbare Welt der Bienen!\n\n👉 Schau auf der Programm-Seite!`
+        : `${prefix}🐝 **${beekeeper ? getExpertName(beekeeper) : 'Gabriel Beekeeper'}** is our beekeeper master! Expert in sustainable beekeeping and honey production.\n\n📚 Available programs:\n${programs.slice(0, 2).map(p => `• "${getProgramTitle(p)}" (€${Math.round(p.price_huf / 400)})`).join('\n')}\n\nHe guides you into the wonderful world of bees!\n\n👉 Check the Programs page!`;
+    }
+
+    // ===== CRAFTS / WEAVING =====
+    if (lowerMsg.includes('kosár') || lowerMsg.includes('fonás') || lowerMsg.includes('basket') || lowerMsg.includes('weav') || lowerMsg.includes('korb') || lowerMsg.includes('flecht') || lowerMsg.includes('kézműves') || lowerMsg.includes('craft') || lowerMsg.includes('handwerk')) {
+      setAvatarMood("happy");
+      const weaver = MOCK_EXPERTS.find(e => e.id === 'mock-expert-4');
+      const programs = findMatchingPrograms(['kosár', 'fonás', 'basket', 'weav', 'korb', 'karácsonyi']);
+      
+      return language === 'hu'
+        ? `${prefix}🧺 **${weaver ? getExpertName(weaver) : 'Tóth Anna'}** a mi kosárfonó művészünk! A hagyományos fonástechnikák megőrzője.\n\n📚 Elérhető programjai:\n${programs.slice(0, 2).map(p => `• "${getProgramTitle(p)}" (${p.price_huf.toLocaleString()} Ft)`).join('\n')}\n\nMinden kosár egy történet - megtanítja, hogyan mesélj a kezeddel!\n\n👉 Nézd meg a Programok oldalon!`
+        : language === 'de'
+        ? `${prefix}🧺 **${weaver ? getExpertName(weaver) : 'Maria Bauer'}** ist unsere Korbflechtkünstlerin! Bewahrerin traditioneller Flechttechniken.\n\n📚 Verfügbare Programme:\n${programs.slice(0, 2).map(p => `• "${getProgramTitle(p)}" (€${Math.round(p.price_huf / 400)})`).join('\n')}\n\nJeder Korb erzählt eine Geschichte - sie lehrt dich, mit deinen Händen zu erzählen!\n\n👉 Schau auf der Programm-Seite!`
+        : `${prefix}🧺 **${weaver ? getExpertName(weaver) : 'Anne Weaver'}** is our basket weaving artist! Keeper of traditional weaving techniques.\n\n📚 Available programs:\n${programs.slice(0, 2).map(p => `• "${getProgramTitle(p)}" (€${Math.round(p.price_huf / 400)})`).join('\n')}\n\nEvery basket tells a story - she teaches you how to tell stories with your hands!\n\n👉 Check the Programs page!`;
+    }
+
+    // ===== PROACTIVE FALLBACK - Zero Rejection Rule =====
+    // Try to find ANY matching expert or program based on keywords
+    const userWords = lowerMsg.split(/\s+/).filter(w => w.length > 3);
+    const matchingExperts = findMatchingExperts(userWords);
+    const matchingPrograms = findMatchingPrograms(userWords);
+    
+    if (matchingExperts.length > 0 || matchingPrograms.length > 0) {
+      setAvatarMood("happy");
+      const expert = matchingExperts[0];
+      const program = matchingPrograms[0];
+      
+      return language === 'hu'
+        ? `${prefix}🔍 Érdekes kérdés! Hadd segítsek:\n\n${expert ? `👤 **${getExpertName(expert)}** (${getExpertTitle(expert)}) talán tud segíteni ebben a témában.\n\n` : ''}${program ? `📚 Kapcsolódó program: "${getProgramTitle(program)}" ${program.is_sponsored ? '(INGYENES!)' : ''}\n\n` : ''}A közösségünkben ${DEMO_STATS.experts} szakértő és ${DEMO_STATS.programs} program van - biztos találunk neked megfelelőt!\n\n❓ **Pontosítanád a kérdésedet?**\n• Mi érdekel leginkább ebben a témában?\n• Gyakorlati tudást keresel vagy elméletet?`
+        : language === 'de'
+        ? `${prefix}🔍 Interessante Frage! Lass mich helfen:\n\n${expert ? `👤 **${getExpertName(expert)}** (${getExpertTitle(expert)}) könnte bei diesem Thema helfen.\n\n` : ''}${program ? `📚 Verwandtes Programm: "${getProgramTitle(program)}" ${program.is_sponsored ? '(KOSTENLOS!)' : ''}\n\n` : ''}In unserer Gemeinschaft gibt es ${DEMO_STATS.experts} Experten und ${DEMO_STATS.programs} Programme - wir finden bestimmt das Richtige für dich!\n\n❓ **Könntest du deine Frage präzisieren?**\n• Was interessiert dich am meisten an diesem Thema?\n• Suchst du praktisches Wissen oder Theorie?`
+        : `${prefix}🔍 Interesting question! Let me help:\n\n${expert ? `👤 **${getExpertName(expert)}** (${getExpertTitle(expert)}) might be able to help with this topic.\n\n` : ''}${program ? `📚 Related program: "${getProgramTitle(program)}" ${program.is_sponsored ? '(FREE!)' : ''}\n\n` : ''}In our community, there are ${DEMO_STATS.experts} experts and ${DEMO_STATS.programs} programs - we'll definitely find something for you!\n\n❓ **Could you clarify your question?**\n• What interests you most about this topic?\n• Are you looking for practical knowledge or theory?`;
+    }
+
+    // ===== ULTIMATE FALLBACK - Still proactive, never "I don't know" =====
     setAvatarMood("neutral");
     return language === 'hu'
-      ? `Szia! Újra itt vagyok. 🤖\n\nÉn vagyok a WellBot, a WellAgora digitális házigazdája. Készen állok, hogy segítsek kiigazodni a 127 tagunk és a szakértői programok között.\n\nMiben lehetek a segítségedre?\n• 🎓 Szakértőket mutatok be\n• 📚 Programokat ajánlok\n• 🎫 Elmagyarázom a kuponrendszert`
+      ? `Szia! 🤖 Örülök, hogy írsz!\n\nÉn vagyok a WellBot, a WellAgora digitális házigazdája. A közösségünk ${DEMO_STATS.members} tagot, ${DEMO_STATS.experts} szakértőt és ${MOCK_SPONSORS.length} szponzort számlál.\n\n🎯 **Miben segíthetek?**\n\n👨‍🍳 **Gasztronómia** - Főzés, kenyérsütés, borkészítés\n🌿 **Természet** - Gyógynövények, méhészet\n🎨 **Kézművesség** - Kosárfonás, hagyományok\n🎫 **Rendszer** - Kuponok, szponzoráció\n\n❓ Melyik terület érdekel? Segítek megtalálni a tökéletes programot vagy szakértőt!`
       : language === 'de'
-      ? `Hallo! Ich bin wieder da. 🤖\n\nIch bin WellBot, der digitale Gastgeber von WellAgora. Ich bin bereit, dir bei der Navigation durch unsere 127 Mitglieder und Expertenprogramme zu helfen.\n\nWie kann ich dir helfen?\n• 🎓 Experten vorstellen\n• 📚 Programme empfehlen\n• 🎫 Das Gutscheinsystem erklären`
-      : `Hi! I'm back. 🤖\n\nI'm WellBot, WellAgora's digital host. I'm ready to help you navigate our 127 members and expert programs.\n\nHow can I help you?\n• 🎓 Introduce experts\n• 📚 Recommend programs\n• 🎫 Explain the voucher system`;
+      ? `Hallo! 🤖 Schön, dass du schreibst!\n\nIch bin WellBot, der digitale Gastgeber von WellAgora. Unsere Gemeinschaft zählt ${DEMO_STATS.members} Mitglieder, ${DEMO_STATS.experts} Experten und ${MOCK_SPONSORS.length} Sponsoren.\n\n🎯 **Wie kann ich helfen?**\n\n👨‍🍳 **Gastronomie** - Kochen, Brotbacken, Weinherstellung\n🌿 **Natur** - Kräuter, Imkerei\n🎨 **Handwerk** - Korbflechten, Traditionen\n🎫 **System** - Gutscheine, Sponsoring\n\n❓ Welcher Bereich interessiert dich? Ich helfe dir, das perfekte Programm oder den perfekten Experten zu finden!`
+      : `Hi! 🤖 Glad you're reaching out!\n\nI'm WellBot, WellAgora's digital host. Our community has ${DEMO_STATS.members} members, ${DEMO_STATS.experts} experts, and ${MOCK_SPONSORS.length} sponsors.\n\n🎯 **How can I help?**\n\n👨‍🍳 **Gastronomy** - Cooking, bread baking, winemaking\n🌿 **Nature** - Herbs, beekeeping\n🎨 **Crafts** - Basket weaving, traditions\n🎫 **System** - Vouchers, sponsorship\n\n❓ Which area interests you? I'll help you find the perfect program or expert!`;
   };
 
   // Community Concierge quick-start chips
