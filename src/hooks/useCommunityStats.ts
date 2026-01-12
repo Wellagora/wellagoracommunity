@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { DEMO_STATS as GLOBAL_DEMO_STATS } from '@/data/mockData';
 
 interface CommunityStats {
   members: number;
@@ -16,16 +17,16 @@ interface UseCommunityStatsResult {
   refetch: () => void;
 }
 
-// Demo mode stats - Single source of truth for demo stats
+// Re-export demo stats from central source
 export const DEMO_STATS: CommunityStats = {
-  members: 127,
-  completions: 312,
-  points: 15420,
-  activeChallenges: 8,
+  members: GLOBAL_DEMO_STATS.members,
+  completions: GLOBAL_DEMO_STATS.completions,
+  points: GLOBAL_DEMO_STATS.points,
+  activeChallenges: GLOBAL_DEMO_STATS.activeChallenges,
 };
 
-// Demo sponsors count
-export const DEMO_SPONSORS_COUNT = 5;
+// Demo sponsors count from central source
+export const DEMO_SPONSORS_COUNT = GLOBAL_DEMO_STATS.sponsors;
 
 /**
  * Hook to fetch community impact statistics using server-side RPC

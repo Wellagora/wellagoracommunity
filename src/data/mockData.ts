@@ -1,6 +1,18 @@
 // Mock Data for Testing - Used when database is empty
 // Names are localized based on active language
 
+// ===== GLOBAL DEMO STATS - Single source of truth =====
+export const DEMO_STATS = {
+  members: 127,
+  experts: 12,
+  sponsors: 5,
+  programs: 10,
+  events: 6,
+  completions: 312,
+  points: 15420,
+  activeChallenges: 8,
+} as const;
+
 export interface MockExpert {
   id: string;
   first_name: string;

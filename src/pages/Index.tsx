@@ -3,10 +3,10 @@ import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { useCommunityStats, DEMO_STATS, DEMO_SPONSORS_COUNT } from "@/hooks/useCommunityStats";
+import { useCommunityStats, DEMO_SPONSORS_COUNT } from "@/hooks/useCommunityStats";
+import { DEMO_STATS } from "@/data/mockData";
 import { motion } from "framer-motion";
 import { Users, Award, TrendingUp, Heart, ChevronRight } from "lucide-react";
-
 import HeroSection from "@/components/HeroSection";
 import ExpertGallery from "@/components/ExpertGallery";
 import FeaturedEventsGrid from "@/components/FeaturedEventsGrid";
@@ -89,7 +89,7 @@ const Index = () => {
             {/* 7. COMMUNITY STATS - Compact horizontal bar */}
             <section className="py-8 bg-[#F5F5F7]">
               <div className="container mx-auto px-4">
-                {statsLoading ? (
+                {statsLoading && !isDemoMode ? (
                   <StatsBarSkeleton />
                 ) : (
                   <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12">
@@ -98,7 +98,9 @@ const Index = () => {
                         <Users className="w-5 h-5 text-cyan-600" />
                       </div>
                       <div>
-                        <div className="text-xl font-bold text-slate-900">{communityStats.members}</div>
+                        <div className="text-xl font-bold text-slate-900">
+                          {isDemoMode ? DEMO_STATS.members : communityStats.members}
+                        </div>
                         <div className="text-xs text-slate-600">{t("index.stat_members")}</div>
                       </div>
                     </div>
@@ -107,7 +109,9 @@ const Index = () => {
                         <Heart className="w-5 h-5 text-rose-600" />
                       </div>
                       <div>
-                        <div className="text-xl font-bold text-slate-900">{isDemoMode ? DEMO_SPONSORS_COUNT : communityStats.activeChallenges}</div>
+                        <div className="text-xl font-bold text-slate-900">
+                          {isDemoMode ? DEMO_STATS.sponsors : DEMO_SPONSORS_COUNT}
+                        </div>
                         <div className="text-xs text-slate-600">{t("index.stat_sponsors")}</div>
                       </div>
                     </div>
@@ -116,7 +120,9 @@ const Index = () => {
                         <Award className="w-5 h-5 text-amber-600" />
                       </div>
                       <div>
-                        <div className="text-xl font-bold text-slate-900">{communityStats.completions}</div>
+                        <div className="text-xl font-bold text-slate-900">
+                          {isDemoMode ? DEMO_STATS.completions : communityStats.completions}
+                        </div>
                         <div className="text-xs text-slate-600">{t("index.stat_completions")}</div>
                       </div>
                     </div>
@@ -125,7 +131,9 @@ const Index = () => {
                         <TrendingUp className="w-5 h-5 text-green-600" />
                       </div>
                       <div>
-                        <div className="text-xl font-bold text-slate-900">{communityStats.points.toLocaleString()}</div>
+                        <div className="text-xl font-bold text-slate-900">
+                          {isDemoMode ? DEMO_STATS.points.toLocaleString() : communityStats.points.toLocaleString()}
+                        </div>
                         <div className="text-xs text-slate-600">{t("index.stat_points")}</div>
                       </div>
                     </div>
