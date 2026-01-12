@@ -54,6 +54,7 @@ const CreatorDashboardPage = lazy(() => import("@/pages/CreatorDashboardPage"));
 const CreatorProgramNewPage = lazy(() => import("@/pages/CreatorProgramNewPage"));
 const CreatorProgramEditPage = lazy(() => import("@/pages/CreatorProgramEditPage"));
 const WorkshopSecretWizard = lazy(() => import("@/components/wizard/WorkshopSecretWizard"));
+const ProgramCreatorWizard = lazy(() => import("@/components/expert-studio/ProgramCreatorWizard"));
 const WorkshopSecretViewPage = lazy(() => import("@/pages/WorkshopSecretViewPage"));
 const ControlPanelPage = lazy(() => import("@/pages/ControlPanelPage"));
 const ProgramDetailPage = lazy(() => import("@/pages/ProgramDetailPage"));
@@ -246,7 +247,7 @@ function App() {
                             path="/szakertoi-studio/uj"
                             element={
                               <ProtectedRoute allowedRoles={["expert"]}>
-                                <WorkshopSecretWizard />
+                                <ProgramCreatorWizard />
                               </ProtectedRoute>
                             }
                           />
@@ -254,7 +255,7 @@ function App() {
                             path="/szakertoi-studio/:id/szerkesztes"
                             element={
                               <ProtectedRoute allowedRoles={["expert"]}>
-                                <WorkshopSecretWizard />
+                                <ProgramCreatorWizard />
                               </ProtectedRoute>
                             }
                           />
