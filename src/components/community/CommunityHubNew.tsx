@@ -162,13 +162,79 @@ const CommunityHubNew = () => {
 
 const CreationsGallerySection = () => {
   const { t } = useLanguage();
-  const { user } = useAuth();
+  const { user, isDemoMode } = useAuth();
   const [creations, setCreations] = useState<Creation[]>([]);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Demo mode mock creations
+  const DEMO_CREATIONS: Creation[] = [
+    {
+      id: 'demo-creation-1',
+      image_url: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&h=400&fit=crop',
+      caption: 'Első kovászkenyerem a kemencében! Köszönöm a mesteri tippeket!',
+      rating: 5,
+      created_at: '2026-01-10T10:00:00Z',
+      user: { first_name: 'Tóth', last_name: 'Eszter', avatar_url: null },
+      content: { id: 'mock-program-2', title: 'Kovászkenyér mesterkurzus' }
+    },
+    {
+      id: 'demo-creation-2',
+      image_url: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&h=400&fit=crop',
+      caption: 'A gyógynövény túra után elkészítettem a saját kertemet.',
+      rating: 5,
+      created_at: '2026-01-08T14:00:00Z',
+      user: { first_name: 'Molnár', last_name: 'Gábor', avatar_url: null },
+      content: { id: 'mock-program-3', title: 'Gyógynövénygyűjtés túra' }
+    },
+    {
+      id: 'demo-creation-3',
+      image_url: 'https://images.unsplash.com/photo-1597225244660-1cd128c64284?w=600&h=400&fit=crop',
+      caption: 'Házi lekvár nagymamám receptje szerint, de modern csavarral!',
+      rating: 4,
+      created_at: '2026-01-05T09:30:00Z',
+      user: { first_name: 'Fekete', last_name: 'Anna', avatar_url: null },
+      content: null
+    },
+    {
+      id: 'demo-creation-4',
+      image_url: 'https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?w=600&h=400&fit=crop',
+      caption: 'A kosárfonás workshopról hazavitt technikával készült tároló.',
+      rating: 5,
+      created_at: '2026-01-03T11:00:00Z',
+      user: { first_name: 'Varga', last_name: 'Zoltán', avatar_url: null },
+      content: { id: 'mock-program-7', title: 'Kosárfonás alapjai' }
+    },
+    {
+      id: 'demo-creation-5',
+      image_url: 'https://images.unsplash.com/photo-1602874801007-bd458bb1b8b4?w=600&h=400&fit=crop',
+      caption: 'Méhviaszgyertya a méhészeti programon tanult technikával!',
+      rating: 5,
+      created_at: '2025-12-28T16:00:00Z',
+      user: { first_name: 'Kiss', last_name: 'Judit', avatar_url: null },
+      content: { id: 'mock-program-9', title: 'Méhészkedés alapjai' }
+    },
+    {
+      id: 'demo-creation-6',
+      image_url: 'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=600&h=400&fit=crop',
+      caption: 'Fantasztikus nap volt a szőlőben! A must íze felejthetetlenül friss.',
+      rating: 5,
+      created_at: '2025-12-20T12:00:00Z',
+      user: { first_name: 'Horváth', last_name: 'Péter', avatar_url: null },
+      content: { id: 'mock-program-6', title: 'Szüret a szőlőben' }
+    }
+  ];
+
   const loadCreations = async () => {
     setIsLoading(true);
+    
+    // In demo mode, use mock data
+    if (isDemoMode) {
+      setCreations(DEMO_CREATIONS);
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const { data } = await supabase
         .from('community_creations')
@@ -221,7 +287,7 @@ const CreationsGallerySection = () => {
 
   useEffect(() => {
     loadCreations();
-  }, []);
+  }, [isDemoMode]);
 
   return (
     <section>

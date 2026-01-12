@@ -100,7 +100,7 @@ const getBillingPeriodFromPlanKey = (planKey: string): BillingPeriod => {
 };
 
 export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, profile } = useAuth();
+  const { user, profile, isDemoMode } = useAuth();
   
   // Plans state
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
@@ -161,6 +161,13 @@ export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
   // Fetch current organization's subscription
   const fetchSubscription = useCallback(async () => {
+    // Skip in demo mode
+    if (isDemoMode) {
+      setCurrentSubscription(null);
+      setSubscriptionLoading(false);
+      return;
+    }
+
     if (!user || !profile?.organization_id) {
       setCurrentSubscription(null);
       setSubscriptionLoading(false);
@@ -226,10 +233,29 @@ export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ 
     } finally {
       setSubscriptionLoading(false);
     }
-  }, [user, profile?.organization_id]);
+  }, [user, profile?.organization_id, isDemoMode]);
 
   // Fetch credits for the user/organization
   const fetchCredits = useCallback(async () => {
+    // Skip in demo mode - use mock data instead
+    if (isDemoMode) {
+      // Demo mode: set mock credits for sponsors
+      if (profile?.user_role === 'sponsor') {
+        setCredits({
+          id: 'demo-credits-1',
+          sponsor_user_id: user?.id || 'demo-sponsor',
+          organization_id: null,
+          total_credits: 50000,
+          used_credits: 15000,
+          available_credits: 35000,
+        });
+      } else {
+        setCredits(null);
+      }
+      setCreditsLoading(false);
+      return;
+    }
+
     if (!user) {
       setCredits(null);
       setCreditsLoading(false);
@@ -275,7 +301,7 @@ export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ 
     } finally {
       setCreditsLoading(false);
     }
-  }, [user, profile?.organization_id]);
+  }, [user, profile?.organization_id, profile?.user_role, isDemoMode]);
 
   // Refresh functions
   const refreshSubscription = useCallback(async () => {
