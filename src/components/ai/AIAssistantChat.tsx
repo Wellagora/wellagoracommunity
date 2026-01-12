@@ -6,12 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { 
   Send, 
   Sparkles,
-  BookOpen,
-  Gift,
-  Star,
   Loader2,
   AlertCircle,
-  Leaf,
   HelpCircle,
   Users,
   MapPin
@@ -22,6 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
+import WellBotAvatar from "./WellBotAvatar";
 
 interface Message {
   id: string;
@@ -41,83 +38,126 @@ const AIAssistantChat = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [avatarMood, setAvatarMood] = useState<"neutral" | "thinking" | "happy" | "greeting">("greeting");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Community Concierge Intelligence - Enhanced demo responses
+  // Reset greeting after initial animation
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAvatarMood("neutral");
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Conversational response prefixes for humanization
+  const getConversationalPrefix = (): string => {
+    const prefixes = language === 'hu' 
+      ? [
+          'Szerintem számodra ez érdekes lehet... ',
+          'A mi 127 tagunk közül sokan szeretik ezt... ',
+          'Hadd mutassam be neked... ',
+          'Örömmel segítek! '
+        ]
+      : language === 'de'
+      ? [
+          'Ich denke, das könnte dich interessieren... ',
+          'Viele unserer 127 Mitglieder mögen das... ',
+          'Lass mich dir zeigen... ',
+          'Ich helfe dir gerne! '
+        ]
+      : [
+          'I think this might interest you... ',
+          'Many of our 127 members love this... ',
+          'Let me show you... ',
+          'Happy to help! '
+        ];
+    return prefixes[Math.floor(Math.random() * prefixes.length)];
+  };
+
+  // Community Concierge Intelligence - Enhanced demo responses with humanized tone
   const getDemoResponse = (userMessage: string): string => {
     const lowerMsg = userMessage.toLowerCase();
+    const prefix = getConversationalPrefix();
     
     // Expert recommendations based on topic
     if (lowerMsg.includes('kenyér') || lowerMsg.includes('kovász') || lowerMsg.includes('bread') || lowerMsg.includes('baking') || lowerMsg.includes('brot')) {
+      setAvatarMood("happy");
       return language === 'hu' 
-        ? '🍞 A mi közösségünkben Kovács János a kenyérsütés mestere! 127 tagunk közül sokan már elvégezték a kovászkenyér kurzusát. A Káli Panzió szponzorációjának köszönhetően ez a program most ingyenesen elérhető. Látogass el a Programok oldalra!'
+        ? `${prefix}🍞 Kovács János a mi kenyérsütő mesterünk! A közösség kedvence - 127 tagunk közül sokan már elvégezték a kovászkenyér kurzusát. A Káli Panzió szponzorációjának köszönhetően most ingyen kipróbálhatod!\n\n👉 Nézd meg a Programok oldalon!`
         : language === 'de'
-        ? '🍞 In unserer Gemeinschaft ist János Kovács der Meister des Brotbackens! Viele unserer 127 Mitglieder haben seinen Sauerteigkurs absolviert. Dank der Sponsoring von Káli Panzió ist dieses Programm kostenlos. Besuchen Sie die Programm-Seite!'
-        : '🍞 In our community, János Kovács is the bread baking master! Many of our 127 members have completed his sourdough course. Thanks to Káli Panzió sponsorship, this program is now free. Visit the Programs page!';
+        ? `${prefix}🍞 János Kovács ist unser Brotback-Meister! Der Liebling der Gemeinschaft - viele unserer 127 Mitglieder haben seinen Kurs absolviert. Dank Káli Panzió kannst du ihn kostenlos ausprobieren!\n\n👉 Schau auf der Programm-Seite!`
+        : `${prefix}🍞 János Kovács is our bread baking master! A community favorite - many of our 127 members have completed his course. Thanks to Káli Panzió sponsorship, you can try it for free!\n\n👉 Check the Programs page!`;
     }
     
     if (lowerMsg.includes('gyógynövény') || lowerMsg.includes('herb') || lowerMsg.includes('kräuter') || lowerMsg.includes('kert') || lowerMsg.includes('garden')) {
+      setAvatarMood("happy");
       return language === 'hu'
-        ? '🌿 Sophie Wagner a gyógynövények és kertészkedés szakértője közösségünkben! Különösen a balatoni táj növényvilágát ismeri kiválóan. 5 szponzorunk támogatásával több ingyenes túrát is szervez. Nézd meg a Szakértők galériát!'
+        ? `${prefix}🌿 Sophie Wagner a mi gyógynövény-szakértőnk! Imádják a tagjaink - különösen a balatoni táj növényvilágáról tud mesélni órákig. 5 szponzorunk támogatásával ingyenes túrákat is tart!\n\n👉 Ismerkedj meg vele a Szakértők galériában!`
         : language === 'de'
-        ? '🌿 Sophie Wagner ist unsere Expertin für Kräuter und Gartenbau! Sie kennt die Pflanzenwelt der Balaton-Region besonders gut. Mit Unterstützung unserer 5 Sponsoren organisiert sie kostenlose Touren. Besuchen Sie die Experten-Galerie!'
-        : '🌿 Sophie Wagner is our herbs and gardening expert! She knows the plant life of the Balaton region especially well. With support from our 5 sponsors, she organizes free tours. Check out the Experts Gallery!';
+        ? `${prefix}🌿 Sophie Wagner ist unsere Kräuter-Expertin! Unsere Mitglieder lieben sie - sie kann stundenlang über die Pflanzenwelt der Balaton-Region erzählen. Mit Unterstützung unserer 5 Sponsoren bietet sie kostenlose Touren!\n\n👉 Lerne sie in der Experten-Galerie kennen!`
+        : `${prefix}🌿 Sophie Wagner is our herbs expert! Our members love her - she can talk for hours about the plant life of the Balaton region. With support from our 5 sponsors, she offers free tours!\n\n👉 Meet her in the Experts Gallery!`;
     }
 
     // Voucher/Coupon explanation
     if (lowerMsg.includes('kupon') || lowerMsg.includes('voucher') || lowerMsg.includes('gutschein') || lowerMsg.includes('hogyan működik')) {
+      setAvatarMood("happy");
       return language === 'hu'
-        ? '🎫 A kuponrendszerünk egyszerű háromszög:\n\n1️⃣ **Szponzorok** (pl. Káli Panzió) krediteket vásárolnak\n2️⃣ **Tagok** (Te!) ingyenes kuponokat kapnak a szponzorált programokhoz\n3️⃣ **Szakértők** megkapják a programdíjat a szponzortól\n\nÍgy mindenki nyer! Nézd meg a Piactéren a "Szponzorált" címkés programokat.'
+        ? `${prefix}🎫 Ez az egyik kedvenc témám! A kuponrendszerünk összeköti a közösséget:\n\n🏨 **Szponzorok** (pl. Káli Panzió) krediteket vásárolnak\n👤 **Tagok** (mint Te!) ingyenes kuponokat kapnak\n🎓 **Szakértők** megkapják a programdíjat\n\nÍgy mindenki nyer - a tudás körforgásban marad a közösségben! 🌿\n\n👉 Nézd meg a "Szponzorált" programokat a Piactéren!`
         : language === 'de'
-        ? '🎫 Unser Gutscheinsystem ist ein einfaches Dreieck:\n\n1️⃣ **Sponsoren** (z.B. Káli Panzió) kaufen Credits\n2️⃣ **Mitglieder** (Du!) erhalten kostenlose Gutscheine\n3️⃣ **Experten** werden vom Sponsor bezahlt\n\nSo gewinnt jeder! Schauen Sie sich die "Gesponsert"-Programme im Marktplatz an.'
-        : '🎫 Our voucher system is a simple triangle:\n\n1️⃣ **Sponsors** (e.g. Káli Panzió) purchase credits\n2️⃣ **Members** (You!) receive free vouchers for sponsored programs\n3️⃣ **Experts** get paid by the sponsor\n\nEveryone wins! Check out "Sponsored" programs in the Marketplace.';
+        ? `${prefix}🎫 Das ist eines meiner Lieblingsthemen! Unser Gutscheinsystem verbindet die Gemeinschaft:\n\n🏨 **Sponsoren** (z.B. Káli Panzió) kaufen Credits\n👤 **Mitglieder** (wie Du!) erhalten kostenlose Gutscheine\n🎓 **Experten** werden bezahlt\n\nSo gewinnt jeder - Wissen bleibt in der Gemeinschaft! 🌿\n\n👉 Schau dir die "Gesponsert"-Programme im Marktplatz an!`
+        : `${prefix}🎫 This is one of my favorite topics! Our voucher system connects the community:\n\n🏨 **Sponsors** (e.g. Káli Panzió) purchase credits\n👤 **Members** (like you!) receive free vouchers\n🎓 **Experts** get paid\n\nEveryone wins - knowledge stays in the community! 🌿\n\n👉 Check out "Sponsored" programs in the Marketplace!`;
     }
 
     // Popular expert question
     if (lowerMsg.includes('népszerű') || lowerMsg.includes('popular') || lowerMsg.includes('beliebt') || lowerMsg.includes('legjobb') || lowerMsg.includes('best')) {
+      setAvatarMood("happy");
       return language === 'hu'
-        ? '⭐ A 127 tagunk kedvenc szakértői:\n\n1️⃣ **Kovács János** - Kovászkenyér mester (4.9⭐)\n2️⃣ **Sophie Wagner** - Gyógynövények (4.8⭐)\n3️⃣ **Nagy Éva** - Méhészkedés alapjai (4.7⭐)\n\nMindegyikük programjait 5 szponzorunk támogatja. Látogass el a Szakértők oldalra!'
+        ? `${prefix}⭐ A közösségünk kedvencei - a 127 tagunk szerint:\n\n🥇 **Kovács János** - Kovászkenyér mester (4.9⭐)\n🥈 **Sophie Wagner** - Gyógynövények (4.8⭐)\n🥉 **Nagy Éva** - Méhészkedés (4.7⭐)\n\nMind a hárman igazi kincsek! 5 szponzorunk támogatásával sok programjuk ingyenes.\n\n👉 Ismerkedj meg velük a Szakértők oldalon!`
         : language === 'de'
-        ? '⭐ Die Lieblingsexperten unserer 127 Mitglieder:\n\n1️⃣ **János Kovács** - Sauerteig-Meister (4.9⭐)\n2️⃣ **Sophie Wagner** - Kräuter (4.8⭐)\n3️⃣ **Éva Nagy** - Imkerei-Grundlagen (4.7⭐)\n\nAlle Programme werden von 5 Sponsoren unterstützt. Besuchen Sie die Experten-Seite!'
-        : '⭐ Favorite experts of our 127 members:\n\n1️⃣ **János Kovács** - Sourdough Master (4.9⭐)\n2️⃣ **Sophie Wagner** - Herbs Expert (4.8⭐)\n3️⃣ **Éva Nagy** - Beekeeping Basics (4.7⭐)\n\nAll programs supported by 5 sponsors. Visit the Experts page!';
+        ? `${prefix}⭐ Die Favoriten unserer Gemeinschaft - laut unseren 127 Mitgliedern:\n\n🥇 **János Kovács** - Sauerteig-Meister (4.9⭐)\n🥈 **Sophie Wagner** - Kräuter (4.8⭐)\n🥉 **Éva Nagy** - Imkerei (4.7⭐)\n\nAlle drei sind echte Schätze! Dank 5 Sponsoren sind viele Programme kostenlos.\n\n👉 Lerne sie auf der Experten-Seite kennen!`
+        : `${prefix}⭐ Our community favorites - according to our 127 members:\n\n🥇 **János Kovács** - Sourdough Master (4.9⭐)\n🥈 **Sophie Wagner** - Herbs Expert (4.8⭐)\n🥉 **Éva Nagy** - Beekeeping (4.7⭐)\n\nAll three are true treasures! Thanks to 5 sponsors, many programs are free.\n\n👉 Meet them on the Experts page!`;
     }
 
     // Programs in a location
     if (lowerMsg.includes('bécs') || lowerMsg.includes('vienna') || lowerMsg.includes('wien') || lowerMsg.includes('budapest') || lowerMsg.includes('balaton')) {
+      setAvatarMood("happy");
       const location = lowerMsg.includes('bécs') || lowerMsg.includes('vienna') || lowerMsg.includes('wien') ? 'Bécs/Wien' : 
                        lowerMsg.includes('budapest') ? 'Budapest' : 'Balaton';
       return language === 'hu'
-        ? `📍 ${location} környékén jelenleg 3 aktív programunk van! A legtöbb szponzorált, így ingyen csatlakozhatsz. Nézd meg a Programok oldalt és szűrj helyszín szerint!`
+        ? `${prefix}📍 Remek választás! ${location} környékén jelenleg 3 aktív programunk van - és a legtöbb szponzorált, szóval ingyen csatlakozhatsz!\n\n👉 Nézd meg a Programok oldalt és szűrj helyszín szerint!`
         : language === 'de'
-        ? `📍 In der Nähe von ${location} haben wir derzeit 3 aktive Programme! Die meisten sind gesponsert, also kannst du kostenlos teilnehmen. Besuche die Programm-Seite und filtere nach Standort!`
-        : `📍 Near ${location}, we currently have 3 active programs! Most are sponsored, so you can join for free. Check the Programs page and filter by location!`;
+        ? `${prefix}📍 Tolle Wahl! In der Nähe von ${location} haben wir 3 aktive Programme - die meisten sind gesponsert, also kannst du kostenlos teilnehmen!\n\n👉 Besuche die Programm-Seite und filtere nach Standort!`
+        : `${prefix}📍 Great choice! Near ${location}, we have 3 active programs - most are sponsored, so you can join for free!\n\n👉 Check the Programs page and filter by location!`;
     }
 
     // Learning/Programs general
     if (lowerMsg.includes('tanul') || lowerMsg.includes('learn') || lowerMsg.includes('lernen') || lowerMsg.includes('program')) {
+      setAvatarMood("happy");
       return language === 'hu' 
-        ? '📚 A mi közösségünkben 12 szakértőnk kínál programokat: kovászkenyér sütés, gyógynövénygyűjtés, méhészkedés, hagyományos kézművesség és még sok más! 5 szponzorunk támogatásával sok program ingyenes. Látogass el a Programok oldalra!'
+        ? `${prefix}📚 A mi 12 szakértőnk fantasztikus programokat kínál: kovászkenyér sütés, gyógynövénygyűjtés, méhészkedés, hagyományos kézművesség... A lista hosszú!\n\n5 szponzorunk jóvoltából sok program ingyenes a 127 tagunknak.\n\n👉 Fedezd fel a Programok oldalon!`
         : language === 'de'
-        ? '📚 In unserer Gemeinschaft bieten 12 Experten Programme an: Sauerteigbrot, Kräutersammeln, Imkerei, traditionelles Handwerk und vieles mehr! Mit Unterstützung von 5 Sponsoren sind viele Programme kostenlos. Besuchen Sie die Programm-Seite!'
-        : '📚 In our community, 12 experts offer programs: sourdough baking, herb gathering, beekeeping, traditional crafts and much more! With support from 5 sponsors, many programs are free. Visit the Programs page!';
+        ? `${prefix}📚 Unsere 12 Experten bieten fantastische Programme: Sauerteigbrot, Kräutersammeln, Imkerei, traditionelles Handwerk... Die Liste ist lang!\n\nDank 5 Sponsoren sind viele Programme für unsere 127 Mitglieder kostenlos.\n\n👉 Entdecke sie auf der Programm-Seite!`
+        : `${prefix}📚 Our 12 experts offer fantastic programs: sourdough baking, herb gathering, beekeeping, traditional crafts... The list goes on!\n\nThanks to 5 sponsors, many programs are free for our 127 members.\n\n👉 Discover them on the Programs page!`;
     }
 
     // Free programs
     if (lowerMsg.includes('ingyenes') || lowerMsg.includes('free') || lowerMsg.includes('kostenlos') || lowerMsg.includes('gratis')) {
+      setAvatarMood("happy");
       return language === 'hu'
-        ? '🎉 Kiváló hír! 5 szponzorunk - köztük a Káli Panzió és helyi vállalkozások - támogatja programjainkat. A 127 tagunk így ingyen vehet részt sok programon. Nézd meg a "Szponzorált" címkével ellátott programokat a Piactéren!'
+        ? `${prefix}🎉 Jó hírem van! 5 szponzorunk - köztük a Káli Panzió és helyi vállalkozások - lehetővé teszik, hogy a 127 tagunk ingyen tanulhasson a szakértőktől.\n\nKeresd a "Szponzorált" címkét!\n\n👉 Nézd meg a Piactéren!`
         : language === 'de'
-        ? '🎉 Tolle Neuigkeiten! Unsere 5 Sponsoren - darunter Káli Panzió und lokale Unternehmen - unterstützen unsere Programme. So können unsere 127 Mitglieder kostenlos teilnehmen. Schauen Sie sich die "Gesponsert"-Programme im Marktplatz an!'
-        : '🎉 Great news! Our 5 sponsors - including Káli Panzió and local businesses - support our programs. This way our 127 members can join many programs for free. Check out programs with the "Sponsored" label in the Marketplace!';
+        ? `${prefix}🎉 Gute Nachrichten! Unsere 5 Sponsoren - darunter Káli Panzió - ermöglichen es unseren 127 Mitgliedern, kostenlos von Experten zu lernen.\n\nSuche nach dem "Gesponsert"-Label!\n\n👉 Schau im Marktplatz!`
+        : `${prefix}🎉 Good news! Our 5 sponsors - including Káli Panzió - make it possible for our 127 members to learn from experts for free.\n\nLook for the "Sponsored" label!\n\n👉 Check the Marketplace!`;
     }
 
-    // Default community concierge response
+    // Default personalized welcome
+    setAvatarMood("neutral");
     return language === 'hu'
-      ? '👋 Szia! WellBot vagyok, a közösségi kalauzod. A mi közösségünkben 127 tag, 12 szakértő és 5 szponzor dolgozik együtt a helyi tudás megőrzéséért.\n\nMiben segíthetek?\n• Programok és kurzusok ajánlása\n• Szakértők bemutatása\n• A szponzorációs rendszer magyarázata\n\nLátogass el a Programok vagy Szakértők oldalra!'
+      ? `Szia! 👋 Én WellBot vagyok, a WellAgora digitális házigazdája. 🏠\n\nNem csak egy gép vagyok - azért születtem, hogy segítsek neked felfedezni a 127 tagú közösségünk értékeit.\n\nMiben segíthetek ma?\n• 🎓 Szakértőket mutatok be\n• 📚 Programokat ajánlok\n• 🎫 Elmagyarázom a kuponrendszert`
       : language === 'de'
-      ? '👋 Hallo! Ich bin WellBot, dein Gemeinschaftsführer. In unserer Gemeinschaft arbeiten 127 Mitglieder, 12 Experten und 5 Sponsoren zusammen, um lokales Wissen zu bewahren.\n\nWie kann ich helfen?\n• Programm- und Kursempfehlungen\n• Expertenvorstellungen\n• Erklärung des Sponsoring-Systems\n\nBesuchen Sie die Programm- oder Experten-Seite!'
-      : '👋 Hi! I\'m WellBot, your community guide. In our community, 127 members, 12 experts, and 5 sponsors work together to preserve local knowledge.\n\nHow can I help?\n• Program and course recommendations\n• Expert introductions\n• Sponsorship system explanation\n\nVisit the Programs or Experts page!';
+      ? `Hallo! 👋 Ich bin WellBot, der digitale Gastgeber von WellAgora. 🏠\n\nIch bin nicht nur eine Maschine - ich wurde geboren, um dir zu helfen, die Werte unserer 127-köpfigen Gemeinschaft zu entdecken.\n\nWie kann ich dir heute helfen?\n• 🎓 Experten vorstellen\n• 📚 Programme empfehlen\n• 🎫 Das Gutscheinsystem erklären`
+      : `Hi! 👋 I'm WellBot, WellAgora's digital host. 🏠\n\nI'm not just a machine - I was born to help you discover the treasures of our 127-member community.\n\nHow can I help you today?\n• 🎓 Introduce experts\n• 📚 Recommend programs\n• 🎫 Explain the voucher system`;
   };
 
   // Community Concierge quick-start chips
@@ -330,20 +370,9 @@ const AIAssistantChat = () => {
       >
         {/* Avatar and Title */}
         <div className="flex items-center gap-4 mb-5">
-          {/* Custom WellBot Avatar with gradient and breathing animation */}
-          <motion.div 
-            className="relative flex-shrink-0"
-            animate={{ scale: [1, 1.02, 1] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-sky-400 via-indigo-500 to-indigo-600 shadow-[0_8px_30px_rgb(99,102,241,0.35)] flex items-center justify-center">
-              <motion.div
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <Leaf className="h-8 w-8 text-white drop-shadow-md" />
-              </motion.div>
-            </div>
+          {/* Custom WellBot Mascot Avatar */}
+          <div className="relative flex-shrink-0">
+            <WellBotAvatar size="lg" mood={avatarMood} />
             {/* Online indicator */}
             <div className="absolute -bottom-1 -right-1 bg-emerald-500 rounded-full w-5 h-5 flex items-center justify-center shadow-md border-2 border-white">
               <motion.div
@@ -352,16 +381,16 @@ const AIAssistantChat = () => {
                 transition={{ duration: 1.5, repeat: Infinity }}
               />
             </div>
-          </motion.div>
+          </div>
           
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-sky-500 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-500 to-sky-500 bg-clip-text text-transparent">
                 WellBot
               </h1>
               <div className="flex items-center gap-2">
-                <Badge className="text-xs bg-indigo-100 text-indigo-700 border-indigo-200">
-                  {language === 'hu' ? 'Közösségi Kalauz' : language === 'de' ? 'Gemeinschaftsführer' : 'Community Concierge'}
+                <Badge className="text-xs bg-amber-100 text-amber-700 border-amber-200">
+                  {language === 'hu' ? 'Digitális Házigazda' : language === 'de' ? 'Digitaler Gastgeber' : 'Digital Host'}
                 </Badge>
                 <div className="flex items-center gap-1.5">
                   <motion.div 
@@ -375,10 +404,10 @@ const AIAssistantChat = () => {
             </div>
             <p className="text-sm text-slate-600 mt-1 line-clamp-2">
               {language === 'hu' 
-                ? 'Segítek megtalálni a tökéletes szakértőt és programot a 127 tagú közösségünkben!'
+                ? 'A WellAgora házigazdája vagyok! Segítek megtalálni a tökéletes szakértőt és programot. 🏠'
                 : language === 'de'
-                ? 'Ich helfe dir, den perfekten Experten und das perfekte Programm in unserer 127-köpfigen Gemeinschaft zu finden!'
-                : 'I help you find the perfect expert and program in our 127-member community!'}
+                ? 'Ich bin der Gastgeber von WellAgora! Ich helfe dir, den perfekten Experten und das Programm zu finden. 🏠'
+                : 'I\'m WellAgora\'s host! I help you find the perfect expert and program. 🏠'}
             </p>
           </div>
         </div>
@@ -396,8 +425,8 @@ const AIAssistantChat = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => handleQuickAction(action)}
-                className="gap-2 text-sm bg-white/80 backdrop-blur-sm border-indigo-200 text-indigo-700 
-                  hover:bg-indigo-50 hover:border-indigo-400 hover:text-indigo-800 
+                className="gap-2 text-sm bg-white/80 backdrop-blur-sm border-amber-200 text-amber-700 
+                  hover:bg-amber-50 hover:border-amber-400 hover:text-amber-800 
                   shadow-[0_2px_8px_rgb(0,0,0,0.04)] transition-all duration-200"
                 disabled={isTyping}
               >
@@ -524,22 +553,18 @@ const AIAssistantChat = () => {
             className="flex flex-col items-center justify-center text-center py-16"
           >
             <div className="bg-white/95 backdrop-blur-md rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-white/40 mb-6">
-              <motion.div
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                className="w-20 h-20 rounded-full bg-gradient-to-br from-sky-400 via-indigo-500 to-indigo-600 shadow-[0_8px_30px_rgb(99,102,241,0.35)] flex items-center justify-center mx-auto mb-4"
-              >
-                <Leaf className="h-10 w-10 text-white" />
-              </motion.div>
-              <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-indigo-600 to-sky-500 bg-clip-text text-transparent">
-                {language === 'hu' ? 'Üdv! WellBot vagyok' : language === 'de' ? 'Hallo! Ich bin WellBot' : 'Hi! I\'m WellBot'}
+              <div className="flex justify-center mb-4">
+                <WellBotAvatar size="xl" mood={avatarMood} />
+              </div>
+              <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-amber-500 to-sky-500 bg-clip-text text-transparent">
+                {language === 'hu' ? 'Szia! WellBot vagyok' : language === 'de' ? 'Hallo! Ich bin WellBot' : 'Hi! I\'m WellBot'}
               </h3>
               <p className="text-slate-600 max-w-sm text-sm leading-relaxed">
                 {language === 'hu' 
-                  ? 'A közösségi kalauzod! Segítek megtalálni a tökéletes szakértőt, programot, és elmagyarázom hogyan működik a szponzorációs rendszer.'
+                  ? 'A WellAgora digitális házigazdája! 🏠 Segítek felfedezni a közösségünk kincseit - szakértőket, programokat, és a szponzorációs rendszert.'
                   : language === 'de'
-                  ? 'Dein Gemeinschaftsführer! Ich helfe dir, den perfekten Experten und das Programm zu finden und erkläre das Sponsoring-System.'
-                  : 'Your community concierge! I help you find the perfect expert, program, and explain how our sponsorship system works.'}
+                  ? 'Der digitale Gastgeber von WellAgora! 🏠 Ich helfe dir, die Schätze unserer Gemeinschaft zu entdecken - Experten, Programme und das Sponsoring-System.'
+                  : 'WellAgora\'s digital host! 🏠 I help you discover our community\'s treasures - experts, programs, and the sponsorship system.'}
               </p>
             </div>
           </motion.div>
@@ -556,23 +581,21 @@ const AIAssistantChat = () => {
                   message.sender === "user" ? "justify-end" : "justify-start"
                 }`}
               >
-                {/* Bot Avatar - Indigo/Sky gradient */}
+                {/* Bot Avatar - Humanized mascot */}
                 {message.sender === "ai" && (
-                  <div className="bg-gradient-to-br from-sky-400 to-indigo-500 rounded-full p-2 flex-shrink-0 shadow-[0_4px_12px_rgb(99,102,241,0.25)]">
-                    <Leaf className="h-5 w-5 text-white" />
-                  </div>
+                  <WellBotAvatar size="sm" mood="neutral" />
                 )}
                 
                 {/* Message Bubble */}
                 <div className={`flex flex-col max-w-[80%] ${message.sender === "user" ? "items-end" : "items-start"}`}>
                   {message.sender === "ai" && (
-                    <span className="text-xs font-medium bg-gradient-to-r from-indigo-600 to-sky-500 bg-clip-text text-transparent mb-1">WellBot</span>
+                    <span className="text-xs font-medium bg-gradient-to-r from-amber-500 to-sky-500 bg-clip-text text-transparent mb-1">WellBot</span>
                   )}
                   <div
-                    className={`p-4 rounded-2xl whitespace-pre-wrap break-words text-sm leading-relaxed ${
+                    className={`p-4 rounded-[1.25rem] whitespace-pre-wrap break-words text-sm leading-relaxed ${
                       message.sender === "user"
-                        ? "bg-gradient-to-r from-sky-500 to-indigo-500 text-white rounded-tr-none shadow-[0_4px_16px_rgb(99,102,241,0.3)]"
-                        : "bg-indigo-50 border border-indigo-100 text-slate-700 rounded-tl-none shadow-[0_4px_16px_rgb(0,0,0,0.06)]"
+                        ? "bg-gradient-to-r from-sky-500 to-sky-600 text-white rounded-tr-sm shadow-[0_4px_16px_rgb(14,165,233,0.3)]"
+                        : "bg-amber-50/80 border border-amber-100 text-slate-700 rounded-tl-sm shadow-[0_4px_16px_rgb(0,0,0,0.05)]"
                     }`}
                   >
                     {message.content}
