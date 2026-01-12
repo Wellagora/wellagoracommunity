@@ -47,6 +47,9 @@ serve(async (req) => {
       throw new Error("GEMINI_API_KEY is not configured");
     }
 
+    console.log('===========================================');
+    console.log('🤖 WellBot is now running on Gemini 1.5 Pro with full context');
+    console.log('===========================================');
     console.log('AI Chat request received:', { messageCount: messages.length, language });
 
     // Fetch user context for personalized responses when user is logged in
@@ -56,11 +59,17 @@ serve(async (req) => {
     const activeProjectId = userContext.activeProjectId;
     const systemPrompt = getSystemPrompt(language, userContext);
 
-    // Initialize Gemini AI
+    // Initialize Gemini AI - UPGRADED to Pro with balanced temperature
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.0-flash",
-      systemInstruction: systemPrompt
+      model: "gemini-1.5-pro",
+      systemInstruction: systemPrompt,
+      generationConfig: {
+        temperature: 0.7,  // Balanced for creative association
+        topP: 0.95,
+        topK: 40,
+        maxOutputTokens: 2048,
+      }
     });
 
     // Convert messages to Gemini format
@@ -242,14 +251,14 @@ async function storeConversation(supabase: any, userId: string, projectId: strin
     conversation_id: conversationId,
     role: userMessage.role,
     content: userMessage.content,
-    model: 'google/gemini-2.0-flash'
+    model: 'google/gemini-1.5-pro'
   });
   
   await supabase.from('ai_messages').insert({
     conversation_id: conversationId,
     role: 'assistant',
     content: aiMessage,
-    model: 'google/gemini-2.0-flash'
+    model: 'google/gemini-1.5-pro'
   });
 }
 

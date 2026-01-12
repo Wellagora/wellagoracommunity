@@ -222,6 +222,29 @@ const AIAssistantChat = () => {
     });
   };
 
+  // ===== HELPER: Find matching experts by keywords =====
+  const findMatchingExperts = (keywords: string[]): typeof MOCK_EXPERTS => {
+    return MOCK_EXPERTS.filter(e => {
+      const searchableText = [
+        e.expert_title, e.expert_title_en, e.expert_title_de,
+        e.bio, e.bio_en, e.bio_de,
+        e.first_name, e.last_name
+      ].join(' ').toLowerCase();
+      return keywords.some(kw => searchableText.includes(kw.toLowerCase()));
+    });
+  };
+
+  // ===== HELPER: Find matching programs by keywords =====
+  const findMatchingPrograms = (keywords: string[]): typeof MOCK_PROGRAMS => {
+    return MOCK_PROGRAMS.filter(p => {
+      const searchableText = [
+        p.title, p.title_en, p.title_de,
+        p.description, p.category
+      ].join(' ').toLowerCase();
+      return keywords.some(kw => searchableText.includes(kw.toLowerCase()));
+    });
+  };
+
   // ===== STRUCTURED RESPONSE BUILDER =====
   // Response Structure: Acknowledge → Expert/Program → Sponsor → Encouraging question
   const buildStructuredResponse = (
