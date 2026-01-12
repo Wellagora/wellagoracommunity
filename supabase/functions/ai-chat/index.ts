@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
-import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai@0.21.0";
+import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai@0.24.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -48,7 +48,7 @@ serve(async (req) => {
     }
 
     console.log('===========================================');
-    console.log('🤖 WellBot is now running on Gemini 1.5 Pro with full context');
+    console.log('🤖 WellBot initializing with Gemini AI...');
     console.log('===========================================');
     console.log('AI Chat request received:', { messageCount: messages.length, language });
 
@@ -59,50 +59,78 @@ serve(async (req) => {
     const activeProjectId = userContext.activeProjectId;
     const systemPrompt = getSystemPrompt(language, userContext);
 
-    // Initialize Gemini AI - UPGRADED to Pro with balanced temperature
+    // Initialize Gemini AI with fallback logic
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-pro",
-      systemInstruction: systemPrompt,
-      generationConfig: {
-        temperature: 0.7,  // Balanced for creative association
-        topP: 0.95,
-        topK: 40,
-        maxOutputTokens: 2048,
-      }
-    });
-
-    // Convert messages to Gemini format
-    const history = messages.slice(0, -1).map((msg: any) => ({
-      role: msg.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: msg.content }]
-    }));
-
-    const chat = model.startChat({
-      history: history
-    });
-
+    
+    // Model priority: gemini-2.0-flash-exp is confirmed working with the user's API key
+    const modelOptions = [
+      'gemini-2.0-flash-exp',
+      'gemini-2.0-flash',
+      'gemini-exp-1206'
+    ];
+    
     let response;
     let finalMessage = '';
-    try {
-      const result = await chat.sendMessage(messages[messages.length - 1].content);
-      response = result.response;
-      finalMessage = response.text();
-      console.log('Gemini response received successfully');
-    } catch (error) {
-      console.error('Gemini API request failed:', error);
-      const errorMessages: Record<string, string> = {
-        hu: 'Az AI asszisztens jelenleg nem elérhető. Kérlek, próbáld újra később.',
-        en: 'AI assistant is currently unavailable. Please try again later.',
-        de: 'KI-Assistent ist derzeit nicht verfügbar. Bitte versuche es später erneut.'
-      };
-      return new Response(
-        JSON.stringify({ 
-          error: 'ai_unavailable',
-          message: errorMessages[language] || errorMessages.en
-        }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 503 }
-      );
+    let usedModel = '';
+    
+    for (const modelName of modelOptions) {
+      try {
+        console.log(`Attempting to use model: ${modelName}`);
+        
+        const model = genAI.getGenerativeModel({ 
+          model: modelName,
+          systemInstruction: systemPrompt,
+          generationConfig: {
+            temperature: 0.7,  // Balanced for creative association
+            topP: 0.95,
+            topK: 40,
+            maxOutputTokens: 2048,
+          }
+        });
+
+        // Convert messages to Gemini format
+        const history = messages.slice(0, -1).map((msg: any) => ({
+          role: msg.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: msg.content }]
+        }));
+
+        const chat = model.startChat({
+          history: history
+        });
+
+        const result = await chat.sendMessage(messages[messages.length - 1].content);
+        response = result.response;
+        finalMessage = response.text();
+        usedModel = modelName;
+        
+        console.log(`✅ Gemini response received successfully using model: ${modelName}`);
+        break; // Success, exit loop
+        
+      } catch (modelError: any) {
+        console.error(`❌ Model ${modelName} failed:`, modelError?.message || modelError);
+        
+        // If this is the last model option, handle the error
+        if (modelName === modelOptions[modelOptions.length - 1]) {
+          console.error('All Gemini models failed. Returning error response.');
+          
+          const errorMessages: Record<string, string> = {
+            hu: 'Az AI asszisztens jelenleg nem elérhető. Kérlek, próbáld újra később.',
+            en: 'AI assistant is currently unavailable. Please try again later.',
+            de: 'KI-Assistent ist derzeit nicht verfügbar. Bitte versuche es später erneut.'
+          };
+          
+          return new Response(
+            JSON.stringify({ 
+              error: 'ai_unavailable',
+              message: errorMessages[language] || errorMessages.en,
+              details: 'All AI models are temporarily unavailable'
+            }),
+            { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 503 }
+          );
+        }
+        // Otherwise continue to next model
+        continue;
+      }
     }
 
     // Initialize or retrieve conversation ID (only when user is logged in)
@@ -131,7 +159,7 @@ serve(async (req) => {
     const suggestions = generateSuggestions(lastUserMessage, language);
 
     // Store conversation (only when we have a persisted conversation id)
-    await storeConversation(supabase, userId || '', projectId, finalConversationId, language, messages[messages.length - 1], finalMessage);
+    await storeConversation(supabase, userId || '', projectId, finalConversationId, language, messages[messages.length - 1], finalMessage, usedModel);
 
     return new Response(
       JSON.stringify({ 
@@ -244,21 +272,23 @@ async function getUserPrograms(supabase: any, userId: string, language: string) 
   });
 }
 
-async function storeConversation(supabase: any, userId: string, projectId: string | null, conversationId: string | null, language: string, userMessage: any, aiMessage: string) {
+async function storeConversation(supabase: any, userId: string, projectId: string | null, conversationId: string | null, language: string, userMessage: any, aiMessage: string, modelUsed: string = 'gemini-1.5-flash') {
   if (!conversationId) return;
+  
+  const modelName = `google/${modelUsed}`;
   
   await supabase.from('ai_messages').insert({
     conversation_id: conversationId,
     role: userMessage.role,
     content: userMessage.content,
-    model: 'google/gemini-1.5-pro'
+    model: modelName
   });
   
   await supabase.from('ai_messages').insert({
     conversation_id: conversationId,
     role: 'assistant',
     content: aiMessage,
-    model: 'google/gemini-1.5-pro'
+    model: modelName
   });
 }
 
