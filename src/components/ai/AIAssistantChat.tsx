@@ -224,7 +224,7 @@ const AIAssistantChat = () => {
 
   return (
     <div className="flex flex-col h-[calc(100vh-3rem)] md:h-[calc(100vh-3.5rem)] max-w-3xl mx-auto bg-[hsl(var(--background))]">
-      {/* STICKY HEADER - Knowledge Guide Header */}
+      {/* STICKY HEADER - WellBot Header */}
       <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-white/40 px-4 py-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         {/* Avatar and Title */}
         <div className="flex items-center gap-4 mb-5">
@@ -232,7 +232,7 @@ const AIAssistantChat = () => {
             <div className="w-16 h-16 rounded-full bg-white/95 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/40 overflow-hidden">
               <img 
                 src={robotAvatar} 
-                alt="Tudás-Kalauz" 
+                alt="WellBot" 
                 className="w-full h-full object-cover"
               />
             </div>
@@ -244,7 +244,7 @@ const AIAssistantChat = () => {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 flex-wrap">
               <h1 className="text-2xl font-bold text-slate-800">
-                {t('wellbot.knowledge_guide_title')}
+                WellBot
               </h1>
               <div className="flex items-center gap-2">
                 <Badge className="text-xs bg-primary/10 text-primary border-primary/20">
@@ -392,7 +392,7 @@ const AIAssistantChat = () => {
               {/* Message Bubble */}
               <div className={`flex flex-col max-w-[80%] ${message.sender === "user" ? "items-end" : "items-start"}`}>
                 {message.sender === "ai" && (
-                  <span className="text-xs font-medium text-primary mb-1">{t('wellbot.knowledge_guide_title')}</span>
+                  <span className="text-xs font-medium text-primary mb-1">WellBot</span>
                 )}
                 <div
                   className={`p-4 rounded-2xl whitespace-pre-wrap break-words text-sm leading-relaxed ${
