@@ -11,14 +11,17 @@ import {
   Star,
   Loader2,
   AlertCircle,
-  Compass
+  Leaf,
+  HelpCircle,
+  Users,
+  MapPin
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
-import robotAvatar from "@/assets/ai-assistant.jpg";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Message {
   id: string;
@@ -41,45 +44,98 @@ const AIAssistantChat = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Demo mode mock responses - includes 127 member count
+  // Community Concierge Intelligence - Enhanced demo responses
   const getDemoResponse = (userMessage: string): string => {
     const lowerMsg = userMessage.toLowerCase();
-    if (lowerMsg.includes('tanul') || lowerMsg.includes('learn')) {
+    
+    // Expert recommendations based on topic
+    if (lowerMsg.includes('kenyér') || lowerMsg.includes('kovász') || lowerMsg.includes('bread') || lowerMsg.includes('baking') || lowerMsg.includes('brot')) {
       return language === 'hu' 
-        ? 'Szia! 🌿 A 127 tagot számláló közösségünkben számos programot találsz: kovászkenyér sütés, gyógynövénygyűjtés, méhészkedés alapjai és még sok más! 12 szakértőnk tartja a legtöbb programot, és a szponzorált programok ingyenesek számodra.'
-        : 'Hi! 🌿 In our community of 127 members, you can find many programs: sourdough baking, herb gathering, beekeeping basics and much more! Our 12 experts lead most programs, and sponsored programs are free for you.';
+        ? '🍞 A mi közösségünkben Kovács János a kenyérsütés mestere! 127 tagunk közül sokan már elvégezték a kovászkenyér kurzusát. A Káli Panzió szponzorációjának köszönhetően ez a program most ingyenesen elérhető. Látogass el a Programok oldalra!'
+        : language === 'de'
+        ? '🍞 In unserer Gemeinschaft ist János Kovács der Meister des Brotbackens! Viele unserer 127 Mitglieder haben seinen Sauerteigkurs absolviert. Dank der Sponsoring von Káli Panzió ist dieses Programm kostenlos. Besuchen Sie die Programm-Seite!'
+        : '🍞 In our community, János Kovács is the bread baking master! Many of our 127 members have completed his sourdough course. Thanks to Káli Panzió sponsorship, this program is now free. Visit the Programs page!';
     }
-    if (lowerMsg.includes('ingyenes') || lowerMsg.includes('free')) {
+    
+    if (lowerMsg.includes('gyógynövény') || lowerMsg.includes('herb') || lowerMsg.includes('kräuter') || lowerMsg.includes('kert') || lowerMsg.includes('garden')) {
       return language === 'hu'
-        ? 'Kiváló hír! 🎉 5 szponzorunk, köztük a Káli Panzió, támogatja programjainkat, így ingyen részt vehetsz rajtuk. Nézd meg a "Szponzorált" címkével ellátott programokat a Piactéren!'
-        : 'Great news! 🎉 Our 5 sponsors, including Káli Panzió, support our programs, so you can join them for free. Check out programs with the "Sponsored" label in the Marketplace!';
+        ? '🌿 Sophie Wagner a gyógynövények és kertészkedés szakértője közösségünkben! Különösen a balatoni táj növényvilágát ismeri kiválóan. 5 szponzorunk támogatásával több ingyenes túrát is szervez. Nézd meg a Szakértők galériát!'
+        : language === 'de'
+        ? '🌿 Sophie Wagner ist unsere Expertin für Kräuter und Gartenbau! Sie kennt die Pflanzenwelt der Balaton-Region besonders gut. Mit Unterstützung unserer 5 Sponsoren organisiert sie kostenlose Touren. Besuchen Sie die Experten-Galerie!'
+        : '🌿 Sophie Wagner is our herbs and gardening expert! She knows the plant life of the Balaton region especially well. With support from our 5 sponsors, she organizes free tours. Check out the Experts Gallery!';
     }
-    if (lowerMsg.includes('népszerű') || lowerMsg.includes('popular')) {
+
+    // Voucher/Coupon explanation
+    if (lowerMsg.includes('kupon') || lowerMsg.includes('voucher') || lowerMsg.includes('gutschein') || lowerMsg.includes('hogyan működik')) {
       return language === 'hu'
-        ? 'A 127 tagunk kedvencei: 1️⃣ Kovászkenyér kurzus (Kovács István), 2️⃣ Gyógynövénygyűjtés túra (Nagy Éva), 3️⃣ Méhészkedés alapjai. Mindegyik kiváló értékeléseket kapott a résztvevőktől!'
-        : 'Favorites of our 127 members: 1️⃣ Sourdough Course (István Kovács), 2️⃣ Herb Gathering Tour (Éva Nagy), 3️⃣ Beekeeping Basics. All have received excellent ratings from participants!';
+        ? '🎫 A kuponrendszerünk egyszerű háromszög:\n\n1️⃣ **Szponzorok** (pl. Káli Panzió) krediteket vásárolnak\n2️⃣ **Tagok** (Te!) ingyenes kuponokat kapnak a szponzorált programokhoz\n3️⃣ **Szakértők** megkapják a programdíjat a szponzortól\n\nÍgy mindenki nyer! Nézd meg a Piactéren a "Szponzorált" címkés programokat.'
+        : language === 'de'
+        ? '🎫 Unser Gutscheinsystem ist ein einfaches Dreieck:\n\n1️⃣ **Sponsoren** (z.B. Káli Panzió) kaufen Credits\n2️⃣ **Mitglieder** (Du!) erhalten kostenlose Gutscheine\n3️⃣ **Experten** werden vom Sponsor bezahlt\n\nSo gewinnt jeder! Schauen Sie sich die "Gesponsert"-Programme im Marktplatz an.'
+        : '🎫 Our voucher system is a simple triangle:\n\n1️⃣ **Sponsors** (e.g. Káli Panzió) purchase credits\n2️⃣ **Members** (You!) receive free vouchers for sponsored programs\n3️⃣ **Experts** get paid by the sponsor\n\nEveryone wins! Check out "Sponsored" programs in the Marketplace.';
     }
+
+    // Popular expert question
+    if (lowerMsg.includes('népszerű') || lowerMsg.includes('popular') || lowerMsg.includes('beliebt') || lowerMsg.includes('legjobb') || lowerMsg.includes('best')) {
+      return language === 'hu'
+        ? '⭐ A 127 tagunk kedvenc szakértői:\n\n1️⃣ **Kovács János** - Kovászkenyér mester (4.9⭐)\n2️⃣ **Sophie Wagner** - Gyógynövények (4.8⭐)\n3️⃣ **Nagy Éva** - Méhészkedés alapjai (4.7⭐)\n\nMindegyikük programjait 5 szponzorunk támogatja. Látogass el a Szakértők oldalra!'
+        : language === 'de'
+        ? '⭐ Die Lieblingsexperten unserer 127 Mitglieder:\n\n1️⃣ **János Kovács** - Sauerteig-Meister (4.9⭐)\n2️⃣ **Sophie Wagner** - Kräuter (4.8⭐)\n3️⃣ **Éva Nagy** - Imkerei-Grundlagen (4.7⭐)\n\nAlle Programme werden von 5 Sponsoren unterstützt. Besuchen Sie die Experten-Seite!'
+        : '⭐ Favorite experts of our 127 members:\n\n1️⃣ **János Kovács** - Sourdough Master (4.9⭐)\n2️⃣ **Sophie Wagner** - Herbs Expert (4.8⭐)\n3️⃣ **Éva Nagy** - Beekeeping Basics (4.7⭐)\n\nAll programs supported by 5 sponsors. Visit the Experts page!';
+    }
+
+    // Programs in a location
+    if (lowerMsg.includes('bécs') || lowerMsg.includes('vienna') || lowerMsg.includes('wien') || lowerMsg.includes('budapest') || lowerMsg.includes('balaton')) {
+      const location = lowerMsg.includes('bécs') || lowerMsg.includes('vienna') || lowerMsg.includes('wien') ? 'Bécs/Wien' : 
+                       lowerMsg.includes('budapest') ? 'Budapest' : 'Balaton';
+      return language === 'hu'
+        ? `📍 ${location} környékén jelenleg 3 aktív programunk van! A legtöbb szponzorált, így ingyen csatlakozhatsz. Nézd meg a Programok oldalt és szűrj helyszín szerint!`
+        : language === 'de'
+        ? `📍 In der Nähe von ${location} haben wir derzeit 3 aktive Programme! Die meisten sind gesponsert, also kannst du kostenlos teilnehmen. Besuche die Programm-Seite und filtere nach Standort!`
+        : `📍 Near ${location}, we currently have 3 active programs! Most are sponsored, so you can join for free. Check the Programs page and filter by location!`;
+    }
+
+    // Learning/Programs general
+    if (lowerMsg.includes('tanul') || lowerMsg.includes('learn') || lowerMsg.includes('lernen') || lowerMsg.includes('program')) {
+      return language === 'hu' 
+        ? '📚 A mi közösségünkben 12 szakértőnk kínál programokat: kovászkenyér sütés, gyógynövénygyűjtés, méhészkedés, hagyományos kézművesség és még sok más! 5 szponzorunk támogatásával sok program ingyenes. Látogass el a Programok oldalra!'
+        : language === 'de'
+        ? '📚 In unserer Gemeinschaft bieten 12 Experten Programme an: Sauerteigbrot, Kräutersammeln, Imkerei, traditionelles Handwerk und vieles mehr! Mit Unterstützung von 5 Sponsoren sind viele Programme kostenlos. Besuchen Sie die Programm-Seite!'
+        : '📚 In our community, 12 experts offer programs: sourdough baking, herb gathering, beekeeping, traditional crafts and much more! With support from 5 sponsors, many programs are free. Visit the Programs page!';
+    }
+
+    // Free programs
+    if (lowerMsg.includes('ingyenes') || lowerMsg.includes('free') || lowerMsg.includes('kostenlos') || lowerMsg.includes('gratis')) {
+      return language === 'hu'
+        ? '🎉 Kiváló hír! 5 szponzorunk - köztük a Káli Panzió és helyi vállalkozások - támogatja programjainkat. A 127 tagunk így ingyen vehet részt sok programon. Nézd meg a "Szponzorált" címkével ellátott programokat a Piactéren!'
+        : language === 'de'
+        ? '🎉 Tolle Neuigkeiten! Unsere 5 Sponsoren - darunter Káli Panzió und lokale Unternehmen - unterstützen unsere Programme. So können unsere 127 Mitglieder kostenlos teilnehmen. Schauen Sie sich die "Gesponsert"-Programme im Marktplatz an!'
+        : '🎉 Great news! Our 5 sponsors - including Káli Panzió and local businesses - support our programs. This way our 127 members can join many programs for free. Check out programs with the "Sponsored" label in the Marketplace!';
+    }
+
+    // Default community concierge response
     return language === 'hu'
-      ? 'Szia! WellBot vagyok. Segítek eligazodni a 127 tagot számláló közösségünk szakértői és programjai között. Kérdezz bátran a programokról, 12 szakértőnkről vagy az 5 szponzorunk által támogatott ingyenes lehetőségekről! 🌿'
-      : 'Hi! I\'m WellBot. I help you navigate our community of 127 members, including 12 experts and programs supported by 5 sponsors. Feel free to ask about programs, experts, or free opportunities! 🌿';
+      ? '👋 Szia! WellBot vagyok, a közösségi kalauzod. A mi közösségünkben 127 tag, 12 szakértő és 5 szponzor dolgozik együtt a helyi tudás megőrzéséért.\n\nMiben segíthetek?\n• Programok és kurzusok ajánlása\n• Szakértők bemutatása\n• A szponzorációs rendszer magyarázata\n\nLátogass el a Programok vagy Szakértők oldalra!'
+      : language === 'de'
+      ? '👋 Hallo! Ich bin WellBot, dein Gemeinschaftsführer. In unserer Gemeinschaft arbeiten 127 Mitglieder, 12 Experten und 5 Sponsoren zusammen, um lokales Wissen zu bewahren.\n\nWie kann ich helfen?\n• Programm- und Kursempfehlungen\n• Expertenvorstellungen\n• Erklärung des Sponsoring-Systems\n\nBesuchen Sie die Programm- oder Experten-Seite!'
+      : '👋 Hi! I\'m WellBot, your community guide. In our community, 127 members, 12 experts, and 5 sponsors work together to preserve local knowledge.\n\nHow can I help?\n• Program and course recommendations\n• Expert introductions\n• Sponsorship system explanation\n\nVisit the Programs or Experts page!';
   };
 
-  // Knowledge Guide quick-start chips
+  // Community Concierge quick-start chips
   const quickActions = [
     { 
-      icon: BookOpen, 
-      title: t('wellbot.chip_learn'), 
-      query: t('wellbot.query_learn')
+      icon: HelpCircle, 
+      title: language === 'hu' ? 'Hogyan működik a kupon?' : language === 'de' ? 'Wie funktioniert der Gutschein?' : 'How do vouchers work?', 
+      query: language === 'hu' ? 'Hogyan működik a kuponrendszer?' : language === 'de' ? 'Wie funktioniert das Gutscheinsystem?' : 'How does the voucher system work?'
     },
     { 
-      icon: Gift, 
-      title: t('wellbot.chip_free'), 
-      query: t('wellbot.query_free')
+      icon: Users, 
+      title: language === 'hu' ? 'Ki a legnépszerűbb szakértő?' : language === 'de' ? 'Wer ist der beliebteste Experte?' : 'Who is the most popular expert?', 
+      query: language === 'hu' ? 'Ki a legnépszerűbb szakértő?' : language === 'de' ? 'Wer ist der beliebteste Experte?' : 'Who is the most popular expert?'
     },
     { 
-      icon: Star, 
-      title: t('wellbot.chip_popular'), 
-      query: t('wellbot.query_popular')
+      icon: MapPin, 
+      title: language === 'hu' ? 'Programok Bécsben?' : language === 'de' ? 'Programme in Wien?' : 'Programs in Vienna?', 
+      query: language === 'hu' ? 'Milyen programok vannak Bécsben?' : language === 'de' ? 'Welche Programme gibt es in Wien?' : 'What programs are available in Vienna?'
     }
   ];
   // Load conversation history on mount (skip in demo mode)
@@ -265,63 +321,93 @@ const AIAssistantChat = () => {
 
   return (
     <div className="flex flex-col h-[calc(100vh-3rem)] md:h-[calc(100vh-3.5rem)] max-w-3xl mx-auto bg-[hsl(var(--background))]">
-      {/* STICKY HEADER - WellBot Header */}
-      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-white/40 px-4 py-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+      {/* STICKY HEADER - WellBot Community Concierge */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-white/40 px-4 py-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
+      >
         {/* Avatar and Title */}
         <div className="flex items-center gap-4 mb-5">
-          <div className="relative flex-shrink-0">
-            <div className="w-16 h-16 rounded-full bg-white/95 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/40 overflow-hidden">
-              <img 
-                src={robotAvatar} 
-                alt="WellBot" 
-                className="w-full h-full object-cover"
+          {/* Custom WellBot Avatar with gradient and breathing animation */}
+          <motion.div 
+            className="relative flex-shrink-0"
+            animate={{ scale: [1, 1.02, 1] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-sky-400 via-indigo-500 to-indigo-600 shadow-[0_8px_30px_rgb(99,102,241,0.35)] flex items-center justify-center">
+              <motion.div
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <Leaf className="h-8 w-8 text-white drop-shadow-md" />
+              </motion.div>
+            </div>
+            {/* Online indicator */}
+            <div className="absolute -bottom-1 -right-1 bg-emerald-500 rounded-full w-5 h-5 flex items-center justify-center shadow-md border-2 border-white">
+              <motion.div
+                className="w-2 h-2 bg-white rounded-full"
+                animate={{ opacity: [1, 0.5, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
               />
             </div>
-            <div className="absolute -bottom-1 -right-1 bg-primary rounded-full p-1.5 shadow-md border-2 border-white">
-              <Compass className="h-3 w-3 text-white" />
-            </div>
-          </div>
+          </motion.div>
           
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-2xl font-bold text-slate-800">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-sky-500 bg-clip-text text-transparent">
                 WellBot
               </h1>
               <div className="flex items-center gap-2">
-                <Badge className="text-xs bg-primary/10 text-primary border-primary/20">
-                  {t('wellbot.available_24_7')}
+                <Badge className="text-xs bg-indigo-100 text-indigo-700 border-indigo-200">
+                  {language === 'hu' ? 'Közösségi Kalauz' : language === 'de' ? 'Gemeinschaftsführer' : 'Community Concierge'}
                 </Badge>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-                  <span className="text-xs text-primary">{t('wellbot.online')}</span>
+                  <motion.div 
+                    className="w-2 h-2 bg-emerald-500 rounded-full"
+                    animate={{ opacity: [1, 0.4, 1] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  />
+                  <span className="text-xs text-emerald-600">{t('wellbot.online')}</span>
                 </div>
               </div>
             </div>
             <p className="text-sm text-slate-600 mt-1 line-clamp-2">
-              {t('wellbot.knowledge_guide_desc')}
+              {language === 'hu' 
+                ? 'Segítek megtalálni a tökéletes szakértőt és programot a 127 tagú közösségünkben!'
+                : language === 'de'
+                ? 'Ich helfe dir, den perfekten Experten und das perfekte Programm in unserer 127-köpfigen Gemeinschaft zu finden!'
+                : 'I help you find the perfect expert and program in our 127-member community!'}
             </p>
           </div>
         </div>
 
-        {/* Quick-Start Chips */}
+        {/* Quick-Start Chips - Community Concierge Actions */}
         <div className="flex flex-wrap gap-2">
           {quickActions.map((action, index) => (
-            <Button
+            <motion.div
               key={index}
-              variant="outline"
-              size="sm"
-              onClick={() => handleQuickAction(action)}
-              className="gap-2 text-sm bg-white/80 backdrop-blur-sm border-slate-200 text-slate-700 
-                hover:bg-primary/5 hover:border-primary hover:text-primary 
-                shadow-[0_2px_8px_rgb(0,0,0,0.04)] transition-all duration-200"
-              disabled={isTyping}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * index, duration: 0.3 }}
             >
-              <action.icon className="h-4 w-4" />
-              {action.title}
-            </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleQuickAction(action)}
+                className="gap-2 text-sm bg-white/80 backdrop-blur-sm border-indigo-200 text-indigo-700 
+                  hover:bg-indigo-50 hover:border-indigo-400 hover:text-indigo-800 
+                  shadow-[0_2px_8px_rgb(0,0,0,0.04)] transition-all duration-200"
+                disabled={isTyping}
+              >
+                <action.icon className="h-4 w-4" />
+                {action.title}
+              </Button>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* INPUT FIELD - Below header, sticky */}
       <div className="sticky top-[180px] z-20 bg-white/80 backdrop-blur-md border-b border-white/40 px-4 py-4 shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
@@ -348,9 +434,13 @@ const AIAssistantChat = () => {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={t('wellbot.input_placeholder')}
-            className="pr-14 resize-none min-h-[52px] max-h-[120px] bg-white/95 border-slate-200 
-              focus:border-primary focus:ring-2 focus:ring-primary/10 text-slate-800 
+            placeholder={language === 'hu' 
+              ? 'Kérdezz a programokról, szakértőkről...' 
+              : language === 'de' 
+              ? 'Fragen Sie nach Programmen, Experten...' 
+              : 'Ask about programs, experts...'}
+            className="pr-14 resize-none min-h-[52px] max-h-[120px] bg-white/95 border-indigo-200 
+              focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 text-slate-800 
               placeholder:text-slate-400 rounded-xl shadow-[0_2px_8px_rgb(0,0,0,0.04)]"
             rows={1}
             disabled={isTyping}
@@ -359,7 +449,7 @@ const AIAssistantChat = () => {
             onClick={() => handleSendMessage(inputValue)}
             disabled={!inputValue.trim() || isTyping}
             size="icon"
-            className="absolute right-2 bottom-2 rounded-lg bg-primary hover:bg-primary/90 shadow-md"
+            className="absolute right-2 bottom-2 rounded-lg bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-600 hover:to-sky-600 shadow-md"
           >
             {isTyping ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -369,87 +459,131 @@ const AIAssistantChat = () => {
           </Button>
         </div>
         <p className="text-xs text-slate-500 mt-2">
-          {t('wellbot.input_hint')}
+          {language === 'hu' ? 'Enter küldés, Shift+Enter új sor' : language === 'de' ? 'Enter senden, Shift+Enter neue Zeile' : 'Enter to send, Shift+Enter for new line'}
         </p>
       </div>
 
       {/* SCROLLABLE MESSAGES AREA - Chat bubbles with organic premium style */}
       <div className="flex-1 overflow-y-auto px-4 py-5 space-y-4 bg-[hsl(var(--background))]">
         {/* Typing Indicator */}
-        {isTyping && (
-          <div className="flex gap-3 items-start animate-fade-in">
-            <div className="bg-primary/10 rounded-full p-2.5 flex-shrink-0 shadow-[0_4px_12px_rgb(0,0,0,0.06)] border border-primary/20">
-              <Sparkles className="h-5 w-5 text-primary animate-pulse" />
-            </div>
-            <div className="bg-white/95 backdrop-blur-sm border border-white/40 p-4 rounded-2xl rounded-tl-none shadow-[0_4px_16px_rgb(0,0,0,0.06)]">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-slate-600">{t('wellbot.typing')}</span>
-                <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></div>
-                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
+        <AnimatePresence>
+          {isTyping && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="flex gap-3 items-start"
+            >
+              <div className="bg-gradient-to-br from-sky-400 to-indigo-500 rounded-full p-2.5 flex-shrink-0 shadow-[0_4px_12px_rgb(99,102,241,0.25)]">
+                <motion.div
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                >
+                  <Sparkles className="h-5 w-5 text-white" />
+                </motion.div>
+              </div>
+              <div className="bg-indigo-50 border border-indigo-100 p-4 rounded-2xl rounded-tl-none shadow-[0_4px_16px_rgb(0,0,0,0.06)]">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-indigo-700">{t('wellbot.typing')}</span>
+                  <div className="flex gap-1">
+                    <motion.div 
+                      className="w-2 h-2 bg-indigo-500 rounded-full"
+                      animate={{ y: [0, -6, 0] }}
+                      transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
+                    />
+                    <motion.div 
+                      className="w-2 h-2 bg-indigo-500 rounded-full"
+                      animate={{ y: [0, -6, 0] }}
+                      transition={{ duration: 0.6, repeat: Infinity, delay: 0.15 }}
+                    />
+                    <motion.div 
+                      className="w-2 h-2 bg-indigo-500 rounded-full"
+                      animate={{ y: [0, -6, 0] }}
+                      transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <div className="flex items-center gap-3 text-slate-500">
-              <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              <Loader2 className="h-5 w-5 animate-spin text-indigo-500" />
               <span>{t('common.loading')}</span>
             </div>
           </div>
         ) : messages.length === 0 && !isTyping ? (
-          /* Empty State - Knowledge Guide Welcome */
-          <div className="flex flex-col items-center justify-center text-center py-16 animate-fade-in">
+          /* Empty State - Community Concierge Welcome */
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="flex flex-col items-center justify-center text-center py-16"
+          >
             <div className="bg-white/95 backdrop-blur-md rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-white/40 mb-6">
-              <Compass className="h-16 w-16 text-primary mx-auto mb-4" />
-              <h3 className="text-2xl font-bold mb-3 text-slate-800">
-                {t('wellbot.knowledge_guide_welcome')}
+              <motion.div
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                className="w-20 h-20 rounded-full bg-gradient-to-br from-sky-400 via-indigo-500 to-indigo-600 shadow-[0_8px_30px_rgb(99,102,241,0.35)] flex items-center justify-center mx-auto mb-4"
+              >
+                <Leaf className="h-10 w-10 text-white" />
+              </motion.div>
+              <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-indigo-600 to-sky-500 bg-clip-text text-transparent">
+                {language === 'hu' ? 'Üdv! WellBot vagyok' : language === 'de' ? 'Hallo! Ich bin WellBot' : 'Hi! I\'m WellBot'}
               </h3>
               <p className="text-slate-600 max-w-sm text-sm leading-relaxed">
-                {t('wellbot.knowledge_guide_hint')}
+                {language === 'hu' 
+                  ? 'A közösségi kalauzod! Segítek megtalálni a tökéletes szakértőt, programot, és elmagyarázom hogyan működik a szponzorációs rendszer.'
+                  : language === 'de'
+                  ? 'Dein Gemeinschaftsführer! Ich helfe dir, den perfekten Experten und das Programm zu finden und erkläre das Sponsoring-System.'
+                  : 'Your community concierge! I help you find the perfect expert, program, and explain how our sponsorship system works.'}
               </p>
             </div>
-          </div>
+          </motion.div>
         ) : (
-          /* Messages - Chat bubbles */
-          messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex gap-3 items-start animate-fade-in ${
-                message.sender === "user" ? "justify-end" : "justify-start"
-              }`}
-            >
-              {/* Bot Avatar */}
-              {message.sender === "ai" && (
-                <div className="bg-primary/10 rounded-full p-2 flex-shrink-0 shadow-[0_4px_12px_rgb(0,0,0,0.06)] border border-primary/20">
-                  <Sparkles className="h-5 w-5 text-primary" />
-                </div>
-              )}
-              
-              {/* Message Bubble */}
-              <div className={`flex flex-col max-w-[80%] ${message.sender === "user" ? "items-end" : "items-start"}`}>
+          /* Messages - Chat bubbles with role-based colors */
+          <AnimatePresence>
+            {messages.map((message, index) => (
+              <motion.div
+                key={message.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+                className={`flex gap-3 items-start ${
+                  message.sender === "user" ? "justify-end" : "justify-start"
+                }`}
+              >
+                {/* Bot Avatar - Indigo/Sky gradient */}
                 {message.sender === "ai" && (
-                  <span className="text-xs font-medium text-primary mb-1">WellBot</span>
+                  <div className="bg-gradient-to-br from-sky-400 to-indigo-500 rounded-full p-2 flex-shrink-0 shadow-[0_4px_12px_rgb(99,102,241,0.25)]">
+                    <Leaf className="h-5 w-5 text-white" />
+                  </div>
                 )}
-                <div
-                  className={`p-4 rounded-2xl whitespace-pre-wrap break-words text-sm leading-relaxed ${
-                    message.sender === "user"
-                      ? "bg-primary text-white rounded-tr-none shadow-[0_4px_16px_rgb(52,199,89,0.3)]"
-                      : "bg-white/95 backdrop-blur-sm border border-white/40 text-slate-700 rounded-tl-none shadow-[0_4px_16px_rgb(0,0,0,0.06)]"
-                  }`}
-                >
-                  {message.content}
+                
+                {/* Message Bubble */}
+                <div className={`flex flex-col max-w-[80%] ${message.sender === "user" ? "items-end" : "items-start"}`}>
+                  {message.sender === "ai" && (
+                    <span className="text-xs font-medium bg-gradient-to-r from-indigo-600 to-sky-500 bg-clip-text text-transparent mb-1">WellBot</span>
+                  )}
+                  <div
+                    className={`p-4 rounded-2xl whitespace-pre-wrap break-words text-sm leading-relaxed ${
+                      message.sender === "user"
+                        ? "bg-gradient-to-r from-sky-500 to-indigo-500 text-white rounded-tr-none shadow-[0_4px_16px_rgb(99,102,241,0.3)]"
+                        : "bg-indigo-50 border border-indigo-100 text-slate-700 rounded-tl-none shadow-[0_4px_16px_rgb(0,0,0,0.06)]"
+                    }`}
+                  >
+                    {message.content}
+                  </div>
+                  <span className="text-xs text-slate-400 mt-1.5">
+                    {format(message.timestamp, 'HH:mm')}
+                  </span>
                 </div>
-                <span className="text-xs text-slate-400 mt-1.5">
-                  {format(message.timestamp, 'HH:mm')}
-                </span>
-              </div>
-            </div>
-          ))
+              </motion.div>
+            ))}
+          </AnimatePresence>
         )}
         <div ref={messagesEndRef} />
       </div>
