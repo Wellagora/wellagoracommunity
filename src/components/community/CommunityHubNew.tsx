@@ -172,11 +172,11 @@ const CreationsGallerySection = () => {
     {
       id: 'demo-creation-1',
       image_url: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&h=400&fit=crop',
-      caption: 'Első kovászkenyerem a kemencében! Köszönöm a mesteri tippeket!',
+      caption: 'Első kovászkenyerem a kemencében! Köszönöm a szakértői tippeket!',
       rating: 5,
       created_at: '2026-01-10T10:00:00Z',
       user: { first_name: 'Tóth', last_name: 'Eszter', avatar_url: null },
-      content: { id: 'mock-program-2', title: 'Kovászkenyér mesterkurzus' }
+      content: { id: 'mock-program-2', title: 'Kovászkenyér kurzus' }
     },
     {
       id: 'demo-creation-2',
