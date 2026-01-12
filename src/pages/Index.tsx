@@ -3,10 +3,10 @@ import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { useCommunityStats, DEMO_SPONSORS_COUNT } from "@/hooks/useCommunityStats";
+import { useCommunityStats } from "@/hooks/useCommunityStats";
 import { DEMO_STATS } from "@/data/mockData";
 import { motion } from "framer-motion";
-import { Users, Award, TrendingUp, Heart, ChevronRight } from "lucide-react";
+import { Users, Award, Heart, ChevronRight } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
 import ExpertGallery from "@/components/ExpertGallery";
 import FeaturedEventsGrid from "@/components/FeaturedEventsGrid";
@@ -104,37 +104,28 @@ const Index = () => {
                         <div className="text-xs text-slate-600">{t("index.stat_members")}</div>
                       </div>
                     </div>
+
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center">
                         <Heart className="w-5 h-5 text-rose-600" />
                       </div>
                       <div>
                         <div className="text-xl font-bold text-slate-900">
-                          {isDemoMode ? DEMO_STATS.sponsors : DEMO_SPONSORS_COUNT}
+                          {isDemoMode ? DEMO_STATS.sponsors : "—"}
                         </div>
                         <div className="text-xs text-slate-600">{t("index.stat_sponsors")}</div>
                       </div>
                     </div>
+
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
                         <Award className="w-5 h-5 text-amber-600" />
                       </div>
                       <div>
                         <div className="text-xl font-bold text-slate-900">
-                          {isDemoMode ? DEMO_STATS.completions : communityStats.completions}
+                          {isDemoMode ? DEMO_STATS.experts : "—"}
                         </div>
-                        <div className="text-xs text-slate-600">{t("index.stat_completions")}</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                        <TrendingUp className="w-5 h-5 text-green-600" />
-                      </div>
-                      <div>
-                        <div className="text-xl font-bold text-slate-900">
-                          {isDemoMode ? DEMO_STATS.points.toLocaleString() : communityStats.points.toLocaleString()}
-                        </div>
-                        <div className="text-xs text-slate-600">{t("index.stat_points")}</div>
+                        <div className="text-xs text-slate-600">{t("index.stat_experts")}</div>
                       </div>
                     </div>
                   </div>
