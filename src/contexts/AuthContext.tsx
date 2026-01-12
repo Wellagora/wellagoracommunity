@@ -147,32 +147,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     logger.debug('Setting up auth state listener', null, 'Auth');
-    
-    // Check for demo session first
-    const demoSession = localStorage.getItem('wellagora_demo_session');
-    if (demoSession) {
+
+    // Restore demo session if present, BUT do not short-circuit Supabase listener setup.
+    // Reason: if we return early here, real Supabase logins won't work until a full reload.
+    const demoSessionRaw = localStorage.getItem('wellagora_demo_session');
+    let hasDemoSession = false;
+
+    if (demoSessionRaw) {
       try {
-        const { user: demoUser, profile: demoProfile } = JSON.parse(demoSession);
+        const { user: demoUser, profile: demoProfile } = JSON.parse(demoSessionRaw);
         logger.debug('Restoring demo session', { role: demoProfile?.user_role }, 'Auth');
         setUser(demoUser);
         setProfile(demoProfile);
         setIsDemoMode(true);
+        hasDemoSession = true;
         setLoading(false);
-        return; // Skip Supabase session check for demo mode
       } catch (e) {
         localStorage.removeItem('wellagora_demo_session');
       }
     }
-    
+
     // Set up auth state listener - MUST NOT be async!
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         logger.debug('Auth state changed', { event, hasSession: !!session }, 'Auth');
-        
+
+        // If a real Supabase session appears, we must exit demo mode.
+        if (session?.user) {
+          localStorage.removeItem('wellagora_demo_session');
+          setIsDemoMode(false);
+        }
+
         // Only synchronous updates here
         setSession(session);
-        setUser(session?.user ?? null);
-        
+        setUser(session?.user ?? (hasDemoSession ? (user as User | null) : null));
+
         // Defer data loading with setTimeout to prevent deadlock
         if (session?.user) {
           logger.debug('User detected, deferring data load', null, 'Auth');
@@ -182,8 +191,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             });
           }, 0);
         } else {
-          logger.debug('No user, clearing data', null, 'Auth');
-          setProfile(null);
+          // No Supabase session: keep demo session state if it was restored.
+          if (!hasDemoSession) {
+            logger.debug('No user, clearing data', null, 'Auth');
+            setProfile(null);
+            setUser(null);
+          }
           setLoading(false);
         }
       }
@@ -193,9 +206,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     logger.debug('Checking for existing session', null, 'Auth');
     supabase.auth.getSession().then(({ data: { session } }) => {
       logger.debug('Initial session check', { hasSession: !!session }, 'Auth');
+
+      // If demo is active and there is no Supabase session, do not override demo state.
+      if (!session && hasDemoSession) {
+        return;
+      }
+
+      if (session?.user) {
+        localStorage.removeItem('wellagora_demo_session');
+        setIsDemoMode(false);
+      }
+
       setSession(session);
       setUser(session?.user ?? null);
-      
+
       if (session?.user) {
         setTimeout(() => {
           loadUserData(session.user.id).finally(() => {
@@ -244,25 +268,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signIn = async (email: string, password: string): Promise<{ error: Error | null; demoRole?: string }> => {
-    // 1. CHECK FOR DEMO ACCOUNT FIRST
+    // 1. CHECK FOR DEMO ACCOUNT FIRST (strict allowlist)
     const demoAccount = DEMO_ACCOUNTS.find(
-      acc => acc.email.toLowerCase() === email.toLowerCase() && acc.password === password
+      (acc) => acc.email.toLowerCase() === email.toLowerCase() && acc.password === password
     );
 
     if (demoAccount) {
       logger.debug('Demo mode activated', { role: demoAccount.role }, 'Auth');
-      
+
+      // Stable IDs are critical so mock data (vouchers/history/etc.) can resolve correctly.
+      const demoUserId =
+        demoAccount.role === 'member'
+          ? 'member-1'
+          : demoAccount.role === 'expert'
+            ? 'mock-expert-1'
+            : demoAccount.role === 'sponsor'
+              ? 'sponsor-1'
+              : 'admin-1';
+
       // Create mock user object (mimics Supabase user structure)
       const mockUser = {
-        id: `demo-${demoAccount.role}-${Date.now()}`,
+        id: demoUserId,
         email: demoAccount.email,
-        user_metadata: { 
+        user_metadata: {
           full_name: demoAccount.name,
-          role: demoAccount.role 
+          role: demoAccount.role,
         },
         app_metadata: {},
         aud: 'authenticated',
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       };
 
       // Get role-specific data
@@ -272,18 +306,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Create mock profile object
       const mockProfile: Profile = {
         id: mockUser.id,
-        first_name: demoAccount.role === 'sponsor' 
-          ? sponsorData?.contact_name?.split(' ')[1] || 'Mária'
-          : demoAccount.role === 'expert'
-            ? expertData?.first_name || 'János'
-            : 'Eszter',
-        last_name: demoAccount.role === 'sponsor' 
-          ? sponsorData?.contact_name?.split(' ')[0] || 'Horváth'
-          : demoAccount.role === 'expert'
-            ? expertData?.last_name || 'Kovács'
-            : 'Tóth',
+        first_name:
+          demoAccount.role === 'sponsor'
+            ? sponsorData?.contact_name?.split(' ')[1] || 'Mária'
+            : demoAccount.role === 'expert'
+              ? expertData?.first_name || 'János'
+              : 'Eszter',
+        last_name:
+          demoAccount.role === 'sponsor'
+            ? sponsorData?.contact_name?.split(' ')[0] || 'Horváth'
+            : demoAccount.role === 'expert'
+              ? expertData?.last_name || 'Kovács'
+              : 'Tóth',
         email: demoAccount.email,
-        user_role: demoAccount.role === 'admin' ? 'member' : demoAccount.role,
+        user_role: demoAccount.role, // admin stays 'admin' for clarity; access is still gated by is_super_admin
         is_super_admin: demoAccount.role === 'admin',
         organization_name: sponsorData?.organization_name || null,
         organization_logo_url: null,
@@ -297,19 +333,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(mockUser as unknown as User);
       setProfile(mockProfile);
       setIsDemoMode(true);
-      
+
       // Store demo session in localStorage for persistence
-      localStorage.setItem('wellagora_demo_session', JSON.stringify({
-        user: mockUser,
-        profile: mockProfile,
-        role: demoAccount.role
-      }));
+      localStorage.setItem(
+        'wellagora_demo_session',
+        JSON.stringify({
+          user: mockUser,
+          profile: mockProfile,
+          role: demoAccount.role,
+        })
+      );
 
       return { error: null, demoRole: demoAccount.role };
     }
 
-    // 2. NORMAL SUPABASE LOGIN (for real accounts)
+    // 2. NORMAL SUPABASE LOGIN (for all non-demo accounts)
     try {
+      // Ensure demo mode is not trapping real logins
+      localStorage.removeItem('wellagora_demo_session');
+      setIsDemoMode(false);
+
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
