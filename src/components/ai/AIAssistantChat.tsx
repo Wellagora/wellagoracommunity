@@ -96,35 +96,239 @@ const AIAssistantChat = () => {
     return language === 'de' ? program.title_de : language === 'en' ? program.title_en : program.title;
   };
 
-  // Helper: Search experts by keywords (proactive matching)
-  const findMatchingExperts = (keywords: string[]): typeof MOCK_EXPERTS => {
-    return MOCK_EXPERTS.filter(expert => {
-      const searchableText = [
-        expert.first_name, expert.last_name, expert.expert_title, expert.bio, expert.expert_bio_long,
-        ...(expert.expertise_areas || [])
-      ].join(' ').toLowerCase();
-      return keywords.some(kw => searchableText.includes(kw.toLowerCase()));
-    });
-  };
-
-  // Helper: Search programs by keywords
-  const findMatchingPrograms = (keywords: string[]): typeof MOCK_PROGRAMS => {
-    return MOCK_PROGRAMS.filter(program => {
-      const searchableText = [
-        program.title, program.title_en, program.title_de,
-        program.description, program.description_en, program.description_de,
-        program.category
-      ].join(' ').toLowerCase();
-      return keywords.some(kw => searchableText.includes(kw.toLowerCase()));
-    });
-  };
-
   // Helper: Get sponsor by name
   const findSponsor = (name: string): typeof MOCK_SPONSORS[0] | undefined => {
     return MOCK_SPONSORS.find(s => 
       s.organization_name.toLowerCase().includes(name.toLowerCase()) ||
       s.organization_name_en.toLowerCase().includes(name.toLowerCase())
     );
+  };
+
+  // ===== SEMANTIC TOPIC-TO-EXPERT MAPPING =====
+  // This is the "Concierge Brain" - maps concepts to related experts using reasoning, not literal search
+  const TOPIC_EXPERT_MAP: Record<string, { expertIds: string[], programKeywords: string[], relatedTopics: string[] }> = {
+    // COOKING & GASTRONOMY - broad topic with multiple experts
+    'cooking': {
+      expertIds: ['mock-expert-6', 'mock-expert-1', 'mock-expert-2', 'mock-expert-3'],
+      programKeywords: ['főz', 'konyha', 'recept', 'étel', 'gasztro', 'cook', 'kitchen', 'food', 'gastro', 'koch', 'küche', 'essen'],
+      relatedTopics: ['baking', 'herbs', 'wine']
+    },
+    // BAKING & BREAD
+    'baking': {
+      expertIds: ['mock-expert-1', 'mock-expert-6'],
+      programKeywords: ['kenyér', 'kovász', 'süt', 'kemence', 'bread', 'baking', 'oven', 'brot', 'backen', 'ofen'],
+      relatedTopics: ['cooking']
+    },
+    // HERBS & NATURE
+    'herbs': {
+      expertIds: ['mock-expert-2', 'mock-expert-5'],
+      programKeywords: ['gyógynövény', 'fűszer', 'tea', 'növény', 'kert', 'herb', 'spice', 'plant', 'garden', 'kräuter', 'gewürz', 'garten'],
+      relatedTopics: ['cooking', 'wellness']
+    },
+    // WINE & BEVERAGES
+    'wine': {
+      expertIds: ['mock-expert-3'],
+      programKeywords: ['bor', 'szőlő', 'pince', 'wine', 'grape', 'cellar', 'wein', 'traube', 'keller'],
+      relatedTopics: ['cooking']
+    },
+    // BEEKEEPING & HONEY
+    'beekeeping': {
+      expertIds: ['mock-expert-5', 'mock-expert-2'],
+      programKeywords: ['méh', 'méz', 'bee', 'honey', 'biene', 'honig', 'kaptár', 'hive'],
+      relatedTopics: ['herbs', 'wellness']
+    },
+    // CRAFTS & TRADITIONAL SKILLS
+    'crafts': {
+      expertIds: ['mock-expert-4', 'mock-expert-1'],
+      programKeywords: ['kosár', 'fonás', 'kézműves', 'hagyomány', 'basket', 'weaving', 'craft', 'tradition', 'korb', 'flechten', 'handwerk'],
+      relatedTopics: ['baking']
+    },
+    // WELLNESS & HEALTH
+    'wellness': {
+      expertIds: ['mock-expert-2', 'mock-expert-5'],
+      programKeywords: ['wellness', 'egészség', 'health', 'gesundheit', 'természet', 'nature', 'natur'],
+      relatedTopics: ['herbs', 'beekeeping']
+    }
+  };
+
+  // ===== SEMANTIC TOPIC DETECTION =====
+  // Uses reasoning to find the best matching topic, not just literal keyword search
+  const detectTopic = (message: string): string | null => {
+    const lowerMsg = message.toLowerCase();
+    
+    // Check each topic's keywords for matches
+    for (const [topic, config] of Object.entries(TOPIC_EXPERT_MAP)) {
+      if (config.programKeywords.some(kw => lowerMsg.includes(kw))) {
+        return topic;
+      }
+    }
+    
+    // Extended semantic matching - common variations and related terms
+    const semanticMap: Record<string, string> = {
+      // Cooking variations
+      'ért a főzés': 'cooking', 'tud főzni': 'cooking', 'főzés': 'cooking', 'sütés': 'cooking',
+      'konyhá': 'cooking', 'recept': 'cooking', 'étel': 'cooking', 'gasztro': 'cooking',
+      'cook': 'cooking', 'cuisine': 'cooking', 'chef': 'cooking', 'kitchen': 'cooking',
+      
+      // Baking variations
+      'kenyér': 'baking', 'kovász': 'baking', 'péksütemény': 'baking', 'kemence': 'baking',
+      'bread': 'baking', 'sourdough': 'baking', 'baker': 'baking',
+      
+      // Herbs/Nature variations
+      'gyógynövény': 'herbs', 'fűszer': 'herbs', 'tea': 'herbs', 'növény': 'herbs', 'kert': 'herbs',
+      'herb': 'herbs', 'spice': 'herbs', 'garden': 'herbs', 'plant': 'herbs',
+      
+      // Wine variations
+      'bor': 'wine', 'szőlő': 'wine', 'pince': 'wine', 'borász': 'wine',
+      'wine': 'wine', 'vineyard': 'wine', 'wein': 'wine',
+      
+      // Beekeeping variations
+      'méh': 'beekeeping', 'méz': 'beekeeping', 'bee': 'beekeeping', 'honey': 'beekeeping',
+      
+      // Crafts variations
+      'kosár': 'crafts', 'fonás': 'crafts', 'kézműves': 'crafts', 'hagyomány': 'crafts',
+      'basket': 'crafts', 'weaving': 'crafts', 'craft': 'crafts', 'handmade': 'crafts',
+      
+      // Wellness variations
+      'wellness': 'wellness', 'egészség': 'wellness', 'természet': 'wellness',
+      'health': 'wellness', 'natural': 'wellness'
+    };
+    
+    for (const [keyword, topic] of Object.entries(semanticMap)) {
+      if (lowerMsg.includes(keyword)) {
+        return topic;
+      }
+    }
+    
+    return null;
+  };
+
+  // ===== GET EXPERTS FOR TOPIC =====
+  const getExpertsForTopic = (topic: string): typeof MOCK_EXPERTS => {
+    const config = TOPIC_EXPERT_MAP[topic];
+    if (!config) return [];
+    return config.expertIds
+      .map(id => MOCK_EXPERTS.find(e => e.id === id))
+      .filter((e): e is typeof MOCK_EXPERTS[0] => e !== undefined);
+  };
+
+  // ===== GET PROGRAMS FOR TOPIC =====
+  const getProgramsForTopic = (topic: string): typeof MOCK_PROGRAMS => {
+    const config = TOPIC_EXPERT_MAP[topic];
+    if (!config) return [];
+    return MOCK_PROGRAMS.filter(p => {
+      const searchableText = [p.title, p.title_en, p.title_de, p.description, p.category].join(' ').toLowerCase();
+      return config.programKeywords.some(kw => searchableText.includes(kw));
+    });
+  };
+
+  // ===== STRUCTURED RESPONSE BUILDER =====
+  // Response Structure: Acknowledge → Expert/Program → Sponsor → Encouraging question
+  const buildStructuredResponse = (
+    topic: string,
+    experts: typeof MOCK_EXPERTS,
+    programs: typeof MOCK_PROGRAMS
+  ): string => {
+    const sponsor = findSponsor('Káli');
+    const sponsoredPrograms = programs.filter(p => p.is_sponsored);
+    const primaryExpert = experts[0];
+    const secondaryExpert = experts[1];
+    
+    if (language === 'hu') {
+      // ACKNOWLEDGE
+      let response = `🎯 Remek választás! `;
+      
+      // PRESENT EXPERTS (personal tone)
+      if (experts.length >= 2 && primaryExpert && secondaryExpert) {
+        response += `A ${DEMO_STATS.members} tagunk közül sokan **${getExpertName(primaryExpert)}**-hoz és **${getExpertName(secondaryExpert)}**-hoz fordulnak!\n\n`;
+        response += `👤 **Beszélj ${primaryExpert.first_name}sal!** - ${getExpertTitle(primaryExpert)}\n`;
+        response += `${primaryExpert.bio}\n\n`;
+        response += `👤 **Keresd ${secondaryExpert.first_name}t!** - ${getExpertTitle(secondaryExpert)}\n`;
+        response += `${secondaryExpert.bio}\n\n`;
+      } else if (primaryExpert) {
+        response += `A ${DEMO_STATS.members} tagunk közül sokan **${getExpertName(primaryExpert)}**-hoz fordulnak!\n\n`;
+        response += `👤 **Beszélj ${primaryExpert.first_name}sal!** - ${getExpertTitle(primaryExpert)}\n`;
+        response += `${primaryExpert.bio}\n\n`;
+      }
+      
+      // PRESENT PROGRAM
+      if (sponsoredPrograms.length > 0) {
+        response += `📚 **Ajánlott program:** "${getProgramTitle(sponsoredPrograms[0])}" `;
+        response += sponsoredPrograms[0].is_sponsored ? '(INGYENES! 🎁)\n\n' : '\n\n';
+      } else if (programs.length > 0) {
+        response += `📚 **Ajánlott program:** "${getProgramTitle(programs[0])}" (${programs[0].price_huf.toLocaleString()} Ft)\n\n`;
+      }
+      
+      // MENTION SPONSOR
+      if (sponsor && sponsoredPrograms.length > 0) {
+        response += `🏨 A **${sponsor.organization_name}** szponzorációjával ${sponsoredPrograms.length} program elérhető ingyen!\n\n`;
+      }
+      
+      // ENCOURAGING QUESTION
+      response += `❓ **Miben segíthetek még?**\n`;
+      response += `• Szeretnél időpontot egyeztetni?\n`;
+      response += `• Érdekel egy másik témakör is?`;
+      
+      return response;
+    } else if (language === 'de') {
+      let response = `🎯 Tolle Wahl! `;
+      
+      if (experts.length >= 2 && primaryExpert && secondaryExpert) {
+        response += `Viele unserer ${DEMO_STATS.members} Mitglieder wenden sich an **${getExpertName(primaryExpert)}** und **${getExpertName(secondaryExpert)}**!\n\n`;
+        response += `👤 **Sprich mit ${primaryExpert.first_name_de}!** - ${getExpertTitle(primaryExpert)}\n\n`;
+        response += `👤 **Frag ${secondaryExpert.first_name_de}!** - ${getExpertTitle(secondaryExpert)}\n\n`;
+      } else if (primaryExpert) {
+        response += `Viele unserer ${DEMO_STATS.members} Mitglieder wenden sich an **${getExpertName(primaryExpert)}**!\n\n`;
+        response += `👤 **Sprich mit ${primaryExpert.first_name_de}!** - ${getExpertTitle(primaryExpert)}\n\n`;
+      }
+      
+      if (sponsoredPrograms.length > 0) {
+        response += `📚 **Empfohlenes Programm:** "${getProgramTitle(sponsoredPrograms[0])}" (KOSTENLOS! 🎁)\n\n`;
+      }
+      
+      if (sponsor) {
+        response += `🏨 Dank **${sponsor.organization_name_de}** sind ${sponsoredPrograms.length} Programme kostenlos!\n\n`;
+      }
+      
+      response += `❓ **Wie kann ich sonst noch helfen?**`;
+      return response;
+    } else {
+      let response = `🎯 Great choice! `;
+      
+      if (experts.length >= 2 && primaryExpert && secondaryExpert) {
+        response += `Many of our ${DEMO_STATS.members} members turn to **${getExpertName(primaryExpert)}** and **${getExpertName(secondaryExpert)}**!\n\n`;
+        response += `👤 **Talk to ${primaryExpert.first_name_en}!** - ${getExpertTitle(primaryExpert)}\n\n`;
+        response += `👤 **Ask ${secondaryExpert.first_name_en}!** - ${getExpertTitle(secondaryExpert)}\n\n`;
+      } else if (primaryExpert) {
+        response += `Many of our ${DEMO_STATS.members} members turn to **${getExpertName(primaryExpert)}**!\n\n`;
+        response += `👤 **Talk to ${primaryExpert.first_name_en}!** - ${getExpertTitle(primaryExpert)}\n\n`;
+      }
+      
+      if (sponsoredPrograms.length > 0) {
+        response += `📚 **Recommended program:** "${getProgramTitle(sponsoredPrograms[0])}" (FREE! 🎁)\n\n`;
+      }
+      
+      if (sponsor) {
+        response += `🏨 Thanks to **${sponsor.organization_name_en}**, ${sponsoredPrograms.length} programs are free!\n\n`;
+      }
+      
+      response += `❓ **How else can I help?**`;
+      return response;
+    }
+  };
+
+  // ===== DISCOVERY FALLBACK (Never a dead-end) =====
+  const buildDiscoveryResponse = (): string => {
+    const allExperts = MOCK_EXPERTS.slice(0, 4);
+    const sponsoredPrograms = MOCK_PROGRAMS.filter(p => p.is_sponsored);
+    
+    if (language === 'hu') {
+      return `🌟 Fedezd fel a közösségünket!\n\nA ${DEMO_STATS.members} tagunk és ${DEMO_STATS.experts} szakértőnk várnak! Íme néhány, akit személyesen ajánlok:\n\n${allExperts.map(e => `👤 **${getExpertName(e)}** - ${getExpertTitle(e)}`).join('\n')}\n\n🎁 **${sponsoredPrograms.length} ingyenes program** érhető el a szponzoraink jóvoltából!\n\n❓ **Melyik terület érdekel?**\n• 👨‍🍳 Gasztronómia (főzés, kenyérsütés, bor)\n• 🌿 Természet (gyógynövények, méhészet)\n• 🎨 Kézművesség (kosárfonás, hagyományok)\n\nÍrd le, mit keresel, és megtalálom neked a tökéletes szakértőt!`;
+    } else if (language === 'de') {
+      return `🌟 Entdecke unsere Gemeinschaft!\n\nUnsere ${DEMO_STATS.members} Mitglieder und ${DEMO_STATS.experts} Experten erwarten dich! Hier sind einige, die ich persönlich empfehle:\n\n${allExperts.map(e => `👤 **${getExpertName(e)}** - ${getExpertTitle(e)}`).join('\n')}\n\n🎁 **${sponsoredPrograms.length} kostenlose Programme** dank unserer Sponsoren!\n\n❓ **Welcher Bereich interessiert dich?**\n• 👨‍🍳 Gastronomie\n• 🌿 Natur\n• 🎨 Handwerk`;
+    } else {
+      return `🌟 Discover our community!\n\nOur ${DEMO_STATS.members} members and ${DEMO_STATS.experts} experts await you! Here are some I personally recommend:\n\n${allExperts.map(e => `👤 **${getExpertName(e)}** - ${getExpertTitle(e)}`).join('\n')}\n\n🎁 **${sponsoredPrograms.length} free programs** thanks to our sponsors!\n\n❓ **Which area interests you?**\n• 👨‍🍳 Gastronomy\n• 🌿 Nature\n• 🎨 Crafts`;
+    }
   };
 
   // ===== PROACTIVE COMMUNITY CONCIERGE INTELLIGENCE =====
