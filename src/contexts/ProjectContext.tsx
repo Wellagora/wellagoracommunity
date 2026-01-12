@@ -28,8 +28,21 @@ interface ProjectContextType {
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
+// Demo mode mock project
+const DEMO_PROJECT: Project = {
+  id: 'demo-project-1',
+  name: 'Káli-medence Közösség',
+  slug: 'kali-medence',
+  region_name: 'Káli-medence',
+  villages: ['Köveskál', 'Mindszentkálla', 'Szentbékkálla', 'Kékkút', 'Balatonhenye'],
+  description: 'A Káli-medence helyi értékőrző közössége',
+  branding: null,
+  settings: null,
+  is_active: true,
+};
+
 export function ProjectProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth();
+  const { user, isDemoMode } = useAuth();
   const [currentProject, setCurrentProjectState] = useState<Project | null>(null);
   const [userProjects, setUserProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,6 +57,14 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   };
 
   const refreshProjects = async () => {
+    // In demo mode, use mock project
+    if (isDemoMode) {
+      setUserProjects([DEMO_PROJECT]);
+      setCurrentProjectState(DEMO_PROJECT);
+      setIsLoading(false);
+      return;
+    }
+
     if (!user) {
       setUserProjects([]);
       setCurrentProjectState(null);
@@ -112,7 +133,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     refreshProjects();
-  }, [user]);
+  }, [user, isDemoMode]);
 
   return (
     <ProjectContext.Provider
