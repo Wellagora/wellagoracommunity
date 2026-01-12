@@ -115,7 +115,7 @@ const AuthPage = () => {
       }
     }
 
-    const { error } = await signIn(loginForm.email.trim(), loginForm.password);
+    const { error, demoRole } = await signIn(loginForm.email.trim(), loginForm.password);
 
     if (error) {
       if (error.message.includes("Invalid login credentials")) {
@@ -127,7 +127,28 @@ const AuthPage = () => {
       }
     } else {
       setSuccess(t('auth.login_successful'));
-      setTimeout(() => navigate("/dashboard"), 1000);
+      
+      // Demo-specific redirects based on role
+      if (demoRole) {
+        setTimeout(() => {
+          switch (demoRole) {
+            case 'sponsor':
+              navigate('/tamogatoi-kozpont');
+              break;
+            case 'expert':
+              navigate('/szakertoi-studio');
+              break;
+            case 'admin':
+              navigate('/');
+              break;
+            default:
+              navigate('/iranyitopult');
+          }
+        }, 500);
+      } else {
+        // Normal user redirect
+        setTimeout(() => navigate("/dashboard"), 1000);
+      }
     }
 
     setIsLoading(false);
