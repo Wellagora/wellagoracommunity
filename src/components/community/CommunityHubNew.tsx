@@ -1014,12 +1014,50 @@ const AskQuestionModal = ({
 
 const LocalPartnersSection = () => {
   const { t } = useLanguage();
+  const { isDemoMode } = useAuth();
+  const navigate = useNavigate();
   const [partners, setPartners] = useState<Partner[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Demo mode mock partners
+  const DEMO_PARTNERS: Partner[] = [
+    {
+      id: 'demo-partner-1',
+      name: 'Káli Panzió',
+      logo_url: null,
+      website_url: 'https://kalipanzio.hu',
+      description: 'Családias vendéglátás a Káli-medence szívében. Helyi termékek és programok.',
+      category: 'accommodation'
+    },
+    {
+      id: 'demo-partner-2',
+      name: 'Bio Kert Kft.',
+      logo_url: null,
+      website_url: 'https://biokert.hu',
+      description: 'Ökológiai gazdálkodás és fenntartható mezőgazdaság.',
+      category: 'agriculture'
+    },
+    {
+      id: 'demo-partner-3',
+      name: 'Helyi Termék Bolt',
+      logo_url: null,
+      website_url: null,
+      description: 'Közvetlenül a termelőktől: méz, lekvár, házi tészta és más finomságok.',
+      category: 'retail'
+    }
+  ];
 
   useEffect(() => {
     const loadPartners = async () => {
       setIsLoading(true);
+      
+      // Use mock data in demo mode
+      if (isDemoMode) {
+        setPartners(DEMO_PARTNERS);
+        setIsLoading(false);
+        return;
+      }
+
       try {
         const { data } = await supabase
           .from('local_partners')
@@ -1036,7 +1074,7 @@ const LocalPartnersSection = () => {
     };
 
     loadPartners();
-  }, []);
+  }, [isDemoMode]);
 
   if (isLoading) {
     return (
@@ -1047,6 +1085,15 @@ const LocalPartnersSection = () => {
   }
 
   if (partners.length === 0) return null;
+
+  const handlePartnerClick = (partner: Partner) => {
+    if (partner.website_url) {
+      window.open(partner.website_url, '_blank', 'noopener,noreferrer');
+    } else {
+      // Navigate to marketplace filtered by this sponsor
+      navigate(`/piacer?sponsor=${encodeURIComponent(partner.name)}`);
+    }
+  };
 
   return (
     <section>
@@ -1063,44 +1110,38 @@ const LocalPartnersSection = () => {
         </p>
       </div>
 
-      {/* Partner cards */}
+      {/* Partner cards - Now clickable */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {partners.map((partner) => (
           <Card
             key={partner.id}
-            className="bg-card border-border p-5 hover:border-accent/50 transition-all"
+            onClick={() => handlePartnerClick(partner)}
+            className="bg-card border-border p-5 hover:border-accent/50 hover:shadow-lg transition-all cursor-pointer group"
           >
             <div className="flex items-center gap-4">
               {partner.logo_url ? (
                 <img
                   src={partner.logo_url}
                   alt={partner.name}
-                  className="w-16 h-16 rounded-lg object-contain bg-background p-2"
+                  className="w-16 h-16 rounded-lg object-contain bg-background p-2 group-hover:scale-105 transition-transform"
                 />
               ) : (
-                <div className="w-16 h-16 rounded-lg bg-accent/20 flex items-center justify-center">
+                <div className="w-16 h-16 rounded-lg bg-accent/20 flex items-center justify-center group-hover:bg-accent/30 transition-colors">
                   <Building2 className="h-8 w-8 text-accent" />
                 </div>
               )}
-              <div>
-                <h3 className="font-semibold text-foreground">{partner.name}</h3>
+              <div className="flex-1">
+                <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">{partner.name}</h3>
                 <p className="text-sm text-muted-foreground line-clamp-2">
                   {partner.description}
                 </p>
               </div>
             </div>
 
-            {partner.website_url && (
-              <a
-                href={partner.website_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 flex items-center gap-2 text-sm text-primary hover:underline"
-              >
-                <ExternalLink className="h-4 w-4" />
-                {t('community.visit_website')}
-              </a>
-            )}
+            <div className="mt-4 flex items-center gap-2 text-sm text-primary">
+              <ExternalLink className="h-4 w-4" />
+              {partner.website_url ? t('community.visit_website') : t('community.view_programs')}
+            </div>
           </Card>
         ))}
       </div>
