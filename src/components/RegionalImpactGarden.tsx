@@ -2,6 +2,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Users, BookOpen, Calendar, Heart, Leaf, Loader2 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { DEMO_STATS } from "@/data/mockData";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,11 +12,12 @@ interface StatCardProps {
   icon: React.ElementType;
   value: number;
   label: string;
-  color: string;
+  bgColor: string;
+  iconColor: string;
   delay: number;
 }
 
-const StatCard = ({ icon: Icon, value, label, color, delay }: StatCardProps) => (
+const StatCard = ({ icon: Icon, value, label, bgColor, iconColor, delay }: StatCardProps) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -24,10 +27,9 @@ const StatCard = ({ icon: Icon, value, label, color, delay }: StatCardProps) => 
     <Card className="bg-card border-border hover:border-primary/50 transition-all duration-300 group h-full">
       <CardContent className="p-6 text-center">
         <div 
-          className="w-14 h-14 mx-auto mb-4 rounded-full flex items-center justify-center transition-transform group-hover:scale-110"
-          style={{ backgroundColor: `${color}20` }}
+          className={`w-14 h-14 mx-auto mb-4 rounded-full flex items-center justify-center transition-transform group-hover:scale-110 ${bgColor}`}
         >
-          <Icon className="h-7 w-7" style={{ color }} />
+          <Icon className={`h-7 w-7 ${iconColor}`} />
         </div>
         <p className="text-3xl md:text-4xl font-bold text-foreground mb-1">{value}</p>
         <p className="text-sm text-muted-foreground">{label}</p>
@@ -38,6 +40,7 @@ const StatCard = ({ icon: Icon, value, label, color, delay }: StatCardProps) => 
 
 export const RegionalImpactGarden = () => {
   const { t } = useLanguage();
+  const { isDemoMode } = useAuth();
   const [stats, setStats] = useState({
     members: 0,
     contents: 0,
@@ -48,6 +51,18 @@ export const RegionalImpactGarden = () => {
 
   useEffect(() => {
     const fetchStats = async () => {
+      // Use demo stats in demo mode
+      if (isDemoMode) {
+        setStats({
+          members: DEMO_STATS.members,
+          contents: DEMO_STATS.programs,
+          events: DEMO_STATS.events,
+          sponsors: DEMO_STATS.sponsors,
+        });
+        setLoading(false);
+        return;
+      }
+
       try {
         // Members count (citizens)
         const { count: membersCount } = await supabase
@@ -86,7 +101,7 @@ export const RegionalImpactGarden = () => {
     };
 
     fetchStats();
-  }, []);
+  }, [isDemoMode]);
 
   return (
     <section className="py-12 md:py-16 bg-gradient-to-b from-background to-muted/20">
@@ -112,33 +127,42 @@ export const RegionalImpactGarden = () => {
         ) : (
           <>
             {/* Statistics - 2x2 on mobile, 4x1 on desktop */}
+            {/* Role-Based Color Palette: Members=Sky, Experts=Emerald, Sponsors=Amber */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-4xl mx-auto">
+              {/* Members - Sky Blue (Community) */}
               <StatCard
                 icon={Users}
                 value={stats.members}
                 label={t('impact_garden.members')}
-                color="hsl(var(--primary))"
+                bgColor="bg-sky-100"
+                iconColor="text-sky-600"
                 delay={0}
               />
+              {/* Programs - Emerald/Green (Experts/Growth) */}
               <StatCard
                 icon={BookOpen}
                 value={stats.contents}
                 label={t('impact_garden.contents')}
-                color="hsl(var(--primary))"
+                bgColor="bg-emerald-100"
+                iconColor="text-emerald-600"
                 delay={0.1}
               />
+              {/* Events - Indigo (Activity) */}
               <StatCard
                 icon={Calendar}
                 value={stats.events}
                 label={t('impact_garden.events')}
-                color="hsl(var(--primary))"
+                bgColor="bg-indigo-100"
+                iconColor="text-indigo-600"
                 delay={0.2}
               />
+              {/* Sponsors - Amber/Gold (Trust/Value) */}
               <StatCard
                 icon={Heart}
                 value={stats.sponsors}
                 label={t('impact_garden.sponsors')}
-                color="hsl(var(--accent))"
+                bgColor="bg-amber-100"
+                iconColor="text-amber-600"
                 delay={0.3}
               />
             </div>

@@ -680,14 +680,41 @@ const CreationUploadModal = ({
 // ============================================
 
 const QASection = () => {
-  const { t } = useLanguage();
-  const { user } = useAuth();
+  const { t, language } = useLanguage();
+  const { user, isDemoMode } = useAuth();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [isAskModalOpen, setIsAskModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Import mock Q&A data
   const loadQuestions = async () => {
     setIsLoading(true);
+    
+    // Use mock data in demo mode
+    if (isDemoMode) {
+      // Import dynamically to avoid circular dependency
+      const { MOCK_QA, getLocalizedQuestion, getLocalizedAnswer } = await import('@/data/mockData');
+      const demoQuestions: Question[] = MOCK_QA.map((q) => ({
+        id: q.id,
+        question: language === 'en' ? q.question_en : language === 'de' ? q.question_de : q.question,
+        created_at: q.created_at,
+        user: q.user,
+        content: q.content ? {
+          id: q.content.id,
+          title: language === 'en' ? q.content.title_en : language === 'de' ? q.content.title_de : q.content.title,
+        } : undefined,
+        answers: q.answers.map((a) => ({
+          id: a.id,
+          answer: language === 'en' ? a.answer_en : language === 'de' ? a.answer_de : a.answer,
+          created_at: q.created_at,
+          expert: a.expert,
+        })),
+      }));
+      setQuestions(demoQuestions);
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const { data } = await supabase
         .from('community_questions')
@@ -748,7 +775,7 @@ const QASection = () => {
 
   useEffect(() => {
     loadQuestions();
-  }, []);
+  }, [isDemoMode, language]);
 
   return (
     <section>

@@ -93,9 +93,10 @@ const Index = () => {
                   <StatsBarSkeleton />
                 ) : (
                   <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12">
+                    {/* Members - Sky Blue (Community) */}
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center">
-                        <Users className="w-5 h-5 text-cyan-600" />
+                      <div className="w-10 h-10 rounded-full bg-sky-100 flex items-center justify-center">
+                        <Users className="w-5 h-5 text-sky-600" />
                       </div>
                       <div>
                         <div className="text-xl font-bold text-slate-900">
@@ -105,9 +106,10 @@ const Index = () => {
                       </div>
                     </div>
 
+                    {/* Sponsors - Amber/Gold (Trust/Value) */}
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center">
-                        <Heart className="w-5 h-5 text-rose-600" />
+                      <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                        <Heart className="w-5 h-5 text-amber-600" />
                       </div>
                       <div>
                         <div className="text-xl font-bold text-slate-900">
@@ -117,9 +119,10 @@ const Index = () => {
                       </div>
                     </div>
 
+                    {/* Experts - Emerald/Green (Nature/Growth) */}
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-                        <Award className="w-5 h-5 text-amber-600" />
+                      <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                        <Award className="w-5 h-5 text-emerald-600" />
                       </div>
                       <div>
                         <div className="text-xl font-bold text-slate-900">
