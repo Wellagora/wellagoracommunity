@@ -16,13 +16,16 @@ interface UseCommunityStatsResult {
   refetch: () => void;
 }
 
-// Demo mode stats
-const DEMO_STATS: CommunityStats = {
+// Demo mode stats - Single source of truth for demo stats
+export const DEMO_STATS: CommunityStats = {
   members: 127,
   completions: 312,
   points: 15420,
   activeChallenges: 8,
 };
+
+// Demo sponsors count
+export const DEMO_SPONSORS_COUNT = 5;
 
 /**
  * Hook to fetch community impact statistics using server-side RPC

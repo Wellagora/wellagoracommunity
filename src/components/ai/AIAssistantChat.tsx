@@ -160,7 +160,7 @@ const AIAssistantChat = () => {
 
     // DEMO MODE: Return mock response instead of calling edge function
     if (isDemoMode) {
-      await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay
+      await new Promise(resolve => setTimeout(resolve, 800)); // 800ms delay
       
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
