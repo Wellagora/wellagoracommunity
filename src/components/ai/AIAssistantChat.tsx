@@ -5,7 +5,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { 
   Send, 
-  Sparkles,
   Loader2,
   AlertCircle,
   HelpCircle,
@@ -154,10 +153,10 @@ const AIAssistantChat = () => {
     // Default personalized welcome
     setAvatarMood("neutral");
     return language === 'hu'
-      ? `Szia! 👋 Én WellBot vagyok, a WellAgora digitális házigazdája. 🏠\n\nNem csak egy gép vagyok - azért születtem, hogy segítsek neked felfedezni a 127 tagú közösségünk értékeit.\n\nMiben segíthetek ma?\n• 🎓 Szakértőket mutatok be\n• 📚 Programokat ajánlok\n• 🎫 Elmagyarázom a kuponrendszert`
+      ? `Szia! Újra itt vagyok. 🤖\n\nÉn vagyok a WellBot, a WellAgora digitális házigazdája. Készen állok, hogy segítsek kiigazodni a 127 tagunk és a szakértői programok között.\n\nMiben lehetek a segítségedre?\n• 🎓 Szakértőket mutatok be\n• 📚 Programokat ajánlok\n• 🎫 Elmagyarázom a kuponrendszert`
       : language === 'de'
-      ? `Hallo! 👋 Ich bin WellBot, der digitale Gastgeber von WellAgora. 🏠\n\nIch bin nicht nur eine Maschine - ich wurde geboren, um dir zu helfen, die Werte unserer 127-köpfigen Gemeinschaft zu entdecken.\n\nWie kann ich dir heute helfen?\n• 🎓 Experten vorstellen\n• 📚 Programme empfehlen\n• 🎫 Das Gutscheinsystem erklären`
-      : `Hi! 👋 I'm WellBot, WellAgora's digital host. 🏠\n\nI'm not just a machine - I was born to help you discover the treasures of our 127-member community.\n\nHow can I help you today?\n• 🎓 Introduce experts\n• 📚 Recommend programs\n• 🎫 Explain the voucher system`;
+      ? `Hallo! Ich bin wieder da. 🤖\n\nIch bin WellBot, der digitale Gastgeber von WellAgora. Ich bin bereit, dir bei der Navigation durch unsere 127 Mitglieder und Expertenprogramme zu helfen.\n\nWie kann ich dir helfen?\n• 🎓 Experten vorstellen\n• 📚 Programme empfehlen\n• 🎫 Das Gutscheinsystem erklären`
+      : `Hi! I'm back. 🤖\n\nI'm WellBot, WellAgora's digital host. I'm ready to help you navigate our 127 members and expert programs.\n\nHow can I help you?\n• 🎓 Introduce experts\n• 📚 Recommend programs\n• 🎫 Explain the voucher system`;
   };
 
   // Community Concierge quick-start chips
@@ -385,34 +384,34 @@ const AIAssistantChat = () => {
           
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-500 to-sky-500 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-sky-500 bg-clip-text text-transparent">
                 WellBot
               </h1>
               <div className="flex items-center gap-2">
-                <Badge className="text-xs bg-amber-100 text-amber-700 border-amber-200">
+                <Badge className="text-xs bg-indigo-100 text-indigo-700 border-indigo-200">
                   {language === 'hu' ? 'Digitális Házigazda' : language === 'de' ? 'Digitaler Gastgeber' : 'Digital Host'}
                 </Badge>
                 <div className="flex items-center gap-1.5">
                   <motion.div 
-                    className="w-2 h-2 bg-emerald-500 rounded-full"
+                    className="w-2 h-2 bg-sky-500 rounded-full"
                     animate={{ opacity: [1, 0.4, 1] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
                   />
-                  <span className="text-xs text-emerald-600">{t('wellbot.online')}</span>
+                  <span className="text-xs text-sky-600">{t('wellbot.online')}</span>
                 </div>
               </div>
             </div>
             <p className="text-sm text-slate-600 mt-1 line-clamp-2">
               {language === 'hu' 
-                ? 'A WellAgora házigazdája vagyok! Segítek megtalálni a tökéletes szakértőt és programot. 🏠'
+                ? 'A WellAgora digitális házigazdája vagyok! Segítek eligazodni a programok és szakértők között. 🤖'
                 : language === 'de'
-                ? 'Ich bin der Gastgeber von WellAgora! Ich helfe dir, den perfekten Experten und das Programm zu finden. 🏠'
-                : 'I\'m WellAgora\'s host! I help you find the perfect expert and program. 🏠'}
+                ? 'Ich bin der digitale Gastgeber von WellAgora! Ich helfe dir bei Programmen und Experten. 🤖'
+                : 'I\'m WellAgora\'s digital host! I help you navigate programs and experts. 🤖'}
             </p>
           </div>
         </div>
 
-        {/* Quick-Start Chips - Community Concierge Actions */}
+        {/* Quick-Start Chips - Sky Blue border, Indigo text */}
         <div className="flex flex-wrap gap-2">
           {quickActions.map((action, index) => (
             <motion.div
@@ -425,8 +424,8 @@ const AIAssistantChat = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => handleQuickAction(action)}
-                className="gap-2 text-sm bg-white/80 backdrop-blur-sm border-amber-200 text-amber-700 
-                  hover:bg-amber-50 hover:border-amber-400 hover:text-amber-800 
+                className="gap-2 text-sm bg-white/80 backdrop-blur-sm border-sky-300 text-indigo-700 
+                  hover:bg-sky-50 hover:border-sky-400 hover:text-indigo-800 
                   shadow-[0_2px_8px_rgb(0,0,0,0.04)] transition-all duration-200"
                 disabled={isTyping}
               >
@@ -494,7 +493,7 @@ const AIAssistantChat = () => {
 
       {/* SCROLLABLE MESSAGES AREA - Chat bubbles with organic premium style */}
       <div className="flex-1 overflow-y-auto px-4 py-5 space-y-4 bg-[hsl(var(--background))]">
-        {/* Typing Indicator */}
+        {/* Typing Indicator with thinking robot */}
         <AnimatePresence>
           {isTyping && (
             <motion.div
@@ -503,30 +502,23 @@ const AIAssistantChat = () => {
               exit={{ opacity: 0, y: -10 }}
               className="flex gap-3 items-start"
             >
-              <div className="bg-gradient-to-br from-sky-400 to-indigo-500 rounded-full p-2.5 flex-shrink-0 shadow-[0_4px_12px_rgb(99,102,241,0.25)]">
-                <motion.div
-                  animate={{ rotate: [0, 360] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                >
-                  <Sparkles className="h-5 w-5 text-white" />
-                </motion.div>
-              </div>
-              <div className="bg-indigo-50 border border-indigo-100 p-4 rounded-2xl rounded-tl-none shadow-[0_4px_16px_rgb(0,0,0,0.06)]">
+              <WellBotAvatar size="sm" mood="thinking" />
+              <div className="bg-sky-50/80 backdrop-blur-sm border border-sky-100 p-4 rounded-2xl rounded-tl-none shadow-[0_4px_16px_rgb(14,165,233,0.1)]">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-indigo-700">{t('wellbot.typing')}</span>
                   <div className="flex gap-1">
                     <motion.div 
-                      className="w-2 h-2 bg-indigo-500 rounded-full"
+                      className="w-2 h-2 bg-sky-500 rounded-full"
                       animate={{ y: [0, -6, 0] }}
                       transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
                     />
                     <motion.div 
-                      className="w-2 h-2 bg-indigo-500 rounded-full"
+                      className="w-2 h-2 bg-sky-500 rounded-full"
                       animate={{ y: [0, -6, 0] }}
                       transition={{ duration: 0.6, repeat: Infinity, delay: 0.15 }}
                     />
                     <motion.div 
-                      className="w-2 h-2 bg-indigo-500 rounded-full"
+                      className="w-2 h-2 bg-sky-500 rounded-full"
                       animate={{ y: [0, -6, 0] }}
                       transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }}
                     />
@@ -545,31 +537,31 @@ const AIAssistantChat = () => {
             </div>
           </div>
         ) : messages.length === 0 && !isTyping ? (
-          /* Empty State - Community Concierge Welcome */
+          /* Empty State - Robot Welcome */
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="flex flex-col items-center justify-center text-center py-16"
           >
-            <div className="bg-white/95 backdrop-blur-md rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-white/40 mb-6">
+            <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 shadow-[0_8px_30px_rgb(99,102,241,0.12)] border border-indigo-100/50 mb-6">
               <div className="flex justify-center mb-4">
                 <WellBotAvatar size="xl" mood={avatarMood} />
               </div>
-              <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-amber-500 to-sky-500 bg-clip-text text-transparent">
-                {language === 'hu' ? 'Szia! WellBot vagyok' : language === 'de' ? 'Hallo! Ich bin WellBot' : 'Hi! I\'m WellBot'}
+              <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-indigo-600 to-sky-500 bg-clip-text text-transparent">
+                {language === 'hu' ? 'Szia! Újra itt vagyok' : language === 'de' ? 'Hallo! Ich bin wieder da' : 'Hi! I\'m back'}
               </h3>
               <p className="text-slate-600 max-w-sm text-sm leading-relaxed">
                 {language === 'hu' 
-                  ? 'A WellAgora digitális házigazdája! 🏠 Segítek felfedezni a közösségünk kincseit - szakértőket, programokat, és a szponzorációs rendszert.'
+                  ? 'Én vagyok WellBot, a WellAgora digitális házigazdája. 🤖 Készen állok, hogy segítsek eligazodni a 127 tagunk és szakértői programjaink között.'
                   : language === 'de'
-                  ? 'Der digitale Gastgeber von WellAgora! 🏠 Ich helfe dir, die Schätze unserer Gemeinschaft zu entdecken - Experten, Programme und das Sponsoring-System.'
-                  : 'WellAgora\'s digital host! 🏠 I help you discover our community\'s treasures - experts, programs, and the sponsorship system.'}
+                  ? 'Ich bin WellBot, der digitale Gastgeber von WellAgora. 🤖 Ich bin bereit, dir bei der Navigation durch unsere 127 Mitglieder und Expertenprogramme zu helfen.'
+                  : 'I\'m WellBot, WellAgora\'s digital host. 🤖 I\'m ready to help you navigate our 127 members and expert programs.'}
               </p>
             </div>
           </motion.div>
         ) : (
-          /* Messages - Chat bubbles with role-based colors */
+          /* Messages - Chat bubbles with glassmorphism for WellBot */
           <AnimatePresence>
             {messages.map((message, index) => (
               <motion.div
@@ -581,7 +573,7 @@ const AIAssistantChat = () => {
                   message.sender === "user" ? "justify-end" : "justify-start"
                 }`}
               >
-                {/* Bot Avatar - Humanized mascot */}
+                {/* Bot Avatar - Robot mascot */}
                 {message.sender === "ai" && (
                   <WellBotAvatar size="sm" mood="neutral" />
                 )}
@@ -589,13 +581,13 @@ const AIAssistantChat = () => {
                 {/* Message Bubble */}
                 <div className={`flex flex-col max-w-[80%] ${message.sender === "user" ? "items-end" : "items-start"}`}>
                   {message.sender === "ai" && (
-                    <span className="text-xs font-medium bg-gradient-to-r from-amber-500 to-sky-500 bg-clip-text text-transparent mb-1">WellBot</span>
+                    <span className="text-xs font-medium bg-gradient-to-r from-indigo-600 to-sky-500 bg-clip-text text-transparent mb-1">WellBot</span>
                   )}
                   <div
                     className={`p-4 rounded-[1.25rem] whitespace-pre-wrap break-words text-sm leading-relaxed ${
                       message.sender === "user"
-                        ? "bg-gradient-to-r from-sky-500 to-sky-600 text-white rounded-tr-sm shadow-[0_4px_16px_rgb(14,165,233,0.3)]"
-                        : "bg-amber-50/80 border border-amber-100 text-slate-700 rounded-tl-sm shadow-[0_4px_16px_rgb(0,0,0,0.05)]"
+                        ? "bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-tr-sm shadow-[0_4px_16px_rgb(99,102,241,0.3)]"
+                        : "bg-sky-50/80 backdrop-blur-sm border border-sky-100 text-slate-700 rounded-tl-sm shadow-[0_4px_16px_rgb(14,165,233,0.1)]"
                     }`}
                   >
                     {message.content}
