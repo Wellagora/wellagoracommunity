@@ -41,27 +41,27 @@ const AIAssistantChat = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Demo mode mock responses
+  // Demo mode mock responses - includes 127 member count
   const getDemoResponse = (userMessage: string): string => {
     const lowerMsg = userMessage.toLowerCase();
     if (lowerMsg.includes('tanul') || lowerMsg.includes('learn')) {
       return language === 'hu' 
-        ? 'Szia! 🌿 Számos programot találsz a Piactéren: kovászkenyér sütés, gyógynövénygyűjtés, méhészkedés alapjai és még sok más! A legtöbb programot helyi szakértők tartják, és a szponzorált programok ingyenesek számodra.'
-        : 'Hi! 🌿 You can find many programs in the Marketplace: sourdough baking, herb gathering, beekeeping basics and much more! Most programs are led by local experts, and sponsored programs are free for you.';
+        ? 'Szia! 🌿 A 127 tagot számláló közösségünkben számos programot találsz: kovászkenyér sütés, gyógynövénygyűjtés, méhészkedés alapjai és még sok más! 12 szakértőnk tartja a legtöbb programot, és a szponzorált programok ingyenesek számodra.'
+        : 'Hi! 🌿 In our community of 127 members, you can find many programs: sourdough baking, herb gathering, beekeeping basics and much more! Our 12 experts lead most programs, and sponsored programs are free for you.';
     }
     if (lowerMsg.includes('ingyenes') || lowerMsg.includes('free')) {
       return language === 'hu'
-        ? 'Kiváló hír! 🎉 A Káli Panzió szponzorálja több programunkat is, így ingyen részt vehetsz rajtuk. Nézd meg a "Szponzorált" címkével ellátott programokat a Piactéren!'
-        : 'Great news! 🎉 Káli Panzió sponsors several of our programs, so you can join them for free. Check out programs with the "Sponsored" label in the Marketplace!';
+        ? 'Kiváló hír! 🎉 5 szponzorunk, köztük a Káli Panzió, támogatja programjainkat, így ingyen részt vehetsz rajtuk. Nézd meg a "Szponzorált" címkével ellátott programokat a Piactéren!'
+        : 'Great news! 🎉 Our 5 sponsors, including Káli Panzió, support our programs, so you can join them for free. Check out programs with the "Sponsored" label in the Marketplace!';
     }
     if (lowerMsg.includes('népszerű') || lowerMsg.includes('popular')) {
       return language === 'hu'
-        ? 'A legkedveltebb programjaink: 1️⃣ Kovászkenyér kurzus (Kovács István), 2️⃣ Gyógynövénygyűjtés túra (Nagy Erzsébet), 3️⃣ Méhészkedés alapjai. Mindegyik kiváló értékeléseket kapott a résztvevőktől!'
-        : 'Our most popular programs: 1️⃣ Sourdough Course (István Kovács), 2️⃣ Herb Gathering Tour (Erzsébet Nagy), 3️⃣ Beekeeping Basics. All have received excellent ratings from participants!';
+        ? 'A 127 tagunk kedvencei: 1️⃣ Kovászkenyér kurzus (Kovács István), 2️⃣ Gyógynövénygyűjtés túra (Nagy Éva), 3️⃣ Méhészkedés alapjai. Mindegyik kiváló értékeléseket kapott a résztvevőktől!'
+        : 'Favorites of our 127 members: 1️⃣ Sourdough Course (István Kovács), 2️⃣ Herb Gathering Tour (Éva Nagy), 3️⃣ Beekeeping Basics. All have received excellent ratings from participants!';
     }
     return language === 'hu'
-      ? 'Szia! Én a WellBot vagyok, a szakértők és programok közötti eligazodásban segítek neked. Kérdezz bátran a programokról, szakértőkről vagy az ingyenes lehetőségekről! 🌿'
-      : 'Hi! I\'m WellBot, I help you navigate experts and programs. Feel free to ask about programs, experts, or free opportunities! 🌿';
+      ? 'Szia! WellBot vagyok. Segítek eligazodni a 127 tagot számláló közösségünk szakértői és programjai között. Kérdezz bátran a programokról, 12 szakértőnkről vagy az 5 szponzorunk által támogatott ingyenes lehetőségekről! 🌿'
+      : 'Hi! I\'m WellBot. I help you navigate our community of 127 members, including 12 experts and programs supported by 5 sponsors. Feel free to ask about programs, experts, or free opportunities! 🌿';
   };
 
   // Knowledge Guide quick-start chips
