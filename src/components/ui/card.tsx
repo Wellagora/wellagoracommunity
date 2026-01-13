@@ -3,28 +3,32 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * Luxury Monochrome 3D Card Component
- * NO borders, massive soft shadows, 32px radius, dramatic hover lift
+ * Salesforce AI-Inspired Glassmorphism Card Component
+ * Glass effect with depth, interactive hover, border glow
  */
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
       className={cn(
-        // Base: Pure white, NO borders
-        "bg-white",
-        // NO border for luxury look
-        "border-0",
-        // Rounded corners: 32px for modern organic look
-        "rounded-[32px]",
-        // Shadow: Massive, soft 3D shadow
-        "shadow-[0_32px_64px_rgba(0,0,0,0.06)]",
+        // Glassmorphism: Semi-transparent white with blur
+        "bg-white/80 backdrop-blur-xl",
+        // Very thin low-opacity border
+        "border border-black/[0.05]",
+        // Rounded corners: 24px for modern organic look
+        "rounded-[24px]",
+        // Shadow: Soft 3D shadow
+        "shadow-[0_24px_48px_rgba(0,0,0,0.04)]",
         // Text color
         "text-card-foreground",
-        // Hover: Dramatic lift effect
+        // Interactive hover: Scale + deeper shadow + border glow
         "transition-all duration-500 ease-out",
-        "hover:shadow-[0_48px_96px_rgba(0,0,0,0.1)]",
-        "hover:-translate-y-2",
+        "hover:scale-[1.02]",
+        "hover:shadow-[0_32px_64px_rgba(0,0,0,0.08)]",
+        "hover:border-black/[0.12]",
+        "hover:-translate-y-1",
+        // Cursor to indicate interactivity
+        "cursor-pointer",
         className
       )}
       {...props}

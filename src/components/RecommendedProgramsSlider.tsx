@@ -103,74 +103,76 @@ const RecommendedProgramsSlider = () => {
   }
 
   return (
-    <section className="py-12 bg-gradient-to-r from-background via-primary/5 to-background">
+    <section className="py-16 bg-gradient-to-b from-background via-black/[0.01] to-background">
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
           viewport={{ once: true }}
         >
-          {/* Header with navigation */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Sparkles className="w-6 h-6 text-primary" />
+          {/* Header - Monochrome */}
+          <div className="flex items-center justify-between mb-10">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-white" />
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold">{t("index.workshop_secrets_title")}</h2>
+              <h2 className="font-serif text-3xl md:text-4xl font-semibold text-foreground">{t("index.workshop_secrets_title")}</h2>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Button
-                variant="outline"
+                variant="glass"
                 size="icon"
                 onClick={() => scroll("left")}
-                className="rounded-full hidden md:flex"
+                className="hidden md:flex"
               >
                 <ChevronLeft className="w-5 h-5" />
               </Button>
               <Button
-                variant="outline"
+                variant="glass"
                 size="icon"
                 onClick={() => scroll("right")}
-                className="rounded-full hidden md:flex"
+                className="hidden md:flex"
               >
                 <ChevronRight className="w-5 h-5" />
               </Button>
               <Link to="/piacer">
-                <Button variant="ghost" className="gap-2">
+                <Button variant="outline" size="sm">
                   {t("index.view_all_secrets")}
-                  <ChevronRight className="w-4 h-4" />
                 </Button>
               </Link>
             </div>
           </div>
 
-          {/* Horizontal scrolling container */}
+          {/* Horizontal scrolling - Ultra Minimalist Cards */}
           <div
             ref={scrollRef}
-            className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory"
+            className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {programs.map((program, index) => (
               <motion.div
                 key={program.id}
-                className="w-[300px] flex-shrink-0 snap-start"
-                initial={{ opacity: 0, x: 20 }}
+                className="w-[320px] flex-shrink-0 snap-start"
+                initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.05 }}
+                transition={{ 
+                  duration: 0.5, 
+                  delay: index * 0.08,
+                  ease: [0.25, 0.46, 0.45, 0.94]
+                }}
                 viewport={{ once: true }}
               >
-                <Link to={`/piacer/${program.id}`}>
-                  <Card className="h-full bg-card hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 border-border/50 group overflow-hidden">
-                    {/* Image with fallback placeholder */}
-                    <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 relative overflow-hidden">
+                <Link to={`/piacer/${program.id}`} className="block group">
+                  <Card className="h-full overflow-hidden">
+                    {/* Image with smooth zoom */}
+                    <div className="aspect-[4/3] bg-gradient-to-br from-black/[0.02] to-black/[0.06] relative overflow-hidden">
                       {program.image_url || program.thumbnail_url ? (
                         <img
                           src={program.image_url || program.thumbnail_url || ''}
                           alt={program.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                           onError={(e) => {
-                            // Hide the broken image and show placeholder
                             e.currentTarget.style.display = 'none';
                             e.currentTarget.nextElementSibling?.classList.remove('hidden');
                           }}
@@ -181,34 +183,17 @@ const RecommendedProgramsSlider = () => {
                       </div>
                     </div>
                     
-                    {/* Content */}
-                    <CardContent className="p-4">
-                      <h3 className="font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                    {/* Ultra-Minimal Content */}
+                    <CardContent className="p-6">
+                      {/* Category */}
+                      <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-black/40 mb-3 block">
+                        Workshop
+                      </span>
+                      
+                      {/* Title - Serif */}
+                      <h3 className="font-serif text-lg font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-black transition-colors duration-300">
                         {program.title}
                       </h3>
-                      
-                      {/* Expert Avatar + Name */}
-                      {program.creator && (
-                        <div className="flex items-center gap-2 mb-3">
-                          <Avatar className="w-6 h-6">
-                            <AvatarImage src={program.creator.avatar_url || undefined} />
-                            <AvatarFallback className="bg-primary/20 text-primary text-xs">
-                              {program.creator.first_name?.[0]}{program.creator.last_name?.[0]}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className="text-sm text-muted-foreground">
-                            {program.creator.first_name} {program.creator.last_name}
-                          </span>
-                        </div>
-                      )}
-                      
-                      {/* Badge */}
-                      <div className="flex items-center justify-between">
-                        {getAccessBadge(program)}
-                        <Button size="sm" variant="secondary" className="ml-2">
-                          {t("common.view")}
-                        </Button>
-                      </div>
                     </CardContent>
                   </Card>
                 </Link>
