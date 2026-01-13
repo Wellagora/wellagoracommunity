@@ -318,7 +318,7 @@ const Navigation = () => {
                   }`}
                 >
                   {isWellBot ? (
-                    <WellBotAvatar size="xs" mood="happy" />
+                    <WellBotAvatar size="xs" mood="neutral" />
                   ) : Icon ? (
                     <Icon 
                       className="h-4 w-4" 
@@ -543,7 +543,7 @@ const Navigation = () => {
                           }`}
                         >
                           {isWellBot ? (
-                            <WellBotAvatar size="xs" mood="happy" />
+                            <WellBotAvatar size="xs" mood="neutral" />
                           ) : Icon ? (
                             <Icon
                               className="h-5 w-5"
