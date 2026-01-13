@@ -26,6 +26,8 @@ import {
   LayoutGrid,
   Megaphone,
   Send,
+  Bot,
+  Reply,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -74,7 +76,15 @@ const SocialFeed = () => {
   }, [isDemoMode]);
 
   const filteredPosts =
-    filter === "all" ? posts : posts.filter((p) => p.type === filter);
+    filter === "all"
+      ? posts
+      : filter === "question"
+      ? posts.filter(
+          (p) =>
+            p.type === "question" ||
+            (p.type === "wellbot_answer" && p.replyToPostId)
+        )
+      : posts.filter((p) => p.type === filter);
 
   // Optimistic like handler
   const handleLike = (postId: string) => {
@@ -226,7 +236,10 @@ const SocialFeed = () => {
 const PostTypeBadge = ({ type }: { type: FeedPost["type"] }) => {
   const { t } = useLanguage();
 
-  const config = {
+  const config: Record<
+    FeedPost["type"],
+    { icon: React.ComponentType<{ className?: string }>; label: string; className: string }
+  > = {
     expert_tip: {
       icon: Lightbulb,
       label: t("feed.expert_tip"),
@@ -246,6 +259,11 @@ const PostTypeBadge = ({ type }: { type: FeedPost["type"] }) => {
       icon: Megaphone,
       label: t("feed.announcement"),
       className: "bg-purple-100 text-purple-700",
+    },
+    wellbot_answer: {
+      icon: Bot,
+      label: t("feed.wellbot_suggestion"),
+      className: "bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700",
     },
   };
 
@@ -441,19 +459,31 @@ const PostCard = ({
     <Card
       className={cn(
         "mb-4 shadow-sm hover:shadow-md transition-shadow",
-        post.authorRole === "expert" && "border-l-4 border-l-indigo-500"
+        post.authorRole === "expert" && "border-l-4 border-l-indigo-500",
+        post.authorRole === "wellbot" &&
+          "border-l-4 border-l-emerald-500 bg-gradient-to-r from-emerald-50/50 to-teal-50/50"
       )}
     >
       <CardContent className="p-4">
         {/* Header: Avatar + Name + Badge + Time */}
         <div className="flex items-start gap-3">
-          <Avatar>
+          <Avatar
+            className={cn(
+              post.authorRole === "wellbot" &&
+                "ring-2 ring-emerald-500 ring-offset-2"
+            )}
+          >
             <AvatarFallback
               className={cn(
-                post.authorRole === "expert" && "bg-indigo-100 text-indigo-700"
+                post.authorRole === "expert" && "bg-indigo-100 text-indigo-700",
+                post.authorRole === "wellbot" && "bg-emerald-100 text-emerald-700"
               )}
             >
-              {getInitials(post.authorName)}
+              {post.authorRole === "wellbot" ? (
+                <Bot className="w-5 h-5" />
+              ) : (
+                getInitials(post.authorName)
+              )}
             </AvatarFallback>
           </Avatar>
 
@@ -474,6 +504,12 @@ const PostCard = ({
                   {post.authorBadge}
                 </Badge>
               )}
+              {post.authorRole === "wellbot" && (
+                <Badge className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs gap-1">
+                  <Bot className="w-3 h-3" />
+                  {post.authorBadge || t("feed.ai_assistant")}
+                </Badge>
+              )}
             </div>
 
             <span className="text-xs text-muted-foreground">
@@ -485,8 +521,19 @@ const PostCard = ({
           <PostTypeBadge type={post.type} />
         </div>
 
+        {/* WellBot Reply Indicator */}
+        {post.isWellBotResponse && (
+          <div className="mt-3 mb-2 flex items-center gap-2 text-xs text-emerald-600">
+            <Reply className="w-3 h-3" />
+            <span>{t("feed.wellbot_replied")}</span>
+          </div>
+        )}
+
         {/* Content */}
-        <p className="mt-3 text-foreground whitespace-pre-wrap leading-relaxed">
+        <p className={cn(
+          "text-foreground whitespace-pre-wrap leading-relaxed",
+          !post.isWellBotResponse && "mt-3"
+        )}>
           {post.content}
         </p>
 

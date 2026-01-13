@@ -3832,7 +3832,10 @@
     "view_all_comments": "View all {{count}} comments",
     "no_posts": "No posts in this category yet.",
     "coming_soon": "Coming soon!",
-    "comment_coming_soon": "Comment feature coming soon!"
+    "comment_coming_soon": "Comment feature coming soon!",
+    "wellbot_suggestion": "WellBot Suggestion",
+    "wellbot_replied": "WellBot replied to this question",
+    "ai_assistant": "AI Assistant"
   },
   "sponsor_hub": {
     "title": "Sponsor Hub",
