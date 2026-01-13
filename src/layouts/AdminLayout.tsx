@@ -60,33 +60,33 @@ const AdminLayout = () => {
 
   const navItems = [
     { 
-      path: '/admin', 
+      path: '/admin-panel', 
       icon: LayoutDashboard, 
       label: t('admin.nav.dashboard'),
       exact: true 
     },
     { 
-      path: '/admin/users', 
+      path: '/admin-panel/users', 
       icon: Users, 
       label: t('admin.nav.users') 
     },
     { 
-      path: '/admin/feedback', 
+      path: '/admin-panel/feedback', 
       icon: MessageSquare, 
       label: t('admin.nav.feedback') 
     },
     { 
-      path: '/admin/analytics', 
+      path: '/admin-panel/analytics', 
       icon: BarChart3, 
       label: t('admin.nav.analytics') 
     },
     { 
-      path: '/admin/moderation', 
+      path: '/admin-panel/moderation', 
       icon: Shield, 
       label: t('admin.nav.moderation') 
     },
     { 
-      path: '/admin/settings', 
+      path: '/admin-panel/settings', 
       icon: Settings, 
       label: t('admin.nav.settings') 
     },
