@@ -38,89 +38,87 @@ interface Program {
   title: string;
   description: string;
   category: string;
-  points_base: number;
+  price: number;
   publication_status: string;
-  is_active: boolean;
   created_at: string;
   image_url: string | null;
   project_id: string | null;
-  sponsor_id: string | null;
+  expert_id: string | null;
   expert_name?: string;
 }
 
-// New realistic mock programs linked to experts and Káli-medence project
+// New mock programs with different statuses for workflow testing
 const MOCK_PROGRAMS: Program[] = [
-  {
-    id: 'prog-kovasz',
-    title: 'Kovászkenyér mesterkurzus',
-    description: 'Tanuld meg a hagyományos kovászkenyér készítését kemencében sütéssel',
-    category: 'Gasztronómia',
-    points_base: 120,
-    publication_status: 'pending_review',
-    is_active: false,
+  { 
+    id: 'p1', 
+    title: 'Gyógynövénytúra a Káli-medencében', 
+    description: 'Fedezd fel a helyi gyógynövényeket szakértő vezetésével.', 
+    expert_name: 'Nagy Eszter', 
+    category: 'Természet', 
+    publication_status: 'pending_review', 
+    price: 8000,
     created_at: '2026-01-10T10:00:00Z',
     image_url: null,
     project_id: 'kali-medence',
-    sponsor_id: 'expert-1',
-    expert_name: 'Dr. Kovács István'
+    expert_id: 'expert-2'
   },
-  {
-    id: 'prog-gyogynoveny',
-    title: 'Gyógynövénygyűjtés túra',
-    description: 'Ismerd meg a Káli-medence gyógynövényeit és felhasználásukat',
-    category: 'Természet',
-    points_base: 80,
-    publication_status: 'pending_review',
-    is_active: false,
+  { 
+    id: 'p2', 
+    title: 'Kovászolás Alapjai Workshop', 
+    description: 'Tanuld meg a tökéletes kovászkenyér titkait.', 
+    expert_name: 'Kovács István', 
+    category: 'Gasztronómia', 
+    publication_status: 'pending_review', 
+    price: 12000,
     created_at: '2026-01-08T10:00:00Z',
     image_url: null,
     project_id: 'kali-medence',
-    sponsor_id: 'expert-2',
-    expert_name: 'Nagy Eszter'
+    expert_id: 'expert-1'
   },
-  {
-    id: 'prog-meheszet',
-    title: 'Méhészkedés kezdőknek',
-    description: 'Alapozó tanfolyam házi méhészet indításához',
-    category: 'Mezőgazdaság',
-    points_base: 150,
-    publication_status: 'published',
-    is_active: true,
+  { 
+    id: 'p3', 
+    title: 'Fenntartható Gazdálkodás', 
+    description: 'Permakultúra és ökogazdálkodás a gyakorlatban.', 
+    expert_name: 'Szabó Péter', 
+    category: 'Mezőgazdaság', 
+    publication_status: 'published', 
+    price: 15000,
     created_at: '2026-01-05T10:00:00Z',
     image_url: null,
     project_id: 'kali-medence',
-    sponsor_id: 'expert-3',
-    expert_name: 'Szabó Péter'
+    expert_id: 'expert-3'
   },
-  {
-    id: 'prog-joga',
-    title: 'Reggeli jóga a szőlőhegyen',
-    description: 'Napfelkeltés jóga a Szent György-hegyen',
-    category: 'Jóllét',
-    points_base: 60,
-    publication_status: 'published',
-    is_active: true,
+  { 
+    id: 'p4', 
+    title: 'Méhészkedés Kezdőknek', 
+    description: 'Ismerd meg a méhészet alapjait.', 
+    expert_name: 'Kiss Gábor', 
+    category: 'Mezőgazdaság', 
+    publication_status: 'draft', 
+    price: 10000,
     created_at: '2026-01-02T10:00:00Z',
     image_url: null,
     project_id: 'kali-medence',
-    sponsor_id: 'expert-4',
-    expert_name: 'Tóth Anna'
+    expert_id: 'expert-4'
   },
-  {
-    id: 'prog-kosar',
-    title: 'Kosárfonás workshop',
-    description: 'Hagyományos fűzfa kosárfonás mesterrel',
-    category: 'Kézművesség',
-    points_base: 100,
-    publication_status: 'draft',
-    is_active: false,
+  { 
+    id: 'p5', 
+    title: 'Jóga a Természetben', 
+    description: 'Relaxáció és mozgás a szabadban.', 
+    expert_name: 'Tóth Anna', 
+    category: 'Jóllét', 
+    publication_status: 'published', 
+    price: 5000,
     created_at: '2025-12-20T10:00:00Z',
     image_url: null,
     project_id: 'kali-medence',
-    sponsor_id: 'expert-5',
-    expert_name: 'Kiss Gábor'
+    expert_id: 'expert-5'
   },
 ];
+
+const formatPrice = (price: number): string => {
+  return price.toLocaleString('hu-HU') + ' Ft';
+};
 
 const AdminPrograms = () => {
   const { t } = useLanguage();
@@ -140,35 +138,56 @@ const AdminPrograms = () => {
         return;
       }
 
-      // Fetch programs with expert info
+      // Fetch programs from expert_contents table (the actual programs table)
       const { data, error } = await supabase
-        .from('challenge_definitions')
+        .from('expert_contents')
         .select('*')
-        .not('project_id', 'is', null)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       
-      // Fetch expert names for sponsors
-      const sponsorIds = data?.filter(d => d.sponsor_id).map(d => d.sponsor_id) || [];
+      // Fetch expert names (creator_id is the expert)
+      const creatorIds = data?.filter(d => d.creator_id).map(d => d.creator_id) || [];
       let expertsMap: Record<string, string> = {};
       
-      if (sponsorIds.length > 0) {
+      if (creatorIds.length > 0) {
         const { data: expertsData } = await supabase
           .from('profiles')
           .select('id, first_name, last_name')
-          .in('id', sponsorIds);
+          .in('id', creatorIds);
         
-        expertsData?.forEach((e: { id: string; first_name: string | null; last_name: string | null }) => {
+        expertsData?.forEach((e: { id: string; first_name: string; last_name: string }) => {
           expertsMap[e.id] = [e.first_name, e.last_name].filter(Boolean).join(' ');
         });
       }
       
-      setPrograms(data?.map(d => ({
-        ...d,
-        publication_status: d.publication_status || (d.is_active ? 'published' : 'draft'),
-        expert_name: d.sponsor_id ? expertsMap[d.sponsor_id] : undefined
-      })) || []);
+      // Map expert_contents to our Program interface
+      // is_published: true = published, false + reviewed_at = rejected, else draft/pending
+      setPrograms(data?.map(d => {
+        let publication_status = 'draft';
+        if (d.is_published) {
+          publication_status = 'published';
+        } else if (d.rejected_at) {
+          publication_status = 'rejected';
+        } else if (d.reviewed_at === null && d.is_published === false) {
+          // Could be pending or draft based on context
+          publication_status = 'pending_review';
+        }
+        
+        return {
+          id: d.id,
+          title: d.title,
+          description: d.description || '',
+          category: d.category || '',
+          price: d.price_huf || 0,
+          publication_status,
+          created_at: d.created_at || '',
+          image_url: d.image_url,
+          project_id: d.region_id,
+          expert_id: d.creator_id,
+          expert_name: d.creator_id ? expertsMap[d.creator_id] : undefined
+        };
+      }) || []);
     } catch (error) {
       console.error('Error fetching programs:', error);
       toast.error(t('admin.programs.fetch_error') || 'Error fetching programs');
@@ -194,7 +213,7 @@ const AdminPrograms = () => {
   const approveProgram = async (programId: string) => {
     if (isDemoMode) {
       setPrograms(prev => prev.map(p => 
-        p.id === programId ? { ...p, publication_status: 'published', is_active: true } : p
+        p.id === programId ? { ...p, publication_status: 'published' } : p
       ));
       toast.success(t('admin.programs.approved') || 'Program approved');
       return;
@@ -202,14 +221,14 @@ const AdminPrograms = () => {
 
     try {
       const { error } = await supabase
-        .from('challenge_definitions')
-        .update({ publication_status: 'published', is_active: true })
+        .from('expert_contents')
+        .update({ is_published: true, reviewed_at: new Date().toISOString() })
         .eq('id', programId);
 
       if (error) throw error;
       
       setPrograms(prev => prev.map(p => 
-        p.id === programId ? { ...p, publication_status: 'published', is_active: true } : p
+        p.id === programId ? { ...p, publication_status: 'published' } : p
       ));
       toast.success(t('admin.programs.approved') || 'Program approved');
     } catch (error) {
@@ -220,8 +239,8 @@ const AdminPrograms = () => {
 
   const rejectProgram = async (programId: string) => {
     if (isDemoMode) {
-      setPrograms(prev => prev.map(p => 
-        p.id === programId ? { ...p, publication_status: 'rejected', is_active: false } : p
+      setPrograms(prev => prev.map(p =>
+        p.id === programId ? { ...p, publication_status: 'rejected' } : p
       ));
       toast.success(t('admin.programs.rejected') || 'Program rejected');
       return;
@@ -229,14 +248,14 @@ const AdminPrograms = () => {
 
     try {
       const { error } = await supabase
-        .from('challenge_definitions')
-        .update({ publication_status: 'rejected', is_active: false })
+        .from('expert_contents')
+        .update({ is_published: false, rejected_at: new Date().toISOString() })
         .eq('id', programId);
 
       if (error) throw error;
       
       setPrograms(prev => prev.map(p => 
-        p.id === programId ? { ...p, publication_status: 'rejected', is_active: false } : p
+        p.id === programId ? { ...p, publication_status: 'rejected' } : p
       ));
       toast.success(t('admin.programs.rejected') || 'Program rejected');
     } catch (error) {
@@ -383,7 +402,7 @@ const AdminPrograms = () => {
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-semibold text-lg">{program.title}</h3>
                       {getStatusBadge(program.publication_status)}
-                      {getCategoryBadge(program.category)}
+                      {program.category && getCategoryBadge(program.category)}
                     </div>
                     <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                       {program.description}
@@ -396,7 +415,7 @@ const AdminPrograms = () => {
                         </span>
                       )}
                       <span className="font-medium text-foreground">
-                        {program.points_base} {t('admin.programs.points')}
+                        {formatPrice(program.price)}
                       </span>
                     </div>
                   </div>
