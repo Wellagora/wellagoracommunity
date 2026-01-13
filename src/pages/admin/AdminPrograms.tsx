@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -20,9 +20,9 @@ import {
   ThumbsUp,
   ThumbsDown,
   MoreHorizontal,
-  Calendar,
-  Users,
-  Award
+  User,
+  Tag,
+  Plus
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -38,62 +38,87 @@ interface Program {
   title: string;
   description: string;
   category: string;
-  difficulty: string;
   points_base: number;
   publication_status: string;
   is_active: boolean;
   created_at: string;
   image_url: string | null;
+  project_id: string | null;
+  sponsor_id: string | null;
+  expert_name?: string;
 }
 
+// New realistic mock programs linked to experts and Káli-medence project
 const MOCK_PROGRAMS: Program[] = [
   {
-    id: 'prog-1',
-    title: 'Helyi Termelői Piac',
-    description: 'Látogass el a helyi termelői piacra és vásárolj helyiektől',
-    category: 'community',
-    difficulty: 'beginner',
-    points_base: 50,
+    id: 'prog-kovasz',
+    title: 'Kovászkenyér mesterkurzus',
+    description: 'Tanuld meg a hagyományos kovászkenyér készítését kemencében sütéssel',
+    category: 'Gasztronómia',
+    points_base: 120,
     publication_status: 'pending_review',
     is_active: false,
-    created_at: '2024-06-10T10:00:00Z',
-    image_url: null
+    created_at: '2026-01-10T10:00:00Z',
+    image_url: null,
+    project_id: 'kali-medence',
+    sponsor_id: 'expert-1',
+    expert_name: 'Dr. Kovács István'
   },
   {
-    id: 'prog-2',
-    title: 'Kerékpáros Közlekedés',
-    description: 'Használd a kerékpárodat munkába járáshoz egy héten keresztül',
-    category: 'transport',
-    difficulty: 'intermediate',
-    points_base: 100,
+    id: 'prog-gyogynoveny',
+    title: 'Gyógynövénygyűjtés túra',
+    description: 'Ismerd meg a Káli-medence gyógynövényeit és felhasználásukat',
+    category: 'Természet',
+    points_base: 80,
     publication_status: 'pending_review',
     is_active: false,
-    created_at: '2024-06-08T10:00:00Z',
-    image_url: null
+    created_at: '2026-01-08T10:00:00Z',
+    image_url: null,
+    project_id: 'kali-medence',
+    sponsor_id: 'expert-2',
+    expert_name: 'Nagy Eszter'
   },
   {
-    id: 'prog-3',
-    title: 'Komposztálási Workshop',
-    description: 'Vegyél részt a komposztálási workshopon',
-    category: 'waste',
-    difficulty: 'beginner',
-    points_base: 75,
+    id: 'prog-meheszet',
+    title: 'Méhészkedés kezdőknek',
+    description: 'Alapozó tanfolyam házi méhészet indításához',
+    category: 'Mezőgazdaság',
+    points_base: 150,
     publication_status: 'published',
     is_active: true,
-    created_at: '2024-05-01T10:00:00Z',
-    image_url: null
+    created_at: '2026-01-05T10:00:00Z',
+    image_url: null,
+    project_id: 'kali-medence',
+    sponsor_id: 'expert-3',
+    expert_name: 'Szabó Péter'
   },
   {
-    id: 'prog-4',
-    title: 'Napelem Telepítés',
-    description: 'Telepíts napelemeket az otthonodra',
-    category: 'energy',
-    difficulty: 'advanced',
-    points_base: 500,
-    publication_status: 'rejected',
+    id: 'prog-joga',
+    title: 'Reggeli jóga a szőlőhegyen',
+    description: 'Napfelkeltés jóga a Szent György-hegyen',
+    category: 'Jóllét',
+    points_base: 60,
+    publication_status: 'published',
+    is_active: true,
+    created_at: '2026-01-02T10:00:00Z',
+    image_url: null,
+    project_id: 'kali-medence',
+    sponsor_id: 'expert-4',
+    expert_name: 'Tóth Anna'
+  },
+  {
+    id: 'prog-kosar',
+    title: 'Kosárfonás workshop',
+    description: 'Hagyományos fűzfa kosárfonás mesterrel',
+    category: 'Kézművesség',
+    points_base: 100,
+    publication_status: 'draft',
     is_active: false,
-    created_at: '2024-04-15T10:00:00Z',
-    image_url: null
+    created_at: '2025-12-20T10:00:00Z',
+    image_url: null,
+    project_id: 'kali-medence',
+    sponsor_id: 'expert-5',
+    expert_name: 'Kiss Gábor'
   },
 ];
 
@@ -115,19 +140,38 @@ const AdminPrograms = () => {
         return;
       }
 
+      // Fetch programs with expert info
       const { data, error } = await supabase
         .from('challenge_definitions')
         .select('*')
+        .not('project_id', 'is', null)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
+      
+      // Fetch expert names for sponsors
+      const sponsorIds = data?.filter(d => d.sponsor_id).map(d => d.sponsor_id) || [];
+      let expertsMap: Record<string, string> = {};
+      
+      if (sponsorIds.length > 0) {
+        const { data: expertsData } = await supabase
+          .from('profiles')
+          .select('id, first_name, last_name')
+          .in('id', sponsorIds);
+        
+        expertsData?.forEach((e: { id: string; first_name: string | null; last_name: string | null }) => {
+          expertsMap[e.id] = [e.first_name, e.last_name].filter(Boolean).join(' ');
+        });
+      }
+      
       setPrograms(data?.map(d => ({
         ...d,
-        publication_status: d.publication_status || (d.is_active ? 'published' : 'draft')
+        publication_status: d.publication_status || (d.is_active ? 'published' : 'draft'),
+        expert_name: d.sponsor_id ? expertsMap[d.sponsor_id] : undefined
       })) || []);
     } catch (error) {
       console.error('Error fetching programs:', error);
-      toast.error(t('admin.programs.fetch_error'));
+      toast.error(t('admin.programs.fetch_error') || 'Error fetching programs');
     } finally {
       setLoading(false);
     }
@@ -152,7 +196,7 @@ const AdminPrograms = () => {
       setPrograms(prev => prev.map(p => 
         p.id === programId ? { ...p, publication_status: 'published', is_active: true } : p
       ));
-      toast.success(t('admin.programs.approved'));
+      toast.success(t('admin.programs.approved') || 'Program approved');
       return;
     }
 
@@ -167,10 +211,10 @@ const AdminPrograms = () => {
       setPrograms(prev => prev.map(p => 
         p.id === programId ? { ...p, publication_status: 'published', is_active: true } : p
       ));
-      toast.success(t('admin.programs.approved'));
+      toast.success(t('admin.programs.approved') || 'Program approved');
     } catch (error) {
       console.error('Error approving program:', error);
-      toast.error(t('admin.programs.approve_error'));
+      toast.error(t('admin.programs.approve_error') || 'Error approving program');
     }
   };
 
@@ -179,7 +223,7 @@ const AdminPrograms = () => {
       setPrograms(prev => prev.map(p => 
         p.id === programId ? { ...p, publication_status: 'rejected', is_active: false } : p
       ));
-      toast.success(t('admin.programs.rejected'));
+      toast.success(t('admin.programs.rejected') || 'Program rejected');
       return;
     }
 
@@ -194,10 +238,10 @@ const AdminPrograms = () => {
       setPrograms(prev => prev.map(p => 
         p.id === programId ? { ...p, publication_status: 'rejected', is_active: false } : p
       ));
-      toast.success(t('admin.programs.rejected'));
+      toast.success(t('admin.programs.rejected') || 'Program rejected');
     } catch (error) {
       console.error('Error rejecting program:', error);
-      toast.error(t('admin.programs.reject_error'));
+      toast.error(t('admin.programs.reject_error') || 'Error rejecting program');
     }
   };
 
@@ -216,27 +260,32 @@ const AdminPrograms = () => {
     }
   };
 
-  const getDifficultyBadge = (difficulty: string) => {
-    switch (difficulty) {
-      case 'beginner':
-        return <Badge variant="outline" className="border-green-500 text-green-600">{t('difficulty.beginner')}</Badge>;
-      case 'intermediate':
-        return <Badge variant="outline" className="border-amber-500 text-amber-600">{t('difficulty.intermediate')}</Badge>;
-      case 'advanced':
-        return <Badge variant="outline" className="border-red-500 text-red-600">{t('difficulty.advanced')}</Badge>;
-      default:
-        return <Badge variant="outline">{difficulty}</Badge>;
-    }
+  const getCategoryBadge = (category: string) => {
+    const colors: Record<string, string> = {
+      'Gasztronómia': 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-200',
+      'Természet': 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200',
+      'Mezőgazdaság': 'bg-lime-100 text-lime-700 dark:bg-lime-900 dark:text-lime-200',
+      'Jóllét': 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200',
+      'Kézművesség': 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-200',
+    };
+    return (
+      <Badge className={colors[category] || 'bg-gray-100 text-gray-700'}>
+        <Tag className="h-3 w-3 mr-1" />
+        {category}
+      </Badge>
+    );
   };
 
   const filteredPrograms = programs.filter(p => {
     const matchesSearch = 
       p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.description.toLowerCase().includes(searchQuery.toLowerCase());
+      p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.expert_name?.toLowerCase().includes(searchQuery.toLowerCase()));
     
     const matchesStatus = statusFilter === 'all' || 
       (statusFilter === 'pending' && p.publication_status === 'pending_review') ||
       (statusFilter === 'published' && p.publication_status === 'published') ||
+      (statusFilter === 'draft' && p.publication_status === 'draft') ||
       (statusFilter === 'rejected' && p.publication_status === 'rejected');
     
     return matchesSearch && matchesStatus;
@@ -246,7 +295,7 @@ const AdminPrograms = () => {
     all: programs.length,
     pending: programs.filter(p => p.publication_status === 'pending_review').length,
     published: programs.filter(p => p.publication_status === 'published').length,
-    rejected: programs.filter(p => p.publication_status === 'rejected').length,
+    draft: programs.filter(p => p.publication_status === 'draft').length,
   };
 
   return (
@@ -289,6 +338,9 @@ const AdminPrograms = () => {
             <TabsTrigger value="published">
               {t('admin.programs.filter_published')} ({counts.published})
             </TabsTrigger>
+            <TabsTrigger value="draft">
+              {t('admin.programs.filter_draft')} ({counts.draft})
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
@@ -304,7 +356,11 @@ const AdminPrograms = () => {
         <Card>
           <CardContent className="py-12 text-center">
             <ClipboardList className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">{t('admin.programs.no_programs')}</p>
+            <p className="text-muted-foreground mb-4">{t('admin.programs.no_programs')}</p>
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              {t('admin.programs.create_first') || 'Első program létrehozása'}
+            </Button>
           </CardContent>
         </Card>
       ) : (
@@ -327,19 +383,20 @@ const AdminPrograms = () => {
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-semibold text-lg">{program.title}</h3>
                       {getStatusBadge(program.publication_status)}
-                      {getDifficultyBadge(program.difficulty)}
+                      {getCategoryBadge(program.category)}
                     </div>
                     <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                       {program.description}
                     </p>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
-                      <span className="flex items-center gap-1">
-                        <Award className="h-4 w-4" />
+                      {program.expert_name && (
+                        <span className="flex items-center gap-1">
+                          <User className="h-4 w-4" />
+                          {program.expert_name}
+                        </span>
+                      )}
+                      <span className="font-medium text-foreground">
                         {program.points_base} {t('admin.programs.points')}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-4 w-4" />
-                        {new Date(program.created_at).toLocaleDateString()}
                       </span>
                     </div>
                   </div>
