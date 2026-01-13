@@ -237,30 +237,13 @@ function App() {
                           <Route
                             path="/super-admin"
                             element={
-                              <ProtectedRoute requireSuperAdmin>
+                            <ProtectedRoute requireSuperAdmin>
                                 <SuperAdminPage />
                               </ProtectedRoute>
                             }
                           />
-                          </Route>
-                        </Route>
-                        
-                        {/* New Admin Dashboard with separate layout */}
-                        <Route
-                          path="/admin-panel"
-                          element={
-                            <ProtectedRoute requireSuperAdmin>
-                              <AdminLayout />
-                            </ProtectedRoute>
-                          }
-                        >
-                          <Route index element={<AdminDashboardNew />} />
-                          <Route path="users" element={<AdminUsers />} />
-                          <Route path="feedback" element={<AdminFeedback />} />
-                          <Route path="analytics" element={<AdminAnalytics />} />
-                          <Route path="moderation" element={<AdminPlaceholder titleKey="admin.nav.moderation" />} />
-                          <Route path="settings" element={<AdminPlaceholder titleKey="admin.nav.settings" />} />
-                        </Route>
+                          
+                          {/* Sponsor routes */}
                           <Route path="/sponsor" element={<SponsorLandingPage />} />
                           <Route path="/register/organization" element={<OrganizationRegisterPage />} />
                           <Route path="/join/org/:inviteCode" element={<JoinOrganizationPage />} />
@@ -343,7 +326,26 @@ function App() {
                           <Route path="/szakertok/:id" element={<CreatorPublicProfilePage />} />
                           <Route path="/creators/:id" element={<CreatorPublicProfilePage />} />
                           
-                            <Route path="*" element={<NotFound />} />
+                          <Route path="*" element={<NotFound />} />
+                          </Route>
+                        </Route>
+                        
+                        {/* New Admin Dashboard with separate layout */}
+                        <Route
+                          path="/admin-panel"
+                          element={
+                            <ProtectedRoute requireSuperAdmin>
+                              <AdminLayout />
+                            </ProtectedRoute>
+                          }
+                        >
+                          <Route index element={<AdminDashboardNew />} />
+                          <Route path="users" element={<AdminUsers />} />
+                          <Route path="feedback" element={<AdminFeedback />} />
+                          <Route path="analytics" element={<AdminAnalytics />} />
+                          <Route path="moderation" element={<AdminPlaceholder titleKey="admin.nav.moderation" />} />
+                          <Route path="settings" element={<AdminPlaceholder titleKey="admin.nav.settings" />} />
+                        </Route>
                       </Routes>
                     </Suspense>
                     <Toaster />

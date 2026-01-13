@@ -443,7 +443,7 @@ const Navigation = () => {
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
                           <Link
-                            to="/super-admin"
+                            to="/admin-panel"
                             className="flex items-center gap-2 cursor-pointer text-purple-600 dark:text-purple-400"
                           >
                             <ShieldCheck className="h-4 w-4" />
