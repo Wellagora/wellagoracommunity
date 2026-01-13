@@ -439,8 +439,8 @@ const AddCommentInput = ({ postId }: { postId: string }) => {
   );
 };
 
-// Main Post Card Component
-const PostCard = ({
+// WellBot Post Card Component - Special 2-column layout
+const WellBotPostCard = ({
   post,
   onLike,
   onShare,
@@ -455,35 +455,132 @@ const PostCard = ({
 }) => {
   const { t } = useLanguage();
   const navigate = useNavigate();
+
+  return (
+    <Card className="mb-4 overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow">
+      {/* Emerald gradient header bar */}
+      <div className="h-2 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500" />
+
+      <CardContent className="p-0">
+        <div className="flex">
+          {/* Left: Robot Avatar Column */}
+          <div className="w-16 sm:w-24 bg-gradient-to-b from-emerald-50 to-teal-50 flex flex-col items-center justify-start py-4 px-2 border-r border-emerald-100">
+            {/* Robot Avatar */}
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-lg ring-4 ring-white">
+              <Bot className="w-6 h-6 sm:w-10 sm:h-10 text-white" />
+            </div>
+
+            {/* WellBot name */}
+            <span className="mt-2 text-xs font-bold text-emerald-700">WellBot</span>
+
+            {/* AI badge */}
+            <Badge className="mt-1 text-[10px] bg-emerald-100 text-emerald-600 border-0 px-1.5">
+              AI
+            </Badge>
+          </div>
+
+          {/* Right: Content Column */}
+          <div className="flex-1 p-4">
+            {/* Reply indicator */}
+            {post.isWellBotResponse && (
+              <div className="flex items-center gap-2 text-xs text-emerald-600 mb-2">
+                <Reply className="w-3 h-3" />
+                <span>{t("feed.wellbot_replied")}</span>
+                <span className="text-muted-foreground">• {formatTimeAgo(post.createdAt)}</span>
+              </div>
+            )}
+
+            {/* Content */}
+            <p className="text-foreground leading-relaxed">
+              {post.content}
+            </p>
+
+            {/* Related Program Card */}
+            {post.relatedProgramId && (
+              <RelatedProgramCard programId={post.relatedProgramId} />
+            )}
+
+            {/* Action Row */}
+            <div className="mt-4 flex items-center gap-2 pt-3 border-t border-emerald-100">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onLike(post.id)}
+                className={cn("gap-1.5", post.isLikedByMe && "text-red-500")}
+              >
+                <Heart className={cn("w-4 h-4", post.isLikedByMe && "fill-current")} />
+                {post.likes}
+              </Button>
+
+              <Button variant="ghost" size="sm" className="gap-1.5">
+                <MessageCircle className="w-4 h-4" />
+                {post.comments.length}
+              </Button>
+
+              {/* Primary CTA: Chat with WellBot */}
+              <Button
+                onClick={() => navigate("/ai-assistant")}
+                size="sm"
+                className="ml-auto bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white gap-1.5"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span className="hidden sm:inline">{t("feed.chat_with_wellbot")}</span>
+              </Button>
+            </div>
+
+            {/* Comments */}
+            {post.comments.length > 0 && (
+              <div className="mt-4">
+                <CommentsSection
+                  comments={post.comments}
+                  getInitials={getInitials}
+                  formatTimeAgo={formatTimeAgo}
+                />
+              </div>
+            )}
+
+            {/* Add Comment Input */}
+            <AddCommentInput postId={post.id} />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+// Regular Post Card Component
+const RegularPostCard = ({
+  post,
+  onLike,
+  onShare,
+  formatTimeAgo,
+  getInitials,
+}: {
+  post: FeedPost;
+  onLike: (postId: string) => void;
+  onShare: (postId: string) => void;
+  formatTimeAgo: (date: string) => string;
+  getInitials: (name: string) => string;
+}) => {
+  const { t } = useLanguage();
+
   return (
     <Card
       className={cn(
         "mb-4 shadow-sm hover:shadow-md transition-shadow",
-        post.authorRole === "expert" && "border-l-4 border-l-indigo-500",
-        post.authorRole === "wellbot" &&
-          "border-l-4 border-l-emerald-500 bg-gradient-to-r from-emerald-50/50 to-teal-50/50"
+        post.authorRole === "expert" && "border-l-4 border-l-indigo-500"
       )}
     >
       <CardContent className="p-4">
         {/* Header: Avatar + Name + Badge + Time */}
         <div className="flex items-start gap-3">
-          <Avatar
-            className={cn(
-              post.authorRole === "wellbot" &&
-                "ring-2 ring-emerald-500 ring-offset-2"
-            )}
-          >
+          <Avatar>
             <AvatarFallback
               className={cn(
-                post.authorRole === "expert" && "bg-indigo-100 text-indigo-700",
-                post.authorRole === "wellbot" && "bg-emerald-100 text-emerald-700"
+                post.authorRole === "expert" && "bg-indigo-100 text-indigo-700"
               )}
             >
-              {post.authorRole === "wellbot" ? (
-                <Bot className="w-5 h-5" />
-              ) : (
-                getInitials(post.authorName)
-              )}
+              {getInitials(post.authorName)}
             </AvatarFallback>
           </Avatar>
 
@@ -504,12 +601,6 @@ const PostCard = ({
                   {post.authorBadge}
                 </Badge>
               )}
-              {post.authorRole === "wellbot" && (
-                <Badge className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs gap-1">
-                  <Bot className="w-3 h-3" />
-                  {post.authorBadge || t("feed.ai_assistant")}
-                </Badge>
-              )}
             </div>
 
             <span className="text-xs text-muted-foreground">
@@ -521,19 +612,8 @@ const PostCard = ({
           <PostTypeBadge type={post.type} />
         </div>
 
-        {/* WellBot Reply Indicator */}
-        {post.isWellBotResponse && (
-          <div className="mt-3 mb-2 flex items-center gap-2 text-xs text-emerald-600">
-            <Reply className="w-3 h-3" />
-            <span>{t("feed.wellbot_replied")}</span>
-          </div>
-        )}
-
         {/* Content */}
-        <p className={cn(
-          "text-foreground whitespace-pre-wrap leading-relaxed",
-          !post.isWellBotResponse && "mt-3"
-        )}>
+        <p className="mt-3 text-foreground whitespace-pre-wrap leading-relaxed">
           {post.content}
         </p>
 
@@ -583,19 +663,6 @@ const PostCard = ({
           </Button>
         </div>
 
-        {/* WellBot Chat Button */}
-        {post.authorRole === "wellbot" && (
-          <div className="mt-3 pt-3 border-t border-emerald-200">
-            <Button
-              onClick={() => navigate("/ai-assistant")}
-              className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white gap-2"
-            >
-              <MessageCircle className="w-4 h-4" />
-              {t("feed.chat_with_wellbot")}
-            </Button>
-          </div>
-        )}
-
         {/* Comments */}
         {post.comments.length > 0 && (
           <CommentsSection
@@ -609,6 +676,43 @@ const PostCard = ({
         <AddCommentInput postId={post.id} />
       </CardContent>
     </Card>
+  );
+};
+
+// Main Post Card Component - routes to appropriate layout
+const PostCard = ({
+  post,
+  onLike,
+  onShare,
+  formatTimeAgo,
+  getInitials,
+}: {
+  post: FeedPost;
+  onLike: (postId: string) => void;
+  onShare: (postId: string) => void;
+  formatTimeAgo: (date: string) => string;
+  getInitials: (name: string) => string;
+}) => {
+  if (post.authorRole === "wellbot") {
+    return (
+      <WellBotPostCard
+        post={post}
+        onLike={onLike}
+        onShare={onShare}
+        formatTimeAgo={formatTimeAgo}
+        getInitials={getInitials}
+      />
+    );
+  }
+
+  return (
+    <RegularPostCard
+      post={post}
+      onLike={onLike}
+      onShare={onShare}
+      formatTimeAgo={formatTimeAgo}
+      getInitials={getInitials}
+    />
   );
 };
 
