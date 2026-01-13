@@ -133,7 +133,7 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
               />
             </>
           ) : (
-            // Normal eyes - digital style
+            // Normal eyes - digital style, looking forward at user
             <>
               {/* Left Eye */}
               <motion.div 
@@ -141,13 +141,13 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
                 variants={eyeVariants}
                 animate={mood}
               >
-                {/* Pupil */}
+                {/* Pupil - centered for forward look */}
                 <motion.div 
                   className={`${sizeConfig.pupil} bg-indigo-900 rounded-full`}
                   animate={mood === 'happy' ? { y: -1 } : { y: 0 }}
                 />
-                {/* Eye highlight */}
-                <div className="absolute top-0.5 right-0.5 w-1 h-1 bg-white rounded-full opacity-90" />
+                {/* Eye highlight - upper left for natural lighting, eyes looking forward */}
+                <div className="absolute top-0.5 left-0.5 w-1 h-1 bg-white rounded-full opacity-90" />
               </motion.div>
               
               {/* Right Eye */}
@@ -156,13 +156,13 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
                 variants={eyeVariants}
                 animate={mood}
               >
-                {/* Pupil */}
+                {/* Pupil - centered for forward look */}
                 <motion.div 
                   className={`${sizeConfig.pupil} bg-indigo-900 rounded-full`}
                   animate={mood === 'happy' ? { y: -1 } : { y: 0 }}
                 />
-                {/* Eye highlight */}
-                <div className="absolute top-0.5 right-0.5 w-1 h-1 bg-white rounded-full opacity-90" />
+                {/* Eye highlight - upper left for natural lighting, eyes looking forward */}
+                <div className="absolute top-0.5 left-0.5 w-1 h-1 bg-white rounded-full opacity-90" />
               </motion.div>
             </>
           )}
