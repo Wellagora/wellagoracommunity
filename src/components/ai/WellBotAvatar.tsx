@@ -1,12 +1,13 @@
 import { motion } from "framer-motion";
 
 interface WellBotAvatarProps {
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
   mood?: "neutral" | "thinking" | "happy" | "greeting";
   className?: string;
 }
 
 const sizeClasses = {
+  xs: { container: "w-6 h-6", eyeGap: "gap-1", eye: "w-1 h-1.5", pupil: "w-0.5 h-0.5", antenna: "h-1", smile: "w-2" },
   sm: { container: "w-10 h-10", eyeGap: "gap-1.5", eye: "w-2 h-2.5", pupil: "w-1 h-1", antenna: "h-2", smile: "w-3" },
   md: { container: "w-14 h-14", eyeGap: "gap-2", eye: "w-2.5 h-3", pupil: "w-1.5 h-1.5", antenna: "h-2.5", smile: "w-4" },
   lg: { container: "w-20 h-20", eyeGap: "gap-3", eye: "w-4 h-5", pupil: "w-2 h-2", antenna: "h-3", smile: "w-6" },

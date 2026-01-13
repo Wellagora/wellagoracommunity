@@ -6,7 +6,6 @@ import {
   Users as UsersIcon,
   LogOut,
   Home,
-  Bot,
   Inbox,
   ChevronDown,
   ShieldCheck,
@@ -16,6 +15,7 @@ import {
   Sparkles,
   Building2,
 } from "lucide-react";
+import { WellBotAvatar } from "@/components/ai/WellBotAvatar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Badge } from "@/components/ui/badge";
@@ -210,8 +210,8 @@ const Navigation = () => {
 
   // Build nav items based on user role
   const navItems = useMemo(() => {
-    // WellBot nav item with indigo color
-    const wellBotItem = { path: "/ai-assistant", label: t("nav.wellbot"), icon: Bot, iconColor: "#6366f1" };
+    // WellBot nav item (special - uses avatar component)
+    const wellBotItem = { path: "/ai-assistant", label: t("nav.wellbot"), icon: null, isWellBot: true };
     
     // Simplified navigation for logged-out users
     if (!user || !profile) {
@@ -302,6 +302,7 @@ const Navigation = () => {
               const Icon = item.icon;
               const active = isActive(item.path);
               const hasCustomColor = 'iconColor' in item && item.iconColor;
+              const isWellBot = 'isWellBot' in item && item.isWellBot;
               return (
                 <Link
                   key={item.path}
@@ -310,14 +311,20 @@ const Navigation = () => {
                     active 
                       ? hasCustomColor 
                         ? "bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700" 
-                        : "text-white bg-gradient-to-r from-emerald-500 to-teal-500" 
+                        : isWellBot
+                          ? "bg-gradient-to-r from-indigo-100 to-sky-100 text-indigo-700"
+                          : "text-white bg-gradient-to-r from-emerald-500 to-teal-500" 
                       : "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
                   }`}
                 >
-                  <Icon 
-                    className="h-4 w-4" 
-                    style={hasCustomColor ? { color: item.iconColor as string } : undefined}
-                  />
+                  {isWellBot ? (
+                    <WellBotAvatar size="xs" mood="happy" />
+                  ) : Icon ? (
+                    <Icon 
+                      className="h-4 w-4" 
+                      style={hasCustomColor ? { color: item.iconColor as string } : undefined}
+                    />
+                  ) : null}
                   {item.label}
                 </Link>
               );
@@ -519,6 +526,7 @@ const Navigation = () => {
                       const Icon = item.icon;
                       const active = isActive(item.path);
                       const hasCustomColor = 'iconColor' in item && item.iconColor;
+                      const isWellBot = 'isWellBot' in item && item.isWellBot;
                       return (
                         <Link
                           key={item.path}
@@ -528,14 +536,20 @@ const Navigation = () => {
                             active
                               ? hasCustomColor
                                 ? "bg-indigo-100 text-indigo-700"
-                                : "bg-primary text-primary-foreground"
+                                : isWellBot
+                                  ? "bg-gradient-to-r from-indigo-100 to-sky-100 text-indigo-700"
+                                  : "bg-primary text-primary-foreground"
                               : "hover:bg-accent/50"
                           }`}
                         >
-                          <Icon
-                            className="h-5 w-5"
-                            style={hasCustomColor ? { color: item.iconColor as string } : undefined}
-                          />
+                          {isWellBot ? (
+                            <WellBotAvatar size="xs" mood="happy" />
+                          ) : Icon ? (
+                            <Icon
+                              className="h-5 w-5"
+                              style={hasCustomColor ? { color: item.iconColor as string } : undefined}
+                            />
+                          ) : null}
                           <span className="font-medium">{item.label}</span>
                         </Link>
                       );
