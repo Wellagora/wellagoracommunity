@@ -3867,5 +3867,32 @@
     "draft_saved": "Piszkozat mentve!",
     "published_success": "Program sikeresen közzétéve! 🎉",
     "publish_error": "Hiba történt a közzététel során"
+  },
+  "sponsor_hub": {
+    "title": "Támogatói Központ",
+    "subtitle": "Kövesd nyomon a közösségi hatásodat",
+    "people_reached": "Elért emberek",
+    "people": "fő",
+    "this_month": "ez a hónap",
+    "programs_supported": "Támogatott programok",
+    "active_programs": "aktív program",
+    "vouchers_redeemed": "Beváltott kuponok",
+    "redeemed": "beváltott kupon",
+    "used_credits": "Felhasznált kredit",
+    "available_balance": "Elérhető egyenleg",
+    "buy_credits": "Kredit vásárlása",
+    "coming_soon": "Hamarosan elérhető!",
+    "roi_title": "Hatás és költés",
+    "sponsored_programs": "Támogatott programjaim",
+    "program": "Program",
+    "expert": "Szakértő",
+    "status": "Státusz",
+    "active": "Aktív",
+    "completed": "Teljesült",
+    "details": "Részletek",
+    "no_programs_title": "Még nincsenek támogatott programjaid",
+    "no_programs_desc": "Fedezd fel a szakértőinket és indítsd el az első kampányodat!",
+    "explore_programs": "Programok felfedezése",
+    "unknown_expert": "Ismeretlen szakértő"
   }
 }

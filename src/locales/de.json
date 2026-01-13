@@ -3501,5 +3501,32 @@
     "next": "Weiter",
     "draft_saved": "Entwurf gespeichert!",
     "published_success": "Programm erfolgreich veröffentlicht! 🎉"
+  },
+  "sponsor_hub": {
+    "title": "Sponsor Hub",
+    "subtitle": "Verfolgen Sie Ihre Gemeinschaftswirkung",
+    "people_reached": "Erreichte Personen",
+    "people": "Personen",
+    "this_month": "diesen Monat",
+    "programs_supported": "Unterstützte Programme",
+    "active_programs": "aktive Programme",
+    "vouchers_redeemed": "Eingelöste Gutscheine",
+    "redeemed": "eingelöst",
+    "used_credits": "Verwendete Kredite",
+    "available_balance": "Verfügbares Guthaben",
+    "buy_credits": "Kredite kaufen",
+    "coming_soon": "Demnächst verfügbar!",
+    "roi_title": "Wirkung & Ausgaben",
+    "sponsored_programs": "Meine gesponserten Programme",
+    "program": "Programm",
+    "expert": "Expert:In",
+    "status": "Status",
+    "active": "Aktiv",
+    "completed": "Abgeschlossen",
+    "details": "Details",
+    "no_programs_title": "Noch keine gesponserten Programme",
+    "no_programs_desc": "Entdecken Sie unsere Expert:Innen und starten Sie Ihre erste Kampagne!",
+    "explore_programs": "Programme entdecken",
+    "unknown_expert": "Unbekannter Experte"
   }
 }
