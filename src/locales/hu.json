@@ -86,6 +86,26 @@
       "fetch_error": "Hiba történt a projektek betöltésekor",
       "error": "Hiba történt a művelet során"
     },
+    "experts": {
+      "title": "Szakértők",
+      "subtitle": "Szakértők hitelesítése és kezelése",
+      "all": "Összes",
+      "pending": "Várakozó",
+      "verified": "Hitelesített",
+      "rejected": "Elutasított",
+      "verify": "Hitelesítés",
+      "reject": "Elutasítás",
+      "view_profile": "Profil megtekintése",
+      "verify_confirm": "Biztosan hitelesíted ezt a szakértőt?",
+      "reject_confirm": "Biztosan elutasítod ezt a szakértőt?",
+      "verify_success": "Szakértő sikeresen hitelesítve!",
+      "reject_success": "Szakértő elutasítva.",
+      "no_experts": "Nincs megjeleníthető szakértő",
+      "no_pending": "Nincs hitelesítésre váró szakértő",
+      "pending_alert": "szakértő vár hitelesítésre",
+      "pending_alert_desc": "Kérjük, tekintsd át a profilokat",
+      "error": "Hiba történt a művelet során"
+    },
     "placeholder": {
       "coming_soon": "Ez a funkció hamarosan elérhető..."
     },
