@@ -337,6 +337,8 @@ export type Database = {
           min_team_size: number | null
           points_base: number
           project_id: string | null
+          publication_status: string | null
+          sponsor_id: string | null
           start_date: string | null
           title: string
           translations: Json | null
@@ -360,6 +362,8 @@ export type Database = {
           min_team_size?: number | null
           points_base?: number
           project_id?: string | null
+          publication_status?: string | null
+          sponsor_id?: string | null
           start_date?: string | null
           title: string
           translations?: Json | null
@@ -383,6 +387,8 @@ export type Database = {
           min_team_size?: number | null
           points_base?: number
           project_id?: string | null
+          publication_status?: string | null
+          sponsor_id?: string | null
           start_date?: string | null
           title?: string
           translations?: Json | null
@@ -394,6 +400,13 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "challenge_definitions_sponsor_id_fkey"
+            columns: ["sponsor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1763,6 +1776,7 @@ export type Database = {
           company_size: string | null
           country: string | null
           created_at: string
+          credit_balance: number | null
           district: string | null
           email: string
           employee_count: number | null
@@ -1805,6 +1819,7 @@ export type Database = {
           role: string
           seeking_partnerships: boolean | null
           social_links: Json | null
+          sponsor_status: string | null
           stripe_account_id: string | null
           stripe_connect_id: string | null
           stripe_onboarding_complete: boolean | null
@@ -1814,6 +1829,7 @@ export type Database = {
           sustainability_goals: string[] | null
           updated_at: string
           user_role: Database["public"]["Enums"]["user_role"]
+          verification_status: string | null
           visibility_radius_km: number | null
           website_url: string | null
           wise_email: string | null
@@ -1830,6 +1846,7 @@ export type Database = {
           company_size?: string | null
           country?: string | null
           created_at?: string
+          credit_balance?: number | null
           district?: string | null
           email: string
           employee_count?: number | null
@@ -1872,6 +1889,7 @@ export type Database = {
           role: string
           seeking_partnerships?: boolean | null
           social_links?: Json | null
+          sponsor_status?: string | null
           stripe_account_id?: string | null
           stripe_connect_id?: string | null
           stripe_onboarding_complete?: boolean | null
@@ -1881,6 +1899,7 @@ export type Database = {
           sustainability_goals?: string[] | null
           updated_at?: string
           user_role?: Database["public"]["Enums"]["user_role"]
+          verification_status?: string | null
           visibility_radius_km?: number | null
           website_url?: string | null
           wise_email?: string | null
@@ -1897,6 +1916,7 @@ export type Database = {
           company_size?: string | null
           country?: string | null
           created_at?: string
+          credit_balance?: number | null
           district?: string | null
           email?: string
           employee_count?: number | null
@@ -1939,6 +1959,7 @@ export type Database = {
           role?: string
           seeking_partnerships?: boolean | null
           social_links?: Json | null
+          sponsor_status?: string | null
           stripe_account_id?: string | null
           stripe_connect_id?: string | null
           stripe_onboarding_complete?: boolean | null
@@ -1948,6 +1969,7 @@ export type Database = {
           sustainability_goals?: string[] | null
           updated_at?: string
           user_role?: Database["public"]["Enums"]["user_role"]
+          verification_status?: string | null
           visibility_radius_km?: number | null
           website_url?: string | null
           wise_email?: string | null
@@ -2813,6 +2835,15 @@ export type Database = {
       }
     }
     Views: {
+      admin_task_queue: {
+        Row: {
+          count: number | null
+          label_en: string | null
+          label_hu: string | null
+          task_type: string | null
+        }
+        Relationships: []
+      }
       geography_columns: {
         Row: {
           coord_dimension: number | null
