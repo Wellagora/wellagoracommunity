@@ -1,4 +1,11 @@
 {
+  "community": {
+    "tab_feed": "Feed",
+    "tab_gallery": "Galerie",
+    "badge": "Gemeinschaftswachstum",
+    "title": "Unsere Gemeinschaft",
+    "subtitle": "Die regionale Gemeinschaft baut und wächst zusammen"
+  },
   "wellbot.knowledge_guide_title": "WellBot",
   "wellbot.chip_learn": "Was kann ich lernen?",
   "wellbot.chip_free": "Verfügbare Programme",
@@ -3531,7 +3538,8 @@
     "comment_coming_soon": "Kommentarfunktion kommt bald!",
     "wellbot_suggestion": "WellBot Empfehlung",
     "wellbot_replied": "WellBot hat auf diese Frage geantwortet",
-    "ai_assistant": "KI-Assistent"
+    "ai_assistant": "KI-Assistent",
+    "chat_with_wellbot": "WellBot fragen"
   },
   "sponsor_hub": {
     "title": "Sponsor Hub",

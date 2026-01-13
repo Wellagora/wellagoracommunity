@@ -454,7 +454,7 @@ const PostCard = ({
   getInitials: (name: string) => string;
 }) => {
   const { t } = useLanguage();
-
+  const navigate = useNavigate();
   return (
     <Card
       className={cn(
@@ -582,6 +582,19 @@ const PostCard = ({
             <span className="hidden sm:inline">{t("feed.share")}</span>
           </Button>
         </div>
+
+        {/* WellBot Chat Button */}
+        {post.authorRole === "wellbot" && (
+          <div className="mt-3 pt-3 border-t border-emerald-200">
+            <Button
+              onClick={() => navigate("/ai-assistant")}
+              className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white gap-2"
+            >
+              <MessageCircle className="w-4 h-4" />
+              {t("feed.chat_with_wellbot")}
+            </Button>
+          </div>
+        )}
 
         {/* Comments */}
         {post.comments.length > 0 && (
