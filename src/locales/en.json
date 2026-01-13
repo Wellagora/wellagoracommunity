@@ -100,6 +100,30 @@
       "updated": "Feedback updated!",
       "fetch_error": "Error loading feedback.",
       "update_error": "Error saving changes."
+    },
+    "analytics": {
+      "title": "Analytics",
+      "subtitle": "Platform usage statistics",
+      "last_7_days": "Last 7 days",
+      "last_14_days": "Last 14 days",
+      "last_30_days": "Last 30 days",
+      "total_page_views": "Total Page Views",
+      "unique_sessions": "Unique Sessions",
+      "total_events": "Total Events",
+      "conversion_rate": "Conversion Rate",
+      "page_views_over_time": "Page Views Over Time",
+      "page_views": "Page Views",
+      "sessions": "Sessions",
+      "voucher_funnel": "Voucher Conversion Funnel",
+      "funnel_view": "View",
+      "funnel_start": "Claim Start",
+      "funnel_complete": "Claim Complete",
+      "top_pages": "Top Pages",
+      "device_breakdown": "Device Breakdown",
+      "device_mobile": "Mobile",
+      "device_desktop": "Desktop",
+      "device_tablet": "Tablet",
+      "top_events": "Top Events"
     }
   },
   "feedback": {

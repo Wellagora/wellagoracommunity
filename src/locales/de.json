@@ -100,6 +100,30 @@
       "updated": "Feedback aktualisiert!",
       "fetch_error": "Fehler beim Laden des Feedbacks.",
       "update_error": "Fehler beim Speichern."
+    },
+    "analytics": {
+      "title": "Analytik",
+      "subtitle": "Plattform-Nutzungsstatistiken",
+      "last_7_days": "Letzte 7 Tage",
+      "last_14_days": "Letzte 14 Tage",
+      "last_30_days": "Letzte 30 Tage",
+      "total_page_views": "Seitenaufrufe gesamt",
+      "unique_sessions": "Einzigartige Sitzungen",
+      "total_events": "Ereignisse gesamt",
+      "conversion_rate": "Konversionsrate",
+      "page_views_over_time": "Seitenaufrufe im Zeitverlauf",
+      "page_views": "Seitenaufrufe",
+      "sessions": "Sitzungen",
+      "voucher_funnel": "Gutschein-Konversionstrichter",
+      "funnel_view": "Ansicht",
+      "funnel_start": "Antrag gestartet",
+      "funnel_complete": "Antrag abgeschlossen",
+      "top_pages": "Top-Seiten",
+      "device_breakdown": "Geräteverteilung",
+      "device_mobile": "Mobil",
+      "device_desktop": "Desktop",
+      "device_tablet": "Tablet",
+      "top_events": "Top-Ereignisse"
     }
   },
   "feedback": {
