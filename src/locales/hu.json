@@ -1,4 +1,21 @@
 {
+  "feedback": {
+    "title": "Visszajelzés küldése",
+    "subtitle": "Segíts nekünk jobbá tenni a platformot!",
+    "type_label": "Milyen típusú visszajelzés?",
+    "type_bug": "Hiba jelentés",
+    "type_feature": "Ötlet / Javaslat",
+    "type_question": "Kérdés",
+    "type_other": "Egyéb",
+    "message_label": "Üzenet",
+    "message_placeholder": "Írd le részletesen, mit tapasztaltál vagy mit javasolsz...",
+    "current_page": "Jelenlegi oldal",
+    "cancel": "Mégse",
+    "submit": "Küldés",
+    "success": "Köszönjük a visszajelzést! 🙏",
+    "error_empty": "Kérjük, írj üzenetet!",
+    "error_submit": "Hiba történt a küldés során. Próbáld újra!"
+  },
   "community": {
     "tab_feed": "Fal",
     "tab_gallery": "Galéria",
