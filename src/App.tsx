@@ -51,6 +51,7 @@ const SuperAdminPage = lazy(() => import("@/pages/SuperAdminPage"));
 const AdminLayout = lazy(() => import("@/layouts/AdminLayout"));
 const AdminDashboardNew = lazy(() => import("@/pages/admin/AdminDashboardNew"));
 const AdminPlaceholder = lazy(() => import("@/pages/admin/AdminPlaceholder"));
+const AdminUsers = lazy(() => import("@/pages/admin/AdminUsers"));
 const SponsorLandingPage = lazy(() => import("@/pages/SponsorLandingPage"));
 const OrganizationRegisterPage = lazy(() => import("@/pages/OrganizationRegisterPage"));
 const JoinOrganizationPage = lazy(() => import("@/pages/JoinOrganizationPage"));
@@ -252,7 +253,7 @@ function App() {
                           }
                         >
                           <Route index element={<AdminDashboardNew />} />
-                          <Route path="users" element={<AdminPlaceholder titleKey="admin.nav.users" />} />
+                          <Route path="users" element={<AdminUsers />} />
                           <Route path="feedback" element={<AdminPlaceholder titleKey="admin.nav.feedback" />} />
                           <Route path="analytics" element={<AdminPlaceholder titleKey="admin.nav.analytics" />} />
                           <Route path="moderation" element={<AdminPlaceholder titleKey="admin.nav.moderation" />} />
