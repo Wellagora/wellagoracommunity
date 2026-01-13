@@ -54,6 +54,10 @@ const AdminPlaceholder = lazy(() => import("@/pages/admin/AdminPlaceholder"));
 const AdminUsers = lazy(() => import("@/pages/admin/AdminUsers"));
 const AdminExperts = lazy(() => import("@/pages/admin/AdminExperts"));
 const AdminProjects = lazy(() => import("@/pages/admin/AdminProjects"));
+const AdminSponsors = lazy(() => import("@/pages/admin/AdminSponsors"));
+const AdminPrograms = lazy(() => import("@/pages/admin/AdminPrograms"));
+const AdminEvents = lazy(() => import("@/pages/admin/AdminEvents"));
+const AdminSettings = lazy(() => import("@/pages/admin/AdminSettings"));
 const AdminFeedback = lazy(() => import("@/pages/admin/AdminFeedback"));
 const AdminAnalytics = lazy(() => import("@/pages/admin/AdminAnalytics"));
 const SponsorLandingPage = lazy(() => import("@/pages/SponsorLandingPage"));
@@ -345,12 +349,12 @@ function App() {
                           <Route path="projects" element={<AdminProjects />} />
                           <Route path="experts" element={<AdminExperts />} />
                           <Route path="users" element={<AdminUsers />} />
-                          <Route path="sponsors" element={<AdminPlaceholder titleKey="admin.nav.sponsors" />} />
-                          <Route path="programs" element={<AdminPlaceholder titleKey="admin.nav.programs" />} />
-                          <Route path="events" element={<AdminPlaceholder titleKey="admin.nav.events" />} />
+                          <Route path="sponsors" element={<AdminSponsors />} />
+                          <Route path="programs" element={<AdminPrograms />} />
+                          <Route path="events" element={<AdminEvents />} />
                           <Route path="feedback" element={<AdminFeedback />} />
                           <Route path="analytics" element={<AdminAnalytics />} />
-                          <Route path="settings" element={<AdminPlaceholder titleKey="admin.nav.settings" />} />
+                          <Route path="settings" element={<AdminSettings />} />
                         </Route>
                       </Routes>
                     </Suspense>
