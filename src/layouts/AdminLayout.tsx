@@ -166,7 +166,7 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 flex">
+    <div className="h-screen overflow-hidden bg-slate-100 dark:bg-slate-950 flex">
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-slate-800 border-b border-slate-700 flex items-center justify-between px-4 z-50">
         <div className="flex items-center gap-2">
@@ -191,18 +191,18 @@ const AdminLayout = () => {
         />
       )}
 
-      {/* Dark Sidebar */}
+      {/* Dark Sidebar - Fixed height, no page scroll */}
       <aside
         className={cn(
           "fixed lg:sticky top-0 left-0 h-screen bg-slate-800 border-r border-slate-700 z-50",
-          "flex flex-col transition-all duration-300",
+          "flex flex-col flex-shrink-0 transition-all duration-300",
           sidebarCollapsed ? "w-16" : "w-64",
           mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
           "lg:translate-x-0"
         )}
       >
         {/* Sidebar Header */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-slate-700">
+        <div className="h-16 flex items-center justify-between px-4 border-b border-slate-700 flex-shrink-0">
           {!sidebarCollapsed && (
             <div className="flex items-center gap-2">
               <Shield className="h-6 w-6 text-emerald-500" />
@@ -226,8 +226,8 @@ const AdminLayout = () => {
           </Button>
         </div>
 
-        {/* Navigation */}
-        <ScrollArea className="flex-1 py-4">
+        {/* Navigation - scrollable only if menu items exceed height */}
+        <div className="flex-1 overflow-y-auto py-4">
           <nav className="px-2 space-y-1">
             {mainNavItems.map((item) => (
               <NavItem key={item.path} item={item} />
@@ -240,10 +240,10 @@ const AdminLayout = () => {
               <NavItem key={item.path} item={item} />
             ))}
           </nav>
-        </ScrollArea>
+        </div>
 
         {/* Exit Admin Button */}
-        <div className="p-4 border-t border-slate-700">
+        <div className="p-4 border-t border-slate-700 flex-shrink-0">
           <Button
             variant="ghost"
             onClick={handleExitAdmin}
@@ -258,8 +258,8 @@ const AdminLayout = () => {
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 min-h-screen lg:pt-0 pt-16">
+      {/* Main Content - Only this area scrolls */}
+      <main className="flex-1 h-full overflow-y-auto lg:pt-0 pt-16">
         <div className="p-6">
           <Outlet />
         </div>
