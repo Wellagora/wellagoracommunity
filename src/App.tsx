@@ -15,6 +15,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import AppLayout from "@/components/layout/AppLayout";
 import TermsCheckWrapper from "@/components/wrappers/TermsCheckWrapper";
+import AnalyticsTracker from "@/components/analytics/AnalyticsTracker";
 import "./index.css";
 
 // Lazy load all pages for better performance
@@ -89,10 +90,12 @@ function App() {
                 <ProjectProvider>
                   <RegionProvider>
                     <BrowserRouter>
-                    <Suspense fallback={<LoadingFallback />}>
-                      <Routes>
-                        {/* Auth page intentionally without global nav */}
-                        <Route path="/auth" element={<AuthPage />} />
+                      {/* Analytics Tracker - must be inside Router & AuthProvider */}
+                      <AnalyticsTracker />
+                      <Suspense fallback={<LoadingFallback />}>
+                        <Routes>
+                          {/* Auth page intentionally without global nav */}
+                          <Route path="/auth" element={<AuthPage />} />
 
                         {/* All other pages share a single, top-level navigation layout */}
                         {/* TermsCheckWrapper shows Terms modal for real users who haven't accepted */}
