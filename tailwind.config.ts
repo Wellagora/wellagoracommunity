@@ -97,6 +97,9 @@ export default {
         'premium': 'var(--shadow-premium)',
         'float': 'var(--shadow-float)',
         'button': 'var(--shadow-button)',
+        'luxury': '0 32px 64px rgba(0, 0, 0, 0.06)',
+        'luxury-hover': '0 48px 96px rgba(0, 0, 0, 0.1)',
+        'luxury-xl': '0 64px 128px rgba(0, 0, 0, 0.12)',
       },
       borderRadius: {
         lg: "var(--radius)",

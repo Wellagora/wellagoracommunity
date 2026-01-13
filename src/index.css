@@ -2,145 +2,146 @@
 @tailwind components;
 @tailwind utilities;
 
-/* WellAgora - Apple Minimalist Design System
-Clean, professional light theme with Apple Blue accent (#007AFF)
+/* Luxury Monochrome Design System
+High-end minimalist aesthetic - Apple meets architecture magazine
+ZERO COLOR policy - Pure White, Obsidian Black, Smoke Gray only
 */
 
 @layer base {
   :root {
-    /* Organic Premium Palette - Soft Slate Gray Background */
-    --background: 210 40% 98%;                  /* #F8FAFC Soft Slate Gray */
-    --foreground: 215 28% 17%;                  /* #1E293B Deep Slate (NO pure black) */
+    /* Monochrome Palette - Pure White Background */
+    --background: 0 0% 100%;                    /* Pure White #FFFFFF */
+    --foreground: 0 0% 7%;                      /* Pitch Black #111111 */
 
-    /* Secondary Background */
-    --secondary-bg: 0 0% 100%;
+    /* Secondary Background - Smoke Gray */
+    --secondary-bg: 0 0% 97%;                   /* Smoke Gray #F5F5F7 */
 
-    /* Card: White with glassmorphism - bg-white/80 effect */
+    /* Card: Pure White - NO borders, dramatic shadows */
     --card: 0 0% 100%;
-    --card-foreground: 215 28% 17%;             /* Deep Slate */
+    --card-foreground: 0 0% 7%;                 /* Pitch Black */
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 28% 17%;          /* Deep Slate */
+    --popover-foreground: 0 0% 7%;
 
-    /* Primary: Fresh Green #34C759 */
-    --primary: 142 71% 45%;
+    /* Primary: Deep Obsidian Black #111111 */
+    --primary: 0 0% 7%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 142 71% 55%;
-    --primary-dark: 142 71% 38%;
+    --primary-glow: 0 0% 15%;
+    --primary-dark: 0 0% 4%;
 
-    /* Accent: Sky Blue for contrast */
-    --accent: 199 89% 48%;
+    /* Accent: Same as primary - Obsidian Black */
+    --accent: 0 0% 7%;
     --accent-foreground: 0 0% 100%;
-    --accent-light: 199 89% 58%;
+    --accent-light: 0 0% 20%;
 
-    /* Secondary: Neutral Gray */
-    --secondary: 215 20% 96%;
-    --secondary-foreground: 215 28% 17%;        /* Deep Slate */
+    /* Secondary: Very Light Gray */
+    --secondary: 0 0% 97%;
+    --secondary-foreground: 0 0% 7%;
 
-    /* Muted: Light gray */
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 20% 46%;            /* Softer muted */
+    /* Muted: Medium Gray for body text */
+    --muted: 0 0% 97%;
+    --muted-foreground: 0 0% 43%;               /* Medium Gray #6E6E73 */
 
-    /* Success - Fresh Green (same as primary) */
-    --success: 142 71% 45%;
+    /* Success - Monochrome (no green) */
+    --success: 0 0% 7%;
     --success-foreground: 0 0% 100%;
-    --success-light: 142 71% 55%;
+    --success-light: 0 0% 15%;
 
-    /* Warning - Apple Orange */
-    --warning: 38 92% 50%;
-    --warning-foreground: 215 25% 15%;
+    /* Warning - Monochrome (no orange) */
+    --warning: 0 0% 30%;
+    --warning-foreground: 0 0% 100%;
 
-    /* Info - Sky Blue */
-    --info: 199 89% 48%;
+    /* Info - Monochrome (no blue) */
+    --info: 0 0% 43%;
     --info-foreground: 0 0% 100%;
 
-    /* Destructive - Apple Red */
-    --destructive: 0 84% 60%;
+    /* Destructive - Dark Gray (no red) */
+    --destructive: 0 0% 20%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Border and Input */
-    --border: 215 20% 88%;
-    --input: 215 20% 94%;
-    --ring: 142 71% 45%;
+    /* Border and Input - Very subtle */
+    --border: 0 0% 92%;
+    --input: 0 0% 97%;
+    --ring: 0 0% 7%;
 
-    --radius: 0.75rem;
+    --radius: 2rem;                             /* 32px for organic modern look */
 
-    /* Organic Premium Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(142 71% 45%), hsl(142 71% 55%));
-    --gradient-hero-mesh: linear-gradient(135deg, hsl(199 89% 95%) 0%, hsl(166 76% 95%) 50%, hsl(142 71% 95%) 100%);
-    --gradient-pastel-icon: linear-gradient(135deg, hsl(166 76% 77%) 0%, hsl(199 89% 70%) 100%);
-    --gradient-nature: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(240 5% 96%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(199 89% 97%) 0%, hsl(166 76% 97%) 50%, hsl(142 71% 97%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(240 5% 96%) 100%);
-    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.8) 0%, hsl(240 5% 97% / 0.8) 100%);
-    --gradient-button: linear-gradient(135deg, hsl(142 71% 45%), hsl(142 71% 50%));
+    /* Monochrome Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(0 0% 7%), hsl(0 0% 15%));
+    --gradient-hero-mesh: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(0 0% 97%) 100%);
+    --gradient-nature: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 97%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 98%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 97%) 100%);
+    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.95) 0%, hsl(0 0% 98% / 0.9) 100%);
+    --gradient-button: linear-gradient(135deg, hsl(0 0% 7%), hsl(0 0% 12%));
 
-    /* Organic Premium Shadows - Ultra-soft 3D effect */
-    --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.04);
-    --shadow-premium: 0 10px 40px -10px hsl(142 71% 45% / 0.15);
-    --shadow-float: 0 20px 50px -15px hsl(215 28% 17% / 0.08);
-    --shadow-button: 0 4px 15px -3px hsl(142 71% 45% / 0.25);
-    --shadow-glow: 0 0 20px hsl(142 71% 45% / 0.15);
-    --shadow-3d: 0 8px 30px rgba(0, 0, 0, 0.04);
+    /* Luxury 3D Shadows - Massive, soft, dramatic */
+    --shadow-card: 0 32px 64px rgba(0, 0, 0, 0.06);
+    --shadow-premium: 0 40px 80px -20px rgba(0, 0, 0, 0.08);
+    --shadow-float: 0 48px 96px -24px rgba(0, 0, 0, 0.1);
+    --shadow-button: 0 8px 24px -4px rgba(0, 0, 0, 0.15);
+    --shadow-glow: 0 0 40px rgba(0, 0, 0, 0.05);
+    --shadow-3d: 0 32px 64px rgba(0, 0, 0, 0.06);
+    --shadow-luxury: 0 32px 64px rgba(0, 0, 0, 0.06);
 
     /* Smooth animation system */
-    --transition-smooth: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.45s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-spring: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-    /* Typography - Inter with 1.6 line-height */
-    --font-heading: 'Inter', 'system-ui', -apple-system, BlinkMacSystemFont, sans-serif;
+    /* Typography - Playfair Display for headings, Inter for UI */
+    --font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
     --font-body: 'Inter', 'system-ui', -apple-system, BlinkMacSystemFont, sans-serif;
 
-    /* Sidebar - Light Theme */
+    /* Sidebar - Pure White, minimal */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 215 25% 15%;
-    --sidebar-primary: 142 71% 45%;
+    --sidebar-foreground: 0 0% 7%;
+    --sidebar-primary: 0 0% 7%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 5% 96%;
-    --sidebar-accent-foreground: 215 25% 15%;
-    --sidebar-border: 215 20% 88%;
-    --sidebar-ring: 142 71% 45%;
+    --sidebar-accent: 0 0% 97%;
+    --sidebar-accent-foreground: 0 0% 7%;
+    --sidebar-border: 0 0% 95%;
+    --sidebar-ring: 0 0% 7%;
   }
 
-  /* Dark mode option */
+  /* Dark mode - Inverted monochrome */
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 0 0% 4%;
+    --foreground: 0 0% 98%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 211 100% 50%;
-    --primary-foreground: 222.2 84% 4.9%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 7%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 60%;
 
-    --accent: 211 100% 50%;
-    --accent-foreground: 222.2 84% 4.9%;
+    --accent: 0 0% 98%;
+    --accent-foreground: 0 0% 7%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 0% 70%;
+    --destructive-foreground: 0 0% 7%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 211 100% 50%;
+    --border: 0 0% 15%;
+    --input: 0 0% 12%;
+    --ring: 0 0% 98%;
     
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 211 100% 50%;
-    --sidebar-primary-foreground: 240 5.9% 10%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 211 100% 50%;
+    --sidebar-background: 0 0% 4%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 0 0% 98%;
+    --sidebar-primary-foreground: 0 0% 4%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 12%;
+    --sidebar-ring: 0 0% 98%;
   }
 }
 
@@ -153,7 +154,7 @@ Clean, professional light theme with Apple Blue accent (#007AFF)
     scroll-behavior: smooth;
     overflow-x: hidden;
     width: 100%;
-    line-height: 1.6;
+    line-height: 1.7;
   }
 
   body {
@@ -163,14 +164,32 @@ Clean, professional light theme with Apple Blue accent (#007AFF)
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    line-height: 1.6;
+    line-height: 1.7;
   }
 
-  /* Enhanced typography - Deep Slate (NO pure black) */
+  /* Luxury Typography - Pitch Black headlines, Medium Gray body */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading font-bold tracking-tight;
-    color: hsl(215 28% 17%); /* Deep Slate #1E293B */
-    letter-spacing: -0.02em;
+    @apply font-heading font-semibold;
+    color: hsl(0 0% 0%); /* Pitch Black #000000 */
+    letter-spacing: -0.03em;
+  }
+
+  h1 {
+    @apply text-5xl md:text-6xl lg:text-7xl font-bold;
+    letter-spacing: -0.04em;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl lg:text-5xl;
+    letter-spacing: -0.03em;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  p {
+    color: hsl(0 0% 43%); /* Medium Gray #6E6E73 */
   }
 
   /* Prevent horizontal scroll on all elements */
@@ -183,74 +202,100 @@ Clean, professional light theme with Apple Blue accent (#007AFF)
     text-wrap: balance;
   }
 
-  /* Premium 3D Glass Morphism for Cards - Ultra soft shadows */
+  /* Luxury 3D Floating Cards - NO borders, massive soft shadows */
   .bg-glass {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+    background: hsl(0 0% 100%);
+    border: none;
+    box-shadow: 0 32px 64px rgba(0, 0, 0, 0.06);
+    border-radius: 32px;
   }
 
   .bg-glass-strong {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(20px) saturate(200%);
-    -webkit-backdrop-filter: blur(20px) saturate(200%);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+    background: hsl(0 0% 100%);
+    border: none;
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.08);
+    border-radius: 32px;
   }
 
-  /* Premium Card (3D glassmorphism effect) */
+  /* Premium Luxury Card - Pure white, NO border, dramatic shadow */
   .card-organic {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
-    border-radius: 1rem;
+    background: hsl(0 0% 100%);
+    border: none;
+    box-shadow: 0 32px 64px rgba(0, 0, 0, 0.06);
+    border-radius: 32px;
   }
 
   /* Premium card class with 3D effect */
   .card-apple {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
-    border-radius: 1rem;
+    background: hsl(0 0% 100%);
+    border: none;
+    box-shadow: 0 32px 64px rgba(0, 0, 0, 0.06);
+    border-radius: 32px;
   }
 
-  /* 3D Card with premium hover lift effect */
+  /* 3D Card with luxury hover lift effect */
   .card-3d-premium {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
-    border-radius: 1rem;
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    background: hsl(0 0% 100%);
+    border: none;
+    box-shadow: 0 32px 64px rgba(0, 0, 0, 0.06);
+    border-radius: 32px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .card-3d-premium:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+    transform: translateY(-8px);
+    box-shadow: 0 48px 96px rgba(0, 0, 0, 0.1);
   }
 
-  /* Hover effects */
+  /* Luxury card - the new standard */
+  .card-luxury {
+    background: hsl(0 0% 100%);
+    border: none;
+    box-shadow: 0 32px 64px rgba(0, 0, 0, 0.06);
+    border-radius: 32px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-luxury:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 48px 96px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Hover effects - Luxury lift */
   .hover-lift {
-    @apply transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-premium;
+    @apply transition-all duration-500 ease-out;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 48px 96px rgba(0, 0, 0, 0.1);
   }
 
   .hover-lift-3d {
-    @apply transition-all duration-500 ease-out hover:-translate-y-3 hover:scale-[1.02] hover:shadow-float;
+    @apply transition-all duration-500 ease-out;
+  }
+
+  .hover-lift-3d:hover {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 64px 128px rgba(0, 0, 0, 0.12);
   }
 
   .hover-glow {
-    @apply transition-all duration-300 hover:shadow-glow hover:scale-105;
+    @apply transition-all duration-500;
+  }
+
+  .hover-glow:hover {
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+    transform: scale(1.02);
   }
 
   .card-float {
-    @apply transform transition-all duration-700 ease-out hover:-translate-y-1 hover:shadow-float hover:scale-[1.01];
+    @apply transform transition-all duration-700 ease-out;
+  }
+
+  .card-float:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.08);
   }
 
   /* Animations */
@@ -283,7 +328,7 @@ Clean, professional light theme with Apple Blue accent (#007AFF)
   @keyframes fadeUp {
     from {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(40px);
     }
     to {
       opacity: 1;
@@ -294,7 +339,7 @@ Clean, professional light theme with Apple Blue accent (#007AFF)
   @keyframes fadeUp3D {
     from {
       opacity: 0;
-      transform: translateY(40px) rotateX(15deg);
+      transform: translateY(60px) rotateX(10deg);
     }
     to {
       opacity: 1;
@@ -305,7 +350,7 @@ Clean, professional light theme with Apple Blue accent (#007AFF)
   @keyframes slideIn3D {
     from {
       opacity: 0;
-      transform: translateX(-50px) rotateY(-15deg);
+      transform: translateX(-60px) rotateY(-10deg);
     }
     to {
       opacity: 1;
@@ -313,12 +358,35 @@ Clean, professional light theme with Apple Blue accent (#007AFF)
     }
   }
 
-  /* Logo enhancement */
+  /* Logo enhancement - monochrome */
   .logo-glow {
-    filter: drop-shadow(0 0 8px hsl(var(--primary) / 0.3));
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
   }
 
   .logo-enhanced {
-    filter: brightness(1.05) contrast(1.05) drop-shadow(0 2px 8px hsl(var(--primary) / 0.2));
+    filter: brightness(1) contrast(1.1) drop-shadow(0 4px 16px rgba(0, 0, 0, 0.08));
+  }
+
+  /* Luxury Badge - Black/White/Gray only */
+  .badge-luxury {
+    @apply px-4 py-1.5 text-xs font-medium tracking-wide uppercase;
+    background: hsl(0 0% 7%);
+    color: hsl(0 0% 100%);
+    border-radius: 9999px;
+  }
+
+  .badge-luxury-outline {
+    @apply px-4 py-1.5 text-xs font-medium tracking-wide uppercase;
+    background: transparent;
+    color: hsl(0 0% 7%);
+    border: 1px solid hsl(0 0% 7%);
+    border-radius: 9999px;
+  }
+
+  .badge-luxury-muted {
+    @apply px-4 py-1.5 text-xs font-medium tracking-wide uppercase;
+    background: hsl(0 0% 97%);
+    color: hsl(0 0% 43%);
+    border-radius: 9999px;
   }
 }

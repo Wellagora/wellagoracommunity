@@ -288,7 +288,7 @@ const Navigation = () => {
         </div>
       )}
       
-      <nav className={`fixed left-0 right-0 z-[100] w-full bg-white/70 backdrop-blur-xl border-b border-[#E5E5E7] shadow-sm ${isDemoMode ? 'top-8' : 'top-0'}`}>
+      <nav className={`fixed left-0 right-0 z-[100] w-full bg-white border-b border-[#F0F0F0] ${isDemoMode ? 'top-8' : 'top-0'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -301,20 +301,15 @@ const Navigation = () => {
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.path);
-              const hasCustomColor = 'iconColor' in item && item.iconColor;
               const isWellBot = 'isWellBot' in item && item.isWellBot;
               return (
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  className={`flex items-center gap-2 px-5 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
                     active 
-                      ? hasCustomColor 
-                        ? "bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700" 
-                        : isWellBot
-                          ? "bg-gradient-to-r from-indigo-100 to-sky-100 text-indigo-700"
-                          : "text-white bg-gradient-to-r from-emerald-500 to-teal-500" 
-                      : "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+                      ? "bg-[#111111] text-white" 
+                      : "text-[#6E6E73] hover:text-[#111111] hover:bg-[#F5F5F7]"
                   }`}
                 >
                   {isWellBot ? (
@@ -322,10 +317,7 @@ const Navigation = () => {
                       <WellBotAvatar size="xs" mood="neutral" />
                     </div>
                   ) : Icon ? (
-                    <Icon 
-                      className="h-4 w-4" 
-                      style={hasCustomColor ? { color: item.iconColor as string } : undefined}
-                    />
+                    <Icon className="h-4 w-4" />
                   ) : null}
                   {item.label}
                 </Link>
@@ -465,10 +457,10 @@ const Navigation = () => {
               </>
             ) : (
               <div className="flex items-center gap-2">
-                <Button variant="outline" asChild className="border-slate-300 text-slate-700 hover:bg-slate-100">
+                <Button variant="outline" asChild>
                   <Link to="/auth">{t("nav.sign_in")}</Link>
                 </Button>
-                <Button asChild className="bg-[#34C759] hover:bg-[#2DB14E] text-white">
+                <Button asChild>
                   <Link to="/auth">{t("nav.join_community")}</Link>
                 </Button>
               </div>
