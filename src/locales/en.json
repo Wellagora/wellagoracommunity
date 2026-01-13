@@ -1,4 +1,42 @@
 {
+  "admin": {
+    "access_denied": "Access Denied",
+    "access_denied_description": "You don't have permission to access the admin panel.",
+    "nav": {
+      "dashboard": "Dashboard",
+      "users": "Users",
+      "feedback": "Feedback",
+      "analytics": "Analytics",
+      "moderation": "Moderation",
+      "settings": "Settings",
+      "exit": "Exit Admin"
+    },
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "subtitle": "Platform overview and management",
+      "quick_actions": "Quick Actions",
+      "refresh": "Refresh",
+      "demo_mode": "Demo mode - data is simulated."
+    },
+    "stats": {
+      "total_users": "Total Users",
+      "experts": "Experts",
+      "sponsors": "Sponsors",
+      "members": "Members",
+      "active_programs": "Active Programs",
+      "pending_feedback": "Pending Feedback"
+    },
+    "actions": {
+      "manage_users": "Manage Users",
+      "moderation": "Content Moderation",
+      "view_feedback": "View Feedback",
+      "analytics": "Analytics",
+      "settings": "Settings"
+    },
+    "placeholder": {
+      "coming_soon": "This feature is coming soon..."
+    }
+  },
   "feedback": {
     "title": "Send Feedback",
     "subtitle": "Help us improve the platform!",
