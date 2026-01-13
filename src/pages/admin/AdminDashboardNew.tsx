@@ -311,7 +311,7 @@ const AdminDashboardNew = () => {
                 <CardTitle className="text-lg">{t('admin.dashboard.task_queue')}</CardTitle>
                 <CardDescription>
                   {totalPendingTasks > 0 
-                    ? t('admin.dashboard.tasks_pending', { count: totalPendingTasks })
+                    ? `${totalPendingTasks} ${t('admin.dashboard.tasks_pending')}`
                     : t('admin.dashboard.all_tasks_complete')
                   }
                 </CardDescription>
