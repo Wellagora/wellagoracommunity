@@ -11,21 +11,22 @@ const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElemen
     <div
       ref={ref}
       className={cn(
-        // Glassmorphism: Semi-transparent white with blur
-        "bg-white/80 backdrop-blur-xl",
-        // Very thin low-opacity border
-        "border border-black/[0.05]",
+        // Glassmorphism: More transparent white with blur
+        "bg-white/40 backdrop-blur-md",
+        // Very thin white border for frosted glass effect
+        "border border-white/30",
         // Rounded corners: 24px for modern organic look
         "rounded-[24px]",
         // Shadow: Soft 3D shadow
-        "shadow-[0_24px_48px_rgba(0,0,0,0.04)]",
+        "shadow-[0_24px_48px_rgba(0,0,0,0.06)]",
         // Text color
         "text-card-foreground",
         // Interactive hover: Scale + deeper shadow + border glow
         "transition-all duration-500 ease-out",
         "hover:scale-[1.02]",
-        "hover:shadow-[0_32px_64px_rgba(0,0,0,0.08)]",
-        "hover:border-black/[0.12]",
+        "hover:shadow-[0_32px_64px_rgba(0,0,0,0.12)]",
+        "hover:border-white/50",
+        "hover:bg-white/60",
         "hover:-translate-y-1",
         // Cursor to indicate interactivity
         "cursor-pointer",
