@@ -874,6 +874,181 @@ export const getLocalizedAnswer = (a: MockQuestion['answers'][0], language: stri
   return a.answer;
 };
 
+// ===== SOCIAL FEED POSTS =====
+export type PostType = 'expert_tip' | 'question' | 'success_story' | 'announcement';
+
+export interface FeedComment {
+  id: string;
+  authorId: string;
+  authorName: string;
+  authorRole: 'member' | 'expert';
+  authorBadge?: string;
+  content: string;
+  createdAt: string;
+  isExpertAnswer?: boolean;
+}
+
+export interface FeedPost {
+  id: string;
+  type: PostType;
+  authorId: string;
+  authorName: string;
+  authorRole: 'member' | 'expert' | 'sponsor';
+  authorBadge?: string;
+  content: string;
+  imageUrl?: string;
+  programKeywords?: string[];
+  relatedProgramId?: string;
+  createdAt: string;
+  likes: number;
+  isLikedByMe: boolean;
+  comments: FeedComment[];
+}
+
+export const MOCK_FEED_POSTS: FeedPost[] = [
+  // POST 1 - Expert Tip (Today, 2 hours ago)
+  {
+    id: 'post-1',
+    type: 'expert_tip',
+    authorId: 'mock-expert-1',
+    authorName: 'Kovács István',
+    authorRole: 'expert',
+    authorBadge: 'Kemencemester',
+    content: 'A mai páratartalom tökéletes a kovásznak! 🌡️ Itt egy kép a reggeli sütésről. Tipp: ha ragacsos a tészta, ne adj hozzá több lisztet - inkább várd ki a pihenőidőt.',
+    imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&h=400&fit=crop',
+    programKeywords: ['kovász', 'kenyér', 'sütés'],
+    relatedProgramId: 'mock-program-2',
+    createdAt: '2026-01-13T08:30:00Z',
+    likes: 24,
+    isLikedByMe: false,
+    comments: [
+      {
+        id: 'c1',
+        authorId: 'member-1',
+        authorName: 'Tóth Eszter',
+        authorRole: 'member',
+        content: 'Köszönöm a tippet! Ma délután megpróbálom. 🙏',
+        createdAt: '2026-01-13T09:15:00Z'
+      }
+    ]
+  },
+  // POST 2 - Member Question (Today, 4 hours ago)
+  {
+    id: 'post-2',
+    type: 'question',
+    authorId: 'member-2',
+    authorName: 'Molnár Gábor',
+    authorRole: 'member',
+    content: 'Sziasztok! Tudja valaki, hol kapok Káli-medencei kecskesajtot? A piacon nem találtam a hétvégén. 🧀',
+    programKeywords: ['sajt', 'kecske', 'helyi'],
+    createdAt: '2026-01-13T06:45:00Z',
+    likes: 8,
+    isLikedByMe: false,
+    comments: [
+      {
+        id: 'c2',
+        authorId: 'mock-expert-2',
+        authorName: 'Nagy Éva',
+        authorRole: 'expert',
+        authorBadge: 'Gyógynövényszakértő',
+        content: 'Szia Gábor! A Köveskáli Sajtműhelyben kapható, szerdán és szombaton van nyitva. Vagy gyere el a sajtkészítő programomra, és készítsd el magadnak! 😊',
+        createdAt: '2026-01-13T07:30:00Z',
+        isExpertAnswer: true
+      },
+      {
+        id: 'c3',
+        authorId: 'member-3',
+        authorName: 'Fekete Anna',
+        authorRole: 'member',
+        content: 'A Tapolcai biopiacon is szokott lenni pénteken!',
+        createdAt: '2026-01-13T08:00:00Z'
+      }
+    ]
+  },
+  // POST 3 - Expert Tip with Image (Yesterday)
+  {
+    id: 'post-3',
+    type: 'expert_tip',
+    authorId: 'mock-expert-2',
+    authorName: 'Nagy Éva',
+    authorRole: 'expert',
+    authorBadge: 'Gyógynövényszakértő',
+    content: 'A kertben már bújnak a tavaszi fűszernövények! 🌿 Most van itt az ideje előkészíteni a magágyást. Aki szeretne saját fűszerkertet, jelentkezzen a tavaszi programomra!',
+    imageUrl: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&h=400&fit=crop',
+    programKeywords: ['fűszer', 'kert', 'növény'],
+    relatedProgramId: 'mock-program-3',
+    createdAt: '2026-01-12T14:20:00Z',
+    likes: 45,
+    isLikedByMe: true,
+    comments: []
+  },
+  // POST 4 - Member Question (2 days ago)
+  {
+    id: 'post-4',
+    type: 'question',
+    authorId: 'member-1',
+    authorName: 'Tóth Eszter',
+    authorRole: 'member',
+    content: 'Mikor lesz a következő közös főzés? 🍳 Az utolsó nagyon jó volt, szeretném hozni a párom is!',
+    programKeywords: ['főzés', 'közös'],
+    createdAt: '2026-01-11T18:30:00Z',
+    likes: 12,
+    isLikedByMe: false,
+    comments: [
+      {
+        id: 'c4',
+        authorId: 'mock-expert-6',
+        authorName: 'Molnár Balázs',
+        authorRole: 'expert',
+        authorBadge: 'Séf',
+        content: 'Január 20-án, szombaton lesz a következő! Tésztakészítés lesz a téma. Hozd nyugodtan! 👨‍👩‍👧',
+        createdAt: '2026-01-11T19:00:00Z',
+        isExpertAnswer: true
+      }
+    ]
+  },
+  // POST 5 - Success Story (3 days ago)
+  {
+    id: 'post-5',
+    type: 'success_story',
+    authorId: 'member-4',
+    authorName: 'Varga Zoltán',
+    authorRole: 'member',
+    content: 'Elkészült az első kemencém a Kemenceépítés program után! 🔥 3 hónap munka, de megérte. Tegnap sütöttem benne az első pizzát - a család imádta! Köszönöm Kovács Istvánnak a türelmet és a tippeket!',
+    imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop',
+    relatedProgramId: 'mock-program-1',
+    createdAt: '2026-01-10T16:00:00Z',
+    likes: 89,
+    isLikedByMe: true,
+    comments: [
+      {
+        id: 'c5',
+        authorId: 'mock-expert-1',
+        authorName: 'Kovács István',
+        authorRole: 'expert',
+        authorBadge: 'Kemencemester',
+        content: 'Zoli, gyönyörű munka! 👏 Büszke vagyok rád. Következő lépés: kenyérsütés kemencében - gyere a haladó kurzusra!',
+        createdAt: '2026-01-10T17:30:00Z',
+        isExpertAnswer: true
+      }
+    ]
+  },
+  // POST 6 - Announcement (1 week ago)
+  {
+    id: 'post-6',
+    type: 'announcement',
+    authorId: 'admin-1',
+    authorName: 'WellAgora Csapat',
+    authorRole: 'sponsor',
+    authorBadge: 'Platform',
+    content: '🎉 Köszönjük, hogy velünk vagytok! A közösségünk átlépte a 100 aktív tagot! Különösen hálásak vagyunk támogatóinknak - a Káli Panziónak és a Balaton Bio-nak - akik lehetővé teszik az ingyenes programokat. Hajrá, 2026! 🚀',
+    createdAt: '2026-01-06T12:00:00Z',
+    likes: 127,
+    isLikedByMe: true,
+    comments: []
+  }
+];
+
 // ===== DEMO ACCOUNTS =====
 export interface DemoAccount {
   email: string;

@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -38,9 +39,12 @@ import {
   X,
   Loader2,
   Share,
+  Rss,
+  ImageIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import ExpertProfileModal from "@/components/creator/ExpertProfileModal";
+import SocialFeed from "./SocialFeed";
 
 interface Creation {
   id: string;
@@ -99,6 +103,7 @@ interface Partner {
 
 const CommunityHubNew = () => {
   const { t } = useLanguage();
+  const [activeTab, setActiveTab] = useState("feed");
 
   return (
     <div className="min-h-screen bg-background">
@@ -118,15 +123,35 @@ const CommunityHubNew = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 space-y-16">
-        {/* Section A: Gallery */}
-        <CreationsGallerySection />
+      {/* Tabs Navigation */}
+      <div className="container mx-auto px-4 py-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid grid-cols-2 w-full max-w-md mx-auto mb-8">
+            <TabsTrigger value="feed" className="gap-2">
+              <Rss className="w-4 h-4" />
+              {t('community.tab_feed') || 'Fal'}
+            </TabsTrigger>
+            <TabsTrigger value="gallery" className="gap-2">
+              <ImageIcon className="w-4 h-4" />
+              {t('community.tab_gallery') || 'Galéria'}
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Section B: Q&A */}
-        <QASection />
+          <TabsContent value="feed" className="mt-0">
+            <SocialFeed />
+          </TabsContent>
 
-        {/* Section C: Local Partners */}
-        <LocalPartnersSection />
+          <TabsContent value="gallery" className="mt-0 space-y-16">
+            {/* Section A: Gallery */}
+            <CreationsGallerySection />
+
+            {/* Section B: Q&A */}
+            <QASection />
+
+            {/* Section C: Local Partners */}
+            <LocalPartnersSection />
+          </TabsContent>
+        </Tabs>
       </div>
 
       {/* Join CTA (non-overlapping; stays in flow) */}
