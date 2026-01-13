@@ -66,9 +66,29 @@ const AdminLayout = () => {
       exact: true 
     },
     { 
+      path: '/admin-panel/projects', 
+      icon: Shield, 
+      label: t('admin.nav.projects') 
+    },
+    { 
       path: '/admin-panel/users', 
       icon: Users, 
       label: t('admin.nav.users') 
+    },
+    { 
+      path: '/admin-panel/sponsors', 
+      icon: Users, 
+      label: t('admin.nav.sponsors') 
+    },
+    { 
+      path: '/admin-panel/programs', 
+      icon: Shield, 
+      label: t('admin.nav.programs') 
+    },
+    { 
+      path: '/admin-panel/events', 
+      icon: MessageSquare, 
+      label: t('admin.nav.events') 
     },
     { 
       path: '/admin-panel/feedback', 
@@ -79,11 +99,6 @@ const AdminLayout = () => {
       path: '/admin-panel/analytics', 
       icon: BarChart3, 
       label: t('admin.nav.analytics') 
-    },
-    { 
-      path: '/admin-panel/moderation', 
-      icon: Shield, 
-      label: t('admin.nav.moderation') 
     },
     { 
       path: '/admin-panel/settings', 

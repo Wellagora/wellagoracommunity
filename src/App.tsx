@@ -340,10 +340,13 @@ function App() {
                           }
                         >
                           <Route index element={<AdminDashboardNew />} />
+                          <Route path="projects" element={<AdminPlaceholder titleKey="admin.nav.projects" />} />
                           <Route path="users" element={<AdminUsers />} />
+                          <Route path="sponsors" element={<AdminPlaceholder titleKey="admin.nav.sponsors" />} />
+                          <Route path="programs" element={<AdminPlaceholder titleKey="admin.nav.programs" />} />
+                          <Route path="events" element={<AdminPlaceholder titleKey="admin.nav.events" />} />
                           <Route path="feedback" element={<AdminFeedback />} />
                           <Route path="analytics" element={<AdminAnalytics />} />
-                          <Route path="moderation" element={<AdminPlaceholder titleKey="admin.nav.moderation" />} />
                           <Route path="settings" element={<AdminPlaceholder titleKey="admin.nav.settings" />} />
                         </Route>
                       </Routes>
