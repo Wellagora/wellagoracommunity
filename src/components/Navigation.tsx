@@ -318,7 +318,9 @@ const Navigation = () => {
                   }`}
                 >
                   {isWellBot ? (
-                    <WellBotAvatar size="xs" mood="neutral" />
+                    <div style={{ transform: 'scaleX(-1)' }}>
+                      <WellBotAvatar size="xs" mood="neutral" />
+                    </div>
                   ) : Icon ? (
                     <Icon 
                       className="h-4 w-4" 
@@ -543,7 +545,9 @@ const Navigation = () => {
                           }`}
                         >
                           {isWellBot ? (
-                            <WellBotAvatar size="xs" mood="neutral" />
+                            <div style={{ transform: 'scaleX(-1)' }}>
+                              <WellBotAvatar size="xs" mood="neutral" />
+                            </div>
                           ) : Icon ? (
                             <Icon
                               className="h-5 w-5"
