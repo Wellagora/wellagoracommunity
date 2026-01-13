@@ -26,9 +26,9 @@ import {
   LayoutGrid,
   Megaphone,
   Send,
-  Bot,
   Reply,
 } from "lucide-react";
+import WellBotAvatar from "@/components/ai/WellBotAvatar";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import {
@@ -261,9 +261,9 @@ const PostTypeBadge = ({ type }: { type: FeedPost["type"] }) => {
       className: "bg-purple-100 text-purple-700",
     },
     wellbot_answer: {
-      icon: Bot,
+      icon: Sparkles,
       label: t("feed.wellbot_suggestion"),
-      className: "bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700",
+      className: "bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700",
     },
   };
 
@@ -288,26 +288,26 @@ const RelatedProgramCard = ({ programId }: { programId: string }) => {
   return (
     <div
       onClick={() => navigate(`/piacter/${programId}`)}
-      className="mt-3 p-3 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-lg border border-emerald-200 cursor-pointer hover:shadow-md transition-all group"
+      className="mt-3 p-3 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-200 cursor-pointer hover:shadow-md transition-all group"
     >
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-          <Bookmark className="w-5 h-5 text-emerald-600" />
+        <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
+          <Bookmark className="w-5 h-5 text-indigo-600" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-xs text-emerald-600 font-medium">
+          <p className="text-xs text-indigo-600 font-medium">
             {t("feed.related_program")}
           </p>
-          <p className="font-semibold text-sm truncate group-hover:text-emerald-700">
+          <p className="font-semibold text-sm truncate group-hover:text-indigo-700">
             {getLocalizedProgramTitle(program, language)}
           </p>
         </div>
-        <ChevronRight className="w-5 h-5 text-emerald-400 group-hover:translate-x-1 transition-transform" />
+        <ChevronRight className="w-5 h-5 text-indigo-400 group-hover:translate-x-1 transition-transform" />
       </div>
 
       {/* Sponsor Attribution */}
       {program.sponsor_name && (
-        <p className="mt-2 text-xs text-emerald-600/70 flex items-center gap-1">
+        <p className="mt-2 text-xs text-indigo-600/70 flex items-center gap-1">
           <Gift className="w-3 h-3" />
           {t("feed.sponsored_by")}: {program.sponsor_name}
         </p>
@@ -458,23 +458,23 @@ const WellBotPostCard = ({
 
   return (
     <Card className="mb-4 overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow">
-      {/* Emerald gradient header bar */}
-      <div className="h-2 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500" />
+      {/* Indigo/Purple gradient header bar */}
+      <div className="h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500" />
 
       <CardContent className="p-0">
         <div className="flex">
           {/* Left: Robot Avatar Column */}
-          <div className="w-16 sm:w-24 bg-gradient-to-b from-emerald-50 to-teal-50 flex flex-col items-center justify-start py-4 px-2 border-r border-emerald-100">
-            {/* Robot Avatar */}
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-lg ring-4 ring-white">
-              <Bot className="w-6 h-6 sm:w-10 sm:h-10 text-white" />
+          <div className="w-20 sm:w-28 bg-gradient-to-b from-indigo-50 to-purple-50 flex flex-col items-center justify-start py-4 px-2 border-r border-indigo-100">
+            {/* Robot Avatar - Using the unified WellBotAvatar component */}
+            <div className="ring-4 ring-white rounded-full shadow-lg">
+              <WellBotAvatar size="lg" mood="happy" />
             </div>
 
             {/* WellBot name */}
-            <span className="mt-2 text-xs font-bold text-emerald-700">WellBot</span>
+            <span className="mt-2 text-xs font-bold text-indigo-700">WellBot</span>
 
             {/* AI badge */}
-            <Badge className="mt-1 text-[10px] bg-emerald-100 text-emerald-600 border-0 px-1.5">
+            <Badge className="mt-1 text-[10px] bg-gradient-to-r from-indigo-500 to-purple-500 text-white border-0 px-1.5">
               AI
             </Badge>
           </div>
@@ -483,7 +483,7 @@ const WellBotPostCard = ({
           <div className="flex-1 p-4">
             {/* Reply indicator */}
             {post.isWellBotResponse && (
-              <div className="flex items-center gap-2 text-xs text-emerald-600 mb-2">
+              <div className="flex items-center gap-2 text-xs text-indigo-600 mb-2">
                 <Reply className="w-3 h-3" />
                 <span>{t("feed.wellbot_replied")}</span>
                 <span className="text-muted-foreground">• {formatTimeAgo(post.createdAt)}</span>
@@ -501,7 +501,7 @@ const WellBotPostCard = ({
             )}
 
             {/* Action Row */}
-            <div className="mt-4 flex items-center gap-2 pt-3 border-t border-emerald-100">
+            <div className="mt-4 flex items-center gap-2 pt-3 border-t border-indigo-100">
               <Button
                 variant="ghost"
                 size="sm"
@@ -521,7 +521,7 @@ const WellBotPostCard = ({
               <Button
                 onClick={() => navigate("/ai-assistant")}
                 size="sm"
-                className="ml-auto bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white gap-1.5"
+                className="ml-auto bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white gap-1.5"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span className="hidden sm:inline">{t("feed.chat_with_wellbot")}</span>
