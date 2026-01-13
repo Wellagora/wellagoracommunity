@@ -8,10 +8,12 @@ import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { User, Building2, MapPin, Heart, Mail, Lock, UserCheck } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { User, Building2, MapPin, Heart, Mail, Lock, UserCheck, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
+import TermsModal from "@/components/legal/TermsModal";
 
 const registerSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required").max(50, "First name must be less than 50 characters"),
@@ -70,6 +72,8 @@ interface RegisterFormProps {
 
 const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
   const [selectedRole, setSelectedRole] = useState<string>("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [showTermsPreview, setShowTermsPreview] = useState(false);
   const { toast } = useToast();
   const { t } = useLanguage();
   
@@ -290,14 +294,50 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
             )}
           </div>
 
+          {/* Terms of Service Checkbox */}
+          <div className="flex items-start gap-3 pt-2">
+            <Checkbox
+              id="terms-accept-register"
+              checked={acceptedTerms}
+              onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+              className="mt-0.5"
+            />
+            <div className="text-sm leading-relaxed">
+              <label htmlFor="terms-accept-register" className="cursor-pointer text-foreground">
+                {t('auth.accept_terms_prefix') || "Elolvastam és elfogadom az "}
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowTermsPreview(true)}
+                className="text-primary hover:underline font-medium"
+              >
+                {t('auth.terms_link') || "Általános Szerződési Feltételeket"}
+              </button>
+              <span className="text-foreground">
+                {t('auth.accept_terms_suffix') || ""}
+              </span>
+            </div>
+          </div>
+
           <Button 
             type="submit" 
             className="w-full bg-gradient-primary hover:shadow-glow transition-smooth"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !acceptedTerms}
           >
             {isSubmitting ? (t('auth.creating_account') || "Fiók létrehozása...") : (t('auth.create_account') || "Fiók létrehozása")}
           </Button>
         </form>
+
+        {/* Terms Preview Modal */}
+        <TermsModal
+          open={showTermsPreview}
+          onAccept={() => {
+            setAcceptedTerms(true);
+            setShowTermsPreview(false);
+          }}
+          onDecline={() => setShowTermsPreview(false)}
+          showDecline={false}
+        />
       </CardContent>
 
       <CardFooter className="text-center">

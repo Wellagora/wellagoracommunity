@@ -41,6 +41,9 @@
   "auth.organization_placeholder": "Vállalat Kft.",
   "auth.industry": "Iparág",
   "auth.industry_placeholder": "Pl. Technológia, Vendéglátás",
+  "auth.accept_terms_prefix": "Elolvastam és elfogadom az ",
+  "auth.terms_link": "Általános Szerződési Feltételeket",
+  "auth.accept_terms_suffix": "",
 "voucher": {
     "title": "Anyagcsomag kupon",
     "subtitle": "Mutasd fel a Szakértőnél",
@@ -3933,5 +3936,14 @@
     "no_programs_desc": "Fedezd fel a szakértőinket és indítsd el az első kampányodat!",
     "explore_programs": "Programok felfedezése",
     "unknown_expert": "Ismeretlen szakértő"
+  },
+  "terms": {
+    "version": "Verzió",
+    "confirm_read": "Elolvastam és megértettem a fenti feltételeket",
+    "confirm_accept": "Elfogadom az Általános Szerződési Feltételeket",
+    "accept": "Elfogadom",
+    "decline": "Elutasítom",
+    "updated_notice": "A feltételeink frissültek. Kérjük, olvassa el és fogadja el az új verziót.",
+    "must_accept": "A folytatáshoz el kell fogadnia az ÁSZF-et."
   }
 }

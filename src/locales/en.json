@@ -41,6 +41,9 @@
   "auth.organization_placeholder": "e.g. Green Tech Inc.",
   "auth.industry": "Industry",
   "auth.industry_placeholder": "e.g. Technology, Hospitality",
+  "auth.accept_terms_prefix": "I have read and accept the ",
+  "auth.terms_link": "Terms of Service",
+  "auth.accept_terms_suffix": "",
   "expert_studio.community_interactions": "Community Interactions",
   "expert_studio.questions_received": "Questions received",
   "expert_studio.unanswered": "unanswered",
@@ -3871,5 +3874,14 @@
     "no_programs_desc": "Explore our experts and start your first campaign!",
     "explore_programs": "Explore Programs",
     "unknown_expert": "Unknown expert"
+  },
+  "terms": {
+    "version": "Version",
+    "confirm_read": "I have read and understood the above terms",
+    "confirm_accept": "I accept the Terms of Service",
+    "accept": "Accept",
+    "decline": "Decline",
+    "updated_notice": "Our terms have been updated. Please read and accept the new version.",
+    "must_accept": "You must accept the Terms of Service to continue."
   }
 }
