@@ -19,7 +19,11 @@ import {
   X,
   AlertTriangle,
   MessageSquare,
-  BarChart3
+  BarChart3,
+  UserCheck,
+  Building2,
+  CalendarDays,
+  FolderKanban
 } from 'lucide-react';
 
 const AdminLayout = () => {
@@ -58,7 +62,8 @@ const AdminLayout = () => {
     }
   }, [profile, isDemoMode, navigate, t]);
 
-  const navItems = [
+  // Main navigation items
+  const mainNavItems = [
     { 
       path: '/admin-panel', 
       icon: LayoutDashboard, 
@@ -67,17 +72,17 @@ const AdminLayout = () => {
     },
     { 
       path: '/admin-panel/projects', 
-      icon: Shield, 
+      icon: FolderKanban, 
       label: t('admin.nav.projects') 
     },
     { 
-      path: '/admin-panel/users', 
-      icon: Users, 
-      label: t('admin.nav.users') 
+      path: '/admin-panel/experts', 
+      icon: UserCheck, 
+      label: t('admin.nav.experts') 
     },
     { 
       path: '/admin-panel/sponsors', 
-      icon: Users, 
+      icon: Building2, 
       label: t('admin.nav.sponsors') 
     },
     { 
@@ -87,8 +92,17 @@ const AdminLayout = () => {
     },
     { 
       path: '/admin-panel/events', 
-      icon: MessageSquare, 
+      icon: CalendarDays, 
       label: t('admin.nav.events') 
+    },
+  ];
+
+  // Secondary navigation items
+  const secondaryNavItems = [
+    { 
+      path: '/admin-panel/users', 
+      icon: Users, 
+      label: t('admin.nav.users') 
     },
     { 
       path: '/admin-panel/feedback', 
@@ -106,6 +120,8 @@ const AdminLayout = () => {
       label: t('admin.nav.settings') 
     },
   ];
+
+  const navItems = [...mainNavItems, ...secondaryNavItems];
 
   const isActive = (path: string, exact?: boolean) => {
     if (exact) return location.pathname === path;
@@ -125,7 +141,7 @@ const AdminLayout = () => {
     );
   }
 
-  const NavItem = ({ item }: { item: typeof navItems[0] }) => {
+  const NavItem = ({ item }: { item: { path: string; icon: typeof LayoutDashboard; label: string; exact?: boolean } }) => {
     const Icon = item.icon;
     const active = isActive(item.path, item.exact);
 
@@ -213,7 +229,14 @@ const AdminLayout = () => {
         {/* Navigation */}
         <ScrollArea className="flex-1 py-4">
           <nav className="px-2 space-y-1">
-            {navItems.map((item) => (
+            {mainNavItems.map((item) => (
+              <NavItem key={item.path} item={item} />
+            ))}
+            
+            {/* Divider */}
+            <div className="my-3 border-t border-slate-700" />
+            
+            {secondaryNavItems.map((item) => (
               <NavItem key={item.path} item={item} />
             ))}
           </nav>

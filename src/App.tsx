@@ -52,6 +52,8 @@ const AdminLayout = lazy(() => import("@/layouts/AdminLayout"));
 const AdminDashboardNew = lazy(() => import("@/pages/admin/AdminDashboardNew"));
 const AdminPlaceholder = lazy(() => import("@/pages/admin/AdminPlaceholder"));
 const AdminUsers = lazy(() => import("@/pages/admin/AdminUsers"));
+const AdminExperts = lazy(() => import("@/pages/admin/AdminExperts"));
+const AdminProjects = lazy(() => import("@/pages/admin/AdminProjects"));
 const AdminFeedback = lazy(() => import("@/pages/admin/AdminFeedback"));
 const AdminAnalytics = lazy(() => import("@/pages/admin/AdminAnalytics"));
 const SponsorLandingPage = lazy(() => import("@/pages/SponsorLandingPage"));
@@ -340,7 +342,8 @@ function App() {
                           }
                         >
                           <Route index element={<AdminDashboardNew />} />
-                          <Route path="projects" element={<AdminPlaceholder titleKey="admin.nav.projects" />} />
+                          <Route path="projects" element={<AdminProjects />} />
+                          <Route path="experts" element={<AdminExperts />} />
                           <Route path="users" element={<AdminUsers />} />
                           <Route path="sponsors" element={<AdminPlaceholder titleKey="admin.nav.sponsors" />} />
                           <Route path="programs" element={<AdminPlaceholder titleKey="admin.nav.programs" />} />

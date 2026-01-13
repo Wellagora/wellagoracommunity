@@ -86,6 +86,26 @@
       "fetch_error": "Fehler beim Laden der Projekte",
       "error": "Ein Fehler ist aufgetreten"
     },
+    "experts": {
+      "title": "Expert:Innen",
+      "subtitle": "Expert:Innen-Verifizierung und -Verwaltung",
+      "all": "Alle",
+      "pending": "Ausstehend",
+      "verified": "Verifiziert",
+      "rejected": "Abgelehnt",
+      "verify": "Verifizieren",
+      "reject": "Ablehnen",
+      "view_profile": "Profil anzeigen",
+      "verify_confirm": "Expert:In wirklich verifizieren?",
+      "reject_confirm": "Expert:In wirklich ablehnen?",
+      "verify_success": "Expert:In verifiziert!",
+      "reject_success": "Expert:In abgelehnt.",
+      "no_experts": "Keine Expert:Innen",
+      "no_pending": "Keine ausstehenden Expert:Innen",
+      "pending_alert": "Expert:Innen warten auf Verifizierung",
+      "pending_alert_desc": "Bitte Profile überprüfen",
+      "error": "Ein Fehler ist aufgetreten"
+    },
     "placeholder": {
       "coming_soon": "Diese Funktion kommt bald..."
     },
