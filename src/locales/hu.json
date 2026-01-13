@@ -1,4 +1,11 @@
 {
+  "community": {
+    "tab_feed": "Fal",
+    "tab_gallery": "Galéria",
+    "badge": "Közösségi növekedés",
+    "title": "Környezetünk",
+    "subtitle": "A régió közössége együtt épít és fejlődik"
+  },
   "wellbot.knowledge_guide_title": "WellBot",
   "wellbot.chip_learn": "Mit tanulhatok?",
   "wellbot.chip_free": "Elérhető programok",
@@ -3897,7 +3904,8 @@
     "comment_coming_soon": "Hozzászólás funkció hamarosan!",
     "wellbot_suggestion": "WellBot ajánlás",
     "wellbot_replied": "WellBot válaszolt a kérdésre",
-    "ai_assistant": "AI Asszisztens"
+    "ai_assistant": "AI Asszisztens",
+    "chat_with_wellbot": "Kérdezz a WellBot-tól"
   },
   "sponsor_hub": {
     "title": "Támogatói Központ",
