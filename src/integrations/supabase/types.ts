@@ -1678,6 +1678,8 @@ export type Database = {
       }
       profiles: {
         Row: {
+          accepted_terms_at: string | null
+          accepted_terms_version: string | null
           avatar_url: string | null
           bio: string | null
           bio_de: string | null
@@ -1743,6 +1745,8 @@ export type Database = {
           wise_iban: string | null
         }
         Insert: {
+          accepted_terms_at?: string | null
+          accepted_terms_version?: string | null
           avatar_url?: string | null
           bio?: string | null
           bio_de?: string | null
@@ -1808,6 +1812,8 @@ export type Database = {
           wise_iban?: string | null
         }
         Update: {
+          accepted_terms_at?: string | null
+          accepted_terms_version?: string | null
           avatar_url?: string | null
           bio?: string | null
           bio_de?: string | null

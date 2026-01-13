@@ -41,6 +41,9 @@
   "auth.organization_placeholder": "z.B. Green Tech GmbH",
   "auth.industry": "Branche",
   "auth.industry_placeholder": "z.B. Technologie, Gastgewerbe",
+  "auth.accept_terms_prefix": "Ich habe die ",
+  "auth.terms_link": "Allgemeinen Geschäftsbedingungen",
+  "auth.accept_terms_suffix": " gelesen und akzeptiere sie",
   "expert_studio.community_interactions": "Community-Interaktionen",
   "expert_studio.questions_received": "Erhaltene Fragen",
   "expert_studio.unanswered": "unbeantwortet",
@@ -3567,5 +3570,14 @@
     "no_programs_desc": "Entdecken Sie unsere Expert:Innen und starten Sie Ihre erste Kampagne!",
     "explore_programs": "Programme entdecken",
     "unknown_expert": "Unbekannter Experte"
+  },
+  "terms": {
+    "version": "Version",
+    "confirm_read": "Ich habe die obigen Bedingungen gelesen und verstanden",
+    "confirm_accept": "Ich akzeptiere die Allgemeinen Geschäftsbedingungen",
+    "accept": "Akzeptieren",
+    "decline": "Ablehnen",
+    "updated_notice": "Unsere Bedingungen wurden aktualisiert. Bitte lesen und akzeptieren Sie die neue Version.",
+    "must_accept": "Sie müssen die AGB akzeptieren, um fortzufahren."
   }
 }

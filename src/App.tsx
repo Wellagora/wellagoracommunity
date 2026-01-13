@@ -14,6 +14,7 @@ import { LoadingFallback } from "@/components/LoadingFallback";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import AppLayout from "@/components/layout/AppLayout";
+import TermsCheckWrapper from "@/components/wrappers/TermsCheckWrapper";
 import "./index.css";
 
 // Lazy load all pages for better performance
@@ -94,8 +95,10 @@ function App() {
                         <Route path="/auth" element={<AuthPage />} />
 
                         {/* All other pages share a single, top-level navigation layout */}
-                        <Route element={<AppLayout />}>
-                          <Route path="/" element={<Index />} />
+                        {/* TermsCheckWrapper shows Terms modal for real users who haven't accepted */}
+                        <Route element={<TermsCheckWrapper />}>
+                          <Route element={<AppLayout />}>
+                            <Route path="/" element={<Index />} />
                           <Route path="/dashboard/handprint" element={<HandprintPage />} />
                           <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
                           <Route path="/dashboard" element={<Navigate to="/iranyitopult" replace />} />
@@ -312,7 +315,8 @@ function App() {
                           <Route path="/szakertok/:id" element={<CreatorPublicProfilePage />} />
                           <Route path="/creators/:id" element={<CreatorPublicProfilePage />} />
                           
-                          <Route path="*" element={<NotFound />} />
+                            <Route path="*" element={<NotFound />} />
+                          </Route>
                         </Route>
                       </Routes>
                     </Suspense>
