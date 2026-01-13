@@ -100,6 +100,30 @@
       "updated": "Visszajelzés frissítve!",
       "fetch_error": "Hiba a visszajelzések betöltésekor.",
       "update_error": "Hiba a mentés során."
+    },
+    "analytics": {
+      "title": "Analitika",
+      "subtitle": "Platform használati statisztikák",
+      "last_7_days": "Utolsó 7 nap",
+      "last_14_days": "Utolsó 14 nap",
+      "last_30_days": "Utolsó 30 nap",
+      "total_page_views": "Összes oldalmegtekintés",
+      "unique_sessions": "Egyedi munkamenetek",
+      "total_events": "Összes esemény",
+      "conversion_rate": "Konverziós ráta",
+      "page_views_over_time": "Oldalmegtekintések időben",
+      "page_views": "Oldalmegtekintések",
+      "sessions": "Munkamenetek",
+      "voucher_funnel": "Voucher konverziós tölcsér",
+      "funnel_view": "Megtekintés",
+      "funnel_start": "Igénylés kezdés",
+      "funnel_complete": "Igénylés befejezés",
+      "top_pages": "Legnépszerűbb oldalak",
+      "device_breakdown": "Eszköz megoszlás",
+      "device_mobile": "Mobil",
+      "device_desktop": "Asztali",
+      "device_tablet": "Tablet",
+      "top_events": "Leggyakoribb események"
     }
   },
   "feedback": {
