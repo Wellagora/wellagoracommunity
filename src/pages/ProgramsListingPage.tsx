@@ -155,71 +155,90 @@ const ProgramsListingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
+    <div className="min-h-screen bg-[#FAFAFA]">
+      <div className="container mx-auto px-4 py-12">
+        {/* Header - Ultra Minimalist */}
+        <motion.div 
+          className="mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           {creatorFilter && filteredCreator ? (
             <div className="mb-6">
               <Link to="/piacer">
-                <Button variant="ghost" size="sm" className="mb-4">
+                <Button variant="ghost" size="sm" className="mb-6">
                   {t("program.back")}
                 </Button>
               </Link>
-              <div className="flex items-center gap-4 p-4 rounded-lg bg-card border border-border">
-                <Avatar className="h-16 w-16 border-2 border-primary">
-                  <AvatarImage src={filteredCreator.avatar_url || undefined} />
-                  <AvatarFallback className="bg-primary/10 text-primary text-lg">
-                    {filteredCreator.first_name?.[0]}
-                    {filteredCreator.last_name?.[0]}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <h2 className="text-xl font-bold text-foreground">
-                    {filteredCreator.first_name} {filteredCreator.last_name}
-                  </h2>
-                  {filteredCreator.expert_title && <p className="text-primary">{String(filteredCreator.expert_title)}</p>}
-                  <p className="text-sm text-muted-foreground">
-                    {t("marketplace.showing_creator_contents").replace("{{count}}", String(filteredPrograms.length))}
-                  </p>
+              <Card className="p-6">
+                <div className="flex items-center gap-6">
+                  <Avatar className="h-20 w-20 border-2 border-black/10">
+                    <AvatarImage src={filteredCreator.avatar_url || undefined} />
+                    <AvatarFallback className="bg-black/5 text-black text-xl font-serif">
+                      {filteredCreator.first_name?.[0]}
+                      {filteredCreator.last_name?.[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h2 className="font-serif text-2xl font-semibold text-foreground">
+                      {filteredCreator.first_name} {filteredCreator.last_name}
+                    </h2>
+                    {filteredCreator.expert_title && (
+                      <p className="text-sm text-black/50 mt-1">{String(filteredCreator.expert_title)}</p>
+                    )}
+                    <p className="text-xs tracking-wide uppercase text-black/40 mt-2">
+                      {filteredPrograms.length} Programs
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </Card>
             </div>
           ) : (
             <>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-xl bg-primary/10">
-                  <Store className="w-6 h-6 text-primary" />
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center">
+                  <Store className="w-6 h-6 text-white" />
                 </div>
-                <h1 className="text-3xl font-bold text-foreground">{t("marketplace.title")}</h1>
+                <h1 className="font-serif text-4xl md:text-5xl font-semibold text-foreground">{t("marketplace.title")}</h1>
               </div>
-              <p className="text-muted-foreground">{t("marketplace.subtitle")}</p>
+              <p className="text-black/50 text-lg max-w-2xl">{t("marketplace.subtitle")}</p>
             </>
           )}
-        </div>
+        </motion.div>
 
-        {/* Search */}
-        <div className="relative mb-6">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+        {/* Search - Glassmorphism */}
+        <motion.div 
+          className="relative mb-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-black/30" />
           <Input
             type="text"
             placeholder={t("marketplace.search")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-12 pr-12 py-6"
+            className="pl-14 pr-14 py-7 text-base bg-white/80 backdrop-blur-xl border-black/[0.05] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.04)] focus:shadow-[0_12px_48px_rgba(0,0,0,0.08)] focus:border-black/[0.1] transition-all duration-300"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground transition-colors"
+              className="absolute right-5 top-1/2 -translate-y-1/2 p-2 text-black/30 hover:text-black/60 transition-colors rounded-full hover:bg-black/5"
             >
               <X className="w-5 h-5" />
             </button>
           )}
-        </div>
+        </motion.div>
 
-        {/* Categories */}
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
+        {/* Categories - Pill Style */}
+        <motion.div 
+          className="flex gap-3 mb-10 overflow-x-auto pb-2 scrollbar-hide"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           {CATEGORIES.map((category) => {
             const Icon = category.icon;
             const isActive = selectedCategory === category.id;
@@ -227,10 +246,10 @@ const ProgramsListingPage = () => {
               <button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap transition-all ${
+                className={`flex items-center gap-2.5 px-5 py-2.5 rounded-full whitespace-nowrap transition-all duration-300 ${
                   isActive
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary"
+                    ? "bg-black text-white shadow-[0_4px_16px_rgba(0,0,0,0.15)]"
+                    : "bg-white/80 backdrop-blur-sm border border-black/[0.05] text-black/60 hover:border-black/[0.15] hover:text-black hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)]"
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -238,21 +257,31 @@ const ProgramsListingPage = () => {
               </button>
             );
           })}
-        </div>
+        </motion.div>
 
         {/* Results Count */}
-        <div className="mb-6 text-muted-foreground">
-          {filteredPrograms.length} {t("marketplace.showing_results")}
-        </div>
+        <motion.div 
+          className="mb-8 text-sm tracking-wide text-black/40"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <span className="font-medium text-black">{filteredPrograms.length}</span> {t("marketplace.showing_results")}
+        </motion.div>
 
-        {/* Programs Grid */}
+        {/* Programs Grid - Ultra Minimalist Salesforce AI Style */}
         {filteredPrograms.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
-              <Search className="w-10 h-10 text-muted-foreground" />
+          <motion.div 
+            className="text-center py-20"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="w-24 h-24 mx-auto mb-8 rounded-full bg-black/[0.03] flex items-center justify-center">
+              <Search className="w-12 h-12 text-black/20" />
             </div>
-            <h3 className="text-xl font-semibold text-foreground mb-2">{t("marketplace.no_results")}</h3>
-            <p className="text-muted-foreground mb-6">{t("marketplace.no_results_desc")}</p>
+            <h3 className="font-serif text-2xl font-semibold text-foreground mb-3">{t("marketplace.no_results")}</h3>
+            <p className="text-muted-foreground mb-8 max-w-md mx-auto">{t("marketplace.no_results_desc")}</p>
             <Button
               variant="outline"
               onClick={() => {
@@ -262,26 +291,30 @@ const ProgramsListingPage = () => {
             >
               {t("marketplace.clear_filters")}
             </Button>
-          </div>
+          </motion.div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredPrograms.map((program, index) => (
               <motion.div
                 key={program.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
+                transition={{ 
+                  duration: 0.5, 
+                  delay: index * 0.08,
+                  ease: [0.25, 0.46, 0.45, 0.94]
+                }}
               >
-                <Link to={`/piacer/${program.id}`}>
-                  <Card className="bg-card border-border/50 rounded-2xl overflow-hidden h-full transition-all duration-300 hover:-translate-y-1 group">
+                <Link to={`/piacer/${program.id}`} className="block group">
+                  <Card className="overflow-hidden h-full">
                     <CardContent className="p-0">
-                      {/* Image */}
-                      <div className="aspect-video bg-muted relative overflow-hidden">
+                      {/* Image with overlay */}
+                      <div className="aspect-[4/3] bg-gradient-to-br from-black/[0.02] to-black/[0.06] relative overflow-hidden">
                         {program.thumbnail_url || program.image_url ? (
                           <img
                             src={program.thumbnail_url || program.image_url || ""}
                             alt={String(program.title)}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                             onError={(e) => {
                               e.currentTarget.style.display = "none";
                               e.currentTarget.nextElementSibling?.classList.remove("hidden");
@@ -292,43 +325,28 @@ const ProgramsListingPage = () => {
                           <ImagePlaceholder icon={Leaf} />
                         </div>
 
+                        {/* Featured badge - Monochrome */}
                         {program.is_featured && (
-                          <Badge className="absolute top-2 left-2 bg-amber-500/90 text-white shadow-md">
-                            <Star className="w-3 h-3 mr-1" />
-                            {t("program.featured")}
-                          </Badge>
-                        )}
-                      </div>
-
-                      {/* Content */}
-                      <div className="p-4">
-                        <h3 className="font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                          {String(program.title)}
-                        </h3>
-
-                        {program.creator && (
-                          <div className="flex items-center gap-2 mb-3">
-                            <Avatar className="w-6 h-6 border border-white shadow-sm">
-                              <AvatarImage src={program.creator.avatar_url || undefined} />
-                              <AvatarFallback className="bg-primary/10 text-primary text-xs">
-                                {program.creator.first_name?.[0]}
-                                {program.creator.last_name?.[0]}
-                              </AvatarFallback>
-                            </Avatar>
-                            <span className="text-sm text-muted-foreground">
-                              {program.creator.first_name} {program.creator.last_name}
+                          <div className="absolute top-4 left-4">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/80 backdrop-blur-sm text-white text-xs font-medium tracking-wide uppercase">
+                              <Star className="w-3 h-3 fill-current" />
+                              Featured
                             </span>
                           </div>
                         )}
+                      </div>
 
-                        <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{String(program.description || "")}</p>
-
-                        <div className="flex items-end justify-between gap-3">
-                          {getAccessBadge(program)}
-                          <Button size="sm" variant="secondary">
-                            {t("common.view")}
-                          </Button>
-                        </div>
+                      {/* Ultra-Minimal Content */}
+                      <div className="p-6">
+                        {/* Category - Uppercase, tiny, spaced out */}
+                        <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-black/40 mb-3 block">
+                          {program.category || "Program"}
+                        </span>
+                        
+                        {/* Title - Serif font */}
+                        <h3 className="font-serif text-xl font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-black transition-colors duration-300">
+                          {String(program.title)}
+                        </h3>
                       </div>
                     </CardContent>
                   </Card>

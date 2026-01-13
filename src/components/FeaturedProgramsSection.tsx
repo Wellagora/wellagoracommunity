@@ -118,37 +118,46 @@ const FeaturedProgramsSection = () => {
   if (featuredPrograms.length === 0) return null;
 
   return (
-    <section className="py-12 bg-background">
+    <section className="py-16 bg-background">
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
           viewport={{ once: true }}
         >
-          <div className="flex items-center gap-3 mb-8">
-            <Star className="w-7 h-7 text-amber-400 fill-amber-400" />
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground">{t("program.featured")}</h2>
+          {/* Header - Monochrome */}
+          <div className="flex items-center gap-4 mb-10">
+            <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
+              <Star className="w-5 h-5 text-white fill-white" />
+            </div>
+            <h2 className="font-serif text-3xl md:text-4xl font-semibold text-foreground">{t("program.featured")}</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Grid - Ultra Minimalist Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredPrograms.map((program, index) => (
               <motion.div
                 key={program.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ 
+                  duration: 0.5, 
+                  delay: index * 0.1,
+                  ease: [0.25, 0.46, 0.45, 0.94]
+                }}
                 viewport={{ once: true }}
               >
-                <Link to={`/piacer/${program.id}`}>
-                  <Card className="bg-card border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 overflow-hidden group">
+                <Link to={`/piacer/${program.id}`} className="block group">
+                  <Card className="overflow-hidden">
                     <CardContent className="p-0">
-                      <div className="aspect-video bg-muted overflow-hidden relative">
+                      {/* Image with smooth zoom */}
+                      <div className="aspect-[4/3] bg-gradient-to-br from-black/[0.02] to-black/[0.06] overflow-hidden relative">
                         {program.thumbnail_url || program.image_url ? (
                           <img
                             src={program.thumbnail_url || program.image_url || ""}
                             alt={typeof program.title === "string" ? program.title : ""}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                             onError={(e) => {
                               e.currentTarget.style.display = "none";
                               e.currentTarget.nextElementSibling?.classList.remove("hidden");
@@ -159,39 +168,25 @@ const FeaturedProgramsSection = () => {
                           <ImagePlaceholder />
                         </div>
 
-                        <div className="absolute top-3 right-3">
-                          <div className="bg-amber-500/90 rounded-full p-1.5">
+                        {/* Featured star - Monochrome */}
+                        <div className="absolute top-4 right-4">
+                          <div className="w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center">
                             <Star className="w-4 h-4 text-white fill-white" />
                           </div>
                         </div>
                       </div>
 
-                      <div className="p-4">
-                        <h3 className="font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                      {/* Ultra-Minimal Content */}
+                      <div className="p-6">
+                        {/* Category */}
+                        <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-black/40 mb-3 block">
+                          Featured
+                        </span>
+                        
+                        {/* Title - Serif */}
+                        <h3 className="font-serif text-xl font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-black transition-colors duration-300">
                           {typeof program.title === "string" ? program.title : ""}
                         </h3>
-
-                        {program.creator && (
-                          <div className="flex items-center gap-2 mb-3">
-                            <Avatar className="w-5 h-5 border border-white shadow-sm">
-                              <AvatarImage src={program.creator.avatar_url || undefined} />
-                              <AvatarFallback className="bg-primary/10 text-primary text-xs">
-                                {program.creator.first_name?.[0]}
-                                {program.creator.last_name?.[0]}
-                              </AvatarFallback>
-                            </Avatar>
-                            <span className="text-xs text-muted-foreground">
-                              {program.creator.first_name} {program.creator.last_name}
-                            </span>
-                          </div>
-                        )}
-
-                        <div className="flex items-center justify-between">
-                          {getAccessBadge(program)}
-                          {program.access_level === "one_time_purchase" && program.price_huf && (
-                            <span className="text-sm font-medium text-primary">{program.price_huf.toLocaleString()} Ft</span>
-                          )}
-                        </div>
                       </div>
                     </CardContent>
                   </Card>
