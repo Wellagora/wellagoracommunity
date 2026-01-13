@@ -1,4 +1,42 @@
 {
+  "admin": {
+    "access_denied": "Zugriff verweigert",
+    "access_denied_description": "Sie haben keine Berechtigung für das Admin-Panel.",
+    "nav": {
+      "dashboard": "Dashboard",
+      "users": "Benutzer",
+      "feedback": "Feedback",
+      "analytics": "Analytik",
+      "moderation": "Moderation",
+      "settings": "Einstellungen",
+      "exit": "Admin verlassen"
+    },
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "subtitle": "Plattform-Übersicht und Verwaltung",
+      "quick_actions": "Schnellaktionen",
+      "refresh": "Aktualisieren",
+      "demo_mode": "Demo-Modus - Daten sind simuliert."
+    },
+    "stats": {
+      "total_users": "Gesamtbenutzer",
+      "experts": "Expert:Innen",
+      "sponsors": "Sponsor:Innen",
+      "members": "Mitglieder",
+      "active_programs": "Aktive Programme",
+      "pending_feedback": "Offenes Feedback"
+    },
+    "actions": {
+      "manage_users": "Benutzer verwalten",
+      "moderation": "Inhaltsmoderation",
+      "view_feedback": "Feedback anzeigen",
+      "analytics": "Analytik",
+      "settings": "Einstellungen"
+    },
+    "placeholder": {
+      "coming_soon": "Diese Funktion kommt bald..."
+    }
+  },
   "feedback": {
     "title": "Feedback senden",
     "subtitle": "Hilf uns, die Plattform zu verbessern!",

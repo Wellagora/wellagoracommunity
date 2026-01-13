@@ -1,4 +1,42 @@
 {
+  "admin": {
+    "access_denied": "Hozzáférés megtagadva",
+    "access_denied_description": "Nincs jogosultságod az admin felülethez.",
+    "nav": {
+      "dashboard": "Vezérlőpult",
+      "users": "Felhasználók",
+      "feedback": "Visszajelzések",
+      "analytics": "Analitika",
+      "moderation": "Moderáció",
+      "settings": "Beállítások",
+      "exit": "Kilépés az Adminból"
+    },
+    "dashboard": {
+      "title": "Admin Vezérlőpult",
+      "subtitle": "Platform áttekintés és kezelés",
+      "quick_actions": "Gyors műveletek",
+      "refresh": "Frissítés",
+      "demo_mode": "Demo módban az adatok szimuláltak."
+    },
+    "stats": {
+      "total_users": "Összes felhasználó",
+      "experts": "Szakértők",
+      "sponsors": "Szponzorok",
+      "members": "Tagok",
+      "active_programs": "Aktív programok",
+      "pending_feedback": "Új visszajelzések"
+    },
+    "actions": {
+      "manage_users": "Felhasználók kezelése",
+      "moderation": "Tartalom moderálás",
+      "view_feedback": "Visszajelzések",
+      "analytics": "Analitika",
+      "settings": "Beállítások"
+    },
+    "placeholder": {
+      "coming_soon": "Ez a funkció hamarosan elérhető..."
+    }
+  },
   "feedback": {
     "title": "Visszajelzés küldése",
     "subtitle": "Segíts nekünk jobbá tenni a platformot!",

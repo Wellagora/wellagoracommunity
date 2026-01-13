@@ -48,6 +48,9 @@ const TranslationToolPage = lazy(() => import("@/pages/TranslationToolPage"));
 const PrivacyPolicyPage = lazy(() => import("@/pages/PrivacyPolicyPage"));
 const ImpressumPage = lazy(() => import("@/pages/ImpressumPage"));
 const SuperAdminPage = lazy(() => import("@/pages/SuperAdminPage"));
+const AdminLayout = lazy(() => import("@/layouts/AdminLayout"));
+const AdminDashboardNew = lazy(() => import("@/pages/admin/AdminDashboardNew"));
+const AdminPlaceholder = lazy(() => import("@/pages/admin/AdminPlaceholder"));
 const SponsorLandingPage = lazy(() => import("@/pages/SponsorLandingPage"));
 const OrganizationRegisterPage = lazy(() => import("@/pages/OrganizationRegisterPage"));
 const JoinOrganizationPage = lazy(() => import("@/pages/JoinOrganizationPage"));
@@ -236,6 +239,25 @@ function App() {
                               </ProtectedRoute>
                             }
                           />
+                          </Route>
+                        </Route>
+                        
+                        {/* New Admin Dashboard with separate layout */}
+                        <Route
+                          path="/admin-panel"
+                          element={
+                            <ProtectedRoute requireSuperAdmin>
+                              <AdminLayout />
+                            </ProtectedRoute>
+                          }
+                        >
+                          <Route index element={<AdminDashboardNew />} />
+                          <Route path="users" element={<AdminPlaceholder titleKey="admin.nav.users" />} />
+                          <Route path="feedback" element={<AdminPlaceholder titleKey="admin.nav.feedback" />} />
+                          <Route path="analytics" element={<AdminPlaceholder titleKey="admin.nav.analytics" />} />
+                          <Route path="moderation" element={<AdminPlaceholder titleKey="admin.nav.moderation" />} />
+                          <Route path="settings" element={<AdminPlaceholder titleKey="admin.nav.settings" />} />
+                        </Route>
                           <Route path="/sponsor" element={<SponsorLandingPage />} />
                           <Route path="/register/organization" element={<OrganizationRegisterPage />} />
                           <Route path="/join/org/:inviteCode" element={<JoinOrganizationPage />} />
@@ -319,8 +341,6 @@ function App() {
                           <Route path="/creators/:id" element={<CreatorPublicProfilePage />} />
                           
                             <Route path="*" element={<NotFound />} />
-                          </Route>
-                        </Route>
                       </Routes>
                     </Suspense>
                     <Toaster />
