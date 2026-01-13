@@ -1,4 +1,21 @@
 {
+  "feedback": {
+    "title": "Feedback senden",
+    "subtitle": "Hilf uns, die Plattform zu verbessern!",
+    "type_label": "Welche Art von Feedback?",
+    "type_bug": "Fehlerbericht",
+    "type_feature": "Idee / Vorschlag",
+    "type_question": "Frage",
+    "type_other": "Sonstiges",
+    "message_label": "Nachricht",
+    "message_placeholder": "Beschreibe detailliert, was du erlebt hast oder vorschlägst...",
+    "current_page": "Aktuelle Seite",
+    "cancel": "Abbrechen",
+    "submit": "Absenden",
+    "success": "Danke für dein Feedback! 🙏",
+    "error_empty": "Bitte schreibe eine Nachricht!",
+    "error_submit": "Beim Senden ist ein Fehler aufgetreten. Bitte versuche es erneut!"
+  },
   "community": {
     "tab_feed": "Feed",
     "tab_gallery": "Galerie",

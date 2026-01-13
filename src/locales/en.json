@@ -1,4 +1,21 @@
 {
+  "feedback": {
+    "title": "Send Feedback",
+    "subtitle": "Help us improve the platform!",
+    "type_label": "What type of feedback?",
+    "type_bug": "Bug Report",
+    "type_feature": "Idea / Suggestion",
+    "type_question": "Question",
+    "type_other": "Other",
+    "message_label": "Message",
+    "message_placeholder": "Describe in detail what you experienced or suggest...",
+    "current_page": "Current page",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "success": "Thank you for your feedback! 🙏",
+    "error_empty": "Please write a message!",
+    "error_submit": "An error occurred while sending. Please try again!"
+  },
   "community": {
     "tab_feed": "Feed",
     "tab_gallery": "Gallery",

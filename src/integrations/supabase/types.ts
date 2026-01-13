@@ -1172,6 +1172,48 @@ export type Database = {
           },
         ]
       }
+      feedback: {
+        Row: {
+          admin_notes: string | null
+          created_at: string | null
+          feedback_type: string
+          id: string
+          message: string
+          page_url: string | null
+          screenshot_url: string | null
+          status: string | null
+          updated_at: string | null
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string | null
+          feedback_type: string
+          id?: string
+          message: string
+          page_url?: string | null
+          screenshot_url?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string | null
+          feedback_type?: string
+          id?: string
+          message?: string
+          page_url?: string | null
+          screenshot_url?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       invoices: {
         Row: {
           amount: number
