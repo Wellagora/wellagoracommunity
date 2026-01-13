@@ -3894,7 +3894,10 @@
     "view_all_comments": "Mind a {{count}} hozzászólás",
     "no_posts": "Még nincs bejegyzés ebben a kategóriában.",
     "coming_soon": "Hamarosan elérhető!",
-    "comment_coming_soon": "Hozzászólás funkció hamarosan!"
+    "comment_coming_soon": "Hozzászólás funkció hamarosan!",
+    "wellbot_suggestion": "WellBot ajánlás",
+    "wellbot_replied": "WellBot válaszolt a kérdésre",
+    "ai_assistant": "AI Asszisztens"
   },
   "sponsor_hub": {
     "title": "Támogatói Központ",

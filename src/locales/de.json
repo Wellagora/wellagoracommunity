@@ -3528,7 +3528,10 @@
     "view_all_comments": "Alle {{count}} Kommentare anzeigen",
     "no_posts": "Noch keine Beiträge in dieser Kategorie.",
     "coming_soon": "Demnächst verfügbar!",
-    "comment_coming_soon": "Kommentarfunktion kommt bald!"
+    "comment_coming_soon": "Kommentarfunktion kommt bald!",
+    "wellbot_suggestion": "WellBot Empfehlung",
+    "wellbot_replied": "WellBot hat auf diese Frage geantwortet",
+    "ai_assistant": "KI-Assistent"
   },
   "sponsor_hub": {
     "title": "Sponsor Hub",

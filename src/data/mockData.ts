@@ -11,6 +11,7 @@ export const DEMO_STATS = {
   completions: 312,
   points: 15420,
   activeChallenges: 8,
+  wellbotResponses: 156,
 } as const;
 
 export interface MockExpert {
@@ -875,13 +876,13 @@ export const getLocalizedAnswer = (a: MockQuestion['answers'][0], language: stri
 };
 
 // ===== SOCIAL FEED POSTS =====
-export type PostType = 'expert_tip' | 'question' | 'success_story' | 'announcement';
+export type PostType = 'expert_tip' | 'question' | 'success_story' | 'announcement' | 'wellbot_answer';
 
 export interface FeedComment {
   id: string;
   authorId: string;
   authorName: string;
-  authorRole: 'member' | 'expert';
+  authorRole: 'member' | 'expert' | 'wellbot';
   authorBadge?: string;
   content: string;
   createdAt: string;
@@ -893,7 +894,7 @@ export interface FeedPost {
   type: PostType;
   authorId: string;
   authorName: string;
-  authorRole: 'member' | 'expert' | 'sponsor';
+  authorRole: 'member' | 'expert' | 'sponsor' | 'wellbot';
   authorBadge?: string;
   content: string;
   imageUrl?: string;
@@ -903,6 +904,8 @@ export interface FeedPost {
   likes: number;
   isLikedByMe: boolean;
   comments: FeedComment[];
+  isWellBotResponse?: boolean;
+  replyToPostId?: string;
 }
 
 export const MOCK_FEED_POSTS: FeedPost[] = [
@@ -965,6 +968,23 @@ export const MOCK_FEED_POSTS: FeedPost[] = [
       }
     ]
   },
+  // WellBot response to cheese question
+  {
+    id: 'post-2-wellbot',
+    type: 'wellbot_answer',
+    authorId: 'wellbot',
+    authorName: 'WellBot',
+    authorRole: 'wellbot',
+    authorBadge: 'AI Asszisztens',
+    content: '🧀 Ha érdekel a sajtkészítés, van egy remek programunk! Nagy Éva Gyógynövényszakértő "Házi teakeverékek készítése" kurzusán megismerheted a helyi ízeket. Ha pedig sajtot szeretnél, a Köveskáli Sajtműhelyben vársz - és nézd meg a helyi termelői programjainkat is!',
+    relatedProgramId: 'mock-program-4',
+    createdAt: '2026-01-13T07:35:00Z',
+    likes: 5,
+    isLikedByMe: false,
+    isWellBotResponse: true,
+    replyToPostId: 'post-2',
+    comments: []
+  },
   // POST 3 - Expert Tip with Image (Yesterday)
   {
     id: 'post-3',
@@ -1004,6 +1024,32 @@ export const MOCK_FEED_POSTS: FeedPost[] = [
         content: 'Január 20-án, szombaton lesz a következő! Tésztakészítés lesz a téma. Hozd nyugodtan! 👨‍👩‍👧',
         createdAt: '2026-01-11T19:00:00Z',
         isExpertAnswer: true
+      }
+    ]
+  },
+  // WellBot response to cooking question
+  {
+    id: 'post-4-wellbot',
+    type: 'wellbot_answer',
+    authorId: 'wellbot',
+    authorName: 'WellBot',
+    authorRole: 'wellbot',
+    authorBadge: 'AI Asszisztens',
+    content: '👨‍🍳 Addig is, amíg vársz a közös főzésre, nézd meg Kovács István "Kovászkenyér mesterkurzus" programját! Lépésről lépésre megtanulhatod a tökéletes kenyérsütést. A Helyi Értékek Programja támogatásával most ingyen elérhető!',
+    relatedProgramId: 'mock-program-2',
+    createdAt: '2026-01-11T19:15:00Z',
+    likes: 8,
+    isLikedByMe: false,
+    isWellBotResponse: true,
+    replyToPostId: 'post-4',
+    comments: [
+      {
+        id: 'c-wb-1',
+        authorId: 'member-1',
+        authorName: 'Tóth Eszter',
+        authorRole: 'member',
+        content: 'Köszi WellBot! Már be is iratkoztam! 🙌',
+        createdAt: '2026-01-11T20:00:00Z'
       }
     ]
   },
