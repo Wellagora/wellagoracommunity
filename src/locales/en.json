@@ -3805,5 +3805,32 @@
     "draft_saved": "Draft saved!",
     "published_success": "Program published successfully! 🎉",
     "publish_error": "Error publishing program"
+  },
+  "sponsor_hub": {
+    "title": "Sponsor Hub",
+    "subtitle": "Track your community impact",
+    "people_reached": "People Reached",
+    "people": "people",
+    "this_month": "this month",
+    "programs_supported": "Programs Supported",
+    "active_programs": "active programs",
+    "vouchers_redeemed": "Vouchers Redeemed",
+    "redeemed": "redeemed",
+    "used_credits": "Used Credits",
+    "available_balance": "Available Balance",
+    "buy_credits": "Buy Credits",
+    "coming_soon": "Coming soon!",
+    "roi_title": "Impact & Spending",
+    "sponsored_programs": "My Sponsored Programs",
+    "program": "Program",
+    "expert": "Expert",
+    "status": "Status",
+    "active": "Active",
+    "completed": "Completed",
+    "details": "Details",
+    "no_programs_title": "No sponsored programs yet",
+    "no_programs_desc": "Explore our experts and start your first campaign!",
+    "explore_programs": "Explore Programs",
+    "unknown_expert": "Unknown expert"
   }
 }
