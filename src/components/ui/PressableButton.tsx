@@ -4,13 +4,15 @@ import { forwardRef, ReactNode } from 'react';
 
 interface PressableButtonProps extends ButtonProps {
   children: ReactNode;
+  pressScale?: number;
 }
 
 export const PressableButton = forwardRef<HTMLButtonElement, PressableButtonProps>(
-  ({ children, className, ...props }, _ref) => {
+  ({ children, className, pressScale = 0.95, ...props }, _ref) => {
     return (
       <motion.div
-        whileTap={{ scale: 0.97 }}
+        whileTap={{ scale: pressScale }}
+        whileHover={{ scale: 1.02 }}
         transition={{ type: 'spring', stiffness: 400, damping: 17 }}
         className="inline-block"
       >

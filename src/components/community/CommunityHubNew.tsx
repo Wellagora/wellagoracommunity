@@ -107,8 +107,8 @@ const CommunityHubNew = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero header */}
-      <div className="bg-gradient-to-b from-card to-background py-12">
+      {/* Sticky Hero header */}
+      <div className="sticky top-0 z-30 bg-gradient-to-b from-card/95 to-background/95 backdrop-blur-sm py-8 border-b border-border/50 shadow-sm">
         <div className="container mx-auto px-4 text-center">
           <Badge className="bg-primary/20 text-primary border-primary/30 mb-4">
             <Users className="h-4 w-4 mr-1" />
