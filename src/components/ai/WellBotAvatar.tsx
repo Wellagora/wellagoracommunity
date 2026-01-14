@@ -78,22 +78,22 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
       variants={bodyBreathVariants}
       animate="breathe"
     >
-      {/* Ambient glow - Glassmorphism silver/pearl */}
+      {/* Ambient glow - Glassmorphism silver/pearl with soft outer glow */}
       <motion.div
-        className={`absolute -inset-1 rounded-full`}
+        className={`absolute -inset-2 rounded-full`}
         variants={pulseGlowVariants}
         animate="pulse"
         style={{ 
-          background: 'radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(229,231,235,0.3) 40%, transparent 70%)',
-          filter: "blur(6px)" 
+          background: 'radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(229,231,235,0.4) 50%, transparent 70%)',
+          filter: "blur(8px)" 
         }}
       />
       
-      {/* Robot body - Frosted Pearl Gray with elegant border */}
+      {/* Robot body - Pearl Silver with 1px black border (0.1 opacity) and premium finish */}
       <motion.div
-        className={`${sizeConfig.container} rounded-full bg-gradient-to-br from-[#E5E7EB] via-[#F0F4F8] to-[#D1D5DB] shadow-[0_4px_20px_rgba(0,0,0,0.08),inset_0_2px_4px_rgba(255,255,255,0.95),inset_0_-2px_4px_rgba(0,0,0,0.04)] flex flex-col items-center justify-center relative overflow-hidden border border-[#E5E7EB]/60`}
+        className={`${sizeConfig.container} rounded-full bg-gradient-to-br from-[#F3F4F6] via-[#E5E7EB] to-[#D1D5DB] flex flex-col items-center justify-center relative overflow-hidden`}
         style={{
-          boxShadow: '0 4px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(255,255,255,0.8) inset, 0 0 20px rgba(255,255,255,0.3)'
+          boxShadow: '0 4px 24px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.1), 0 0 30px rgba(255,255,255,0.5), inset 0 2px 4px rgba(255,255,255,0.9), inset 0 -2px 4px rgba(0,0,0,0.05)'
         }}
       >
         {/* Glass reflection overlay - enhanced frosted pearl */}

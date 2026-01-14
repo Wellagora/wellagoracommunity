@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Users, Lightbulb, Handshake, Calendar, TrendingUp, Clock, Award } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Users, Lightbulb, Handshake, Calendar, TrendingUp, Clock, Award, Zap } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion, useInView } from "framer-motion";
 import { useCommunityStats } from "@/hooks/useCommunityStats";
@@ -80,6 +81,16 @@ const Sparkline = ({ data, className = "" }: { data: number[]; className?: strin
   );
 };
 
+// Demo avatar data for the stack
+const DEMO_AVATARS = [
+  { name: "AK", image: null },
+  { name: "BM", image: null },
+  { name: "CS", image: null },
+  { name: "DT", image: null },
+  { name: "EL", image: null },
+  { name: "FK", image: null },
+];
+
 // Weekly comparison component
 const WeeklyComparison = ({ current, previous, label, icon: Icon }: { 
   current: number; 
@@ -92,19 +103,74 @@ const WeeklyComparison = ({ current, previous, label, icon: Icon }: {
   const isPositive = change >= 0;
   
   return (
-    <div className="flex items-center gap-4 p-4 bg-white/70 backdrop-blur-xl rounded-xl border border-white/50 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
+    <div className="flex items-center gap-4 p-4 bg-white/90 backdrop-blur-xl rounded-xl border border-black/[0.05] shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
       <div className="w-12 h-12 bg-black/[0.03] rounded-full flex items-center justify-center">
-        <Icon className="w-5 h-5 text-black/50" strokeWidth={1.2} />
+        <Icon className="w-5 h-5 text-black" strokeWidth={1.2} />
       </div>
       <div className="flex-1">
-        <p className="text-sm font-medium text-black/40 tracking-wide">{label}</p>
+        <p className="text-sm font-medium text-black/60 tracking-wide">{label}</p>
         <div className="flex items-baseline gap-2">
-          <span className="text-2xl font-semibold text-black tracking-tight tabular-nums">{current.toLocaleString()}</span>
+          <span className="text-2xl font-bold text-black tracking-tight tabular-nums">{current.toLocaleString()}</span>
           <span className={`text-sm font-medium ${isPositive ? 'text-emerald-600' : 'text-red-500'}`}>
             {isPositive ? '+' : ''}{percentChange}%
           </span>
         </div>
       </div>
+    </div>
+  );
+};
+
+// Avatar Stack Component
+const AvatarStack = () => {
+  return (
+    <div className="flex -space-x-3">
+      {DEMO_AVATARS.map((avatar, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: i * 0.1 }}
+        >
+          <Avatar className="w-10 h-10 border-2 border-white shadow-sm">
+            {avatar.image ? (
+              <AvatarImage src={avatar.image} />
+            ) : (
+              <AvatarFallback className="bg-gradient-to-br from-slate-100 to-slate-200 text-black/70 text-xs font-medium">
+                {avatar.name}
+              </AvatarFallback>
+            )}
+          </Avatar>
+        </motion.div>
+      ))}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.6 }}
+        className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center text-xs font-medium border-2 border-white shadow-sm"
+      >
+        +89
+      </motion.div>
+    </div>
+  );
+};
+
+// Live Indicator Component
+const LiveIndicator = () => {
+  return (
+    <div className="flex items-center gap-2 px-3 py-1.5 bg-white/90 backdrop-blur-md rounded-full border border-black/[0.05] shadow-sm">
+      <motion.div
+        className="w-2 h-2 rounded-full bg-emerald-500"
+        animate={{
+          scale: [1, 1.3, 1],
+          opacity: [1, 0.7, 1],
+        }}
+        transition={{
+          duration: 1.5,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+      <span className="text-xs font-medium text-black/70">Élőben</span>
     </div>
   );
 };
@@ -133,13 +199,6 @@ export const CommunityImpactCounter = () => {
 
   const metrics = [
     {
-      icon: Users,
-      label: t('impact_counter.active_members') || 'Aktív tagok',
-      value: stats.members,
-      change: "+18%",
-      sparkline: sparklineData.members,
-    },
-    {
       icon: Lightbulb,
       label: t('impact_counter.shared_ideas') || 'Megosztott ötletek',
       value: stats.sharedIdeas,
@@ -148,7 +207,7 @@ export const CommunityImpactCounter = () => {
     },
     {
       icon: Handshake,
-      label: t('impact_counter.collaborations') || 'Együttműködések',
+      label: t('impact_counter.collaborations') || 'Közösségi Kapcsolódások',
       value: stats.collaborations,
       change: "+31%",
       sparkline: sparklineData.collaborations,
@@ -248,16 +307,56 @@ export const CommunityImpactCounter = () => {
           </motion.div>
         </div>
 
-        {/* Metric Cards - Glassmorphism with Sparklines */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+        {/* Primary Metric: Aktív Tagok with Avatar Stack */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="max-w-4xl mx-auto mb-8"
+        >
+          <Card className="bg-white/90 backdrop-blur-2xl border-black/[0.05] rounded-3xl overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.06)]">
+            <CardContent className="p-6 md:p-8">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                {/* Left: Number and Label */}
+                <div className="flex items-center gap-6">
+                  <div className="w-16 h-16 bg-black/[0.03] rounded-2xl flex items-center justify-center">
+                    <Users className="w-8 h-8 text-black" strokeWidth={1.2} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-black/50 tracking-wide mb-1">
+                      {t('impact_counter.active_members') || 'Aktív tagok'}
+                    </p>
+                    <div className="flex items-baseline gap-3">
+                      <span className="text-5xl md:text-6xl font-bold text-black tracking-tight tabular-nums">
+                        {loading ? '...' : <AnimatedCounter end={stats.members} shouldStart={isInView && !loading} />}
+                      </span>
+                      <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200/50 text-sm font-medium">
+                        +18%
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right: Avatar Stack + Live Indicator */}
+                <div className="flex flex-col items-center md:items-end gap-3">
+                  <AvatarStack />
+                  <LiveIndicator />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Secondary Metric Cards - Glassmorphism with Sparklines */}
+        <div className="grid sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
           {metrics.map((metric, index) => (
             <motion.div
               key={metric.label}
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
+              transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
             >
-              <Card className="relative overflow-hidden group bg-white/60 backdrop-blur-2xl border-white/60 rounded-2xl transition-all duration-500 hover:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.12)] hover:-translate-y-1 hover:bg-white/80">
+              <Card className="relative overflow-hidden group bg-white/90 backdrop-blur-2xl border-black/[0.05] rounded-2xl transition-all duration-500 hover:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.12)] hover:scale-[1.02]">
                 {/* Sparkline background - appears on hover */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
                   <div className="absolute bottom-0 left-0 right-0 h-16">
@@ -271,21 +370,21 @@ export const CommunityImpactCounter = () => {
                       {/* Soft icon glow */}
                       <div className="absolute inset-0 rounded-full bg-[#E5E7EB]/50 blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
                       <div className="relative w-11 h-11 bg-black/[0.03] rounded-full flex items-center justify-center group-hover:bg-black/[0.05] transition-colors">
-                        <metric.icon className="w-5 h-5 text-black/50" strokeWidth={1.2} />
+                        <metric.icon className="w-5 h-5 text-black" strokeWidth={1.2} />
                       </div>
                     </div>
-                    <Badge className="bg-black/[0.03] text-black/50 border-black/[0.05] text-xs font-medium">
+                    <Badge className="bg-black/[0.03] text-black/70 border-black/[0.05] text-xs font-medium">
                       {metric.change}
                     </Badge>
                   </div>
                   
                   <div className="space-y-1">
                     <div className="flex items-baseline space-x-1">
-                      <span className="text-3xl font-semibold text-black tracking-tight tabular-nums">
+                      <span className="text-3xl font-bold text-black tracking-tight tabular-nums">
                         {loading ? '...' : <AnimatedCounter end={metric.value} shouldStart={isInView && !loading} />}
                       </span>
                     </div>
-                    <p className="text-sm font-medium text-black/40 tracking-wide">{metric.label}</p>
+                    <p className="text-sm font-medium text-black/60 tracking-wide">{metric.label}</p>
                   </div>
                 </CardContent>
               </Card>
