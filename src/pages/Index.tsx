@@ -3,10 +3,8 @@ import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { useCommunityStats } from "@/hooks/useCommunityStats";
-import { DEMO_STATS } from "@/data/mockData";
 import { motion } from "framer-motion";
-import { Users, Award, Heart, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
 import ExpertGallery from "@/components/ExpertGallery";
 import FeaturedEventsGrid from "@/components/FeaturedEventsGrid";
@@ -16,14 +14,10 @@ import { UpcomingEventsSection } from "@/components/events/UpcomingEventsSection
 import { RegionalImpactGarden } from "@/components/RegionalImpactGarden";
 import { CommunityImpactCounter } from "@/components/CommunityImpactCounter";
 import Footer from "@/components/Footer";
-import { StatsBarSkeleton } from "@/components/ui/skeletons";
 
 const Index = () => {
   const { t } = useLanguage();
-  const { user, profile, loading, isDemoMode } = useAuth();
-  
-  // Use the centralized hook for community stats
-  const { stats: communityStats, loading: statsLoading } = useCommunityStats();
+  const { user, profile, loading } = useAuth();
 
   // Show loading state while checking authentication
   if (loading) {
@@ -87,55 +81,8 @@ const Index = () => {
             {/* 6. REGIONÁLIS HATÁSKERT */}
             <RegionalImpactGarden />
 
-            {/* 7. COMMUNITY STATS - Compact horizontal bar */}
-            <section className="py-6 bg-[#F5F5F7]">
-              <div className="container mx-auto px-4">
-                {statsLoading && !isDemoMode ? (
-                  <StatsBarSkeleton />
-                ) : (
-                  <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12">
-                    {/* Members - Monochrome */}
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
-                        <Users className="w-5 h-5 text-slate-700" />
-                      </div>
-                      <div>
-                        <div className="text-xl font-bold text-slate-900">
-                          {isDemoMode ? DEMO_STATS.members : communityStats.members}
-                        </div>
-                        <div className="text-xs text-slate-600">{t("index.stat_members")}</div>
-                      </div>
-                    </div>
-
-                    {/* Sponsors - Monochrome */}
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
-                        <Heart className="w-5 h-5 text-slate-700" />
-                      </div>
-                      <div>
-                        <div className="text-xl font-bold text-slate-900">
-                          {isDemoMode ? DEMO_STATS.sponsors : "—"}
-                        </div>
-                        <div className="text-xs text-slate-600">{t("index.stat_sponsors")}</div>
-                      </div>
-                    </div>
-
-                    {/* Experts - Monochrome */}
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
-                        <Award className="w-5 h-5 text-slate-700" />
-                      </div>
-                      <div>
-                        <div className="text-xl font-bold text-slate-900">
-                          {isDemoMode ? DEMO_STATS.experts : "—"}
-                        </div>
-                        <div className="text-xs text-slate-600">{t("index.stat_experts")}</div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </section>
+            {/* 7. COMMUNITY IMPACT - Avatar Stack + Notification Stream */}
+            <CommunityImpactCounter />
           </main>
         </div>
 
