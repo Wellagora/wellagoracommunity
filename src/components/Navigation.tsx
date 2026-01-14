@@ -289,9 +289,9 @@ const Navigation = () => {
         </div>
       )}
       
-      <nav className={`fixed left-0 right-0 z-[100] w-full bg-white border-b border-[#F0F0F0] ${isDemoMode ? 'top-8' : 'top-0'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+      <nav className={`fixed left-0 right-0 z-[100] w-full bg-white/95 backdrop-blur-md border-b border-slate-200 ${isDemoMode ? 'top-8' : 'top-0'}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-visible">
+          <div className="flex items-center justify-between h-16 overflow-visible">
             {/* Logo - Left */}
             <Link to="/" className="flex items-center shrink-0">
               <img src={wellagoraLogo} alt="WellAgora" className="h-10 w-auto object-contain" />
