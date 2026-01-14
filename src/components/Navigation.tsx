@@ -290,15 +290,15 @@ const Navigation = () => {
       )}
       
       <nav className={`fixed left-0 right-0 z-[100] w-full bg-white/95 backdrop-blur-md border-b border-slate-200 ${isDemoMode ? 'top-8' : 'top-0'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-visible">
-          <div className="flex items-center justify-between h-16 overflow-visible">
-            {/* Logo - Left */}
-            <Link to="/" className="flex items-center shrink-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo - Left - ALWAYS visible with shrink-0 */}
+            <Link to="/" className="flex items-center shrink-0 z-10">
               <img src={wellagoraLogo} alt="WellAgora" className="h-10 w-auto object-contain" />
             </Link>
 
-            {/* Desktop Navigation - Center with flex-1 */}
-            <div className="hidden md:flex flex-1 items-center justify-center gap-x-6">
+            {/* Desktop Navigation - Center - absolute positioning to not push logo */}
+            <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 items-center gap-x-6">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.path);
@@ -326,8 +326,8 @@ const Navigation = () => {
               })}
             </div>
 
-            {/* Desktop Actions - Right - Tightly grouped with consistent gap-4 */}
-            <div className="hidden md:flex items-center gap-4">
+            {/* Desktop Actions - Right - ALWAYS visible with shrink-0 */}
+            <div className="hidden md:flex items-center gap-4 shrink-0 z-10">
               {/* Super Admin View Switcher - Apple iOS Segmented Control */}
             {isSuperAdmin && user && (
               <div className="flex items-center bg-[#F5F5F7] rounded-lg p-1 shadow-sm">

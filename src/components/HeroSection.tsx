@@ -109,7 +109,7 @@ const HeroSection = () => {
   return (
     <section 
       ref={sectionRef}
-      className="min-h-[70vh] flex items-center justify-center py-8 relative overflow-hidden bg-white"
+      className="min-h-[70vh] flex items-center justify-center py-8 relative bg-white"
     >
       {/* Clean white background */}
       <div className="absolute inset-0 -z-20 bg-white" />
