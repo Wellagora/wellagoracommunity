@@ -325,9 +325,9 @@ const Navigation = () => {
               })}
             </div>
 
-            {/* Desktop Actions - Right */}
-            <div className="hidden md:flex items-center gap-4">
-            {/* Super Admin View Switcher - Apple iOS Segmented Control */}
+            {/* Desktop Actions - Right - Force consistent spacing */}
+            <div className="hidden md:flex items-center gap-4 ml-auto">
+              {/* Super Admin View Switcher - Apple iOS Segmented Control */}
             {isSuperAdmin && user && (
               <div className="flex items-center bg-[#F5F5F7] rounded-lg p-1 shadow-sm">
                 <button
