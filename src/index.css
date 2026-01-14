@@ -90,14 +90,14 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-/* ===== CLEAN SOLID BACKGROUNDS ===== */
+/* ===== CLEAN SOLID WHITE BACKGROUNDS ===== */
 .clean-background {
-  background-color: #F8F9FA;
+  background-color: #FFFFFF;
 }
 
-/* Removed dot-grid - now using solid off-white */
+/* Solid white background - no gray grids or dots */
 body {
-  background-color: #F8F9FA;
+  background-color: #FFFFFF;
 }
 
 /* ===== ULTRA-THIN SEPARATORS ===== */

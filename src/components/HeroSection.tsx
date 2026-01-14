@@ -117,10 +117,10 @@ const HeroSection = () => {
   return (
     <section 
       ref={sectionRef}
-      className="min-h-[75vh] flex items-center justify-center py-8 relative overflow-hidden bg-[#FAFAFA]"
+      className="min-h-[75vh] flex items-center justify-center py-8 relative overflow-hidden bg-[#FFFFFF]"
     >
-      {/* Clean Ghost-Grey Background */}
-      <div className="absolute inset-0 -z-10 bg-[#FAFAFA]" />
+      {/* Clean Solid White Background */}
+      <div className="absolute inset-0 -z-10 bg-[#FFFFFF]" />
       
       {/* Interactive Wave Background */}
       <WaveBackground mouseX={mousePosition.x} mouseY={mousePosition.y} />
@@ -205,19 +205,12 @@ const HeroSection = () => {
               onMouseLeave={() => setHoveredCard(null)}
             >
               <Link to={path.link} className="block">
-                {/* Light-Leak Border */}
+                {/* Permanent 1px border */}
                 <div 
-                  className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  className="relative bg-white rounded-2xl p-6 transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.15)] min-h-[140px] flex flex-col justify-between"
                   style={{
-                    background: 'conic-gradient(from 0deg at 50% 50%, transparent 0%, rgba(0,0,0,0.1) 25%, transparent 50%, rgba(0,0,0,0.08) 75%, transparent 100%)',
-                    animation: 'spin 4s linear infinite',
-                  }}
-                />
-                
-                <div 
-                  className="relative bg-white/90 backdrop-blur-xl rounded-2xl p-6 transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.15)] min-h-[140px] flex flex-col justify-between"
-                  style={{
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                    border: '1px solid #E5E7EB',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                   }}
                 >
                   {/* Category indicator */}

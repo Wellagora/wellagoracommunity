@@ -147,23 +147,23 @@ const Index = () => {
   // Non-authenticated user view - Modern landing page
   return (
     <>
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="min-h-screen bg-[#FFFFFF] flex flex-col">
         <Navigation />
         <main className="flex-1">
           {/* 1. HERO SECTION - Full viewport with integrated registration cards */}
           <HeroSection />
 
-          {/* 2. COMMUNITY IMPACT - Gamification section */}
-          <CommunityImpactCounter />
-
-          {/* 3. SZAKÉRTŐI ARCKÉPCSARNOK - Expert Portrait Gallery */}
+          {/* 2. SZAKÉRTŐI ARCKÉPCSARNOK - Expert Portrait Gallery */}
           <ExpertGallery />
 
-          {/* 4. KIEMELT ESEMÉNYEK - Fixed 3-column grid */}
+          {/* 3. KIEMELT ESEMÉNYEK - Fixed 3-column grid */}
           <FeaturedEventsGrid />
 
-          {/* 5. AJÁNLOTT PROGRAMOK - Horizontal slider */}
+          {/* 4. AJÁNLOTT PROGRAMOK - Horizontal slider */}
           <RecommendedProgramsSlider />
+
+          {/* 5. COMMUNITY PULSE - After recommended programs */}
+          <CommunityImpactCounter />
         </main>
       </div>
 
