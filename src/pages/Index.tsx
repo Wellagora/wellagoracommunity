@@ -60,7 +60,7 @@ const Index = () => {
                     {t("index.ready_to_make_impact")}
                   </p>
                   <Link to="/piacer">
-                    <Button size="lg" className="min-w-[200px] gap-2 bg-[#007AFF] hover:bg-[#0056b3] text-white">
+                    <Button size="lg" className="min-w-[200px] gap-2 bg-slate-900 hover:bg-slate-800 text-white">
                       {t("index.go_to_marketplace")}
                       <ChevronRight className="w-5 h-5" />
                     </Button>

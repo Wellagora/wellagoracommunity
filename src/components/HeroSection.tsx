@@ -5,27 +5,27 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { SmartTiltCard } from "@/components/ui/SmartTiltCard";
 import { StaggerContainer, StaggerItem } from "@/components/ui/StaggerAnimation";
 
-// Animated wave background - MONOCHROME slate/silver tones
+// Animated wave background - MONOCHROME slate/silver tones - MORE VISIBLE
 const AnimatedWaveBackground = () => {
   return (
     <div className="absolute inset-0 -z-10 overflow-hidden">
-      {/* Wave 1 - Slate */}
+      {/* Wave 1 - Slate Silver - MORE VISIBLE */}
       <motion.div
         className="absolute inset-0"
         animate={{
           x: ['-100%', '100%'],
+          scaleY: [1, 1.05, 0.95, 1],
         }}
         transition={{
-          duration: 10,
-          repeat: Infinity,
-          ease: "linear",
+          x: { duration: 10, repeat: Infinity, ease: 'linear' },
+          scaleY: { duration: 6, repeat: Infinity, ease: 'easeInOut' },
         }}
         style={{
-          background: 'linear-gradient(90deg, transparent, rgba(100, 116, 139, 0.15), rgba(148, 163, 184, 0.2), rgba(100, 116, 139, 0.15), transparent)',
+          background: 'linear-gradient(90deg, transparent 0%, rgba(148, 163, 184, 0.4) 25%, rgba(203, 213, 225, 0.6) 50%, rgba(148, 163, 184, 0.4) 75%, transparent 100%)',
         }}
       />
       
-      {/* Wave 2 - Lighter slate */}
+      {/* Wave 2 - Lighter, offset */}
       <motion.div
         className="absolute inset-0"
         animate={{
@@ -34,10 +34,10 @@ const AnimatedWaveBackground = () => {
         transition={{
           duration: 15,
           repeat: Infinity,
-          ease: "linear",
+          ease: 'linear',
         }}
         style={{
-          background: 'linear-gradient(90deg, transparent, rgba(203, 213, 225, 0.1), rgba(226, 232, 240, 0.15), rgba(203, 213, 225, 0.1), transparent)',
+          background: 'linear-gradient(90deg, transparent 0%, rgba(226, 232, 240, 0.3) 30%, rgba(241, 245, 249, 0.5) 50%, rgba(226, 232, 240, 0.3) 70%, transparent 100%)',
         }}
       />
       
@@ -195,7 +195,7 @@ const HeroSection = () => {
                 <SmartTiltCard>
                   <Link to={path.link} className="block">
                     <div 
-                      className="relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 min-h-[100px] flex flex-col justify-center border border-slate-200 shadow-sm hover:shadow-xl transition-shadow duration-300"
+                      className="relative bg-white/80 backdrop-blur-xl rounded-2xl p-6 min-h-[100px] flex flex-col justify-center border border-[#E5E7EB] shadow-sm hover:shadow-lg transition-all duration-300"
                     >
                       {/* Title - NO numbers */}
                       <h3 className="text-xl font-serif font-semibold text-slate-900 mb-2">
