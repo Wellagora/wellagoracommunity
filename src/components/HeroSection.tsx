@@ -138,7 +138,7 @@ const HeroSection = () => {
         {/* Kinetic Typographic Hero */}
         <div className="mb-6">
           <motion.h1 
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-serif font-semibold text-black leading-[0.95] tracking-tight"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-black leading-[0.95] tracking-tight"
           >
             <motion.span 
               style={{ y: line1Y }}
@@ -198,7 +198,7 @@ const HeroSection = () => {
                       className="relative bg-white/80 backdrop-blur-xl rounded-2xl p-6 min-h-[100px] flex flex-col justify-center border border-[#E5E7EB] shadow-sm hover:shadow-lg transition-all duration-300"
                     >
                       {/* Title - NO numbers */}
-                      <h3 className="text-xl font-serif font-semibold text-slate-900 mb-2">
+                      <h3 className="text-xl font-semibold text-slate-900 mb-2">
                         {path.title}
                       </h3>
 
