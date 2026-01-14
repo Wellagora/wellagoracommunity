@@ -2,41 +2,50 @@ import { useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PressableButton } from "@/components/ui/PressableButton";
-import { Sparkles, Heart, Users } from "lucide-react";
+import { Sparkles, Heart, Users, LucideIcon } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useInView } from "framer-motion";
 import { Link } from "react-router-dom";
 import { StaggerContainer, StaggerItem } from "@/components/ui/StaggerAnimation";
 import { LiveNotificationFeed } from "@/components/home/LiveNotificationFeed";
 
-// Story testimonials - MONOCHROME design
-const STORY_CARDS = [
+// Story card config - only static data, text comes from translations
+const STORY_CARD_CONFIG: Array<{
+  id: string;
+  titleKey: string;
+  quoteKey: string;
+  authorKey: string;
+  roleKey: string;
+  avatar: string;
+  icon: LucideIcon;
+  borderColor: string;
+}> = [
   {
     id: 'community',
-    title: 'Aktív közösség',
-    quote: '"Végre találtam egy helyet, ahol a szomszédaim igazi barátokká váltak."',
-    author: 'Tóth Anna',
-    role: 'közösségi tag',
+    titleKey: 'community_pulse.story_active_title',
+    quoteKey: 'community_pulse.story_active_quote',
+    authorKey: 'community_pulse.story_active_author',
+    roleKey: 'community_pulse.story_active_role',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100',
     icon: Users,
     borderColor: 'border-l-slate-900',
   },
   {
     id: 'experiences',
-    title: 'Felfedezésre váró élmények',
-    quote: '"A kovászkenyér kurzuson megtanultam, amit a nagyanyám már elfelejtett."',
-    author: 'Kovács Péter',
-    role: 'lelkes résztvevő',
+    titleKey: 'community_pulse.story_experiences_title',
+    quoteKey: 'community_pulse.story_experiences_quote',
+    authorKey: 'community_pulse.story_experiences_author',
+    roleKey: 'community_pulse.story_experiences_role',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100',
     icon: Sparkles,
     borderColor: 'border-l-slate-700',
   },
   {
     id: 'connections',
-    title: 'Megvalósult találkozások',
-    quote: '"A gyógynövénytúrán ismertem meg a legjobb barátnőmet."',
-    author: 'Nagy Eszter',
-    role: 'új barátságok',
+    titleKey: 'community_pulse.story_connections_title',
+    quoteKey: 'community_pulse.story_connections_quote',
+    authorKey: 'community_pulse.story_connections_author',
+    roleKey: 'community_pulse.story_connections_role',
     avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100',
     icon: Heart,
     borderColor: 'border-l-slate-500',
@@ -54,42 +63,45 @@ export const CommunityImpactCounter = () => {
         {/* Header - NO colored badges */}
         <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-bold text-slate-900">
-            Együtt többre megyünk
+            {t('community_pulse.title')}
           </h2>
           <p className="text-slate-500 mt-3">
-            Csatlakozz te is a növekvő közösségünkhöz
+            {t('community_pulse.subtitle')}
           </p>
         </div>
 
         {/* Story Cards - Monochrome with left border + Stagger */}
         <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          {STORY_CARDS.map((story) => (
-            <StaggerItem key={story.id}>
-              <Card className={`bg-white/80 backdrop-blur-sm border-l-4 ${story.borderColor} hover:shadow-lg transition-shadow`}>
-                <CardContent className="p-5">
-                  <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center mb-4">
-                    <story.icon className="w-5 h-5 text-slate-700" />
-                  </div>
-                  <h3 className="font-bold text-slate-900">{story.title}</h3>
-                  <p className="text-slate-600 mt-2 text-sm italic">
-                    {story.quote}
-                  </p>
-                  <div className="flex items-center gap-2 mt-4">
-                    <Avatar className="w-8 h-8">
-                      <AvatarImage src={story.avatar} />
-                      <AvatarFallback className="bg-slate-200 text-slate-700 text-xs">
-                        {story.author.split(' ').map(n => n[0]).join('')}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="text-sm font-medium text-slate-800">{story.author}</p>
-                      <p className="text-xs text-slate-400">{story.role}</p>
+          {STORY_CARD_CONFIG.map((story) => {
+            const author = t(story.authorKey);
+            return (
+              <StaggerItem key={story.id}>
+                <Card className={`bg-white/80 backdrop-blur-sm border-l-4 ${story.borderColor} hover:shadow-lg transition-shadow`}>
+                  <CardContent className="p-5">
+                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center mb-4">
+                      <story.icon className="w-5 h-5 text-slate-700" />
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </StaggerItem>
-          ))}
+                    <h3 className="font-bold text-slate-900">{t(story.titleKey)}</h3>
+                    <p className="text-slate-600 mt-2 text-sm italic">
+                      "{t(story.quoteKey)}"
+                    </p>
+                    <div className="flex items-center gap-2 mt-4">
+                      <Avatar className="w-8 h-8">
+                        <AvatarImage src={story.avatar} />
+                        <AvatarFallback className="bg-slate-200 text-slate-700 text-xs">
+                          {author.split(' ').map(n => n[0]).join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="text-sm font-medium text-slate-800">{author}</p>
+                        <p className="text-xs text-slate-400">{t(story.roleKey)}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </StaggerItem>
+            );
+          })}
         </StaggerContainer>
 
         {/* Live Notification Feed - Animated */}
@@ -100,7 +112,7 @@ export const CommunityImpactCounter = () => {
               <div className="w-2 h-2 rounded-full bg-slate-900" />
               <div className="absolute w-2 h-2 rounded-full bg-slate-900 animate-ping" />
             </div>
-            <span className="font-semibold text-slate-800">Friss a közösségből</span>
+            <span className="font-semibold text-slate-800">{t('community_pulse.feed_title')}</span>
           </div>
           
           {/* Live animated notification stream */}
@@ -111,7 +123,7 @@ export const CommunityImpactCounter = () => {
         <div className="text-center mt-10">
           <PressableButton asChild size="lg" className="bg-slate-900 hover:bg-slate-800 text-white px-8">
             <Link to="/auth">
-              Csatlakozom a közösséghez
+              {t('community_pulse.cta_button')}
             </Link>
           </PressableButton>
         </div>

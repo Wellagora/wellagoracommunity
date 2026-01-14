@@ -4301,5 +4301,23 @@
     "decline": "Elutasítom",
     "updated_notice": "A feltételeink frissültek. Kérjük, olvassa el és fogadja el az új verziót.",
     "must_accept": "A folytatáshoz el kell fogadnia az ÁSZF-et."
+  },
+  "community_pulse": {
+    "title": "Együtt többre megyünk",
+    "subtitle": "Csatlakozz te is a növekvő közösségünkhöz",
+    "story_active_title": "Aktív közösség",
+    "story_active_quote": "Végre találtam egy helyet, ahol a szomszédaim igazi barátokká váltak.",
+    "story_active_author": "Tóth Anna",
+    "story_active_role": "közösségi tag",
+    "story_experiences_title": "Felfedezésre váró élmények",
+    "story_experiences_quote": "A kovászkenyér kurzuson megtanultam, amit a nagyanyám már elfelejtett.",
+    "story_experiences_author": "Kovács Péter",
+    "story_experiences_role": "lelkes résztvevő",
+    "story_connections_title": "Megvalósult találkozások",
+    "story_connections_quote": "A gyógynövénytúrán ismertem meg a legjobb barátnőmet.",
+    "story_connections_author": "Nagy Eszter",
+    "story_connections_role": "új barátságok",
+    "feed_title": "Friss a közösségből",
+    "cta_button": "Csatlakozom a közösséghez"
   }
 }

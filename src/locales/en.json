@@ -4239,5 +4239,23 @@
     "decline": "Decline",
     "updated_notice": "Our terms have been updated. Please read and accept the new version.",
     "must_accept": "You must accept the Terms of Service to continue."
+  },
+  "community_pulse": {
+    "title": "Together we achieve more",
+    "subtitle": "Join our growing community",
+    "story_active_title": "Active Community",
+    "story_active_quote": "Finally I found a place where my neighbors became true friends.",
+    "story_active_author": "Anna Tóth",
+    "story_active_role": "community member",
+    "story_experiences_title": "Experiences waiting for you",
+    "story_experiences_quote": "In the sourdough course I learned what my grandmother never told me.",
+    "story_experiences_author": "Péter Kovács",
+    "story_experiences_role": "enthusiastic participant",
+    "story_connections_title": "Connections made",
+    "story_connections_quote": "On the herb tour I met my best friend.",
+    "story_connections_author": "Eszter Nagy",
+    "story_connections_role": "new friendships",
+    "feed_title": "Fresh from the community",
+    "cta_button": "Join the community"
   }
 }

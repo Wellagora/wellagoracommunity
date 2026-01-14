@@ -3935,5 +3935,23 @@
     "decline": "Ablehnen",
     "updated_notice": "Unsere Bedingungen wurden aktualisiert. Bitte lesen und akzeptieren Sie die neue Version.",
     "must_accept": "Sie müssen die AGB akzeptieren, um fortzufahren."
+  },
+  "community_pulse": {
+    "title": "Gemeinsam erreichen wir mehr",
+    "subtitle": "Werde auch du Teil unserer wachsenden Gemeinschaft",
+    "story_active_title": "Aktive Gemeinschaft",
+    "story_active_quote": "Endlich habe ich einen Ort gefunden, an dem meine Nachbarn zu echten Freunden wurden.",
+    "story_active_author": "Anna Tóth",
+    "story_active_role": "Gemeinschaftsmitglied",
+    "story_experiences_title": "Erlebnisse, die auf dich warten",
+    "story_experiences_quote": "Im Sauerteigbrot-Kurs lernte ich, was meine Großmutter mir nie erzählt hat.",
+    "story_experiences_author": "Péter Kovács",
+    "story_experiences_role": "begeisterter Teilnehmer",
+    "story_connections_title": "Verwirklichte Begegnungen",
+    "story_connections_quote": "Bei der Kräuterwanderung lernte ich meine beste Freundin kennen.",
+    "story_connections_author": "Eszter Nagy",
+    "story_connections_role": "neue Freundschaften",
+    "feed_title": "Aktuelles aus der Gemeinschaft",
+    "cta_button": "Der Gemeinschaft beitreten"
   }
 }
