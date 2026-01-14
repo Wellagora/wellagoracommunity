@@ -41,6 +41,7 @@ export const TiltCard = ({ children, className = "", tiltStrength = 10 }: TiltCa
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      whileTap={{ scale: 0.97 }}
       style={{
         rotateX,
         rotateY,
@@ -48,6 +49,7 @@ export const TiltCard = ({ children, className = "", tiltStrength = 10 }: TiltCa
         transformPerspective: 1000,
         transformStyle: 'preserve-3d',
       }}
+      transition={{ type: 'spring', stiffness: 400, damping: 17 }}
       className={className}
     >
       {children}
