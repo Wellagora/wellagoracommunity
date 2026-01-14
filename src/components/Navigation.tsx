@@ -291,45 +291,42 @@ const Navigation = () => {
       <nav className={`fixed left-0 right-0 z-[100] w-full bg-white border-b border-[#F0F0F0] ${isDemoMode ? 'top-8' : 'top-0'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Logo */}
+            {/* Logo - Left */}
             <Link to="/" className="flex items-center shrink-0">
               <img src={wellagoraLogo} alt="WellAgora" className="h-10 w-auto object-contain" />
             </Link>
 
-          {/* Desktop Navigation - Center */}
-          <div className="hidden md:flex items-center gap-x-6">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const active = isActive(item.path);
-              const isWellBot = 'isWellBot' in item && item.isWellBot;
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
-                    active 
-                      ? "bg-[#111111] text-white" 
-                      : "text-[#6E6E73] hover:text-[#111111] hover:bg-[#F5F5F7]"
-                  }`}
-                >
-                  {isWellBot ? (
-                    <div style={{ transform: 'scaleX(-1)' }}>
-                      <WellBotAvatar size="xs" mood="neutral" />
-                    </div>
-                  ) : Icon ? (
-                    <Icon className="h-4 w-4" />
-                  ) : null}
-                  {item.label}
-                </Link>
-              );
-            })}
-          </div>
+            {/* Desktop Navigation - Center with flex-1 */}
+            <div className="hidden md:flex flex-1 items-center justify-center gap-x-6">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const active = isActive(item.path);
+                const isWellBot = 'isWellBot' in item && item.isWellBot;
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
+                      active 
+                        ? "bg-[#111111] text-white" 
+                        : "text-[#6E6E73] hover:text-[#111111] hover:bg-[#F5F5F7]"
+                    }`}
+                  >
+                    {isWellBot ? (
+                      <div style={{ transform: 'scaleX(-1)' }}>
+                        <WellBotAvatar size="xs" mood="neutral" />
+                      </div>
+                    ) : Icon ? (
+                      <Icon className="h-4 w-4" />
+                    ) : null}
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
 
-          {/* Flexible spacer */}
-          <div className="flex-1" />
-
-          {/* Desktop Actions - Right - Tight group */}
-          <div className="hidden md:flex items-center gap-4">
+            {/* Desktop Actions - Right */}
+            <div className="hidden md:flex items-center gap-4">
             {/* Super Admin View Switcher - Apple iOS Segmented Control */}
             {isSuperAdmin && user && (
               <div className="flex items-center bg-[#F5F5F7] rounded-lg p-1 shadow-sm">
