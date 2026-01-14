@@ -1,13 +1,81 @@
 import { Link } from "react-router-dom";
-import { useRef, useState } from "react";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
+import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ArrowRight } from "lucide-react";
+
+// Interactive wave background component
+const WaveBackground = ({ mouseX, mouseY }: { mouseX: number; mouseY: number }) => {
+  return (
+    <div className="absolute inset-0 -z-5 overflow-hidden">
+      {/* Ambient wave layers */}
+      {[...Array(3)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute inset-0"
+          style={{
+            background: `radial-gradient(ellipse at ${50 + mouseX * 0.02}% ${50 + mouseY * 0.02}%, rgba(0,0,0,0.03) 0%, transparent 50%)`,
+          }}
+          animate={{
+            scale: [1, 1.05, 1],
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{
+            duration: 8 + i * 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: i * 1.5,
+          }}
+        />
+      ))}
+      
+      {/* Slow ambient flow */}
+      <motion.div
+        className="absolute inset-0"
+        animate={{
+          backgroundPosition: ["0% 0%", "100% 100%"],
+        }}
+        transition={{
+          duration: 30,
+          repeat: Infinity,
+          repeatType: "reverse",
+          ease: "linear",
+        }}
+        style={{
+          background: `linear-gradient(135deg, 
+            transparent 0%, 
+            rgba(0,0,0,0.02) 25%, 
+            transparent 50%, 
+            rgba(0,0,0,0.015) 75%, 
+            transparent 100%)`,
+          backgroundSize: "400% 400%",
+        }}
+      />
+    </div>
+  );
+};
 
 const HeroSection = () => {
   const { t } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  // Mouse tracking for wave effect
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (sectionRef.current) {
+        const rect = sectionRef.current.getBoundingClientRect();
+        setMousePosition({
+          x: ((e.clientX - rect.left) / rect.width - 0.5) * 100,
+          y: ((e.clientY - rect.top) / rect.height - 0.5) * 100,
+        });
+      }
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   // Scroll-based parallax for typography
   const { scrollYProgress } = useScroll({
@@ -50,14 +118,17 @@ const HeroSection = () => {
   return (
     <section 
       ref={sectionRef}
-      className="min-h-[80vh] flex items-center justify-center py-10 relative overflow-hidden bg-[#FAFAFA]"
+      className="min-h-[75vh] flex items-center justify-center py-8 relative overflow-hidden bg-[#FAFAFA]"
     >
       {/* Clean Ghost-Grey Background */}
       <div className="absolute inset-0 -z-10 bg-[#FAFAFA]" />
       
+      {/* Interactive Wave Background */}
+      <WaveBackground mouseX={mousePosition.x} mouseY={mousePosition.y} />
+      
       {/* Subtle stipple texture overlay */}
       <div 
-        className="absolute inset-0 -z-10 opacity-[0.02]"
+        className="absolute inset-0 -z-5 opacity-[0.015]"
         style={{
           backgroundImage: 'radial-gradient(circle at 1px 1px, #000 1px, transparent 0)',
           backgroundSize: '24px 24px',
@@ -69,7 +140,7 @@ const HeroSection = () => {
         className="max-w-6xl mx-auto px-4 text-center relative z-10"
       >
         {/* Kinetic Typographic Hero - Tighter vertical rhythm */}
-        <div className="mb-8">
+        <div className="mb-6">
           <motion.h1 
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-serif font-semibold text-black leading-[0.95] tracking-tight"
           >
@@ -112,7 +183,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.2 }}
-          className="text-base md:text-lg text-black/40 max-w-xl mx-auto font-light tracking-wide mb-6"
+          className="text-base md:text-lg text-black/40 max-w-xl mx-auto font-light tracking-wide mb-5"
         >
           {t('landing.hero_subtitle')}
         </motion.p>

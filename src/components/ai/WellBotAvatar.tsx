@@ -17,18 +17,6 @@ const sizeClasses = {
 export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }: WellBotAvatarProps) => {
   const sizeConfig = sizeClasses[size];
 
-  // Floating levitation animation
-  const floatingVariants = {
-    float: {
-      y: [0, -4, 0],
-      transition: {
-        duration: 3,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
-  };
-
   // Eye blink animation for greeting
   const eyeVariants = {
     neutral: {
@@ -59,94 +47,114 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
     }
   };
 
-  // Thinking halo glow - now using white/silver for glassmorphism
-  const haloVariants = {
-    neutral: { opacity: 0, scale: 1 },
-    greeting: { opacity: 0, scale: 1 },
-    happy: { opacity: 0.4, scale: 1.1, transition: { duration: 0.3 } },
-    thinking: {
-      opacity: [0.2, 0.6, 0.2],
-      scale: [1, 1.15, 1],
-      transition: { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
+  // Internal pulse animation - "living" feel
+  const pulseGlowVariants = {
+    pulse: {
+      opacity: [0.3, 0.6, 0.3],
+      scale: [1, 1.05, 1],
+      transition: {
+        duration: 3,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
+  };
+
+  // Body breathing animation
+  const bodyBreathVariants = {
+    breathe: {
+      scale: [1, 1.02, 1],
+      transition: {
+        duration: 4,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
     }
   };
 
   return (
     <motion.div
       className={`relative ${className}`}
-      variants={floatingVariants}
-      animate="float"
+      variants={bodyBreathVariants}
+      animate="breathe"
     >
-      {/* Thinking halo glow effect - Glassmorphism white/silver */}
+      {/* Soft internal pulse glow - Frosted Pearl Gray */}
       <motion.div
-        className={`absolute inset-0 ${sizeConfig.container} rounded-full bg-gradient-to-br from-white/80 to-gray-300/60`}
-        variants={haloVariants}
-        animate={mood}
-        style={{ filter: "blur(12px)" }}
+        className={`absolute inset-0 ${sizeConfig.container} rounded-full`}
+        variants={pulseGlowVariants}
+        animate="pulse"
+        style={{ 
+          background: 'radial-gradient(circle, rgba(229,231,235,0.8) 0%, rgba(240,244,248,0.4) 50%, transparent 70%)',
+          filter: "blur(8px)" 
+        }}
       />
       
-      {/* Robot body - Sleek Black/Dark Gray with Glassmorphism */}
+      {/* Robot body - Frosted Pearl Gray with Muted Tech Blue undertones */}
       <motion.div
-        className={`${sizeConfig.container} rounded-full bg-gradient-to-br from-[#1a1a1a] via-[#2d2d2d] to-[#0f0f0f] shadow-[0_8px_30px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)] flex flex-col items-center justify-center relative overflow-hidden`}
+        className={`${sizeConfig.container} rounded-full bg-gradient-to-br from-[#E5E7EB] via-[#F0F4F8] to-[#D1D5DB] shadow-[0_8px_30px_rgba(0,0,0,0.12),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(0,0,0,0.05)] flex flex-col items-center justify-center relative overflow-hidden`}
       >
-        {/* Glass reflection overlay */}
-        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white/15 via-transparent to-transparent" />
+        {/* Glass reflection overlay - enhanced for frosted look */}
+        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white/60 via-white/20 to-transparent" />
         
-        {/* Subtle silver rim - glassmorphism glow */}
-        <div className="absolute inset-0 rounded-full border border-white/10" />
+        {/* Subtle inner border - pearl shimmer */}
+        <div className="absolute inset-0 rounded-full border border-white/50" />
+        <div className="absolute inset-[1px] rounded-full border border-[#E5E7EB]/30" />
         
-        {/* Face plate - subtle lighter area */}
-        <div className="absolute inset-2 rounded-full bg-gradient-to-b from-white/5 to-transparent" />
+        {/* Face plate - soft frosted area */}
+        <div className="absolute inset-2 rounded-full bg-gradient-to-b from-white/40 to-transparent" />
         
-        {/* Antenna - silver/white glow */}
+        {/* Antenna - soft gray with subtle glow */}
         <motion.div
-          className={`absolute -top-1 left-1/2 -translate-x-1/2 ${sizeConfig.antenna} w-1 bg-gradient-to-t from-gray-500 to-gray-300 rounded-full`}
+          className={`absolute -top-1 left-1/2 -translate-x-1/2 ${sizeConfig.antenna} w-1 bg-gradient-to-t from-[#9CA3AF] to-[#D1D5DB] rounded-full`}
           animate={{ 
             boxShadow: mood === 'thinking' 
-              ? ['0 0 4px rgba(255,255,255,0.6)', '0 0 8px rgba(255,255,255,0.8)', '0 0 4px rgba(255,255,255,0.6)']
-              : '0 0 0px transparent'
+              ? ['0 0 4px rgba(209,213,219,0.8)', '0 0 8px rgba(240,244,248,1)', '0 0 4px rgba(209,213,219,0.8)']
+              : '0 0 2px rgba(209,213,219,0.4)'
           }}
-          transition={{ duration: 1, repeat: Infinity }}
+          transition={{ duration: 2, repeat: Infinity }}
         >
           <motion.div
-            className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-gray-200"
+            className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#F0F4F8]"
             animate={mood === 'thinking' ? {
               scale: [1, 1.3, 1],
-              boxShadow: ['0 0 4px rgba(255,255,255,0.6)', '0 0 10px rgba(255,255,255,0.9)', '0 0 4px rgba(255,255,255,0.6)']
-            } : {}}
-            transition={{ duration: 1, repeat: Infinity }}
+              boxShadow: ['0 0 4px rgba(240,244,248,0.6)', '0 0 10px rgba(240,244,248,0.9)', '0 0 4px rgba(240,244,248,0.6)']
+            } : {
+              scale: [1, 1.1, 1],
+              opacity: [0.8, 1, 0.8]
+            }}
+            transition={{ duration: 2.5, repeat: Infinity }}
           />
         </motion.div>
         
         {/* Eyes container */}
         <div className={`flex ${sizeConfig.eyeGap} relative z-10 mt-1`}>
           {mood === 'thinking' ? (
-            // Thinking state - pulsing dots with silver glow
+            // Thinking state - pulsing dots with soft glow
             <>
               <motion.div 
-                className={`${sizeConfig.eye} bg-gray-300 rounded-full`}
+                className={`${sizeConfig.eye} bg-[#6B7280] rounded-full shadow-inner`}
                 variants={thinkingPulseVariants}
                 animate="thinking"
               />
               <motion.div 
-                className={`${sizeConfig.eye} bg-gray-300 rounded-full`}
+                className={`${sizeConfig.eye} bg-[#6B7280] rounded-full shadow-inner`}
                 variants={thinkingPulseVariants}
                 animate="thinking"
                 style={{ animationDelay: '0.5s' }}
               />
             </>
           ) : (
-            // Normal eyes - white with dark pupils
+            // Normal eyes - soft dark with light pupils
             <>
               {/* Left Eye */}
               <motion.div 
-                className={`${sizeConfig.eye} bg-white rounded-full flex items-center justify-center relative shadow-inner`}
+                className={`${sizeConfig.eye} bg-[#4B5563] rounded-full flex items-center justify-center relative shadow-inner`}
                 variants={eyeVariants}
                 animate={mood}
               >
-                {/* Pupil - centered for forward look */}
+                {/* Pupil - dark center */}
                 <motion.div 
-                  className={`${sizeConfig.pupil} bg-[#1a1a1a] rounded-full`}
+                  className={`${sizeConfig.pupil} bg-[#1F2937] rounded-full`}
                   animate={mood === 'happy' ? { y: -1 } : { y: 0 }}
                 />
                 {/* Eye highlight - upper left for natural lighting */}
@@ -155,13 +163,13 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
               
               {/* Right Eye */}
               <motion.div 
-                className={`${sizeConfig.eye} bg-white rounded-full flex items-center justify-center relative shadow-inner`}
+                className={`${sizeConfig.eye} bg-[#4B5563] rounded-full flex items-center justify-center relative shadow-inner`}
                 variants={eyeVariants}
                 animate={mood}
               >
-                {/* Pupil - centered for forward look */}
+                {/* Pupil - dark center */}
                 <motion.div 
-                  className={`${sizeConfig.pupil} bg-[#1a1a1a] rounded-full`}
+                  className={`${sizeConfig.pupil} bg-[#1F2937] rounded-full`}
                   animate={mood === 'happy' ? { y: -1 } : { y: 0 }}
                 />
                 {/* Eye highlight - upper left for natural lighting */}
@@ -171,7 +179,7 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
           )}
         </div>
         
-        {/* Smile - subtle arc in white/silver */}
+        {/* Smile - subtle arc in darker gray */}
         <motion.div
           className={`${sizeConfig.smile} mt-1 relative z-10`}
           animate={mood === 'happy' ? { scaleX: 1.2 } : { scaleX: 1 }}
@@ -180,7 +188,7 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
             <motion.path
               d="M4 2 Q12 8 20 2"
               fill="none"
-              stroke="rgba(255,255,255,0.9)"
+              stroke="rgba(75,85,99,0.8)"
               strokeWidth="2"
               strokeLinecap="round"
               initial={{ pathLength: 0 }}
@@ -190,8 +198,8 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
           </svg>
         </motion.div>
         
-        {/* Bottom shadow for depth */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-2 bg-gradient-to-t from-black/30 to-transparent rounded-b-full" />
+        {/* Subtle bottom shadow for depth */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-2 bg-gradient-to-t from-[#9CA3AF]/20 to-transparent rounded-b-full" />
       </motion.div>
     </motion.div>
   );
