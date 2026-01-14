@@ -11,7 +11,8 @@ export default function AppLayout() {
       <header>
         <Navigation />
       </header>
-      <main className={`${isDemoMode ? 'pt-20 md:pt-22' : 'pt-12 md:pt-14'}`}>
+      {/* Nav is fixed (h-16). In demo mode there's an extra 8px banner above it. */}
+      <main className={isDemoMode ? "pt-24" : "pt-16"}>
         <Outlet />
       </main>
       
