@@ -205,19 +205,14 @@ const HeroSection = () => {
               onMouseLeave={() => setHoveredCard(null)}
             >
               <Link to={path.link} className="block">
-                {/* Permanent 1px border */}
+                {/* Permanent 1px border - NO numbers */}
                 <div 
-                  className="relative bg-white rounded-2xl p-6 transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.15)] min-h-[140px] flex flex-col justify-between"
+                  className="relative bg-white rounded-2xl p-6 transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.15)] min-h-[120px] flex flex-col justify-between"
                   style={{
                     border: '1px solid #E5E7EB',
                     boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                   }}
                 >
-                  {/* Category indicator */}
-                  <div className="text-[10px] uppercase tracking-[0.3em] text-black/25 font-medium mb-3">
-                    {path.id === 'member' ? '01' : path.id === 'expert' ? '02' : '03'}
-                  </div>
-
                   {/* Title */}
                   <h3 className="text-xl font-serif font-semibold text-black/90 group-hover:text-black transition-colors mb-2">
                     {path.title}

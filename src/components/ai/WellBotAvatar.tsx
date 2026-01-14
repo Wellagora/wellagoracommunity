@@ -1,4 +1,4 @@
-import { MessageCircle } from "lucide-react";
+import { Bot } from "lucide-react";
 
 interface WellBotAvatarProps {
   size?: "xs" | "sm" | "md" | "lg" | "xl";
@@ -31,17 +31,16 @@ export const WellBotAvatar = ({
         visibility: 'visible',
       }}
     >
-      {/* Main avatar body - Pure White with 2px solid Black border and shadow-lg */}
+      {/* Friendly Bot Avatar - Gradient with Bot icon */}
       <div
-        className={`${sizeConfig.container} rounded-full flex items-center justify-center`}
+        className={`${sizeConfig.container} rounded-full flex items-center justify-center shadow-md`}
         style={{
-          background: '#FFFFFF',
-          border: '2px solid #000000',
-          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
+          background: 'linear-gradient(135deg, #34D399 0%, #14B8A6 100%)',
+          border: '2px solid #10B981',
         }}
       >
-        <MessageCircle 
-          className={`${sizeConfig.icon} text-[#000000]`}
+        <Bot 
+          className={`${sizeConfig.icon} text-white`}
           strokeWidth={2}
         />
       </div>
