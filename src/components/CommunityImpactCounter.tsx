@@ -1,37 +1,13 @@
-import { useState, useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PressableButton } from "@/components/ui/PressableButton";
-import { Sparkles, Star, UserPlus, Heart, Users } from "lucide-react";
+import { Sparkles, Heart, Users } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useInView } from "framer-motion";
 import { Link } from "react-router-dom";
 import { StaggerContainer, StaggerItem } from "@/components/ui/StaggerAnimation";
-
-// Mock activity feed - MONOCHROME
-const MOCK_ACTIVITIES = [
-  {
-    id: 1,
-    type: 'new_program',
-    icon: Sparkles,
-    text: 'Új program: "Kemenceépítés alapjai"',
-    subtext: '12 férőhely • Február 8.'
-  },
-  {
-    id: 2,
-    type: 'new_members',
-    icon: UserPlus,
-    text: '+5 új tag csatlakozott',
-    subtext: 'ma reggel'
-  },
-  {
-    id: 3,
-    type: 'review',
-    icon: Star,
-    text: '"Csodálatos élmény!" — új értékelés',
-    subtext: 'tegnap'
-  },
-];
+import { LiveNotificationFeed } from "@/components/home/LiveNotificationFeed";
 
 // Story testimonials - MONOCHROME design
 const STORY_CARDS = [
@@ -71,36 +47,6 @@ export const CommunityImpactCounter = () => {
   const { t } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
-  const [visibleActivities, setVisibleActivities] = useState(MOCK_ACTIVITIES);
-  
-  // Rotate activities every 5 seconds for "live" feel
-  useEffect(() => {
-    const allActivities = [
-      ...MOCK_ACTIVITIES,
-      {
-        id: 4,
-        type: 'new_program',
-        icon: Sparkles,
-        text: 'Új program: "Kovászkenyér mesterkurzus"',
-        subtext: '8 férőhely • Február 15.'
-      },
-      {
-        id: 5,
-        type: 'review',
-        icon: Star,
-        text: '"Fantasztikus túra volt!" — Szabó Márta',
-        subtext: '2 napja'
-      },
-    ];
-    
-    const interval = setInterval(() => {
-      setVisibleActivities(() => {
-        const shuffled = [...allActivities].sort(() => Math.random() - 0.5);
-        return shuffled.slice(0, 3);
-      });
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <section ref={sectionRef} className="py-12 bg-gradient-to-b from-white to-slate-50">
@@ -146,35 +92,19 @@ export const CommunityImpactCounter = () => {
           ))}
         </StaggerContainer>
 
-        {/* Activity Feed - Monochrome */}
+        {/* Live Notification Feed - Animated */}
         <Card className="p-6 bg-white/90 backdrop-blur-md border border-slate-200">
           <div className="flex items-center gap-2 mb-5">
-            <div className="w-2 h-2 rounded-full bg-slate-900 animate-pulse" />
+            {/* Pulsing live indicator - BLACK not green */}
+            <div className="relative flex items-center justify-center">
+              <div className="w-2 h-2 rounded-full bg-slate-900" />
+              <div className="absolute w-2 h-2 rounded-full bg-slate-900 animate-ping" />
+            </div>
             <span className="font-semibold text-slate-800">Friss a közösségből</span>
           </div>
           
-          <div className="space-y-4">
-            <AnimatePresence mode="popLayout">
-              {visibleActivities.map((activity) => (
-                <motion.div
-                  key={activity.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  transition={{ duration: 0.3 }}
-                  className="flex items-center gap-4 p-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors"
-                >
-                  <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center">
-                    <activity.icon className="w-5 h-5 text-slate-600" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-800">{activity.text}</p>
-                    <p className="text-xs text-slate-400">{activity.subtext}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
+          {/* Live animated notification stream */}
+          <LiveNotificationFeed />
         </Card>
 
         {/* CTA */}
