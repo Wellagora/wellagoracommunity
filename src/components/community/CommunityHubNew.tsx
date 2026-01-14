@@ -110,7 +110,7 @@ const CommunityHubNew = () => {
       {/* Sticky Hero header */}
       <div className="sticky top-0 z-30 bg-gradient-to-b from-card/95 to-background/95 backdrop-blur-sm py-8 border-b border-border/50 shadow-sm">
         <div className="container mx-auto px-4 text-center">
-          <Badge className="bg-primary/20 text-primary border-primary/30 mb-4">
+          <Badge className="bg-black/10 text-black border-black/20 mb-4">
             <Users className="h-4 w-4 mr-1" />
             {t('community.badge')}
           </Badge>
@@ -162,14 +162,12 @@ const CommunityHubNew = () => {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             whileHover={{ scale: 1.02, y: -2 }}
-            whileTap={{ scale: 0.98 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="group relative px-6 py-4 rounded-2xl bg-gradient-to-r from-primary to-emerald-500 text-white font-semibold shadow-[0_10px_40px_-10px_rgba(52,199,89,0.5)] hover:shadow-[0_20px_60px_-10px_rgba(52,199,89,0.6)] transition-shadow"
+            className="group relative px-6 py-4 rounded-2xl bg-black text-white font-semibold shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_60px_-10px_rgba(0,0,0,0.4)] transition-shadow"
           >
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary to-emerald-500 blur-lg opacity-50 group-hover:opacity-70 transition-opacity" />
-
             <span className="relative flex items-center gap-2">
               <Users className="w-5 h-5" />
               {t('community.join_movement')}

@@ -58,14 +58,14 @@ export const CommunityImpactCounter = () => {
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   return (
-    <section ref={sectionRef} className="py-12 bg-gradient-to-b from-white to-slate-50">
+    <section ref={sectionRef} className="py-12 bg-white">
       <div className="container mx-auto px-4 max-w-4xl">
         {/* Header - NO colored badges */}
         <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900">
+          <h2 className="text-3xl md:text-4xl font-bold text-black">
             {t('community_pulse.title')}
           </h2>
-          <p className="text-slate-500 mt-3">
+          <p className="text-black/50 mt-3">
             {t('community_pulse.subtitle')}
           </p>
         </div>
@@ -76,25 +76,25 @@ export const CommunityImpactCounter = () => {
             const author = t(story.authorKey);
             return (
               <StaggerItem key={story.id}>
-                <Card className={`bg-white/80 backdrop-blur-sm border-l-4 ${story.borderColor} hover:shadow-lg transition-shadow`}>
+                <Card className={`bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 border-l-4 ${story.borderColor} hover:shadow-lg transition-shadow`}>
                   <CardContent className="p-5">
-                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center mb-4">
-                      <story.icon className="w-5 h-5 text-slate-700" />
+                    <div className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center mb-4">
+                      <story.icon className="w-5 h-5 text-black/70" />
                     </div>
-                    <h3 className="font-bold text-slate-900">{t(story.titleKey)}</h3>
-                    <p className="text-slate-600 mt-2 text-sm italic">
+                    <h3 className="font-bold text-black">{t(story.titleKey)}</h3>
+                    <p className="text-black/60 mt-2 text-sm italic">
                       "{t(story.quoteKey)}"
                     </p>
                     <div className="flex items-center gap-2 mt-4">
                       <Avatar className="w-8 h-8">
                         <AvatarImage src={story.avatar} />
-                        <AvatarFallback className="bg-slate-200 text-slate-700 text-xs">
+                        <AvatarFallback className="bg-black/10 text-black/70 text-xs">
                           {author.split(' ').map(n => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="text-sm font-medium text-slate-800">{author}</p>
-                        <p className="text-xs text-slate-400">{t(story.roleKey)}</p>
+                        <p className="text-sm font-medium text-black">{author}</p>
+                        <p className="text-xs text-black/40">{t(story.roleKey)}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -105,14 +105,14 @@ export const CommunityImpactCounter = () => {
         </StaggerContainer>
 
         {/* Live Notification Feed - Animated */}
-        <Card className="p-6 bg-white/90 backdrop-blur-md border border-slate-200">
+        <Card className="p-6 bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5">
           <div className="flex items-center gap-2 mb-5">
             {/* Pulsing live indicator - BLACK not green */}
             <div className="relative flex items-center justify-center">
-              <div className="w-2 h-2 rounded-full bg-slate-900" />
-              <div className="absolute w-2 h-2 rounded-full bg-slate-900 animate-ping" />
+              <div className="w-2 h-2 rounded-full bg-black" />
+              <div className="absolute w-2 h-2 rounded-full bg-black animate-ping" />
             </div>
-            <span className="font-semibold text-slate-800">{t('community_pulse.feed_title')}</span>
+            <span className="font-semibold text-black">{t('community_pulse.feed_title')}</span>
           </div>
           
           {/* Live animated notification stream */}
@@ -121,7 +121,7 @@ export const CommunityImpactCounter = () => {
 
         {/* CTA */}
         <div className="text-center mt-10">
-          <PressableButton asChild size="lg" className="bg-slate-900 hover:bg-slate-800 text-white px-8">
+          <PressableButton asChild size="lg" className="bg-black hover:bg-black/90 text-white px-8">
             <Link to="/auth">
               {t('community_pulse.cta_button')}
             </Link>
