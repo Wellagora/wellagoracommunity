@@ -90,17 +90,14 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-/* ===== GLASSMORPHISM BACKGROUNDS ===== */
-.glass-background {
-  background-color: #FAFAFA;
-  background-image: radial-gradient(#d1d5db 1px, transparent 1px);
-  background-size: 20px 20px;
+/* ===== CLEAN SOLID BACKGROUNDS ===== */
+.clean-background {
+  background-color: #F8F9FA;
 }
 
-.glass-background-subtle {
-  background-color: #FAFAFA;
-  background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
-  background-size: 16px 16px;
+/* Removed dot-grid - now using solid off-white */
+body {
+  background-color: #F8F9FA;
 }
 
 /* ===== ULTRA-THIN SEPARATORS ===== */

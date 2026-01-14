@@ -11,27 +11,24 @@ const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElemen
     <div
       ref={ref}
       className={cn(
-        // Clean white with subtle blur
-        "bg-white/95 backdrop-blur-sm",
-        // Light-leak border effect container
-        "light-leak-border",
+        // Clean solid white background
+        "bg-white",
         // Rounded corners: 20px for editorial look
         "rounded-[20px]",
-        // Shadow: Soft editorial shadow
-        "shadow-[0_2px_8px_rgba(0,0,0,0.04),0_24px_64px_-16px_rgba(0,0,0,0.08)]",
+        // Very light default shadow (grounded)
+        "shadow-[0_1px_3px_rgba(0,0,0,0.04)]",
+        // Border for definition
+        "border border-black/[0.05]",
         // Text color
         "text-card-foreground",
-        // Spring physics transition
-        "transition-all duration-500",
-        "hover:-translate-y-2",
-        "hover:shadow-[0_4px_12px_rgba(0,0,0,0.06),0_32px_80px_-16px_rgba(0,0,0,0.12)]",
-        // Cursor to indicate interactivity
-        "cursor-pointer",
+        // Smooth transition
+        "transition-all duration-300 ease-out",
+        // Hover: subtle lift with shadow
+        "hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)]",
+        "hover:scale-[1.02]",
+        "hover:border-black/[0.1]",
         className
       )}
-      style={{
-        transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
-      }}
       {...props}
     />
   )
