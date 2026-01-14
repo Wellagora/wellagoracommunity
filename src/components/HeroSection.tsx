@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 // Animated wave background - MONOCHROME slate/silver tones
@@ -48,6 +48,55 @@ const AnimatedWaveBackground = () => {
         }}
       />
     </div>
+  );
+};
+
+// 3D Tilt Card for Hero CTA cards
+const TiltCard = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  
+  const rotateX = useSpring(0, { stiffness: 200, damping: 20 });
+  const rotateY = useSpring(0, { stiffness: 200, damping: 20 });
+  const scale = useSpring(1, { stiffness: 200, damping: 20 });
+  
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!ref.current) return;
+    
+    const rect = ref.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    const mouseX = e.clientX - centerX;
+    const mouseY = e.clientY - centerY;
+    
+    // Invert Y for natural tilt feel
+    rotateX.set((-mouseY / rect.height) * 8);
+    rotateY.set((mouseX / rect.width) * 8);
+    scale.set(1.02);
+  };
+
+  const handleMouseLeave = () => {
+    rotateX.set(0);
+    rotateY.set(0);
+    scale.set(1);
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        rotateX,
+        rotateY,
+        scale,
+        transformPerspective: 1000,
+        transformStyle: 'preserve-3d',
+      }}
+      className={className}
+    >
+      {children}
+    </motion.div>
   );
 };
 
@@ -186,7 +235,7 @@ const HeroSection = () => {
           {/* Animated wave background behind cards */}
           <AnimatedWaveBackground />
           
-          {/* Cards Grid */}
+          {/* Cards Grid with 3D Tilt */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto relative z-10">
             {registrationPaths.map((path, index) => (
               <motion.div
@@ -199,23 +248,24 @@ const HeroSection = () => {
                   damping: 20, 
                   delay: 0.3 + index * 0.1 
                 }}
-                className="group"
               >
-                <Link to={path.link} className="block">
-                  <div 
-                    className="relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 min-h-[100px] flex flex-col justify-center border border-gray-200 shadow-sm transition-all duration-300 ease-out group-hover:shadow-lg group-hover:scale-[1.02]"
-                  >
-                    {/* Title - NO numbers */}
-                    <h3 className="text-xl font-serif font-semibold text-black/90 group-hover:text-black transition-colors duration-300 mb-2">
-                      {path.title}
-                    </h3>
+                <TiltCard>
+                  <Link to={path.link} className="block">
+                    <div 
+                      className="relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 min-h-[100px] flex flex-col justify-center border border-slate-200 shadow-sm hover:shadow-xl transition-shadow duration-300"
+                    >
+                      {/* Title - NO numbers */}
+                      <h3 className="text-xl font-serif font-semibold text-slate-900 mb-2">
+                        {path.title}
+                      </h3>
 
-                    {/* Static description - NO hover swap */}
-                    <p className="text-black/40 text-sm leading-snug font-light">
-                      {path.description}
-                    </p>
-                  </div>
-                </Link>
+                      {/* Static description - NO hover swap */}
+                      <p className="text-slate-500 text-sm leading-snug font-light">
+                        {path.description}
+                      </p>
+                    </div>
+                  </Link>
+                </TiltCard>
               </motion.div>
             ))}
           </div>
