@@ -3,15 +3,31 @@ import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-// Animated wave background that runs behind cards
+// Animated wave background - MONOCHROME slate/silver tones
 const AnimatedWaveBackground = () => {
   return (
     <div className="absolute inset-0 -z-10 overflow-hidden">
-      {/* Wave 1 - Fast */}
+      {/* Wave 1 - Slate */}
       <motion.div
         className="absolute inset-0"
         animate={{
-          backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+          x: ['-100%', '100%'],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+        style={{
+          background: 'linear-gradient(90deg, transparent, rgba(100, 116, 139, 0.15), rgba(148, 163, 184, 0.2), rgba(100, 116, 139, 0.15), transparent)',
+        }}
+      />
+      
+      {/* Wave 2 - Lighter slate */}
+      <motion.div
+        className="absolute inset-0"
+        animate={{
+          x: ['100%', '-100%'],
         }}
         transition={{
           duration: 15,
@@ -19,25 +35,7 @@ const AnimatedWaveBackground = () => {
           ease: "linear",
         }}
         style={{
-          background: 'linear-gradient(90deg, transparent, rgba(16,185,129,0.08), rgba(59,130,246,0.08), transparent)',
-          backgroundSize: '200% 100%',
-        }}
-      />
-      
-      {/* Wave 2 - Slower, offset */}
-      <motion.div
-        className="absolute inset-0"
-        animate={{
-          backgroundPosition: ["100% 50%", "0% 50%", "100% 50%"],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-        style={{
-          background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.06), rgba(16,185,129,0.06), transparent)',
-          backgroundSize: '200% 100%',
+          background: 'linear-gradient(90deg, transparent, rgba(203, 213, 225, 0.1), rgba(226, 232, 240, 0.15), rgba(203, 213, 225, 0.1), transparent)',
         }}
       />
       
@@ -114,11 +112,11 @@ const HeroSection = () => {
       {/* Clean white background */}
       <div className="absolute inset-0 -z-20 bg-white" />
       
-      {/* Subtle ambient parallax layer */}
+      {/* Subtle ambient parallax layer - MONOCHROME */}
       <motion.div
         className="absolute inset-0 -z-15 opacity-30"
         style={{
-          background: `radial-gradient(ellipse at ${50 + mousePosition.x * 0.02}% ${50 + mousePosition.y * 0.02}%, rgba(16,185,129,0.05) 0%, transparent 60%)`,
+          background: `radial-gradient(ellipse at ${50 + mousePosition.x * 0.02}% ${50 + mousePosition.y * 0.02}%, rgba(100, 116, 139, 0.08) 0%, transparent 60%)`,
         }}
       />
       

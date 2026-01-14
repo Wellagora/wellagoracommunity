@@ -1,80 +1,68 @@
 import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Star, UserPlus, Heart } from "lucide-react";
+import { Sparkles, Star, UserPlus, Heart, Users } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 
-// Mock community members for avatar stack
-const MOCK_MEMBERS = [
-  { id: 1, name: 'Anna T.', initials: 'AT', color: 'bg-emerald-500' },
-  { id: 2, name: 'Péter K.', initials: 'PK', color: 'bg-blue-500' },
-  { id: 3, name: 'Eszter N.', initials: 'EN', color: 'bg-purple-500' },
-  { id: 4, name: 'Gábor S.', initials: 'GS', color: 'bg-amber-500' },
-  { id: 5, name: 'Mária L.', initials: 'ML', color: 'bg-rose-500' },
-];
-
-// Mock activity feed
+// Mock activity feed - MONOCHROME
 const MOCK_ACTIVITIES = [
   {
     id: 1,
     type: 'new_program',
     icon: Sparkles,
-    iconColor: 'text-amber-500',
-    bgColor: 'bg-amber-50',
     text: 'Új program: "Kemenceépítés alapjai"',
-    time: '2 órája'
+    subtext: '12 férőhely • Február 8.'
   },
   {
     id: 2,
     type: 'new_members',
     icon: UserPlus,
-    iconColor: 'text-emerald-500',
-    bgColor: 'bg-emerald-50',
-    text: '+3 új tag csatlakozott a közösséghez',
-    time: 'ma'
+    text: '+5 új tag csatlakozott',
+    subtext: 'ma reggel'
   },
   {
     id: 3,
     type: 'review',
     icon: Star,
-    iconColor: 'text-yellow-500',
-    bgColor: 'bg-yellow-50',
-    text: '"Csodálatos élmény volt!" — új értékelés',
-    time: 'tegnap'
+    text: '"Csodálatos élmény!" — új értékelés',
+    subtext: 'tegnap'
   },
 ];
 
-// Story testimonials
+// Story testimonials - MONOCHROME design
 const STORY_CARDS = [
   {
     id: 'community',
     title: 'Aktív közösség',
     quote: '"Végre találtam egy helyet, ahol a szomszédaim igazi barátokká váltak."',
     author: 'Tóth Anna',
-    location: 'Kővágóörs',
-    gradient: 'from-emerald-500 to-teal-600',
-    hasAvatars: true,
+    role: 'közösségi tag',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100',
+    icon: Users,
+    borderColor: 'border-l-slate-900',
   },
   {
     id: 'experiences',
     title: 'Felfedezésre váró élmények',
-    quote: '"A kovászkenyér kurzuson megtanultam, amit a nagyanyám már elfelejtett elmesélni."',
+    quote: '"A kovászkenyér kurzuson megtanultam, amit a nagyanyám már elfelejtett."',
     author: 'Kovács Péter',
-    location: 'Révfülöp',
-    gradient: 'from-indigo-500 to-purple-600',
+    role: 'lelkes résztvevő',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100',
     icon: Sparkles,
+    borderColor: 'border-l-slate-700',
   },
   {
     id: 'connections',
     title: 'Megvalósult találkozások',
-    quote: '"A gyógynövénytúrán ismertem meg a legjobb barátnőmet. Azóta együtt főzünk minden héten."',
+    quote: '"A gyógynövénytúrán ismertem meg a legjobb barátnőmet."',
     author: 'Nagy Eszter',
-    location: 'Mindszentkálla',
-    gradient: 'from-rose-500 to-pink-600',
+    role: 'új barátságok',
+    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100',
     icon: Heart,
+    borderColor: 'border-l-slate-500',
   },
 ];
 
@@ -92,19 +80,15 @@ export const CommunityImpactCounter = () => {
         id: 4,
         type: 'new_program',
         icon: Sparkles,
-        iconColor: 'text-indigo-500',
-        bgColor: 'bg-indigo-50',
         text: 'Új program: "Kovászkenyér mesterkurzus"',
-        time: '4 órája'
+        subtext: '8 férőhely • Február 15.'
       },
       {
         id: 5,
         type: 'review',
         icon: Star,
-        iconColor: 'text-yellow-500',
-        bgColor: 'bg-yellow-50',
         text: '"Fantasztikus túra volt!" — Szabó Márta',
-        time: '2 napja'
+        subtext: '2 napja'
       },
     ];
     
@@ -119,22 +103,19 @@ export const CommunityImpactCounter = () => {
 
   return (
     <section ref={sectionRef} className="py-12 bg-gradient-to-b from-white to-slate-50">
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <span className="text-sm font-medium text-emerald-600 uppercase tracking-wider">
-            {t('community_pulse.badge')}
-          </span>
-          <h2 className="text-3xl md:text-4xl font-bold mt-2 text-black">
-            Élő közösség a Káli-medencében
+      <div className="container mx-auto px-4 max-w-4xl">
+        {/* Header - NO colored badges */}
+        <div className="text-center mb-10">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900">
+            Együtt többre megyünk
           </h2>
-          <p className="text-slate-500 mt-2 max-w-md mx-auto">
-            Valódi emberek, valódi történetek
+          <p className="text-slate-500 mt-3">
+            Csatlakozz te is a növekvő közösségünkhöz
           </p>
         </div>
 
-        {/* Three Story Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-10">
+        {/* Story Cards - Monochrome with left border */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
           {STORY_CARDS.map((story, index) => (
             <motion.div
               key={story.id}
@@ -142,60 +123,41 @@ export const CommunityImpactCounter = () => {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <Card className="overflow-hidden bg-white border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
-                {/* Gradient Header */}
-                <div className={`h-24 bg-gradient-to-r ${story.gradient} flex items-center justify-center`}>
-                  {story.hasAvatars ? (
-                    <div className="flex -space-x-3">
-                      {MOCK_MEMBERS.map((member) => (
-                        <Avatar 
-                          key={member.id} 
-                          className="w-10 h-10 border-2 border-white/50"
-                        >
-                          <AvatarFallback className="bg-white/20 text-white text-xs font-medium">
-                            {member.initials}
-                          </AvatarFallback>
-                        </Avatar>
-                      ))}
-                      <div className="w-10 h-10 rounded-full bg-white/20 border-2 border-white/50 flex items-center justify-center">
-                        <span className="text-xs font-semibold text-white">+123</span>
-                      </div>
-                    </div>
-                  ) : story.icon ? (
-                    <story.icon className="w-12 h-12 text-white/90" />
-                  ) : null}
-                </div>
-                
+              <Card className={`bg-white/80 backdrop-blur-sm border-l-4 ${story.borderColor} hover:shadow-lg transition-shadow`}>
                 <CardContent className="p-5">
-                  <h3 className="font-semibold text-lg text-black mb-2">
-                    {story.title}
-                  </h3>
-                  <p className="text-slate-600 text-sm italic leading-relaxed mb-3">
+                  <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center mb-4">
+                    <story.icon className="w-5 h-5 text-slate-700" />
+                  </div>
+                  <h3 className="font-bold text-slate-900">{story.title}</h3>
+                  <p className="text-slate-600 mt-2 text-sm italic">
                     {story.quote}
                   </p>
-                  <p className="text-slate-400 text-xs">
-                    — {story.author}, {story.location}
-                  </p>
+                  <div className="flex items-center gap-2 mt-4">
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={story.avatar} />
+                      <AvatarFallback className="bg-slate-200 text-slate-700 text-xs">
+                        {story.author.split(' ').map(n => n[0]).join('')}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="text-sm font-medium text-slate-800">{story.author}</p>
+                      <p className="text-xs text-slate-400">{story.role}</p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>
           ))}
         </div>
 
-        {/* Live Activity Feed */}
-        <div className="max-w-2xl mx-auto">
-          <div className="flex items-center gap-2 mb-4">
-            {/* Pulsing green dot */}
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-            </span>
-            <span className="text-sm font-medium text-slate-600">
-              Friss a közösségből
-            </span>
+        {/* Activity Feed - Monochrome */}
+        <Card className="p-6 bg-white/90 backdrop-blur-md border border-slate-200">
+          <div className="flex items-center gap-2 mb-5">
+            <div className="w-2 h-2 rounded-full bg-slate-900 animate-pulse" />
+            <span className="font-semibold text-slate-800">Friss a közösségből</span>
           </div>
           
-          <div className="space-y-3">
+          <div className="space-y-4">
             <AnimatePresence mode="popLayout">
               {visibleActivities.map((activity) => (
                 <motion.div
@@ -204,28 +166,24 @@ export const CommunityImpactCounter = () => {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ duration: 0.3 }}
-                  className="flex items-center gap-3 p-3 bg-white rounded-xl border border-slate-100 shadow-sm"
+                  className="flex items-center gap-4 p-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors"
                 >
-                  <div className={`w-10 h-10 rounded-lg ${activity.bgColor} flex items-center justify-center shrink-0`}>
-                    <activity.icon className={`w-5 h-5 ${activity.iconColor}`} />
+                  <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center">
+                    <activity.icon className="w-5 h-5 text-slate-600" />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-slate-800 truncate">
-                      {activity.text}
-                    </p>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-slate-800">{activity.text}</p>
+                    <p className="text-xs text-slate-400">{activity.subtext}</p>
                   </div>
-                  <span className="text-xs text-slate-400 shrink-0">
-                    {activity.time}
-                  </span>
                 </motion.div>
               ))}
             </AnimatePresence>
           </div>
-        </div>
+        </Card>
 
         {/* CTA */}
         <div className="text-center mt-10">
-          <Button asChild size="lg" className="bg-black hover:bg-black/90 text-white px-8 py-6 text-base font-medium rounded-full">
+          <Button asChild size="lg" className="bg-slate-900 hover:bg-slate-800 text-white px-8">
             <Link to="/auth">
               Csatlakozom a közösséghez
             </Link>
