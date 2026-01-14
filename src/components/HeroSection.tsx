@@ -205,48 +205,66 @@ const HeroSection = () => {
               onMouseLeave={() => setHoveredCard(null)}
             >
               <Link to={path.link} className="block">
-                {/* Permanent 1px border - NO numbers */}
+                {/* Smooth hover animation - scale + gradient background */}
                 <div 
-                  className="relative bg-white rounded-2xl p-6 transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.15)] min-h-[120px] flex flex-col justify-between"
+                  className="relative bg-white rounded-2xl p-6 min-h-[120px] flex flex-col justify-between overflow-hidden transition-all duration-300 ease-out group-hover:scale-[1.02]"
                   style={{
                     border: '1px solid #E5E7EB',
                     boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                   }}
                 >
-                  {/* Title */}
-                  <h3 className="text-xl font-serif font-semibold text-black/90 group-hover:text-black transition-colors mb-2">
-                    {path.title}
-                  </h3>
+                  {/* Animated gradient background on hover */}
+                  <div 
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(16,185,129,0.05) 0%, rgba(59,130,246,0.05) 50%, rgba(139,92,246,0.05) 100%)',
+                    }}
+                  />
+                  
+                  {/* Subtle glow effect on hover */}
+                  <div 
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{
+                      boxShadow: 'inset 0 0 40px rgba(16,185,129,0.08)',
+                    }}
+                  />
 
-                  {/* Description / Benefit - Animated swap */}
-                  <div className="relative h-10 overflow-hidden">
-                    <AnimatePresence mode="wait">
-                      {hoveredCard === path.id ? (
-                        <motion.p
-                          key="benefit"
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ duration: 0.2 }}
-                          className="text-black/60 text-sm leading-snug font-medium"
-                        >
-                          ✨ {path.benefit}
-                        </motion.p>
-                      ) : (
-                        <motion.p
-                          key="description"
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ duration: 0.2 }}
-                          className="text-black/40 text-sm leading-snug font-light"
-                        >
-                          {path.description}
-                        </motion.p>
-                      )}
-                    </AnimatePresence>
+                  {/* Content */}
+                  <div className="relative z-10">
+                    {/* Title */}
+                    <h3 className="text-xl font-serif font-semibold text-black/90 group-hover:text-black transition-colors duration-300 mb-2">
+                      {path.title}
+                    </h3>
+
+                    {/* Description / Benefit - Animated swap */}
+                    <div className="relative h-10 overflow-hidden">
+                      <AnimatePresence mode="wait">
+                        {hoveredCard === path.id ? (
+                          <motion.p
+                            key="benefit"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ duration: 0.2 }}
+                            className="text-emerald-600 text-sm leading-snug font-medium"
+                          >
+                            ✨ {path.benefit}
+                          </motion.p>
+                        ) : (
+                          <motion.p
+                            key="description"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ duration: 0.2 }}
+                            className="text-black/40 text-sm leading-snug font-light"
+                          >
+                            {path.description}
+                          </motion.p>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   </div>
-
                 </div>
               </Link>
             </motion.div>
