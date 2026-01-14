@@ -56,7 +56,7 @@ const HeroSection = () => {
   return (
     <section 
       ref={sectionRef}
-      className="min-h-screen flex items-center justify-center py-20 relative overflow-hidden bg-[#FAFAFA]"
+      className="min-h-[85vh] flex items-center justify-center py-12 relative overflow-hidden bg-[#FAFAFA]"
     >
       {/* Clean Ghost-Grey Background */}
       <div className="absolute inset-0 -z-10 bg-[#FAFAFA]" />
@@ -74,10 +74,10 @@ const HeroSection = () => {
         style={{ opacity }}
         className="max-w-6xl mx-auto px-4 text-center relative z-10"
       >
-        {/* Kinetic Typographic Hero */}
-        <div className="mb-16">
+        {/* Kinetic Typographic Hero - Tighter vertical rhythm */}
+        <div className="mb-6">
           <motion.h1 
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-serif font-semibold text-black leading-[0.95] tracking-tight"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-serif font-semibold text-black leading-[0.95] tracking-tight"
           >
             <motion.span 
               style={{ y: line1Y }}
@@ -100,48 +100,65 @@ const HeroSection = () => {
             </motion.span>
             <motion.span 
               style={{ y: line2Y }}
-              className="block mt-2 text-black/80"
+              className="block mt-1 text-black/80"
             >
               {t('landing.hero_line2')}
             </motion.span>
             <motion.span 
               style={{ y: line3Y }}
-              className="block mt-2 text-black/60"
+              className="block mt-1 text-black/60"
             >
               {t('landing.hero_line3')}
             </motion.span>
           </motion.h1>
         </div>
 
-        {/* Subtitle */}
+        {/* Power CTA Button - Prominent placement */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.2 }}
+          className="mb-8"
+        >
+          <Link to="/auth">
+            <Button 
+              size="lg"
+              className="px-10 py-5 text-lg font-medium rounded-full bg-black text-white hover:bg-black/90 shadow-[0_4px_24px_rgba(0,0,0,0.15)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-all duration-300 hover:scale-[1.02]"
+            >
+              {t('landing.cta_join')}
+            </Button>
+          </Link>
+        </motion.div>
+
+        {/* Subtitle - Secondary to CTA */}
         <motion.p 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.3 }}
-          className="text-lg md:text-xl text-black/50 max-w-2xl mx-auto font-light tracking-wide"
+          className="text-base md:text-lg text-black/40 max-w-xl mx-auto font-light tracking-wide mb-8"
         >
           {t('landing.hero_subtitle')}
         </motion.p>
 
-        {/* Ultra-Minimalist Cards with Light-Leak Effect */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-16 max-w-4xl mx-auto">
+        {/* Compact Feature Cards - Secondary to CTA */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 max-w-3xl mx-auto">
           {registrationPaths.map((path, index) => (
             <motion.div
               key={path.id}
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ 
                 type: "spring", 
-                stiffness: 80, 
+                stiffness: 100, 
                 damping: 20, 
-                delay: 0.4 + index * 0.1 
+                delay: 0.4 + index * 0.08 
               }}
               className="group relative"
             >
               <Link to={path.link} className="block">
                 {/* Light-Leak Border */}
                 <div 
-                  className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  className="absolute -inset-[1px] rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                   style={{
                     background: 'conic-gradient(from 0deg at 50% 50%, transparent 0%, rgba(0,0,0,0.08) 25%, transparent 50%, rgba(0,0,0,0.06) 75%, transparent 100%)',
                     animation: 'spin 4s linear infinite',
@@ -149,34 +166,25 @@ const HeroSection = () => {
                 />
                 
                 <div 
-                  className="relative bg-white/90 backdrop-blur-xl rounded-2xl p-8 transition-all duration-500 group-hover:-translate-y-2"
+                  className="relative bg-white/80 backdrop-blur-xl rounded-xl p-5 transition-all duration-300 group-hover:-translate-y-1"
                   style={{
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.04), 0 24px 64px -16px rgba(0,0,0,0.08)',
+                    boxShadow: '0 1px 4px rgba(0,0,0,0.03), 0 12px 32px -8px rgba(0,0,0,0.06)',
                   }}
                 >
                   {/* Category indicator */}
-                  <div className="text-[10px] uppercase tracking-[0.3em] text-black/30 font-medium mb-4">
+                  <div className="text-[9px] uppercase tracking-[0.25em] text-black/25 font-medium mb-2">
                     {path.id === 'member' ? '01' : path.id === 'expert' ? '02' : '03'}
                   </div>
 
-                  {/* Title */}
-                  <h3 className="text-xl font-serif font-semibold text-black group-hover:text-black/80 transition-colors">
+                  {/* Title - Lighter weight */}
+                  <h3 className="text-base font-serif font-medium text-black/80 group-hover:text-black transition-colors">
                     {path.title}
                   </h3>
 
-                  {/* Description */}
-                  <p className="text-black/40 text-sm mt-2 leading-relaxed">
+                  {/* Description - Compact */}
+                  <p className="text-black/35 text-xs mt-1.5 leading-relaxed font-light">
                     {path.description}
                   </p>
-
-                  {/* Liquid Button */}
-                  <div className="mt-6">
-                    <Button 
-                      className="w-full liquid-button relative overflow-hidden"
-                    >
-                      <span className="relative z-10">{path.cta}</span>
-                    </Button>
-                  </div>
                 </div>
               </Link>
             </motion.div>

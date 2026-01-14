@@ -27,13 +27,13 @@ const ExpertGallery = () => {
   });
 
   return (
-    <section className="py-24 bg-[#F8F9FA] relative overflow-hidden">
+    <section className="py-12 bg-[#F8F9FA] relative overflow-hidden">
       {/* Ultra-thin top separator */}
       <div className="absolute top-0 left-0 right-0 h-[0.5px] bg-black/[0.06]" />
       
       <div className="container mx-auto px-4">
         {/* Header - Editorial style */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <motion.span 
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -124,7 +124,7 @@ const ExpertGallery = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="text-center mt-12"
+          className="text-center mt-8"
         >
           <Link 
             to="/piacer" 

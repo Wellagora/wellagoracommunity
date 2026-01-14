@@ -1,4 +1,7 @@
 {
+  "landing": {
+    "cta_join": "Beitreten"
+  },
   "admin": {
     "access_denied": "Zugriff verweigert",
     "access_denied_description": "Sie haben keine Berechtigung für das Admin-Panel.",
