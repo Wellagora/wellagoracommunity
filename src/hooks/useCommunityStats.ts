@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { DEMO_STATS as GLOBAL_DEMO_STATS } from '@/data/mockData';
 
 interface CommunityStats {
   members: number;
-  completions: number;
-  points: number;
-  activeChallenges: number;
+  sharedIdeas: number;
+  collaborations: number;
+  eventsCount: number;
 }
 
 interface UseCommunityStatsResult {
@@ -17,34 +17,34 @@ interface UseCommunityStatsResult {
   refetch: () => void;
 }
 
-// Re-export demo stats from central source
+// Demo stats with realistic fallback numbers
 export const DEMO_STATS: CommunityStats = {
   members: GLOBAL_DEMO_STATS.members,
-  completions: GLOBAL_DEMO_STATS.completions,
-  points: GLOBAL_DEMO_STATS.points,
-  activeChallenges: GLOBAL_DEMO_STATS.activeChallenges,
+  sharedIdeas: GLOBAL_DEMO_STATS.programs,
+  collaborations: 89,
+  eventsCount: GLOBAL_DEMO_STATS.events,
 };
 
 // Demo sponsors count from central source
 export const DEMO_SPONSORS_COUNT = GLOBAL_DEMO_STATS.sponsors;
 
 /**
- * Hook to fetch community impact statistics using server-side RPC
- * Returns mock data when in demo mode
+ * Hook to fetch community impact statistics from Supabase
+ * Returns mock data when in demo mode or database is empty
  * @param projectId - Optional project ID to filter stats
  */
 export const useCommunityStats = (projectId?: string): UseCommunityStatsResult => {
   const { isDemoMode } = useAuth();
   const [stats, setStats] = useState<CommunityStats>({
     members: 0,
-    completions: 0,
-    points: 0,
-    activeChallenges: 0,
+    sharedIdeas: 0,
+    collaborations: 0,
+    eventsCount: 0,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     // In demo mode, use mock stats immediately
     if (isDemoMode) {
       setStats(DEMO_STATS);
@@ -56,38 +56,47 @@ export const useCommunityStats = (projectId?: string): UseCommunityStatsResult =
       setLoading(true);
       setError(null);
       
-      const { data, error: rpcError } = await supabase.rpc('get_community_impact_stats', {
-        p_project_id: projectId || null,
-      });
+      // Fetch all counts in parallel
+      const [profilesResult, programsResult, vouchersResult, eventsResult] = await Promise.all([
+        // Active members count from profiles
+        supabase.from('profiles').select('id', { count: 'exact', head: true }),
+        // Shared ideas from expert_contents (programs)
+        supabase.from('expert_contents').select('id', { count: 'exact', head: true }).eq('is_published', true),
+        // Collaborations from content_access (voucher redemptions)
+        supabase.from('content_access').select('id', { count: 'exact', head: true }),
+        // Events count
+        supabase.from('events').select('id', { count: 'exact', head: true }),
+      ]);
 
-      if (rpcError) throw rpcError;
+      const membersCount = profilesResult.count ?? 0;
+      const programsCount = programsResult.count ?? 0;
+      const collaborationsCount = vouchersResult.count ?? 0;
+      const eventsCount = eventsResult.count ?? 0;
 
-      if (data) {
-        const statsData = data as {
-          total_members: number;
-          total_completions: number;
-          total_points: number;
-          active_challenges: number;
-        };
-        
+      // If database is empty, use demo data
+      if (membersCount === 0 && programsCount === 0 && eventsCount === 0) {
+        setStats(DEMO_STATS);
+      } else {
         setStats({
-          members: statsData.total_members || 0,
-          completions: statsData.total_completions || 0,
-          points: statsData.total_points || 0,
-          activeChallenges: statsData.active_challenges || 0,
+          members: membersCount,
+          sharedIdeas: programsCount,
+          collaborations: collaborationsCount,
+          eventsCount: eventsCount,
         });
       }
     } catch (e) {
       console.error('Failed to fetch community stats:', e);
       setError(e as Error);
+      // Fallback to demo stats on error
+      setStats(DEMO_STATS);
     } finally {
       setLoading(false);
     }
-  };
+  }, [projectId, isDemoMode]);
 
   useEffect(() => {
     fetchStats();
-  }, [projectId, isDemoMode]);
+  }, [fetchStats]);
 
   return { stats, loading, error, refetch: fetchStats };
 };

@@ -47,25 +47,25 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
     }
   };
 
-  // Internal pulse animation - "living" feel
+  // Internal pulse animation - "living" intelligent entity feel
   const pulseGlowVariants = {
     pulse: {
-      opacity: [0.3, 0.6, 0.3],
-      scale: [1, 1.05, 1],
+      opacity: [0.4, 0.7, 0.4],
+      scale: [1, 1.08, 1],
       transition: {
-        duration: 3,
+        duration: 2.5,
         repeat: Infinity,
         ease: "easeInOut"
       }
     }
   };
 
-  // Body breathing animation
+  // Body breathing animation - subtle life-like movement
   const bodyBreathVariants = {
     breathe: {
-      scale: [1, 1.02, 1],
+      scale: [1, 1.025, 1],
       transition: {
-        duration: 4,
+        duration: 3.5,
         repeat: Infinity,
         ease: "easeInOut"
       }
@@ -78,49 +78,52 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
       variants={bodyBreathVariants}
       animate="breathe"
     >
-      {/* Soft internal pulse glow - Frosted Pearl Gray */}
+      {/* Ambient glow - Glassmorphism silver/pearl */}
       <motion.div
-        className={`absolute inset-0 ${sizeConfig.container} rounded-full`}
+        className={`absolute -inset-1 rounded-full`}
         variants={pulseGlowVariants}
         animate="pulse"
         style={{ 
-          background: 'radial-gradient(circle, rgba(229,231,235,0.8) 0%, rgba(240,244,248,0.4) 50%, transparent 70%)',
-          filter: "blur(8px)" 
+          background: 'radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(229,231,235,0.3) 40%, transparent 70%)',
+          filter: "blur(6px)" 
         }}
       />
       
-      {/* Robot body - Frosted Pearl Gray with Muted Tech Blue undertones */}
+      {/* Robot body - Frosted Pearl Gray with elegant border */}
       <motion.div
-        className={`${sizeConfig.container} rounded-full bg-gradient-to-br from-[#E5E7EB] via-[#F0F4F8] to-[#D1D5DB] shadow-[0_8px_30px_rgba(0,0,0,0.12),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(0,0,0,0.05)] flex flex-col items-center justify-center relative overflow-hidden`}
+        className={`${sizeConfig.container} rounded-full bg-gradient-to-br from-[#E5E7EB] via-[#F0F4F8] to-[#D1D5DB] shadow-[0_4px_20px_rgba(0,0,0,0.08),inset_0_2px_4px_rgba(255,255,255,0.95),inset_0_-2px_4px_rgba(0,0,0,0.04)] flex flex-col items-center justify-center relative overflow-hidden border border-[#E5E7EB]/60`}
+        style={{
+          boxShadow: '0 4px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(255,255,255,0.8) inset, 0 0 20px rgba(255,255,255,0.3)'
+        }}
       >
-        {/* Glass reflection overlay - enhanced for frosted look */}
-        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white/60 via-white/20 to-transparent" />
+        {/* Glass reflection overlay - enhanced frosted pearl */}
+        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white/70 via-white/30 to-transparent" />
         
         {/* Subtle inner border - pearl shimmer */}
-        <div className="absolute inset-0 rounded-full border border-white/50" />
-        <div className="absolute inset-[1px] rounded-full border border-[#E5E7EB]/30" />
+        <div className="absolute inset-0 rounded-full border border-white/60" />
+        <div className="absolute inset-[1px] rounded-full border border-[#D1D5DB]/20" />
         
         {/* Face plate - soft frosted area */}
-        <div className="absolute inset-2 rounded-full bg-gradient-to-b from-white/40 to-transparent" />
+        <div className="absolute inset-2 rounded-full bg-gradient-to-b from-white/50 to-transparent" />
         
-        {/* Antenna - soft gray with subtle glow */}
+        {/* Antenna - soft gray with subtle silver glow */}
         <motion.div
           className={`absolute -top-1 left-1/2 -translate-x-1/2 ${sizeConfig.antenna} w-1 bg-gradient-to-t from-[#9CA3AF] to-[#D1D5DB] rounded-full`}
           animate={{ 
             boxShadow: mood === 'thinking' 
-              ? ['0 0 4px rgba(209,213,219,0.8)', '0 0 8px rgba(240,244,248,1)', '0 0 4px rgba(209,213,219,0.8)']
-              : '0 0 2px rgba(209,213,219,0.4)'
+              ? ['0 0 4px rgba(255,255,255,0.6)', '0 0 10px rgba(255,255,255,0.9)', '0 0 4px rgba(255,255,255,0.6)']
+              : '0 0 3px rgba(255,255,255,0.4)'
           }}
           transition={{ duration: 2, repeat: Infinity }}
         >
           <motion.div
-            className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#F0F4F8]"
+            className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-gradient-to-br from-white to-[#E5E7EB]"
             animate={mood === 'thinking' ? {
-              scale: [1, 1.3, 1],
-              boxShadow: ['0 0 4px rgba(240,244,248,0.6)', '0 0 10px rgba(240,244,248,0.9)', '0 0 4px rgba(240,244,248,0.6)']
+              scale: [1, 1.4, 1],
+              boxShadow: ['0 0 6px rgba(255,255,255,0.5)', '0 0 14px rgba(255,255,255,0.9)', '0 0 6px rgba(255,255,255,0.5)']
             } : {
-              scale: [1, 1.1, 1],
-              opacity: [0.8, 1, 0.8]
+              scale: [1, 1.15, 1],
+              opacity: [0.85, 1, 0.85]
             }}
             transition={{ duration: 2.5, repeat: Infinity }}
           />
@@ -158,7 +161,7 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
                   animate={mood === 'happy' ? { y: -1 } : { y: 0 }}
                 />
                 {/* Eye highlight - upper left for natural lighting */}
-                <div className="absolute top-0.5 left-0.5 w-1 h-1 bg-white rounded-full opacity-90" />
+                <div className="absolute top-0.5 left-0.5 w-1 h-1 bg-white rounded-full opacity-95" />
               </motion.div>
               
               {/* Right Eye */}
@@ -173,7 +176,7 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
                   animate={mood === 'happy' ? { y: -1 } : { y: 0 }}
                 />
                 {/* Eye highlight - upper left for natural lighting */}
-                <div className="absolute top-0.5 left-0.5 w-1 h-1 bg-white rounded-full opacity-90" />
+                <div className="absolute top-0.5 left-0.5 w-1 h-1 bg-white rounded-full opacity-95" />
               </motion.div>
             </>
           )}
@@ -188,7 +191,7 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
             <motion.path
               d="M4 2 Q12 8 20 2"
               fill="none"
-              stroke="rgba(75,85,99,0.8)"
+              stroke="rgba(75,85,99,0.75)"
               strokeWidth="2"
               strokeLinecap="round"
               initial={{ pathLength: 0 }}
@@ -199,7 +202,7 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
         </motion.div>
         
         {/* Subtle bottom shadow for depth */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-2 bg-gradient-to-t from-[#9CA3AF]/20 to-transparent rounded-b-full" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-2 bg-gradient-to-t from-[#9CA3AF]/15 to-transparent rounded-b-full" />
       </motion.div>
     </motion.div>
   );

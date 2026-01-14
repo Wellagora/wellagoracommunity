@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Users, MessageSquare, Handshake, Calendar, TrendingUp, Clock, Zap, Award } from "lucide-react";
+import { Users, Lightbulb, Handshake, Calendar, TrendingUp, Clock, Award } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion, useInView } from "framer-motion";
+import { useCommunityStats } from "@/hooks/useCommunityStats";
 
 interface CounterProps {
   end: number;
@@ -41,6 +42,44 @@ const AnimatedCounter = ({ end, duration = 2000, shouldStart, suffix = "" }: Cou
   return <span>{count.toLocaleString()}{suffix}</span>;
 };
 
+// Sparkline component - minimalist trend visualization
+const Sparkline = ({ data, className = "" }: { data: number[]; className?: string }) => {
+  const max = Math.max(...data);
+  const min = Math.min(...data);
+  const range = max - min || 1;
+  
+  const points = data.map((value, index) => {
+    const x = (index / (data.length - 1)) * 100;
+    const y = 100 - ((value - min) / range) * 80 - 10;
+    return `${x},${y}`;
+  }).join(' ');
+
+  return (
+    <svg className={`w-full h-full ${className}`} viewBox="0 0 100 100" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="sparklineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="rgba(0,0,0,0.08)" />
+          <stop offset="100%" stopColor="rgba(0,0,0,0)" />
+        </linearGradient>
+      </defs>
+      {/* Area fill */}
+      <polygon
+        points={`0,100 ${points} 100,100`}
+        fill="url(#sparklineGradient)"
+      />
+      {/* Line */}
+      <polyline
+        points={points}
+        fill="none"
+        stroke="rgba(0,0,0,0.15)"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
 // Weekly comparison component
 const WeeklyComparison = ({ current, previous, label, icon: Icon }: { 
   current: number; 
@@ -53,15 +92,15 @@ const WeeklyComparison = ({ current, previous, label, icon: Icon }: {
   const isPositive = change >= 0;
   
   return (
-    <div className="flex items-center gap-4 p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-black/5">
-      <div className="w-12 h-12 bg-black/5 rounded-full flex items-center justify-center">
-        <Icon className="w-5 h-5 text-black/60" />
+    <div className="flex items-center gap-4 p-4 bg-white/70 backdrop-blur-xl rounded-xl border border-white/50 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
+      <div className="w-12 h-12 bg-black/[0.03] rounded-full flex items-center justify-center">
+        <Icon className="w-5 h-5 text-black/50" strokeWidth={1.2} />
       </div>
       <div className="flex-1">
-        <p className="text-sm font-medium text-black/50">{label}</p>
+        <p className="text-sm font-medium text-black/40 tracking-wide">{label}</p>
         <div className="flex items-baseline gap-2">
-          <span className="text-2xl font-bold text-black/90 tabular-nums">{current}</span>
-          <span className={`text-sm font-medium ${isPositive ? 'text-green-600' : 'text-red-500'}`}>
+          <span className="text-2xl font-semibold text-black tracking-tight tabular-nums">{current.toLocaleString()}</span>
+          <span className={`text-sm font-medium ${isPositive ? 'text-emerald-600' : 'text-red-500'}`}>
             {isPositive ? '+' : ''}{percentChange}%
           </span>
         </div>
@@ -74,37 +113,52 @@ export const CommunityImpactCounter = () => {
   const { t } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  
+  // Fetch real stats from Supabase
+  const { stats, loading } = useCommunityStats();
 
-  // Weekly snapshot data
+  // Weekly snapshot data (simulated comparison for now)
   const weeklySnapshot = {
     knowledgeMinutes: { current: 1847, previous: 1620 },
     connections: { current: 234, previous: 198 },
   };
 
+  // Sparkline data for hover effect (simulated trend data)
+  const sparklineData = {
+    members: [85, 92, 88, 95, 102, 110, 127],
+    ideas: [8, 9, 10, 11, 10, 12, 12],
+    collaborations: [65, 72, 78, 75, 82, 85, 89],
+    events: [3, 4, 5, 5, 6, 6, 6],
+  };
+
   const metrics = [
     {
       icon: Users,
-      label: t('impact_counter.active_members'),
-      value: 2847,
+      label: t('impact_counter.active_members') || 'Aktív tagok',
+      value: stats.members,
       change: "+18%",
+      sparkline: sparklineData.members,
     },
     {
-      icon: MessageSquare,
-      label: t('impact_counter.shared_ideas'),
-      value: 1256,
+      icon: Lightbulb,
+      label: t('impact_counter.shared_ideas') || 'Megosztott ötletek',
+      value: stats.sharedIdeas,
       change: "+24%",
+      sparkline: sparklineData.ideas,
     },
     {
       icon: Handshake,
-      label: t('impact_counter.collaborations'),
-      value: 342,
+      label: t('impact_counter.collaborations') || 'Együttműködések',
+      value: stats.collaborations,
       change: "+31%",
+      sparkline: sparklineData.collaborations,
     },
     {
       icon: Calendar,
-      label: t('impact_counter.events_held'),
-      value: 127,
+      label: t('impact_counter.events_held') || 'Események',
+      value: stats.eventsCount,
       change: "+15%",
+      sparkline: sparklineData.events,
     },
   ];
 
@@ -115,37 +169,37 @@ export const CommunityImpactCounter = () => {
       
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-8">
-          <Badge className="mb-4 bg-black/5 text-black/70 border-black/10 hover:bg-black/10">
-            <TrendingUp className="w-3.5 h-3.5 mr-1.5" />
+        <div className="text-center mb-10">
+          <Badge className="mb-4 bg-black/[0.03] text-black/60 border-black/[0.06] hover:bg-black/[0.05] font-medium">
+            <TrendingUp className="w-3.5 h-3.5 mr-1.5" strokeWidth={1.5} />
             {t('community_pulse.badge') || 'Közösségi Pulzus'}
           </Badge>
-          <h2 className="text-3xl md:text-4xl font-serif font-semibold text-black mb-3">
+          <h2 className="text-3xl md:text-4xl font-bold text-black tracking-tight mb-3">
             {t('community_pulse.title') || 'Közösségi Pulzus'}
           </h2>
-          <p className="text-black/50 max-w-2xl mx-auto font-light">
+          <p className="text-black/40 max-w-2xl mx-auto font-light tracking-wide">
             {t('community_pulse.subtitle') || 'Élő statisztikák a közösségünk növekedéséről'}
           </p>
         </div>
 
         {/* Weekly Snapshot - Heti Pillanatkép */}
-        <div className="max-w-4xl mx-auto mb-8">
+        <div className="max-w-4xl mx-auto mb-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6 }}
           >
-            <Card className="bg-white/80 backdrop-blur-xl border-black/5 shadow-[0_4px_20px_rgba(0,0,0,0.04)] rounded-2xl overflow-hidden">
+            <Card className="bg-white/60 backdrop-blur-2xl border-white/60 shadow-[0_8px_40px_rgba(0,0,0,0.04)] rounded-3xl overflow-hidden">
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center">
-                    <Clock className="w-5 h-5 text-black/70" />
+                  <div className="w-10 h-10 rounded-full bg-black/[0.03] flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-black/50" strokeWidth={1.2} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-black/80">
+                    <h3 className="font-semibold text-black tracking-tight">
                       {t('community_pulse.weekly_snapshot') || 'Heti Pillanatkép'}
                     </h3>
-                    <p className="text-sm text-black/50">
+                    <p className="text-sm text-black/40 font-light">
                       {t('community_pulse.compared_to_last_week') || 'Az előző 7 naphoz képest'}
                     </p>
                   </div>
@@ -156,7 +210,7 @@ export const CommunityImpactCounter = () => {
                     current={weeklySnapshot.knowledgeMinutes.current}
                     previous={weeklySnapshot.knowledgeMinutes.previous}
                     label={t('community_pulse.knowledge_minutes') || 'Tudáspercek'}
-                    icon={Zap}
+                    icon={TrendingUp}
                   />
                   <WeeklyComparison 
                     current={weeklySnapshot.connections.current}
@@ -171,20 +225,20 @@ export const CommunityImpactCounter = () => {
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={isInView ? { scale: 1, opacity: 1 } : {}}
                   transition={{ duration: 0.5, delay: 0.8, type: "spring" }}
-                  className="flex items-center justify-center gap-4 mt-5 pt-5 border-t border-black/5"
+                  className="flex items-center justify-center gap-4 mt-5 pt-5 border-t border-black/[0.04]"
                 >
                   <div className="relative">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg">
-                      <Award className="w-6 h-6 text-white" />
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center shadow-lg shadow-amber-400/30">
+                      <Award className="w-6 h-6 text-white" strokeWidth={1.5} />
                     </div>
                     {/* Glow effect */}
-                    <div className="absolute inset-0 rounded-full bg-amber-400/30 blur-lg -z-10" />
+                    <div className="absolute inset-0 rounded-full bg-amber-400/20 blur-xl -z-10" />
                   </div>
                   <div>
-                    <Badge className="bg-amber-100 text-amber-700 border-amber-200 mb-1">
+                    <Badge className="bg-amber-50 text-amber-700 border-amber-200/50 mb-1 font-medium">
                       {t('impact_counter.milestone_badge') || 'Mérföldkő!'}
                     </Badge>
-                    <p className="font-medium text-black/80 text-sm">
+                    <p className="font-medium text-black/70 text-sm tracking-tight">
                       {t('impact_counter.milestone_100') || '100. tag csatlakozott!'}
                     </p>
                   </div>
@@ -194,7 +248,7 @@ export const CommunityImpactCounter = () => {
           </motion.div>
         </div>
 
-        {/* Metric Cards */}
+        {/* Metric Cards - Glassmorphism with Sparklines */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
           {metrics.map((metric, index) => (
             <motion.div
@@ -203,29 +257,37 @@ export const CommunityImpactCounter = () => {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
             >
-              <Card className="relative overflow-hidden group bg-white/80 backdrop-blur-xl border-black/5 rounded-2xl transition-all duration-500 hover:shadow-[0_16px_48px_-12px_rgba(0,0,0,0.12)] hover:-translate-y-1">
-                <CardContent className="p-5">
+              <Card className="relative overflow-hidden group bg-white/60 backdrop-blur-2xl border-white/60 rounded-2xl transition-all duration-500 hover:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.12)] hover:-translate-y-1 hover:bg-white/80">
+                {/* Sparkline background - appears on hover */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                  <div className="absolute bottom-0 left-0 right-0 h-16">
+                    <Sparkline data={metric.sparkline} />
+                  </div>
+                </div>
+                
+                <CardContent className="p-5 relative z-10">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-11 h-11 bg-black/5 rounded-full flex items-center justify-center group-hover:bg-black/10 transition-colors">
-                      <metric.icon className="w-5 h-5 text-black/60" />
+                    <div className="relative">
+                      {/* Soft icon glow */}
+                      <div className="absolute inset-0 rounded-full bg-[#E5E7EB]/50 blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <div className="relative w-11 h-11 bg-black/[0.03] rounded-full flex items-center justify-center group-hover:bg-black/[0.05] transition-colors">
+                        <metric.icon className="w-5 h-5 text-black/50" strokeWidth={1.2} />
+                      </div>
                     </div>
-                    <Badge className="bg-black/5 text-black/60 border-black/10 text-xs font-medium">
+                    <Badge className="bg-black/[0.03] text-black/50 border-black/[0.05] text-xs font-medium">
                       {metric.change}
                     </Badge>
                   </div>
                   
                   <div className="space-y-1">
                     <div className="flex items-baseline space-x-1">
-                      <span className="text-3xl font-bold text-black/90 tabular-nums">
-                        <AnimatedCounter end={metric.value} shouldStart={isInView} />
+                      <span className="text-3xl font-semibold text-black tracking-tight tabular-nums">
+                        {loading ? '...' : <AnimatedCounter end={metric.value} shouldStart={isInView && !loading} />}
                       </span>
                     </div>
-                    <p className="text-sm font-medium text-black/50">{metric.label}</p>
+                    <p className="text-sm font-medium text-black/40 tracking-wide">{metric.label}</p>
                   </div>
                 </CardContent>
-                
-                {/* Subtle hover gradient */}
-                <div className="absolute inset-0 bg-gradient-to-br from-black/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
               </Card>
             </motion.div>
           ))}

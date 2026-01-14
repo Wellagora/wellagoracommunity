@@ -325,8 +325,8 @@ const Navigation = () => {
             })}
           </div>
 
-          {/* Desktop Actions - Right - Consistent gap-x-4 with no stray margins */}
-          <div className="hidden md:flex items-center gap-x-4">
+          {/* Desktop Actions - Right - Tight group with ml-auto */}
+          <div className="hidden md:flex items-center gap-4 ml-auto">
             {/* Super Admin View Switcher - Apple iOS Segmented Control */}
             {isSuperAdmin && user && (
               <div className="flex items-center bg-[#F5F5F7] rounded-lg p-1 shadow-sm">
@@ -363,7 +363,7 @@ const Navigation = () => {
               </div>
             )}
 
-            {/* Language Selector - No extra margin */}
+            {/* Language Selector */}
             <LanguageSelector />
 
             {user ? (
