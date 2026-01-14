@@ -18,14 +18,22 @@ export const WellBotAvatar = ({
   className = "",
 }: WellBotAvatarProps) => {
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative group ${className}`}>
+      {/* Main avatar image with Pearl Silver glow */}
       <img 
         src="/images/wellbot-avatar.png" 
         alt="WellBot"
-        className={`${sizeClasses[size]} object-contain filter drop-shadow-md`}
+        className={`${sizeClasses[size]} object-contain`}
+        style={{
+          filter: 'drop-shadow(0 0 8px rgba(229, 231, 235, 0.8))',
+        }}
       />
-      {/* Subtle glow effect */}
-      <div className="absolute inset-0 bg-white/20 rounded-full blur-md -z-10" />
+      
+      {/* Ambient glow on hover */}
+      <div className="absolute inset-0 bg-slate-200/30 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
+      
+      {/* Subtle border effect */}
+      <div className="absolute inset-0 rounded-full border border-black/10" />
     </div>
   );
 };
