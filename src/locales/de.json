@@ -3953,5 +3953,15 @@
     "story_connections_role": "neue Freundschaften",
     "feed_title": "Aktuelles aus der Gemeinschaft",
     "cta_button": "Der Gemeinschaft beitreten"
+  },
+  "activity_feed": {
+    "kata_joined": "Kata ist gerade beigetreten",
+    "new_program": "Neues Erlebnis: Traditionelles Brotbacken",
+    "peter_review": "Péter schrieb eine Bewertung: 'Unvergesslicher Tag!'",
+    "anna_joined": "Anna und 3 weitere sind beigetreten",
+    "eszter_liked": "Eszter hat das Kräuterwanderung-Programm geliked",
+    "gabor_comment": "Gábor kommentierte: 'Wann ist das nächste?'",
+    "time_now": "jetzt",
+    "time_minutes_ago": "Min."
   }
 }

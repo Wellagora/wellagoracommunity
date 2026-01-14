@@ -4257,5 +4257,15 @@
     "story_connections_role": "new friendships",
     "feed_title": "Fresh from the community",
     "cta_button": "Join the community"
+  },
+  "activity_feed": {
+    "kata_joined": "Kata just joined",
+    "new_program": "New experience: Traditional Bread Baking",
+    "peter_review": "Péter wrote a review: 'Unforgettable day!'",
+    "anna_joined": "Anna and 3 others joined",
+    "eszter_liked": "Eszter liked the Herb Tour program",
+    "gabor_comment": "Gábor commented: 'When is the next one?'",
+    "time_now": "now",
+    "time_minutes_ago": "min ago"
   }
 }
