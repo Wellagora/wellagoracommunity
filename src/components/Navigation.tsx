@@ -457,11 +457,11 @@ const Navigation = () => {
                 </DropdownMenu>
               </>
             ) : (
-              <div className="flex items-center gap-x-3">
-                <MagneticButton variant="outline" size="sm" strength={0.2} asChild>
+              <div className="flex items-center gap-4">
+                <MagneticButton variant="outline" size="sm" strength={0.2} className="shrink-0" asChild>
                   <Link to="/auth">{t("nav.sign_in")}</Link>
                 </MagneticButton>
-                <MagneticButton size="sm" strength={0.3} asChild>
+                <MagneticButton size="sm" strength={0.3} className="shrink-0" asChild>
                   <Link to="/auth">{t("nav.join_community")}</Link>
                 </MagneticButton>
               </div>
