@@ -209,18 +209,14 @@ const Navigation = () => {
     }
   };
 
-  // Build nav items based on user role
+  // Build nav items based on user role (WellBot moved to right side)
   const navItems = useMemo(() => {
-    // WellBot nav item (special - uses avatar component)
-    const wellBotItem = { path: "/ai-assistant", label: t("nav.wellbot"), icon: null, isWellBot: true };
-    
     // Simplified navigation for logged-out users
     if (!user || !profile) {
       return [
         { path: "/", label: t("nav.home"), icon: Home },
         { path: "/piacer", label: t("nav.marketplace"), icon: Store },
         { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
-        wellBotItem,
       ];
     }
 
@@ -243,7 +239,6 @@ const Navigation = () => {
           icon: Sparkles,
           iconColor: "#00E5FF"
         },
-        wellBotItem,
       ];
     }
 
@@ -257,7 +252,6 @@ const Navigation = () => {
           icon: Building2,
           iconColor: "#FFD700"
         },
-        wellBotItem,
       ];
     }
 
@@ -265,7 +259,6 @@ const Navigation = () => {
     return [
       ...baseItems,
       { path: "/iranyitopult", label: t("nav.control_panel"), icon: LayoutDashboard },
-      wellBotItem,
     ];
   }, [user, profile, t, displayRole]);
 
@@ -297,75 +290,87 @@ const Navigation = () => {
               <img src={wellagoraLogo} alt="WellAgora" className="h-10 w-auto object-contain" />
             </Link>
 
-            {/* Desktop Navigation - Center - absolute positioning to not push logo */}
-            <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 items-center gap-x-6">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const active = isActive(item.path);
-                const isWellBot = 'isWellBot' in item && item.isWellBot;
-                return (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
-                      active 
-                        ? "bg-[#111111] text-white" 
-                        : "text-[#6E6E73] hover:text-[#111111] hover:bg-[#F5F5F7]"
-                    }`}
-                  >
-                    {isWellBot ? (
-                      <div style={{ transform: 'scaleX(-1)' }}>
-                        <WellBotAvatar size="xs" mood="neutral" />
-                      </div>
-                    ) : Icon ? (
-                      <Icon className="h-4 w-4" />
-                    ) : null}
-                    {item.label}
-                  </Link>
-                );
-              })}
+            {/* Desktop Navigation - Center - positioned with margin to avoid overlap with right side */}
+            <div className="hidden md:flex flex-1 justify-center items-center">
+              <div className="flex items-center gap-x-3 mr-[280px]">
+                {navItems.map((item) => {
+                  const Icon = item.icon;
+                  const active = isActive(item.path);
+                  return (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-full transition-all duration-300 whitespace-nowrap ${
+                        active 
+                          ? "bg-[#111111] text-white" 
+                          : "text-[#6E6E73] hover:text-[#111111] hover:bg-[#F5F5F7]"
+                      }`}
+                    >
+                      {Icon && <Icon className="h-4 w-4" />}
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Desktop Actions - Right - ALWAYS visible with shrink-0 */}
-            <div className="hidden md:flex items-center gap-4 shrink-0 z-10">
+            <div className="hidden md:flex items-center gap-3 shrink-0 z-10">
               {/* Super Admin View Switcher - Apple iOS Segmented Control */}
-            {isSuperAdmin && user && (
-              <div className="flex items-center bg-[#F5F5F7] rounded-lg p-1 shadow-sm">
-                <button
-                  onClick={() => handleViewChange('member')}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
-                    activeView === 'member'
-                      ? 'bg-white text-[#34C759] shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  {t('roles.explorer')}
-                </button>
-                <button
-                  onClick={() => handleViewChange('expert')}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
-                    activeView === 'expert'
-                      ? 'bg-white text-[#007AFF] shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  {t('roles.expert')}
-                </button>
-                <button
-                  onClick={() => handleViewChange('sponsor')}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
-                    activeView === 'sponsor'
-                      ? 'bg-white text-amber-600 shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  {t('roles.sponsor')}
-                </button>
-              </div>
-            )}
+              {isSuperAdmin && user && (
+                <div className="flex items-center bg-[#F5F5F7] rounded-lg p-1 shadow-sm shrink-0">
+                  <button
+                    onClick={() => handleViewChange('member')}
+                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
+                      activeView === 'member'
+                        ? 'bg-white text-[#34C759] shadow-sm'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    {t('roles.explorer')}
+                  </button>
+                  <button
+                    onClick={() => handleViewChange('expert')}
+                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
+                      activeView === 'expert'
+                        ? 'bg-white text-[#007AFF] shadow-sm'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    {t('roles.expert')}
+                  </button>
+                  <button
+                    onClick={() => handleViewChange('sponsor')}
+                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
+                      activeView === 'sponsor'
+                        ? 'bg-white text-amber-600 shadow-sm'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    {t('roles.sponsor')}
+                  </button>
+                </div>
+              )}
 
-            {/* Language Selector */}
-            <LanguageSelector />
+              {/* WellBot Button - Moved here from center nav to prevent overlap */}
+              <Link
+                to="/ai-assistant"
+                className={`flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-full transition-all duration-300 shrink-0 ${
+                  isActive('/ai-assistant')
+                    ? "bg-[#111111] text-white"
+                    : "text-[#6E6E73] hover:text-[#111111] hover:bg-[#F5F5F7]"
+                }`}
+              >
+                <div style={{ transform: 'scaleX(-1)' }}>
+                  <WellBotAvatar size="xs" mood="neutral" />
+                </div>
+                <span className="hidden lg:inline">{t("nav.wellbot")}</span>
+              </Link>
+
+              {/* Language Selector */}
+              <div className="shrink-0">
+                <LanguageSelector />
+              </div>
 
             {user ? (
               <>
