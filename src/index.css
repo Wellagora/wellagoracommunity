@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -283,8 +283,8 @@ ZERO COLOR policy - Pure White, Obsidian Black, Smoke Gray only
     --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     --transition-spring: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-    /* Typography - Playfair Display for headings, Inter for UI */
-    --font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    /* Typography - Inter for ALL text (standardized) */
+    --font-heading: 'Inter', 'system-ui', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-body: 'Inter', 'system-ui', -apple-system, BlinkMacSystemFont, sans-serif;
 
     /* Sidebar - Pure White, minimal */
@@ -361,25 +361,25 @@ ZERO COLOR policy - Pure White, Obsidian Black, Smoke Gray only
     line-height: 1.7;
   }
 
-  /* Luxury Typography - Pitch Black headlines, Medium Gray body */
+  /* Typography - Inter for everything, weight hierarchy */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading font-semibold;
+    @apply font-body;
     color: hsl(0 0% 0%); /* Pitch Black #000000 */
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
   }
 
   h1 {
     @apply text-5xl md:text-6xl lg:text-7xl font-bold;
-    letter-spacing: -0.04em;
-  }
-
-  h2 {
-    @apply text-3xl md:text-4xl lg:text-5xl;
     letter-spacing: -0.03em;
   }
 
+  h2 {
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold;
+    letter-spacing: -0.02em;
+  }
+
   h3 {
-    @apply text-2xl md:text-3xl;
+    @apply text-2xl md:text-3xl font-semibold;
   }
 
   p {

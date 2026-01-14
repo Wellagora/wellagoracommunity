@@ -45,11 +45,11 @@ export const StoryOfTheWeek = () => {
                 </div>
 
                 <blockquote className="relative mb-6">
-                  <div className="absolute -left-1 md:-left-2 -top-1 md:-top-2 text-4xl md:text-6xl text-primary/20 font-serif">"</div>
+                  <div className="absolute -left-1 md:-left-2 -top-1 md:-top-2 text-4xl md:text-6xl text-primary/20">"</div>
                   <p className="text-base md:text-lg text-foreground leading-relaxed pl-6 md:pl-8 italic">
                     {t('story_week.quote')}
                   </p>
-                  <div className="absolute -right-1 md:-right-2 -bottom-2 md:-bottom-4 text-4xl md:text-6xl text-primary/20 font-serif">"</div>
+                  <div className="absolute -right-1 md:-right-2 -bottom-2 md:-bottom-4 text-4xl md:text-6xl text-primary/20">"</div>
                 </blockquote>
 
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-6 border-t border-border">

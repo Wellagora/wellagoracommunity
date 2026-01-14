@@ -181,8 +181,7 @@ export default {
       fontFamily: {
         'heading': 'var(--font-heading)',
         'body': 'var(--font-body)',
-        'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
-        'serif': ['Playfair Display', 'ui-serif', 'Georgia'],
+        'sans': ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
     },
   },

@@ -272,7 +272,7 @@ const AuthPage = () => {
         <div className="w-full max-w-md">
           {/* Logo/Brand */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-semibold text-slate-900 tracking-tight" style={{ fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+            <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">
               WellAgora
             </h1>
           </div>

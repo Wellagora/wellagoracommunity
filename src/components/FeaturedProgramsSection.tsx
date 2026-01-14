@@ -131,7 +131,7 @@ const FeaturedProgramsSection = () => {
             <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
               <Star className="w-5 h-5 text-white fill-white" />
             </div>
-            <h2 className="font-serif text-3xl md:text-4xl font-semibold text-foreground">{t("program.featured")}</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground">{t("program.featured")}</h2>
           </div>
 
           {/* Grid - Ultra Minimalist Cards */}

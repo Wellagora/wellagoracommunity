@@ -175,7 +175,7 @@ const ProgramsListingPage = () => {
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <h2 className="font-serif text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl font-semibold text-foreground">
                     {filteredCreator.first_name} {filteredCreator.last_name}
                   </h2>
                   {filteredCreator.expert_title && (
@@ -190,7 +190,7 @@ const ProgramsListingPage = () => {
                 <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
                   <Store className="w-5 h-5 text-white" />
                 </div>
-                <h1 className="font-serif text-3xl md:text-4xl font-semibold text-foreground">{t("marketplace.title")}</h1>
+                <h1 className="text-3xl md:text-4xl font-bold text-foreground">{t("marketplace.title")}</h1>
               </div>
               <p className="text-black/50 text-base max-w-2xl">{t("marketplace.subtitle")}</p>
             </div>
@@ -318,8 +318,8 @@ const ProgramsListingPage = () => {
                           {program.category || "Program"}
                         </span>
                         
-                        {/* Title - Serif font */}
-                        <h3 className="font-serif text-xl font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-black transition-colors duration-300">
+                        {/* Title */}
+                        <h3 className="text-xl font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-black transition-colors duration-300">
                           {String(program.title)}
                         </h3>
                       </div>
