@@ -39,25 +39,31 @@ const Index = () => {
           <Navigation />
           <main className="pt-2 md:pt-4 flex-1">
             {/* 1. SIMPLIFIED HERO - Welcome + Single CTA */}
-            <section className="relative overflow-hidden bg-[#F5F5F7]">
-              <div className="container mx-auto px-4 py-4 sm:py-8 relative z-10">
+            <section className="relative overflow-hidden bg-white/80 backdrop-blur-xl border-b border-black/5">
+              <div className="container mx-auto px-4 py-6 sm:py-10 relative z-10">
                 <motion.div
                   className="max-w-4xl mx-auto text-center"
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
+                  transition={{ type: "spring", stiffness: 100, damping: 20 }}
                 >
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-3 tracking-tight">
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black mb-3 tracking-tight">
                     {t("index.welcome_back")}, {profile.first_name}! 👋
                   </h1>
-                  <p className="text-base sm:text-lg text-slate-600 mb-6 max-w-2xl mx-auto">
+                  <p className="text-base sm:text-lg text-black/50 mb-6 max-w-2xl mx-auto">
                     {t("index.ready_to_make_impact")}
                   </p>
                   <Link to="/piacer">
-                    <Button size="lg" className="min-w-[200px] gap-2 bg-slate-900 hover:bg-slate-800 text-white">
-                      {t("index.go_to_marketplace")}
-                      <ChevronRight className="w-5 h-5" />
-                    </Button>
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                    >
+                      <Button size="lg" className="min-w-[200px] gap-2 bg-black hover:bg-black/90 text-white">
+                        {t("index.go_to_marketplace")}
+                        <ChevronRight className="w-5 h-5" />
+                      </Button>
+                    </motion.div>
                   </Link>
                 </motion.div>
               </div>

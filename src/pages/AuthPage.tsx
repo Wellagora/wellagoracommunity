@@ -15,9 +15,9 @@ import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { DEMO_ACCOUNTS } from "@/data/mockData";
 
-// Accent colors
-const FRESH_GREEN = "#34C759";
-const APPLE_BLUE = "#007AFF";
+// Monochrome accent colors
+const ACCENT_BLACK = "#000000";
+const ACCENT_RING = "#111111";
 
 const AuthPage = () => {
   const navigate = useNavigate();
@@ -233,30 +233,15 @@ const AuthPage = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="flex items-center space-x-2">
-          <Loader2 className="h-4 w-4 animate-spin" style={{ color: APPLE_BLUE }} />
-          <span className="text-slate-700">Betöltés...</span>
+          <Loader2 className="h-4 w-4 animate-spin text-black" />
+          <span className="text-black/70">Betöltés...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Mesh Gradient Background - Blue to Green */}
-      <div 
-        className="absolute inset-0 -z-10"
-        style={{
-          background: 'linear-gradient(135deg, hsl(199 89% 96%) 0%, hsl(166 76% 96%) 40%, hsl(142 71% 96%) 100%)',
-        }}
-      />
-      <div 
-        className="absolute inset-0 -z-10 opacity-40"
-        style={{
-          backgroundImage: `radial-gradient(circle at 20% 30%, hsl(199 89% 85% / 0.5) 0%, transparent 50%),
-                            radial-gradient(circle at 80% 70%, hsl(166 76% 85% / 0.5) 0%, transparent 50%),
-                            radial-gradient(circle at 50% 50%, hsl(142 71% 85% / 0.4) 0%, transparent 60%)`,
-        }}
-      />
+    <div className="min-h-screen relative overflow-hidden bg-white">
       <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
         {/* Back to Home */}
         <div className="absolute top-6 left-6">
@@ -272,34 +257,34 @@ const AuthPage = () => {
         <div className="w-full max-w-md">
           {/* Logo/Brand */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">
+            <h1 className="text-3xl font-bold text-black tracking-tight">
               WellAgora
             </h1>
           </div>
 
           {error && (
-            <Alert className="mb-6 bg-red-50 border-red-200">
-              <AlertDescription className="text-red-700">{error}</AlertDescription>
+            <Alert className="mb-6 bg-black/5 border-black/10">
+              <AlertDescription className="text-black/70">{error}</AlertDescription>
             </Alert>
           )}
 
           {success && (
-            <Alert className="mb-6 bg-green-50 border-green-200">
-              <AlertDescription className="text-green-700">{success}</AlertDescription>
+            <Alert className="mb-6 bg-black/5 border-black/10">
+              <AlertDescription className="text-black/70">{success}</AlertDescription>
             </Alert>
           )}
 
           <Tabs defaultValue="signup" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-slate-100 rounded-xl p-1 mb-8">
+            <TabsList className="grid w-full grid-cols-2 bg-black/5 rounded-xl p-1 mb-8">
               <TabsTrigger
                 value="login"
-                className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-500 font-medium"
+                className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-sm text-black/50 font-semibold"
               >
                 {t('auth.sign_in') || 'Bejelentkezés'}
               </TabsTrigger>
               <TabsTrigger
                 value="signup"
-                className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-500 font-medium"
+                className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-sm text-black/50 font-semibold"
               >
                 {t('auth.sign_up') || 'Regisztráció'}
               </TabsTrigger>
@@ -307,20 +292,20 @@ const AuthPage = () => {
 
             {/* LOGIN TAB */}
             <TabsContent value="login">
-              <Card className="bg-white/80 backdrop-blur-xl border border-slate-200 shadow-xl rounded-2xl">
+              <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 shadow-xl rounded-2xl">
                 <CardContent className="p-8">
                   <div className="text-center mb-8">
-                    <h2 className="text-2xl font-semibold text-slate-900 mb-2" style={{ lineHeight: '1.5' }}>
+                    <h2 className="text-2xl font-bold text-black mb-2" style={{ lineHeight: '1.5' }}>
                       {t('auth.welcome_back') || 'Üdvözlünk vissza!'}
                     </h2>
-                    <p className="text-slate-500" style={{ lineHeight: '1.5' }}>
+                    <p className="text-black/50" style={{ lineHeight: '1.5' }}>
                       {t('auth.enter_details') || 'Kérlek add meg az adataidat'}
                     </p>
                   </div>
 
                   <form onSubmit={handleLogin} className="space-y-5">
                     <div className="space-y-2">
-                      <Label htmlFor="login-email" className="text-slate-700 text-sm font-medium">
+                      <Label htmlFor="login-email" className="text-black/70 text-sm font-semibold">
                         {t('auth.email_address') || 'E-mail'}
                       </Label>
                       <Input
@@ -329,13 +314,12 @@ const AuthPage = () => {
                         placeholder={t('auth.email_placeholder') || 'pelda@email.hu'}
                         value={loginForm.email}
                         onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
-                        className="h-12 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl focus:ring-2 focus:border-transparent"
-                        style={{ '--tw-ring-color': APPLE_BLUE } as React.CSSProperties}
+                        className="h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent"
                         required
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="login-password" className="text-slate-700 text-sm font-medium">
+                      <Label htmlFor="login-password" className="text-black/70 text-sm font-semibold">
                         {t('auth.password') || 'Jelszó'}
                       </Label>
                       <Input
@@ -344,15 +328,13 @@ const AuthPage = () => {
                         placeholder={t('auth.password_placeholder') || 'Add meg a jelszavad'}
                         value={loginForm.password}
                         onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
-                        className="h-12 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl focus:ring-2 focus:border-transparent"
-                        style={{ '--tw-ring-color': APPLE_BLUE } as React.CSSProperties}
+                        className="h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent"
                         required
                       />
                     </div>
                     <Button
                       type="submit"
-                      className="w-full h-12 text-white font-semibold rounded-xl text-base"
-                      style={{ backgroundColor: FRESH_GREEN }}
+                      className="w-full h-12 bg-black hover:bg-black/90 text-white font-semibold rounded-xl text-base"
                       disabled={isLoading}
                     >
                       {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -429,24 +411,22 @@ const AuthPage = () => {
                           <div className="flex items-center gap-4">
                             <div 
                               className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${
-                                isSelected ? 'bg-[#007AFF]/10' : 'bg-slate-100'
+                                isSelected ? 'bg-black/10' : 'bg-black/5'
                               }`}
                             >
                               <Icon 
-                                className="w-6 h-6 transition-colors"
-                                style={{ color: isSelected ? APPLE_BLUE : '#64748b' }}
+                                className={`w-6 h-6 transition-colors ${isSelected ? 'text-black' : 'text-black/50'}`}
                               />
                             </div>
                             <div className="flex-1">
-                              <p className="font-semibold text-slate-900" style={{ lineHeight: '1.5' }}>{role.label}</p>
-                              <p className="text-sm text-slate-500" style={{ lineHeight: '1.5' }}>{role.desc}</p>
+                              <p className="font-semibold text-black" style={{ lineHeight: '1.5' }}>{role.label}</p>
+                              <p className="text-sm text-black/50" style={{ lineHeight: '1.5' }}>{role.desc}</p>
                             </div>
                             {isSelected && (
                               <motion.div 
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
-                                className="w-6 h-6 rounded-full flex items-center justify-center"
-                                style={{ backgroundColor: APPLE_BLUE }}
+                                className="w-6 h-6 rounded-full bg-black flex items-center justify-center"
                               >
                                 <Check className="w-4 h-4 text-white" />
                               </motion.div>
@@ -471,7 +451,7 @@ const AuthPage = () => {
                         {/* Name Fields */}
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label htmlFor="firstName" className="text-slate-700 text-sm font-medium">
+                            <Label htmlFor="firstName" className="text-black/70 text-sm font-semibold">
                               {t('auth.first_name') || 'Keresztnév'}
                             </Label>
                             <Input
@@ -479,13 +459,12 @@ const AuthPage = () => {
                               placeholder="János"
                               value={signupForm.firstName}
                               onChange={(e) => setSignupForm({ ...signupForm, firstName: e.target.value })}
-                              className="h-12 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl focus:ring-2 focus:border-transparent"
-                              style={{ '--tw-ring-color': APPLE_BLUE } as React.CSSProperties}
+                              className="h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent"
                               required
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="lastName" className="text-slate-700 text-sm font-medium">
+                            <Label htmlFor="lastName" className="text-black/70 text-sm font-semibold">
                               {t('auth.last_name') || 'Vezetéknév'}
                             </Label>
                             <Input
@@ -493,8 +472,7 @@ const AuthPage = () => {
                               placeholder="Kovács"
                               value={signupForm.lastName}
                               onChange={(e) => setSignupForm({ ...signupForm, lastName: e.target.value })}
-                              className="h-12 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl focus:ring-2 focus:border-transparent"
-                              style={{ '--tw-ring-color': APPLE_BLUE } as React.CSSProperties}
+                              className="h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent"
                               required
                             />
                           </div>
@@ -502,7 +480,7 @@ const AuthPage = () => {
 
                         {/* Email */}
                         <div className="space-y-2">
-                          <Label htmlFor="email" className="text-slate-700 text-sm font-medium">
+                          <Label htmlFor="email" className="text-black/70 text-sm font-semibold">
                             {t('auth.email_address') || 'E-mail'}
                           </Label>
                           <Input
@@ -511,8 +489,7 @@ const AuthPage = () => {
                             placeholder={t('auth.email_placeholder') || 'pelda@email.hu'}
                             value={signupForm.email}
                             onChange={(e) => setSignupForm({ ...signupForm, email: e.target.value })}
-                            className="h-12 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl focus:ring-2 focus:border-transparent"
-                            style={{ '--tw-ring-color': APPLE_BLUE } as React.CSSProperties}
+                            className="h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent"
                             required
                           />
                         </div>
@@ -524,7 +501,7 @@ const AuthPage = () => {
                             animate={{ opacity: 1, y: 0 }}
                             className="space-y-2"
                           >
-                            <Label htmlFor="organization" className="text-slate-700 text-sm font-medium">
+                            <Label htmlFor="organization" className="text-black/70 text-sm font-semibold">
                               {t('auth.organization_name') || 'Szervezet neve'}
                             </Label>
                             <Input
@@ -532,8 +509,7 @@ const AuthPage = () => {
                               placeholder={t('auth.organization_placeholder') || 'Vállalat Kft.'}
                               value={signupForm.organization}
                               onChange={(e) => setSignupForm({ ...signupForm, organization: e.target.value })}
-                              className="h-12 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl focus:ring-2 focus:border-transparent"
-                              style={{ '--tw-ring-color': APPLE_BLUE } as React.CSSProperties}
+                              className="h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent"
                             />
                           </motion.div>
                         )}
@@ -545,7 +521,7 @@ const AuthPage = () => {
                             animate={{ opacity: 1, y: 0 }}
                             className="space-y-2"
                           >
-                            <Label htmlFor="bio" className="text-slate-700 text-sm font-medium">
+                            <Label htmlFor="bio" className="text-black/70 text-sm font-semibold">
                               {t('auth.expertise') || 'Szakterületed (röviden)'}
                             </Label>
                             <Textarea
@@ -553,8 +529,7 @@ const AuthPage = () => {
                               placeholder={t('auth.expertise_placeholder') || 'pl. Hagyományos kézművesség, lekvárfőzés...'}
                               value={signupForm.bio}
                               onChange={(e) => setSignupForm({ ...signupForm, bio: e.target.value })}
-                              className="bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl focus:ring-2 focus:border-transparent min-h-[100px]"
-                              style={{ '--tw-ring-color': APPLE_BLUE } as React.CSSProperties}
+                              className="bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent min-h-[100px]"
                             />
                           </motion.div>
                         )}
@@ -562,7 +537,7 @@ const AuthPage = () => {
                         {/* Password Fields */}
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label htmlFor="password" className="text-slate-700 text-sm font-medium">
+                            <Label htmlFor="password" className="text-black/70 text-sm font-semibold">
                               {t('auth.password') || 'Jelszó'}
                             </Label>
                             <Input
@@ -571,13 +546,12 @@ const AuthPage = () => {
                               placeholder="••••••••"
                               value={signupForm.password}
                               onChange={(e) => setSignupForm({ ...signupForm, password: e.target.value })}
-                              className="h-12 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl focus:ring-2 focus:border-transparent"
-                              style={{ '--tw-ring-color': APPLE_BLUE } as React.CSSProperties}
+                              className="h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent"
                               required
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="confirmPassword" className="text-slate-700 text-sm font-medium">
+                            <Label htmlFor="confirmPassword" className="text-black/70 text-sm font-semibold">
                               {t('auth.confirm_password') || 'Jelszó újra'}
                             </Label>
                             <Input
@@ -586,8 +560,7 @@ const AuthPage = () => {
                               placeholder="••••••••"
                               value={signupForm.confirmPassword}
                               onChange={(e) => setSignupForm({ ...signupForm, confirmPassword: e.target.value })}
-                              className="h-12 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl focus:ring-2 focus:border-transparent"
-                              style={{ '--tw-ring-color': APPLE_BLUE } as React.CSSProperties}
+                              className="h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent"
                               required
                             />
                           </div>
@@ -595,8 +568,7 @@ const AuthPage = () => {
 
                         <Button
                           type="submit"
-                          className="w-full h-12 text-white font-semibold rounded-xl text-base hover:opacity-90 transition-opacity"
-                          style={{ backgroundColor: FRESH_GREEN }}
+                          className="w-full h-12 bg-black hover:bg-black/90 text-white font-semibold rounded-xl text-base transition-opacity"
                           disabled={isLoading}
                         >
                           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
