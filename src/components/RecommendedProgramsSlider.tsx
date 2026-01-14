@@ -103,7 +103,7 @@ const RecommendedProgramsSlider = () => {
   }
 
   return (
-    <section className="py-16 bg-gradient-to-b from-background via-black/[0.01] to-background">
+    <section className="py-10 bg-gradient-to-b from-background via-black/[0.01] to-background">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -112,8 +112,8 @@ const RecommendedProgramsSlider = () => {
           viewport={{ once: true }}
         >
           {/* Header - Monochrome */}
-          <div className="flex items-center justify-between mb-10">
-            <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>

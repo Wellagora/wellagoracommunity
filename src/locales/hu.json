@@ -1,4 +1,7 @@
 {
+  "landing": {
+    "cta_join": "Csatlakozom"
+  },
   "admin": {
     "access_denied": "Hozzáférés megtagadva",
     "access_denied_description": "Nincs jogosultságod az admin felülethez.",

@@ -80,7 +80,7 @@ const FeaturedEventsGrid = () => {
   }
 
   return (
-    <section className="py-12 bg-background">
+    <section className="py-10 bg-background">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -89,7 +89,7 @@ const FeaturedEventsGrid = () => {
           viewport={{ once: true }}
         >
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-amber-500/10">
                 <Star className="w-6 h-6 text-amber-400 fill-amber-400" />

@@ -1,4 +1,7 @@
 {
+  "landing": {
+    "cta_join": "Join Us"
+  },
   "admin": {
     "access_denied": "Access Denied",
     "access_denied_description": "You don't have permission to access the admin panel.",

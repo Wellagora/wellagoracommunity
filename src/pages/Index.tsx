@@ -87,7 +87,7 @@ const Index = () => {
             <RegionalImpactGarden />
 
             {/* 7. COMMUNITY STATS - Compact horizontal bar */}
-            <section className="py-8 bg-[#F5F5F7]">
+            <section className="py-6 bg-[#F5F5F7]">
               <div className="container mx-auto px-4">
                 {statsLoading && !isDemoMode ? (
                   <StatsBarSkeleton />
