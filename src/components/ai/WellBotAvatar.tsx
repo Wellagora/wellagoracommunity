@@ -16,17 +16,17 @@ const sizeClasses = {
 export const WellBotAvatar = ({ 
   size = "md", 
   className = "",
-  // mood prop accepted for backwards compatibility but not used with static image
 }: WellBotAvatarProps) => {
   return (
-    <img 
-      src="/images/wellbot-avatar.png" 
-      alt="WellBot"
-      className={`${sizeClasses[size]} object-contain ${className}`}
-      style={{
-        filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
-      }}
-    />
+    <div className={`relative ${className}`}>
+      <img 
+        src="/images/wellbot-avatar.png" 
+        alt="WellBot"
+        className={`${sizeClasses[size]} object-contain filter drop-shadow-md`}
+      />
+      {/* Subtle glow effect */}
+      <div className="absolute inset-0 bg-white/20 rounded-full blur-md -z-10" />
+    </div>
   );
 };
 
