@@ -155,7 +155,7 @@ const ProgramsListingPage = () => {
   };
 
   return (
-    <div className="min-h-screen glass-background">
+    <div className="min-h-screen bg-[#F8F9FA]">
       <div className="container mx-auto px-4 py-12">
         {/* Header - Ultra Minimalist */}
         <motion.div 
