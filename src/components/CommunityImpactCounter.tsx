@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { PressableButton } from "@/components/ui/PressableButton";
 import { Sparkles, Star, UserPlus, Heart, Users } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
+import { StaggerContainer, StaggerItem } from "@/components/ui/StaggerAnimation";
 
 // Mock activity feed - MONOCHROME
 const MOCK_ACTIVITIES = [
@@ -114,15 +115,10 @@ export const CommunityImpactCounter = () => {
           </p>
         </div>
 
-        {/* Story Cards - Monochrome with left border */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          {STORY_CARDS.map((story, index) => (
-            <motion.div
-              key={story.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
+        {/* Story Cards - Monochrome with left border + Stagger */}
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          {STORY_CARDS.map((story) => (
+            <StaggerItem key={story.id}>
               <Card className={`bg-white/80 backdrop-blur-sm border-l-4 ${story.borderColor} hover:shadow-lg transition-shadow`}>
                 <CardContent className="p-5">
                   <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center mb-4">
@@ -146,9 +142,9 @@ export const CommunityImpactCounter = () => {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
 
         {/* Activity Feed - Monochrome */}
         <Card className="p-6 bg-white/90 backdrop-blur-md border border-slate-200">
@@ -183,11 +179,11 @@ export const CommunityImpactCounter = () => {
 
         {/* CTA */}
         <div className="text-center mt-10">
-          <Button asChild size="lg" className="bg-slate-900 hover:bg-slate-800 text-white px-8">
+          <PressableButton asChild size="lg" className="bg-slate-900 hover:bg-slate-800 text-white px-8">
             <Link to="/auth">
               Csatlakozom a közösséghez
             </Link>
-          </Button>
+          </PressableButton>
         </div>
       </div>
     </section>
