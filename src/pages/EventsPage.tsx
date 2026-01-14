@@ -143,37 +143,37 @@ const EventsPage = () => {
 
       <main className="flex-1 pt-16">
         <div className="container mx-auto px-4 py-8">
-          {/* Sticky Header */}
-          <div className="sticky top-16 z-40 -mx-4 px-4 py-4 mb-4 bg-background/95 backdrop-blur-md border-b border-border/50">
+          {/* Sticky Header Section - Title, Subtitle, Search and Filters */}
+          <div className="sticky top-16 z-40 -mx-4 px-4 pt-4 pb-5 mb-6 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
             <h1 className="text-3xl font-bold mb-1">{t("events.title")}</h1>
-            <p className="text-muted-foreground">{t("events.subtitle")}</p>
-          </div>
+            <p className="text-muted-foreground mb-5">{t("events.subtitle")}</p>
 
-          {/* Filters */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-8">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder={t("common.search")}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
+            {/* Filters - Inside sticky header */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder={t("common.search")}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              <Select value={selectedVillage} onValueChange={setSelectedVillage}>
+                <SelectTrigger className="w-full sm:w-[200px]">
+                  <Filter className="w-4 h-4 mr-2" />
+                  <SelectValue placeholder={t("events.select_village")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t("common.all")}</SelectItem>
+                  {VILLAGES.map((village) => (
+                    <SelectItem key={village} value={village}>
+                      {village}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-            <Select value={selectedVillage} onValueChange={setSelectedVillage}>
-              <SelectTrigger className="w-full sm:w-[200px]">
-                <Filter className="w-4 h-4 mr-2" />
-                <SelectValue placeholder={t("events.select_village")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("common.all")}</SelectItem>
-                {VILLAGES.map((village) => (
-                  <SelectItem key={village} value={village}>
-                    {village}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </div>
 
           {/* Events Grid */}
