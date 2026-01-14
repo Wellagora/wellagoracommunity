@@ -155,10 +155,10 @@ const ProgramsListingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA]">
-      <div className="container mx-auto px-4 py-12">
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 pt-0 pb-12">
         {/* Sticky Header Section - Title, Search, and Categories */}
-        <div className="sticky top-16 z-40 -mx-4 px-4 pt-4 pb-6 bg-[#F8F9FA]/95 backdrop-blur-md border-b border-black/5 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+        <div className="sticky top-0 z-30 -mx-4 px-4 pt-6 pb-6 bg-background/90 backdrop-blur-sm border-b border-border/50 shadow-sm">
           {creatorFilter && filteredCreator ? (
             <div className="mb-6">
               <Link to="/piacer">
