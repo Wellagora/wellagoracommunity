@@ -4319,5 +4319,15 @@
     "story_connections_role": "új barátságok",
     "feed_title": "Friss a közösségből",
     "cta_button": "Csatlakozom a közösséghez"
+  },
+  "activity_feed": {
+    "kata_joined": "Kata épp most csatlakozott",
+    "new_program": "Új élmény: Tradicionális kenyérsütés",
+    "peter_review": "Péter véleményt írt: 'Felejthetetlen nap volt!'",
+    "anna_joined": "Anna és 3 másik tag csatlakozott",
+    "eszter_liked": "Eszter kedvelte a Gyógynövénytúra programot",
+    "gabor_comment": "Gábor hozzászólt: 'Mikor lesz a következő?'",
+    "time_now": "most",
+    "time_minutes_ago": "perce"
   }
 }

@@ -1,65 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { UserPlus, Sparkles, MessageCircle, Heart, Star } from 'lucide-react';
-
-// Human-centric mock notifications
-const MOCK_NOTIFICATIONS = [
-  {
-    id: 1,
-    type: 'join',
-    icon: UserPlus,
-    message: 'Kata épp most csatlakozott',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50',
-    initials: 'KA',
-    time: 'most',
-  },
-  {
-    id: 2,
-    type: 'program',
-    icon: Sparkles,
-    message: 'Új élmény: Tradicionális kenyérsütés',
-    avatar: null,
-    initials: '🍞',
-    time: '2 perce',
-  },
-  {
-    id: 3,
-    type: 'review',
-    icon: Star,
-    message: "Péter véleményt írt: 'Felejthetetlen nap volt!'",
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50',
-    initials: 'PK',
-    time: '5 perce',
-  },
-  {
-    id: 4,
-    type: 'join',
-    icon: UserPlus,
-    message: 'Anna és 3 másik tag csatlakozott',
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50',
-    initials: 'AT',
-    time: '8 perce',
-  },
-  {
-    id: 5,
-    type: 'like',
-    icon: Heart,
-    message: 'Eszter kedvelte a Gyógynövénytúra programot',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=50',
-    initials: 'EN',
-    time: '12 perce',
-  },
-  {
-    id: 6,
-    type: 'comment',
-    icon: MessageCircle,
-    message: "Gábor hozzászólt: 'Mikor lesz a következő?'",
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50',
-    initials: 'GS',
-    time: '15 perce',
-  },
-];
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Notification {
   id: number;
@@ -72,10 +15,74 @@ interface Notification {
 }
 
 export const LiveNotificationFeed = () => {
-  const [notifications, setNotifications] = useState<Notification[]>(
-    MOCK_NOTIFICATIONS.slice(0, 3)
-  );
+  const { t } = useLanguage();
+  
+  // Create translated notifications inside the component
+  const MOCK_NOTIFICATIONS: Notification[] = useMemo(() => [
+    {
+      id: 1,
+      type: 'join',
+      icon: UserPlus,
+      message: t('activity_feed.kata_joined'),
+      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50',
+      initials: 'KA',
+      time: t('activity_feed.time_now'),
+    },
+    {
+      id: 2,
+      type: 'program',
+      icon: Sparkles,
+      message: t('activity_feed.new_program'),
+      avatar: null,
+      initials: '🍞',
+      time: `2 ${t('activity_feed.time_minutes_ago')}`,
+    },
+    {
+      id: 3,
+      type: 'review',
+      icon: Star,
+      message: t('activity_feed.peter_review'),
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50',
+      initials: 'PK',
+      time: `5 ${t('activity_feed.time_minutes_ago')}`,
+    },
+    {
+      id: 4,
+      type: 'join',
+      icon: UserPlus,
+      message: t('activity_feed.anna_joined'),
+      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50',
+      initials: 'AT',
+      time: `8 ${t('activity_feed.time_minutes_ago')}`,
+    },
+    {
+      id: 5,
+      type: 'like',
+      icon: Heart,
+      message: t('activity_feed.eszter_liked'),
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=50',
+      initials: 'EN',
+      time: `12 ${t('activity_feed.time_minutes_ago')}`,
+    },
+    {
+      id: 6,
+      type: 'comment',
+      icon: MessageCircle,
+      message: t('activity_feed.gabor_comment'),
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50',
+      initials: 'GS',
+      time: `15 ${t('activity_feed.time_minutes_ago')}`,
+    },
+  ], [t]);
+
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [currentIndex, setCurrentIndex] = useState(3);
+
+  // Initialize notifications when MOCK_NOTIFICATIONS changes (language switch)
+  useEffect(() => {
+    setNotifications(MOCK_NOTIFICATIONS.slice(0, 3));
+    setCurrentIndex(3);
+  }, [MOCK_NOTIFICATIONS]);
 
   // Rotate notifications every 5 seconds
   useEffect(() => {
@@ -97,12 +104,12 @@ export const LiveNotificationFeed = () => {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [MOCK_NOTIFICATIONS]);
 
   return (
     <div className="space-y-3">
       <AnimatePresence mode="popLayout">
-        {notifications.map((notification, index) => (
+        {notifications.map((notification) => (
           <motion.div
             key={notification.id}
             initial={{ opacity: 0, y: -20, scale: 0.95 }}
