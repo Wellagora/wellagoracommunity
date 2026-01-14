@@ -296,8 +296,8 @@ const Navigation = () => {
               <img src={wellagoraLogo} alt="WellAgora" className="h-10 w-auto object-contain" />
             </Link>
 
-          {/* Desktop Navigation - Center with consistent gap-x-6 */}
-          <div className="hidden md:flex items-center gap-x-6 flex-1 justify-center">
+          {/* Desktop Navigation - Center */}
+          <div className="hidden md:flex items-center gap-x-6">
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.path);
@@ -325,8 +325,11 @@ const Navigation = () => {
             })}
           </div>
 
-          {/* Desktop Actions - Right - Tight group with ml-auto */}
-          <div className="hidden md:flex items-center gap-4 ml-auto">
+          {/* Flexible spacer */}
+          <div className="flex-1" />
+
+          {/* Desktop Actions - Right - Tight group */}
+          <div className="hidden md:flex items-center gap-4">
             {/* Super Admin View Switcher - Apple iOS Segmented Control */}
             {isSuperAdmin && user && (
               <div className="flex items-center bg-[#F5F5F7] rounded-lg p-1 shadow-sm">

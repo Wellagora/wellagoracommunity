@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
-import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { ArrowRight } from "lucide-react";
 
 // Interactive wave background component
 const WaveBackground = ({ mouseX, mouseY }: { mouseX: number; mouseY: number }) => {
@@ -260,20 +259,6 @@ const HeroSection = () => {
                     </AnimatePresence>
                   </div>
 
-                  {/* Arrow indicator on hover */}
-                  <motion.div
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ 
-                      opacity: hoveredCard === path.id ? 1 : 0,
-                      x: hoveredCard === path.id ? 0 : -10
-                    }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute bottom-4 right-4"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center">
-                      <ArrowRight className="w-4 h-4 text-white" />
-                    </div>
-                  </motion.div>
                 </div>
               </Link>
             </motion.div>
