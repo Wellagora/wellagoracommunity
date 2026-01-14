@@ -9,6 +9,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { StaggerContainer, StaggerItem } from "@/components/ui/StaggerAnimation";
+import { SmartTiltCard } from "@/components/ui/SmartTiltCard";
 
 const ExpertGallery = () => {
   const { t, language } = useLanguage();
@@ -62,14 +64,9 @@ const ExpertGallery = () => {
             className="w-full"
           >
             <CarouselContent className="-ml-4">
-              {experts.map((expert, index) => (
+              {experts.map((expert) => (
                 <CarouselItem key={expert.id} className="pl-4 basis-[280px] md:basis-[320px]">
-                  <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                  >
+                  <SmartTiltCard>
                     <Link 
                       to={`/szakertok/${expert.id}`} 
                       className="block group"
@@ -103,7 +100,7 @@ const ExpertGallery = () => {
                         <div className="absolute inset-0 rounded-2xl border border-white/0 group-hover:border-white/20 transition-colors duration-300" />
                       </div>
                     </Link>
-                  </motion.div>
+                  </SmartTiltCard>
                 </CarouselItem>
               ))}
             </CarouselContent>
