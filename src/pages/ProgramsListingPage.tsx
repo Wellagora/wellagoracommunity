@@ -157,10 +157,10 @@ const ProgramsListingPage = () => {
   return (
     <div className="min-h-screen bg-[#F8F9FA]">
       <div className="container mx-auto px-4 py-12">
-        {/* Sticky Header - Ultra Minimalist */}
-        <div className="sticky top-16 z-40 -mx-4 px-4 py-4 mb-8 bg-[#F8F9FA]/95 backdrop-blur-md border-b border-black/5">
+        {/* Sticky Header Section - Title, Search, and Categories */}
+        <div className="sticky top-16 z-40 -mx-4 px-4 pt-4 pb-6 bg-[#F8F9FA]/95 backdrop-blur-md border-b border-black/5 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
           {creatorFilter && filteredCreator ? (
-            <div>
+            <div className="mb-6">
               <Link to="/piacer">
                 <Button variant="ghost" size="sm" className="mb-4">
                   {t("program.back")}
@@ -185,11 +185,7 @@ const ProgramsListingPage = () => {
               </div>
             </div>
           ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
+            <div className="mb-6">
               <div className="flex items-center gap-4 mb-2">
                 <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
                   <Store className="w-5 h-5 text-white" />
@@ -197,71 +193,56 @@ const ProgramsListingPage = () => {
                 <h1 className="font-serif text-3xl md:text-4xl font-semibold text-foreground">{t("marketplace.title")}</h1>
               </div>
               <p className="text-black/50 text-base max-w-2xl">{t("marketplace.subtitle")}</p>
-            </motion.div>
+            </div>
           )}
+
+          {/* Search - Inside sticky header */}
+          <div className="relative mb-5">
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-black/30" />
+            <Input
+              type="text"
+              placeholder={t("marketplace.search")}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-14 pr-14 py-6 text-base bg-white/80 backdrop-blur-xl border-black/[0.05] rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.03)] focus:shadow-[0_8px_32px_rgba(0,0,0,0.06)] focus:border-black/[0.1] transition-all duration-300"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-5 top-1/2 -translate-y-1/2 p-2 text-black/30 hover:text-black/60 transition-colors rounded-full hover:bg-black/5"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
+          </div>
+
+          {/* Categories - Inside sticky header */}
+          <div className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-hide">
+            {CATEGORIES.map((category) => {
+              const Icon = category.icon;
+              const isActive = selectedCategory === category.id;
+              return (
+                <button
+                  key={category.id}
+                  onClick={() => setSelectedCategory(category.id)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap transition-all duration-300 ${
+                    isActive
+                      ? "bg-black text-white shadow-[0_4px_16px_rgba(0,0,0,0.15)]"
+                      : "bg-white/80 backdrop-blur-sm border border-black/[0.05] text-black/60 hover:border-black/[0.15] hover:text-black hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)]"
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span className="text-sm font-medium">{t(category.labelKey)}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Search - Glassmorphism */}
-        <motion.div 
-          className="relative mb-10"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-black/30" />
-          <Input
-            type="text"
-            placeholder={t("marketplace.search")}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-14 pr-14 py-7 text-base bg-white/80 backdrop-blur-xl border-black/[0.05] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.04)] focus:shadow-[0_12px_48px_rgba(0,0,0,0.08)] focus:border-black/[0.1] transition-all duration-300"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery("")}
-              className="absolute right-5 top-1/2 -translate-y-1/2 p-2 text-black/30 hover:text-black/60 transition-colors rounded-full hover:bg-black/5"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          )}
-        </motion.div>
-
-        {/* Categories - Pill Style */}
-        <motion.div 
-          className="flex gap-3 mb-10 overflow-x-auto pb-2 scrollbar-hide"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          {CATEGORIES.map((category) => {
-            const Icon = category.icon;
-            const isActive = selectedCategory === category.id;
-            return (
-              <button
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                className={`flex items-center gap-2.5 px-5 py-2.5 rounded-full whitespace-nowrap transition-all duration-300 ${
-                  isActive
-                    ? "bg-black text-white shadow-[0_4px_16px_rgba(0,0,0,0.15)]"
-                    : "bg-white/80 backdrop-blur-sm border border-black/[0.05] text-black/60 hover:border-black/[0.15] hover:text-black hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)]"
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                <span className="text-sm font-medium">{t(category.labelKey)}</span>
-              </button>
-            );
-          })}
-        </motion.div>
-
         {/* Results Count */}
-        <motion.div 
-          className="mb-8 text-sm tracking-wide text-black/40"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
+        <div className="mt-8 mb-6 text-sm tracking-wide text-black/40">
           <span className="font-medium text-black">{filteredPrograms.length}</span> {t("marketplace.showing_results")}
-        </motion.div>
+        </div>
 
         {/* Programs Grid - Ultra Minimalist Salesforce AI Style */}
         {filteredPrograms.length === 0 ? (
