@@ -157,55 +157,49 @@ const ProgramsListingPage = () => {
   return (
     <div className="min-h-screen bg-[#F8F9FA]">
       <div className="container mx-auto px-4 py-12">
-        {/* Header - Ultra Minimalist */}
-        <motion.div 
-          className="mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        {/* Sticky Header - Ultra Minimalist */}
+        <div className="sticky top-16 z-40 -mx-4 px-4 py-4 mb-8 bg-[#F8F9FA]/95 backdrop-blur-md border-b border-black/5">
           {creatorFilter && filteredCreator ? (
-            <div className="mb-6">
+            <div>
               <Link to="/piacer">
-                <Button variant="ghost" size="sm" className="mb-6">
+                <Button variant="ghost" size="sm" className="mb-4">
                   {t("program.back")}
                 </Button>
               </Link>
-              <Card className="p-6">
-                <div className="flex items-center gap-6">
-                  <Avatar className="h-20 w-20 border-2 border-black/10">
-                    <AvatarImage src={filteredCreator.avatar_url || undefined} />
-                    <AvatarFallback className="bg-black/5 text-black text-xl font-serif">
-                      {filteredCreator.first_name?.[0]}
-                      {filteredCreator.last_name?.[0]}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h2 className="font-serif text-2xl font-semibold text-foreground">
-                      {filteredCreator.first_name} {filteredCreator.last_name}
-                    </h2>
-                    {filteredCreator.expert_title && (
-                      <p className="text-sm text-black/50 mt-1">{String(filteredCreator.expert_title)}</p>
-                    )}
-                    <p className="text-xs tracking-wide uppercase text-black/40 mt-2">
-                      {filteredPrograms.length} Programs
-                    </p>
-                  </div>
+              <div className="flex items-center gap-4">
+                <Avatar className="h-14 w-14 border-2 border-black/10">
+                  <AvatarImage src={filteredCreator.avatar_url || undefined} />
+                  <AvatarFallback className="bg-black/5 text-black text-lg font-serif">
+                    {filteredCreator.first_name?.[0]}
+                    {filteredCreator.last_name?.[0]}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <h2 className="font-serif text-2xl font-semibold text-foreground">
+                    {filteredCreator.first_name} {filteredCreator.last_name}
+                  </h2>
+                  {filteredCreator.expert_title && (
+                    <p className="text-sm text-black/50">{String(filteredCreator.expert_title)}</p>
+                  )}
                 </div>
-              </Card>
+              </div>
             </div>
           ) : (
-            <>
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center">
-                  <Store className="w-6 h-6 text-white" />
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="flex items-center gap-4 mb-2">
+                <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
+                  <Store className="w-5 h-5 text-white" />
                 </div>
-                <h1 className="font-serif text-4xl md:text-5xl font-semibold text-foreground">{t("marketplace.title")}</h1>
+                <h1 className="font-serif text-3xl md:text-4xl font-semibold text-foreground">{t("marketplace.title")}</h1>
               </div>
-              <p className="text-black/50 text-lg max-w-2xl">{t("marketplace.subtitle")}</p>
-            </>
+              <p className="text-black/50 text-base max-w-2xl">{t("marketplace.subtitle")}</p>
+            </motion.div>
           )}
-        </motion.div>
+        </div>
 
         {/* Search - Glassmorphism */}
         <motion.div 

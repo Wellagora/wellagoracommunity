@@ -143,9 +143,9 @@ const EventsPage = () => {
 
       <main className="flex-1 pt-16">
         <div className="container mx-auto px-4 py-8">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">{t("events.title")}</h1>
+          {/* Sticky Header */}
+          <div className="sticky top-16 z-40 -mx-4 px-4 py-4 mb-4 bg-background/95 backdrop-blur-md border-b border-border/50">
+            <h1 className="text-3xl font-bold mb-1">{t("events.title")}</h1>
             <p className="text-muted-foreground">{t("events.subtitle")}</p>
           </div>
 
