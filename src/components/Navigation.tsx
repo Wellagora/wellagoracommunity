@@ -16,6 +16,7 @@ import {
   Building2,
 } from "lucide-react";
 import { WellBotAvatar } from "@/components/ai/WellBotAvatar";
+import { MagneticButton } from "@/components/ui/MagneticButton";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Badge } from "@/components/ui/badge";
@@ -457,12 +458,12 @@ const Navigation = () => {
               </>
             ) : (
               <div className="flex items-center gap-x-3">
-                <Button variant="outline" size="sm" asChild>
+                <MagneticButton variant="outline" size="sm" strength={0.2} asChild>
                   <Link to="/auth">{t("nav.sign_in")}</Link>
-                </Button>
-                <Button size="sm" asChild>
+                </MagneticButton>
+                <MagneticButton size="sm" strength={0.3} asChild>
                   <Link to="/auth">{t("nav.join_community")}</Link>
-                </Button>
+                </MagneticButton>
               </div>
             )}
           </div>
