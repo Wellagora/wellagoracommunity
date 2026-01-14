@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
-import { useRef, useEffect, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import { useRef, useState } from "react";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ArrowRight } from "lucide-react";
 
 const HeroSection = () => {
   const { t } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
   // Scroll-based parallax for typography
   const { scrollYProgress } = useScroll({
@@ -20,20 +20,12 @@ const HeroSection = () => {
   const line3Y = useTransform(scrollYProgress, [0, 1], [0, 0]);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0.3]);
 
-  // Track mouse for liquid button effect
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
   const registrationPaths = [
     {
       id: 'member',
       title: t('landing.card_member_title'),
       description: t('landing.card_member_desc_short'),
+      benefit: t('landing.card_member_benefit'),
       cta: t('landing.card_member_cta'),
       link: '/auth?role=member',
     },
@@ -41,6 +33,7 @@ const HeroSection = () => {
       id: 'expert',
       title: t('landing.card_expert_title'),
       description: t('landing.card_expert_desc_short'),
+      benefit: t('landing.card_expert_benefit'),
       cta: t('landing.card_expert_cta'),
       link: '/auth?role=expert',
     },
@@ -48,6 +41,7 @@ const HeroSection = () => {
       id: 'sponsor',
       title: t('landing.card_sponsor_title'),
       description: t('landing.card_sponsor_desc_short'),
+      benefit: t('landing.card_sponsor_benefit'),
       cta: t('landing.card_sponsor_cta'),
       link: '/auth?role=sponsor',
     },
@@ -56,14 +50,14 @@ const HeroSection = () => {
   return (
     <section 
       ref={sectionRef}
-      className="min-h-[85vh] flex items-center justify-center py-12 relative overflow-hidden bg-[#FAFAFA]"
+      className="min-h-[80vh] flex items-center justify-center py-10 relative overflow-hidden bg-[#FAFAFA]"
     >
       {/* Clean Ghost-Grey Background */}
       <div className="absolute inset-0 -z-10 bg-[#FAFAFA]" />
       
       {/* Subtle stipple texture overlay */}
       <div 
-        className="absolute inset-0 -z-10 opacity-[0.03]"
+        className="absolute inset-0 -z-10 opacity-[0.02]"
         style={{
           backgroundImage: 'radial-gradient(circle at 1px 1px, #000 1px, transparent 0)',
           backgroundSize: '24px 24px',
@@ -75,7 +69,7 @@ const HeroSection = () => {
         className="max-w-6xl mx-auto px-4 text-center relative z-10"
       >
         {/* Kinetic Typographic Hero - Tighter vertical rhythm */}
-        <div className="mb-6">
+        <div className="mb-8">
           <motion.h1 
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-serif font-semibold text-black leading-[0.95] tracking-tight"
           >
@@ -113,35 +107,18 @@ const HeroSection = () => {
           </motion.h1>
         </div>
 
-        {/* Power CTA Button - Prominent placement */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.2 }}
-          className="mb-8"
-        >
-          <Link to="/auth">
-            <Button 
-              size="lg"
-              className="px-10 py-5 text-lg font-medium rounded-full bg-black text-white hover:bg-black/90 shadow-[0_4px_24px_rgba(0,0,0,0.15)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-all duration-300 hover:scale-[1.02]"
-            >
-              {t('landing.cta_join')}
-            </Button>
-          </Link>
-        </motion.div>
-
-        {/* Subtitle - Secondary to CTA */}
+        {/* Subtitle - Secondary to cards */}
         <motion.p 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.3 }}
-          className="text-base md:text-lg text-black/40 max-w-xl mx-auto font-light tracking-wide mb-8"
+          transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.2 }}
+          className="text-base md:text-lg text-black/40 max-w-xl mx-auto font-light tracking-wide mb-6"
         >
           {t('landing.hero_subtitle')}
         </motion.p>
 
-        {/* Compact Feature Cards - Secondary to CTA */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 max-w-3xl mx-auto">
+        {/* Interactive Action Cards - Primary Entry Points */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
           {registrationPaths.map((path, index) => (
             <motion.div
               key={path.id}
@@ -151,40 +128,81 @@ const HeroSection = () => {
                 type: "spring", 
                 stiffness: 100, 
                 damping: 20, 
-                delay: 0.4 + index * 0.08 
+                delay: 0.3 + index * 0.1 
               }}
               className="group relative"
+              onMouseEnter={() => setHoveredCard(path.id)}
+              onMouseLeave={() => setHoveredCard(null)}
             >
               <Link to={path.link} className="block">
                 {/* Light-Leak Border */}
                 <div 
-                  className="absolute -inset-[1px] rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                   style={{
-                    background: 'conic-gradient(from 0deg at 50% 50%, transparent 0%, rgba(0,0,0,0.08) 25%, transparent 50%, rgba(0,0,0,0.06) 75%, transparent 100%)',
+                    background: 'conic-gradient(from 0deg at 50% 50%, transparent 0%, rgba(0,0,0,0.1) 25%, transparent 50%, rgba(0,0,0,0.08) 75%, transparent 100%)',
                     animation: 'spin 4s linear infinite',
                   }}
                 />
                 
                 <div 
-                  className="relative bg-white/80 backdrop-blur-xl rounded-xl p-5 transition-all duration-300 group-hover:-translate-y-1"
+                  className="relative bg-white/90 backdrop-blur-xl rounded-2xl p-6 transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.15)] min-h-[140px] flex flex-col justify-between"
                   style={{
-                    boxShadow: '0 1px 4px rgba(0,0,0,0.03), 0 12px 32px -8px rgba(0,0,0,0.06)',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
                   }}
                 >
                   {/* Category indicator */}
-                  <div className="text-[9px] uppercase tracking-[0.25em] text-black/25 font-medium mb-2">
+                  <div className="text-[10px] uppercase tracking-[0.3em] text-black/25 font-medium mb-3">
                     {path.id === 'member' ? '01' : path.id === 'expert' ? '02' : '03'}
                   </div>
 
-                  {/* Title - Lighter weight */}
-                  <h3 className="text-base font-serif font-medium text-black/80 group-hover:text-black transition-colors">
+                  {/* Title */}
+                  <h3 className="text-xl font-serif font-semibold text-black/90 group-hover:text-black transition-colors mb-2">
                     {path.title}
                   </h3>
 
-                  {/* Description - Compact */}
-                  <p className="text-black/35 text-xs mt-1.5 leading-relaxed font-light">
-                    {path.description}
-                  </p>
+                  {/* Description / Benefit - Animated swap */}
+                  <div className="relative h-10 overflow-hidden">
+                    <AnimatePresence mode="wait">
+                      {hoveredCard === path.id ? (
+                        <motion.p
+                          key="benefit"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.2 }}
+                          className="text-black/60 text-sm leading-snug font-medium"
+                        >
+                          ✨ {path.benefit}
+                        </motion.p>
+                      ) : (
+                        <motion.p
+                          key="description"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.2 }}
+                          className="text-black/40 text-sm leading-snug font-light"
+                        >
+                          {path.description}
+                        </motion.p>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Arrow indicator on hover */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ 
+                      opacity: hoveredCard === path.id ? 1 : 0,
+                      x: hoveredCard === path.id ? 0 : -10
+                    }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute bottom-4 right-4"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center">
+                      <ArrowRight className="w-4 h-4 text-white" />
+                    </div>
+                  </motion.div>
                 </div>
               </Link>
             </motion.div>

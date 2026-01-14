@@ -59,13 +59,13 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
     }
   };
 
-  // Thinking halo glow
+  // Thinking halo glow - now using white/silver for glassmorphism
   const haloVariants = {
     neutral: { opacity: 0, scale: 1 },
     greeting: { opacity: 0, scale: 1 },
-    happy: { opacity: 0.3, scale: 1.1, transition: { duration: 0.3 } },
+    happy: { opacity: 0.4, scale: 1.1, transition: { duration: 0.3 } },
     thinking: {
-      opacity: [0.2, 0.5, 0.2],
+      opacity: [0.2, 0.6, 0.2],
       scale: [1, 1.15, 1],
       transition: { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
     }
@@ -77,39 +77,42 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
       variants={floatingVariants}
       animate="float"
     >
-      {/* Thinking halo glow effect */}
+      {/* Thinking halo glow effect - Glassmorphism white/silver */}
       <motion.div
-        className={`absolute inset-0 ${sizeConfig.container} rounded-full bg-gradient-to-br from-sky-400 to-indigo-500`}
+        className={`absolute inset-0 ${sizeConfig.container} rounded-full bg-gradient-to-br from-white/80 to-gray-300/60`}
         variants={haloVariants}
         animate={mood}
         style={{ filter: "blur(12px)" }}
       />
       
-      {/* Robot body - Rounded, soft, high-tech minimalist */}
+      {/* Robot body - Sleek Black/Dark Gray with Glassmorphism */}
       <motion.div
-        className={`${sizeConfig.container} rounded-full bg-gradient-to-br from-indigo-500 via-indigo-600 to-sky-600 shadow-[0_8px_30px_rgb(99,102,241,0.4)] flex flex-col items-center justify-center relative overflow-hidden`}
+        className={`${sizeConfig.container} rounded-full bg-gradient-to-br from-[#1a1a1a] via-[#2d2d2d] to-[#0f0f0f] shadow-[0_8px_30px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)] flex flex-col items-center justify-center relative overflow-hidden`}
       >
-        {/* Inner highlight - gives depth */}
-        <div className="absolute inset-1 rounded-full bg-gradient-to-br from-white/30 via-transparent to-transparent" />
+        {/* Glass reflection overlay */}
+        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white/15 via-transparent to-transparent" />
         
-        {/* Face plate - lighter area for eyes */}
-        <div className="absolute inset-2 rounded-full bg-gradient-to-b from-slate-100/20 to-transparent" />
+        {/* Subtle silver rim - glassmorphism glow */}
+        <div className="absolute inset-0 rounded-full border border-white/10" />
         
-        {/* Antenna */}
+        {/* Face plate - subtle lighter area */}
+        <div className="absolute inset-2 rounded-full bg-gradient-to-b from-white/5 to-transparent" />
+        
+        {/* Antenna - silver/white glow */}
         <motion.div
-          className={`absolute -top-1 left-1/2 -translate-x-1/2 ${sizeConfig.antenna} w-1 bg-gradient-to-t from-indigo-400 to-sky-300 rounded-full`}
+          className={`absolute -top-1 left-1/2 -translate-x-1/2 ${sizeConfig.antenna} w-1 bg-gradient-to-t from-gray-500 to-gray-300 rounded-full`}
           animate={{ 
             boxShadow: mood === 'thinking' 
-              ? ['0 0 4px rgb(56,189,248)', '0 0 8px rgb(56,189,248)', '0 0 4px rgb(56,189,248)']
+              ? ['0 0 4px rgba(255,255,255,0.6)', '0 0 8px rgba(255,255,255,0.8)', '0 0 4px rgba(255,255,255,0.6)']
               : '0 0 0px transparent'
           }}
           transition={{ duration: 1, repeat: Infinity }}
         >
           <motion.div
-            className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-sky-400"
+            className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-gray-200"
             animate={mood === 'thinking' ? {
               scale: [1, 1.3, 1],
-              boxShadow: ['0 0 4px rgb(56,189,248)', '0 0 10px rgb(56,189,248)', '0 0 4px rgb(56,189,248)']
+              boxShadow: ['0 0 4px rgba(255,255,255,0.6)', '0 0 10px rgba(255,255,255,0.9)', '0 0 4px rgba(255,255,255,0.6)']
             } : {}}
             transition={{ duration: 1, repeat: Infinity }}
           />
@@ -118,22 +121,22 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
         {/* Eyes container */}
         <div className={`flex ${sizeConfig.eyeGap} relative z-10 mt-1`}>
           {mood === 'thinking' ? (
-            // Thinking state - pulsing dots
+            // Thinking state - pulsing dots with silver glow
             <>
               <motion.div 
-                className={`${sizeConfig.eye} bg-sky-300 rounded-full`}
+                className={`${sizeConfig.eye} bg-gray-300 rounded-full`}
                 variants={thinkingPulseVariants}
                 animate="thinking"
               />
               <motion.div 
-                className={`${sizeConfig.eye} bg-sky-300 rounded-full`}
+                className={`${sizeConfig.eye} bg-gray-300 rounded-full`}
                 variants={thinkingPulseVariants}
                 animate="thinking"
                 style={{ animationDelay: '0.5s' }}
               />
             </>
           ) : (
-            // Normal eyes - digital style, looking forward at user
+            // Normal eyes - white with dark pupils
             <>
               {/* Left Eye */}
               <motion.div 
@@ -143,10 +146,10 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
               >
                 {/* Pupil - centered for forward look */}
                 <motion.div 
-                  className={`${sizeConfig.pupil} bg-indigo-900 rounded-full`}
+                  className={`${sizeConfig.pupil} bg-[#1a1a1a] rounded-full`}
                   animate={mood === 'happy' ? { y: -1 } : { y: 0 }}
                 />
-                {/* Eye highlight - upper left for natural lighting, eyes looking forward */}
+                {/* Eye highlight - upper left for natural lighting */}
                 <div className="absolute top-0.5 left-0.5 w-1 h-1 bg-white rounded-full opacity-90" />
               </motion.div>
               
@@ -158,17 +161,17 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
               >
                 {/* Pupil - centered for forward look */}
                 <motion.div 
-                  className={`${sizeConfig.pupil} bg-indigo-900 rounded-full`}
+                  className={`${sizeConfig.pupil} bg-[#1a1a1a] rounded-full`}
                   animate={mood === 'happy' ? { y: -1 } : { y: 0 }}
                 />
-                {/* Eye highlight - upper left for natural lighting, eyes looking forward */}
+                {/* Eye highlight - upper left for natural lighting */}
                 <div className="absolute top-0.5 left-0.5 w-1 h-1 bg-white rounded-full opacity-90" />
               </motion.div>
             </>
           )}
         </div>
         
-        {/* Smile - subtle arc */}
+        {/* Smile - subtle arc in white/silver */}
         <motion.div
           className={`${sizeConfig.smile} mt-1 relative z-10`}
           animate={mood === 'happy' ? { scaleX: 1.2 } : { scaleX: 1 }}
@@ -177,7 +180,7 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
             <motion.path
               d="M4 2 Q12 8 20 2"
               fill="none"
-              stroke="white"
+              stroke="rgba(255,255,255,0.9)"
               strokeWidth="2"
               strokeLinecap="round"
               initial={{ pathLength: 0 }}
@@ -188,7 +191,7 @@ export const WellBotAvatar = ({ size = "md", mood = "neutral", className = "" }:
         </motion.div>
         
         {/* Bottom shadow for depth */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-2 bg-gradient-to-t from-slate-800/20 to-transparent rounded-b-full" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-2 bg-gradient-to-t from-black/30 to-transparent rounded-b-full" />
       </motion.div>
     </motion.div>
   );

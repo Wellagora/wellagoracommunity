@@ -14,6 +14,7 @@ import RecommendedProgramsSlider from "@/components/RecommendedProgramsSlider";
 import CTABanner from "@/components/CTABanner";
 import { UpcomingEventsSection } from "@/components/events/UpcomingEventsSection";
 import { RegionalImpactGarden } from "@/components/RegionalImpactGarden";
+import { CommunityImpactCounter } from "@/components/CommunityImpactCounter";
 import Footer from "@/components/Footer";
 import { StatsBarSkeleton } from "@/components/ui/skeletons";
 
@@ -152,13 +153,16 @@ const Index = () => {
           {/* 1. HERO SECTION - Full viewport with integrated registration cards */}
           <HeroSection />
 
-          {/* 2. SZAKÉRTŐI ARCKÉPCSARNOK - Expert Portrait Gallery */}
+          {/* 2. COMMUNITY IMPACT - Gamification section */}
+          <CommunityImpactCounter />
+
+          {/* 3. SZAKÉRTŐI ARCKÉPCSARNOK - Expert Portrait Gallery */}
           <ExpertGallery />
 
-          {/* 3. KIEMELT ESEMÉNYEK - Fixed 3-column grid */}
+          {/* 4. KIEMELT ESEMÉNYEK - Fixed 3-column grid */}
           <FeaturedEventsGrid />
 
-          {/* 4. AJÁNLOTT PROGRAMOK - Horizontal slider */}
+          {/* 5. AJÁNLOTT PROGRAMOK - Horizontal slider */}
           <RecommendedProgramsSlider />
         </main>
       </div>
