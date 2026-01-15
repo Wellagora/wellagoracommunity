@@ -15,7 +15,7 @@ export default function AppLayout() {
   return (
     <div className="min-h-screen bg-transparent">
       {/* Global Liquid Mesh Gradient - runs behind everything */}
-      <LiquidMeshGradient intensity={gradientIntensity} />
+      <LiquidMeshGradient className="z-0" intensity={gradientIntensity} />
       
       <div className="relative z-10">
         <header>
