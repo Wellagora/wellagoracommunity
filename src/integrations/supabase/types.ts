@@ -1171,6 +1171,60 @@ export type Database = {
           },
         ]
       }
+      expert_media: {
+        Row: {
+          created_at: string
+          expert_id: string
+          file_type: string
+          file_url: string
+          id: string
+          program_id: string | null
+          status: string
+          thumbnail_url: string | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          expert_id: string
+          file_type: string
+          file_url: string
+          id?: string
+          program_id?: string | null
+          status?: string
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          expert_id?: string
+          file_type?: string
+          file_url?: string
+          id?: string
+          program_id?: string | null
+          status?: string
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_media_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expert_media_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       expert_services: {
         Row: {
           content_id: string | null

@@ -2,16 +2,17 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
-import { Video, Camera, Plus } from "lucide-react";
+import { Video, Camera, Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
 interface QuickActionBarProps {
   onVideoCapture: (file: File) => void;
   onPhotoCapture: (file: File) => void;
+  uploading?: boolean;
 }
 
-const QuickActionBar = ({ onVideoCapture, onPhotoCapture }: QuickActionBarProps) => {
+const QuickActionBar = ({ onVideoCapture, onPhotoCapture, uploading = false }: QuickActionBarProps) => {
   const { t } = useLanguage();
   const videoInputRef = useRef<HTMLInputElement>(null);
   const photoInputRef = useRef<HTMLInputElement>(null);
@@ -25,8 +26,9 @@ const QuickActionBar = ({ onVideoCapture, onPhotoCapture }: QuickActionBarProps)
         return;
       }
       onVideoCapture(file);
-      toast.success(t("expert_studio.video_captured"));
     }
+    // Reset input so same file can be selected again
+    e.target.value = '';
   };
 
   const handlePhotoCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,8 +40,9 @@ const QuickActionBar = ({ onVideoCapture, onPhotoCapture }: QuickActionBarProps)
         return;
       }
       onPhotoCapture(file);
-      toast.success(t("expert_studio.photo_captured"));
     }
+    // Reset input so same file can be selected again
+    e.target.value = '';
   };
 
   return (
@@ -56,6 +59,7 @@ const QuickActionBar = ({ onVideoCapture, onPhotoCapture }: QuickActionBarProps)
         capture="environment"
         className="hidden"
         onChange={handleVideoCapture}
+        disabled={uploading}
       />
       <input
         ref={photoInputRef}
@@ -64,15 +68,21 @@ const QuickActionBar = ({ onVideoCapture, onPhotoCapture }: QuickActionBarProps)
         capture="environment"
         className="hidden"
         onChange={handlePhotoCapture}
+        disabled={uploading}
       />
 
       {/* Record Video Button */}
       <Button
         variant="outline"
         onClick={() => videoInputRef.current?.click()}
-        className="h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-red-500/10 to-pink-500/10 border-red-500/20 hover:border-red-500/40 hover:bg-red-500/15 transition-all duration-300"
+        disabled={uploading}
+        className="h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-red-500/10 to-pink-500/10 border-red-500/20 hover:border-red-500/40 hover:bg-red-500/15 transition-all duration-300 disabled:opacity-50"
       >
-        <Video className="w-6 h-6 text-red-500" />
+        {uploading ? (
+          <Loader2 className="w-6 h-6 text-red-500 animate-spin" />
+        ) : (
+          <Video className="w-6 h-6 text-red-500" />
+        )}
         <span className="text-sm font-medium text-foreground">
           {t("expert_studio.record_video")}
         </span>
@@ -82,9 +92,14 @@ const QuickActionBar = ({ onVideoCapture, onPhotoCapture }: QuickActionBarProps)
       <Button
         variant="outline"
         onClick={() => photoInputRef.current?.click()}
-        className="h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/20 hover:border-blue-500/40 hover:bg-blue-500/15 transition-all duration-300"
+        disabled={uploading}
+        className="h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/20 hover:border-blue-500/40 hover:bg-blue-500/15 transition-all duration-300 disabled:opacity-50"
       >
-        <Camera className="w-6 h-6 text-blue-500" />
+        {uploading ? (
+          <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
+        ) : (
+          <Camera className="w-6 h-6 text-blue-500" />
+        )}
         <span className="text-sm font-medium text-foreground">
           {t("expert_studio.upload_photo")}
         </span>
