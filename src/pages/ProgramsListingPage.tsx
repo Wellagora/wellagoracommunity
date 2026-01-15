@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
+import { resolveImageUrl, resolveAvatarUrl } from "@/lib/imageResolver";
 
 const CATEGORIES = [
   { id: "all", labelKey: "marketplace.all_categories", icon: Grid },
@@ -161,8 +162,8 @@ const ProgramsListingPage = () => {
             id: content.id,
             title,
             description,
-            image_url: content.image_url,
-            thumbnail_url: content.thumbnail_url,
+            image_url: resolveImageUrl(content.image_url),
+            thumbnail_url: resolveImageUrl(content.thumbnail_url),
             access_type: content.access_type,
             price_huf: content.price_huf,
             category: content.category,
@@ -174,7 +175,7 @@ const ProgramsListingPage = () => {
               id: creator.id,
               first_name: creator.first_name,
               last_name: creator.last_name,
-              avatar_url: creator.avatar_url,
+              avatar_url: resolveAvatarUrl(creator.avatar_url),
             } : null,
           };
         });
