@@ -34,8 +34,12 @@ const ExpertStudio = () => {
     media, 
     loading: mediaLoading, 
     uploading, 
+    analyzing,
     uploadMedia, 
-    deleteMedia 
+    analyzeMedia,
+    linkMediaToProgram,
+    deleteMedia,
+    dismissSuggestion
   } = useExpertMedia();
 
   useEffect(() => {
@@ -166,8 +170,12 @@ const ExpertStudio = () => {
       <MediaLibrary
         media={media}
         loading={mediaLoading}
+        analyzing={analyzing}
         onDelete={deleteMedia}
         onConvertToProgram={handleConvertToProgram}
+        onAddToProgram={(mediaItem, programId) => linkMediaToProgram(mediaItem.id, programId)}
+        onDismissSuggestion={dismissSuggestion}
+        onAnalyze={analyzeMedia}
       />
 
       {/* Main Content Grid */}

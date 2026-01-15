@@ -1173,6 +1173,8 @@ export type Database = {
       }
       expert_media: {
         Row: {
+          ai_suggestion: Json | null
+          analyzed_at: string | null
           created_at: string
           expert_id: string
           file_type: string
@@ -1183,8 +1185,11 @@ export type Database = {
           thumbnail_url: string | null
           title: string | null
           updated_at: string
+          view_count: number | null
         }
         Insert: {
+          ai_suggestion?: Json | null
+          analyzed_at?: string | null
           created_at?: string
           expert_id: string
           file_type: string
@@ -1195,8 +1200,11 @@ export type Database = {
           thumbnail_url?: string | null
           title?: string | null
           updated_at?: string
+          view_count?: number | null
         }
         Update: {
+          ai_suggestion?: Json | null
+          analyzed_at?: string | null
           created_at?: string
           expert_id?: string
           file_type?: string
@@ -1207,6 +1215,7 @@ export type Database = {
           thumbnail_url?: string | null
           title?: string | null
           updated_at?: string
+          view_count?: number | null
         }
         Relationships: [
           {
@@ -1822,6 +1831,7 @@ export type Database = {
         Row: {
           accepted_terms_at: string | null
           accepted_terms_version: string | null
+          auto_create_drafts: boolean | null
           avatar_url: string | null
           bio: string | null
           bio_de: string | null
@@ -1892,6 +1902,7 @@ export type Database = {
         Insert: {
           accepted_terms_at?: string | null
           accepted_terms_version?: string | null
+          auto_create_drafts?: boolean | null
           avatar_url?: string | null
           bio?: string | null
           bio_de?: string | null
@@ -1962,6 +1973,7 @@ export type Database = {
         Update: {
           accepted_terms_at?: string | null
           accepted_terms_version?: string | null
+          auto_create_drafts?: boolean | null
           avatar_url?: string | null
           bio?: string | null
           bio_de?: string | null
@@ -2049,6 +2061,52 @@ export type Database = {
             columns: ["suspended_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      program_media_links: {
+        Row: {
+          created_at: string
+          id: string
+          media_id: string
+          position: number | null
+          program_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          media_id: string
+          position?: number | null
+          program_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          media_id?: string
+          position?: number | null
+          program_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "program_media_links_media_id_fkey"
+            columns: ["media_id"]
+            isOneToOne: false
+            referencedRelation: "expert_media"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "program_media_links_media_id_fkey"
+            columns: ["media_id"]
+            isOneToOne: false
+            referencedRelation: "expert_media_with_usage"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "program_media_links_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
             referencedColumns: ["id"]
           },
         ]
@@ -2900,6 +2958,40 @@ export type Database = {
           task_type: string | null
         }
         Relationships: []
+      }
+      expert_media_with_usage: {
+        Row: {
+          ai_suggestion: Json | null
+          analyzed_at: string | null
+          created_at: string | null
+          expert_id: string | null
+          file_type: string | null
+          file_url: string | null
+          id: string | null
+          program_id: string | null
+          status: string | null
+          thumbnail_url: string | null
+          title: string | null
+          updated_at: string | null
+          usage_count: number | null
+          view_count: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_media_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expert_media_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       geography_columns: {
         Row: {
