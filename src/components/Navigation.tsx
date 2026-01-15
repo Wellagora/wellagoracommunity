@@ -34,6 +34,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import wellagoraLogo from "@/assets/wellagora-logo.png";
 import LanguageSelector from "./LanguageSelector";
+import { DemoSwitcher } from "./navigation/DemoSwitcher";
 
 // Helper to determine effective role from database user_role
 const getEffectiveRole = (userRole: string | undefined): 'member' | 'expert' | 'sponsor' => {
@@ -283,7 +284,7 @@ const Navigation = () => {
       )}
       
       <nav className={`fixed left-0 right-0 z-[100] w-full bg-white/95 backdrop-blur-md border-b border-slate-200 ${isDemoMode ? 'top-8' : 'top-0'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pr-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pr-8 lg:pr-12">
           <div className="flex items-center justify-between h-16">
             {/* Logo - Left - Slightly offset to create space */}
             <Link to="/" className="flex items-center shrink-0 z-10 -ml-1 sm:ml-0">
@@ -316,40 +317,12 @@ const Navigation = () => {
 
             {/* Desktop Actions - Right - ALWAYS visible with shrink-0 */}
             <div className="hidden md:flex items-center gap-3 shrink-0 z-10">
-              {/* Super Admin View Switcher - Apple iOS Segmented Control */}
+              {/* Super Admin Demo Switcher - Compact */}
               {isSuperAdmin && user && (
-                <div className="flex items-center bg-[#F5F5F7] rounded-lg p-1 shadow-sm shrink-0">
-                  <button
-                    onClick={() => handleViewChange('member')}
-                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
-                      activeView === 'member'
-                        ? 'bg-white text-[#34C759] shadow-sm'
-                        : 'text-slate-600 hover:text-slate-900'
-                    }`}
-                  >
-                    {t('roles.explorer')}
-                  </button>
-                  <button
-                    onClick={() => handleViewChange('expert')}
-                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
-                      activeView === 'expert'
-                        ? 'bg-white text-[#007AFF] shadow-sm'
-                        : 'text-slate-600 hover:text-slate-900'
-                    }`}
-                  >
-                    {t('roles.expert')}
-                  </button>
-                  <button
-                    onClick={() => handleViewChange('sponsor')}
-                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
-                      activeView === 'sponsor'
-                        ? 'bg-white text-amber-600 shadow-sm'
-                        : 'text-slate-600 hover:text-slate-900'
-                    }`}
-                  >
-                    {t('roles.sponsor')}
-                  </button>
-                </div>
+                <DemoSwitcher 
+                  activeView={activeView} 
+                  onViewChange={handleViewChange} 
+                />
               )}
 
               {/* WellBot Button - Moved here from center nav to prevent overlap */}
