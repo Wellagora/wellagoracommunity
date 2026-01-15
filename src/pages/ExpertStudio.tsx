@@ -12,6 +12,7 @@ import { DashboardCard } from "@/components/dashboard/DashboardCard";
 // Expert Studio Components
 import QuickActionBar from "@/components/expert-studio/QuickActionBar";
 import VoucherValidator from "@/components/expert-studio/VoucherValidator";
+import VoucherManagement from "@/components/expert-studio/VoucherManagement";
 import BalanceCard from "@/components/expert-studio/BalanceCard";
 import MyProgramsList from "@/components/expert-studio/MyProgramsList";
 
@@ -47,13 +48,42 @@ const ExpertStudio = () => {
       const totalReach = contentData?.reduce((sum, c) => sum + (c.used_licenses || 0), 0) || 0;
       const totalEarnings = totalReach * 500; // Average 500 Ft per redemption
       
-      // Mock data for demo - in production, fetch from transactions table
-      setBalance(12500);
-      setStats({
-        monthlyEarnings: 8500,
-        totalEarnings: totalEarnings || 25000,
-        pendingAmount: 3000,
-      });
+      // Fetch real voucher stats
+      const contentIds = contentData?.map(c => c.id) || [];
+      
+      if (contentIds.length > 0) {
+        const { data: vouchersData } = await supabase
+          .from('vouchers')
+          .select('status, redeemed_at, content_id')
+          .in('content_id', contentIds);
+        
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        
+        const usedVouchers = vouchersData?.filter(v => v.status === 'used') || [];
+        const thisMonthRedemptions = usedVouchers.filter(v => 
+          v.redeemed_at && new Date(v.redeemed_at) >= startOfMonth
+        );
+        
+        // Calculate earnings (85% of average 5000 Ft per voucher)
+        const avgValue = 5000;
+        const monthlyEarnings = thisMonthRedemptions.length * Math.round(avgValue * 0.85);
+        const calculatedTotalEarnings = usedVouchers.length * Math.round(avgValue * 0.85);
+        
+        setBalance(calculatedTotalEarnings);
+        setStats({
+          monthlyEarnings,
+          totalEarnings: calculatedTotalEarnings,
+          pendingAmount: (vouchersData?.filter(v => v.status === 'active').length || 0) * Math.round(avgValue * 0.85),
+        });
+      } else {
+        setBalance(0);
+        setStats({
+          monthlyEarnings: 0,
+          totalEarnings: 0,
+          pendingAmount: 0,
+        });
+      }
     } catch (error) {
       console.error("Error loading studio data:", error);
     } finally {
@@ -62,13 +92,11 @@ const ExpertStudio = () => {
   };
 
   const handleVideoCapture = async (file: File) => {
-    // In production, upload to Supabase Storage
     console.log("Video captured:", file.name);
     toast.success(t("expert_studio.video_ready"));
   };
 
   const handlePhotoCapture = async (file: File) => {
-    // In production, upload to Supabase Storage
     console.log("Photo captured:", file.name);
     toast.success(t("expert_studio.photo_ready"));
   };
@@ -115,7 +143,7 @@ const ExpertStudio = () => {
       />
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         {/* Voucher Validator - The Business Heart */}
         <DashboardCard>
           <VoucherValidator 
@@ -135,6 +163,11 @@ const ExpertStudio = () => {
           />
         </DashboardCard>
       </div>
+
+      {/* Voucher Management - Full Width */}
+      <DashboardCard delay={0.15} className="mb-6">
+        <VoucherManagement />
+      </DashboardCard>
 
       {/* My Programs List */}
       <DashboardCard delay={0.2}>
