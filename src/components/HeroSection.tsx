@@ -44,7 +44,7 @@ const HeroSection = () => {
   return (
     <section 
       ref={sectionRef}
-      className="min-h-[70vh] flex items-center justify-center py-8 relative overflow-hidden"
+      className="min-h-[70vh] flex items-center justify-center py-8 relative overflow-hidden bg-transparent"
     >
       {/* Background is now handled globally by AppLayout */}
 
@@ -98,7 +98,7 @@ const HeroSection = () => {
                 <SmartTiltCard>
                   <Link to={path.link} className="block">
                     <div 
-                      className="relative bg-white/80 backdrop-blur-xl rounded-2xl p-6 min-h-[100px] flex flex-col justify-center border border-[#E5E7EB] shadow-sm hover:shadow-lg transition-all duration-300"
+                      className="relative bg-white/40 backdrop-blur-2xl rounded-2xl p-6 min-h-[100px] flex flex-col justify-center border border-white/30 shadow-lg hover:shadow-xl hover:bg-white/50 transition-all duration-300"
                     >
                       {/* Title - NO numbers */}
                       <h3 className="text-xl font-semibold text-slate-900 mb-2">

@@ -49,8 +49,8 @@ const LiquidMeshGradient = ({ className = "", intensity = 'vibrant' }: LiquidMes
       const normalizedX = (e.clientX - centerX) / centerX;
       const normalizedY = (e.clientY - centerY) / centerY;
       
-      mouseX.set(normalizedX * 30); // Max 30px movement
-      mouseY.set(normalizedY * 30);
+      mouseX.set(normalizedX * 60); // Max 60px movement
+      mouseY.set(normalizedY * 60);
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -76,38 +76,38 @@ const LiquidMeshGradient = ({ className = "", intensity = 'vibrant' }: LiquidMes
   const blobs = [
     {
       id: 1,
-      baseOpacity: 0.9,
-      color: `rgba(255, 255, 255, ${0.9 * opacityMultiplier})`, // White
-      size: "60%",
-      initialX: "10%",
-      initialY: "10%",
+      baseOpacity: 0.7,
+      color: `rgba(148, 163, 184, ${0.7 * opacityMultiplier})`, // Slate-400
+      size: "80%",
+      initialX: "5%",
+      initialY: "5%",
       duration: 25,
     },
     {
       id: 2,
-      baseOpacity: 0.85,
-      color: `rgba(243, 244, 246, ${0.85 * opacityMultiplier})`, // Pearl Gray #F3F4F6
-      size: "55%",
+      baseOpacity: 0.5,
+      color: `rgba(100, 116, 139, ${0.5 * opacityMultiplier})`, // Slate-500
+      size: "70%",
       initialX: "50%",
-      initialY: "-10%",
+      initialY: "55%",
       duration: 30,
     },
     {
       id: 3,
-      baseOpacity: 0.8,
-      color: `rgba(229, 231, 235, ${0.8 * opacityMultiplier})`, // Silver #E5E7EB
-      size: "50%",
-      initialX: "70%",
-      initialY: "40%",
+      baseOpacity: 0.3,
+      color: `rgba(71, 85, 105, ${0.3 * opacityMultiplier})`, // Slate-600
+      size: "65%",
+      initialX: "65%",
+      initialY: "15%",
       duration: 22,
     },
     {
       id: 4,
-      baseOpacity: 0.75,
-      color: `rgba(241, 245, 249, ${0.75 * opacityMultiplier})`, // Slate-100
-      size: "45%",
-      initialX: "20%",
-      initialY: "60%",
+      baseOpacity: 0.15,
+      color: `rgba(20, 184, 166, ${0.15 * opacityMultiplier})`, // Teal-500
+      size: "60%",
+      initialX: "25%",
+      initialY: "75%",
       duration: 28,
     },
   ];
@@ -116,10 +116,8 @@ const LiquidMeshGradient = ({ className = "", intensity = 'vibrant' }: LiquidMes
     <div 
       ref={containerRef}
       className={`fixed inset-0 overflow-hidden pointer-events-none ${className}`}
-      style={{ filter: "blur(80px)", zIndex: -10 }}
+      style={{ filter: "blur(50px)", zIndex: -10 }}
     >
-      {/* Base white layer */}
-      <div className="absolute inset-0 bg-white" />
       
       {blobs.map((blob) => (
         <motion.div
@@ -135,10 +133,10 @@ const LiquidMeshGradient = ({ className = "", intensity = 'vibrant' }: LiquidMes
             y: getOffsetY(),
           }}
           animate={{
-            x: [0, 50, -30, 20, 0],
-            y: [0, -40, 30, -20, 0],
-            scale: [1, 1.1, 0.95, 1.05, 1],
-            rotate: [0, 45, -30, 60, 0],
+            x: [0, 60, -40, 30, 0],
+            y: [0, -50, 40, -30, 0],
+            scale: [1, 1.15, 0.9, 1.1, 1],
+            rotate: [0, 60, -45, 80, 0],
           }}
           transition={{
             duration: blob.duration,
