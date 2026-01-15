@@ -2787,6 +2787,7 @@ export type Database = {
           code: string
           content_id: string
           created_at: string | null
+          expires_at: string | null
           id: string
           pickup_location: string | null
           redeemed_at: string | null
@@ -2798,6 +2799,7 @@ export type Database = {
           code: string
           content_id: string
           created_at?: string | null
+          expires_at?: string | null
           id?: string
           pickup_location?: string | null
           redeemed_at?: string | null
@@ -2809,6 +2811,7 @@ export type Database = {
           code?: string
           content_id?: string
           created_at?: string | null
+          expires_at?: string | null
           id?: string
           pickup_location?: string | null
           redeemed_at?: string | null
