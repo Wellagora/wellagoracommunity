@@ -4,8 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { DEMO_ACCOUNTS, MOCK_SPONSORS, MOCK_EXPERTS } from '@/data/mockData';
 
-// User roles - simplified to 3 main roles
-export type UserRole = 'member' | 'expert' | 'sponsor';
+// User roles - simplified to main roles + admin
+export type UserRole = 'member' | 'expert' | 'sponsor' | 'admin';
 
 interface Profile {
   id: string;
@@ -34,6 +34,8 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   isDemoMode: boolean;
+  viewAsRole: UserRole | null;
+  setViewAsRole: (role: UserRole | null) => void;
   signUp: (data: {
     email: string;
     password: string;
@@ -67,6 +69,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [isDemoMode, setIsDemoMode] = useState(false);
+  
+  // God Mode: viewAsRole allows Super Admins to switch between views
+  const [viewAsRole, setViewAsRoleState] = useState<UserRole | null>(() => {
+    const stored = sessionStorage.getItem('wellagora_view_as_role');
+    return stored as UserRole | null;
+  });
+
+  // Setter that also persists to sessionStorage
+  const setViewAsRole = (role: UserRole | null) => {
+    setViewAsRoleState(role);
+    if (role) {
+      sessionStorage.setItem('wellagora_view_as_role', role);
+    } else {
+      sessionStorage.removeItem('wellagora_view_as_role');
+    }
+  };
 
   // Helper function to fetch profile data
   const fetchProfileData = async (userId: string) => {
@@ -298,7 +316,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = async () => {
     // Clear demo session if exists
     localStorage.removeItem('wellagora_demo_session');
+    sessionStorage.removeItem('wellagora_view_as_role');
     setIsDemoMode(false);
+    setViewAsRoleState(null);
     
     // Normal Supabase signout
     await supabase.auth.signOut();
@@ -332,6 +352,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     session,
     loading,
     isDemoMode,
+    viewAsRole,
+    setViewAsRole,
     signUp,
     signIn,
     signOut,
