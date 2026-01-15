@@ -76,38 +76,38 @@ const LiquidMeshGradient = ({ className = "", intensity = 'vibrant' }: LiquidMes
   const blobs = [
     {
       id: 1,
-      baseOpacity: 0.7,
-      color: `rgba(148, 163, 184, ${0.7 * opacityMultiplier})`, // Slate-400
-      size: "90%",
-      initialX: "0%",
-      initialY: "0%",
+      baseOpacity: 0.4,
+      color: `rgba(203, 213, 225, ${0.4 * opacityMultiplier})`, // Light Slate
+      size: "100%",
+      initialX: "-5%",
+      initialY: "-5%",
       duration: 25,
     },
     {
       id: 2,
-      baseOpacity: 0.5,
-      color: `rgba(100, 116, 139, ${0.5 * opacityMultiplier})`, // Slate-500
-      size: "80%",
-      initialX: "45%",
-      initialY: "50%",
+      baseOpacity: 0.3,
+      color: `rgba(226, 232, 240, ${0.3 * opacityMultiplier})`, // Cool Gray
+      size: "90%",
+      initialX: "40%",
+      initialY: "45%",
       duration: 30,
     },
     {
       id: 3,
-      baseOpacity: 0.3,
-      color: `rgba(71, 85, 105, ${0.3 * opacityMultiplier})`, // Slate-600
-      size: "75%",
-      initialX: "60%",
-      initialY: "10%",
+      baseOpacity: 0.5,
+      color: `rgba(241, 245, 249, ${0.5 * opacityMultiplier})`, // Ghost White
+      size: "85%",
+      initialX: "55%",
+      initialY: "5%",
       duration: 22,
     },
     {
       id: 4,
-      baseOpacity: 0.15,
-      color: `rgba(20, 184, 166, ${0.15 * opacityMultiplier})`, // Teal-500
-      size: "70%",
-      initialX: "20%",
-      initialY: "70%",
+      baseOpacity: 0.05,
+      color: `rgba(15, 118, 110, ${0.05 * opacityMultiplier})`, // Ultra-subtle Teal
+      size: "80%",
+      initialX: "15%",
+      initialY: "65%",
       duration: 28,
     },
   ];
