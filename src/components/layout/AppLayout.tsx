@@ -13,7 +13,7 @@ export default function AppLayout() {
   const gradientIntensity = isLandingPage ? 'vibrant' : 'muted';
   
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-transparent">
       {/* Global Liquid Mesh Gradient - runs behind everything */}
       <LiquidMeshGradient intensity={gradientIntensity} />
       
