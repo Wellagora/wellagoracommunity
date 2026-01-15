@@ -4,11 +4,16 @@ import { useGyroscope } from "@/hooks/useGyroscope";
 
 interface LiquidMeshGradientProps {
   className?: string;
+  /** Opacity intensity: 'vibrant' (0.8) for landing, 'muted' (0.25) for internal pages */
+  intensity?: 'vibrant' | 'muted';
 }
 
-const LiquidMeshGradient = ({ className = "" }: LiquidMeshGradientProps) => {
+const LiquidMeshGradient = ({ className = "", intensity = 'vibrant' }: LiquidMeshGradientProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  
+  // Opacity based on intensity
+  const opacityMultiplier = intensity === 'vibrant' ? 1 : 0.3;
   
   // Mouse tracking for desktop
   const mouseX = useMotionValue(0);
@@ -31,23 +36,21 @@ const LiquidMeshGradient = ({ className = "" }: LiquidMeshGradientProps) => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Desktop mouse tracking
+  // Desktop mouse tracking - global window listener for full coverage
   useEffect(() => {
     if (isMobile) return;
     
     const handleMouseMove = (e: MouseEvent) => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        
-        // Normalize to -1 to 1 range
-        const normalizedX = (e.clientX - centerX) / (rect.width / 2);
-        const normalizedY = (e.clientY - centerY) / (rect.height / 2);
-        
-        mouseX.set(normalizedX * 30); // Max 30px movement
-        mouseY.set(normalizedY * 30);
-      }
+      // Normalize to center of viewport
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      
+      // Normalize to -1 to 1 range
+      const normalizedX = (e.clientX - centerX) / centerX;
+      const normalizedY = (e.clientY - centerY) / centerY;
+      
+      mouseX.set(normalizedX * 30); // Max 30px movement
+      mouseY.set(normalizedY * 30);
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -73,7 +76,8 @@ const LiquidMeshGradient = ({ className = "" }: LiquidMeshGradientProps) => {
   const blobs = [
     {
       id: 1,
-      color: "rgba(255, 255, 255, 0.9)", // White
+      baseOpacity: 0.9,
+      color: `rgba(255, 255, 255, ${0.9 * opacityMultiplier})`, // White
       size: "60%",
       initialX: "10%",
       initialY: "10%",
@@ -81,7 +85,8 @@ const LiquidMeshGradient = ({ className = "" }: LiquidMeshGradientProps) => {
     },
     {
       id: 2,
-      color: "rgba(243, 244, 246, 0.85)", // Pearl Gray #F3F4F6
+      baseOpacity: 0.85,
+      color: `rgba(243, 244, 246, ${0.85 * opacityMultiplier})`, // Pearl Gray #F3F4F6
       size: "55%",
       initialX: "50%",
       initialY: "-10%",
@@ -89,7 +94,8 @@ const LiquidMeshGradient = ({ className = "" }: LiquidMeshGradientProps) => {
     },
     {
       id: 3,
-      color: "rgba(229, 231, 235, 0.8)", // Silver #E5E7EB
+      baseOpacity: 0.8,
+      color: `rgba(229, 231, 235, ${0.8 * opacityMultiplier})`, // Silver #E5E7EB
       size: "50%",
       initialX: "70%",
       initialY: "40%",
@@ -97,7 +103,8 @@ const LiquidMeshGradient = ({ className = "" }: LiquidMeshGradientProps) => {
     },
     {
       id: 4,
-      color: "rgba(241, 245, 249, 0.75)", // Slate-100
+      baseOpacity: 0.75,
+      color: `rgba(241, 245, 249, ${0.75 * opacityMultiplier})`, // Slate-100
       size: "45%",
       initialX: "20%",
       initialY: "60%",
@@ -108,8 +115,8 @@ const LiquidMeshGradient = ({ className = "" }: LiquidMeshGradientProps) => {
   return (
     <div 
       ref={containerRef}
-      className={`absolute inset-0 overflow-hidden ${className}`}
-      style={{ filter: "blur(80px)" }}
+      className={`fixed inset-0 overflow-hidden pointer-events-none ${className}`}
+      style={{ filter: "blur(80px)", zIndex: -10 }}
     >
       {/* Base white layer */}
       <div className="absolute inset-0 bg-white" />
@@ -146,7 +153,7 @@ const LiquidMeshGradient = ({ className = "" }: LiquidMeshGradientProps) => {
       <motion.div
         className="absolute inset-0"
         style={{
-          background: `radial-gradient(ellipse at center, rgba(248, 250, 252, 0.5) 0%, transparent 70%)`,
+          background: `radial-gradient(ellipse at center, rgba(248, 250, 252, ${0.5 * opacityMultiplier}) 0%, transparent 70%)`,
         }}
       />
     </div>
