@@ -3831,8 +3831,16 @@
   "expert.set_price": "Inhaltspreis",
   "expert.price_hint": "Bei 0 ist der Inhalt kostenlos.",
   "expert.earnings_info": "Bei kostenpflichtigen Inhalten erhalten Sie 85% der Einnahmen.",
-  "expert_studio.sales": "Verkäufe",
+"expert_studio.sales": "Verkäufe",
   "expert_studio.sponsorships": "Sponsorings",
+  "expert_studio.no_claims_yet": "Noch keine Anmeldungen",
+  "expert_studio.claims_will_appear": "Hier erscheinen die Mitglieder, die sich für Ihre Programme anmelden",
+  
+  "dashboard.welcome": "Willkommen",
+  
+  "common.back": "Zurück",
+  "common.logout": "Abmelden",
+  "common.user": "Benutzer",
   
   "categories": {
     "gardening": "Gärtnern",

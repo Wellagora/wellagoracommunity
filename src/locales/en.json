@@ -2416,7 +2416,8 @@
     "media_highlights": "Media Highlights",
     "awards": "Awards",
     "success_stories": "Success Stories",
-    "upcoming_milestones": "Upcoming Milestones"
+    "upcoming_milestones": "Upcoming Milestones",
+    "welcome": "Welcome"
   },
   "handprint.login_message": "To use the handprint calculator, please sign in.",
   "handprint.regional_impact": "Regional Impact Calculator",
@@ -4117,7 +4118,13 @@
   "expert.set_price": "Content price",
   "expert.price_hint": "If you set 0, the content will be free.",
   "expert.earnings_info": "For paid content, you receive 85% of the revenue.",
-  "expert_studio.sales": "Sales",
+"expert_studio.sales": "Sales",
+  "expert_studio.no_claims_yet": "No claims yet",
+  "expert_studio.claims_will_appear": "Members who join your programs will appear here",
+  
+  "common.back": "Back",
+  "common.logout": "Logout",
+  "common.user": "User",
   "expert_studio.sponsorships": "Sponsorships",
   
   "categories": {

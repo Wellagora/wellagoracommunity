@@ -4171,6 +4171,14 @@
   "expert.earnings_info": "Fizetős tartalomnál te kapod a bevétel 85%-át.",
   "expert_studio.sales": "Eladások",
   "expert_studio.sponsorships": "Szponzorációk",
+  "expert_studio.no_claims_yet": "Még nincsenek igénylések",
+  "expert_studio.claims_will_appear": "Itt jelennek meg a programjaidra jelentkezett tagok",
+  
+  "dashboard.welcome": "Üdvözöljük",
+  
+  "common.back": "Vissza",
+  "common.logout": "Kilépés",
+  "common.user": "Felhasználó",
   
   "categories": {
     "gardening": "Kertészet",
