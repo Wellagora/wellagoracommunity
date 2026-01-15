@@ -283,7 +283,7 @@ const Navigation = () => {
       )}
       
       <nav className={`fixed left-0 right-0 z-[100] w-full bg-white/95 backdrop-blur-md border-b border-slate-200 ${isDemoMode ? 'top-8' : 'top-0'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pr-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo - Left - Slightly offset to create space */}
             <Link to="/" className="flex items-center shrink-0 z-10 -ml-1 sm:ml-0">
@@ -402,7 +402,7 @@ const Navigation = () => {
                       <ChevronDown className="h-4 w-4 text-foreground/70" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuContent align="end" className="w-56" style={{ right: 0 }}>
                     {/* User info header */}
                     <div className="px-2 py-1.5 border-b mb-1">
                       <p className="font-medium text-sm">{profile?.first_name} {profile?.last_name}</p>
@@ -435,17 +435,17 @@ const Navigation = () => {
                       </Link>
                     </DropdownMenuItem>
                     
-                    {/* Super Admin link */}
+                    {/* Super Admin link - clearly visible */}
                     {isSuperAdmin && (
                       <>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
                           <Link
                             to="/admin-panel"
-                            className="flex items-center gap-2 cursor-pointer text-purple-600 dark:text-purple-400"
+                            className="flex items-center gap-2 cursor-pointer text-purple-600 dark:text-purple-400 font-semibold bg-purple-50 dark:bg-purple-900/20"
                           >
                             <ShieldCheck className="h-4 w-4" />
-                            Super Admin
+                            Adminisztrációs Központ
                           </Link>
                         </DropdownMenuItem>
                       </>
