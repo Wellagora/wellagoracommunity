@@ -268,88 +268,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signIn = async (email: string, password: string): Promise<{ error: Error | null; demoRole?: string }> => {
-    // 1. CHECK FOR DEMO ACCOUNT FIRST (strict allowlist)
+    // Check if this is a demo account (for role-based redirect after login)
     const demoAccount = DEMO_ACCOUNTS.find(
-      (acc) => acc.email.toLowerCase() === email.toLowerCase() && acc.password === password
+      (acc) => acc.email.toLowerCase() === email.toLowerCase()
     );
 
-    if (demoAccount) {
-      logger.debug('Demo mode activated', { role: demoAccount.role }, 'Auth');
-
-      // Stable IDs are critical so mock data (vouchers/history/etc.) can resolve correctly.
-      const demoUserId =
-        demoAccount.role === 'member'
-          ? 'member-1'
-          : demoAccount.role === 'expert'
-            ? 'mock-expert-1'
-            : demoAccount.role === 'sponsor'
-              ? 'sponsor-1'
-              : 'admin-1';
-
-      // Create mock user object (mimics Supabase user structure)
-      const mockUser = {
-        id: demoUserId,
-        email: demoAccount.email,
-        user_metadata: {
-          full_name: demoAccount.name,
-          role: demoAccount.role,
-        },
-        app_metadata: {},
-        aud: 'authenticated',
-        created_at: new Date().toISOString(),
-      };
-
-      // Get role-specific data
-      const sponsorData = demoAccount.role === 'sponsor' ? MOCK_SPONSORS[0] : null;
-      const expertData = demoAccount.role === 'expert' ? MOCK_EXPERTS[0] : null;
-
-      // Create mock profile object
-      const mockProfile: Profile = {
-        id: mockUser.id,
-        first_name:
-          demoAccount.role === 'sponsor'
-            ? sponsorData?.contact_name?.split(' ')[1] || 'Mária'
-            : demoAccount.role === 'expert'
-              ? expertData?.first_name || 'János'
-              : 'Eszter',
-        last_name:
-          demoAccount.role === 'sponsor'
-            ? sponsorData?.contact_name?.split(' ')[0] || 'Horváth'
-            : demoAccount.role === 'expert'
-              ? expertData?.last_name || 'Kovács'
-              : 'Tóth',
-        email: demoAccount.email,
-        user_role: demoAccount.role, // admin stays 'admin' for clarity; access is still gated by is_super_admin
-        is_super_admin: demoAccount.role === 'admin',
-        organization_name: sponsorData?.organization_name || null,
-        organization_logo_url: null,
-        avatar_url: expertData?.avatar_url || null,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        is_verified_expert: demoAccount.role === 'expert',
-      };
-
-      // Set states
-      setUser(mockUser as unknown as User);
-      setProfile(mockProfile);
-      setIsDemoMode(true);
-
-      // Store demo session in localStorage for persistence
-      localStorage.setItem(
-        'wellagora_demo_session',
-        JSON.stringify({
-          user: mockUser,
-          profile: mockProfile,
-          role: demoAccount.role,
-        })
-      );
-
-      return { error: null, demoRole: demoAccount.role };
-    }
-
-    // 2. NORMAL SUPABASE LOGIN (for all non-demo accounts)
+    // ALWAYS use real Supabase authentication - no mock data bypass
     try {
-      // Ensure demo mode is not trapping real logins
+      // Ensure demo mode is cleared for fresh login
       localStorage.removeItem('wellagora_demo_session');
       setIsDemoMode(false);
 
@@ -357,7 +283,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email,
         password,
       });
-      return { error };
+
+      if (error) {
+        return { error };
+      }
+
+      // Return demoRole for redirect purposes (if it was a demo account)
+      return { error: null, demoRole: demoAccount?.role };
     } catch (error) {
       return { error: error as Error };
     }
