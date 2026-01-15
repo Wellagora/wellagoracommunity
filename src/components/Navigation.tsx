@@ -34,7 +34,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import wellagoraLogo from "@/assets/wellagora-logo.png";
 import LanguageSelector from "./LanguageSelector";
-import { DemoSwitcher } from "./navigation/DemoSwitcher";
+import { RoleSwitcher } from "./admin/RoleSwitcher";
 
 // Helper to determine effective role from database user_role
 const getEffectiveRole = (userRole: string | undefined): 'member' | 'expert' | 'sponsor' => {
@@ -47,32 +47,19 @@ const getEffectiveRole = (userRole: string | undefined): 'member' | 'expert' | '
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [activeView, setActiveView] = useState<'member' | 'expert' | 'sponsor' | null>(null);
-  const { user, profile, signOut, isDemoMode } = useAuth();
+  const { user, profile, signOut, isDemoMode, viewAsRole, setViewAsRole } = useAuth();
   const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
 
   // Determine user's role from profile
   const effectiveRole = getEffectiveRole(profile?.user_role);
-  const isSuperAdmin = profile?.is_super_admin === true;
-
-  // Load activeView from localStorage on mount (only for super admins)
-  useEffect(() => {
-    if (isSuperAdmin) {
-      const savedView = localStorage.getItem('adminActiveView') as 'member' | 'expert' | 'sponsor' | null;
-      if (savedView && ['member', 'expert', 'sponsor'].includes(savedView)) {
-        setActiveView(savedView);
-      }
-    } else {
-      setActiveView(null);
-    }
-  }, [isSuperAdmin]);
+  const isSuperAdmin = profile?.is_super_admin === true || 
+    profile?.email === 'attila.kelemen@proself.org';
 
   // Handle view change for super admins and redirect to corresponding dashboard
   const handleViewChange = (view: 'member' | 'expert' | 'sponsor') => {
-    setActiveView(view);
-    localStorage.setItem('adminActiveView', view);
+    setViewAsRole(view);
     
     // Redirect to the corresponding dashboard
     switch (view) {
@@ -90,17 +77,18 @@ const Navigation = () => {
   };
 
   // Get display label for current view
-  const getViewLabel = (view: 'member' | 'expert' | 'sponsor' | null): string => {
+  const getViewLabel = (view: string | null): string => {
     switch (view) {
       case 'member': return t('roles.explorer');
       case 'expert': return t('roles.expert');
       case 'sponsor': return t('roles.sponsor');
+      case 'admin': return 'Admin';
       default: return 'Admin';
     }
   };
 
-  // The role to use for routing/navigation (activeView takes precedence for super admins)
-  const displayRole = (isSuperAdmin && activeView) ? activeView : effectiveRole;
+  // The role to use for routing/navigation (viewAsRole takes precedence for super admins)
+  const displayRole = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
 
   // Load unread message count
   useEffect(() => {
@@ -158,45 +146,49 @@ const Navigation = () => {
     return location.pathname === path;
   };
 
-  // Get dashboard route based on user's role (or activeView for super admins)
+  // Get dashboard route based on user's role (or viewAsRole for super admins)
   const getDashboardRoute = useCallback((): string => {
     if (!user) return '/auth';
     
-    // For super admins with activeView, route to the corresponding dashboard
-    const roleToUse = (isSuperAdmin && activeView) ? activeView : effectiveRole;
+    // For super admins with viewAsRole, route to the corresponding dashboard
+    const roleToUse = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
     
     switch (roleToUse) {
       case 'expert':
         return '/szakertoi-studio';
       case 'sponsor':
         return '/tamogatoi-kozpont';
+      case 'admin':
+        return '/admin-panel';
       case 'member':
       default:
         return '/iranyitopult';
     }
-  }, [user, isSuperAdmin, activeView, effectiveRole]);
+  }, [user, isSuperAdmin, viewAsRole, effectiveRole]);
 
   // Get dashboard label based on role
   const getDashboardLabel = useCallback((): string => {
     if (!user) return t('nav.sign_in');
     
-    const roleToUse = (isSuperAdmin && activeView) ? activeView : effectiveRole;
+    const roleToUse = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
     
     switch (roleToUse) {
       case 'expert':
         return t('nav.expert_studio');
       case 'sponsor':
         return t('nav.sponsor_center');
+      case 'admin':
+        return 'Admin Panel';
       case 'member':
       default:
         return t('nav.control_panel');
     }
-  }, [user, isSuperAdmin, activeView, effectiveRole, t]);
+  }, [user, isSuperAdmin, viewAsRole, effectiveRole, t]);
 
   // Get role display text
   const getRoleDisplayText = (): string => {
-    if (isSuperAdmin && activeView) {
-      return `Super Admin (${getViewLabel(activeView)})`;
+    if (isSuperAdmin && viewAsRole) {
+      return `Super Admin (${getViewLabel(viewAsRole)})`;
     }
     if (isSuperAdmin) return 'Super Admin';
     switch (effectiveRole) {
@@ -316,14 +308,9 @@ const Navigation = () => {
             </div>
 
             {/* Desktop Actions - Right */}
-            <div className="hidden md:flex items-center gap-2 shrink-0 z-10">
-              {/* Super Admin Demo Switcher - Compact dropdown (hidden on mobile) */}
-              {isSuperAdmin && user && (
-                <DemoSwitcher 
-                  activeView={activeView} 
-                  onViewChange={handleViewChange} 
-                />
-              )}
+            <div className="hidden md:flex items-center gap-4 shrink-0 z-10 pr-8 lg:pr-12">
+              {/* God Mode Role Switcher - Only for Super Admins */}
+              <RoleSwitcher />
 
               {/* WellBot Button - Moved here from center nav to prevent overlap */}
               <Link
@@ -574,7 +561,7 @@ const Navigation = () => {
                         <button
                           onClick={() => handleViewChange('member')}
                           className={`flex-1 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
-                            activeView === 'member'
+                            viewAsRole === 'member'
                               ? 'bg-white text-[#007AFF] shadow-sm'
                               : 'text-slate-600'
                           }`}
@@ -584,7 +571,7 @@ const Navigation = () => {
                         <button
                           onClick={() => handleViewChange('expert')}
                           className={`flex-1 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
-                            activeView === 'expert'
+                            viewAsRole === 'expert'
                               ? 'bg-white text-[#007AFF] shadow-sm'
                               : 'text-slate-600'
                           }`}
@@ -594,7 +581,7 @@ const Navigation = () => {
                         <button
                           onClick={() => handleViewChange('sponsor')}
                           className={`flex-1 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
-                            activeView === 'sponsor'
+                            viewAsRole === 'sponsor'
                               ? 'bg-white text-[#007AFF] shadow-sm'
                               : 'text-slate-600'
                           }`}
