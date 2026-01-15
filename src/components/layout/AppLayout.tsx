@@ -17,16 +17,18 @@ export default function AppLayout() {
       {/* Global Liquid Mesh Gradient - runs behind everything */}
       <LiquidMeshGradient intensity={gradientIntensity} />
       
-      <header>
-        <Navigation />
-      </header>
-      {/* Nav is fixed (h-16). In demo mode there's an extra 8px banner above it. */}
-      <main className={isDemoMode ? "pt-24" : "pt-16"}>
-        <Outlet />
-      </main>
-      
-      {/* Feedback Button - appears on all pages for pilot testing */}
-      <FeedbackButton />
+      <div className="relative z-10">
+        <header>
+          <Navigation />
+        </header>
+        {/* Nav is fixed (h-16). In demo mode there's an extra 8px banner above it. */}
+        <main className={(isDemoMode ? "pt-24" : "pt-16") + " relative"}>
+          <Outlet />
+        </main>
+        
+        {/* Feedback Button - appears on all pages for pilot testing */}
+        <FeedbackButton />
+      </div>
     </div>
   );
 }

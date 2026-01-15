@@ -12,8 +12,8 @@ const LiquidMeshGradient = ({ className = "", intensity = 'vibrant' }: LiquidMes
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   
-  // Opacity based on intensity
-  const opacityMultiplier = intensity === 'vibrant' ? 1 : 0.3;
+  // Opacity based on intensity (forced to 1.0 for visibility debugging)
+  const opacityMultiplier = 1;
   
   // Mouse tracking for desktop
   const mouseX = useMotionValue(0);
@@ -116,7 +116,7 @@ const LiquidMeshGradient = ({ className = "", intensity = 'vibrant' }: LiquidMes
     <div 
       ref={containerRef}
       className={`fixed inset-0 overflow-hidden pointer-events-none ${className}`}
-      style={{ filter: "blur(50px)", zIndex: -10 }}
+      style={{ filter: "blur(50px)", zIndex: 0 }}
     >
       
       {blobs.map((blob) => (
