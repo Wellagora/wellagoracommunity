@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { getDashboardUrl } from "@/hooks/useRoleRedirect";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -65,10 +66,11 @@ const AuthPage = () => {
     }
   }, [refCodeFromUrl]);
 
-  // Redirect if already authenticated
+  // Redirect if already authenticated - use role-based redirect
   useEffect(() => {
     if (!loading && user && profile) {
-      navigate("/dashboard");
+      const targetUrl = getDashboardUrl(profile.user_role, profile.is_super_admin);
+      navigate(targetUrl, { replace: true });
     }
   }, [user, profile, loading, navigate]);
 
@@ -146,8 +148,12 @@ const AuthPage = () => {
           }
         }, 500);
       } else {
-        // Normal user redirect
-        setTimeout(() => navigate("/dashboard"), 1000);
+        // Normal user redirect - use role-based redirect after profile loads
+        setTimeout(() => {
+          // Profile may not be loaded yet, redirect to generic dashboard
+          // The dashboard will handle the final redirect
+          navigate("/iranyitopult");
+        }, 1000);
       }
     }
 
