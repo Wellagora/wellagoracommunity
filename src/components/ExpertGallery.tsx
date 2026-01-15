@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { resolveAvatarUrl } from "@/lib/imageResolver";
 import {
   Carousel,
   CarouselContent,
@@ -118,7 +119,7 @@ const ExpertGallery = () => {
                       <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-muted">
                         {/* Full-bleed Photo */}
                         <img
-                          src={expert.avatar_url || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=533&fit=crop'}
+                          src={resolveAvatarUrl(expert.avatar_url) || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=533&fit=crop'}
                           alt={`${expert.first_name || ''} ${expert.last_name || ''}`}
                           className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
