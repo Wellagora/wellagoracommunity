@@ -110,42 +110,55 @@ const LiquidMeshGradient = ({ className = "", intensity = 'vibrant' }: LiquidMes
       initialY: "75%",
       duration: 28,
     },
+    {
+      id: 5,
+      baseOpacity: 0.5,
+      color: `rgba(239, 68, 68, ${0.5 * opacityMultiplier})`, // TEST RED
+      size: "50%",
+      initialX: "50%",
+      initialY: "50%",
+      duration: 20,
+    },
   ];
 
   return (
-    <div 
-      ref={containerRef}
-      className={`fixed inset-0 overflow-hidden pointer-events-none ${className}`}
-      style={{ filter: "blur(50px)", zIndex: 0 }}
-    >
-      
-      {blobs.map((blob) => (
-        <motion.div
-          key={blob.id}
-          className="absolute rounded-full"
-          style={{
-            width: blob.size,
-            height: blob.size,
-            background: `radial-gradient(circle at 30% 30%, ${blob.color}, transparent 70%)`,
-            left: blob.initialX,
-            top: blob.initialY,
-            x: getOffsetX(),
-            y: getOffsetY(),
-          }}
-          animate={{
-            x: [0, 60, -40, 30, 0],
-            y: [0, -50, 40, -30, 0],
-            scale: [1, 1.15, 0.9, 1.1, 1],
-            rotate: [0, 60, -45, 80, 0],
-          }}
-          transition={{
-            duration: blob.duration,
-            repeat: Infinity,
-            ease: "easeInOut",
-            times: [0, 0.25, 0.5, 0.75, 1],
-          }}
-        />
-      ))}
+    <>
+      <div className="fixed top-20 left-4 bg-red-500 text-white p-2 z-[9999]">
+        MESH DEBUG: Component is rendering
+      </div>
+
+      <div 
+        ref={containerRef}
+        className={`fixed inset-0 overflow-hidden pointer-events-none ${className}`}
+        style={{ filter: "blur(50px)", zIndex: 0 }}
+      >
+        {blobs.map((blob) => (
+          <motion.div
+            key={blob.id}
+            className="absolute rounded-full"
+            style={{
+              width: blob.size,
+              height: blob.size,
+              background: `radial-gradient(circle at 30% 30%, ${blob.color}, transparent 70%)`,
+              left: blob.initialX,
+              top: blob.initialY,
+              x: getOffsetX(),
+              y: getOffsetY(),
+            }}
+            animate={{
+              x: [0, 60, -40, 30, 0],
+              y: [0, -50, 40, -30, 0],
+              scale: [1, 1.15, 0.9, 1.1, 1],
+              rotate: [0, 60, -45, 80, 0],
+            }}
+            transition={{
+              duration: blob.duration,
+              repeat: Infinity,
+              ease: "easeInOut",
+              times: [0, 0.25, 0.5, 0.75, 1],
+            }}
+          />
+        ))}
       
       {/* Additional ambient glow layer */}
       <motion.div
@@ -154,7 +167,8 @@ const LiquidMeshGradient = ({ className = "", intensity = 'vibrant' }: LiquidMes
           background: `radial-gradient(ellipse at center, rgba(248, 250, 252, ${0.5 * opacityMultiplier}) 0%, transparent 70%)`,
         }}
       />
-    </div>
+      </div>
+    </>
   );
 };
 

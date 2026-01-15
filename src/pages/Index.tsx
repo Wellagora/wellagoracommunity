@@ -22,7 +22,7 @@ const Index = () => {
   // Show loading state while checking authentication
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-transparent flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">{t("common.loading")}</p>
@@ -35,7 +35,7 @@ const Index = () => {
   if (user && profile) {
     return (
       <>
-        <div className="min-h-screen bg-background flex flex-col">
+        <div className="min-h-screen bg-transparent flex flex-col">
           <Navigation />
           <main className="pt-2 md:pt-4 flex-1">
             {/* 1. SIMPLIFIED HERO - Welcome + Single CTA */}
@@ -100,7 +100,7 @@ const Index = () => {
   // Non-authenticated user view - Modern landing page
   return (
     <>
-      <div className="min-h-screen bg-[#FFFFFF] flex flex-col">
+      <div className="min-h-screen bg-transparent flex flex-col">
         <Navigation />
         <main className="flex-1">
           {/* 1. HERO SECTION - Full viewport with integrated registration cards */}
