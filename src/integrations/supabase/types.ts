@@ -1880,7 +1880,7 @@ export type Database = {
           referral_code: string | null
           region: string | null
           region_type: string | null
-          role: string
+          role: string | null
           seeking_partnerships: boolean | null
           social_links: Json | null
           sponsor_status: string | null
@@ -1951,7 +1951,7 @@ export type Database = {
           referral_code?: string | null
           region?: string | null
           region_type?: string | null
-          role: string
+          role?: string | null
           seeking_partnerships?: boolean | null
           social_links?: Json | null
           sponsor_status?: string | null
@@ -2022,7 +2022,7 @@ export type Database = {
           referral_code?: string | null
           region?: string | null
           region_type?: string | null
-          role?: string
+          role?: string | null
           seeking_partnerships?: boolean | null
           social_links?: Json | null
           sponsor_status?: string | null
