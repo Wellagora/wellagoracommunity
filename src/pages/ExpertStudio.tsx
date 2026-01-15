@@ -6,7 +6,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { motion } from "framer-motion";
+import DashboardLayout from "@/layouts/DashboardLayout";
+import { DashboardCard } from "@/components/dashboard/DashboardCard";
 
 // Expert Studio Components
 import QuickActionBar from "@/components/expert-studio/QuickActionBar";
@@ -64,14 +65,12 @@ const ExpertStudio = () => {
     // In production, upload to Supabase Storage
     console.log("Video captured:", file.name);
     toast.success(t("expert_studio.video_ready"));
-    // Navigate to program creator with the video
   };
 
   const handlePhotoCapture = async (file: File) => {
     // In production, upload to Supabase Storage
     console.log("Photo captured:", file.name);
     toast.success(t("expert_studio.photo_ready"));
-    // Navigate to program creator with the photo
   };
 
   const handleBalanceUpdate = (newBalance: number) => {
@@ -80,7 +79,7 @@ const ExpertStudio = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Skeleton className="h-10 w-64 mb-8" />
           <div className="grid grid-cols-3 gap-3 mb-8">
@@ -102,57 +101,46 @@ const ExpertStudio = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header - Creative Workspace Style */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <div className="flex items-center gap-4 mb-2">
-            <div className="p-3 rounded-2xl bg-gradient-to-br from-primary/20 to-emerald-500/20 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-              <Sparkles className="w-8 h-8 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-foreground">
-                {t("expert_studio.title")}
-              </h1>
-              <p className="text-muted-foreground">
-                {t("expert_studio.subtitle")}
-              </p>
-            </div>
-          </div>
-        </motion.div>
+    <DashboardLayout
+      title={t("expert_studio.title")}
+      subtitle={t("expert_studio.subtitle")}
+      icon={Sparkles}
+      iconColor="text-black"
+      backUrl="/"
+    >
+      {/* Quick Action Bar - Mobile First */}
+      <QuickActionBar 
+        onVideoCapture={handleVideoCapture}
+        onPhotoCapture={handlePhotoCapture}
+      />
 
-        {/* Quick Action Bar - Mobile First */}
-        <QuickActionBar 
-          onVideoCapture={handleVideoCapture}
-          onPhotoCapture={handlePhotoCapture}
-        />
-
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* Voucher Validator - The Business Heart */}
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Voucher Validator - The Business Heart */}
+        <DashboardCard>
           <VoucherValidator 
             userId={user.id}
             onBalanceUpdate={handleBalanceUpdate}
             balance={balance}
           />
+        </DashboardCard>
 
-          {/* Balance & Earnings Card */}
+        {/* Balance & Earnings Card */}
+        <DashboardCard delay={0.1}>
           <BalanceCard 
             balance={balance}
             monthlyEarnings={stats.monthlyEarnings}
             totalEarnings={stats.totalEarnings}
             pendingAmount={stats.pendingAmount}
           />
-        </div>
-
-        {/* My Programs List */}
-        <MyProgramsList userId={user.id} />
+        </DashboardCard>
       </div>
-    </div>
+
+      {/* My Programs List */}
+      <DashboardCard delay={0.2}>
+        <MyProgramsList userId={user.id} />
+      </DashboardCard>
+    </DashboardLayout>
   );
 };
 
