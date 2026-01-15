@@ -86,48 +86,85 @@ const SponsorDashboardPage = () => {
     availableCredits: 100
   });
 
-  // Fetch REAL data from Supabase
+  // Fetch REAL data from Supabase with optimized aggregate queries
   useEffect(() => {
     const fetchSponsorData = async () => {
       if (!user) return;
       
       setIsLoading(true);
       try {
-        // 1. Fetch sponsorships for this user
-        const { data: sponsorships, error: sponsorshipError } = await supabase
+        // 1. Get sponsorship counts (aggregate - no full row fetch)
+        const { count: challengeSponsorshipCount } = await supabase
           .from('challenge_sponsorships')
-          .select('*, challenge_definitions(*)')
+          .select('*', { count: 'exact', head: true })
           .eq('sponsor_user_id', user.id);
 
-        // 2. Fetch content sponsorships
-        const { data: contentSponsorships, error: contentError } = await supabase
+        // 2. Fetch content sponsorships (need IDs for further queries)
+        const { data: contentSponsorships } = await supabase
           .from('content_sponsorships')
-          .select('*, expert_contents(*)')
+          .select('id, content_id, total_licenses, used_licenses, expert_contents(id, title, creator_id)')
           .eq('sponsor_id', user.id);
 
-        // 3. Fetch vouchers redeemed for sponsored content
+        const contentIds = contentSponsorships?.map(c => c.content_id) || [];
+        const totalPrograms = (challengeSponsorshipCount || 0) + (contentSponsorships?.length || 0);
+
+        // 3. Get voucher counts using aggregate (optimized - no full row fetch)
         let totalVouchersRedeemed = 0;
         let totalLicenses = 0;
-        const programs: SponsoredProgram[] = [];
+        
+        if (contentIds.length > 0) {
+          // Single aggregate query for all redeemed vouchers
+          const { count: redeemedCount } = await supabase
+            .from('vouchers')
+            .select('*', { count: 'exact', head: true })
+            .in('content_id', contentIds)
+            .eq('status', 'redeemed');
+          
+          totalVouchersRedeemed = redeemedCount || 0;
+          totalLicenses = contentSponsorships?.reduce((sum, cs) => sum + (cs.total_licenses || 50), 0) || 0;
 
-        if (contentSponsorships && contentSponsorships.length > 0) {
-          for (const cs of contentSponsorships) {
+          // Single aggregate for unique users reached
+          const { count: uniqueUserCount } = await supabase
+            .from('vouchers')
+            .select('user_id', { count: 'exact', head: true })
+            .in('content_id', contentIds);
+          
+          // Build programs list with per-content counts (batch where possible)
+          const programs: SponsoredProgram[] = [];
+          
+          // Get all creator IDs at once
+          const creatorIds = contentSponsorships
+            ?.map(cs => cs.expert_contents?.creator_id)
+            .filter(Boolean) as string[];
+          
+          // Batch fetch all creators
+          interface CreatorProfile {
+            id: string;
+            first_name: string | null;
+            last_name: string | null;
+          }
+          
+          const { data: creators } = creatorIds.length > 0 
+            ? await supabase
+                .from('profiles')
+                .select('id, first_name, last_name')
+                .in('id', creatorIds)
+            : { data: [] as CreatorProfile[] };
+          
+          const creatorMap = new Map<string, CreatorProfile>(
+            (creators || []).map((c: CreatorProfile) => [c.id, c])
+          );
+
+          // Get per-content voucher counts
+          for (const cs of contentSponsorships || []) {
             const { count } = await supabase
               .from('vouchers')
               .select('*', { count: 'exact', head: true })
               .eq('content_id', cs.content_id)
               .eq('status', 'redeemed');
 
-            totalVouchersRedeemed += count || 0;
-            totalLicenses += cs.total_licenses || 50;
-
-            // Get expert name
-            const { data: creator } = await supabase
-              .from('profiles')
-              .select('first_name, last_name')
-              .eq('id', cs.expert_contents?.creator_id)
-              .single();
-
+            const creator = creatorMap.get(cs.expert_contents?.creator_id || '');
+            
             programs.push({
               id: cs.content_id,
               programName: cs.expert_contents?.title || 'Program',
@@ -137,18 +174,20 @@ const SponsorDashboardPage = () => {
               status: (count || 0) >= (cs.total_licenses || 50) ? 'completed' : 'active'
             });
           }
+          
+          setSponsoredPrograms(programs);
         }
 
-        // 4. Fetch credit transactions to calculate usage
-        const { data: creditTx } = await supabase
+        // 4. Credit aggregates
+        const { data: creditData } = await supabase
           .from('credit_transactions')
           .select('credits, transaction_type')
           .eq('sponsor_user_id', user.id);
 
         let usedCredits = 0;
         let earnedCredits = 0;
-        if (creditTx) {
-          for (const tx of creditTx) {
+        if (creditData) {
+          for (const tx of creditData) {
             if (tx.transaction_type === 'spend') {
               usedCredits += tx.credits;
             } else if (tx.transaction_type === 'purchase' || tx.transaction_type === 'subscription') {
@@ -157,19 +196,33 @@ const SponsorDashboardPage = () => {
           }
         }
 
-        // 5. Calculate stats
-        const challengeCount = sponsorships?.length || 0;
-        const contentCount = contentSponsorships?.length || 0;
-        const totalPrograms = challengeCount + contentCount;
-        
-        // Get unique users reached (people who redeemed vouchers)
-        const { data: voucherUsers } = await supabase
-          .from('vouchers')
-          .select('user_id')
-          .in('content_id', contentSponsorships?.map(c => c.content_id) || []);
+        // 5. Calculate unique users reached
+        let peopleReached = 0;
+        if (contentIds.length > 0) {
+          const { data: userIds } = await supabase
+            .from('vouchers')
+            .select('user_id')
+            .in('content_id', contentIds);
+          
+          peopleReached = new Set(userIds?.map(v => v.user_id) || []).size;
+        }
 
-        const uniqueUsers = new Set(voucherUsers?.map(v => v.user_id) || []);
-        const peopleReached = uniqueUsers.size;
+        // 6. Monthly growth - compare with last month
+        const comparisonDate = new Date();
+        comparisonDate.setMonth(comparisonDate.getMonth() - 1);
+        
+        let monthlyGrowth = 0;
+        if (contentIds.length > 0) {
+          const { count: lastMonthCount } = await supabase
+            .from('vouchers')
+            .select('*', { count: 'exact', head: true })
+            .in('content_id', contentIds)
+            .lt('created_at', comparisonDate.toISOString());
+
+          monthlyGrowth = lastMonthCount && lastMonthCount > 0
+            ? Math.round(((totalVouchersRedeemed - lastMonthCount) / lastMonthCount) * 100)
+            : totalVouchersRedeemed > 0 ? 100 : 0;
+        }
 
         // Calculate conversion rate
         const conversionRate = totalLicenses > 0 
@@ -178,20 +231,6 @@ const SponsorDashboardPage = () => {
 
         // Calculate CO2 impact (estimate: 2kg per voucher redeemed)
         const totalImpactCO2 = totalVouchersRedeemed * 2;
-
-        // Monthly growth (calculate from last month comparison)
-        const oneMonthAgo = new Date();
-        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-        
-        const { count: lastMonthCount } = await supabase
-          .from('vouchers')
-          .select('*', { count: 'exact', head: true })
-          .in('content_id', contentSponsorships?.map(c => c.content_id) || [])
-          .lt('created_at', oneMonthAgo.toISOString());
-
-        const monthlyGrowth = lastMonthCount && lastMonthCount > 0
-          ? Math.round(((totalVouchersRedeemed - lastMonthCount) / lastMonthCount) * 100)
-          : totalVouchersRedeemed > 0 ? 100 : 0;
 
         setStats({
           peopleReached,
@@ -202,7 +241,6 @@ const SponsorDashboardPage = () => {
           totalImpactCO2
         });
 
-        setSponsoredPrograms(programs);
         setCreditInfo({
           usedCredits,
           totalCredits: earnedCredits || 100,
