@@ -3477,7 +3477,7 @@
   "subscription.discount": "~17% Rabatt",
   "subscription.credits_per_month": "{{count}} Credits/Monat",
   "subscription.bonus_credits": "+{{count}} Bonus-Credits",
-  "subscription.select_plan": "Dieses wählen",
+  "subscription.select_plan": "Auswählen",
   "subscription.popular": "Beliebt",
   "subscription.current_plan": "Aktuelles Paket",
   "subscription.credits_per_month_short": "Credits/Monat",
