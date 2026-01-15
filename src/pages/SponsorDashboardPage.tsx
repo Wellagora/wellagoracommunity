@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { SubscriptionPlanSelector } from '@/components/subscription/SubscriptionPlanSelector';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { toast } from 'sonner';
+import DashboardLayout from '@/layouts/DashboardLayout';
 import {
   getDemoSponsorData,
   getLocalizedOrgName,
@@ -27,8 +28,8 @@ import {
   Wallet,
   Search,
   Plus,
-  ArrowLeft,
-  Gift
+  Gift,
+  Building2
 } from 'lucide-react';
 import {
   AreaChart,
@@ -207,301 +208,287 @@ const SponsorDashboardPage = () => {
   const creditUsagePercent = Math.round((sponsorData.used_credits / sponsorData.total_credits) * 100);
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
-          <div>
-            <Button
-              variant="ghost"
-              onClick={() => navigate('/')}
-              className="mb-4 text-muted-foreground hover:text-foreground"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              {t('common.back')}
-            </Button>
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight">
-              {t('sponsor_hub.title')}
-            </h1>
-            <p className="text-muted-foreground mt-2">
-              {t('sponsor_hub.subtitle')} • <span className="font-medium text-foreground">{orgName}</span>
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <Button
-              variant="outline"
-              onClick={() => navigate('/piacer')}
-              className="border-border text-foreground hover:bg-accent"
-            >
-              <Search className="w-4 h-4 mr-2" />
-              {t('sponsor_hub.explore_programs')}
-            </Button>
-            <Button
-              onClick={() => setShowPackages(true)}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              {t('sponsor_hub.buy_credits')}
-            </Button>
-          </div>
-        </div>
+    <DashboardLayout
+      title={t('sponsor_hub.title')}
+      subtitle={`${t('sponsor_hub.subtitle')} • ${orgName}`}
+      icon={Building2}
+      iconColor="text-emerald-600"
+      backUrl="/"
+    >
+      {/* Action Buttons */}
+      <div className="flex flex-wrap gap-3 mb-6">
+        <Button
+          variant="outline"
+          onClick={() => navigate('/piacer')}
+          className="border-black/10 text-black hover:bg-black/5"
+        >
+          <Search className="w-4 h-4 mr-2" />
+          {t('sponsor_hub.explore_programs')}
+        </Button>
+        <Button
+          onClick={() => setShowPackages(true)}
+          className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          {t('sponsor_hub.buy_credits')}
+        </Button>
+      </div>
 
-        {/* Impact Cards - Top Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* Card 1: People Reached */}
-          <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200 shadow-md hover:shadow-lg transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-emerald-700 mb-1">
-                    {t('sponsor_hub.people_reached')}
-                  </p>
-                  <p className="text-4xl font-bold text-emerald-900">{stats.peopleReached}</p>
-                  <Badge className="mt-2 bg-emerald-600 text-white text-xs">
-                    <TrendingUp className="w-3 h-3 mr-1" />
-                    +{stats.monthlyGrowth} {t('sponsor_hub.this_month')}
-                  </Badge>
-                </div>
-                <div className="p-4 rounded-full bg-emerald-200/50">
-                  <Users className="w-8 h-8 text-emerald-700" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Card 2: Programs Supported */}
-          <Card className="bg-gradient-to-br from-indigo-50 to-indigo-100 border-indigo-200 shadow-md hover:shadow-lg transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-indigo-700 mb-1">
-                    {t('sponsor_hub.programs_supported')}
-                  </p>
-                  <p className="text-4xl font-bold text-indigo-900">{stats.programsSupported}</p>
-                  <p className="text-sm text-indigo-600 mt-2">
-                    {t('sponsor_hub.active_programs')}
-                  </p>
-                </div>
-                <div className="p-4 rounded-full bg-indigo-200/50">
-                  <Calendar className="w-8 h-8 text-indigo-700" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Card 3: Vouchers Redeemed */}
-          <Card className="bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200 shadow-md hover:shadow-lg transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-amber-700 mb-1">
-                    {t('sponsor_hub.vouchers_redeemed')}
-                  </p>
-                  <p className="text-4xl font-bold text-amber-900">{stats.vouchersRedeemed}</p>
-                  <p className="text-sm text-amber-600 mt-2">
-                    {t('sponsor_hub.redeemed')}
-                  </p>
-                </div>
-                <div className="p-4 rounded-full bg-amber-200/50">
-                  <Ticket className="w-8 h-8 text-amber-700" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Chart Section - Takes 2 columns */}
-          <Card className="lg:col-span-2 shadow-md">
-            <CardHeader>
-              <CardTitle className="text-xl text-foreground">
-                {t('sponsor_hub.roi_title')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                    <defs>
-                      <linearGradient id="colorReached" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#10b981" stopOpacity={0.1} />
-                      </linearGradient>
-                      <linearGradient id="colorCredits" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#6366f1" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#6366f1" stopOpacity={0.1} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis dataKey="month" stroke="#64748b" />
-                    <YAxis yAxisId="left" stroke="#10b981" />
-                    <YAxis yAxisId="right" orientation="right" stroke="#6366f1" />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Legend />
-                    <Area
-                      yAxisId="left"
-                      type="monotone"
-                      dataKey="reached"
-                      stroke="#10b981"
-                      strokeWidth={2}
-                      fillOpacity={1}
-                      fill="url(#colorReached)"
-                      name={t('sponsor_hub.people_reached')}
-                    />
-                    <Area
-                      yAxisId="right"
-                      type="monotone"
-                      dataKey="credits"
-                      stroke="#6366f1"
-                      strokeWidth={2}
-                      fillOpacity={1}
-                      fill="url(#colorCredits)"
-                      name={t('sponsor_hub.used_credits')}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Credit Monitor - Takes 1 column */}
-          <Card className="shadow-md">
-            <CardHeader>
-              <CardTitle className="text-xl text-foreground flex items-center gap-2">
-                <Wallet className="w-5 h-5 text-emerald-600" />
-                {t('sponsor_dashboard.credit_usage')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                {/* Progress Bar */}
-                <div>
-                  <div className="flex justify-between text-sm mb-2">
-                    <span className="text-muted-foreground">{t('sponsor_hub.used_credits')}</span>
-                    <span className="font-medium text-foreground">{creditUsagePercent}%</span>
-                  </div>
-                  <Progress value={creditUsagePercent} className="h-3 bg-slate-100" />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {formatCurrency(sponsorData.used_credits)} / {formatCurrency(sponsorData.total_credits)}
-                  </p>
-                </div>
-
-                {/* Available Balance */}
-                <div className="bg-emerald-50 rounded-xl p-4 text-center">
-                  <p className="text-sm text-emerald-700 mb-1">{t('sponsor_hub.available_balance')}</p>
-                  <p className="text-3xl font-bold text-emerald-900">
-                    {formatCurrency(sponsorData.available_credits)}
-                  </p>
-                </div>
-
-                {/* Buy Credits Button */}
-                <Button
-                  onClick={() => {
-                    toast.info(t('sponsor_hub.coming_soon'));
-                  }}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  {t('sponsor_hub.buy_credits')}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Sponsored Programs List */}
-        <Card className="shadow-md">
-          <CardHeader>
-            <CardTitle className="text-xl text-foreground flex items-center gap-2">
-              <Gift className="w-5 h-5 text-indigo-600" />
-              {t('sponsor_hub.sponsored_programs')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {sponsoredPrograms.length === 0 ? (
-              <div className="text-center py-12">
-                <Gift className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  {t('sponsor_hub.no_programs_title')}
-                </h3>
-                <p className="text-muted-foreground mb-6">
-                  {t('sponsor_hub.no_programs_desc')}
+      {/* Impact Cards - Top Row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        {/* Card 1: People Reached */}
+        <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-black/60 mb-1">
+                  {t('sponsor_hub.people_reached')}
                 </p>
-                <Button onClick={() => navigate('/piacer')} className="bg-primary hover:bg-primary/90">
-                  {t('sponsor_hub.explore_programs')}
-                </Button>
+                <p className="text-4xl font-bold text-black">{stats.peopleReached}</p>
+                <Badge className="mt-2 bg-emerald-600 text-white text-xs">
+                  <TrendingUp className="w-3 h-3 mr-1" />
+                  +{stats.monthlyGrowth} {t('sponsor_hub.this_month')}
+                </Badge>
               </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-border">
-                      <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
-                        {t('sponsor_hub.program')}
-                      </th>
-                      <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
-                        {t('sponsor_hub.expert')}
-                      </th>
-                      <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
-                        {t('sponsor_hub.redeemed')}
-                      </th>
-                      <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
-                        {t('sponsor_hub.status')}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sponsoredPrograms.map((program) => (
-                      <tr
-                        key={program.id}
-                        className="border-b border-border/50 hover:bg-accent/50 transition-colors cursor-pointer"
-                        onClick={() => navigate(`/piacer/${program.id}`)}
-                      >
-                        <td className="py-4 px-4">
-                          <p className="font-medium text-foreground">{program.programName}</p>
-                        </td>
-                        <td className="py-4 px-4 text-muted-foreground">
-                          {program.expertName}
-                        </td>
-                        <td className="py-4 px-4">
-                          <div className="flex items-center gap-2">
-                            <Progress
-                              value={(program.vouchersRedeemed / program.vouchersTotal) * 100}
-                              className="w-20 h-2"
-                            />
-                            <span className="text-sm text-muted-foreground">
-                              {program.vouchersRedeemed}/{program.vouchersTotal}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="py-4 px-4">
-                          <Badge
-                            variant={program.status === 'active' ? 'default' : 'secondary'}
-                            className={
-                              program.status === 'active'
-                                ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-100'
-                                : 'bg-slate-100 text-slate-800'
-                            }
-                          >
-                            {t(`sponsor_hub.${program.status}`)}
-                          </Badge>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="p-4 rounded-full bg-emerald-100">
+                <Users className="w-8 h-8 text-emerald-600" />
               </div>
-            )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Card 2: Programs Supported */}
+        <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-black/60 mb-1">
+                  {t('sponsor_hub.programs_supported')}
+                </p>
+                <p className="text-4xl font-bold text-black">{stats.programsSupported}</p>
+                <p className="text-sm text-black/50 mt-2">
+                  {t('sponsor_hub.active_programs')}
+                </p>
+              </div>
+              <div className="p-4 rounded-full bg-indigo-100">
+                <Calendar className="w-8 h-8 text-indigo-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Card 3: Vouchers Redeemed */}
+        <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-black/60 mb-1">
+                  {t('sponsor_hub.vouchers_redeemed')}
+                </p>
+                <p className="text-4xl font-bold text-black">{stats.vouchersRedeemed}</p>
+                <p className="text-sm text-black/50 mt-2">
+                  {t('sponsor_hub.redeemed')}
+                </p>
+              </div>
+              <div className="p-4 rounded-full bg-amber-100">
+                <Ticket className="w-8 h-8 text-amber-600" />
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
 
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        {/* Chart Section - Takes 2 columns */}
+        <Card className="lg:col-span-2 bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-xl text-black">
+              {t('sponsor_hub.roi_title')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorReached" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0.1} />
+                    </linearGradient>
+                    <linearGradient id="colorCredits" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#6366f1" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#6366f1" stopOpacity={0.1} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                  <XAxis dataKey="month" stroke="#64748b" />
+                  <YAxis yAxisId="left" stroke="#10b981" />
+                  <YAxis yAxisId="right" orientation="right" stroke="#6366f1" />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Legend />
+                  <Area
+                    yAxisId="left"
+                    type="monotone"
+                    dataKey="reached"
+                    stroke="#10b981"
+                    strokeWidth={2}
+                    fillOpacity={1}
+                    fill="url(#colorReached)"
+                    name={t('sponsor_hub.people_reached')}
+                  />
+                  <Area
+                    yAxisId="right"
+                    type="monotone"
+                    dataKey="credits"
+                    stroke="#6366f1"
+                    strokeWidth={2}
+                    fillOpacity={1}
+                    fill="url(#colorCredits)"
+                    name={t('sponsor_hub.used_credits')}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Credit Monitor - Takes 1 column */}
+        <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-xl text-black flex items-center gap-2">
+              <Wallet className="w-5 h-5 text-emerald-600" />
+              {t('sponsor_dashboard.credit_usage')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {/* Progress Bar */}
+              <div>
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-black/60">{t('sponsor_hub.used_credits')}</span>
+                  <span className="font-medium text-black">{creditUsagePercent}%</span>
+                </div>
+                <Progress value={creditUsagePercent} className="h-3 bg-black/5" />
+                <p className="text-xs text-black/50 mt-1">
+                  {formatCurrency(sponsorData.used_credits)} / {formatCurrency(sponsorData.total_credits)}
+                </p>
+              </div>
+
+              {/* Available Balance */}
+              <div className="bg-emerald-50 rounded-xl p-4 text-center">
+                <p className="text-sm text-emerald-700 mb-1">{t('sponsor_hub.available_balance')}</p>
+                <p className="text-3xl font-bold text-emerald-900">
+                  {formatCurrency(sponsorData.available_credits)}
+                </p>
+              </div>
+
+              {/* Buy Credits Button */}
+              <Button
+                onClick={() => {
+                  toast.info(t('sponsor_hub.coming_soon'));
+                }}
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                {t('sponsor_hub.buy_credits')}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Sponsored Programs List */}
+      <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm">
+        <CardHeader>
+          <CardTitle className="text-xl text-black flex items-center gap-2">
+            <Gift className="w-5 h-5 text-indigo-600" />
+            {t('sponsor_hub.sponsored_programs')}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {sponsoredPrograms.length === 0 ? (
+            <div className="text-center py-12">
+              <Gift className="w-12 h-12 text-black/30 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-black mb-2">
+                {t('sponsor_hub.no_programs_title')}
+              </h3>
+              <p className="text-black/50 mb-6">
+                {t('sponsor_hub.no_programs_desc')}
+              </p>
+              <Button onClick={() => navigate('/piacer')} className="bg-black hover:bg-black/90 text-white">
+                {t('sponsor_hub.explore_programs')}
+              </Button>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-black/10">
+                    <th className="text-left py-3 px-4 text-sm font-medium text-black/60">
+                      {t('sponsor_hub.program')}
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-black/60">
+                      {t('sponsor_hub.expert')}
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-black/60">
+                      {t('sponsor_hub.redeemed')}
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-black/60">
+                      {t('sponsor_hub.status')}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sponsoredPrograms.map((program) => (
+                    <tr
+                      key={program.id}
+                      className="border-b border-black/5 hover:bg-black/[0.02] transition-colors cursor-pointer"
+                      onClick={() => navigate(`/piacer/${program.id}`)}
+                    >
+                      <td className="py-4 px-4">
+                        <p className="font-medium text-black">{program.programName}</p>
+                      </td>
+                      <td className="py-4 px-4 text-black/60">
+                        {program.expertName}
+                      </td>
+                      <td className="py-4 px-4">
+                        <div className="flex items-center gap-2">
+                          <Progress
+                            value={(program.vouchersRedeemed / program.vouchersTotal) * 100}
+                            className="w-20 h-2"
+                          />
+                          <span className="text-sm text-black/60">
+                            {program.vouchersRedeemed}/{program.vouchersTotal}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="py-4 px-4">
+                        <Badge
+                          variant={program.status === 'active' ? 'default' : 'secondary'}
+                          className={
+                            program.status === 'active'
+                              ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-100'
+                              : 'bg-black/10 text-black/70'
+                          }
+                        >
+                          {t(`sponsor_hub.${program.status}`)}
+                        </Badge>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Package Selection Dialog */}
       <Dialog open={showPackages} onOpenChange={setShowPackages}>
-        <DialogContent className="w-[95vw] max-w-6xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 bg-background">
+        <DialogContent className="w-[95vw] max-w-6xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 bg-white">
           <DialogHeader>
-            <DialogTitle className="text-xl sm:text-2xl font-bold text-foreground">
+            <DialogTitle className="text-xl sm:text-2xl font-bold text-black">
               {t('sponsor_dashboard.select_package')}
             </DialogTitle>
           </DialogHeader>
@@ -516,7 +503,7 @@ const SponsorDashboardPage = () => {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </DashboardLayout>
   );
 };
 
