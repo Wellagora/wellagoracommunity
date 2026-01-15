@@ -284,16 +284,16 @@ const Navigation = () => {
       )}
       
       <nav className={`fixed left-0 right-0 z-[100] w-full bg-white/95 backdrop-blur-md border-b border-slate-200 ${isDemoMode ? 'top-8' : 'top-0'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pr-8 lg:pr-12">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="flex items-center justify-between h-16">
-            {/* Logo - Left - Slightly offset to create space */}
-            <Link to="/" className="flex items-center shrink-0 z-10 -ml-1 sm:ml-0">
+            {/* Logo - Left */}
+            <Link to="/" className="flex items-center shrink-0 z-10">
               <img src={wellagoraLogo} alt="WellAgora" className="h-9 sm:h-10 w-auto object-contain" />
             </Link>
 
-            {/* Desktop Navigation - Center - positioned with margin to avoid overlap with right side */}
+            {/* Desktop Navigation - Center */}
             <div className="hidden md:flex flex-1 justify-center items-center">
-              <div className="flex items-center gap-x-3 mr-[280px]">
+              <div className="flex items-center gap-x-2">
                 {navItems.map((item) => {
                   const Icon = item.icon;
                   const active = isActive(item.path);
@@ -315,9 +315,9 @@ const Navigation = () => {
               </div>
             </div>
 
-            {/* Desktop Actions - Right - ALWAYS visible with shrink-0 */}
-            <div className="hidden md:flex items-center gap-3 shrink-0 z-10">
-              {/* Super Admin Demo Switcher - Compact */}
+            {/* Desktop Actions - Right */}
+            <div className="hidden md:flex items-center gap-2 shrink-0 z-10">
+              {/* Super Admin Demo Switcher - Compact dropdown (hidden on mobile) */}
               {isSuperAdmin && user && (
                 <DemoSwitcher 
                   activeView={activeView} 

@@ -1,7 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useLocalizedContent } from "@/hooks/useLocalizedContent";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,7 +10,6 @@ import {
   Apple,
   BookOpen,
   Briefcase,
-  Gift,
   Grid,
   Heart,
   Leaf,
@@ -21,15 +19,10 @@ import {
   Store,
   Users,
   X,
+  Loader2,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import {
-  MOCK_PROGRAMS,
-  getMockExpertById,
-  getLocalizedExpertName,
-  getLocalizedSponsorName,
-  formatPriceByLanguage,
-} from "@/data/mockData";
+import { supabase } from "@/integrations/supabase/client";
 
 const CATEGORIES = [
   { id: "all", labelKey: "marketplace.all_categories", icon: Grid },
@@ -41,6 +34,35 @@ const CATEGORIES = [
   { id: "business", labelKey: "marketplace.category_business", icon: Briefcase },
 ];
 
+interface Program {
+  id: string;
+  title: string;
+  description: string | null;
+  image_url: string | null;
+  thumbnail_url: string | null;
+  access_type: string | null;
+  price_huf: number | null;
+  category: string | null;
+  is_featured: boolean | null;
+  is_sponsored: boolean | null;
+  sponsor_name: string | null;
+  creator_id: string | null;
+  creator?: {
+    id: string;
+    first_name: string | null;
+    last_name: string | null;
+    avatar_url: string | null;
+  } | null;
+}
+
+interface CreatorProfile {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  avatar_url: string | null;
+  expert_title: string | null;
+}
+
 const ImagePlaceholder = ({ icon: Icon }: { icon: typeof Leaf }) => (
   <div className="w-full h-full flex items-center justify-center bg-muted">
     <div className="w-16 h-16 rounded-2xl bg-background/60 backdrop-blur flex items-center justify-center shadow-sm border border-border/50">
@@ -51,76 +73,150 @@ const ImagePlaceholder = ({ icon: Icon }: { icon: typeof Leaf }) => (
 
 const ProgramsListingPage = () => {
   const { t, language } = useLanguage();
-  const { getLocalizedField } = useLocalizedContent();
   const [searchParams] = useSearchParams();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [programs, setPrograms] = useState<Program[]>([]);
+  const [filteredCreator, setFilteredCreator] = useState<CreatorProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // HARD ENFORCEMENT: marketplace shows ONLY mock programs
   const creatorFilter = searchParams.get("creator");
 
-  const programs = useMemo(() => {
-    return MOCK_PROGRAMS.map((mp) => {
-      const creator = getMockExpertById(mp.creator_id);
-      const localizedCreatorName = creator ? getLocalizedExpertName(creator, language) : null;
-      const localizedSponsorName = getLocalizedSponsorName(mp, language);
+  // Fetch programs from Supabase
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      setIsLoading(true);
+      try {
+        // Fetch expert_contents with creator profiles
+        let query = supabase
+          .from("expert_contents")
+          .select(`
+            id,
+            title,
+            title_en,
+            title_de,
+            description,
+            description_en,
+            description_de,
+            image_url,
+            thumbnail_url,
+            access_type,
+            price_huf,
+            category,
+            is_featured,
+            is_sponsored,
+            sponsor_name,
+            creator_id
+          `)
+          .eq("is_published", true)
+          .order("is_featured", { ascending: false })
+          .order("created_at", { ascending: false });
 
-      return {
-        id: mp.id,
-        title: getLocalizedField(mp as unknown as Record<string, unknown>, "title"),
-        description: getLocalizedField(mp as unknown as Record<string, unknown>, "description"),
-        image_url: mp.image_url,
-        thumbnail_url: mp.thumbnail_url,
-        access_level: mp.access_level,
-        access_type: mp.access_type,
-        price_huf: mp.price_huf,
-        category: mp.category,
-        is_featured: mp.is_featured,
-        creator_id: mp.creator_id,
-        is_sponsored: mp.is_sponsored,
-        sponsor_name: localizedSponsorName,
-        creator: creator && localizedCreatorName ? {
-          id: creator.id,
-          first_name: localizedCreatorName.firstName,
-          last_name: localizedCreatorName.lastName,
-          avatar_url: creator.avatar_url,
-        } : null,
-      };
-    });
-  }, [getLocalizedField, language]);
+        if (creatorFilter) {
+          query = query.eq("creator_id", creatorFilter);
+        }
 
-  const filteredCreator = useMemo(() => {
-    if (!creatorFilter) return null;
-    const c = getMockExpertById(creatorFilter);
-    if (!c) return null;
-    const n = getLocalizedExpertName(c, language);
-    return {
-      id: c.id,
-      first_name: n.firstName,
-      last_name: n.lastName,
-      avatar_url: c.avatar_url,
-      expert_title: getLocalizedField(c as unknown as Record<string, unknown>, "expert_title"),
+        const { data: contentsData, error: contentsError } = await query;
+
+        if (contentsError) {
+          console.error("Error fetching programs:", contentsError);
+          setPrograms([]);
+          return;
+        }
+
+        // Fetch all creator profiles
+        const creatorIds = [...new Set((contentsData || []).map(c => c.creator_id).filter(Boolean))];
+        
+        let profilesMap: Record<string, CreatorProfile> = {};
+        if (creatorIds.length > 0) {
+          const { data: profilesData } = await supabase
+            .from("profiles")
+            .select("id, first_name, last_name, avatar_url, expert_title")
+            .in("id", creatorIds);
+
+          if (profilesData) {
+            profilesMap = profilesData.reduce((acc, p) => {
+              acc[p.id] = p;
+              return acc;
+            }, {} as Record<string, CreatorProfile>);
+          }
+        }
+
+        // Map data with localized fields
+        const mappedPrograms: Program[] = (contentsData || []).map((content) => {
+          const creator = content.creator_id ? profilesMap[content.creator_id] : null;
+          
+          // Get localized title
+          let title = content.title;
+          if (language === 'en' && content.title_en) title = content.title_en;
+          if (language === 'de' && content.title_de) title = content.title_de;
+
+          // Get localized description
+          let description = content.description;
+          if (language === 'en' && content.description_en) description = content.description_en;
+          if (language === 'de' && content.description_de) description = content.description_de;
+
+          return {
+            id: content.id,
+            title,
+            description,
+            image_url: content.image_url,
+            thumbnail_url: content.thumbnail_url,
+            access_type: content.access_type,
+            price_huf: content.price_huf,
+            category: content.category,
+            is_featured: content.is_featured,
+            is_sponsored: content.is_sponsored,
+            sponsor_name: content.sponsor_name,
+            creator_id: content.creator_id,
+            creator: creator ? {
+              id: creator.id,
+              first_name: creator.first_name,
+              last_name: creator.last_name,
+              avatar_url: creator.avatar_url,
+            } : null,
+          };
+        });
+
+        setPrograms(mappedPrograms);
+
+        // If filtering by creator, set the filtered creator details
+        if (creatorFilter && profilesMap[creatorFilter]) {
+          setFilteredCreator(profilesMap[creatorFilter]);
+        }
+      } catch (err) {
+        console.error("Error fetching programs:", err);
+        setPrograms([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
-  }, [creatorFilter, getLocalizedField, language]);
+
+    fetchPrograms();
+  }, [creatorFilter, language]);
 
   const filteredPrograms = useMemo(() => {
-    const base = creatorFilter ? programs.filter((p) => p.creator_id === creatorFilter) : programs;
-
-    return base.filter((program) => {
+    return programs.filter((program) => {
       const matchesSearch =
         !searchQuery ||
-        String(program.title).toLowerCase().includes(searchQuery.toLowerCase()) ||
+        String(program.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
         String(program.description || "").toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesCategory = selectedCategory === "all" || program.category === selectedCategory;
 
       return matchesSearch && matchesCategory;
     });
-  }, [creatorFilter, programs, searchQuery, selectedCategory]);
+  }, [programs, searchQuery, selectedCategory]);
 
-  const getAccessBadge = (program: (typeof programs)[number]) => {
-    const priceInfo = formatPriceByLanguage(program.price_huf || 0, language);
+  const formatPrice = (priceHuf: number | null): string => {
+    if (!priceHuf || priceHuf === 0) return language === 'hu' ? '0 Ft' : '0 €';
+    if (language === 'hu') return `${priceHuf.toLocaleString('hu-HU')} Ft`;
+    const euroPrice = Math.round(priceHuf / 400);
+    return `${euroPrice} €`;
+  };
+
+  const getAccessBadge = (program: Program) => {
     const sponsorLabel = language === 'de' ? 'Gesponsert von' : language === 'en' ? 'Sponsored by' : 'Támogató';
     
     // SINGLE elegant badge for sponsored content
@@ -132,9 +228,9 @@ const ProgramsListingPage = () => {
           </Badge>
           <div className="flex items-center gap-2">
             <span className="text-sm font-bold text-primary">{language === 'hu' ? '0 Ft' : '0 €'}</span>
-            {program.price_huf > 0 && (
+            {program.price_huf && program.price_huf > 0 && (
               <span className="text-xs text-muted-foreground line-through">
-                {priceInfo.originalPrice}
+                {formatPrice(program.price_huf)}
               </span>
             )}
           </div>
@@ -142,11 +238,11 @@ const ProgramsListingPage = () => {
       );
     }
 
-    if (program.price_huf > 0) {
+    if (program.price_huf && program.price_huf > 0) {
       return (
         <Badge className="bg-accent text-accent-foreground border-0 text-xs">
           <ShoppingCart className="w-3 h-3 mr-1" />
-          {priceInfo.price}
+          {formatPrice(program.price_huf)}
         </Badge>
       );
     }
@@ -239,96 +335,125 @@ const ProgramsListingPage = () => {
           </div>
         </div>
 
-        {/* Results Count */}
-        <div className="mt-8 mb-6 text-sm tracking-wide text-black/40">
-          <span className="font-medium text-black">{filteredPrograms.length}</span> {t("marketplace.showing_results")}
-        </div>
-
-        {/* Programs Grid - Ultra Minimalist Salesforce AI Style */}
-        {filteredPrograms.length === 0 ? (
-          <motion.div 
-            className="text-center py-20"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="w-24 h-24 mx-auto mb-8 rounded-full bg-black/[0.03] flex items-center justify-center">
-              <Search className="w-12 h-12 text-black/20" />
-            </div>
-            <h3 className="font-serif text-2xl font-semibold text-foreground mb-3">{t("marketplace.no_results")}</h3>
-            <p className="text-muted-foreground mb-8 max-w-md mx-auto">{t("marketplace.no_results_desc")}</p>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setSearchQuery("");
-                setSelectedCategory("all");
-              }}
-            >
-              {t("marketplace.clear_filters")}
-            </Button>
-          </motion.div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPrograms.map((program, index) => (
-              <motion.div
-                key={program.id}
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ 
-                  duration: 0.5, 
-                  delay: index * 0.08,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-              >
-                <Link to={`/piacer/${program.id}`} className="block group">
-                  <Card className="overflow-hidden h-full">
-                    <CardContent className="p-0">
-                      {/* Image with overlay */}
-                      <div className="aspect-[4/3] bg-gradient-to-br from-black/[0.02] to-black/[0.06] relative overflow-hidden">
-                        {program.thumbnail_url || program.image_url ? (
-                          <img
-                            src={program.thumbnail_url || program.image_url || ""}
-                            alt={String(program.title)}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                            onError={(e) => {
-                              e.currentTarget.style.display = "none";
-                              e.currentTarget.nextElementSibling?.classList.remove("hidden");
-                            }}
-                          />
-                        ) : null}
-                        <div className={program.thumbnail_url || program.image_url ? "hidden" : ""}>
-                          <ImagePlaceholder icon={Leaf} />
-                        </div>
-
-                        {/* Featured badge - Monochrome */}
-                        {program.is_featured && (
-                          <div className="absolute top-4 left-4">
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/80 backdrop-blur-sm text-white text-xs font-medium tracking-wide uppercase">
-                              <Star className="w-3 h-3 fill-current" />
-                              Featured
-                            </span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Ultra-Minimal Content */}
-                      <div className="p-6">
-                        {/* Category - Uppercase, tiny, spaced out */}
-                        <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-black/40 mb-3 block">
-                          {program.category || "Program"}
-                        </span>
-                        
-                        {/* Title */}
-                        <h3 className="text-xl font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-black transition-colors duration-300">
-                          {String(program.title)}
-                        </h3>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-            ))}
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
           </div>
+        ) : (
+          <>
+            {/* Results Count */}
+            <div className="mt-8 mb-6 text-sm tracking-wide text-black/40">
+              <span className="font-medium text-black">{filteredPrograms.length}</span> {t("marketplace.showing_results")}
+            </div>
+
+            {/* Programs Grid - Ultra Minimalist Salesforce AI Style */}
+            {filteredPrograms.length === 0 ? (
+              <motion.div 
+                className="text-center py-20"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="w-24 h-24 mx-auto mb-8 rounded-full bg-black/[0.03] flex items-center justify-center">
+                  <Search className="w-12 h-12 text-black/20" />
+                </div>
+                <h3 className="font-serif text-2xl font-semibold text-foreground mb-3">{t("marketplace.no_results")}</h3>
+                <p className="text-muted-foreground mb-8 max-w-md mx-auto">{t("marketplace.no_results_desc")}</p>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedCategory("all");
+                  }}
+                >
+                  {t("marketplace.clear_filters")}
+                </Button>
+              </motion.div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredPrograms.map((program, index) => (
+                  <motion.div
+                    key={program.id}
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ 
+                      duration: 0.5, 
+                      delay: index * 0.08,
+                      ease: [0.25, 0.46, 0.45, 0.94]
+                    }}
+                  >
+                    <Link to={`/piacer/${program.id}`} className="block group">
+                      <Card className="overflow-hidden h-full">
+                        <CardContent className="p-0">
+                          {/* Image with overlay */}
+                          <div className="aspect-[4/3] bg-gradient-to-br from-black/[0.02] to-black/[0.06] relative overflow-hidden">
+                            {program.thumbnail_url || program.image_url ? (
+                              <img
+                                src={program.thumbnail_url || program.image_url || ""}
+                                alt={String(program.title)}
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = "none";
+                                  e.currentTarget.nextElementSibling?.classList.remove("hidden");
+                                }}
+                              />
+                            ) : null}
+                            <div className={program.thumbnail_url || program.image_url ? "hidden" : ""}>
+                              <ImagePlaceholder icon={Leaf} />
+                            </div>
+
+                            {/* Featured badge - Monochrome */}
+                            {program.is_featured && (
+                              <div className="absolute top-4 left-4">
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/80 backdrop-blur-sm text-white text-xs font-medium tracking-wide uppercase">
+                                  <Star className="w-3 h-3 fill-current" />
+                                  Featured
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Ultra-Minimal Content */}
+                          <div className="p-6">
+                            {/* Category - Uppercase, tiny, spaced out */}
+                            <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-black/40 mb-3 block">
+                              {program.category || "Program"}
+                            </span>
+                            
+                            {/* Title */}
+                            <h3 className="text-xl font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-black transition-colors duration-300">
+                              {String(program.title)}
+                            </h3>
+
+                            {/* Creator info */}
+                            {program.creator && (
+                              <div className="flex items-center gap-2 mt-3">
+                                <Avatar className="h-6 w-6">
+                                  <AvatarImage src={program.creator.avatar_url || undefined} />
+                                  <AvatarFallback className="text-xs bg-muted">
+                                    {program.creator.first_name?.[0]}{program.creator.last_name?.[0]}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span className="text-sm text-muted-foreground">
+                                  {program.creator.first_name} {program.creator.last_name}
+                                </span>
+                              </div>
+                            )}
+
+                            {/* Price/Access badge */}
+                            <div className="mt-4">
+                              {getAccessBadge(program)}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
