@@ -12,8 +12,8 @@ const LiquidMeshGradient = ({ className = "", intensity = 'vibrant' }: LiquidMes
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   
-  // Opacity based on intensity (forced to 1.0 for visibility debugging)
-  const opacityMultiplier = 1;
+  // Opacity based on intensity
+  const opacityMultiplier = intensity === 'vibrant' ? 1 : 0.35;
   
   // Mouse tracking for desktop
   const mouseX = useMotionValue(0);
@@ -78,60 +78,46 @@ const LiquidMeshGradient = ({ className = "", intensity = 'vibrant' }: LiquidMes
       id: 1,
       baseOpacity: 0.7,
       color: `rgba(148, 163, 184, ${0.7 * opacityMultiplier})`, // Slate-400
-      size: "80%",
-      initialX: "5%",
-      initialY: "5%",
+      size: "90%",
+      initialX: "0%",
+      initialY: "0%",
       duration: 25,
     },
     {
       id: 2,
       baseOpacity: 0.5,
       color: `rgba(100, 116, 139, ${0.5 * opacityMultiplier})`, // Slate-500
-      size: "70%",
-      initialX: "50%",
-      initialY: "55%",
+      size: "80%",
+      initialX: "45%",
+      initialY: "50%",
       duration: 30,
     },
     {
       id: 3,
       baseOpacity: 0.3,
       color: `rgba(71, 85, 105, ${0.3 * opacityMultiplier})`, // Slate-600
-      size: "65%",
-      initialX: "65%",
-      initialY: "15%",
+      size: "75%",
+      initialX: "60%",
+      initialY: "10%",
       duration: 22,
     },
     {
       id: 4,
       baseOpacity: 0.15,
       color: `rgba(20, 184, 166, ${0.15 * opacityMultiplier})`, // Teal-500
-      size: "60%",
-      initialX: "25%",
-      initialY: "75%",
+      size: "70%",
+      initialX: "20%",
+      initialY: "70%",
       duration: 28,
-    },
-    {
-      id: 5,
-      baseOpacity: 0.5,
-      color: `rgba(239, 68, 68, ${0.5 * opacityMultiplier})`, // TEST RED
-      size: "50%",
-      initialX: "50%",
-      initialY: "50%",
-      duration: 20,
     },
   ];
 
   return (
-    <>
-      <div className="fixed top-20 left-4 bg-red-500 text-white p-2 z-[9999]">
-        MESH DEBUG: Component is rendering
-      </div>
-
-      <div 
-        ref={containerRef}
-        className={`fixed inset-0 overflow-hidden pointer-events-none ${className}`}
-        style={{ filter: "blur(50px)", zIndex: 0 }}
-      >
+    <div 
+      ref={containerRef}
+      className={`fixed inset-0 overflow-hidden pointer-events-none ${className}`}
+      style={{ filter: "blur(50px)", zIndex: 0 }}
+    >
         {blobs.map((blob) => (
           <motion.div
             key={blob.id}
@@ -167,8 +153,7 @@ const LiquidMeshGradient = ({ className = "", intensity = 'vibrant' }: LiquidMes
           background: `radial-gradient(ellipse at center, rgba(248, 250, 252, ${0.5 * opacityMultiplier}) 0%, transparent 70%)`,
         }}
       />
-      </div>
-    </>
+    </div>
   );
 };
 
