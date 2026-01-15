@@ -584,8 +584,3 @@ ZERO COLOR policy - Pure White, Obsidian Black, Smoke Gray only
     border-radius: 9999px;
   }
 }
-
-html, body, #root {
-  background: transparent !important;
-  background-color: transparent !important;
-}
