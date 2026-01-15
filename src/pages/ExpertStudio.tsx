@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { DashboardCard } from "@/components/dashboard/DashboardCard";
 
@@ -15,10 +14,13 @@ import VoucherValidator from "@/components/expert-studio/VoucherValidator";
 import VoucherManagement from "@/components/expert-studio/VoucherManagement";
 import BalanceCard from "@/components/expert-studio/BalanceCard";
 import MyProgramsList from "@/components/expert-studio/MyProgramsList";
+import MediaLibrary from "@/components/expert-studio/MediaLibrary";
+import { useExpertMedia, ExpertMedia } from "@/hooks/useExpertMedia";
 
 const ExpertStudio = () => {
   const { user, loading } = useAuth();
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [balance, setBalance] = useState(0);
   const [stats, setStats] = useState({
@@ -26,6 +28,15 @@ const ExpertStudio = () => {
     totalEarnings: 0,
     pendingAmount: 0,
   });
+
+  // Media library hook
+  const { 
+    media, 
+    loading: mediaLoading, 
+    uploading, 
+    uploadMedia, 
+    deleteMedia 
+  } = useExpertMedia();
 
   useEffect(() => {
     if (user) {
@@ -92,13 +103,21 @@ const ExpertStudio = () => {
   };
 
   const handleVideoCapture = async (file: File) => {
-    console.log("Video captured:", file.name);
-    toast.success(t("expert_studio.video_ready"));
+    await uploadMedia(file, 'video');
   };
 
   const handlePhotoCapture = async (file: File) => {
-    console.log("Photo captured:", file.name);
-    toast.success(t("expert_studio.photo_ready"));
+    await uploadMedia(file, 'image');
+  };
+
+  const handleConvertToProgram = (mediaItem: ExpertMedia) => {
+    // Navigate to wizard with media data as URL params
+    const params = new URLSearchParams({
+      mediaId: mediaItem.id,
+      mediaUrl: mediaItem.file_url,
+      mediaType: mediaItem.file_type,
+    });
+    navigate(`/szakertoi-studio/uj?${params.toString()}`);
   };
 
   const handleBalanceUpdate = (newBalance: number) => {
@@ -140,6 +159,15 @@ const ExpertStudio = () => {
       <QuickActionBar 
         onVideoCapture={handleVideoCapture}
         onPhotoCapture={handlePhotoCapture}
+        uploading={uploading}
+      />
+
+      {/* Media Library - New Section */}
+      <MediaLibrary
+        media={media}
+        loading={mediaLoading}
+        onDelete={deleteMedia}
+        onConvertToProgram={handleConvertToProgram}
       />
 
       {/* Main Content Grid */}

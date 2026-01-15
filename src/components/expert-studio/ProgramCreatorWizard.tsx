@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,6 +18,7 @@ export interface ProgramFormData {
   mediaFile: File | null;
   mediaUrl: string;
   mediaType: "video" | "image" | null;
+  mediaLibraryId?: string | null; // Track if from media library
   
   // Details
   title_hu: string;
@@ -38,6 +39,7 @@ const initialFormData: ProgramFormData = {
   mediaFile: null,
   mediaUrl: "",
   mediaType: null,
+  mediaLibraryId: null,
   title_hu: "",
   category: "",
   pricingMode: "sponsor_only",
@@ -57,6 +59,7 @@ const ProgramCreatorWizard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { id: editId } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
 
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<ProgramFormData>(initialFormData);
@@ -64,6 +67,25 @@ const ProgramCreatorWizard = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [isLoading, setIsLoading] = useState(!!editId);
+
+  // Check for media library params on mount
+  useEffect(() => {
+    const mediaId = searchParams.get('mediaId');
+    const mediaUrl = searchParams.get('mediaUrl');
+    const mediaType = searchParams.get('mediaType');
+
+    if (mediaUrl && mediaType) {
+      setFormData(prev => ({
+        ...prev,
+        mediaUrl: mediaUrl,
+        mediaType: mediaType as 'video' | 'image',
+        mediaLibraryId: mediaId || null,
+      }));
+      // Auto-advance to step 2 (details) since media is pre-selected
+      setCurrentStep(1);
+      toast.success('Média betöltve a Médiatárból!');
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (editId && user) {
@@ -182,6 +204,8 @@ const ProgramCreatorWizard = () => {
         updated_at: new Date().toISOString(),
       };
 
+      let savedContentId = contentId;
+
       if (contentId) {
         await supabase.from("expert_contents").update(contentData).eq("id", contentId);
       } else {
@@ -192,8 +216,20 @@ const ProgramCreatorWizard = () => {
           .single();
 
         if (!error && data) {
+          savedContentId = data.id;
           setContentId(data.id);
         }
+      }
+
+      // Update media library item status if from media library
+      if (formData.mediaLibraryId && savedContentId) {
+        await supabase
+          .from('expert_media')
+          .update({ 
+            status: 'in_draft',
+            program_id: savedContentId 
+          })
+          .eq('id', formData.mediaLibraryId);
       }
 
       // Update form with uploaded URL
@@ -219,6 +255,14 @@ const ProgramCreatorWizard = () => {
           updated_at: new Date().toISOString(),
         })
         .eq("id", contentId);
+
+      // Update media library item status to published
+      if (formData.mediaLibraryId) {
+        await supabase
+          .from('expert_media')
+          .update({ status: 'published' })
+          .eq('id', formData.mediaLibraryId);
+      }
 
       toast.success(t("program_creator.published_success"));
       navigate("/szakertoi-studio");
