@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useLocalizedContent } from "@/hooks/useLocalizedContent";
+import { useVouchers } from "@/hooks/useVouchers";
 import { MOCK_PROGRAMS, getMockExpertById } from "@/data/mockData";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,8 @@ import {
   Crown, 
   CheckCircle2,
   ShoppingCart,
-  Ticket
+  Ticket,
+  Check
 } from "lucide-react";
 import { motion } from "framer-motion";
 import PurchaseModal from "@/components/PurchaseModal";
@@ -30,14 +32,20 @@ import GracefulPlaceholder from "@/components/GracefulPlaceholder";
 
 const ProgramDetailPage = () => {
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
+  const [isClaimingVoucher, setIsClaimingVoucher] = useState(false);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { t } = useLanguage();
   const { getLocalizedField } = useLocalizedContent();
+  const { claimVoucher, hasVoucherForContent, getVoucherByContentId } = useVouchers();
 
   // Check if this is a mock program
   const isMockProgram = id?.startsWith('mock-program-');
+  
+  // Check if user already has voucher for this program
+  const existingVoucher = id ? getVoucherByContentId(id) : undefined;
+  const alreadyClaimed = id ? hasVoucherForContent(id) : false;
 
   // Fetch program with creator - use maybeSingle to avoid errors
   const { data: program, isLoading: programLoading } = useQuery({
@@ -160,22 +168,85 @@ const ProgramDetailPage = () => {
     }
   };
 
-  // Handler for mock voucher claim
-  const handleMockVoucherClaim = () => {
-    toast({
-      title: "Sikeres teszt igénylés! 🎉",
-      description: "Ez egy teszt kupon - valós adatokkal működik majd.",
-    });
+  // Handler for voucher claim (real implementation)
+  const handleClaimVoucher = async () => {
+    if (!id) return;
+    
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
+    
+    setIsClaimingVoucher(true);
+    try {
+      const result = await claimVoucher(id);
+      if (result.success && result.voucher) {
+        // Show success with voucher code
+        toast({
+          title: t('voucher.claimed_success') || "Sikeresen csatlakoztál! 🎉",
+          description: `${t('voucher.code_label') || 'Kuponkód'}: ${result.voucher.code}`,
+        });
+      }
+    } finally {
+      setIsClaimingVoucher(false);
+    }
   };
 
   const renderCTAButton = () => {
+    // If user already has a voucher for this content
+    if (alreadyClaimed && existingVoucher) {
+      return (
+        <div className="space-y-3 w-full">
+          <Button 
+            size="lg"
+            variant="outline"
+            className="w-full border-emerald-500/50 text-emerald-600 bg-emerald-50 cursor-default"
+            disabled
+          >
+            <Check className="w-5 h-5 mr-2" />
+            {t('voucher.already_claimed') || 'Már csatlakoztál'}
+          </Button>
+          <div className="text-center">
+            <Badge variant="outline" className="text-sm font-mono border-black/20 px-3 py-1">
+              {existingVoucher.code}
+            </Badge>
+          </div>
+        </div>
+      );
+    }
+
+    // For real programs (not mock), show claim button
+    if (!isMockProgram && id) {
+      return (
+        <Button 
+          size="lg"
+          className="bg-black hover:bg-black/90 text-white font-semibold shadow-lg w-full"
+          onClick={handleClaimVoucher}
+          disabled={isClaimingVoucher}
+        >
+          {isClaimingVoucher ? (
+            <>
+              <span className="animate-spin mr-2">⏳</span>
+              {t('common.loading') || 'Betöltés...'}
+            </>
+          ) : (
+            <>
+              <Ticket className="w-5 h-5 mr-2" />
+              {t('landing.cta_join') || 'Csatlakozom'}
+            </>
+          )}
+        </Button>
+      );
+    }
+    
     // For mock programs, show a special test button
     if (isMockProgram) {
       return (
         <Button 
           size="lg"
           className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg w-full"
-          onClick={handleMockVoucherClaim}
+          onClick={handleClaimVoucher}
+          disabled={isClaimingVoucher}
         >
           <Ticket className="w-5 h-5 mr-2" />
           {t('voucher.generate_btn')}

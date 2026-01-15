@@ -1,11 +1,12 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { UserPlus, Sparkles, MessageCircle, Heart, Star } from 'lucide-react';
+import { UserPlus, Sparkles, MessageCircle, Heart, Star, Ticket } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
 
 interface Notification {
-  id: number;
+  id: number | string;
   type: string;
   icon: typeof UserPlus;
   message: string;
@@ -17,7 +18,7 @@ interface Notification {
 export const LiveNotificationFeed = () => {
   const { t } = useLanguage();
   
-  // Create translated notifications inside the component
+  // Create base mock notifications
   const MOCK_NOTIFICATIONS: Notification[] = useMemo(() => [
     {
       id: 1,
@@ -84,6 +85,49 @@ export const LiveNotificationFeed = () => {
     setCurrentIndex(3);
   }, [MOCK_NOTIFICATIONS]);
 
+  // Subscribe to real-time voucher claims
+  useEffect(() => {
+    const channel = supabase
+      .channel('voucher-claims')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'vouchers',
+        },
+        async (payload) => {
+          // Fetch the content title for this voucher
+          const { data: content } = await supabase
+            .from('expert_contents')
+            .select('title')
+            .eq('id', payload.new.content_id)
+            .single();
+          
+          if (content) {
+            const newNotification: Notification = {
+              id: payload.new.id,
+              type: 'voucher',
+              icon: Ticket,
+              message: t('activity_feed.new_voucher_claim')?.replace('{program}', content.title) 
+                || `Egy új Tag csatlakozott: ${content.title}`,
+              avatar: null,
+              initials: '🎫',
+              time: t('activity_feed.time_now') || 'Most',
+            };
+            
+            // Add to top of feed
+            setNotifications(prev => [newNotification, ...prev.slice(0, 2)]);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [t]);
+
   // Rotate notifications every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
@@ -132,7 +176,7 @@ export const LiveNotificationFeed = () => {
             layout
           >
             {/* Glassmorphism bubble */}
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-white/60 backdrop-blur-md border border-slate-200/50 shadow-sm hover:bg-white/80 transition-colors">
+            <div className={`flex items-center gap-3 p-3 rounded-xl bg-white/60 backdrop-blur-md border border-slate-200/50 shadow-sm hover:bg-white/80 transition-colors ${notification.type === 'voucher' ? 'ring-2 ring-emerald-200' : ''}`}>
               {/* Avatar or Icon */}
               {notification.avatar ? (
                 <Avatar className="w-9 h-9 ring-2 ring-white shadow-sm">
@@ -142,7 +186,7 @@ export const LiveNotificationFeed = () => {
                   </AvatarFallback>
                 </Avatar>
               ) : (
-                <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-lg shadow-sm ring-2 ring-white">
+                <div className={`w-9 h-9 rounded-full flex items-center justify-center text-lg shadow-sm ring-2 ring-white ${notification.type === 'voucher' ? 'bg-emerald-100' : 'bg-slate-100'}`}>
                   {notification.initials}
                 </div>
               )}
@@ -156,7 +200,7 @@ export const LiveNotificationFeed = () => {
               
               {/* Icon + Time */}
               <div className="flex items-center gap-1.5 text-slate-400 flex-shrink-0">
-                <notification.icon className="w-3.5 h-3.5" />
+                <notification.icon className={`w-3.5 h-3.5 ${notification.type === 'voucher' ? 'text-emerald-500' : ''}`} />
                 <span className="text-xs">{notification.time}</span>
               </div>
             </div>

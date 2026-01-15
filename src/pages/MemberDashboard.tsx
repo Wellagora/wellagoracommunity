@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -7,9 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { KPICard } from "@/components/dashboard/KPICard";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { DashboardCard } from "@/components/dashboard/DashboardCard";
+import { useVouchers, VoucherStatus } from "@/hooks/useVouchers";
 import { 
   Ticket, 
   BookOpen, 
@@ -18,18 +20,13 @@ import {
   ChevronRight,
   Sparkles,
   Users,
-  Home
+  Home,
+  CheckCircle,
+  Clock,
+  XCircle
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-
-interface Voucher {
-  id: string;
-  code: string;
-  content_title: string;
-  sponsor_name: string;
-  status: string;
-  expires_at: string;
-}
+import { useQuery } from "@tanstack/react-query";
 
 interface SponsoredContent {
   id: string;
@@ -42,82 +39,45 @@ interface SponsoredContent {
 const MemberDashboard = () => {
   const { user, profile, loading } = useAuth();
   const { t } = useLanguage();
-  const [vouchers, setVouchers] = useState<Voucher[]>([]);
-  const [sponsoredContent, setSponsoredContent] = useState<SponsoredContent[]>([]);
-  const [stats, setStats] = useState({
-    activeVouchers: 0,
-    openedContents: 0,
-    totalSavings: 0
-  });
-  const [isLoading, setIsLoading] = useState(true);
+  const { vouchers, isLoading: vouchersLoading, stats } = useVouchers();
+  const [statusFilter, setStatusFilter] = useState<VoucherStatus | 'all'>('all');
 
-  useEffect(() => {
-    if (user) {
-      loadDashboardData();
-    }
-  }, [user]);
-
-  const loadDashboardData = async () => {
-    if (!user) return;
-    
-    setIsLoading(true);
-    try {
-      // Fetch user's content access (vouchers/sponsored content)
-      const { data: accessData } = await supabase
-        .from('content_access')
-        .select(`
-          id,
-          access_type,
-          amount_paid,
-          created_at,
-          content_id,
-          expert_contents(id, title, image_url, sponsor_name, category)
-        `)
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      // Transform data for display
-      const voucherList: Voucher[] = [];
-      let openedCount = 0;
-      let savings = 0;
-
-      if (accessData) {
-        accessData.forEach((access: any) => {
-          openedCount++;
-          if (access.access_type === 'sponsored') {
-            savings += access.amount_paid || 0;
-            voucherList.push({
-              id: access.id,
-              code: `WA-2026-${access.id.substring(0, 4).toUpperCase()}`,
-              content_title: access.expert_contents?.title || 'N/A',
-              sponsor_name: access.expert_contents?.sponsor_name || 'N/A',
-              status: 'active',
-              expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-            });
-          }
-        });
-      }
-
-      setVouchers(voucherList);
-      setStats({
-        activeVouchers: voucherList.length,
-        openedContents: openedCount,
-        totalSavings: savings
-      });
-
-      // Fetch sponsored content recommendations
-      const { data: contentData } = await supabase
+  // Fetch sponsored content recommendations
+  const { data: sponsoredContent = [], isLoading: contentLoading } = useQuery({
+    queryKey: ['sponsored-content'],
+    queryFn: async () => {
+      const { data } = await supabase
         .from('expert_contents')
         .select('id, title, image_url, sponsor_name, category')
         .eq('is_sponsored', true)
         .eq('is_published', true)
         .limit(6);
+      return data || [];
+    },
+    enabled: !!user,
+  });
 
-      setSponsoredContent(contentData || []);
-    } catch (error) {
-      console.error('Error loading dashboard data:', error);
-    } finally {
-      setIsLoading(false);
+  // Filter vouchers by status
+  const filteredVouchers = statusFilter === 'all' 
+    ? vouchers 
+    : vouchers.filter(v => v.status === statusFilter);
+
+  const getStatusIcon = (status: VoucherStatus) => {
+    switch (status) {
+      case 'active': return <CheckCircle className="w-4 h-4 text-emerald-500" />;
+      case 'used': return <Clock className="w-4 h-4 text-blue-500" />;
+      case 'expired': return <XCircle className="w-4 h-4 text-red-400" />;
+    }
+  };
+
+  const getStatusBadge = (status: VoucherStatus) => {
+    switch (status) {
+      case 'active': 
+        return <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200">{t('voucher.status_active') || 'Aktív'}</Badge>;
+      case 'used': 
+        return <Badge className="bg-blue-100 text-blue-700 border-blue-200">{t('voucher.status_used') || 'Felhasznált'}</Badge>;
+      case 'expired': 
+        return <Badge className="bg-red-100 text-red-700 border-red-200">{t('voucher.status_expired') || 'Lejárt'}</Badge>;
     }
   };
 
@@ -154,16 +114,16 @@ const MemberDashboard = () => {
         <DashboardCard>
           <KPICard
             title={t('member_dashboard.active_vouchers')}
-            value={stats.activeVouchers}
+            value={stats.active}
             icon={Ticket}
             subtitle={t('member_dashboard.redeemable')}
-            iconColor="text-black"
+            iconColor="text-emerald-600"
           />
         </DashboardCard>
         <DashboardCard delay={0.1}>
           <KPICard
             title={t('member_dashboard.opened_contents')}
-            value={stats.openedContents}
+            value={vouchers.length}
             icon={BookOpen}
             subtitle={t('member_dashboard.workshop_secrets')}
             iconColor="text-black/70"
@@ -171,7 +131,7 @@ const MemberDashboard = () => {
         </DashboardCard>
         <DashboardCard delay={0.2}>
           <KPICard
-            title={t('member_dashboard.savings')}
+            title={t('member_dashboard.savings') || 'Megtakarítás'}
             value={`${stats.totalSavings.toLocaleString()} Ft`}
             icon={PiggyBank}
             subtitle={t('member_dashboard.from_sponsor')}
@@ -180,58 +140,101 @@ const MemberDashboard = () => {
         </DashboardCard>
       </div>
 
-      {/* Active Vouchers Section */}
+      {/* Active Vouchers Section with Filter Tabs */}
       <DashboardCard delay={0.3} className="mb-6">
-        <CardHeader className="flex flex-row items-center justify-between p-0 pb-4">
+        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-0 pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Ticket className="w-5 h-5 text-black/60" />
-            {t('member_dashboard.active_vouchers')}
+            {t('member_dashboard.my_vouchers') || 'Kuponjaim'}
           </CardTitle>
-          <Link to="/piacer">
-            <Button variant="ghost" size="sm" className="text-black/60 hover:text-black">
-              {t('member_dashboard.new_voucher')} <ChevronRight className="w-4 h-4 ml-1" />
-            </Button>
-          </Link>
+          <div className="flex items-center gap-3">
+            {/* Status Filter Tabs */}
+            <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as VoucherStatus | 'all')}>
+              <TabsList className="bg-black/5 h-9">
+                <TabsTrigger value="all" className="text-xs px-3 data-[state=active]:bg-white">
+                  {t('common.all') || 'Mind'} ({vouchers.length})
+                </TabsTrigger>
+                <TabsTrigger value="active" className="text-xs px-3 data-[state=active]:bg-white">
+                  {t('voucher.status_active') || 'Aktív'} ({stats.active})
+                </TabsTrigger>
+                <TabsTrigger value="used" className="text-xs px-3 data-[state=active]:bg-white">
+                  {t('voucher.status_used') || 'Felhasznált'} ({stats.used})
+                </TabsTrigger>
+                <TabsTrigger value="expired" className="text-xs px-3 data-[state=active]:bg-white">
+                  {t('voucher.status_expired') || 'Lejárt'} ({stats.expired})
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <Link to="/piacer">
+              <Button variant="ghost" size="sm" className="text-black/60 hover:text-black">
+                {t('member_dashboard.new_voucher')} <ChevronRight className="w-4 h-4 ml-1" />
+              </Button>
+            </Link>
+          </div>
         </CardHeader>
         <CardContent className="p-0">
-          {isLoading ? (
+          {vouchersLoading ? (
             <div className="space-y-3">
               {[1, 2].map((i) => (
                 <Skeleton key={i} className="h-20 w-full rounded-lg" />
               ))}
             </div>
-          ) : vouchers.length > 0 ? (
+          ) : filteredVouchers.length > 0 ? (
             <div className="space-y-3">
-              {vouchers.map((voucher) => (
-                <div
+              {filteredVouchers.map((voucher) => (
+                <Link 
                   key={voucher.id}
-                  className="flex items-center justify-between p-4 rounded-xl bg-black/[0.02] border border-black/5"
+                  to={`/piacer/${voucher.content_id}`}
+                  className="block"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-lg bg-black/5">
-                      <QrCode className="w-8 h-8 text-black/60" />
+                  <div
+                    className="flex items-center justify-between p-4 rounded-xl bg-black/[0.02] border border-black/5 hover:bg-black/[0.04] transition-colors"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="p-2 rounded-lg bg-black/5 relative">
+                        {voucher.content_image ? (
+                          <img 
+                            src={voucher.content_image} 
+                            alt={voucher.content_title}
+                            className="w-12 h-12 object-cover rounded-lg"
+                          />
+                        ) : (
+                          <QrCode className="w-8 h-8 text-black/60" />
+                        )}
+                        <div className="absolute -top-1 -right-1">
+                          {getStatusIcon(voucher.status)}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="font-medium text-black">{voucher.content_title}</p>
+                        <p className="text-sm text-black/50">
+                          {voucher.expert_name}
+                          {voucher.sponsor_name && (
+                            <span> • {t('member_dashboard.sponsor_label')}: {voucher.sponsor_name}</span>
+                          )}
+                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge variant="outline" className="text-xs border-black/10 font-mono">
+                            {voucher.code}
+                          </Badge>
+                          {getStatusBadge(voucher.status)}
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium text-black">{voucher.content_title}</p>
-                      <p className="text-sm text-black/50">
-                        {t('member_dashboard.sponsor_label')}: {voucher.sponsor_name}
-                      </p>
-                      <Badge variant="outline" className="mt-1 text-xs border-black/10">
-                        {voucher.code}
-                      </Badge>
-                    </div>
+                    <Button variant="outline" size="sm" className="border-black/10">
+                      {t('member_dashboard.show_qr')}
+                    </Button>
                   </div>
-                  <Button variant="outline" size="sm" className="border-black/10">
-                    {t('member_dashboard.show_qr')}
-                  </Button>
-                </div>
+                </Link>
               ))}
             </div>
           ) : (
             <div className="text-center py-8">
               <Ticket className="w-12 h-12 mx-auto text-black/30 mb-4" />
               <p className="text-black/50 mb-4">
-                {t('member_dashboard.no_vouchers')}
+                {statusFilter === 'all' 
+                  ? (t('member_dashboard.no_vouchers'))
+                  : (t('member_dashboard.no_vouchers_in_category') || 'Nincs ilyen kuponod')}
               </p>
               <Link to="/piacer">
                 <Button className="bg-black hover:bg-black/90 text-white">
@@ -253,7 +256,7 @@ const MemberDashboard = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          {isLoading ? (
+          {contentLoading ? (
             <div className="flex gap-4">
               {[1, 2, 3].map((i) => (
                 <Skeleton key={i} className="h-48 w-64 rounded-xl flex-shrink-0" />
@@ -265,7 +268,7 @@ const MemberDashboard = () => {
                 {sponsoredContent.map((content) => (
                   <Link
                     key={content.id}
-                    to={`/muhelytitok/${content.id}`}
+                    to={`/piacer/${content.id}`}
                     className="flex-shrink-0 w-64"
                   >
                     <div className="rounded-xl overflow-hidden border border-black/5 bg-white hover:shadow-lg transition-shadow">
