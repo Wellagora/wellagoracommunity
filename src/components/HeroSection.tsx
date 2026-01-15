@@ -44,7 +44,7 @@ const HeroSection = () => {
   return (
     <section 
       ref={sectionRef}
-      className="min-h-[70vh] flex items-center justify-center py-8 relative overflow-hidden bg-gradient-to-b from-white to-slate-50"
+      className="min-h-[70vh] flex items-center justify-center py-8 relative overflow-hidden bg-white"
     >
       {/* Background is now handled globally by AppLayout */}
 
