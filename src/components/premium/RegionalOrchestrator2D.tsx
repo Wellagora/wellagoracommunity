@@ -266,9 +266,8 @@ const RegionalOrchestrator2D = () => {
         initial="hidden"
         animate={controls}
       >
-        {/* Isometric District Grid */}
-        <div className="relative min-h-[600px] bg-gradient-to-br from-background via-card/20 to-background rounded-3xl p-8 overflow-hidden">
-          <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        {/* Isometric District */}
+        <div className="relative min-h-[600px] bg-white/80 backdrop-blur-sm rounded-3xl p-8 overflow-hidden border border-black/5">
           
           {/* Connection Lines SVG */}
           {showConnections && (

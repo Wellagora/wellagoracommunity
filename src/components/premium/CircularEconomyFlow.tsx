@@ -225,8 +225,7 @@ const CircularEconomyFlow = () => {
       </div>
 
       {/* Main Flow Diagram */}
-      <div className="relative bg-gradient-to-br from-background via-card/10 to-background rounded-3xl p-8 min-h-[600px] overflow-hidden">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+      <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 min-h-[600px] overflow-hidden border border-black/5">
         
         {/* Flow Lines SVG */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}>

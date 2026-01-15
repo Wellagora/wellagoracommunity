@@ -202,8 +202,7 @@ const CommunityOverview = ({ stakeholderCount, onViewChange, onOpenStoryBook }: 
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.6, duration: 0.5 }}
       >
-        <Card className="bg-gradient-ocean border-0 shadow-float overflow-hidden relative group">
-          <div className="absolute inset-0 bg-wave-pattern opacity-30 group-hover:opacity-50 transition-opacity duration-700"></div>
+        <Card className="bg-slate-900 border-0 shadow-lg overflow-hidden relative group">
           
           <CardContent className="p-12 text-center relative z-10">
             <motion.div

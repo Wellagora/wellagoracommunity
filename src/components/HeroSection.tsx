@@ -4,7 +4,6 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { SmartTiltCard } from "@/components/ui/SmartTiltCard";
 import { StaggerContainer, StaggerItem } from "@/components/ui/StaggerAnimation";
-import LiquidMeshGradient from "@/components/ui/LiquidMeshGradient";
 
 const HeroSection = () => {
   const { t } = useLanguage();
@@ -45,10 +44,9 @@ const HeroSection = () => {
   return (
     <section 
       ref={sectionRef}
-      className="min-h-[70vh] flex items-center justify-center py-8 relative bg-white overflow-hidden"
+      className="min-h-[70vh] flex items-center justify-center py-8 relative overflow-hidden"
     >
-      {/* Liquid Mesh Gradient Background - Behind everything */}
-      <LiquidMeshGradient className="-z-10" />
+      {/* Background is now handled globally by AppLayout */}
 
       <motion.div 
         style={{ opacity }}
@@ -63,19 +61,7 @@ const HeroSection = () => {
               style={{ y: line1Y }}
               className="block relative"
             >
-              <span className="relative">
-                {t('landing.hero_line1')}
-                <span 
-                  className="absolute inset-0 text-transparent bg-clip-text opacity-10"
-                  style={{
-                    backgroundImage: 'radial-gradient(circle at 2px 2px, #000 1px, transparent 0)',
-                    backgroundSize: '4px 4px',
-                    WebkitBackgroundClip: 'text',
-                  }}
-                >
-                  {t('landing.hero_line1')}
-                </span>
-              </span>
+              {t('landing.hero_line1')}
             </motion.span>
             <motion.span 
               style={{ y: line2Y }}

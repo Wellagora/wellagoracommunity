@@ -1,13 +1,22 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import FeedbackButton from "@/components/feedback/FeedbackButton";
+import LiquidMeshGradient from "@/components/ui/LiquidMeshGradient";
 
 export default function AppLayout() {
   const { isDemoMode } = useAuth();
+  const location = useLocation();
+  
+  // Landing page gets vibrant background, all internal pages get muted
+  const isLandingPage = location.pathname === "/" || location.pathname === "";
+  const gradientIntensity = isLandingPage ? 'vibrant' : 'muted';
   
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
+      {/* Global Liquid Mesh Gradient - runs behind everything */}
+      <LiquidMeshGradient intensity={gradientIntensity} />
+      
       <header>
         <Navigation />
       </header>
