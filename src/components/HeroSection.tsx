@@ -1,78 +1,14 @@
 import { Link } from "react-router-dom";
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { SmartTiltCard } from "@/components/ui/SmartTiltCard";
 import { StaggerContainer, StaggerItem } from "@/components/ui/StaggerAnimation";
-
-// Animated wave background - MONOCHROME slate/silver tones - MORE VISIBLE
-const AnimatedWaveBackground = () => {
-  return (
-    <div className="absolute inset-0 -z-10 overflow-hidden">
-      {/* Wave 1 - Slate Silver - MORE VISIBLE */}
-      <motion.div
-        className="absolute inset-0"
-        animate={{
-          x: ['-100%', '100%'],
-          scaleY: [1, 1.05, 0.95, 1],
-        }}
-        transition={{
-          x: { duration: 10, repeat: Infinity, ease: 'linear' },
-          scaleY: { duration: 6, repeat: Infinity, ease: 'easeInOut' },
-        }}
-        style={{
-          background: 'linear-gradient(90deg, transparent 0%, rgba(148, 163, 184, 0.4) 25%, rgba(203, 213, 225, 0.6) 50%, rgba(148, 163, 184, 0.4) 75%, transparent 100%)',
-        }}
-      />
-      
-      {/* Wave 2 - Lighter, offset */}
-      <motion.div
-        className="absolute inset-0"
-        animate={{
-          x: ['100%', '-100%'],
-        }}
-        transition={{
-          duration: 15,
-          repeat: Infinity,
-          ease: 'linear',
-        }}
-        style={{
-          background: 'linear-gradient(90deg, transparent 0%, rgba(226, 232, 240, 0.3) 30%, rgba(241, 245, 249, 0.5) 50%, rgba(226, 232, 240, 0.3) 70%, transparent 100%)',
-        }}
-      />
-      
-      {/* Subtle grid pattern */}
-      <div 
-        className="absolute inset-0 opacity-[0.02]"
-        style={{
-          backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
-        }}
-      />
-    </div>
-  );
-};
+import LiquidMeshGradient from "@/components/ui/LiquidMeshGradient";
 
 const HeroSection = () => {
   const { t } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  // Mouse tracking for subtle parallax
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (sectionRef.current) {
-        const rect = sectionRef.current.getBoundingClientRect();
-        setMousePosition({
-          x: ((e.clientX - rect.left) / rect.width - 0.5) * 100,
-          y: ((e.clientY - rect.top) / rect.height - 0.5) * 100,
-        });
-      }
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
 
   // Scroll-based parallax for typography
   const { scrollYProgress } = useScroll({
@@ -109,27 +45,10 @@ const HeroSection = () => {
   return (
     <section 
       ref={sectionRef}
-      className="min-h-[70vh] flex items-center justify-center py-8 relative bg-white"
+      className="min-h-[70vh] flex items-center justify-center py-8 relative bg-white overflow-hidden"
     >
-      {/* Clean white background */}
-      <div className="absolute inset-0 -z-20 bg-white" />
-      
-      {/* Subtle ambient parallax layer - MONOCHROME */}
-      <motion.div
-        className="absolute inset-0 -z-15 opacity-30"
-        style={{
-          background: `radial-gradient(ellipse at ${50 + mousePosition.x * 0.02}% ${50 + mousePosition.y * 0.02}%, rgba(100, 116, 139, 0.08) 0%, transparent 60%)`,
-        }}
-      />
-      
-      {/* Stipple texture overlay */}
-      <div 
-        className="absolute inset-0 -z-5 opacity-[0.015]"
-        style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, #000 1px, transparent 0)',
-          backgroundSize: '24px 24px',
-        }}
-      />
+      {/* Liquid Mesh Gradient Background - Behind everything */}
+      <LiquidMeshGradient className="-z-10" />
 
       <motion.div 
         style={{ opacity }}
@@ -183,10 +102,8 @@ const HeroSection = () => {
           {t('landing.hero_subtitle')}
         </motion.p>
 
-        {/* CTA Cards with Animated Background */}
+        {/* CTA Cards with Glassmorphism on top of Liquid Background */}
         <div className="relative">
-          {/* Animated wave background behind cards */}
-          <AnimatedWaveBackground />
           
           {/* Cards Grid with Stagger + SmartTiltCard */}
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto relative z-10">
