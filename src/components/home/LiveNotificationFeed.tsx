@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { UserPlus, Sparkles, MessageCircle, Heart, Star, Ticket } from 'lucide-react';
+import { UserPlus, Sparkles, Ticket } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -16,79 +16,122 @@ interface Notification {
 }
 
 export const LiveNotificationFeed = () => {
-  const { t } = useLanguage();
-  
-  // Create base mock notifications
-  const MOCK_NOTIFICATIONS: Notification[] = useMemo(() => [
-    {
-      id: 1,
-      type: 'join',
-      icon: UserPlus,
-      message: t('activity_feed.kata_joined'),
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50',
-      initials: 'KA',
-      time: t('activity_feed.time_now'),
-    },
-    {
-      id: 2,
-      type: 'program',
-      icon: Sparkles,
-      message: t('activity_feed.new_program'),
-      avatar: null,
-      initials: '🍞',
-      time: `2 ${t('activity_feed.time_minutes_ago')}`,
-    },
-    {
-      id: 3,
-      type: 'review',
-      icon: Star,
-      message: t('activity_feed.peter_review'),
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50',
-      initials: 'PK',
-      time: `5 ${t('activity_feed.time_minutes_ago')}`,
-    },
-    {
-      id: 4,
-      type: 'join',
-      icon: UserPlus,
-      message: t('activity_feed.anna_joined'),
-      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50',
-      initials: 'AT',
-      time: `8 ${t('activity_feed.time_minutes_ago')}`,
-    },
-    {
-      id: 5,
-      type: 'like',
-      icon: Heart,
-      message: t('activity_feed.eszter_liked'),
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=50',
-      initials: 'EN',
-      time: `12 ${t('activity_feed.time_minutes_ago')}`,
-    },
-    {
-      id: 6,
-      type: 'comment',
-      icon: MessageCircle,
-      message: t('activity_feed.gabor_comment'),
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50',
-      initials: 'GS',
-      time: `15 ${t('activity_feed.time_minutes_ago')}`,
-    },
-  ], [t]);
-
+  const { t, language } = useLanguage();
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(3);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Initialize notifications when MOCK_NOTIFICATIONS changes (language switch)
+  // Format relative time
+  const formatRelativeTime = useCallback((dateString: string): string => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMins < 1) return t('activity_feed.time_now') || 'Most';
+    if (diffMins < 60) return `${diffMins} ${t('activity_feed.time_minutes_ago') || 'perce'}`;
+    if (diffHours < 24) return `${diffHours} ${language === 'hu' ? 'órája' : language === 'de' ? 'Stunden' : 'hours ago'}`;
+    return `${diffDays} ${language === 'hu' ? 'napja' : language === 'de' ? 'Tage' : 'days ago'}`;
+  }, [t, language]);
+
+  // Get user initials
+  const getInitials = (firstName?: string | null, lastName?: string | null): string => {
+    const first = firstName?.[0]?.toUpperCase() || '';
+    const last = lastName?.[0]?.toUpperCase() || '';
+    return first + last || '👤';
+  };
+
+  // Fetch initial real data from Supabase
+  const fetchRealNotifications = useCallback(async () => {
+    try {
+      // Fetch last 5 vouchers with user profiles and content
+      const { data: vouchers, error } = await supabase
+        .from('vouchers')
+        .select(`
+          id,
+          created_at,
+          user_id,
+          content_id
+        `)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (error || !vouchers || vouchers.length === 0) {
+        // Fall back to mock data if no real data
+        setNotifications([
+          {
+            id: 1,
+            type: 'program',
+            icon: Sparkles,
+            message: t('activity_feed.new_program') || 'Új program indult!',
+            avatar: null,
+            initials: '🍞',
+            time: t('activity_feed.time_now') || 'Most',
+          }
+        ]);
+        setIsLoading(false);
+        return;
+      }
+
+      // Fetch profiles and content for each voucher
+      const notificationPromises = vouchers.map(async (voucher) => {
+        // Get user profile
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('first_name, last_name, avatar_url')
+          .eq('id', voucher.user_id)
+          .single();
+
+        // Get content title
+        const { data: content } = await supabase
+          .from('expert_contents')
+          .select('title')
+          .eq('id', voucher.content_id)
+          .single();
+
+        const userName = profile?.first_name 
+          ? `${profile.first_name} ${profile.last_name?.[0] || ''}.`
+          : t('activity_feed.member') || 'Egy Tag';
+
+        const programTitle = content?.title || t('activity_feed.program') || 'programhoz';
+
+        // Format: "🎉 [User Name] épp most csatlakozott a [Program Title] programhoz!"
+        const message = language === 'hu' 
+          ? `🎉 ${userName} csatlakozott: ${programTitle}`
+          : language === 'de'
+          ? `🎉 ${userName} ist beigetreten: ${programTitle}`
+          : `🎉 ${userName} just joined: ${programTitle}`;
+
+        return {
+          id: voucher.id,
+          type: 'voucher',
+          icon: Ticket,
+          message,
+          avatar: profile?.avatar_url || null,
+          initials: getInitials(profile?.first_name, profile?.last_name),
+          time: formatRelativeTime(voucher.created_at),
+        };
+      });
+
+      const realNotifications = await Promise.all(notificationPromises);
+      setNotifications(realNotifications.slice(0, 3));
+    } catch (err) {
+      console.error('Error fetching notifications:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [t, language, formatRelativeTime]);
+
+  // Load real data on mount
   useEffect(() => {
-    setNotifications(MOCK_NOTIFICATIONS.slice(0, 3));
-    setCurrentIndex(3);
-  }, [MOCK_NOTIFICATIONS]);
+    fetchRealNotifications();
+  }, [fetchRealNotifications]);
 
   // Subscribe to real-time voucher claims
   useEffect(() => {
     const channel = supabase
-      .channel('voucher-claims')
+      .channel('voucher-claims-realtime')
       .on(
         'postgres_changes',
         {
@@ -97,28 +140,39 @@ export const LiveNotificationFeed = () => {
           table: 'vouchers',
         },
         async (payload) => {
-          // Fetch the content title for this voucher
-          const { data: content } = await supabase
-            .from('expert_contents')
-            .select('title')
-            .eq('id', payload.new.content_id)
-            .single();
+          // Fetch profile and content for this voucher
+          const [profileRes, contentRes] = await Promise.all([
+            supabase.from('profiles').select('first_name, last_name, avatar_url').eq('id', payload.new.user_id).single(),
+            supabase.from('expert_contents').select('title').eq('id', payload.new.content_id).single()
+          ]);
           
-          if (content) {
-            const newNotification: Notification = {
-              id: payload.new.id,
-              type: 'voucher',
-              icon: Ticket,
-              message: t('activity_feed.new_voucher_claim')?.replace('{program}', content.title) 
-                || `Egy új Tag csatlakozott: ${content.title}`,
-              avatar: null,
-              initials: '🎫',
-              time: t('activity_feed.time_now') || 'Most',
-            };
-            
-            // Add to top of feed
-            setNotifications(prev => [newNotification, ...prev.slice(0, 2)]);
-          }
+          const profile = profileRes.data;
+          const content = contentRes.data;
+
+          const userName = profile?.first_name 
+            ? `${profile.first_name} ${profile.last_name?.[0] || ''}.`
+            : t('activity_feed.member') || 'Egy Tag';
+
+          const programTitle = content?.title || t('activity_feed.program') || 'programhoz';
+
+          const message = language === 'hu' 
+            ? `🎉 ${userName} csatlakozott: ${programTitle}`
+            : language === 'de'
+            ? `🎉 ${userName} ist beigetreten: ${programTitle}`
+            : `🎉 ${userName} just joined: ${programTitle}`;
+
+          const newNotification: Notification = {
+            id: payload.new.id,
+            type: 'voucher',
+            icon: Ticket,
+            message,
+            avatar: profile?.avatar_url || null,
+            initials: getInitials(profile?.first_name, profile?.last_name),
+            time: t('activity_feed.time_now') || 'Most',
+          };
+          
+          // Add to top of feed
+          setNotifications(prev => [newNotification, ...prev.slice(0, 2)]);
         }
       )
       .subscribe();
@@ -126,29 +180,20 @@ export const LiveNotificationFeed = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [t]);
+  }, [t, language]);
 
-  // Rotate notifications every 5 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => {
-        const nextIndex = (prev + 1) % MOCK_NOTIFICATIONS.length;
-        
-        // Add new notification to top, remove oldest
-        setNotifications((current) => {
-          const newNotification = {
-            ...MOCK_NOTIFICATIONS[nextIndex],
-            id: Date.now(), // Unique key for animation
-          };
-          return [newNotification, ...current.slice(0, 2)];
-        });
-        
-        return nextIndex;
-      });
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [MOCK_NOTIFICATIONS]);
+  if (isLoading) {
+    return (
+      <div className="space-y-3">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/60 backdrop-blur-md border border-slate-200/50 animate-pulse">
+            <div className="w-9 h-9 rounded-full bg-slate-200" />
+            <div className="flex-1 h-4 bg-slate-200 rounded" />
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3">
@@ -207,6 +252,13 @@ export const LiveNotificationFeed = () => {
           </motion.div>
         ))}
       </AnimatePresence>
+      
+      {notifications.length === 0 && !isLoading && (
+        <div className="text-center py-6 text-slate-400">
+          <Sparkles className="w-8 h-8 mx-auto mb-2 opacity-50" />
+          <p className="text-sm">{t('activity_feed.no_activity') || 'Hamarosan itt lesznek az aktivitások!'}</p>
+        </div>
+      )}
     </div>
   );
 };

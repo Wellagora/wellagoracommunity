@@ -473,8 +473,22 @@ const Navigation = () => {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
+          {/* Mobile Menu Button + WellBot */}
+          <div className="md:hidden flex items-center gap-2">
+            {/* WellBot Button - Always visible on mobile */}
+            <Link
+              to="/ai-assistant"
+              className={`flex items-center justify-center p-2 rounded-full transition-all duration-300 ${
+                isActive('/ai-assistant')
+                  ? "bg-[#111111] text-white"
+                  : "text-[#6E6E73] hover:text-[#111111] hover:bg-[#F5F5F7]"
+              }`}
+            >
+              <div style={{ transform: 'scaleX(-1)' }}>
+                <WellBotAvatar size="xs" mood="neutral" />
+              </div>
+            </Link>
+            
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-10 w-10">
