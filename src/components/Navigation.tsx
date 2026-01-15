@@ -285,9 +285,9 @@ const Navigation = () => {
       <nav className={`fixed left-0 right-0 z-[100] w-full bg-white/95 backdrop-blur-md border-b border-slate-200 ${isDemoMode ? 'top-8' : 'top-0'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Logo - Left - ALWAYS visible with shrink-0 */}
-            <Link to="/" className="flex items-center shrink-0 z-10">
-              <img src={wellagoraLogo} alt="WellAgora" className="h-10 w-auto object-contain" />
+            {/* Logo - Left - Slightly offset to create space */}
+            <Link to="/" className="flex items-center shrink-0 z-10 -ml-1 sm:ml-0">
+              <img src={wellagoraLogo} alt="WellAgora" className="h-9 sm:h-10 w-auto object-contain" />
             </Link>
 
             {/* Desktop Navigation - Center - positioned with margin to avoid overlap with right side */}
@@ -473,12 +473,12 @@ const Navigation = () => {
             )}
           </div>
 
-          {/* Mobile Menu Button + WellBot */}
-          <div className="md:hidden flex items-center gap-2">
-            {/* WellBot Button - Always visible on mobile */}
+          {/* Mobile Actions Row: WellBot + Language + Auth/Profile + Menu */}
+          <div className="md:hidden flex items-center gap-2 shrink-0">
+            {/* WellBot Button - Always visible, min 44px touch target */}
             <Link
               to="/ai-assistant"
-              className={`flex items-center justify-center p-2 rounded-full transition-all duration-300 ${
+              className={`flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-full transition-all duration-300 ${
                 isActive('/ai-assistant')
                   ? "bg-[#111111] text-white"
                   : "text-[#6E6E73] hover:text-[#111111] hover:bg-[#F5F5F7]"
@@ -489,9 +489,30 @@ const Navigation = () => {
               </div>
             </Link>
             
+            {/* Language Selector - Compact */}
+            <div className="shrink-0">
+              <LanguageSelector />
+            </div>
+
+            {/* Profile Avatar (logged in) or nothing (logged out) */}
+            {user && profile && (
+              <Link
+                to="/profile"
+                className="flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px]"
+              >
+                <Avatar className="h-8 w-8 ring-2 ring-black/5">
+                  <AvatarImage src={profile.avatar_url || undefined} />
+                  <AvatarFallback className="bg-black text-white text-xs">
+                    {profile.first_name?.[0]}{profile.last_name?.[0]}
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+            )}
+            
+            {/* Hamburger Menu */}
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-10 w-10">
+                <Button variant="ghost" size="icon" className="w-11 h-11 min-w-[44px] min-h-[44px]">
                   <Menu className="h-6 w-6" />
                   <span className="sr-only">Toggle menu</span>
                 </Button>
