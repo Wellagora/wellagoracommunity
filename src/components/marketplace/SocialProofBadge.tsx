@@ -1,0 +1,118 @@
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { motion } from 'framer-motion';
+import { Users, Flame, Clock } from 'lucide-react';
+
+interface SocialProofBadgeProps {
+  attendeeCount?: number;
+  seatsLeft?: number;
+  maxSeats?: number;
+  showAvatars?: boolean;
+  size?: 'sm' | 'md';
+}
+
+// Simulated avatars for social proof
+const MOCK_AVATARS = [
+  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
+  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face',
+  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
+];
+
+const INITIALS = ['AK', 'BP', 'MT', 'ZN'];
+
+export const SocialProofBadge = ({
+  attendeeCount = 0,
+  seatsLeft,
+  maxSeats,
+  showAvatars = true,
+  size = 'sm'
+}: SocialProofBadgeProps) => {
+  const { language } = useLanguage();
+
+  // Generate random but consistent attendee count if not provided
+  const displayCount = attendeeCount > 0 ? attendeeCount : Math.floor(Math.random() * 20) + 5;
+  
+  const avatarSize = size === 'sm' ? 'h-5 w-5' : 'h-6 w-6';
+  const overlapSize = size === 'sm' ? '-ml-1.5' : '-ml-2';
+
+  // Scarcity labels
+  const getScarcityText = () => {
+    if (!seatsLeft) return null;
+    if (seatsLeft <= 3) {
+      return language === 'hu' 
+        ? `Már csak ${seatsLeft} hely!` 
+        : language === 'de' 
+        ? `Nur noch ${seatsLeft} Plätze!` 
+        : `Only ${seatsLeft} spots left!`;
+    }
+    if (seatsLeft <= 5) {
+      return language === 'hu' 
+        ? `Még ${seatsLeft} hely` 
+        : language === 'de' 
+        ? `Noch ${seatsLeft} Plätze` 
+        : `${seatsLeft} spots remaining`;
+    }
+    return null;
+  };
+
+  const attendeeText = language === 'hu' 
+    ? `+${displayCount} már jelentkezett` 
+    : language === 'de' 
+    ? `+${displayCount} angemeldet` 
+    : `+${displayCount} joined`;
+
+  const scarcityText = getScarcityText();
+  const isUrgent = seatsLeft && seatsLeft <= 3;
+
+  return (
+    <div className="flex flex-col gap-1.5">
+      {/* Attendee avatars and count */}
+      {showAvatars && (
+        <div className="flex items-center gap-2">
+          <div className="flex items-center">
+            {MOCK_AVATARS.slice(0, 3).map((avatar, idx) => (
+              <Avatar 
+                key={idx} 
+                className={`${avatarSize} ${idx > 0 ? overlapSize : ''} ring-2 ring-white`}
+              >
+                <AvatarImage src={avatar} />
+                <AvatarFallback className="text-[8px] bg-primary/10 text-primary">
+                  {INITIALS[idx]}
+                </AvatarFallback>
+              </Avatar>
+            ))}
+            {displayCount > 3 && (
+              <div className={`${avatarSize} ${overlapSize} rounded-full bg-black/80 ring-2 ring-white flex items-center justify-center`}>
+                <span className="text-[8px] font-medium text-white">+{displayCount - 3}</span>
+              </div>
+            )}
+          </div>
+          <span className="text-xs text-muted-foreground font-medium">
+            {attendeeText}
+          </span>
+        </div>
+      )}
+
+      {/* Scarcity indicator */}
+      {scarcityText && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className={`inline-flex items-center gap-1.5 text-xs font-medium ${
+            isUrgent ? 'text-red-600' : 'text-orange-600'
+          }`}
+        >
+          {isUrgent ? (
+            <Flame className="w-3 h-3 animate-pulse" />
+          ) : (
+            <Clock className="w-3 h-3" />
+          )}
+          {scarcityText}
+        </motion.div>
+      )}
+    </div>
+  );
+};
+
+export default SocialProofBadge;

@@ -224,7 +224,26 @@ serve(async (req) => {
 
           createdIds.programs.push(programId);
 
-          // Create sponsorship for some programs
+          // Seed 3-5 reviews per program with Hungarian content
+          const reviewCount = 3 + Math.floor(Math.random() * 3);
+          const REVIEW_COMMENTS = [
+            'Fantasztikus program! Nagyon sokat tanultam, köszönöm szépen!',
+            'Profi szakértő, minden kérdésre választ kaptam. Ajánlom mindenkinek!',
+            'Életem egyik legjobb döntése volt, hogy részt vettem. 5 csillag!',
+            'Gyakorlatias, hasznos, és remek közösség. Visszatérek!',
+            'Lenyűgöző tudás és lelkesedés. Nagyon inspiráló volt!',
+          ];
+          
+          for (let r = 0; r < reviewCount; r++) {
+            const reviewerId = randomPick(createdIds.members.length > 0 ? createdIds.members : [crypto.randomUUID()]);
+            await supabase.from('content_reviews').insert({
+              content_id: programId,
+              user_id: reviewerId,
+              rating: 4 + Math.round(Math.random()), // 4 or 5 stars
+              comment: REVIEW_COMMENTS[r % REVIEW_COMMENTS.length],
+              created_at: randomDateInPast(30)
+            });
+          }
           if (Math.random() > 0.4 && createdIds.sponsors.length > 0) {
             const sponsorId = randomPick(createdIds.sponsors);
             const contribution = Math.min(price, Math.floor(Math.random() * 15000) + 5000);
