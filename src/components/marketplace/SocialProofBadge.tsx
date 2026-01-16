@@ -41,26 +41,26 @@ export const SocialProofBadge = ({
     if (!seatsLeft) return null;
     if (seatsLeft <= 3) {
       return language === 'hu' 
-        ? `Már csak ${seatsLeft} hely!` 
+        ? `Már csak ${seatsLeft} szabad hely!` 
         : language === 'de' 
         ? `Nur noch ${seatsLeft} Plätze!` 
         : `Only ${seatsLeft} spots left!`;
     }
     if (seatsLeft <= 5) {
       return language === 'hu' 
-        ? `Még ${seatsLeft} hely` 
+        ? `Még ${seatsLeft} hely elérhető` 
         : language === 'de' 
-        ? `Noch ${seatsLeft} Plätze` 
+        ? `Noch ${seatsLeft} Plätze verfügbar` 
         : `${seatsLeft} spots remaining`;
     }
     return null;
   };
 
   const attendeeText = language === 'hu' 
-    ? `+${displayCount} már jelentkezett` 
+    ? `+${displayCount} fő már jelentkezett` 
     : language === 'de' 
-    ? `+${displayCount} angemeldet` 
-    : `+${displayCount} joined`;
+    ? `+${displayCount} Personen angemeldet` 
+    : `+${displayCount} people joined`;
 
   const scarcityText = getScarcityText();
   const isUrgent = seatsLeft && seatsLeft <= 3;
