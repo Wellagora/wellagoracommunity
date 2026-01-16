@@ -55,6 +55,7 @@ import SystemSettings from "@/components/superadmin/SystemSettings";
 import CreatorManager from "@/components/superadmin/CreatorManager";
 import ContentModerationPanel from "@/components/superadmin/ContentModerationPanel";
 import FinancialOverview from "@/components/superadmin/FinancialOverview";
+import TestDataManager from "@/components/superadmin/TestDataManager";
 import { CreateEventDialog } from "@/components/events/CreateEventDialog";
 
 type MenuItem = {
