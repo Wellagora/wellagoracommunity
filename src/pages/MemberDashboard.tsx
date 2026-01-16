@@ -12,6 +12,9 @@ import { KPICard } from "@/components/dashboard/KPICard";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { DashboardCard } from "@/components/dashboard/DashboardCard";
 import { useVouchers, VoucherStatus } from "@/hooks/useVouchers";
+import CommunityActivityFeed from "@/components/dashboard/CommunityActivityFeed";
+import ActiveNowStats from "@/components/dashboard/ActiveNowStats";
+import RegionalProgramsHighlight from "@/components/dashboard/RegionalProgramsHighlight";
 import { 
   Ticket, 
   BookOpen, 
@@ -109,6 +112,11 @@ const MemberDashboard = () => {
       backUrl="/"
     >
 
+      {/* Active Now Stats - Living Community Feel */}
+      <DashboardCard className="mb-6">
+        <ActiveNowStats />
+      </DashboardCard>
+
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <DashboardCard>
@@ -137,6 +145,16 @@ const MemberDashboard = () => {
             subtitle={t('member_dashboard.from_sponsor')}
             iconColor="text-black/60"
           />
+        </DashboardCard>
+      </div>
+
+      {/* Living Community Section - Activity Feed + Regional Focus */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+        <DashboardCard delay={0.25}>
+          <CommunityActivityFeed />
+        </DashboardCard>
+        <DashboardCard delay={0.3}>
+          <RegionalProgramsHighlight />
         </DashboardCard>
       </div>
 
