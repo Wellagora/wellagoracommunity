@@ -11,7 +11,6 @@ import FeaturedEventsGrid from "@/components/FeaturedEventsGrid";
 import RecommendedProgramsSlider from "@/components/RecommendedProgramsSlider";
 import CTABanner from "@/components/CTABanner";
 import { UpcomingEventsSection } from "@/components/events/UpcomingEventsSection";
-import { RegionalImpactGarden } from "@/components/RegionalImpactGarden";
 import { CommunityImpactCounter } from "@/components/CommunityImpactCounter";
 import Footer from "@/components/Footer";
 
@@ -84,10 +83,7 @@ const Index = () => {
             {/* 5. KÖZELGŐ ESEMÉNYEK - Timeline list */}
             <UpcomingEventsSection />
 
-            {/* 6. REGIONÁLIS HATÁSKERT */}
-            <RegionalImpactGarden />
-
-            {/* 7. COMMUNITY IMPACT - Avatar Stack + Notification Stream */}
+            {/* 6. COMMUNITY IMPACT - Avatar Stack + Notification Stream */}
             <CommunityImpactCounter />
           </main>
         </div>
