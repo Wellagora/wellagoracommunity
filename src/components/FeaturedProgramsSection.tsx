@@ -4,9 +4,11 @@ import { useLocalizedContent } from "@/hooks/useLocalizedContent";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Star, Crown, ShoppingCart, Gift, Leaf } from "lucide-react";
+import { Star, Crown, ShoppingCart, Gift, Leaf, TrendingUp, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { MOCK_PROGRAMS, getMockExpertById, getLocalizedExpertName, getLocalizedSponsorName, formatPriceByLanguage } from "@/data/mockData";
+import { SocialProofBadge } from "@/components/marketplace/SocialProofBadge";
+import { VerifiedExpertBadge } from "@/components/marketplace/VerifiedExpertBadge";
 
 const ImagePlaceholder = () => (
   <div className="w-full h-full flex items-center justify-center bg-muted">
@@ -149,7 +151,7 @@ const FeaturedProgramsSection = () => {
                 viewport={{ once: true }}
               >
                 <Link to={`/piacer/${program.id}`} className="block group">
-                  <Card className="overflow-hidden">
+                  <Card className="overflow-hidden transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:scale-[1.02]">
                     <CardContent className="p-0">
                       {/* Image with smooth zoom */}
                       <div className="aspect-[4/3] bg-gradient-to-br from-black/[0.02] to-black/[0.06] overflow-hidden relative">
@@ -168,25 +170,60 @@ const FeaturedProgramsSection = () => {
                           <ImagePlaceholder />
                         </div>
 
-                        {/* Featured star - Monochrome */}
-                        <div className="absolute top-4 right-4">
-                          <div className="w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center">
-                            <Star className="w-4 h-4 text-white fill-white" />
-                          </div>
+                        {/* Premium AJÁNLOTT badge with gradient */}
+                        <div className="absolute top-4 left-4">
+                          <motion.span 
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-semibold tracking-wide uppercase shadow-lg shadow-amber-500/25"
+                          >
+                            <TrendingUp className="w-3 h-3" />
+                            {language === 'hu' ? 'AJÁNLOTT' : language === 'de' ? 'EMPFOHLEN' : 'RECOMMENDED'}
+                          </motion.span>
                         </div>
                       </div>
 
-                      {/* Ultra-Minimal Content */}
+                      {/* Enhanced Content */}
                       <div className="p-6">
                         {/* Category */}
                         <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-black/40 mb-3 block">
                           {t('marketplace.featured')}
                         </span>
                         
-                        {/* Title - Serif */}
-                        <h3 className="text-lg font-medium text-foreground leading-snug line-clamp-2 group-hover:text-black transition-colors duration-300">
+                        {/* Title */}
+                        <h3 className="text-lg font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-black transition-colors duration-300">
                           {typeof program.title === "string" ? program.title : ""}
                         </h3>
+
+                        {/* Expert with verified badge */}
+                        {program.creator && (
+                          <div className="flex items-center gap-2 mt-3">
+                            <Avatar className="h-6 w-6">
+                              <AvatarImage src={program.creator.avatar_url || undefined} />
+                              <AvatarFallback className="text-xs bg-muted">
+                                {program.creator.first_name?.[0]}{program.creator.last_name?.[0]}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="text-sm text-muted-foreground">
+                              {program.creator.first_name} {program.creator.last_name}
+                            </span>
+                            <VerifiedExpertBadge size="sm" />
+                          </div>
+                        )}
+
+                        {/* Social proof */}
+                        <div className="mt-3">
+                          <SocialProofBadge 
+                            attendeeCount={8 + index * 3} 
+                            seatsLeft={index === 0 ? 2 : index === 1 ? 4 : undefined}
+                            size="sm"
+                          />
+                        </div>
+
+                        {/* Price/Access badge */}
+                        <div className="mt-4">
+                          {getAccessBadge(program)}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>

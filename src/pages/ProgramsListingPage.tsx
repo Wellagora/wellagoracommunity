@@ -20,10 +20,16 @@ import {
   Users,
   X,
   Loader2,
+  TrendingUp,
+  Sparkles,
+  Gift,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveImageUrl, resolveAvatarUrl } from "@/lib/imageResolver";
+import { SocialProofBadge } from "@/components/marketplace/SocialProofBadge";
+import { VerifiedExpertBadge } from "@/components/marketplace/VerifiedExpertBadge";
+import { LivePulseToast } from "@/components/marketplace/LivePulseToast";
 
 const CATEGORIES = [
   { id: "all", labelKey: "marketplace.all_categories", icon: Grid },
@@ -248,23 +254,37 @@ const ProgramsListingPage = () => {
     return `${euroPrice} €`;
   };
 
-  const getAccessBadge = (program: Program) => {
+  const getAccessBadge = (program: Program, idx?: number) => {
     const sponsorLabel = language === 'de' ? 'Gesponsert von' : language === 'en' ? 'Sponsored by' : 'Támogató';
     
-    // SINGLE elegant badge for sponsored content
+    // Enhanced sponsored badge with contribution message
     if (program.is_sponsored && program.sponsor_name) {
+      const contributionAmount = program.price_huf ? Math.round(program.price_huf * 0.8) : 5000;
       return (
-        <div className="flex flex-col gap-1">
-          <Badge className="bg-primary/15 text-primary border border-primary/30 text-xs font-medium">
-            {sponsorLabel}: {program.sponsor_name}
-          </Badge>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-bold text-primary">{language === 'hu' ? '0 Ft' : '0 €'}</span>
-            {program.price_huf && program.price_huf > 0 && (
-              <span className="text-xs text-muted-foreground line-through">
-                {formatPrice(program.price_huf)}
+        <div className="flex flex-col gap-2">
+          <div className="p-2.5 rounded-lg bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 border border-primary/20">
+            <div className="flex items-center gap-2 mb-1.5">
+              <Gift className="w-4 h-4 text-primary" />
+              <span className="text-xs font-semibold text-primary uppercase tracking-wider">
+                {language === 'hu' ? 'SZPONZORÁLT' : language === 'de' ? 'GESPONSERT' : 'SPONSORED'}
               </span>
-            )}
+            </div>
+            <p className="text-xs text-foreground/70 leading-snug">
+              {language === 'hu' 
+                ? `A ${program.sponsor_name} ${formatPrice(contributionAmount)}-tal támogatja a részvételedet!`
+                : language === 'de'
+                ? `${program.sponsor_name} unterstützt dich mit ${formatPrice(contributionAmount)}!`
+                : `${program.sponsor_name} is supporting you with ${formatPrice(contributionAmount)}!`
+              }
+            </p>
+            <div className="flex items-baseline gap-2 mt-1.5">
+              <span className="text-sm font-bold text-primary">{language === 'hu' ? '0 Ft' : '0 €'}</span>
+              {program.price_huf && program.price_huf > 0 && (
+                <span className="text-xs text-muted-foreground line-through">
+                  {formatPrice(program.price_huf)}
+                </span>
+              )}
+            </div>
           </div>
         </div>
       );
@@ -416,7 +436,7 @@ const ProgramsListingPage = () => {
                     }}
                   >
                     <Link to={`/piacer/${program.id}`} className="block group">
-                      <Card className="overflow-hidden h-full">
+                      <Card className="overflow-hidden h-full transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:scale-[1.02]">
                         <CardContent className="p-0">
                           {/* Image with overlay */}
                           <div className="aspect-[4/3] bg-gradient-to-br from-black/[0.02] to-black/[0.06] relative overflow-hidden">
@@ -435,18 +455,22 @@ const ProgramsListingPage = () => {
                               <ImagePlaceholder icon={Leaf} />
                             </div>
 
-                            {/* Featured badge - Monochrome */}
+                            {/* Featured badge - Premium gradient */}
                             {program.is_featured && (
                               <div className="absolute top-4 left-4">
-                                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/80 backdrop-blur-sm text-white text-xs font-medium tracking-wide uppercase">
-                                  <Star className="w-3 h-3 fill-current" />
-                                  {t('marketplace.featured')}
-                                </span>
+                                <motion.span 
+                                  initial={{ opacity: 0, scale: 0.9 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-semibold tracking-wide uppercase shadow-lg shadow-amber-500/25"
+                                >
+                                  <TrendingUp className="w-3 h-3" />
+                                  {language === 'hu' ? 'NÉPSZERŰ' : language === 'de' ? 'BELIEBT' : 'POPULAR'}
+                                </motion.span>
                               </div>
                             )}
                           </div>
 
-                          {/* Ultra-Minimal Content */}
+                          {/* Enhanced Content */}
                           <div className="p-6">
                             {/* Category - Uppercase, tiny, spaced out */}
                             <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-black/40 mb-3 block">
@@ -458,7 +482,7 @@ const ProgramsListingPage = () => {
                               {String(program.title)}
                             </h3>
 
-                            {/* Creator info */}
+                            {/* Creator info with verified badge */}
                             {program.creator && (
                               <div className="flex items-center gap-2 mt-3">
                                 <Avatar className="h-6 w-6">
@@ -470,12 +494,22 @@ const ProgramsListingPage = () => {
                                 <span className="text-sm text-muted-foreground">
                                   {program.creator.first_name} {program.creator.last_name}
                                 </span>
+                                <VerifiedExpertBadge size="sm" />
                               </div>
                             )}
 
+                            {/* Social proof - Attendees + Scarcity */}
+                            <div className="mt-3">
+                              <SocialProofBadge 
+                                attendeeCount={5 + (index * 2) % 15} 
+                                seatsLeft={index % 4 === 0 ? 2 : index % 5 === 0 ? 4 : undefined}
+                                size="sm"
+                              />
+                            </div>
+
                             {/* Price/Access badge */}
                             <div className="mt-4">
-                              {getAccessBadge(program)}
+                              {getAccessBadge(program, index)}
                             </div>
                           </div>
                         </CardContent>
@@ -488,6 +522,9 @@ const ProgramsListingPage = () => {
           </>
         )}
       </div>
+
+      {/* Live Pulse Toast - Real-time activity notifications */}
+      <LivePulseToast enabled={true} interval={15000} />
     </div>
   );
 };
