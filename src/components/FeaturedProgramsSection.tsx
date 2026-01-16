@@ -184,7 +184,7 @@ const FeaturedProgramsSection = () => {
                         </span>
                         
                         {/* Title - Serif */}
-                        <h3 className="font-serif text-xl font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-black transition-colors duration-300">
+                        <h3 className="text-lg font-medium text-foreground leading-snug line-clamp-2 group-hover:text-black transition-colors duration-300">
                           {typeof program.title === "string" ? program.title : ""}
                         </h3>
                       </div>

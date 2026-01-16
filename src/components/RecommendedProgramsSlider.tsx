@@ -191,7 +191,7 @@ const RecommendedProgramsSlider = () => {
                       </span>
                       
                       {/* Title - Serif */}
-                      <h3 className="font-serif text-lg font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-black transition-colors duration-300">
+                      <h3 className="text-lg font-medium text-foreground leading-snug line-clamp-2 group-hover:text-black transition-colors duration-300">
                         {program.title}
                       </h3>
                     </CardContent>
