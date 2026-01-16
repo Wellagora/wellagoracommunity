@@ -12,7 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Settings, Package, Info, Pencil } from "lucide-react";
+import { Settings, Package, Info, Pencil, Beaker } from "lucide-react";
+import TestDataManager from "./TestDataManager";
 
 interface Project {
   id: string;
@@ -179,7 +180,7 @@ const SystemSettings = () => {
       </div>
 
       <Tabs defaultValue="general" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="general">
             <Settings className="w-4 h-4 mr-2" />
             Általános
@@ -187,6 +188,10 @@ const SystemSettings = () => {
           <TabsTrigger value="subscriptions">
             <Package className="w-4 h-4 mr-2" />
             Előfizetési csomagok
+          </TabsTrigger>
+          <TabsTrigger value="testing">
+            <Beaker className="w-4 h-4 mr-2" />
+            E2E Teszt
           </TabsTrigger>
           <TabsTrigger value="system">
             <Info className="w-4 h-4 mr-2" />
@@ -325,6 +330,10 @@ const SystemSettings = () => {
               </Table>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="testing" className="space-y-4">
+          <TestDataManager />
         </TabsContent>
 
         <TabsContent value="system" className="space-y-4">
