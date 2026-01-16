@@ -3116,55 +3116,183 @@ export type Database = {
         }
         Relationships: []
       }
+      voucher_settlements: {
+        Row: {
+          cancellation_date: string | null
+          content_id: string | null
+          created_at: string | null
+          days_before_event: number | null
+          event_date: string | null
+          expert_id: string | null
+          expert_payout: number
+          id: string
+          notes: string | null
+          original_price: number
+          platform_fee: number
+          processed_at: string | null
+          settlement_status: string | null
+          settlement_type: string
+          sponsor_contribution: number | null
+          sponsor_credit_action: string | null
+          sponsor_id: string | null
+          user_id: string
+          user_payment: number | null
+          user_refund: number | null
+          voucher_id: string
+        }
+        Insert: {
+          cancellation_date?: string | null
+          content_id?: string | null
+          created_at?: string | null
+          days_before_event?: number | null
+          event_date?: string | null
+          expert_id?: string | null
+          expert_payout?: number
+          id?: string
+          notes?: string | null
+          original_price?: number
+          platform_fee?: number
+          processed_at?: string | null
+          settlement_status?: string | null
+          settlement_type: string
+          sponsor_contribution?: number | null
+          sponsor_credit_action?: string | null
+          sponsor_id?: string | null
+          user_id: string
+          user_payment?: number | null
+          user_refund?: number | null
+          voucher_id: string
+        }
+        Update: {
+          cancellation_date?: string | null
+          content_id?: string | null
+          created_at?: string | null
+          days_before_event?: number | null
+          event_date?: string | null
+          expert_id?: string | null
+          expert_payout?: number
+          id?: string
+          notes?: string | null
+          original_price?: number
+          platform_fee?: number
+          processed_at?: string | null
+          settlement_status?: string | null
+          settlement_type?: string
+          sponsor_contribution?: number | null
+          sponsor_credit_action?: string | null
+          sponsor_id?: string | null
+          user_id?: string
+          user_payment?: number | null
+          user_refund?: number | null
+          voucher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voucher_settlements_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "voucher_settlements_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "voucher_settlements_sponsor_id_fkey"
+            columns: ["sponsor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "voucher_settlements_voucher_id_fkey"
+            columns: ["voucher_id"]
+            isOneToOne: false
+            referencedRelation: "vouchers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vouchers: {
         Row: {
           cancellation_date: string | null
+          cancellation_type: string | null
+          cancelled_at: string | null
+          cancelled_by: string | null
           code: string
           content_id: string
           created_at: string | null
           credit_status: string | null
+          event_date: string | null
+          expert_payout_status: string | null
           expires_at: string | null
+          financial_notes: string | null
           id: string
           is_no_show: boolean | null
           no_show_at: string | null
+          payout_amount: number | null
           pickup_location: string | null
           redeemed_at: string | null
           redeemed_by: string | null
+          refund_amount: number | null
           sponsor_credit_deducted: number | null
+          sponsor_credit_status: string | null
           status: string | null
           user_id: string
         }
         Insert: {
           cancellation_date?: string | null
+          cancellation_type?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
           code: string
           content_id: string
           created_at?: string | null
           credit_status?: string | null
+          event_date?: string | null
+          expert_payout_status?: string | null
           expires_at?: string | null
+          financial_notes?: string | null
           id?: string
           is_no_show?: boolean | null
           no_show_at?: string | null
+          payout_amount?: number | null
           pickup_location?: string | null
           redeemed_at?: string | null
           redeemed_by?: string | null
+          refund_amount?: number | null
           sponsor_credit_deducted?: number | null
+          sponsor_credit_status?: string | null
           status?: string | null
           user_id: string
         }
         Update: {
           cancellation_date?: string | null
+          cancellation_type?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
           code?: string
           content_id?: string
           created_at?: string | null
           credit_status?: string | null
+          event_date?: string | null
+          expert_payout_status?: string | null
           expires_at?: string | null
+          financial_notes?: string | null
           id?: string
           is_no_show?: boolean | null
           no_show_at?: string | null
+          payout_amount?: number | null
           pickup_location?: string | null
           redeemed_at?: string | null
           redeemed_by?: string | null
+          refund_amount?: number | null
           sponsor_credit_deducted?: number | null
+          sponsor_credit_status?: string | null
           status?: string | null
           user_id?: string
         }
@@ -3695,6 +3823,7 @@ export type Database = {
         Returns: boolean
       }
       longtransactionsenabled: { Args: never; Returns: boolean }
+      mark_voucher_noshow: { Args: { p_voucher_code: string }; Returns: Json }
       populate_geometry_columns:
         | { Args: { tbl_oid: unknown; use_typmod?: boolean }; Returns: number }
         | { Args: { use_typmod?: boolean }; Returns: string }
@@ -3741,6 +3870,18 @@ export type Database = {
           p_new_credits: number
           p_package_type?: string
           p_sponsor_user_id: string
+        }
+        Returns: Json
+      }
+      process_early_cancellation: {
+        Args: { p_processed_by?: string; p_voucher_id: string }
+        Returns: Json
+      }
+      process_noshow_or_late_cancellation: {
+        Args: {
+          p_cancellation_type: string
+          p_processed_by?: string
+          p_voucher_id: string
         }
         Returns: Json
       }
