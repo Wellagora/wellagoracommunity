@@ -63,6 +63,10 @@ export interface MockProgram {
   is_sponsored: boolean;
   created_at: string;
   tools_needed?: string | null;
+  // NEW: Content type for quota logic
+  content_type: 'recorded' | 'online_live' | 'in_person';
+  max_capacity?: number; // Physical capacity for in_person events
+  max_sponsored_seats?: number; // Sponsored quota for all types
   [key: string]: unknown;
 }
 
@@ -218,7 +222,7 @@ export const MOCK_EXPERTS: MockExpert[] = [
 ];
 
 export const MOCK_PROGRAMS: MockProgram[] = [
-  // Expert 1's programs
+  // Expert 1's programs - IN-PERSON workshops
   {
     id: 'mock-program-1',
     title: 'Kemenceépítés alapjai',
@@ -241,7 +245,10 @@ export const MOCK_PROGRAMS: MockProgram[] = [
     sponsor_name_de: 'Balaton Region Stiftung',
     sponsor_logo_url: null,
     is_sponsored: true,
-    created_at: '2024-06-01T10:00:00Z'
+    created_at: '2024-06-01T10:00:00Z',
+    content_type: 'in_person',
+    max_capacity: 12,
+    max_sponsored_seats: 8
   },
   {
     id: 'mock-program-2',
@@ -265,9 +272,11 @@ export const MOCK_PROGRAMS: MockProgram[] = [
     sponsor_name_de: 'Programm für lokale Werte',
     sponsor_logo_url: null,
     is_sponsored: true,
-    created_at: '2024-06-10T10:00:00Z'
+    created_at: '2024-06-10T10:00:00Z',
+    content_type: 'recorded',
+    max_sponsored_seats: 50
   },
-  // Expert 2's programs
+  // Expert 2's programs - ONLINE LIVE sessions
   {
     id: 'mock-program-3',
     title: 'Gyógynövénygyűjtés túra',
@@ -290,7 +299,10 @@ export const MOCK_PROGRAMS: MockProgram[] = [
     sponsor_name_de: 'Verein für grüne Zukunft',
     sponsor_logo_url: null,
     is_sponsored: true,
-    created_at: '2024-06-15T10:00:00Z'
+    created_at: '2024-06-15T10:00:00Z',
+    content_type: 'in_person',
+    max_capacity: 15,
+    max_sponsored_seats: 10
   },
   {
     id: 'mock-program-4',
@@ -314,9 +326,12 @@ export const MOCK_PROGRAMS: MockProgram[] = [
     sponsor_name_de: null,
     sponsor_logo_url: null,
     is_sponsored: false,
-    created_at: '2024-06-20T10:00:00Z'
+    created_at: '2024-06-20T10:00:00Z',
+    content_type: 'online_live',
+    max_capacity: 100,
+    max_sponsored_seats: 20
   },
-  // Expert 3's programs
+  // Expert 3's programs - IN-PERSON experiences
   {
     id: 'mock-program-5',
     title: 'Borkóstoló és pincetúra',
@@ -339,7 +354,10 @@ export const MOCK_PROGRAMS: MockProgram[] = [
     sponsor_name_de: 'Weinstraße des Balaton-Hochlands',
     sponsor_logo_url: null,
     is_sponsored: true,
-    created_at: '2024-06-25T10:00:00Z'
+    created_at: '2024-06-25T10:00:00Z',
+    content_type: 'in_person',
+    max_capacity: 20,
+    max_sponsored_seats: 12
   },
   {
     id: 'mock-program-6',
@@ -363,9 +381,12 @@ export const MOCK_PROGRAMS: MockProgram[] = [
     sponsor_name_de: null,
     sponsor_logo_url: null,
     is_sponsored: false,
-    created_at: '2024-07-01T10:00:00Z'
+    created_at: '2024-07-01T10:00:00Z',
+    content_type: 'in_person',
+    max_capacity: 30,
+    max_sponsored_seats: 0
   },
-  // Expert 4's programs
+  // Expert 4's programs - IN-PERSON crafts
   {
     id: 'mock-program-7',
     title: 'Kosárfonás kezdőknek',
@@ -388,7 +409,10 @@ export const MOCK_PROGRAMS: MockProgram[] = [
     sponsor_name_de: null,
     sponsor_logo_url: null,
     is_sponsored: false,
-    created_at: '2024-07-05T10:00:00Z'
+    created_at: '2024-07-05T10:00:00Z',
+    content_type: 'in_person',
+    max_capacity: 10,
+    max_sponsored_seats: 0
   },
   {
     id: 'mock-program-8',
@@ -412,9 +436,12 @@ export const MOCK_PROGRAMS: MockProgram[] = [
     sponsor_name_de: null,
     sponsor_logo_url: null,
     is_sponsored: false,
-    created_at: '2024-07-10T10:00:00Z'
+    created_at: '2024-07-10T10:00:00Z',
+    content_type: 'online_live',
+    max_capacity: 50,
+    max_sponsored_seats: 0
   },
-  // Expert 5's programs
+  // Expert 5's programs - RECORDED content
   {
     id: 'mock-program-9',
     title: 'Méhészkedés alapjai',
@@ -437,7 +464,9 @@ export const MOCK_PROGRAMS: MockProgram[] = [
     sponsor_name_de: null,
     sponsor_logo_url: null,
     is_sponsored: false,
-    created_at: '2024-07-15T10:00:00Z'
+    created_at: '2024-07-15T10:00:00Z',
+    content_type: 'recorded',
+    max_sponsored_seats: 0
   },
   {
     id: 'mock-program-10',
@@ -461,9 +490,12 @@ export const MOCK_PROGRAMS: MockProgram[] = [
     sponsor_name_de: null,
     sponsor_logo_url: null,
     is_sponsored: false,
-    created_at: '2024-07-20T10:00:00Z'
+    created_at: '2024-07-20T10:00:00Z',
+    content_type: 'in_person',
+    max_capacity: 8,
+    max_sponsored_seats: 0
   },
-  // Expert 6's programs - Chef Molnár Balázs
+  // Expert 6's programs - Chef Molnár Balázs - ONLINE LIVE cooking
   {
     id: 'mock-program-11',
     title: 'Közösségi Főzőtanfolyam',
@@ -486,7 +518,10 @@ export const MOCK_PROGRAMS: MockProgram[] = [
     sponsor_name_de: 'Káli Pension',
     sponsor_logo_url: null,
     is_sponsored: true,
-    created_at: '2024-08-01T10:00:00Z'
+    created_at: '2024-08-01T10:00:00Z',
+    content_type: 'online_live',
+    max_capacity: 200,
+    max_sponsored_seats: 50
   },
   {
     id: 'mock-program-12',
@@ -510,7 +545,10 @@ export const MOCK_PROGRAMS: MockProgram[] = [
     sponsor_name_de: null,
     sponsor_logo_url: null,
     is_sponsored: false,
-    created_at: '2024-08-05T10:00:00Z'
+    created_at: '2024-08-05T10:00:00Z',
+    content_type: 'in_person',
+    max_capacity: 16,
+    max_sponsored_seats: 0
   }
 ];
 
