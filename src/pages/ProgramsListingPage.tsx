@@ -30,6 +30,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { resolveImageUrl, resolveAvatarUrl } from "@/lib/imageResolver";
 import { SocialProofBadge } from "@/components/marketplace/SocialProofBadge";
 import { VerifiedExpertBadge } from "@/components/marketplace/VerifiedExpertBadge";
+import { SponsorContributionBadge } from "@/components/marketplace/SponsorContributionBadge";
 import { LivePulseToast } from "@/components/marketplace/LivePulseToast";
 
 const CATEGORIES = [
@@ -254,38 +255,23 @@ const ProgramsListingPage = () => {
   };
 
   const getAccessBadge = (program: Program, idx?: number) => {
-    const sponsorLabel = language === 'de' ? 'Gesponsert von' : language === 'en' ? 'Sponsored by' : 'Támogató';
-    
-    // Enhanced sponsored badge with contribution message
+    // Enhanced sponsored badge with contribution badge component
     if (program.is_sponsored && program.sponsor_name) {
       const contributionAmount = program.price_huf ? Math.round(program.price_huf * 0.8) : 5000;
+      const maxSeats = 10;
+      const usedSeats = Math.floor(Math.random() * 8) + 2; // Simulated 2-10 seats used
+      const seatsExhausted = usedSeats >= maxSeats;
+      
       return (
-        <div className="flex flex-col gap-2">
-          <div className="p-2.5 rounded-lg bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 border border-primary/20">
-            <div className="flex items-center gap-2 mb-1.5">
-              <Gift className="w-4 h-4 text-primary" />
-              <span className="text-xs font-semibold text-primary uppercase tracking-wider">
-                {language === 'hu' ? 'SZPONZORÁLT' : language === 'de' ? 'GESPONSERT' : 'SPONSORED'}
-              </span>
-            </div>
-            <p className="text-xs text-foreground/70 leading-snug">
-              {language === 'hu' 
-                ? `A ${program.sponsor_name} ${formatPrice(contributionAmount)}-tal támogatja a részvételedet!`
-                : language === 'de'
-                ? `${program.sponsor_name} unterstützt dich mit ${formatPrice(contributionAmount)}!`
-                : `${program.sponsor_name} is supporting you with ${formatPrice(contributionAmount)}!`
-              }
-            </p>
-            <div className="flex items-baseline gap-2 mt-1.5">
-              <span className="text-sm font-bold text-primary">{language === 'hu' ? '0 Ft' : '0 €'}</span>
-              {program.price_huf && program.price_huf > 0 && (
-                <span className="text-xs text-muted-foreground line-through">
-                  {formatPrice(program.price_huf)}
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
+        <SponsorContributionBadge
+          sponsorName={program.sponsor_name}
+          contributionAmount={contributionAmount}
+          originalPrice={program.price_huf || 0}
+          size="sm"
+          maxSeats={maxSeats}
+          usedSeats={usedSeats}
+          showImpactMode={seatsExhausted}
+        />
       );
     }
 

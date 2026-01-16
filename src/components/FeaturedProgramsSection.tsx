@@ -9,6 +9,23 @@ import { motion } from "framer-motion";
 import { MOCK_PROGRAMS, getMockExpertById, getLocalizedExpertName, getLocalizedSponsorName, formatPriceByLanguage } from "@/data/mockData";
 import { SocialProofBadge } from "@/components/marketplace/SocialProofBadge";
 import { VerifiedExpertBadge } from "@/components/marketplace/VerifiedExpertBadge";
+import { SponsorContributionBadge } from "@/components/marketplace/SponsorContributionBadge";
+
+// Category translations for Hungarian
+const CATEGORY_LABELS: Record<string, { hu: string; en: string; de: string }> = {
+  workshop: { hu: 'MŰHELY', en: 'WORKSHOP', de: 'WORKSHOP' },
+  gastronomy: { hu: 'GASZTRONÓMIA', en: 'GASTRONOMY', de: 'GASTRONOMIE' },
+  wellness: { hu: 'WELLNESS', en: 'WELLNESS', de: 'WELLNESS' },
+  sustainability: { hu: 'FENNTARTHATÓSÁG', en: 'SUSTAINABILITY', de: 'NACHHALTIGKEIT' },
+  community: { hu: 'KÖZÖSSÉG', en: 'COMMUNITY', de: 'GEMEINSCHAFT' },
+  crafts: { hu: 'KÉZMŰVESSÉG', en: 'CRAFTS', de: 'KUNSTHANDWERK' },
+};
+
+const getCategoryLabel = (category: string, language: string): string => {
+  const labels = CATEGORY_LABELS[category];
+  if (!labels) return category.toUpperCase();
+  return labels[language as keyof typeof labels] || labels.hu;
+};
 
 const ImagePlaceholder = () => (
   <div className="w-full h-full flex items-center justify-center bg-muted">
@@ -30,6 +47,11 @@ const FeaturedProgramsSection = () => {
       const localizedCreatorName = creator ? getLocalizedExpertName(creator, language) : null;
       const localizedSponsorName = getLocalizedSponsorName(mp, language);
 
+      // Calculate sponsorship details
+      const sponsorContribution = mp.is_sponsored ? Math.round(mp.price_huf * 0.8) : 0; // 80% sponsor contribution
+      const maxSeats = mp.is_sponsored ? 10 : 0;
+      const usedSeats = mp.is_sponsored ? Math.floor(Math.random() * 8) + 2 : 0; // 2-10 seats used
+
       return {
         id: mp.id,
         title: getLocalizedField(mp as unknown as Record<string, unknown>, "title"),
@@ -39,6 +61,10 @@ const FeaturedProgramsSection = () => {
         price_huf: mp.price_huf,
         is_sponsored: mp.is_sponsored,
         sponsor_name: localizedSponsorName,
+        sponsor_contribution: sponsorContribution,
+        max_seats: maxSeats,
+        used_seats: usedSeats,
+        category: mp.category,
         creator: creator && localizedCreatorName
           ? {
               id: creator.id,
@@ -56,26 +82,26 @@ const FeaturedProgramsSection = () => {
     is_sponsored?: boolean;
     sponsor_name?: string | null;
     price_huf?: number | null;
+    sponsor_contribution?: number;
+    max_seats?: number;
+    used_seats?: number;
   }) => {
     const priceInfo = formatPriceByLanguage(program.price_huf || 0, language);
-    const sponsorLabel = language === 'de' ? 'Gesponsert von' : language === 'en' ? 'Sponsored by' : 'Támogató';
+    const remainingSeats = (program.max_seats || 0) - (program.used_seats || 0);
+    const seatsExhausted = remainingSeats <= 0;
     
-    // SINGLE elegant badge for sponsored content
+    // ALWAYS show sponsor contribution badge if sponsored (regardless of seat availability)
     if (program.is_sponsored && program.sponsor_name) {
       return (
-        <div className="flex flex-col gap-1">
-          <Badge className="bg-primary/15 text-primary border border-primary/30 text-xs font-medium">
-            {sponsorLabel}: {program.sponsor_name}
-          </Badge>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-bold text-primary">{language === 'hu' ? '0 Ft' : '0 €'}</span>
-            {program.price_huf && program.price_huf > 0 && (
-              <span className="text-xs text-muted-foreground line-through">
-                {priceInfo.originalPrice}
-              </span>
-            )}
-          </div>
-        </div>
+        <SponsorContributionBadge
+          sponsorName={program.sponsor_name}
+          contributionAmount={program.sponsor_contribution || Math.round((program.price_huf || 0) * 0.8)}
+          originalPrice={program.price_huf || 0}
+          size="sm"
+          maxSeats={program.max_seats || 10}
+          usedSeats={program.used_seats || 0}
+          showImpactMode={seatsExhausted}
+        />
       );
     }
 
@@ -95,7 +121,8 @@ const FeaturedProgramsSection = () => {
       case "premium":
         return (
           <Badge className="bg-amber-500/20 text-amber-600 border-amber-500/30 text-xs">
-            <Crown className="w-3 h-3 mr-1" />Premium
+            <Crown className="w-3 h-3 mr-1" />
+            {language === 'hu' ? 'PRÉMIUM' : 'Premium'}
           </Badge>
         );
       case "one_time_purchase":
@@ -170,7 +197,7 @@ const FeaturedProgramsSection = () => {
                           <ImagePlaceholder />
                         </div>
 
-                        {/* Premium AJÁNLOTT badge with gradient */}
+                        {/* Premium KIEMELT badge with gradient */}
                         <div className="absolute top-4 left-4">
                           <motion.span 
                             initial={{ opacity: 0, scale: 0.9 }}
@@ -178,16 +205,16 @@ const FeaturedProgramsSection = () => {
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-semibold tracking-wide uppercase shadow-lg shadow-amber-500/25"
                           >
                             <TrendingUp className="w-3 h-3" />
-                            {language === 'hu' ? 'AJÁNLOTT' : language === 'de' ? 'EMPFOHLEN' : 'RECOMMENDED'}
+                            {language === 'hu' ? 'KIEMELT' : language === 'de' ? 'EMPFOHLEN' : 'FEATURED'}
                           </motion.span>
                         </div>
                       </div>
 
                       {/* Enhanced Content */}
                       <div className="p-6">
-                        {/* Category */}
+                        {/* Category - Use actual program category */}
                         <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-black/40 mb-3 block">
-                          {t('marketplace.featured')}
+                          {getCategoryLabel(program.category || 'workshop', language)}
                         </span>
                         
                         {/* Title */}
