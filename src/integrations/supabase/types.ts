@@ -788,10 +788,12 @@ export type Database = {
           discount_value: string | null
           id: string
           is_active: boolean | null
+          is_category_sponsorship: boolean | null
           is_chain_partner: boolean | null
           redemption_location: string | null
           sponsor_id: string
           sponsorship_benefit: string | null
+          supported_category: string | null
           total_licenses: number
           used_licenses: number | null
         }
@@ -803,10 +805,12 @@ export type Database = {
           discount_value?: string | null
           id?: string
           is_active?: boolean | null
+          is_category_sponsorship?: boolean | null
           is_chain_partner?: boolean | null
           redemption_location?: string | null
           sponsor_id: string
           sponsorship_benefit?: string | null
+          supported_category?: string | null
           total_licenses?: number
           used_licenses?: number | null
         }
@@ -818,10 +822,12 @@ export type Database = {
           discount_value?: string | null
           id?: string
           is_active?: boolean | null
+          is_category_sponsorship?: boolean | null
           is_chain_partner?: boolean | null
           redemption_location?: string | null
           sponsor_id?: string
           sponsorship_benefit?: string | null
+          supported_category?: string | null
           total_licenses?: number
           used_licenses?: number | null
         }
@@ -870,6 +876,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      credit_package_history: {
+        Row: {
+          action: string
+          created_at: string | null
+          id: string
+          initial_credits: number
+          package_type: string
+          processed_at: string | null
+          remaining_credits: number
+          rollover_credits: number | null
+          sponsor_user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          id?: string
+          initial_credits: number
+          package_type: string
+          processed_at?: string | null
+          remaining_credits: number
+          rollover_credits?: number | null
+          sponsor_user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          id?: string
+          initial_credits?: number
+          package_type?: string
+          processed_at?: string | null
+          remaining_credits?: number
+          rollover_credits?: number | null
+          sponsor_user_id?: string
+        }
+        Relationships: []
       }
       credit_packages: {
         Row: {
@@ -2478,14 +2520,50 @@ export type Database = {
           },
         ]
       }
+      sponsor_alerts: {
+        Row: {
+          alert_type: string
+          email_sent_to: string | null
+          id: string
+          metadata: Json | null
+          sent_at: string | null
+          sponsor_user_id: string
+        }
+        Insert: {
+          alert_type: string
+          email_sent_to?: string | null
+          id?: string
+          metadata?: Json | null
+          sent_at?: string | null
+          sponsor_user_id: string
+        }
+        Update: {
+          alert_type?: string
+          email_sent_to?: string | null
+          id?: string
+          metadata?: Json | null
+          sent_at?: string | null
+          sponsor_user_id?: string
+        }
+        Relationships: []
+      }
       sponsor_credits: {
         Row: {
           available_credits: number | null
           created_at: string | null
           credits_never_expire: boolean | null
           id: string
+          initial_credits: number | null
+          is_renewed: boolean | null
+          low_balance_alert_sent: boolean | null
           organization_id: string | null
+          package_end_date: string | null
+          package_start_date: string | null
+          previous_package_rollover: number | null
           sponsor_user_id: string
+          sponsored_category: string | null
+          sponsored_expert_id: string | null
+          sponsorship_type: string | null
           subscription_id: string | null
           total_credits: number
           updated_at: string | null
@@ -2496,8 +2574,17 @@ export type Database = {
           created_at?: string | null
           credits_never_expire?: boolean | null
           id?: string
+          initial_credits?: number | null
+          is_renewed?: boolean | null
+          low_balance_alert_sent?: boolean | null
           organization_id?: string | null
+          package_end_date?: string | null
+          package_start_date?: string | null
+          previous_package_rollover?: number | null
           sponsor_user_id: string
+          sponsored_category?: string | null
+          sponsored_expert_id?: string | null
+          sponsorship_type?: string | null
           subscription_id?: string | null
           total_credits?: number
           updated_at?: string | null
@@ -2508,8 +2595,17 @@ export type Database = {
           created_at?: string | null
           credits_never_expire?: boolean | null
           id?: string
+          initial_credits?: number | null
+          is_renewed?: boolean | null
+          low_balance_alert_sent?: boolean | null
           organization_id?: string | null
+          package_end_date?: string | null
+          package_start_date?: string | null
+          previous_package_rollover?: number | null
           sponsor_user_id?: string
+          sponsored_category?: string | null
+          sponsored_expert_id?: string | null
+          sponsorship_type?: string | null
           subscription_id?: string | null
           total_credits?: number
           updated_at?: string | null
@@ -2521,6 +2617,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sponsor_credits_sponsored_expert_id_fkey"
+            columns: ["sponsored_expert_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {
@@ -3632,6 +3735,15 @@ export type Database = {
       }
       postgis_version: { Args: never; Returns: string }
       postgis_wagyu_version: { Args: never; Returns: string }
+      process_credit_expiry: { Args: never; Returns: number }
+      process_credit_renewal: {
+        Args: {
+          p_new_credits: number
+          p_package_type?: string
+          p_sponsor_user_id: string
+        }
+        Returns: Json
+      }
       st_3dclosestpoint: {
         Args: { geom1: unknown; geom2: unknown }
         Returns: unknown
