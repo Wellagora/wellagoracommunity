@@ -28,7 +28,7 @@ const STORY_CARD_CONFIG: Array<{
     roleKey: 'community_pulse.story_active_role',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100',
     icon: Users,
-    borderColor: 'border-l-slate-900',
+    borderColor: 'border-l-black/20',
   },
   {
     id: 'experiences',
@@ -38,7 +38,7 @@ const STORY_CARD_CONFIG: Array<{
     roleKey: 'community_pulse.story_experiences_role',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100',
     icon: Sparkles,
-    borderColor: 'border-l-slate-700',
+    borderColor: 'border-l-black/15',
   },
   {
     id: 'connections',
@@ -48,7 +48,7 @@ const STORY_CARD_CONFIG: Array<{
     roleKey: 'community_pulse.story_connections_role',
     avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100',
     icon: Heart,
-    borderColor: 'border-l-slate-500',
+    borderColor: 'border-l-black/10',
   },
 ];
 
