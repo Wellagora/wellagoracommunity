@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useLocalizedContent } from "@/hooks/useLocalizedContent";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -99,6 +100,7 @@ const CATEGORY_TRANSLATIONS: Record<string, Record<string, string>> = {
 
 const ProgramsListingPage = () => {
   const { t, language } = useLanguage();
+  const { getLocalizedField } = useLocalizedContent();
   const [searchParams] = useSearchParams();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -181,24 +183,21 @@ const ProgramsListingPage = () => {
           }
         }
 
-        // Map data with localized fields
+        // Map data with localized fields using the hook helper
         const mappedPrograms: Program[] = (contentsData || []).map((content) => {
           const creator = content.creator_id ? profilesMap[content.creator_id] : null;
           
-          // Get localized title
-          let title = content.title;
-          if (language === 'en' && content.title_en) title = content.title_en;
-          if (language === 'de' && content.title_de) title = content.title_de;
-
-          // Get localized description
-          let description = content.description;
-          if (language === 'en' && content.description_en) description = content.description_en;
-          if (language === 'de' && content.description_de) description = content.description_de;
+          // Use the centralized localization helper for consistent behavior
+          // HU: uses base field (title, description) 
+          // EN: uses title_en, description_en with HU fallback
+          // DE: uses title_de, description_de with HU fallback
+          const localizedTitle = getLocalizedField(content as Record<string, unknown>, 'title');
+          const localizedDescription = getLocalizedField(content as Record<string, unknown>, 'description');
 
           return {
             id: content.id,
-            title,
-            description,
+            title: localizedTitle || content.title,
+            description: localizedDescription || content.description,
             image_url: resolveImageUrl(content.image_url),
             thumbnail_url: resolveImageUrl(content.thumbnail_url),
             access_type: content.access_type,

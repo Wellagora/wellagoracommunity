@@ -49,18 +49,98 @@ const MEMBER_NAMES = [
   { first: 'Lilla', last: 'Fekete' }
 ];
 
-// Fully Hungarian program titles and descriptions
+// Fully localized program titles and descriptions (HU base, EN, DE translations)
 const PROGRAM_DATA = [
-  { title: 'Fenntartható Kertészkedés Alapjai', desc: 'Tanuld meg, hogyan alakíts ki fenntartható kertet akár kis helyen is. Komposztálás, öntözés, természetes növényvédelem.', category: 'gardening' },
-  { title: 'Hulladékmentes Konyha', desc: 'Fedezd fel a zero waste konyha titkait! Házi tartósítás, fermentálás, maradékok újrahasznosítása.', category: 'cooking' },
-  { title: 'Tudatos Vásárlás Mesterkurzus', desc: 'Hogyan vásárolj fenntarthatóan? Helyi termelők, szezonális termékek, csomagolásmentes megoldások.', category: 'sustainability' },
-  { title: 'Komposztálás A-tól Z-ig', desc: 'Minden, amit a komposztálásról tudni kell: házi komposztáló, giliszta komposzt, balkonon is!', category: 'gardening' },
-  { title: 'Természetes Kozmetikumok Készítése', desc: 'Készíts saját krémeket, szappanokat és testápolókat természetes alapanyagokból!', category: 'crafts' },
-  { title: 'Energiatakarékos Otthon', desc: 'Praktikus tippek az otthoni energiafogyasztás csökkentésére. Szigetelés, LED, okos eszközök.', category: 'sustainability' },
-  { title: 'Kovászos Kenyér Műhely', desc: 'A tökéletes kovászos kenyér titkai. Kovász ápolás, dagasztás, sütés - kezdőknek is!', category: 'cooking' },
-  { title: 'Méhészet Kezdőknek', desc: 'Ismerd meg a méhek csodálatos világát! Első lépések a házi méhészetben.', category: 'gardening' },
-  { title: 'Ökológiai Lábnyom Csökkentése', desc: 'Mérd fel és csökkentsd ökológiai lábnyomodat! Gyakorlati lépések a fenntarthatóbb életért.', category: 'sustainability' },
-  { title: 'Újrahasznosítás és Kreatív Alkotás', desc: 'Adj új életet a régi tárgyaknak! Upcycling workshop kreatív megoldásokkal.', category: 'crafts' }
+  { 
+    title: 'Fenntartható Kertészkedés Alapjai', 
+    title_en: 'Sustainable Gardening Basics',
+    title_de: 'Grundlagen des nachhaltigen Gärtnerns',
+    desc: 'Tanuld meg, hogyan alakíts ki fenntartható kertet akár kis helyen is. Komposztálás, öntözés, természetes növényvédelem.',
+    desc_en: 'Learn how to create a sustainable garden even in small spaces. Composting, irrigation, natural pest control.',
+    desc_de: 'Lerne, wie du auch auf kleinem Raum einen nachhaltigen Garten anlegen kannst. Kompostierung, Bewässerung, natürlicher Pflanzenschutz.',
+    category: 'gardening' 
+  },
+  { 
+    title: 'Hulladékmentes Konyha', 
+    title_en: 'Zero Waste Kitchen',
+    title_de: 'Müllfreie Küche',
+    desc: 'Fedezd fel a zero waste konyha titkait! Házi tartósítás, fermentálás, maradékok újrahasznosítása.',
+    desc_en: 'Discover the secrets of a zero waste kitchen! Home preserving, fermentation, repurposing leftovers.',
+    desc_de: 'Entdecke die Geheimnisse der müllfreien Küche! Hausgemachtes Einmachen, Fermentation, Resteverwertung.',
+    category: 'cooking' 
+  },
+  { 
+    title: 'Tudatos Vásárlás Mesterkurzus', 
+    title_en: 'Conscious Shopping Masterclass',
+    title_de: 'Meisterkurs für bewusstes Einkaufen',
+    desc: 'Hogyan vásárolj fenntarthatóan? Helyi termelők, szezonális termékek, csomagolásmentes megoldások.',
+    desc_en: 'How to shop sustainably? Local producers, seasonal products, package-free solutions.',
+    desc_de: 'Wie kauft man nachhaltig ein? Lokale Produzenten, saisonale Produkte, verpackungsfreie Lösungen.',
+    category: 'sustainability' 
+  },
+  { 
+    title: 'Komposztálás A-tól Z-ig', 
+    title_en: 'Composting from A to Z',
+    title_de: 'Kompostierung von A bis Z',
+    desc: 'Minden, amit a komposztálásról tudni kell: házi komposztáló, giliszta komposzt, balkonon is!',
+    desc_en: 'Everything you need to know about composting: home composter, worm compost, even on a balcony!',
+    desc_de: 'Alles über Kompostierung: Heimkomposter, Wurmkompost, sogar auf dem Balkon!',
+    category: 'gardening' 
+  },
+  { 
+    title: 'Természetes Kozmetikumok Készítése', 
+    title_en: 'Making Natural Cosmetics',
+    title_de: 'Herstellung natürlicher Kosmetik',
+    desc: 'Készíts saját krémeket, szappanokat és testápolókat természetes alapanyagokból!',
+    desc_en: 'Make your own creams, soaps and body care products from natural ingredients!',
+    desc_de: 'Stelle deine eigenen Cremes, Seifen und Pflegeprodukte aus natürlichen Zutaten her!',
+    category: 'crafts' 
+  },
+  { 
+    title: 'Energiatakarékos Otthon', 
+    title_en: 'Energy-Efficient Home',
+    title_de: 'Energieeffizientes Zuhause',
+    desc: 'Praktikus tippek az otthoni energiafogyasztás csökkentésére. Szigetelés, LED, okos eszközök.',
+    desc_en: 'Practical tips to reduce home energy consumption. Insulation, LEDs, smart devices.',
+    desc_de: 'Praktische Tipps zur Reduzierung des Energieverbrauchs zu Hause. Isolierung, LEDs, Smart-Geräte.',
+    category: 'sustainability' 
+  },
+  { 
+    title: 'Kovászos Kenyér Műhely', 
+    title_en: 'Sourdough Bread Workshop',
+    title_de: 'Sauerteigbrot-Workshop',
+    desc: 'A tökéletes kovászos kenyér titkai. Kovász ápolás, dagasztás, sütés - kezdőknek is!',
+    desc_en: 'Secrets of perfect sourdough bread. Starter care, kneading, baking - for beginners too!',
+    desc_de: 'Geheimnisse des perfekten Sauerteigbrots. Sauerteignpflege, Kneten, Backen - auch für Anfänger!',
+    category: 'cooking' 
+  },
+  { 
+    title: 'Méhészet Kezdőknek', 
+    title_en: 'Beekeeping for Beginners',
+    title_de: 'Imkerei für Anfänger',
+    desc: 'Ismerd meg a méhek csodálatos világát! Első lépések a házi méhészetben.',
+    desc_en: 'Discover the wonderful world of bees! First steps in home beekeeping.',
+    desc_de: 'Entdecke die wunderbare Welt der Bienen! Erste Schritte in der Heimimkerei.',
+    category: 'gardening' 
+  },
+  { 
+    title: 'Ökológiai Lábnyom Csökkentése', 
+    title_en: 'Reducing Your Ecological Footprint',
+    title_de: 'Reduzierung des ökologischen Fußabdrucks',
+    desc: 'Mérd fel és csökkentsd ökológiai lábnyomodat! Gyakorlati lépések a fenntarthatóbb életért.',
+    desc_en: 'Assess and reduce your ecological footprint! Practical steps for a more sustainable life.',
+    desc_de: 'Bewerte und reduziere deinen ökologischen Fußabdruck! Praktische Schritte für ein nachhaltigeres Leben.',
+    category: 'sustainability' 
+  },
+  { 
+    title: 'Újrahasznosítás és Kreatív Alkotás', 
+    title_en: 'Upcycling and Creative Making',
+    title_de: 'Upcycling und kreatives Gestalten',
+    desc: 'Adj új életet a régi tárgyaknak! Upcycling workshop kreatív megoldásokkal.',
+    desc_en: 'Give new life to old objects! Upcycling workshop with creative solutions.',
+    desc_de: 'Schenke alten Gegenständen neues Leben! Upcycling-Workshop mit kreativen Lösungen.',
+    category: 'crafts' 
+  }
 ];
 
 const CATEGORIES = ['sustainability', 'cooking', 'wellness', 'gardening', 'crafts'];
@@ -214,8 +294,15 @@ serve(async (req) => {
           await supabase.from('expert_contents').insert({
             id: programId,
             creator_id: expertId,
+            // Hungarian base fields
             title: programData.title,
             description: `${TEST_PREFIX}${programData.desc} Típus: ${isOnline ? 'Online' : 'Személyes'}.`,
+            // English translations
+            title_en: programData.title_en,
+            description_en: `${TEST_PREFIX}${programData.desc_en} Type: ${isOnline ? 'Online' : 'In-person'}.`,
+            // German translations
+            title_de: programData.title_de,
+            description_de: `${TEST_PREFIX}${programData.desc_de} Typ: ${isOnline ? 'Online' : 'Persönlich'}.`,
             category: programData.category,
             price_huf: price,
             access_type: 'paid',

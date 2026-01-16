@@ -6,19 +6,35 @@ type LocalizedRecord = Record<string, unknown>;
 /**
  * Hook for accessing localized content from database records
  * Automatically returns the correct language version based on current locale
+ * 
+ * Database Schema:
+ * - Base field (e.g., 'title') = Hungarian (HU) content
+ * - Suffix fields (e.g., 'title_en', 'title_de') = Translated content
+ * 
+ * Priority chain:
+ * - HU: base field → (no fallback needed, it IS Hungarian)
+ * - EN: field_en → base field (Hungarian fallback)
+ * - DE: field_de → base field (Hungarian fallback)
  */
 export function useLocalizedContent() {
   const { language } = useLanguage();
 
   /**
    * Get a localized field value from a database record
-   * Tries language-specific field first (e.g., title_en), falls back to base field (title)
+   * Tries language-specific field first, falls back to base field (Hungarian)
    */
   const getLocalizedField = useCallback((
     item: LocalizedRecord | null | undefined,
     fieldName: string
   ): string => {
     if (!item) return '';
+    
+    // For Hungarian - the base field IS Hungarian, use it directly
+    if (language === 'hu') {
+      const huValue = item[fieldName];
+      // Return base field for Hungarian
+      return typeof huValue === 'string' ? huValue : '';
+    }
     
     // For English, try _en suffix first
     if (language === 'en') {
@@ -36,7 +52,7 @@ export function useLocalizedContent() {
       }
     }
     
-    // Fallback to base field (Hungarian)
+    // Fallback to base field (Hungarian) for all languages
     const baseValue = item[fieldName];
     return typeof baseValue === 'string' ? baseValue : '';
   }, [language]);
@@ -73,7 +89,7 @@ export function useLocalizedContent() {
       return typeof val === 'string' && val.trim() !== '';
     }
     
-    // Hungarian always has translation (it's the original)
+    // Hungarian always has translation (it's the base/original)
     return true;
   }, [language]);
 
