@@ -15,6 +15,8 @@ import { useVouchers, VoucherStatus } from "@/hooks/useVouchers";
 import CommunityActivityFeed from "@/components/dashboard/CommunityActivityFeed";
 import ActiveNowStats from "@/components/dashboard/ActiveNowStats";
 import RegionalProgramsHighlight from "@/components/dashboard/RegionalProgramsHighlight";
+import SavingsWallet from "@/components/member/SavingsWallet";
+import CommunityTicker from "@/components/member/CommunityTicker";
 import { 
   Ticket, 
   BookOpen, 
@@ -112,39 +114,42 @@ const MemberDashboard = () => {
       backUrl="/"
     >
 
+      {/* Community Activity Ticker - Real-time "[Name] just joined [Program]" */}
+      <DashboardCard className="mb-4">
+        <CommunityTicker />
+      </DashboardCard>
+
       {/* Active Now Stats - Living Community Feel */}
       <DashboardCard className="mb-6">
         <ActiveNowStats />
       </DashboardCard>
 
-      {/* KPI Cards */}
+      {/* Savings Wallet - Total HUF saved via sponsorships */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <DashboardCard>
-          <KPICard
-            title={t('member_dashboard.active_vouchers')}
-            value={stats.active}
-            icon={Ticket}
-            subtitle={t('member_dashboard.redeemable')}
-            iconColor="text-emerald-600"
+        <DashboardCard className="md:col-span-1">
+          <SavingsWallet 
+            totalSavings={stats.totalSavings}
+            sponsorCount={vouchers.filter(v => v.sponsor_name).length}
+            voucherCount={vouchers.length}
           />
         </DashboardCard>
-        <DashboardCard delay={0.1}>
-          <KPICard
-            title={t('member_dashboard.opened_contents')}
-            value={vouchers.length}
-            icon={BookOpen}
-            subtitle={t('member_dashboard.workshop_secrets')}
-            iconColor="text-black/70"
-          />
-        </DashboardCard>
-        <DashboardCard delay={0.2}>
-          <KPICard
-            title={t('member_dashboard.savings') || 'Megtakarítás'}
-            value={`${stats.totalSavings.toLocaleString()} Ft`}
-            icon={PiggyBank}
-            subtitle={t('member_dashboard.from_sponsor')}
-            iconColor="text-black/60"
-          />
+        <DashboardCard delay={0.1} className="md:col-span-2">
+          <div className="grid grid-cols-2 gap-4 h-full">
+            <KPICard
+              title={t('member_dashboard.active_vouchers')}
+              value={stats.active}
+              icon={Ticket}
+              subtitle={t('member_dashboard.redeemable')}
+              iconColor="text-emerald-600"
+            />
+            <KPICard
+              title={t('member_dashboard.opened_contents')}
+              value={vouchers.length}
+              icon={BookOpen}
+              subtitle={t('member_dashboard.workshop_secrets')}
+              iconColor="text-black/70"
+            />
+          </div>
         </DashboardCard>
       </div>
 
