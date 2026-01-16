@@ -68,6 +68,63 @@ export type Database = {
           },
         ]
       }
+      affiliate_links: {
+        Row: {
+          click_count: number | null
+          commission_rate: number | null
+          content_id: string | null
+          created_at: string | null
+          expert_id: string
+          id: string
+          is_active: boolean | null
+          partner_name: string | null
+          product_name: string
+          product_url: string
+          updated_at: string | null
+        }
+        Insert: {
+          click_count?: number | null
+          commission_rate?: number | null
+          content_id?: string | null
+          created_at?: string | null
+          expert_id: string
+          id?: string
+          is_active?: boolean | null
+          partner_name?: string | null
+          product_name: string
+          product_url: string
+          updated_at?: string | null
+        }
+        Update: {
+          click_count?: number | null
+          commission_rate?: number | null
+          content_id?: string | null
+          created_at?: string | null
+          expert_id?: string
+          id?: string
+          is_active?: boolean | null
+          partner_name?: string | null
+          product_name?: string
+          product_url?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_links_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "affiliate_links_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_conversations: {
         Row: {
           created_at: string
@@ -1049,6 +1106,7 @@ export type Database = {
           description: string | null
           description_de: string | null
           description_en: string | null
+          fixed_sponsor_amount: number | null
           id: string
           image_url: string | null
           is_featured: boolean | null
@@ -1085,6 +1143,7 @@ export type Database = {
           description?: string | null
           description_de?: string | null
           description_en?: string | null
+          fixed_sponsor_amount?: number | null
           id?: string
           image_url?: string | null
           is_featured?: boolean | null
@@ -1121,6 +1180,7 @@ export type Database = {
           description?: string | null
           description_de?: string | null
           description_en?: string | null
+          fixed_sponsor_amount?: number | null
           id?: string
           image_url?: string | null
           is_featured?: boolean | null
@@ -2371,6 +2431,53 @@ export type Database = {
         }
         Relationships: []
       }
+      sponsor_activity_log: {
+        Row: {
+          activity_type: string
+          content_id: string | null
+          content_title: string | null
+          created_at: string | null
+          credit_amount: number | null
+          id: string
+          member_id: string | null
+          member_name: string | null
+          message: string | null
+          sponsor_id: string
+        }
+        Insert: {
+          activity_type: string
+          content_id?: string | null
+          content_title?: string | null
+          created_at?: string | null
+          credit_amount?: number | null
+          id?: string
+          member_id?: string | null
+          member_name?: string | null
+          message?: string | null
+          sponsor_id: string
+        }
+        Update: {
+          activity_type?: string
+          content_id?: string | null
+          content_title?: string | null
+          created_at?: string | null
+          credit_amount?: number | null
+          id?: string
+          member_id?: string | null
+          member_name?: string | null
+          message?: string | null
+          sponsor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sponsor_activity_log_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sponsor_credits: {
         Row: {
           available_credits: number | null
@@ -2753,9 +2860,13 @@ export type Database = {
           created_at: string | null
           creator_id: string
           creator_revenue: number
+          expert_share: number | null
+          gross_amount: number | null
           id: string
           license_count: number | null
           platform_fee: number
+          platform_share: number | null
+          share_percentage: number | null
           sponsor_id: string | null
           status: string | null
           transaction_type: string | null
@@ -2769,9 +2880,13 @@ export type Database = {
           created_at?: string | null
           creator_id: string
           creator_revenue: number
+          expert_share?: number | null
+          gross_amount?: number | null
           id?: string
           license_count?: number | null
           platform_fee: number
+          platform_share?: number | null
+          share_percentage?: number | null
           sponsor_id?: string | null
           status?: string | null
           transaction_type?: string | null
@@ -2785,9 +2900,13 @@ export type Database = {
           created_at?: string | null
           creator_id?: string
           creator_revenue?: number
+          expert_share?: number | null
+          gross_amount?: number | null
           id?: string
           license_count?: number | null
           platform_fee?: number
+          platform_share?: number | null
+          share_percentage?: number | null
           sponsor_id?: string | null
           status?: string | null
           transaction_type?: string | null
@@ -2896,38 +3015,53 @@ export type Database = {
       }
       vouchers: {
         Row: {
+          cancellation_date: string | null
           code: string
           content_id: string
           created_at: string | null
+          credit_status: string | null
           expires_at: string | null
           id: string
+          is_no_show: boolean | null
+          no_show_at: string | null
           pickup_location: string | null
           redeemed_at: string | null
           redeemed_by: string | null
+          sponsor_credit_deducted: number | null
           status: string | null
           user_id: string
         }
         Insert: {
+          cancellation_date?: string | null
           code: string
           content_id: string
           created_at?: string | null
+          credit_status?: string | null
           expires_at?: string | null
           id?: string
+          is_no_show?: boolean | null
+          no_show_at?: string | null
           pickup_location?: string | null
           redeemed_at?: string | null
           redeemed_by?: string | null
+          sponsor_credit_deducted?: number | null
           status?: string | null
           user_id: string
         }
         Update: {
+          cancellation_date?: string | null
           code?: string
           content_id?: string
           created_at?: string | null
+          credit_status?: string | null
           expires_at?: string | null
           id?: string
+          is_no_show?: boolean | null
+          no_show_at?: string | null
           pickup_location?: string | null
           redeemed_at?: string | null
           redeemed_by?: string | null
+          sponsor_credit_deducted?: number | null
           status?: string | null
           user_id?: string
         }
@@ -3164,6 +3298,13 @@ export type Database = {
             }
             Returns: string
           }
+      calculate_revenue_split: {
+        Args: { gross_amount: number }
+        Returns: {
+          expert_share: number
+          platform_share: number
+        }[]
+      }
       can_use_view: {
         Args: { _user_id: string; _view: string }
         Returns: boolean
