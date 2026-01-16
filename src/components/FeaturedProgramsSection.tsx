@@ -42,15 +42,15 @@ const FeaturedProgramsSection = () => {
   // HARD ENFORCEMENT: featured section shows ONLY mock programs
   const featuredPrograms = MOCK_PROGRAMS
     .filter((p) => p.is_featured)
-    .map((mp) => {
+    .map((mp, idx) => {
       const creator = getMockExpertById(mp.creator_id);
       const localizedCreatorName = creator ? getLocalizedExpertName(creator, language) : null;
       const localizedSponsorName = getLocalizedSponsorName(mp, language);
 
       // Calculate sponsorship details
       const sponsorContribution = mp.is_sponsored ? Math.round(mp.price_huf * 0.8) : 0; // 80% sponsor contribution
-      const maxSeats = mp.is_sponsored ? 10 : 0;
-      const usedSeats = mp.is_sponsored ? Math.floor(Math.random() * 8) + 2 : 0; // 2-10 seats used
+      const maxSeats = mp.is_sponsored ? (mp.max_sponsored_seats || 10) : 0;
+      const usedSeats = mp.is_sponsored ? Math.min(maxSeats - 2, 2 + idx) : 0; // Deterministic usage
 
       return {
         id: mp.id,
@@ -65,6 +65,9 @@ const FeaturedProgramsSection = () => {
         max_seats: maxSeats,
         used_seats: usedSeats,
         category: mp.category,
+        // Pass content type for quota-specific labels
+        content_type: mp.content_type || 'in_person',
+        max_capacity: mp.max_capacity,
         creator: creator && localizedCreatorName
           ? {
               id: creator.id,
@@ -85,6 +88,8 @@ const FeaturedProgramsSection = () => {
     sponsor_contribution?: number;
     max_seats?: number;
     used_seats?: number;
+    content_type?: 'recorded' | 'online_live' | 'in_person';
+    max_capacity?: number;
   }) => {
     const priceInfo = formatPriceByLanguage(program.price_huf || 0, language);
     const remainingSeats = (program.max_seats || 0) - (program.used_seats || 0);
@@ -101,6 +106,8 @@ const FeaturedProgramsSection = () => {
           maxSeats={program.max_seats || 10}
           usedSeats={program.used_seats || 0}
           showImpactMode={seatsExhausted}
+          contentType={program.content_type || 'in_person'}
+          maxCapacity={program.max_capacity}
         />
       );
     }

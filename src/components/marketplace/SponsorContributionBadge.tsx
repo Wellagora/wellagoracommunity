@@ -213,11 +213,13 @@ export const SponsorContributionBadge = ({
             {getSponsorText()}
           </p>
 
-          {/* Price breakdown - STRIKETHROUGH ORIGINAL + BOLD SPONSORED */}
-          <div className="flex items-baseline gap-2 mt-2">
+          {/* Price breakdown - STRICT HIERARCHY: Line 1 = Strikethrough, Line 2 = Bold Final Price */}
+          <div className="flex flex-col gap-0.5 mt-2">
+            {/* Line 1: Original price with strikethrough */}
             <span className="text-xs text-muted-foreground line-through">
               {formatPrice(originalPrice)}
             </span>
+            {/* Line 2: Final price in bold */}
             <span className={`${classes.price} font-bold text-primary`}>
               {memberPayment === 0 ? (language === 'hu' ? '0 Ft' : '0 €') : formatPrice(memberPayment)}
             </span>

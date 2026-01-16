@@ -58,13 +58,13 @@ export const CommunityImpactCounter = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
-  // Social proof count with localization
+  // Social proof count with localization - Using 'Tag/Tagunk' instead of 'tanuló'
   const memberCount = DEMO_STATS.members + 1073; // 1200+ members
   const socialProofText = language === 'hu' 
-    ? `Csatlakozz ${memberCount.toLocaleString('hu-HU')}+ tanulóhoz!`
+    ? `Csatlakozz ${memberCount.toLocaleString('hu-HU')}+ Tagunkhoz!`
     : language === 'de'
-    ? `Schließe dich ${memberCount.toLocaleString('de-DE')}+ Lernenden an!`
-    : `Join ${memberCount.toLocaleString()}+ learners!`;
+    ? `Schließe dich ${memberCount.toLocaleString('de-DE')}+ Mitgliedern an!`
+    : `Join ${memberCount.toLocaleString()}+ Members!`;
 
   return (
     <section 

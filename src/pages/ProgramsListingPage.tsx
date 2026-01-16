@@ -65,6 +65,9 @@ interface Program {
   sponsor_contribution?: number;
   max_seats?: number;
   used_seats?: number;
+  // Content type for quota logic
+  content_type?: 'recorded' | 'online_live' | 'in_person';
+  max_capacity?: number;
   creator_id: string | null;
   creator?: {
     id: string;
@@ -150,8 +153,8 @@ const ProgramsListingPage = () => {
     
     // Calculate sponsorship details - 80% sponsor contribution
     const sponsorContribution = mp.is_sponsored ? Math.round(mp.price_huf * 0.8) : 0;
-    const maxSeats = mp.is_sponsored ? 10 : 0;
-    const usedSeats = mp.is_sponsored ? Math.min(7, 2 + idx) : 0; // Deterministic 2-9 seats used
+    const maxSeats = mp.is_sponsored ? (mp.max_sponsored_seats || 10) : 0;
+    const usedSeats = mp.is_sponsored ? Math.min(maxSeats - 2, 2 + idx) : 0; // Deterministic usage
     
     return {
       id: mp.id,
@@ -168,6 +171,9 @@ const ProgramsListingPage = () => {
       sponsor_contribution: sponsorContribution,
       max_seats: maxSeats,
       used_seats: usedSeats,
+      // Pass content type for quota-specific labels
+      content_type: mp.content_type || 'in_person',
+      max_capacity: mp.max_capacity,
       creator_id: mp.creator_id,
       creator: creator && localizedCreatorName ? {
         id: creator.id,
@@ -332,7 +338,7 @@ const ProgramsListingPage = () => {
   };
 
   const getAccessBadge = (program: Program, idx?: number) => {
-    // Enhanced sponsored badge with contribution badge component
+    // Enhanced sponsored badge with contribution badge component + content_type for quota labels
     if (program.is_sponsored) {
       const sponsorName = program.sponsor_name || FALLBACK_SPONSOR[language as keyof typeof FALLBACK_SPONSOR];
       const contributionAmount = program.sponsor_contribution || (program.price_huf ? Math.round(program.price_huf * 0.8) : 5000);
@@ -349,6 +355,8 @@ const ProgramsListingPage = () => {
           maxSeats={maxSeats}
           usedSeats={usedSeats}
           showImpactMode={seatsExhausted}
+          contentType={program.content_type || 'in_person'}
+          maxCapacity={program.max_capacity}
         />
       );
     }
