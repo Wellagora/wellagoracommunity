@@ -32,6 +32,13 @@ import { SocialProofBadge } from "@/components/marketplace/SocialProofBadge";
 import { VerifiedExpertBadge } from "@/components/marketplace/VerifiedExpertBadge";
 import { SponsorContributionBadge } from "@/components/marketplace/SponsorContributionBadge";
 import { LivePulseToast } from "@/components/marketplace/LivePulseToast";
+import { 
+  MOCK_PROGRAMS, 
+  getMockExpertById, 
+  getLocalizedExpertName, 
+  getLocalizedSponsorName, 
+  MockProgram 
+} from "@/data/mockData";
 
 const CATEGORIES = [
   { id: "all", labelKey: "marketplace.all_categories", icon: Grid },
@@ -55,6 +62,9 @@ interface Program {
   is_featured: boolean | null;
   is_sponsored: boolean | null;
   sponsor_name: string | null;
+  sponsor_contribution?: number;
+  max_seats?: number;
+  used_seats?: number;
   creator_id: string | null;
   creator?: {
     id: string;
@@ -99,6 +109,13 @@ const CATEGORY_TRANSLATIONS: Record<string, Record<string, string>> = {
   'crafts': { hu: 'Kézművesség', en: 'Crafts', de: 'Handwerk' },
 };
 
+// Fallback sponsor for programs without sponsor but marked as sponsored
+const FALLBACK_SPONSOR = {
+  hu: 'Success Inc.',
+  en: 'Success Inc.',
+  de: 'Success GmbH',
+};
+
 const ProgramsListingPage = () => {
   const { t, language } = useLanguage();
   const { getLocalizedField } = useLocalizedContent();
@@ -109,6 +126,7 @@ const ProgramsListingPage = () => {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [filteredCreator, setFilteredCreator] = useState<CreatorProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [usingMockData, setUsingMockData] = useState(false);
 
   const creatorFilter = searchParams.get("creator");
 
@@ -124,7 +142,43 @@ const ProgramsListingPage = () => {
     return category.charAt(0).toUpperCase() + category.slice(1);
   };
 
-  // Fetch programs from Supabase
+  // Convert mock program to Program interface
+  const convertMockToProgram = (mp: MockProgram, idx: number): Program => {
+    const creator = getMockExpertById(mp.creator_id);
+    const localizedCreatorName = creator ? getLocalizedExpertName(creator, language) : null;
+    const localizedSponsorName = getLocalizedSponsorName(mp, language);
+    
+    // Calculate sponsorship details - 80% sponsor contribution
+    const sponsorContribution = mp.is_sponsored ? Math.round(mp.price_huf * 0.8) : 0;
+    const maxSeats = mp.is_sponsored ? 10 : 0;
+    const usedSeats = mp.is_sponsored ? Math.min(7, 2 + idx) : 0; // Deterministic 2-9 seats used
+    
+    return {
+      id: mp.id,
+      title: getLocalizedField(mp as unknown as Record<string, unknown>, 'title'),
+      description: getLocalizedField(mp as unknown as Record<string, unknown>, 'description'),
+      image_url: mp.image_url,
+      thumbnail_url: mp.thumbnail_url,
+      access_type: mp.access_type,
+      price_huf: mp.price_huf,
+      category: mp.category,
+      is_featured: mp.is_featured,
+      is_sponsored: mp.is_sponsored,
+      sponsor_name: localizedSponsorName || (mp.is_sponsored ? FALLBACK_SPONSOR[language as keyof typeof FALLBACK_SPONSOR] : null),
+      sponsor_contribution: sponsorContribution,
+      max_seats: maxSeats,
+      used_seats: usedSeats,
+      creator_id: mp.creator_id,
+      creator: creator && localizedCreatorName ? {
+        id: creator.id,
+        first_name: localizedCreatorName.firstName,
+        last_name: localizedCreatorName.lastName,
+        avatar_url: creator.avatar_url,
+      } : null,
+    };
+  };
+
+  // Fetch programs from Supabase with mock data fallback
   useEffect(() => {
     const fetchPrograms = async () => {
       setIsLoading(true);
@@ -160,11 +214,21 @@ const ProgramsListingPage = () => {
 
         const { data: contentsData, error: contentsError } = await query;
 
-        if (contentsError) {
-          console.error("Error fetching programs:", contentsError);
-          setPrograms([]);
+        // FALLBACK: If DB is empty or error, use mock data
+        if (contentsError || !contentsData || contentsData.length === 0) {
+          console.log("Using mock data fallback - DB returned empty or error:", contentsError);
+          setUsingMockData(true);
+          
+          const mockPrograms = MOCK_PROGRAMS
+            .filter(mp => mp.is_published)
+            .map((mp, idx) => convertMockToProgram(mp, idx));
+          
+          setPrograms(mockPrograms);
+          setIsLoading(false);
           return;
         }
+
+        setUsingMockData(false);
 
         // Fetch all creator profiles
         const creatorIds = [...new Set((contentsData || []).map(c => c.creator_id).filter(Boolean))];
@@ -185,7 +249,7 @@ const ProgramsListingPage = () => {
         }
 
         // Map data with localized fields using the hook helper
-        const mappedPrograms: Program[] = (contentsData || []).map((content) => {
+        const mappedPrograms: Program[] = (contentsData || []).map((content, idx) => {
           const creator = content.creator_id ? profilesMap[content.creator_id] : null;
           
           // Use the centralized localization helper for consistent behavior
@@ -194,6 +258,11 @@ const ProgramsListingPage = () => {
           // DE: uses title_de, description_de with HU fallback
           const localizedTitle = getLocalizedField(content as Record<string, unknown>, 'title');
           const localizedDescription = getLocalizedField(content as Record<string, unknown>, 'description');
+
+          // Calculate sponsorship details
+          const sponsorContribution = content.is_sponsored ? Math.round((content.price_huf || 0) * 0.8) : 0;
+          const maxSeats = content.is_sponsored ? 10 : 0;
+          const usedSeats = content.is_sponsored ? Math.min(7, 2 + idx) : 0;
 
           return {
             id: content.id,
@@ -206,7 +275,10 @@ const ProgramsListingPage = () => {
             category: content.category,
             is_featured: content.is_featured,
             is_sponsored: content.is_sponsored,
-            sponsor_name: content.sponsor_name,
+            sponsor_name: content.sponsor_name || (content.is_sponsored ? FALLBACK_SPONSOR[language as keyof typeof FALLBACK_SPONSOR] : null),
+            sponsor_contribution: sponsorContribution,
+            max_seats: maxSeats,
+            used_seats: usedSeats,
             creator_id: content.creator_id,
             creator: creator ? {
               id: creator.id,
@@ -225,7 +297,12 @@ const ProgramsListingPage = () => {
         }
       } catch (err) {
         console.error("Error fetching programs:", err);
-        setPrograms([]);
+        // Fallback to mock data on any error
+        setUsingMockData(true);
+        const mockPrograms = MOCK_PROGRAMS
+          .filter(mp => mp.is_published)
+          .map((mp, idx) => convertMockToProgram(mp, idx));
+        setPrograms(mockPrograms);
       } finally {
         setIsLoading(false);
       }
@@ -256,15 +333,16 @@ const ProgramsListingPage = () => {
 
   const getAccessBadge = (program: Program, idx?: number) => {
     // Enhanced sponsored badge with contribution badge component
-    if (program.is_sponsored && program.sponsor_name) {
-      const contributionAmount = program.price_huf ? Math.round(program.price_huf * 0.8) : 5000;
-      const maxSeats = 10;
-      const usedSeats = Math.floor(Math.random() * 8) + 2; // Simulated 2-10 seats used
+    if (program.is_sponsored) {
+      const sponsorName = program.sponsor_name || FALLBACK_SPONSOR[language as keyof typeof FALLBACK_SPONSOR];
+      const contributionAmount = program.sponsor_contribution || (program.price_huf ? Math.round(program.price_huf * 0.8) : 5000);
+      const maxSeats = program.max_seats || 10;
+      const usedSeats = program.used_seats || Math.min(7, 2 + (idx || 0));
       const seatsExhausted = usedSeats >= maxSeats;
       
       return (
         <SponsorContributionBadge
-          sponsorName={program.sponsor_name}
+          sponsorName={sponsorName}
           contributionAmount={contributionAmount}
           originalPrice={program.price_huf || 0}
           size="sm"
