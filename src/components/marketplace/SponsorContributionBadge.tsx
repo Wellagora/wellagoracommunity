@@ -1,18 +1,44 @@
-import { Gift, Sparkles, Users, Trophy, Heart } from 'lucide-react';
+import { Gift, Sparkles, Users, Trophy, Heart, Video, Monitor, MapPin, Clock } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { motion } from 'framer-motion';
 import { Progress } from '@/components/ui/progress';
+
+// Content types with distinct quota logic
+export type ContentType = 'recorded' | 'online_live' | 'in_person';
 
 interface SponsorContributionBadgeProps {
   sponsorName: string;
   contributionAmount: number;
   originalPrice: number;
   size?: 'sm' | 'md' | 'lg';
-  // New props for impact mode
+  // Quota management
   maxSeats?: number;
   usedSeats?: number;
-  showImpactMode?: boolean; // When true and seats exhausted, show impact instead of price
+  showImpactMode?: boolean;
+  // NEW: Content type for distinct labels
+  contentType?: ContentType;
+  maxCapacity?: number; // Physical capacity for in_person
 }
+
+// Get content type icon
+const getContentTypeIcon = (type: ContentType) => {
+  switch (type) {
+    case 'recorded': return Video;
+    case 'online_live': return Monitor;
+    case 'in_person': return MapPin;
+    default: return Gift;
+  }
+};
+
+// Get content type label
+const getContentTypeLabel = (type: ContentType, language: string) => {
+  const labels = {
+    recorded: { hu: 'FELVETT', en: 'RECORDED', de: 'AUFGEZEICHNET' },
+    online_live: { hu: 'ONLINE ÉLŐ', en: 'ONLINE LIVE', de: 'ONLINE LIVE' },
+    in_person: { hu: 'SZEMÉLYES', en: 'IN-PERSON', de: 'VOR ORT' }
+  };
+  return labels[type]?.[language as keyof typeof labels.recorded] || labels[type]?.hu || type.toUpperCase();
+};
 
 export const SponsorContributionBadge = ({
   sponsorName,
@@ -21,7 +47,9 @@ export const SponsorContributionBadge = ({
   size = 'md',
   maxSeats = 10,
   usedSeats = 0,
-  showImpactMode = false
+  showImpactMode = false,
+  contentType = 'in_person',
+  maxCapacity
 }: SponsorContributionBadgeProps) => {
   const { language } = useLanguage();
 
@@ -39,6 +67,30 @@ export const SponsorContributionBadge = ({
   const seatsExhausted = remainingSeats === 0;
   const seatProgress = maxSeats > 0 ? (usedSeats / maxSeats) * 100 : 0;
 
+  // Content-type specific quota labels
+  const getQuotaLabel = () => {
+    switch (contentType) {
+      case 'recorded':
+        // Unlimited access, limited discount
+        if (language === 'hu') return `${remainingSeats} kedvezményes lehetőség maradt`;
+        if (language === 'de') return `${remainingSeats} ermäßigte Möglichkeiten übrig`;
+        return `${remainingSeats} discounted spots left`;
+      case 'online_live':
+        // High capacity, limited sponsored
+        if (language === 'hu') return `${remainingSeats} támogatott hely maradt`;
+        if (language === 'de') return `${remainingSeats} geförderte Plätze übrig`;
+        return `${remainingSeats} sponsored spots left`;
+      case 'in_person':
+        // Physical + sponsored limits
+        if (language === 'hu') return `${remainingSeats} szabad hely maradt`;
+        if (language === 'de') return `${remainingSeats} freie Plätze übrig`;
+        return `${remainingSeats} spots left`;
+      default:
+        if (language === 'hu') return `${remainingSeats} hely maradt`;
+        return `${remainingSeats} spots left`;
+    }
+  };
+
   const getSponsorText = () => {
     if (language === 'hu') {
       return `A ${sponsorName} ${formatPrice(contributionAmount)}-tal támogatja a részvételedet!`;
@@ -54,19 +106,19 @@ export const SponsorContributionBadge = ({
       return `A ${sponsorName} ${usedSeats} ember részvételét támogatta ennél a programnál.`;
     }
     if (language === 'de') {
-      return `${sponsorName} hat die Teilnahme von ${usedSeats} Personen an diesem Programm unterstützt.`;
+      return `${sponsorName} hat die Teilnahme von ${usedSeats} Personen unterstützt.`;
     }
-    return `${sponsorName} has supported ${usedSeats} people's participation in this program.`;
+    return `${sponsorName} has supported ${usedSeats} people's participation.`;
   };
 
   const getSeatStatusText = () => {
     if (language === 'hu') {
-      return `${usedSeats}/${maxSeats} támogatott hely már gazdára talált`;
+      return `${usedSeats}/${maxSeats} támogatott hely foglalt`;
     }
     if (language === 'de') {
-      return `${usedSeats}/${maxSeats} geförderte Plätze bereits vergeben`;
+      return `${usedSeats}/${maxSeats} Plätze vergeben`;
     }
-    return `${usedSeats}/${maxSeats} sponsored seats already claimed`;
+    return `${usedSeats}/${maxSeats} seats claimed`;
   };
 
   const sizeClasses = {
@@ -76,6 +128,7 @@ export const SponsorContributionBadge = ({
   };
 
   const classes = sizeClasses[size];
+  const TypeIcon = getContentTypeIcon(contentType);
 
   // IMPACT MODE: When seats are exhausted, show community impact badge
   if (showImpactMode && seatsExhausted) {
@@ -139,35 +192,54 @@ export const SponsorContributionBadge = ({
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 mb-1">
-            <Sparkles className="w-3 h-3 text-primary" />
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">
-              {language === 'hu' ? 'SZPONZORÁLT' : language === 'de' ? 'GESPONSERT' : 'SPONSORED'}
-            </span>
+          {/* Content type + Sponsored badge */}
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <div className="flex items-center gap-1">
+              <TypeIcon className="w-3 h-3 text-muted-foreground" />
+              <span className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
+                {getContentTypeLabel(contentType, language)}
+              </span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-primary" />
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">
+                {language === 'hu' ? 'SZPONZORÁLT' : language === 'de' ? 'GESPONSERT' : 'SPONSORED'}
+              </span>
+            </div>
           </div>
           
+          {/* Sponsor support text */}
           <p className={`${classes.text} text-foreground/80 leading-snug`}>
             {getSponsorText()}
           </p>
 
-          {/* Price breakdown */}
+          {/* Price breakdown - STRIKETHROUGH ORIGINAL + BOLD SPONSORED */}
           <div className="flex items-baseline gap-2 mt-2">
-            <span className={`${classes.price} font-bold text-primary`}>
-              {memberPayment === 0 ? (language === 'hu' ? '0 Ft' : '0 €') : formatPrice(memberPayment)}
-            </span>
             <span className="text-xs text-muted-foreground line-through">
               {formatPrice(originalPrice)}
             </span>
+            <span className={`${classes.price} font-bold text-primary`}>
+              {memberPayment === 0 ? (language === 'hu' ? '0 Ft' : '0 €') : formatPrice(memberPayment)}
+            </span>
           </div>
 
-          {/* Seat progress if available */}
+          {/* Quota status with content-type specific label */}
           {maxSeats > 0 && remainingSeats > 0 && (
             <div className="mt-2">
               <div className="flex items-center gap-2">
-                <Users className="w-3 h-3 text-primary/70" />
-                <span className="text-xs text-muted-foreground">{getSeatStatusText()}</span>
+                {remainingSeats <= 3 ? (
+                  <Clock className="w-3 h-3 text-red-500" />
+                ) : (
+                  <Users className="w-3 h-3 text-primary/70" />
+                )}
+                <span className={`text-xs font-medium ${remainingSeats <= 3 ? 'text-red-600' : 'text-muted-foreground'}`}>
+                  {getQuotaLabel()}
+                </span>
               </div>
-              <Progress value={seatProgress} className="h-1.5 mt-1" />
+              <Progress 
+                value={seatProgress} 
+                className={`h-1.5 mt-1 ${remainingSeats <= 3 ? '[&>div]:bg-red-500' : ''}`} 
+              />
             </div>
           )}
         </div>
