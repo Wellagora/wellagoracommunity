@@ -822,6 +822,8 @@
   "marketplace.free_via_sponsor": "Ingyenes a Szponzor jóvoltából",
   "marketplace.value_label": "Értéke",
   "marketplace.featured_offers": "Kiemelt Ajánlatok",
+  "marketplace.featured": "Kiemelt",
+  "marketplace.program": "Program",
   "marketplace.open_content": "Nyílt tartalom",
   "expert_studio.view_all_contents": "Nézd meg az összes {{count}} programját →",
 
