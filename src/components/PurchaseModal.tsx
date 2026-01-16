@@ -42,8 +42,9 @@ export const PurchaseModal = ({ isOpen, onClose, content }: PurchaseModalProps) 
 
     try {
       const amount = content.price_huf;
-      const platformFee = Math.round(amount * 0.15);
-      const creatorRevenue = amount - platformFee;
+      // WellAgora Business Engine: 80/20 split based on Expert Price
+      const platformFee = Math.round(amount * 0.20);
+      const creatorRevenue = Math.round(amount * 0.80);
 
       // Insert into content_access
       const { error: accessError } = await supabase

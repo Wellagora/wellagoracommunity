@@ -1,21 +1,35 @@
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Heart, Gift } from 'lucide-react';
+import { Heart, Gift, Wallet, CreditCard } from 'lucide-react';
 
 interface SponsoredPriceBadgeProps {
   originalPrice: number;
   sponsoredPrice?: number;
   sponsorName?: string;
+  sponsorContribution?: number;
   isSponsored: boolean;
   size?: 'sm' | 'md' | 'lg';
+  showBreakdown?: boolean;
 }
 
+/**
+ * SponsoredPriceBadge - WellAgora Business Engine Pricing Display
+ * 
+ * Shows the expert-driven pricing with sponsor contribution:
+ * - Original price (Expert Price) = what the Expert sets
+ * - Sponsor contribution = fixed HUF amount sponsor pays
+ * - Member payment = Original - Sponsor Contribution
+ * 
+ * The 80/20 split is based on the FULL expert price, not just member payment.
+ */
 const SponsoredPriceBadge = ({
   originalPrice,
-  sponsoredPrice = 0,
+  sponsoredPrice,
   sponsorName,
+  sponsorContribution = 0,
   isSponsored,
-  size = 'md'
+  size = 'md',
+  showBreakdown = false
 }: SponsoredPriceBadgeProps) => {
   const { language } = useLanguage();
 
@@ -27,27 +41,41 @@ const SponsoredPriceBadge = ({
 
   const classes = sizeClasses[size];
 
+  // Calculate member payment using the new business logic
+  // If sponsoredPrice is provided (legacy), use it; otherwise calculate from contribution
+  const memberPayment = sponsoredPrice !== undefined 
+    ? sponsoredPrice 
+    : Math.max(0, originalPrice - sponsorContribution);
+  
+  const actualSponsorContribution = sponsoredPrice !== undefined
+    ? (originalPrice - sponsoredPrice)
+    : sponsorContribution;
+
+  const formatPrice = (amount: number) => {
+    return `${amount.toLocaleString('hu-HU')} Ft`;
+  };
+
   if (!isSponsored) {
     return (
       <div className="flex items-baseline gap-1">
         <span className={`font-bold text-black ${classes.price}`}>
-          {originalPrice > 0 ? `${originalPrice.toLocaleString()} Ft` : (language === 'hu' ? 'Ingyenes' : 'Free')}
+          {originalPrice > 0 ? formatPrice(originalPrice) : (language === 'hu' ? 'Ingyenes' : 'Free')}
         </span>
       </div>
     );
   }
 
   return (
-    <div className="space-y-1.5">
-      {/* Price Display */}
-      <div className="flex items-baseline gap-2">
-        {/* Strikethrough Original Price */}
+    <div className="space-y-2">
+      {/* Price Display - Shows Member Payment prominently */}
+      <div className="flex items-baseline gap-2 flex-wrap">
+        {/* Original Expert Price (crossed out) */}
         <span className={`text-black/40 line-through ${classes.original}`}>
-          {originalPrice.toLocaleString()} Ft
+          {formatPrice(originalPrice)}
         </span>
-        {/* New Sponsored Price */}
+        {/* Member Payment - What they actually pay */}
         <span className={`font-bold text-emerald-600 ${classes.price}`}>
-          {sponsoredPrice > 0 ? `${sponsoredPrice.toLocaleString()} Ft` : '0 Ft'}
+          {memberPayment > 0 ? formatPrice(memberPayment) : '0 Ft'}
         </span>
       </div>
 
@@ -63,15 +91,42 @@ const SponsoredPriceBadge = ({
       )}
 
       {/* Savings Highlight */}
-      {originalPrice > sponsoredPrice && (
+      {actualSponsorContribution > 0 && (
         <Badge 
           className={`bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-700 border-amber-200 ${classes.badge}`}
         >
           <Gift className="w-3 h-3 mr-1" />
           {language === 'hu' 
-            ? `${(originalPrice - sponsoredPrice).toLocaleString()} Ft megtakarítás!`
-            : `Save ${(originalPrice - sponsoredPrice).toLocaleString()} Ft!`}
+            ? `${formatPrice(actualSponsorContribution)} támogatás!`
+            : `${formatPrice(actualSponsorContribution)} sponsored!`}
         </Badge>
+      )}
+
+      {/* Payment Breakdown (optional detailed view) */}
+      {showBreakdown && isSponsored && (
+        <div className="mt-3 p-3 rounded-lg bg-black/[0.02] border border-black/5 space-y-2">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-black/60 flex items-center gap-1">
+              <Wallet className="w-3 h-3" />
+              {language === 'hu' ? 'Szakértő ára' : 'Expert price'}
+            </span>
+            <span className="font-medium text-black">{formatPrice(originalPrice)}</span>
+          </div>
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-black/60 flex items-center gap-1">
+              <Heart className="w-3 h-3 text-rose-500" />
+              {language === 'hu' ? 'Támogatói hozzájárulás' : 'Sponsor contribution'}
+            </span>
+            <span className="font-medium text-emerald-600">-{formatPrice(actualSponsorContribution)}</span>
+          </div>
+          <div className="border-t border-black/10 pt-2 flex items-center justify-between text-xs">
+            <span className="text-black/80 font-semibold flex items-center gap-1">
+              <CreditCard className="w-3 h-3" />
+              {language === 'hu' ? 'Te fizeted' : 'You pay'}
+            </span>
+            <span className="font-bold text-emerald-600">{formatPrice(memberPayment)}</span>
+          </div>
+        </div>
       )}
     </div>
   );

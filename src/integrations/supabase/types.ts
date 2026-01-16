@@ -790,8 +790,11 @@ export type Database = {
           is_active: boolean | null
           is_category_sponsorship: boolean | null
           is_chain_partner: boolean | null
+          max_sponsored_seats: number | null
           redemption_location: string | null
+          sponsor_contribution_huf: number | null
           sponsor_id: string
+          sponsored_seats_used: number | null
           sponsorship_benefit: string | null
           supported_category: string | null
           total_licenses: number
@@ -807,8 +810,11 @@ export type Database = {
           is_active?: boolean | null
           is_category_sponsorship?: boolean | null
           is_chain_partner?: boolean | null
+          max_sponsored_seats?: number | null
           redemption_location?: string | null
+          sponsor_contribution_huf?: number | null
           sponsor_id: string
+          sponsored_seats_used?: number | null
           sponsorship_benefit?: string | null
           supported_category?: string | null
           total_licenses?: number
@@ -824,8 +830,11 @@ export type Database = {
           is_active?: boolean | null
           is_category_sponsorship?: boolean | null
           is_chain_partner?: boolean | null
+          max_sponsored_seats?: number | null
           redemption_location?: string | null
+          sponsor_contribution_huf?: number | null
           sponsor_id?: string
+          sponsored_seats_used?: number | null
           sponsorship_benefit?: string | null
           supported_category?: string | null
           total_licenses?: number
@@ -2635,6 +2644,48 @@ export type Database = {
           },
         ]
       }
+      sponsor_packages: {
+        Row: {
+          billing_period: string
+          bonus_credits_huf: number | null
+          created_at: string | null
+          credits_huf: number
+          id: string
+          is_active: boolean | null
+          name_en: string
+          name_hu: string
+          package_key: string
+          platform_fee_huf: number
+          total_price_huf: number
+        }
+        Insert: {
+          billing_period: string
+          bonus_credits_huf?: number | null
+          created_at?: string | null
+          credits_huf: number
+          id?: string
+          is_active?: boolean | null
+          name_en: string
+          name_hu: string
+          package_key: string
+          platform_fee_huf: number
+          total_price_huf: number
+        }
+        Update: {
+          billing_period?: string
+          bonus_credits_huf?: number | null
+          created_at?: string | null
+          credits_huf?: number
+          id?: string
+          is_active?: boolean | null
+          name_en?: string
+          name_hu?: string
+          package_key?: string
+          platform_fee_huf?: number
+          total_price_huf?: number
+        }
+        Relationships: []
+      }
       sponsors: {
         Row: {
           created_at: string | null
@@ -2963,14 +3014,20 @@ export type Database = {
           created_at: string | null
           creator_id: string
           creator_revenue: number
+          expert_payout: number | null
+          expert_price_huf: number | null
           expert_share: number | null
           gross_amount: number | null
           id: string
           license_count: number | null
+          member_payment_amount: number | null
+          platform_commission: number | null
           platform_fee: number
           platform_share: number | null
           share_percentage: number | null
           sponsor_id: string | null
+          sponsor_payment_amount: number | null
+          sponsorship_id: string | null
           status: string | null
           transaction_type: string | null
         }
@@ -2983,14 +3040,20 @@ export type Database = {
           created_at?: string | null
           creator_id: string
           creator_revenue: number
+          expert_payout?: number | null
+          expert_price_huf?: number | null
           expert_share?: number | null
           gross_amount?: number | null
           id?: string
           license_count?: number | null
+          member_payment_amount?: number | null
+          platform_commission?: number | null
           platform_fee: number
           platform_share?: number | null
           share_percentage?: number | null
           sponsor_id?: string | null
+          sponsor_payment_amount?: number | null
+          sponsorship_id?: string | null
           status?: string | null
           transaction_type?: string | null
         }
@@ -3003,14 +3066,20 @@ export type Database = {
           created_at?: string | null
           creator_id?: string
           creator_revenue?: number
+          expert_payout?: number | null
+          expert_price_huf?: number | null
           expert_share?: number | null
           gross_amount?: number | null
           id?: string
           license_count?: number | null
+          member_payment_amount?: number | null
+          platform_commission?: number | null
           platform_fee?: number
           platform_share?: number | null
           share_percentage?: number | null
           sponsor_id?: string | null
+          sponsor_payment_amount?: number | null
+          sponsorship_id?: string | null
           status?: string | null
           transaction_type?: string | null
         }
@@ -3041,6 +3110,13 @@ export type Database = {
             columns: ["sponsor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_sponsorship_id_fkey"
+            columns: ["sponsorship_id"]
+            isOneToOne: false
+            referencedRelation: "content_sponsorships"
             referencedColumns: ["id"]
           },
         ]
@@ -3529,16 +3605,27 @@ export type Database = {
             }
             Returns: string
           }
-      calculate_revenue_split: {
-        Args: { gross_amount: number }
+      calculate_program_payment: {
+        Args: { expert_price_huf: number; sponsor_contribution_huf?: number }
         Returns: {
-          expert_share: number
-          platform_share: number
+          expert_payout_huf: number
+          member_payment_huf: number
+          platform_commission_huf: number
+          sponsor_payment_huf: number
+          total_collected_huf: number
         }[]
       }
       can_use_view: {
         Args: { _user_id: string; _view: string }
         Returns: boolean
+      }
+      check_and_reserve_sponsored_seat: {
+        Args: { p_sponsorship_id: string; p_user_id: string }
+        Returns: {
+          message: string
+          seats_remaining: number
+          success: boolean
+        }[]
       }
       check_content_access: {
         Args: { p_content_id: string; p_user_id: string }
@@ -3884,6 +3971,19 @@ export type Database = {
           p_voucher_id: string
         }
         Returns: Json
+      }
+      process_sponsored_purchase: {
+        Args: {
+          p_content_id: string
+          p_sponsorship_id: string
+          p_user_id: string
+        }
+        Returns: {
+          member_amount: number
+          message: string
+          sponsor_amount: number
+          success: boolean
+        }[]
       }
       st_3dclosestpoint: {
         Args: { geom1: unknown; geom2: unknown }
