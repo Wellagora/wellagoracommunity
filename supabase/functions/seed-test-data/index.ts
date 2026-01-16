@@ -20,16 +20,22 @@ const randomDateInPast = (days: number): string => {
 // Helper to pick random item from array
 const randomPick = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 
-// Test data constants
+// Test data constants - FULLY HUNGARIAN
 const TEST_PREFIX = 'TEST_';
-const SPONSOR_NAMES = ['GreenTech Kft.', 'EcoVentures Zrt.', 'Sustainability Corp'];
-const EXPERT_NAMES = [
-  { first: 'Anna', last: 'Kovács' },
-  { first: 'Péter', last: 'Nagy' },
-  { first: 'Eszter', last: 'Szabó' },
-  { first: 'László', last: 'Tóth' },
-  { first: 'Katalin', last: 'Molnár' }
+
+// Hungarian company names (fully localized)
+const SPONSOR_NAMES = ['ZöldTech Kft.', 'ÖkoVentures Zrt.', 'Fenntarthatósági Központ Kft.'];
+
+// Hungarian expert names with proper titles and locations
+const EXPERT_DATA = [
+  { first: 'Anna', last: 'Kovács', title: 'Fenntarthatósági Tanácsadó', location: 'Budapest, Magyarország', bio: 'Szenvedélyes fenntarthatósági szakértő, aki 10 éve segít embereknek zöldebb életet élni.' },
+  { first: 'Péter', last: 'Nagy', title: 'Kézműves Pék', location: 'Debrecen, Magyarország', bio: 'Hagyományos kovászos kenyerek és péksütemények mestere, a lassú ételkészítés híve.' },
+  { first: 'Eszter', last: 'Szabó', title: 'Természetes Kozmetikus', location: 'Szeged, Magyarország', bio: 'Természetes alapanyagokból készít kozmetikumokat, workshopjain megosztja tudását.' },
+  { first: 'László', last: 'Tóth', title: 'Permakultúra Szakértő', location: 'Pécs, Magyarország', bio: 'Városi kertészkedés és permakultúra rajongó, aki kis tereken is zöld oázisokat teremt.' },
+  { first: 'Katalin', last: 'Molnár', title: 'Tudatos Életmód Coach', location: 'Győr, Magyarország', bio: 'Életmód tanácsadó, aki a tudatos fogyasztás és a zero waste életmód népszerűsítésén dolgozik.' }
 ];
+
+// Hungarian member names
 const MEMBER_NAMES = [
   { first: 'Gábor', last: 'Kiss' },
   { first: 'Zsófia', last: 'Varga' },
@@ -42,18 +48,21 @@ const MEMBER_NAMES = [
   { first: 'Levente', last: 'Oláh' },
   { first: 'Lilla', last: 'Fekete' }
 ];
-const PROGRAM_TITLES = [
-  'Fenntartható Kertészkedés Alapjai',
-  'Zero Waste Konyha Workshop',
-  'Tudatos Vásárlás Mesterkurzus',
-  'Komposztálás A-tól Z-ig',
-  'Természetes Kozmetikumok Készítése',
-  'Energiatakarékos Otthon',
-  'Organikus Főzőtanfolyam',
-  'Méhészet Kezdőknek',
-  'Ökológiai Lábnyom Csökkentése',
-  'Recycling és Upcycling Workshop'
+
+// Fully Hungarian program titles and descriptions
+const PROGRAM_DATA = [
+  { title: 'Fenntartható Kertészkedés Alapjai', desc: 'Tanuld meg, hogyan alakíts ki fenntartható kertet akár kis helyen is. Komposztálás, öntözés, természetes növényvédelem.', category: 'gardening' },
+  { title: 'Hulladékmentes Konyha', desc: 'Fedezd fel a zero waste konyha titkait! Házi tartósítás, fermentálás, maradékok újrahasznosítása.', category: 'cooking' },
+  { title: 'Tudatos Vásárlás Mesterkurzus', desc: 'Hogyan vásárolj fenntarthatóan? Helyi termelők, szezonális termékek, csomagolásmentes megoldások.', category: 'sustainability' },
+  { title: 'Komposztálás A-tól Z-ig', desc: 'Minden, amit a komposztálásról tudni kell: házi komposztáló, giliszta komposzt, balkonon is!', category: 'gardening' },
+  { title: 'Természetes Kozmetikumok Készítése', desc: 'Készíts saját krémeket, szappanokat és testápolókat természetes alapanyagokból!', category: 'crafts' },
+  { title: 'Energiatakarékos Otthon', desc: 'Praktikus tippek az otthoni energiafogyasztás csökkentésére. Szigetelés, LED, okos eszközök.', category: 'sustainability' },
+  { title: 'Kovászos Kenyér Műhely', desc: 'A tökéletes kovászos kenyér titkai. Kovász ápolás, dagasztás, sütés - kezdőknek is!', category: 'cooking' },
+  { title: 'Méhészet Kezdőknek', desc: 'Ismerd meg a méhek csodálatos világát! Első lépések a házi méhészetben.', category: 'gardening' },
+  { title: 'Ökológiai Lábnyom Csökkentése', desc: 'Mérd fel és csökkentsd ökológiai lábnyomodat! Gyakorlati lépések a fenntarthatóbb életért.', category: 'sustainability' },
+  { title: 'Újrahasznosítás és Kreatív Alkotás', desc: 'Adj új életet a régi tárgyaknak! Upcycling workshop kreatív megoldásokkal.', category: 'crafts' }
 ];
+
 const CATEGORIES = ['sustainability', 'cooking', 'wellness', 'gardening', 'crafts'];
 const PRICES = [5000, 8000, 12000, 15000, 20000, 25000, 30000];
 
@@ -178,17 +187,18 @@ serve(async (req) => {
       // 2. CREATE 5 EXPERTS with 2-3 programs each
       for (let i = 0; i < 5; i++) {
         const expertId = crypto.randomUUID();
-        const name = EXPERT_NAMES[i];
+        const expert = EXPERT_DATA[i];
 
         await supabase.from('profiles').insert({
           id: expertId,
           email: `test_expert_${i}@wellagora.test`,
-          first_name: name.first,
-          last_name: name.last,
+          first_name: expert.first,
+          last_name: expert.last,
           user_role: 'expert',
           is_verified_expert: true,
-          expert_title: 'Fenntarthatósági Szakértő',
-          bio: `${TEST_PREFIX}Experienced sustainability expert for E2E testing`
+          expert_title: expert.title,
+          location: expert.location,
+          bio: `${TEST_PREFIX}${expert.bio}`
         });
 
         createdIds.experts.push(expertId);
@@ -199,13 +209,14 @@ serve(async (req) => {
           const programId = crypto.randomUUID();
           const price = randomPick(PRICES);
           const isOnline = Math.random() > 0.5;
+          const programData = PROGRAM_DATA[(i * 2 + j) % PROGRAM_DATA.length];
 
           await supabase.from('expert_contents').insert({
             id: programId,
             creator_id: expertId,
-            title: `${PROGRAM_TITLES[(i * 2 + j) % PROGRAM_TITLES.length]}`,
-            description: `${TEST_PREFIX}This is a test program for E2E testing. Price: ${price} HUF. Type: ${isOnline ? 'Online' : 'Offline'}`,
-            category: randomPick(CATEGORIES),
+            title: programData.title,
+            description: `${TEST_PREFIX}${programData.desc} Típus: ${isOnline ? 'Online' : 'Személyes'}.`,
+            category: programData.category,
             price_huf: price,
             access_type: 'paid',
             is_published: true

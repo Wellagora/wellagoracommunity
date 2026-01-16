@@ -72,6 +72,25 @@ const ImagePlaceholder = ({ icon: Icon }: { icon: typeof Leaf }) => (
   </div>
 );
 
+// Category translation helper
+const CATEGORY_TRANSLATIONS: Record<string, Record<string, string>> = {
+  'sustainability': { hu: 'Fenntarthatóság', en: 'Sustainability', de: 'Nachhaltigkeit' },
+  'sustainable-living': { hu: 'Fenntartható Életmód', en: 'Sustainable Living', de: 'Nachhaltiges Leben' },
+  'workshop': { hu: 'Műhely', en: 'Workshop', de: 'Werkstatt' },
+  'workshop-craft': { hu: 'Műhely & Kézművesség', en: 'Workshop & Craft', de: 'Werkstatt & Handwerk' },
+  'gastronomy': { hu: 'Helyi Gasztronómia', en: 'Local Gastronomy', de: 'Lokale Gastronomie' },
+  'local-gastronomy': { hu: 'Helyi Gasztronómia', en: 'Local Gastronomy', de: 'Lokale Gastronomie' },
+  'cooking': { hu: 'Főzés', en: 'Cooking', de: 'Kochen' },
+  'community': { hu: 'Közösség', en: 'Community', de: 'Gemeinschaft' },
+  'community-impact': { hu: 'Közösségi Hatás', en: 'Community Impact', de: 'Gemeinschaftswirkung' },
+  'wellness': { hu: 'Jóllét', en: 'Wellness', de: 'Wohlbefinden' },
+  'wellbeing': { hu: 'Jóllét & Reziliencia', en: 'Wellbeing & Resilience', de: 'Wohlbefinden & Resilienz' },
+  'business': { hu: 'Üzlet', en: 'Business', de: 'Geschäft' },
+  'agora-business': { hu: 'Agora Business', en: 'Agora Business', de: 'Agora Business' },
+  'gardening': { hu: 'Kertészkedés', en: 'Gardening', de: 'Gärtnern' },
+  'crafts': { hu: 'Kézművesség', en: 'Crafts', de: 'Handwerk' },
+};
+
 const ProgramsListingPage = () => {
   const { t, language } = useLanguage();
   const [searchParams] = useSearchParams();
@@ -83,6 +102,18 @@ const ProgramsListingPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const creatorFilter = searchParams.get("creator");
+
+  // Helper to get localized category label
+  const getCategoryLabel = (category: string | null): string => {
+    if (!category) return t('marketplace.program');
+    const normalized = category.toLowerCase().replace(/\s+/g, '-');
+    const translations = CATEGORY_TRANSLATIONS[normalized];
+    if (translations) {
+      return translations[language] || translations['hu'] || category;
+    }
+    // Fallback: capitalize first letter
+    return category.charAt(0).toUpperCase() + category.slice(1);
+  };
 
   // Fetch programs from Supabase
   useEffect(() => {
@@ -409,7 +440,7 @@ const ProgramsListingPage = () => {
                               <div className="absolute top-4 left-4">
                                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/80 backdrop-blur-sm text-white text-xs font-medium tracking-wide uppercase">
                                   <Star className="w-3 h-3 fill-current" />
-                                  Featured
+                                  {t('marketplace.featured')}
                                 </span>
                               </div>
                             )}
@@ -419,7 +450,7 @@ const ProgramsListingPage = () => {
                           <div className="p-6">
                             {/* Category - Uppercase, tiny, spaced out */}
                             <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-black/40 mb-3 block">
-                              {program.category || "Program"}
+                              {getCategoryLabel(program.category)}
                             </span>
                             
                             {/* Title */}

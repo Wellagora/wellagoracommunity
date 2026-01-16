@@ -770,6 +770,8 @@
   "marketplace.back_to_all": "← Back to all Workshop Secrets",
   "marketplace.showing_creator_contents": "{{count}} Workshop Secrets from this Master",
   "marketplace.filters": "Filters",
+  "marketplace.featured": "Featured",
+  "marketplace.program": "Program",
   "expert_studio.view_all_contents": "View all {{count}} Workshop Secrets →",
 
   "content.guide": "Workshop Secret",

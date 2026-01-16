@@ -180,7 +180,7 @@ const FeaturedProgramsSection = () => {
                       <div className="p-6">
                         {/* Category */}
                         <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-black/40 mb-3 block">
-                          Featured
+                          {t('marketplace.featured')}
                         </span>
                         
                         {/* Title - Serif */}
