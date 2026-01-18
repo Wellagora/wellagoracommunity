@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import PurchaseModal from "@/components/PurchaseModal";
+import MobileStickyPurchaseBar from "@/components/program/MobileStickyPurchaseBar";
 import ReviewSection from "@/components/reviews/ReviewSection";
 import StarRating from "@/components/reviews/StarRating";
 import GracefulPlaceholder from "@/components/GracefulPlaceholder";
@@ -589,6 +590,22 @@ const ProgramDetailPage = () => {
               sponsor_contribution: sponsorship?.sponsor_contribution_huf || (program as any).fixed_sponsor_amount || undefined,
               sponsorship_id: sponsorship?.id || undefined,
             }}
+          />
+        )}
+
+        {/* Mobile Sticky Purchase Bar */}
+        {program && (
+          <MobileStickyPurchaseBar
+            originalPrice={program.price_huf}
+            sponsorContribution={sponsorship?.sponsor_contribution_huf || (program as any).fixed_sponsor_amount}
+            isSponsored={(program as any).is_sponsored}
+            sponsorName={(program as any).sponsor_name}
+            hasAccess={accessStatus?.has_access}
+            alreadyClaimed={alreadyClaimed}
+            isClaimingVoucher={isClaimingVoucher}
+            onPurchaseClick={() => setIsPurchaseModalOpen(true)}
+            onClaimVoucher={(program as any).is_sponsored ? handleClaimVoucher : undefined}
+            accessLevel={program.access_level}
           />
         )}
       </div>
