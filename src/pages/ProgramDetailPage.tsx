@@ -22,7 +22,11 @@ import {
   CheckCircle2,
   ShoppingCart,
   Ticket,
-  Check
+  Check,
+  MapPin,
+  Monitor,
+  Video,
+  Sparkles
 } from "lucide-react";
 import { motion } from "framer-motion";
 import PurchaseModal from "@/components/PurchaseModal";
@@ -249,7 +253,7 @@ const ProgramDetailPage = () => {
           ) : (
             <>
               <Ticket className="w-5 h-5 mr-2" />
-              {t('landing.cta_join') || 'Csatlakozom'}
+              {t('voucher.claim_spot') || 'Támogatott hely igénylése'}
             </>
           )}
         </Button>
@@ -407,18 +411,27 @@ const ProgramDetailPage = () => {
                 )}
               </div>
 
-              {/* Badges Row */}
+              {/* Badges Row with Event Format Tag */}
               <div className="flex flex-wrap gap-2 mb-4">
+                {/* Event Format Tag */}
+                {program.content_type && (
+                  <Badge className="bg-black/10 text-foreground border-black/20">
+                    {program.content_type === 'in_person' && <><MapPin className="w-3 h-3 mr-1" />📍 Élő esemény</>}
+                    {program.content_type === 'online_live' && <><Monitor className="w-3 h-3 mr-1" />💻 Online élő</>}
+                    {program.content_type === 'recorded' && <><Video className="w-3 h-3 mr-1" />🎥 Videókurzus</>}
+                  </Badge>
+                )}
+                {!program.content_type && (
+                  <Badge className="bg-black/10 text-foreground border-black/20">
+                    <MapPin className="w-3 h-3 mr-1" />📍 Élő esemény
+                  </Badge>
+                )}
+                
                 {getAccessBadge(program.access_level)}
                 {program.is_featured && (
                   <Badge className="bg-amber-500/20 text-amber-600 border-amber-500/30">
                     <Star className="w-3 h-3 mr-1 fill-amber-500" />
                     {t('creator.status_featured')}
-                  </Badge>
-                )}
-                {program.access_level === 'one_time_purchase' && program.price_huf && (
-                  <Badge className="bg-primary/20 text-primary border-primary/30">
-                    {program.price_huf.toLocaleString()} Ft
                   </Badge>
                 )}
               </div>
@@ -485,50 +498,68 @@ const ProgramDetailPage = () => {
               <div className="sticky top-24">
                 <Card className="bg-white/80 backdrop-blur-md border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                   <CardContent className="p-6">
-                    {/* Sponsor Info if available - Professional Badge */}
-                    {program.is_sponsored && program.sponsor_name && (
-                      <div className="mb-4 p-4 rounded-xl bg-emerald-50 border border-emerald-200">
-                        {/* Sponsored/Free Badge */}
-                        <Badge className="bg-emerald-500 text-white border-0 text-sm font-semibold mb-3 px-3 py-1">
-                          TÁMOGATOTT / INGYENES
-                        </Badge>
-                        
-                        {/* Price Display */}
-                        <div className="flex items-center gap-3 mb-3">
-                          {program.price_huf && (
-                            <span className="text-lg text-muted-foreground line-through">
-                              {program.price_huf.toLocaleString()} Ft
-                            </span>
-                          )}
+                    {/* Sponsor Info - CONSISTENT with marketplace cards */}
+                    {program.is_sponsored && program.sponsor_name && (() => {
+                      const contributionAmount = sponsorship?.sponsor_contribution_huf || (program as any).fixed_sponsor_amount || (program.price_huf ? Math.round(program.price_huf * 0.8) : 5000);
+                      const memberPayment = Math.max(0, (program.price_huf || 0) - contributionAmount);
+                      const formatPrice = (price: number) => `${price.toLocaleString('hu-HU')} Ft`;
+                      
+                      return (
+                        <div className="mb-4 p-4 rounded-xl bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 border border-primary/20">
+                          {/* Price hierarchy: strikethrough original, then discounted or FREE badge */}
+                          <div className="flex flex-col gap-1 mb-3">
+                            {/* Original price strikethrough */}
+                            {program.price_huf && (
+                              <span className="text-sm text-muted-foreground line-through">
+                                {formatPrice(program.price_huf)}
+                              </span>
+                            )}
+                            {/* Show FREE badge or discounted price */}
+                            {memberPayment === 0 ? (
+                              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 font-semibold text-base w-fit">
+                                <Sparkles className="w-4 h-4" />
+                                INGYENES
+                              </span>
+                            ) : (
+                              <span className="text-2xl font-bold text-primary">
+                                {formatPrice(memberPayment)}
+                              </span>
+                            )}
+                          </div>
+                          
+                          {/* Sponsor support message */}
+                          <p className="text-sm text-foreground/80 mb-3">
+                            A <span className="font-semibold">{program.sponsor_name}</span> {formatPrice(contributionAmount)}-tal támogatja a részvételedet!
+                          </p>
+                          
+                          {/* Sponsor Logo & Name - Clickable */}
+                          <Link 
+                            to={`/partners/${program.sponsor_name?.toLowerCase().replace(/\s+/g, '-')}`}
+                            className="flex items-center gap-3 p-2 rounded-lg bg-white/60 hover:bg-white/80 transition-colors group"
+                          >
+                            <div className="w-12 h-12 rounded-lg bg-white border border-border/20 flex items-center justify-center overflow-hidden shadow-sm group-hover:scale-105 transition-transform">
+                              <img 
+                                src={`/partner-logos/${program.sponsor_name?.toLowerCase()}.png`}
+                                alt={program.sponsor_name}
+                                className="w-10 h-10 object-contain"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.src = `https://logo.clearbit.com/${program.sponsor_name?.toLowerCase()}.hu?size=80`;
+                                }}
+                              />
+                            </div>
+                            <div>
+                              <p className="text-xs text-muted-foreground">{t('marketplace.sponsored_by_label')}</p>
+                              <p className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                                {program.sponsor_name}
+                              </p>
+                            </div>
+                          </Link>
                         </div>
-                        
-                        {/* Sponsor Logo & Name */}
-                        <Link 
-                          to={`/partners/${program.sponsor_name?.toLowerCase().replace(/\s+/g, '-')}`}
-                          className="flex items-center gap-3 p-2 rounded-lg bg-white/60 hover:bg-white/80 transition-colors group"
-                        >
-                          <div className="w-12 h-12 rounded-lg bg-white border border-border/20 flex items-center justify-center overflow-hidden shadow-sm group-hover:scale-105 transition-transform">
-                            <img 
-                              src={`/partner-logos/${program.sponsor_name?.toLowerCase()}.png`}
-                              alt={program.sponsor_name}
-                              className="w-10 h-10 object-contain"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.style.display = 'none';
-                              }}
-                            />
-                          </div>
-                          <div>
-                            <p className="text-xs text-muted-foreground">{t('marketplace.sponsored_by_label')}</p>
-                            <p className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                              {program.sponsor_name}
-                            </p>
-                          </div>
-                        </Link>
-                      </div>
-                    )}
+                      );
+                    })()}
 
-                    {/* Price Display */}
+                    {/* Price Display - Non-sponsored programs */}
                     {program.access_level === 'one_time_purchase' && program.price_huf && !program.is_sponsored && (
                       <div className="mb-4">
                         <p className="text-3xl font-bold text-foreground">

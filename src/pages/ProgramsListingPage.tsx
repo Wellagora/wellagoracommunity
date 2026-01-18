@@ -583,10 +583,17 @@ const ProgramsListingPage = () => {
 
                           {/* Enhanced Content */}
                           <div className="p-6">
-                            {/* Category - Uppercase, tiny, spaced out */}
-                            <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-black/40 mb-3 block">
-                              {getCategoryLabel(program.category)}
-                            </span>
+                            {/* Event Format Tag + Category */}
+                            <div className="flex items-center gap-2 mb-3">
+                              <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-black/5 border border-black/10 text-black/70">
+                                {program.content_type === 'recorded' && '🎥 Videókurzus'}
+                                {program.content_type === 'online_live' && '💻 Online élő'}
+                                {(program.content_type === 'in_person' || !program.content_type) && '📍 Élő esemény'}
+                              </span>
+                              <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-black/40">
+                                {getCategoryLabel(program.category)}
+                              </span>
+                            </div>
                             
                             {/* Title */}
                             <h3 className="text-xl font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-black transition-colors duration-300">

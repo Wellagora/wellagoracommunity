@@ -20,8 +20,8 @@ export const TERMS_CONTENT = {
         content: 'A platformon három fő szerepkör létezik: Tag (közösségi résztvevő), Szakértő (tudásmegosztó), és Szponzor (támogató). Minden szerepkörhöz speciális jogosultságok és felelősségek tartoznak, melyeket a felhasználó a regisztráció során elfogad.'
       },
       {
-        title: '4. Voucher rendszer',
-        content: 'A szponzorok által támogatott voucher-ek a megadott feltételek szerint válthatók be. A voucher-ek nem átruházhatók és nem válthatók készpénzre. A beváltási feltételeket minden voucher esetén külön feltüntetjük. A voucher-ek érvényességi ideje korlátozott.'
+        title: '4. Támogatott helyek rendszere',
+        content: 'A szponzorok által támogatott helyek a megadott feltételek szerint válthatók be. A támogatott helyek nem átruházhatók és nem válthatók készpénzre. A beváltási feltételeket minden támogatás esetén külön feltüntetjük. A támogatott helyek érvényességi ideje korlátozott.'
       },
       {
         title: '5. Szakértői tartalom',
@@ -66,8 +66,8 @@ export const TERMS_CONTENT = {
         content: 'The platform features three main roles: Member (community participant), Expert (knowledge sharer), and Sponsor (supporter). Each role carries specific permissions and responsibilities that users accept upon registration.'
       },
       {
-        title: '4. Voucher System',
-        content: 'Sponsor-supported vouchers can be redeemed according to specified conditions. Vouchers are non-transferable and cannot be exchanged for cash. Redemption conditions are specified for each voucher. Vouchers have limited validity periods.'
+        title: '4. Sponsored Spots System',
+        content: 'Sponsor-supported spots can be redeemed according to specified conditions. Sponsored spots are non-transferable and cannot be exchanged for cash. Redemption conditions are specified for each sponsorship. Sponsored spots have limited validity periods.'
       },
       {
         title: '5. Expert Content',
