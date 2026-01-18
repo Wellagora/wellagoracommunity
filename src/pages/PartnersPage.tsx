@@ -22,7 +22,7 @@ const ALL_PARTNERS = [
     id: "1",
     name: "Praktiker",
     slug: "praktiker",
-    logo: "https://logo.clearbit.com/praktiker.hu",
+    logo: "/partner-logos/praktiker.png",
     category: "DIY & Garden",
     offerCount: 2
   },
@@ -30,7 +30,7 @@ const ALL_PARTNERS = [
     id: "2",
     name: "DM",
     slug: "dm",
-    logo: "https://logo.clearbit.com/dm.de",
+    logo: "/partner-logos/dm.png",
     category: "Health & Beauty",
     offerCount: 1
   },
@@ -38,7 +38,7 @@ const ALL_PARTNERS = [
     id: "3",
     name: "Rossmann",
     slug: "rossmann",
-    logo: "https://logo.clearbit.com/rossmann.de",
+    logo: "/partner-logos/rossmann.png",
     category: "Health & Beauty",
     offerCount: 1
   },
@@ -46,7 +46,7 @@ const ALL_PARTNERS = [
     id: "4",
     name: "OBI",
     slug: "obi",
-    logo: "https://logo.clearbit.com/obi.de",
+    logo: "/partner-logos/obi.png",
     category: "DIY & Garden",
     offerCount: 0
   },
@@ -54,7 +54,7 @@ const ALL_PARTNERS = [
     id: "5",
     name: "IKEA",
     slug: "ikea",
-    logo: "https://logo.clearbit.com/ikea.com",
+    logo: "/partner-logos/ikea.png",
     category: "Home & Living",
     offerCount: 0
   },
@@ -62,7 +62,7 @@ const ALL_PARTNERS = [
     id: "6",
     name: "Auchan",
     slug: "auchan",
-    logo: "https://logo.clearbit.com/auchan.hu",
+    logo: "/partner-logos/auchan.png",
     category: "Grocery",
     offerCount: 0
   },

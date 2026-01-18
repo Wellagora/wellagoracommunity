@@ -6,14 +6,14 @@ import { Link } from 'react-router-dom';
 
 // Partner logo mapping for clickable sponsor logos
 const PARTNER_LOGOS: Record<string, { logo: string; slug: string }> = {
-  'Praktiker': { logo: 'https://logo.clearbit.com/praktiker.hu', slug: 'praktiker' },
-  'DM': { logo: 'https://logo.clearbit.com/dm.de', slug: 'dm' },
-  'Rossmann': { logo: 'https://logo.clearbit.com/rossmann.de', slug: 'rossmann' },
-  'OBI': { logo: 'https://logo.clearbit.com/obi.de', slug: 'obi' },
-  'IKEA': { logo: 'https://logo.clearbit.com/ikea.com', slug: 'ikea' },
-  'Auchan': { logo: 'https://logo.clearbit.com/auchan.hu', slug: 'auchan' },
-  'SPAR': { logo: 'https://logo.clearbit.com/spar.hu', slug: 'spar' },
-  'Müller': { logo: 'https://logo.clearbit.com/mueller.de', slug: 'muller' },
+  'Praktiker': { logo: '/partner-logos/praktiker.png', slug: 'praktiker' },
+  'DM': { logo: '/partner-logos/dm.png', slug: 'dm' },
+  'Rossmann': { logo: '/partner-logos/rossmann.png', slug: 'rossmann' },
+  'OBI': { logo: '/partner-logos/obi.png', slug: 'obi' },
+  'IKEA': { logo: '/partner-logos/ikea.png', slug: 'ikea' },
+  'Auchan': { logo: '/partner-logos/auchan.png', slug: 'auchan' },
+  'SPAR': { logo: '/partner-logos/spar.png', slug: 'spar' },
+  'Müller': { logo: '/partner-logos/muller.png', slug: 'muller' },
 };
 // Content types with distinct quota logic
 export type ContentType = 'recorded' | 'online_live' | 'in_person';
@@ -209,10 +209,6 @@ export const SponsorContributionBadge = ({
                 src={partnerInfo.logo} 
                 alt={sponsorName}
                 className="w-full h-full object-contain p-1.5"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.parentElement!.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-primary/10 text-primary font-bold text-xs">${sponsorName.charAt(0)}</div>`;
-                }}
               />
             </Link>
           ) : (
