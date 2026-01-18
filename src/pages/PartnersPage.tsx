@@ -166,10 +166,10 @@ const PartnersPage = () => {
                   transition={{ delay: index * 0.05 }}
                 >
                   <Link to={`/partners/${partner.slug}`}>
-                    <Card className="h-full hover:shadow-lg transition-all group bg-white border-border/40">
+                    <Card className="h-full hover:shadow-xl transition-all group bg-white border-border/40 hover:border-primary/20">
                       <CardContent className="p-6">
-                        {/* Logo */}
-                        <div className="w-20 h-20 mx-auto mb-4 rounded-xl bg-slate-50 border border-border/20 p-4 group-hover:scale-105 transition-transform">
+                        {/* Logo - Boosted to 80px with premium styling */}
+                        <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-white border border-border/30 p-3 group-hover:scale-110 transition-transform shadow-sm group-hover:shadow-lg">
                           <img 
                             src={partner.logo} 
                             alt={partner.name} 

@@ -180,11 +180,11 @@ const PartnerProfilePage = () => {
             </Link>
 
             <div className="flex flex-col md:flex-row items-start gap-8">
-              {/* Partner Logo - Large, high-res, clean */}
+              {/* Partner Logo - Extra Large 160px, high-res, premium styling */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="w-40 h-40 rounded-2xl bg-white/80 backdrop-blur-md border border-border/20 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.06)] flex-shrink-0 flex items-center justify-center"
+                className="w-44 h-44 rounded-3xl bg-white border-[0.5px] border-black/10 p-5 shadow-xl flex-shrink-0 flex items-center justify-center"
               >
                 <img 
                   src={partner.logo} 
@@ -211,9 +211,9 @@ const PartnerProfilePage = () => {
                   <p className="text-muted-foreground mb-5 max-w-2xl leading-relaxed">{description}</p>
                   
                   <div className="flex flex-wrap gap-3">
-                    <Button size="default" asChild className="bg-black hover:bg-black/90 text-white font-semibold shadow-lg">
+                    <Button size="lg" asChild className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-xl text-base px-8">
                       <a href={partner.website} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="w-4 h-4 mr-2" />
+                        <ExternalLink className="w-5 h-5 mr-2" />
                         {language === "hu" ? "Irány a webshop" : language === "de" ? "Zum Webshop" : "Visit Webshop"}
                       </a>
                     </Button>

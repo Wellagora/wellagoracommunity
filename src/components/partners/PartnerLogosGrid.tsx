@@ -99,12 +99,12 @@ export const PartnerLogosGrid = memo(({
           >
             <Link 
               to={`/partners/${partner.slug}`}
-              className="block w-12 h-12 rounded-lg bg-white border border-border/20 p-2 hover:shadow-md hover:scale-110 transition-all"
+              className="block w-16 h-16 rounded-xl bg-white border border-border/30 p-2.5 hover:shadow-lg hover:scale-110 transition-all shadow-sm"
             >
               <img 
                 src={partner.logo} 
                 alt={partner.name} 
-                className="w-full h-full object-contain opacity-70 hover:opacity-100 transition-opacity"
+                className="w-full h-full object-contain hover:opacity-100 transition-opacity"
               />
             </Link>
           </motion.div>
@@ -138,13 +138,13 @@ export const PartnerLogosGrid = memo(({
           >
             <Link 
               to={`/partners/${partner.slug}`}
-              className="group block aspect-square rounded-xl bg-white border border-border/20 p-3 hover:shadow-lg hover:border-primary/20 transition-all"
+              className="group block aspect-square rounded-2xl bg-white border border-border/30 p-3 hover:shadow-xl hover:border-primary/20 transition-all shadow-sm"
             >
               <div className="w-full h-full flex items-center justify-center">
                 <img 
                   src={partner.logo} 
                   alt={partner.name} 
-                  className="max-w-full max-h-full object-contain opacity-60 group-hover:opacity-100 transition-opacity"
+                  className="max-w-full max-h-full object-contain group-hover:opacity-100 transition-opacity group-hover:scale-105"
                 />
               </div>
             </Link>
