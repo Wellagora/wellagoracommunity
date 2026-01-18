@@ -210,6 +210,7 @@ const Navigation = () => {
         { path: "/", label: t("nav.home"), icon: Home },
         { path: "/piacer", label: t("nav.marketplace"), icon: Store },
         { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
+        { path: "/partners", label: t("nav.partners") || "Partnerek", icon: Building2 },
       ];
     }
 
@@ -218,6 +219,7 @@ const Navigation = () => {
       { path: "/", label: t("nav.home"), icon: Home },
       { path: "/piacer", label: t("nav.marketplace"), icon: Store },
       { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
+      { path: "/partners", label: t("nav.partners") || "Partnerek", icon: Building2 },
       { path: "/community", label: t("nav.community"), icon: UsersIcon },
     ];
 

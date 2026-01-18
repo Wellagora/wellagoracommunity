@@ -78,6 +78,8 @@ const CreatorPublicProfilePage = lazy(() => import("@/pages/CreatorPublicProfile
 const ProgramsListingPage = lazy(() => import("@/pages/ProgramsListingPage"));
 const NotificationsPage = lazy(() => import("@/pages/NotificationsPage"));
 const MyCoursesPage = lazy(() => import("@/pages/MyCoursesPage"));
+const PartnersPage = lazy(() => import("@/pages/PartnersPage"));
+const PartnerProfilePage = lazy(() => import("@/pages/PartnerProfilePage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function App() {
@@ -164,6 +166,10 @@ function App() {
                           <Route path="/events" element={<Navigate to="/esemenyek" replace />} />
                           <Route path="/elo-alkalmak" element={<Navigate to="/esemenyek" replace />} />
                           <Route path="/esemenyek" element={<EventsPage />} />
+                          
+                          {/* Partner routes */}
+                          <Route path="/partners" element={<PartnersPage />} />
+                          <Route path="/partners/:slug" element={<PartnerProfilePage />} />
                           
                           {/* Redirect challenges to marketplace */}
                           <Route path="/challenges" element={<Navigate to="/piacer" replace />} />

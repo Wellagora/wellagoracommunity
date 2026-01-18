@@ -14,6 +14,7 @@ import { Calendar, MapPin, Users, Clock, Search, Filter, Check } from "lucide-re
 import { format } from "date-fns";
 import { hu, de, enUS } from "date-fns/locale";
 import { toast } from "sonner";
+import EventCard from "@/components/events/EventCard";
 
 const VILLAGES = [
   "Kővágóörs",
@@ -190,92 +191,18 @@ const EventsPage = () => {
               ))}
             </div>
           ) : filteredEvents && filteredEvents.length > 0 ? (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {filteredEvents.map((event) => {
-                const dateInfo = formatEventDate(event.start_date);
-                const rsvpStatus = getUserRsvpStatus(event.id);
-                const villageColor = event.village ? villageColors[event.village] : "bg-muted text-muted-foreground";
+                const rsvpStatus = getUserRsvpStatus(event.id) as "going" | "maybe" | "not_going" | null;
 
                 return (
-                  <Card key={event.id} className="overflow-hidden hover:shadow-lg transition-shadow group">
-                    {/* Event Image */}
-                    <div className="relative h-40 overflow-hidden">
-                      <img
-                        src={event.image_url || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80'}
-                        alt={event.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        onError={(e) => {
-                          e.currentTarget.src = 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80';
-                        }}
-                      />
-                      {/* Date badge overlay */}
-                      <div className="absolute top-3 left-3 bg-background/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg">
-                        <div className="text-2xl font-bold text-primary leading-none">{dateInfo.day}</div>
-                        <div className="text-xs text-muted-foreground uppercase">{dateInfo.month}</div>
-                      </div>
-                      {/* RSVP indicator */}
-                      {rsvpStatus === "going" && (
-                        <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-success/90 backdrop-blur-sm flex items-center justify-center shadow-lg">
-                          <Check className="w-4 h-4 text-white" />
-                        </div>
-                      )}
-                    </div>
-
-                    <CardContent className="p-4 space-y-3">
-                      <div>
-                        <CardTitle className="text-lg leading-tight mb-2">{event.title}</CardTitle>
-                        {event.village && (
-                          <Badge variant="outline" className={`text-xs ${villageColor}`}>
-                            {event.village}
-                          </Badge>
-                        )}
-                      </div>
-
-                      {event.description && (
-                        <p className="text-sm text-muted-foreground line-clamp-2">{event.description}</p>
-                      )}
-
-                      <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
-                          {dateInfo.weekday}, {dateInfo.time}
-                        </span>
-                        {event.location_name && (
-                          <span className="flex items-center gap-1">
-                            <MapPin className="w-4 h-4" />
-                            {event.location_name}
-                          </span>
-                        )}
-                        {event.max_participants && (
-                          <span className="flex items-center gap-1">
-                            <Users className="w-4 h-4" />
-                            {event.current_participants || 0}/{event.max_participants}
-                          </span>
-                        )}
-                      </div>
-
-                      {user && (
-                        <div className="flex gap-2 pt-2">
-                          <Button
-                            variant={rsvpStatus === "going" ? "default" : "outline"}
-                            size="sm"
-                            className="flex-1"
-                            onClick={() => handleRsvp(event.id, "going")}
-                          >
-                            {t("events.going")}
-                          </Button>
-                          <Button
-                            variant={rsvpStatus === "maybe" ? "secondary" : "ghost"}
-                            size="sm"
-                            className="flex-1"
-                            onClick={() => handleRsvp(event.id, "maybe")}
-                          >
-                            {t("events.maybe")}
-                          </Button>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
+                  <EventCard
+                    key={event.id}
+                    event={event}
+                    rsvpStatus={rsvpStatus}
+                    onRsvp={user ? handleRsvp : undefined}
+                    showRsvpButtons={!!user}
+                  />
                 );
               })}
             </div>
