@@ -13,6 +13,8 @@ import Step2Details from "./wizard-steps/Step2Details";
 import Step3Localization from "./wizard-steps/Step3Localization";
 import Step4Preview from "./wizard-steps/Step4Preview";
 
+export type ContentType = 'in_person' | 'online_live' | 'recorded';
+
 export interface ProgramFormData {
   // Media
   mediaFile: File | null;
@@ -25,6 +27,15 @@ export interface ProgramFormData {
   category: string;
   pricingMode: "sponsor_only" | "purchasable";
   price_huf: number;
+  
+  // Program Type & Conditional Fields
+  contentType: ContentType;
+  eventDate: string; // ISO date string
+  eventTime: string; // HH:MM format
+  locationAddress: string; // Physical location for in_person
+  locationMapUrl: string; // Google Maps link
+  meetingLink: string; // Zoom/Teams link for online_live
+  videoUrl: string; // Vimeo/YouTube link for recorded
   
   // Localization
   description_hu: string;
@@ -44,6 +55,13 @@ const initialFormData: ProgramFormData = {
   category: "",
   pricingMode: "sponsor_only",
   price_huf: 0,
+  contentType: "in_person",
+  eventDate: "",
+  eventTime: "",
+  locationAddress: "",
+  locationMapUrl: "",
+  meetingLink: "",
+  videoUrl: "",
   description_hu: "",
   title_en: "",
   description_en: "",
@@ -117,6 +135,13 @@ const ProgramCreatorWizard = () => {
         category: data.category || "",
         pricingMode: data.price_huf && data.price_huf > 0 ? "purchasable" : "sponsor_only",
         price_huf: data.price_huf || 0,
+        contentType: (data.content_type as ContentType) || "in_person",
+        eventDate: "",
+        eventTime: "",
+        locationAddress: "",
+        locationMapUrl: "",
+        meetingLink: data.content_url || "",
+        videoUrl: data.content_url || "",
         description_hu: data.description || "",
         title_en: data.title_en || "",
         description_en: data.description_en || "",
@@ -188,6 +213,13 @@ const ProgramCreatorWizard = () => {
         }
       }
 
+      // Prepare content URL based on content type
+      const contentUrl = formData.contentType === 'recorded' 
+        ? formData.videoUrl 
+        : formData.contentType === 'online_live' 
+        ? formData.meetingLink 
+        : formData.locationMapUrl;
+
       const contentData = {
         title: formData.title_hu || "Névtelen program",
         title_en: formData.title_en || null,
@@ -196,6 +228,8 @@ const ProgramCreatorWizard = () => {
         description_en: formData.description_en || null,
         description_de: formData.description_de || null,
         category: formData.category,
+        content_type: formData.contentType,
+        content_url: contentUrl || null,
         image_url: imageUrl,
         thumbnail_url: imageUrl,
         price_huf: formData.pricingMode === "purchasable" ? formData.price_huf : 0,
