@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useLocalizedContent } from "@/hooks/useLocalizedContent";
 import { useVouchers } from "@/hooks/useVouchers";
+import { useFavorites } from "@/hooks/useFavorites";
 import { MOCK_PROGRAMS, getMockExpertById } from "@/data/mockData";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -26,7 +27,8 @@ import {
   MapPin,
   Monitor,
   Video,
-  Sparkles
+  Sparkles,
+  Heart
 } from "lucide-react";
 import { motion } from "framer-motion";
 import PurchaseModal from "@/components/PurchaseModal";
@@ -44,6 +46,7 @@ const ProgramDetailPage = () => {
   const { t } = useLanguage();
   const { getLocalizedField } = useLocalizedContent();
   const { claimVoucher, hasVoucherForContent, getVoucherByContentId } = useVouchers();
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   // Check if this is a mock program
   const isMockProgram = id?.startsWith('mock-program-');
@@ -109,14 +112,14 @@ const ProgramDetailPage = () => {
     enabled: !!id,
   });
 
-  // Fetch active sponsorship for this program
+  // Fetch active sponsorship for this program with quota info
   const { data: sponsorship } = useQuery({
     queryKey: ['programSponsorship', id],
     queryFn: async () => {
       if (isMockProgram) return null;
       const { data } = await supabase
         .from('content_sponsorships')
-        .select('id, sponsor_contribution_huf, is_active')
+        .select('id, sponsor_contribution_huf, is_active, total_licenses, used_licenses, max_sponsored_seats, sponsored_seats_used')
         .eq('content_id', id)
         .eq('is_active', true)
         .maybeSingle();
@@ -124,6 +127,14 @@ const ProgramDetailPage = () => {
     },
     enabled: !!id && !isMockProgram,
   });
+
+  // Calculate quota status
+  const quotaInfo = sponsorship ? {
+    maxSeats: sponsorship.max_sponsored_seats || sponsorship.total_licenses || 10,
+    usedSeats: sponsorship.sponsored_seats_used || sponsorship.used_licenses || 0,
+    get remainingSeats() { return Math.max(0, this.maxSeats - this.usedSeats); },
+    get isExhausted() { return this.remainingSeats === 0; }
+  } : null;
 
   // Fetch related programs from same creator - use mock data for mock programs
   const { data: relatedPrograms } = useQuery({
@@ -236,8 +247,27 @@ const ProgramDetailPage = () => {
       );
     }
 
-    // For real programs (not mock), show claim button
+    // For real programs (not mock), show claim button with quota check
     if (!isMockProgram && id) {
+      // If quota is exhausted, show impact message instead
+      if (quotaInfo?.isExhausted) {
+        return (
+          <div className="space-y-3 w-full">
+            <Button 
+              size="lg"
+              variant="outline"
+              className="w-full border-amber-500/50 text-amber-600 bg-amber-50 cursor-not-allowed"
+              disabled
+            >
+              {t('voucher.quota_exhausted') || 'Elfogyott a támogatott keret'}
+            </Button>
+            <p className="text-sm text-center text-muted-foreground">
+              {quotaInfo.usedSeats} {t('sponsor.members_supported') || 'Tag részvételét támogatta'}
+            </p>
+          </div>
+        );
+      }
+
       return (
         <Button 
           size="lg"

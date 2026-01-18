@@ -1,7 +1,9 @@
 import { useMemo, useState, useEffect } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useLocalizedContent } from "@/hooks/useLocalizedContent";
+import { useAuth } from "@/contexts/AuthContext";
+import { useFavorites } from "@/hooks/useFavorites";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -143,7 +145,10 @@ const FALLBACK_SPONSOR = {
 const ProgramsListingPage = () => {
   const { t, language } = useLanguage();
   const { getLocalizedField } = useLocalizedContent();
+  const { user } = useAuth();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -151,6 +156,7 @@ const ProgramsListingPage = () => {
   const [filteredCreator, setFilteredCreator] = useState<CreatorProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [usingMockData, setUsingMockData] = useState(false);
+  const [sponsorshipData, setSponsorshipData] = useState<Record<string, { maxSeats: number; usedSeats: number; contribution: number }>>({});
 
   const creatorFilter = searchParams.get("creator");
 
@@ -261,6 +267,27 @@ const ProgramsListingPage = () => {
         }
 
         setUsingMockData(false);
+
+        // Fetch all content_sponsorships for these programs
+        const contentIds = contentsData.map(c => c.id);
+        const { data: sponsorships } = await supabase
+          .from('content_sponsorships')
+          .select('content_id, total_licenses, used_licenses, max_sponsored_seats, sponsored_seats_used, sponsor_contribution_huf, is_active')
+          .in('content_id', contentIds)
+          .eq('is_active', true);
+
+        // Build sponsorship lookup map
+        const sponsorshipMap: Record<string, { maxSeats: number; usedSeats: number; contribution: number }> = {};
+        if (sponsorships) {
+          for (const s of sponsorships) {
+            sponsorshipMap[s.content_id] = {
+              maxSeats: s.max_sponsored_seats || s.total_licenses || 10,
+              usedSeats: s.sponsored_seats_used || s.used_licenses || 0,
+              contribution: s.sponsor_contribution_huf || 0
+            };
+          }
+        }
+        setSponsorshipData(sponsorshipMap);
 
         // Fetch all creator profiles
         const creatorIds = [...new Set((contentsData || []).map(c => c.creator_id).filter(Boolean))];
@@ -579,6 +606,29 @@ const ProgramsListingPage = () => {
                                 </motion.span>
                               </div>
                             )}
+
+                            {/* Favorite Button */}
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                if (!user) {
+                                  navigate('/auth');
+                                  return;
+                                }
+                                toggleFavorite(program.id);
+                              }}
+                              className="absolute top-4 right-4 p-2 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-md hover:shadow-lg transition-all group/fav"
+                              aria-label={isFavorite(program.id) ? 'Remove from favorites' : 'Add to favorites'}
+                            >
+                              <Heart 
+                                className={`w-5 h-5 transition-colors ${
+                                  isFavorite(program.id) 
+                                    ? 'fill-red-500 text-red-500' 
+                                    : 'text-gray-500 group-hover/fav:text-red-400'
+                                }`} 
+                              />
+                            </button>
                           </div>
 
                           {/* Enhanced Content */}

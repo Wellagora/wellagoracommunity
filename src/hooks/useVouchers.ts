@@ -147,20 +147,43 @@ export const useVouchers = (): UseVouchersReturn => {
     fetchVouchers();
   }, [fetchVouchers]);
 
-  const claimVoucher = useCallback(async (contentId: string): Promise<{ success: boolean; voucher?: Voucher }> => {
+  const claimVoucher = useCallback(async (contentId: string): Promise<{ success: boolean; voucher?: Voucher; error?: string }> => {
     if (!user) {
       toast.error(t('auth.login_required'));
-      return { success: false };
+      return { success: false, error: 'login_required' };
     }
 
     // Check if user already has a voucher for this content
     const existingVoucher = vouchers.find(v => v.content_id === contentId);
     if (existingVoucher) {
       toast.info(t('voucher.already_claimed') || 'Már csatlakoztál ehhez a programhoz!');
-      return { success: false };
+      return { success: false, error: 'already_claimed' };
     }
 
     try {
+      // First, check if there's an active sponsorship and if quota is available
+      const { data: sponsorship, error: sponsorError } = await supabase
+        .from('content_sponsorships')
+        .select('id, total_licenses, used_licenses, max_sponsored_seats, sponsored_seats_used, is_active')
+        .eq('content_id', contentId)
+        .eq('is_active', true)
+        .maybeSingle();
+
+      if (sponsorError) {
+        console.error('Error checking sponsorship:', sponsorError);
+      }
+
+      // Check quota if sponsorship exists
+      if (sponsorship) {
+        const maxSeats = sponsorship.max_sponsored_seats || sponsorship.total_licenses || 10;
+        const usedSeats = sponsorship.sponsored_seats_used || sponsorship.used_licenses || 0;
+        
+        if (usedSeats >= maxSeats) {
+          toast.error(t('voucher.quota_exhausted') || 'Elfogyott a támogatott keret');
+          return { success: false, error: 'quota_exhausted' };
+        }
+      }
+
       const voucherCode = generateVoucherCode();
       const expiresAt = new Date();
       expiresAt.setFullYear(expiresAt.getFullYear() + 1); // 1 year expiry
@@ -203,9 +226,21 @@ export const useVouchers = (): UseVouchersReturn => {
         // Handle unique constraint violation
         if (insertError.code === '23505') {
           toast.info(t('voucher.already_claimed') || 'Már csatlakoztál ehhez a programhoz!');
-          return { success: false };
+          return { success: false, error: 'already_claimed' };
         }
         throw insertError;
+      }
+
+      // Decrement sponsorship quota if exists
+      if (sponsorship) {
+        const newUsedSeats = (sponsorship.sponsored_seats_used || sponsorship.used_licenses || 0) + 1;
+        await supabase
+          .from('content_sponsorships')
+          .update({
+            sponsored_seats_used: newUsedSeats,
+            used_licenses: newUsedSeats
+          })
+          .eq('id', sponsorship.id);
       }
 
       // Transform the new voucher
@@ -241,7 +276,7 @@ export const useVouchers = (): UseVouchersReturn => {
     } catch (err) {
       console.error('Error claiming voucher:', err);
       toast.error(t('voucher.claim_error') || 'Hiba történt a csatlakozás során');
-      return { success: false };
+      return { success: false, error: 'unknown' };
     }
   }, [user, vouchers, t]);
 
