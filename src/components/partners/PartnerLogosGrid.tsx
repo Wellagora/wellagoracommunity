@@ -17,56 +17,56 @@ const FEATURED_PARTNERS: Partner[] = [
     id: "1",
     name: "Praktiker",
     slug: "praktiker",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Praktiker_logo.svg/200px-Praktiker_logo.svg.png",
+    logo: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=200&fit=crop&q=80",
     category: "DIY & Garden"
   },
   {
     id: "2",
     name: "DM",
     slug: "dm",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Dm_Logo.svg/200px-Dm_Logo.svg.png",
+    logo: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=200&h=200&fit=crop&q=80",
     category: "Health & Beauty"
   },
   {
     id: "3",
     name: "Rossmann",
     slug: "rossmann",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Rossmann_Logo.svg/200px-Rossmann_Logo.svg.png",
+    logo: "https://images.unsplash.com/photo-1631729371254-42c2892f0e6e?w=200&h=200&fit=crop&q=80",
     category: "Health & Beauty"
   },
   {
     id: "4",
     name: "OBI",
     slug: "obi",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Obi-Logo.svg/200px-Obi-Logo.svg.png",
+    logo: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=200&h=200&fit=crop&q=80",
     category: "DIY & Garden"
   },
   {
     id: "5",
     name: "IKEA",
     slug: "ikea",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Ikea_logo.svg/200px-Ikea_logo.svg.png",
+    logo: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200&h=200&fit=crop&q=80",
     category: "Home & Living"
   },
   {
     id: "6",
     name: "Auchan",
     slug: "auchan",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Auchan_logo.svg/200px-Auchan_logo.svg.png",
+    logo: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=200&h=200&fit=crop&q=80",
     category: "Grocery"
   },
   {
     id: "7",
     name: "SPAR",
     slug: "spar",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/SPAR_Logo.svg/200px-SPAR_Logo.svg.png",
+    logo: "https://images.unsplash.com/photo-1534723452862-4c874018d66d?w=200&h=200&fit=crop&q=80",
     category: "Grocery"
   },
   {
     id: "8",
     name: "Müller",
     slug: "muller",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Muller_logo.svg/200px-Muller_logo.svg.png",
+    logo: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=200&h=200&fit=crop&q=80",
     category: "Health & Beauty"
   },
 ];
