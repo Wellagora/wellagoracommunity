@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -13,7 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Loader2, ShoppingCart, CheckCircle2, CreditCard } from "lucide-react";
+import { Loader2, ShoppingCart, CheckCircle2, CreditCard, Gift, Sparkles } from "lucide-react";
 import confetti from "canvas-confetti";
 
 interface PurchaseModalProps {
@@ -24,6 +25,10 @@ interface PurchaseModalProps {
     title: string;
     price_huf: number;
     creator_id: string;
+    is_sponsored?: boolean;
+    sponsor_name?: string;
+    sponsor_contribution?: number;
+    sponsorship_id?: string;
   };
 }
 
@@ -31,9 +36,16 @@ export const PurchaseModal = ({ isOpen, onClose, content }: PurchaseModalProps) 
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  // Calculate prices for sponsored content
+  const isSponsored = content.is_sponsored && content.sponsor_contribution && content.sponsor_contribution > 0;
+  const originalPrice = content.price_huf;
+  const sponsorContribution = content.sponsor_contribution || 0;
+  const memberPays = isSponsored ? Math.max(0, originalPrice - sponsorContribution) : originalPrice;
 
   const handlePurchase = async () => {
     if (!user || !content) return;
@@ -41,37 +53,54 @@ export const PurchaseModal = ({ isOpen, onClose, content }: PurchaseModalProps) 
     setIsPurchasing(true);
 
     try {
-      const amount = content.price_huf;
-      // WellAgora Business Engine: 80/20 split based on Expert Price
-      const platformFee = Math.round(amount * 0.20);
-      const creatorRevenue = Math.round(amount * 0.80);
-
-      // Insert into content_access
-      const { error: accessError } = await supabase
-        .from("content_access")
-        .insert({
-          content_id: content.id,
-          user_id: user.id,
-          amount_paid: amount,
-          payment_reference: `SIM-${Date.now()}`,
+      if (isSponsored && content.sponsorship_id) {
+        // Use the process_sponsored_purchase RPC for sponsored content
+        const { data, error } = await supabase.rpc('process_sponsored_purchase', {
+          p_content_id: content.id,
+          p_user_id: user.id,
+          p_sponsorship_id: content.sponsorship_id
         });
 
-      if (accessError) throw accessError;
+        if (error) throw error;
 
-      // Insert into transactions
-      const { error: transactionError } = await supabase
-        .from("transactions")
-        .insert({
-          content_id: content.id,
-          buyer_id: user.id,
-          creator_id: content.creator_id,
-          amount: amount,
-          platform_fee: platformFee,
-          creator_revenue: creatorRevenue,
-          status: "completed",
-        });
+        // Check the result
+        const result = data?.[0];
+        if (!result?.success) {
+          throw new Error(result?.message || 'Purchase failed');
+        }
+      } else {
+        // Standard purchase (non-sponsored)
+        const amount = content.price_huf;
+        const platformFee = Math.round(amount * 0.20);
+        const creatorRevenue = Math.round(amount * 0.80);
 
-      if (transactionError) throw transactionError;
+        // Insert into content_access
+        const { error: accessError } = await supabase
+          .from("content_access")
+          .insert({
+            content_id: content.id,
+            user_id: user.id,
+            amount_paid: amount,
+            payment_reference: `SIM-${Date.now()}`,
+          });
+
+        if (accessError) throw accessError;
+
+        // Insert into transactions
+        const { error: transactionError } = await supabase
+          .from("transactions")
+          .insert({
+            content_id: content.id,
+            buyer_id: user.id,
+            creator_id: content.creator_id,
+            amount: amount,
+            platform_fee: platformFee,
+            creator_revenue: creatorRevenue,
+            status: "completed",
+          });
+
+        if (transactionError) throw transactionError;
+      }
 
       // Success!
       setIsComplete(true);
@@ -87,16 +116,18 @@ export const PurchaseModal = ({ isOpen, onClose, content }: PurchaseModalProps) 
       // Invalidate queries
       queryClient.invalidateQueries({ queryKey: ["contentAccess"] });
       queryClient.invalidateQueries({ queryKey: ["myLearning"] });
+      queryClient.invalidateQueries({ queryKey: ["program"] });
 
       toast({
         title: t("purchase.success"),
         description: t("purchase.success_description"),
       });
 
-      // Close after delay
+      // Navigate to My Library after delay
       setTimeout(() => {
         setIsComplete(false);
         onClose();
+        navigate('/kurzusaim');
       }, 2000);
     } catch (error: any) {
       console.error("Purchase error:", error);
@@ -111,7 +142,10 @@ export const PurchaseModal = ({ isOpen, onClose, content }: PurchaseModalProps) 
   };
 
   const formatPrice = (price: number) => {
-    return price.toLocaleString("hu-HU");
+    if (language === 'hu') {
+      return `${price.toLocaleString("hu-HU")} Ft`;
+    }
+    return `${Math.round(price / 400)} €`;
   };
 
   return (
@@ -133,7 +167,11 @@ export const PurchaseModal = ({ isOpen, onClose, content }: PurchaseModalProps) 
           <>
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2 text-foreground">
-                <ShoppingCart className="w-5 h-5 text-[hsl(var(--cyan))]" />
+                {isSponsored ? (
+                  <Gift className="w-5 h-5 text-emerald-400" />
+                ) : (
+                  <ShoppingCart className="w-5 h-5 text-[hsl(var(--cyan))]" />
+                )}
                 {t("purchase.confirm_title")}
               </DialogTitle>
               <DialogDescription className="text-muted-foreground">
@@ -146,12 +184,42 @@ export const PurchaseModal = ({ isOpen, onClose, content }: PurchaseModalProps) 
                 <h4 className="font-semibold text-foreground mb-2 line-clamp-2">
                   {content.title}
                 </h4>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">{t("purchase.price")}</span>
-                  <span className="text-2xl font-bold text-[hsl(var(--cyan))]">
-                    {formatPrice(content.price_huf)} Ft
-                  </span>
-                </div>
+                
+                {isSponsored ? (
+                  <div className="space-y-2">
+                    {/* Original price strikethrough */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">{t("purchase.original_price")}</span>
+                      <span className="text-lg text-muted-foreground line-through">
+                        {formatPrice(originalPrice)}
+                      </span>
+                    </div>
+                    
+                    {/* Sponsored contribution */}
+                    <div className="flex items-center justify-between text-emerald-400">
+                      <span className="flex items-center gap-1">
+                        <Sparkles className="w-4 h-4" />
+                        {content.sponsor_name} {language === 'hu' ? 'támogatása' : 'contribution'}
+                      </span>
+                      <span>-{formatPrice(sponsorContribution)}</span>
+                    </div>
+                    
+                    {/* Member pays (bold) */}
+                    <div className="flex items-center justify-between border-t border-white/10 pt-2 mt-2">
+                      <span className="text-foreground font-medium">{t("purchase.you_pay")}</span>
+                      <span className="text-2xl font-bold text-[hsl(var(--cyan))]">
+                        {formatPrice(memberPays)}
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">{t("purchase.price")}</span>
+                    <span className="text-2xl font-bold text-[hsl(var(--cyan))]">
+                      {formatPrice(content.price_huf)}
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -182,7 +250,7 @@ export const PurchaseModal = ({ isOpen, onClose, content }: PurchaseModalProps) 
                 ) : (
                   <>
                     <ShoppingCart className="w-4 h-4 mr-2" />
-                    {t("purchase.confirm_button")}
+                    {t("purchase.confirm_button")} {formatPrice(memberPays)}
                   </>
                 )}
               </Button>

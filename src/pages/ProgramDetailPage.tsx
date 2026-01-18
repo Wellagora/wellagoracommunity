@@ -104,6 +104,22 @@ const ProgramDetailPage = () => {
     enabled: !!id,
   });
 
+  // Fetch active sponsorship for this program
+  const { data: sponsorship } = useQuery({
+    queryKey: ['programSponsorship', id],
+    queryFn: async () => {
+      if (isMockProgram) return null;
+      const { data } = await supabase
+        .from('content_sponsorships')
+        .select('id, sponsor_contribution_huf, is_active')
+        .eq('content_id', id)
+        .eq('is_active', true)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!id && !isMockProgram,
+  });
+
   // Fetch related programs from same creator - use mock data for mock programs
   const { data: relatedPrograms } = useQuery({
     queryKey: ['relatedPrograms', program?.creator_id, id],
@@ -568,6 +584,10 @@ const ProgramDetailPage = () => {
               title: localizedTitle,
               price_huf: program.price_huf || 0,
               creator_id: program.creator_id || '',
+              is_sponsored: (program as any).is_sponsored || false,
+              sponsor_name: (program as any).sponsor_name || undefined,
+              sponsor_contribution: sponsorship?.sponsor_contribution_huf || (program as any).fixed_sponsor_amount || undefined,
+              sponsorship_id: sponsorship?.id || undefined,
             }}
           />
         )}
