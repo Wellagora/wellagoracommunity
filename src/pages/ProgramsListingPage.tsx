@@ -208,7 +208,12 @@ const ProgramsListingPage = () => {
             is_featured,
             is_sponsored,
             sponsor_name,
-            creator_id
+            creator_id,
+            content_type,
+            max_capacity,
+            fixed_sponsor_amount,
+            total_licenses,
+            used_licenses
           `)
           .eq("is_published", true)
           .order("is_featured", { ascending: false })
@@ -265,10 +270,14 @@ const ProgramsListingPage = () => {
           const localizedTitle = getLocalizedField(content as Record<string, unknown>, 'title');
           const localizedDescription = getLocalizedField(content as Record<string, unknown>, 'description');
 
-          // Calculate sponsorship details
-          const sponsorContribution = content.is_sponsored ? Math.round((content.price_huf || 0) * 0.8) : 0;
-          const maxSeats = content.is_sponsored ? 10 : 0;
-          const usedSeats = content.is_sponsored ? Math.min(7, 2 + idx) : 0;
+          // Calculate sponsorship details - use DB values when available
+          const contentData = content as Record<string, unknown>;
+          const sponsorContribution = contentData.fixed_sponsor_amount as number || 
+            (content.is_sponsored ? Math.round((content.price_huf || 0) * 0.4) : 0);
+          const maxSeats = (contentData.total_licenses as number) || (content.is_sponsored ? 10 : 0);
+          const usedSeats = (contentData.used_licenses as number) || (content.is_sponsored ? Math.min(7, 2 + idx) : 0);
+          const contentType = (contentData.content_type as 'recorded' | 'online_live' | 'in_person') || 'in_person';
+          const maxCapacity = contentData.max_capacity as number | undefined;
 
           return {
             id: content.id,
@@ -285,6 +294,8 @@ const ProgramsListingPage = () => {
             sponsor_contribution: sponsorContribution,
             max_seats: maxSeats,
             used_seats: usedSeats,
+            content_type: contentType,
+            max_capacity: maxCapacity,
             creator_id: content.creator_id,
             creator: creator ? {
               id: creator.id,
