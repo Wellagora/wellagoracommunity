@@ -11,10 +11,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Textarea } from "@/components/ui/textarea";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Loader2, Users, Sparkles, Building2, ArrowLeft, Check, ChevronDown } from "lucide-react";
+import { Loader2, Users, Sparkles, Building2, ArrowLeft, Check, ChevronDown, Eye, EyeOff } from "lucide-react";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { DEMO_ACCOUNTS } from "@/data/mockData";
+import { supabase } from "@/integrations/supabase/client";
 
 // Monochrome accent colors
 const ACCENT_BLACK = "#000000";
@@ -85,6 +86,17 @@ const AuthPage = () => {
     email: "",
     password: "",
   });
+
+  // Password visibility toggles
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Forgot password state
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetSuccess, setResetSuccess] = useState(false);
 
   const [signupForm, setSignupForm] = useState({
     email: "",
@@ -325,18 +337,36 @@ const AuthPage = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="login-password" className="text-black/70 text-sm font-semibold">
-                        {t('auth.password') || 'Jelszó'}
-                      </Label>
-                      <Input
-                        id="login-password"
-                        type="password"
-                        placeholder={t('auth.password_placeholder') || 'Add meg a jelszavad'}
-                        value={loginForm.password}
-                        onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
-                        className="h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent"
-                        required
-                      />
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="login-password" className="text-black/70 text-sm font-semibold">
+                          {t('auth.password') || 'Jelszó'}
+                        </Label>
+                        <button
+                          type="button"
+                          onClick={() => setShowForgotPassword(true)}
+                          className="text-xs text-black/50 hover:text-black transition-colors"
+                        >
+                          {t('auth.forgot_password') || 'Elfelejtettem a jelszavam'}
+                        </button>
+                      </div>
+                      <div className="relative">
+                        <Input
+                          id="login-password"
+                          type={showLoginPassword ? "text" : "password"}
+                          placeholder={t('auth.password_placeholder') || 'Add meg a jelszavad'}
+                          value={loginForm.password}
+                          onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+                          className="h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent pr-12"
+                          required
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowLoginPassword(!showLoginPassword)}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-black/40 hover:text-black/70 transition-colors"
+                        >
+                          {showLoginPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                        </button>
+                      </div>
                     </div>
                     <Button
                       type="submit"
@@ -347,6 +377,100 @@ const AuthPage = () => {
                       {t('auth.continue') || 'Bejelentkezés'}
                     </Button>
                   </form>
+
+                  {/* Forgot Password Modal */}
+                  <AnimatePresence>
+                    {showForgotPassword && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+                        onClick={() => setShowForgotPassword(false)}
+                      >
+                        <motion.div
+                          initial={{ scale: 0.9, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0.9, opacity: 0 }}
+                          onClick={(e) => e.stopPropagation()}
+                          className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl"
+                        >
+                          <h3 className="text-xl font-bold text-black mb-2">
+                            {t('auth.reset_password') || 'Jelszó visszaállítása'}
+                          </h3>
+                          <p className="text-black/60 text-sm mb-6">
+                            {t('auth.reset_password_desc') || 'Add meg az e-mail címed és küldünk egy visszaállító linket.'}
+                          </p>
+                          
+                          {resetSuccess ? (
+                            <div className="text-center py-4">
+                              <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Check className="w-6 h-6 text-emerald-600" />
+                              </div>
+                              <p className="text-emerald-700 font-medium">
+                                {t('auth.reset_email_sent') || 'Elküldtük a visszaállító linket!'}
+                              </p>
+                              <Button
+                                variant="ghost"
+                                className="mt-4"
+                                onClick={() => {
+                                  setShowForgotPassword(false);
+                                  setResetSuccess(false);
+                                  setResetEmail("");
+                                }}
+                              >
+                                {t('auth.back_to_login') || 'Vissza a bejelentkezéshez'}
+                              </Button>
+                            </div>
+                          ) : (
+                            <form
+                              onSubmit={async (e) => {
+                                e.preventDefault();
+                                setResetLoading(true);
+                                const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+                                  redirectTo: `${window.location.origin}/auth?reset=true`,
+                                });
+                                setResetLoading(false);
+                                if (!error) {
+                                  setResetSuccess(true);
+                                } else {
+                                  setError(error.message);
+                                }
+                              }}
+                              className="space-y-4"
+                            >
+                              <Input
+                                type="email"
+                                placeholder={t('auth.email_placeholder') || 'pelda@email.hu'}
+                                value={resetEmail}
+                                onChange={(e) => setResetEmail(e.target.value)}
+                                className="h-12 bg-black/5 border-black/10 rounded-xl"
+                                required
+                              />
+                              <div className="flex gap-3">
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  className="flex-1"
+                                  onClick={() => setShowForgotPassword(false)}
+                                >
+                                  {t('common.cancel') || 'Mégse'}
+                                </Button>
+                                <Button
+                                  type="submit"
+                                  className="flex-1 bg-black hover:bg-black/90"
+                                  disabled={resetLoading}
+                                >
+                                  {resetLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                  {t('auth.send_reset_link') || 'Link küldése'}
+                                </Button>
+                              </div>
+                            </form>
+                          )}
+                        </motion.div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
                   {/* Demo Login Panel */}
                   <Collapsible className="mt-6 pt-6 border-t border-slate-200">
@@ -376,6 +500,50 @@ const AuthPage = () => {
                       </p>
                     </CollapsibleContent>
                   </Collapsible>
+
+                  {/* Social Login Options */}
+                  <div className="mt-6 pt-6 border-t border-slate-200">
+                    <div className="relative mb-4">
+                      <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t border-slate-200" />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-white px-2 text-slate-400">
+                          {t('auth.or_continue_with') || 'vagy'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Button 
+                        variant="outline" 
+                        type="button" 
+                        className="h-12 border-slate-200 hover:bg-slate-50 rounded-xl"
+                        disabled
+                      >
+                        <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+                          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        Google
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        type="button" 
+                        className="h-12 border-slate-200 hover:bg-slate-50 rounded-xl"
+                        disabled
+                      >
+                        <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+                          <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                        Facebook
+                      </Button>
+                    </div>
+                    <p className="text-xs text-slate-400 text-center mt-3">
+                      {t('auth.social_login_soon') || 'Hamarosan elérhető'}
+                    </p>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -546,29 +714,47 @@ const AuthPage = () => {
                             <Label htmlFor="password" className="text-black/70 text-sm font-semibold">
                               {t('auth.password') || 'Jelszó'}
                             </Label>
-                            <Input
-                              id="password"
-                              type="password"
-                              placeholder="••••••••"
-                              value={signupForm.password}
-                              onChange={(e) => setSignupForm({ ...signupForm, password: e.target.value })}
-                              className="h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent"
-                              required
-                            />
+                            <div className="relative">
+                              <Input
+                                id="password"
+                                type={showSignupPassword ? "text" : "password"}
+                                placeholder="••••••••"
+                                value={signupForm.password}
+                                onChange={(e) => setSignupForm({ ...signupForm, password: e.target.value })}
+                                className="h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent pr-12"
+                                required
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setShowSignupPassword(!showSignupPassword)}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-black/40 hover:text-black/70 transition-colors"
+                              >
+                                {showSignupPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                              </button>
+                            </div>
                           </div>
                           <div className="space-y-2">
                             <Label htmlFor="confirmPassword" className="text-black/70 text-sm font-semibold">
                               {t('auth.confirm_password') || 'Jelszó újra'}
                             </Label>
-                            <Input
-                              id="confirmPassword"
-                              type="password"
-                              placeholder="••••••••"
-                              value={signupForm.confirmPassword}
-                              onChange={(e) => setSignupForm({ ...signupForm, confirmPassword: e.target.value })}
-                              className="h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent"
-                              required
-                            />
+                            <div className="relative">
+                              <Input
+                                id="confirmPassword"
+                                type={showConfirmPassword ? "text" : "password"}
+                                placeholder="••••••••"
+                                value={signupForm.confirmPassword}
+                                onChange={(e) => setSignupForm({ ...signupForm, confirmPassword: e.target.value })}
+                                className="h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent pr-12"
+                                required
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-black/40 hover:text-black/70 transition-colors"
+                              >
+                                {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                              </button>
+                            </div>
                           </div>
                         </div>
 

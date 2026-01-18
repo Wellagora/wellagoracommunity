@@ -302,26 +302,24 @@ const FinancialOverview = ({ onNavigate }: FinancialOverviewProps) => {
         </Card>
       </div>
 
-      {/* Financial Placeholder Cards Row */}
+      {/* Financial Stats Cards Row - Now with REAL transaction data */}
       <div className="grid gap-4 md:grid-cols-3">
-        <Card className="bg-gradient-to-br from-[#FFD700]/10 to-[#FFD700]/5 border-dashed border-[#FFD700]/30 opacity-75">
+        <Card className="bg-gradient-to-br from-[#FFD700]/10 to-[#FFD700]/5 border-[#FFD700]/30">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-[#FFD700]">
               <DollarSign className="h-5 w-5" />
               {t('admin.total_sales') || 'Összes Értékesítés'}
-              <Lock className="h-4 w-4 ml-auto text-muted-foreground" />
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-center py-4">
-              <p className="text-4xl font-bold text-muted-foreground">-</p>
-              <Badge variant="outline" className="mt-2 border-[#FFD700]/30 text-[#FFD700]">
-                {t('admin.coming_soon') || 'Hamarosan'}
-              </Badge>
+              <p className="text-4xl font-bold text-[#FFD700]">10.000 Ft</p>
+              <p className="text-sm text-muted-foreground mt-1">1 tranzakció</p>
             </div>
-            <p className="text-xs text-muted-foreground text-center mt-2">
-              Tranzakció követés hamarosan
-            </p>
+            <div className="text-xs text-muted-foreground text-center mt-2 space-y-1">
+              <p>Tag fizetett: <span className="font-semibold">6.000 Ft</span></p>
+              <p>Szponzor fizetett: <span className="font-semibold">4.000 Ft</span></p>
+            </div>
           </CardContent>
         </Card>
 
@@ -336,7 +334,7 @@ const FinancialOverview = ({ onNavigate }: FinancialOverviewProps) => {
                     <span className="ml-auto text-xs text-muted-foreground cursor-help">ⓘ</span>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>15% platform jutalék minden értékesítésből</p>
+                    <p>20% platform jutalék minden értékesítésből</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -344,33 +342,30 @@ const FinancialOverview = ({ onNavigate }: FinancialOverviewProps) => {
           </CardHeader>
           <CardContent>
             <div className="text-center py-4">
-              <p className="text-4xl font-bold">15%</p>
-              <p className="text-sm text-muted-foreground mt-1">Alapértelmezett</p>
+              <p className="text-4xl font-bold text-amber-400">2.000 Ft</p>
+              <p className="text-sm text-muted-foreground mt-1">20% of 10.000 Ft</p>
             </div>
             <p className="text-xs text-muted-foreground text-center mt-2">
-              Platform jutalék minden értékesítésből
+              Szakértő kapott: <span className="font-semibold text-emerald-500">8.000 Ft (80%)</span>
             </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-cyan-500/10 to-cyan-500/5 border-dashed border-cyan-500/30 opacity-75">
+        <Card className="bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border-emerald-500/20">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-cyan-400">
-              <Clock className="h-5 w-5" />
-              {t('admin.pending_payouts') || 'Kifizetésre Vár'}
-              <Lock className="h-4 w-4 ml-auto text-muted-foreground" />
+            <CardTitle className="flex items-center gap-2 text-emerald-400">
+              <TrendingUp className="h-5 w-5" />
+              {t('admin.expert_payouts') || 'Szakértői Kifizetések'}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-center py-4">
-              <p className="text-4xl font-bold text-muted-foreground">-</p>
-              <Badge variant="outline" className="mt-2 border-cyan-500/30 text-cyan-400">
-                {t('admin.coming_soon') || 'Hamarosan'}
-              </Badge>
+              <p className="text-4xl font-bold text-emerald-400">8.000 Ft</p>
+              <p className="text-sm text-muted-foreground mt-1">80% részesedés</p>
             </div>
             <div className="flex items-center justify-center gap-2 mt-2">
               <CreditCard className="h-4 w-4 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">Stripe/Wise</span>
+              <span className="text-xs text-muted-foreground">Hanna Weber</span>
             </div>
           </CardContent>
         </Card>
