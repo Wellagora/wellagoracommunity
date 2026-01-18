@@ -196,92 +196,92 @@ body {
   transition: transform 0.1s ease-out;
 }
 
-/* Luxury Monochrome Design System
+/* Organic Premium 3D Light Theme
 High-end minimalist aesthetic - Apple meets architecture magazine
-ZERO COLOR policy - Pure White, Obsidian Black, Smoke Gray only
+Deep Slate navigation, Soft Slate backgrounds, pure organic feel
 */
 
 @layer base {
   :root {
-    /* Monochrome Palette - Pure White Background */
-    --background: 0 0% 100%;                    /* Pure White #FFFFFF */
-    --foreground: 0 0% 7%;                      /* Pitch Black #111111 */
+    /* Organic Premium Palette */
+    --background: 210 20% 98%;                  /* Soft Slate #F8FAFC */
+    --foreground: 222 47% 11%;                  /* Deep Slate #1E293B */
 
-    /* Secondary Background - Smoke Gray */
-    --secondary-bg: 0 0% 97%;                   /* Smoke Gray #F5F5F7 */
+    /* Secondary Background - Warm Gray */
+    --secondary-bg: 220 14% 96%;                /* Warm Slate #F1F5F9 */
 
-    /* Card: Pure White - NO borders, dramatic shadows */
+    /* Card: Pure White with subtle warmth */
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 7%;                 /* Pitch Black */
+    --card-foreground: 222 47% 11%;             /* Deep Slate */
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 7%;
+    --popover-foreground: 222 47% 11%;
 
-    /* Primary: Deep Obsidian Black #111111 */
-    --primary: 0 0% 7%;
+    /* Primary: Deep Slate for elegant contrast */
+    --primary: 222 47% 11%;                     /* Deep Slate #1E293B */
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 0 0% 15%;
-    --primary-dark: 0 0% 4%;
+    --primary-glow: 222 40% 20%;
+    --primary-dark: 222 50% 8%;
 
-    /* Accent: Same as primary - Obsidian Black */
-    --accent: 0 0% 7%;
+    /* Accent: Emerald green for organic feel */
+    --accent: 160 84% 39%;                      /* Emerald #10B981 */
     --accent-foreground: 0 0% 100%;
-    --accent-light: 0 0% 20%;
+    --accent-light: 160 70% 50%;
 
-    /* Secondary: Very Light Gray */
-    --secondary: 0 0% 97%;
-    --secondary-foreground: 0 0% 7%;
+    /* Secondary: Soft gray */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 222 47% 11%;
 
-    /* Muted: Medium Gray for body text */
-    --muted: 0 0% 97%;
-    --muted-foreground: 0 0% 43%;               /* Medium Gray #6E6E73 */
+    /* Muted: Balanced gray for body text */
+    --muted: 220 14% 96%;
+    --muted-foreground: 215 16% 47%;            /* Slate Gray #64748B */
 
-    /* Success - Monochrome (no green) */
-    --success: 0 0% 7%;
+    /* Success - Emerald green */
+    --success: 160 84% 39%;
     --success-foreground: 0 0% 100%;
-    --success-light: 0 0% 15%;
+    --success-light: 160 70% 50%;
 
-    /* Warning - Monochrome (no orange) */
-    --warning: 0 0% 30%;
+    /* Warning - Amber */
+    --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    /* Info - Monochrome (no blue) */
-    --info: 0 0% 43%;
+    /* Info - Sky blue */
+    --info: 199 89% 48%;
     --info-foreground: 0 0% 100%;
 
-    /* Destructive - Dark Gray (no red) */
-    --destructive: 0 0% 20%;
+    /* Destructive - Rose */
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     /* Border and Input - Very subtle */
-    --border: 0 0% 92%;
-    --input: 0 0% 97%;
-    --ring: 0 0% 7%;
+    --border: 220 13% 91%;
+    --input: 220 14% 96%;
+    --ring: 222 47% 11%;
 
-    --radius: 2rem;                             /* 32px for organic modern look */
+    --radius: 1.5rem;                           /* 24px for organic modern look */
 
-    /* Monochrome Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(0 0% 7%), hsl(0 0% 15%));
-    --gradient-hero-mesh: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(0 0% 97%) 100%);
-    --gradient-nature: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 97%) 100%);
-    --gradient-hero: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 98%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 97%) 100%);
-    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.95) 0%, hsl(0 0% 98% / 0.9) 100%);
-    --gradient-button: linear-gradient(135deg, hsl(0 0% 7%), hsl(0 0% 12%));
+    /* Organic Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(222 47% 11%), hsl(222 40% 20%));
+    --gradient-hero-mesh: linear-gradient(135deg, hsl(210 20% 98%) 0%, hsl(220 14% 96%) 100%);
+    --gradient-nature: linear-gradient(180deg, hsl(210 20% 98%) 0%, hsl(220 14% 96%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(210 20% 98%) 0%, hsl(220 14% 96%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(210 20% 98%) 0%, hsl(220 14% 96%) 100%);
+    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.95) 0%, hsl(220 14% 98% / 0.9) 100%);
+    --gradient-button: linear-gradient(135deg, hsl(222 47% 11%), hsl(222 40% 18%));
 
-    /* Luxury 3D Shadows - Massive, soft, dramatic */
-    --shadow-card: 0 32px 64px rgba(0, 0, 0, 0.06);
-    --shadow-premium: 0 40px 80px -20px rgba(0, 0, 0, 0.08);
-    --shadow-float: 0 48px 96px -24px rgba(0, 0, 0, 0.1);
-    --shadow-button: 0 8px 24px -4px rgba(0, 0, 0, 0.15);
-    --shadow-glow: 0 0 40px rgba(0, 0, 0, 0.05);
-    --shadow-3d: 0 32px 64px rgba(0, 0, 0, 0.06);
-    --shadow-luxury: 0 32px 64px rgba(0, 0, 0, 0.06);
+    /* Luxury 3D Shadows - Soft, organic, elegant */
+    --shadow-card: 0 4px 24px -4px rgba(30, 41, 59, 0.08);
+    --shadow-premium: 0 8px 32px -8px rgba(30, 41, 59, 0.1);
+    --shadow-float: 0 16px 48px -12px rgba(30, 41, 59, 0.12);
+    --shadow-button: 0 4px 16px -2px rgba(30, 41, 59, 0.15);
+    --shadow-glow: 0 0 24px rgba(16, 185, 129, 0.1);
+    --shadow-3d: 0 8px 32px rgba(30, 41, 59, 0.08);
+    --shadow-luxury: 0 8px 32px rgba(30, 41, 59, 0.08);
 
     /* Smooth animation system */
-    --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    --transition-spring: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
     /* Typography - Inter for ALL text (standardized) */
     --font-heading: 'Inter', 'system-ui', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -289,53 +289,53 @@ ZERO COLOR policy - Pure White, Obsidian Black, Smoke Gray only
 
     /* Sidebar - Pure White, minimal */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 0 0% 7%;
-    --sidebar-primary: 0 0% 7%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 222 47% 11%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 97%;
-    --sidebar-accent-foreground: 0 0% 7%;
-    --sidebar-border: 0 0% 95%;
-    --sidebar-ring: 0 0% 7%;
+    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 222 47% 11%;
   }
 
-  /* Dark mode - Inverted monochrome */
+  /* Dark mode - Inverted organic */
   .dark {
-    --background: 0 0% 4%;
-    --foreground: 0 0% 98%;
+    --background: 222 47% 8%;
+    --foreground: 210 20% 98%;
 
-    --card: 0 0% 7%;
-    --card-foreground: 0 0% 98%;
+    --card: 222 47% 11%;
+    --card-foreground: 210 20% 98%;
 
-    --popover: 0 0% 7%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 20% 98%;
 
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 7%;
+    --primary: 210 20% 98%;
+    --primary-foreground: 222 47% 11%;
 
-    --secondary: 0 0% 12%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 222 40% 15%;
+    --secondary-foreground: 210 20% 98%;
 
-    --muted: 0 0% 12%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 222 40% 15%;
+    --muted-foreground: 215 16% 60%;
 
-    --accent: 0 0% 98%;
-    --accent-foreground: 0 0% 7%;
+    --accent: 160 84% 39%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 0% 70%;
-    --destructive-foreground: 0 0% 7%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 15%;
-    --input: 0 0% 12%;
-    --ring: 0 0% 98%;
+    --border: 222 40% 18%;
+    --input: 222 40% 15%;
+    --ring: 210 20% 98%;
     
-    --sidebar-background: 0 0% 4%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 0 0% 98%;
-    --sidebar-primary-foreground: 0 0% 4%;
-    --sidebar-accent: 0 0% 10%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 0 0% 12%;
-    --sidebar-ring: 0 0% 98%;
+    --sidebar-background: 222 47% 8%;
+    --sidebar-foreground: 210 20% 98%;
+    --sidebar-primary: 210 20% 98%;
+    --sidebar-primary-foreground: 222 47% 8%;
+    --sidebar-accent: 222 40% 12%;
+    --sidebar-accent-foreground: 210 20% 98%;
+    --sidebar-border: 222 40% 15%;
+    --sidebar-ring: 210 20% 98%;
   }
 }
 
