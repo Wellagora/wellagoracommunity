@@ -2,6 +2,13 @@
   "nav": {
     "partners": "Partners"
   },
+  "mobile_nav.discover": "Discover",
+  "mobile_nav.my_courses": "My Courses",
+  "mobile_nav.notifications": "Alerts",
+  "mobile_nav.profile": "Profile",
+  "mobile_nav.my_studio": "Studio",
+  "mobile_nav.my_campaigns": "Campaigns",
+  "mobile_nav.dashboard": "Dashboard",
   "landing": {
     "cta_join": "Join Us"
   },
