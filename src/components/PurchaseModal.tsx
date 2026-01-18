@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
+import { notificationTriggers } from "@/lib/notificationTriggers";
 import {
   Dialog,
   DialogContent,
@@ -35,7 +36,7 @@ interface PurchaseModalProps {
 export const PurchaseModal = ({ isOpen, onClose, content }: PurchaseModalProps) => {
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { t, language } = useLanguage();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -112,6 +113,20 @@ export const PurchaseModal = ({ isOpen, onClose, content }: PurchaseModalProps) 
         origin: { y: 0.6 },
         colors: ["#00E5FF", "#0066FF", "#00CCFF", "#FFD700"],
       });
+
+      // Send purchase confirmation notification & email
+      notificationTriggers.onPurchaseComplete({
+        userId: user.id,
+        userEmail: user.email || profile?.email || '',
+        userName: profile?.first_name || profile?.public_display_name,
+        programTitle: content.title,
+        programId: content.id,
+        originalPrice: originalPrice,
+        finalPrice: memberPays,
+        sponsorName: content.sponsor_name,
+        sponsorContribution: sponsorContribution,
+        isSponsored: !!isSponsored
+      }).catch(err => console.error('Failed to send purchase notification:', err));
 
       // Invalidate queries
       queryClient.invalidateQueries({ queryKey: ["contentAccess"] });
