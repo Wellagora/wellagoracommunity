@@ -74,7 +74,7 @@ export const MembershipCard = memo(({ variant = "full", className = "" }: Member
   }
 
   return (
-    <Card className={`overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white shadow-xl ${className}`}>
+    <Card className={`overflow-hidden bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 text-white shadow-2xl border-0 ${className}`}>
       <MembershipCardContent 
         displayName={displayName}
         memberNumber={memberNumber}
@@ -114,19 +114,19 @@ const MembershipCardContent = memo(({
       {/* Card Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-amber-400" />
+          <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg">
+            <Sparkles className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h3 className="font-bold text-lg">WellAgora</h3>
-            <p className="text-xs text-white/60">
+            <h3 className="font-bold text-xl tracking-tight text-white drop-shadow-sm">WellAgora</h3>
+            <p className="text-sm text-white/90 font-medium">
               {language === "hu" ? "Digitális Tagsági Kártya" : language === "de" ? "Digitale Mitgliedskarte" : "Digital Membership Card"}
             </p>
           </div>
         </div>
-        <Avatar className="h-12 w-12 border-2 border-white/20">
+        <Avatar className="h-14 w-14 border-3 border-white/40 shadow-lg">
           <AvatarImage src={avatarUrl || undefined} />
-          <AvatarFallback className="bg-white/10 text-white">
+          <AvatarFallback className="bg-white/20 text-white text-lg font-semibold">
             {displayName.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
@@ -134,52 +134,52 @@ const MembershipCardContent = memo(({
 
       {/* Member Info */}
       <div className="mb-6">
-        <p className="text-sm text-white/60 mb-1">
+        <p className="text-sm text-white/80 mb-1 font-medium">
           {language === "hu" ? "Tag neve" : "Member Name"}
         </p>
-        <p className="font-semibold text-xl">{displayName}</p>
+        <p className="font-bold text-2xl text-white drop-shadow-sm">{displayName}</p>
       </div>
 
       {/* Member Number with QR */}
       <div className="flex items-end justify-between gap-4">
         <div className="flex-1">
-          <p className="text-sm text-white/60 mb-1">
+          <p className="text-sm text-white/80 mb-1 font-medium">
             {language === "hu" ? "Tagszám" : "Member Number"}
           </p>
           <div className="flex items-center gap-2">
-            <p className="font-mono text-lg tracking-wider">{memberNumber}</p>
+            <p className="font-mono text-lg tracking-widest font-bold text-white">{memberNumber}</p>
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
+              className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/20"
               onClick={onCopyNumber}
             >
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
             </Button>
           </div>
-          <p className="text-xs text-white/40 mt-2">
+          <p className="text-sm text-white/70 mt-2 font-medium">
             {language === "hu" ? `Tag ${memberSince} óta` : `Member since ${memberSince}`}
           </p>
         </div>
 
-        {/* QR Code */}
+        {/* QR Code - Black on White for perfect scanability */}
         <div className="flex-shrink-0">
-          <div className="w-20 h-20 bg-white rounded-lg p-1.5 shadow-lg">
+          <div className="w-24 h-24 bg-white rounded-xl p-2 shadow-xl ring-4 ring-white/30">
             <img src={qrCodeUrl} alt="QR Code" className="w-full h-full" />
           </div>
         </div>
       </div>
 
       {/* Partner Discount Hint */}
-      <div className="mt-6 pt-4 border-t border-white/10">
-        <div className="flex items-center gap-2 text-sm text-white/70">
-          <Store className="w-4 h-4" />
+      <div className="mt-6 pt-4 border-t border-white/30">
+        <div className="flex items-center gap-2 text-sm text-white/90 font-medium">
+          <Store className="w-5 h-5" />
           <span>
             {language === "hu" 
-              ? "Mutasd fel partnereinknél az exkluzív hozzáféréshez." 
+              ? "Mutasd fel partnereinknél az exkluzív kedvezményekhez!" 
               : language === "de"
               ? "Zeigen Sie bei unseren Partnern für exklusiven Zugang."
-              : "Show at our partners for exclusive access."}
+              : "Show at our partners for exclusive access!"}
           </span>
         </div>
       </div>
