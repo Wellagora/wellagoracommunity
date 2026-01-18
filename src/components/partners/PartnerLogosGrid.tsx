@@ -17,56 +17,56 @@ const FEATURED_PARTNERS: Partner[] = [
     id: "1",
     name: "Praktiker",
     slug: "praktiker",
-    logo: "https://logo.clearbit.com/praktiker.hu",
+    logo: "/partner-logos/praktiker.png",
     category: "DIY & Garden"
   },
   {
     id: "2",
     name: "DM",
     slug: "dm",
-    logo: "https://logo.clearbit.com/dm.de",
+    logo: "/partner-logos/dm.png",
     category: "Health & Beauty"
   },
   {
     id: "3",
     name: "Rossmann",
     slug: "rossmann",
-    logo: "https://logo.clearbit.com/rossmann.de",
+    logo: "/partner-logos/rossmann.png",
     category: "Health & Beauty"
   },
   {
     id: "4",
     name: "OBI",
     slug: "obi",
-    logo: "https://logo.clearbit.com/obi.de",
+    logo: "/partner-logos/obi.png",
     category: "DIY & Garden"
   },
   {
     id: "5",
     name: "IKEA",
     slug: "ikea",
-    logo: "https://logo.clearbit.com/ikea.com",
+    logo: "/partner-logos/ikea.png",
     category: "Home & Living"
   },
   {
     id: "6",
     name: "Auchan",
     slug: "auchan",
-    logo: "https://logo.clearbit.com/auchan.hu",
+    logo: "/partner-logos/auchan.png",
     category: "Grocery"
   },
   {
     id: "7",
     name: "SPAR",
     slug: "spar",
-    logo: "https://logo.clearbit.com/spar.hu",
+    logo: "/partner-logos/spar.png",
     category: "Grocery"
   },
   {
     id: "8",
     name: "Müller",
     slug: "muller",
-    logo: "https://logo.clearbit.com/mueller.de",
+    logo: "/partner-logos/muller.png",
     category: "Health & Beauty"
   },
 ];
