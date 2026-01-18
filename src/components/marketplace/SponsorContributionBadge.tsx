@@ -2,7 +2,19 @@ import { Gift, Sparkles, Users, Trophy, Heart, Video, Monitor, MapPin, Clock } f
 import { useLanguage } from '@/contexts/LanguageContext';
 import { motion } from 'framer-motion';
 import { Progress } from '@/components/ui/progress';
+import { Link } from 'react-router-dom';
 
+// Partner logo mapping for clickable sponsor logos
+const PARTNER_LOGOS: Record<string, { logo: string; slug: string }> = {
+  'Praktiker': { logo: 'https://logo.clearbit.com/praktiker.hu', slug: 'praktiker' },
+  'DM': { logo: 'https://logo.clearbit.com/dm.de', slug: 'dm' },
+  'Rossmann': { logo: 'https://logo.clearbit.com/rossmann.de', slug: 'rossmann' },
+  'OBI': { logo: 'https://logo.clearbit.com/obi.de', slug: 'obi' },
+  'IKEA': { logo: 'https://logo.clearbit.com/ikea.com', slug: 'ikea' },
+  'Auchan': { logo: 'https://logo.clearbit.com/auchan.hu', slug: 'auchan' },
+  'SPAR': { logo: 'https://logo.clearbit.com/spar.hu', slug: 'spar' },
+  'Müller': { logo: 'https://logo.clearbit.com/mueller.de', slug: 'muller' },
+};
 // Content types with distinct quota logic
 export type ContentType = 'recorded' | 'online_live' | 'in_person';
 
@@ -174,6 +186,9 @@ export const SponsorContributionBadge = ({
     );
   }
 
+  // Get partner info for clickable logo
+  const partnerInfo = PARTNER_LOGOS[sponsorName];
+
   // ACTIVE SPONSORSHIP MODE: Show contribution and price
   return (
     <motion.div
@@ -182,12 +197,32 @@ export const SponsorContributionBadge = ({
       className={`${classes.container} rounded-xl bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 border border-primary/20`}
     >
       <div className="flex items-start gap-3">
-        {/* Icon with glow */}
+        {/* Clickable Partner Logo or default icon */}
         <div className="relative flex-shrink-0">
-          <div className="absolute inset-0 bg-primary/20 rounded-full blur-md" />
-          <div className="relative w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/25">
-            <Gift className={`${classes.icon} text-white`} />
-          </div>
+          {partnerInfo ? (
+            <Link 
+              to={`/partners/${partnerInfo.slug}`}
+              className="block w-11 h-11 rounded-xl overflow-hidden bg-white shadow-md hover:shadow-lg transition-shadow border border-border/50"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img 
+                src={partnerInfo.logo} 
+                alt={sponsorName}
+                className="w-full h-full object-contain p-1.5"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.parentElement!.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-primary/10 text-primary font-bold text-xs">${sponsorName.charAt(0)}</div>`;
+                }}
+              />
+            </Link>
+          ) : (
+            <>
+              <div className="absolute inset-0 bg-primary/20 rounded-full blur-md" />
+              <div className="relative w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/25">
+                <Gift className={`${classes.icon} text-white`} />
+              </div>
+            </>
+          )}
         </div>
 
         {/* Content */}
@@ -208,9 +243,28 @@ export const SponsorContributionBadge = ({
             </div>
           </div>
           
-          {/* Sponsor support text */}
+          {/* Sponsor support text with clickable name */}
           <p className={`${classes.text} text-foreground/80 leading-snug`}>
-            {getSponsorText()}
+            {partnerInfo ? (
+              <>
+                {language === 'hu' ? 'A ' : ''}
+                <Link 
+                  to={`/partners/${partnerInfo.slug}`}
+                  className="font-semibold text-primary hover:underline"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {sponsorName}
+                </Link>
+                {language === 'hu' 
+                  ? ` ${formatPrice(contributionAmount)}-tal támogatja a részvételedet!`
+                  : language === 'de'
+                  ? ` unterstützt deine Teilnahme mit ${formatPrice(contributionAmount)}!`
+                  : ` is supporting your participation with ${formatPrice(contributionAmount)}!`
+                }
+              </>
+            ) : (
+              getSponsorText()
+            )}
           </p>
 
           {/* Price breakdown - STRICT HIERARCHY: Line 1 = Strikethrough, Line 2 = Bold Final Price */}

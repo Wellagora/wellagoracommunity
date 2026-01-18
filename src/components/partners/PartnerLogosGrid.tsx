@@ -17,56 +17,56 @@ const FEATURED_PARTNERS: Partner[] = [
     id: "1",
     name: "Praktiker",
     slug: "praktiker",
-    logo: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=200&fit=crop&q=80",
+    logo: "https://logo.clearbit.com/praktiker.hu",
     category: "DIY & Garden"
   },
   {
     id: "2",
     name: "DM",
     slug: "dm",
-    logo: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=200&h=200&fit=crop&q=80",
+    logo: "https://logo.clearbit.com/dm.de",
     category: "Health & Beauty"
   },
   {
     id: "3",
     name: "Rossmann",
     slug: "rossmann",
-    logo: "https://images.unsplash.com/photo-1631729371254-42c2892f0e6e?w=200&h=200&fit=crop&q=80",
+    logo: "https://logo.clearbit.com/rossmann.de",
     category: "Health & Beauty"
   },
   {
     id: "4",
     name: "OBI",
     slug: "obi",
-    logo: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=200&h=200&fit=crop&q=80",
+    logo: "https://logo.clearbit.com/obi.de",
     category: "DIY & Garden"
   },
   {
     id: "5",
     name: "IKEA",
     slug: "ikea",
-    logo: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200&h=200&fit=crop&q=80",
+    logo: "https://logo.clearbit.com/ikea.com",
     category: "Home & Living"
   },
   {
     id: "6",
     name: "Auchan",
     slug: "auchan",
-    logo: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=200&h=200&fit=crop&q=80",
+    logo: "https://logo.clearbit.com/auchan.hu",
     category: "Grocery"
   },
   {
     id: "7",
     name: "SPAR",
     slug: "spar",
-    logo: "https://images.unsplash.com/photo-1534723452862-4c874018d66d?w=200&h=200&fit=crop&q=80",
+    logo: "https://logo.clearbit.com/spar.hu",
     category: "Grocery"
   },
   {
     id: "8",
     name: "Müller",
     slug: "muller",
-    logo: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=200&h=200&fit=crop&q=80",
+    logo: "https://logo.clearbit.com/mueller.de",
     category: "Health & Beauty"
   },
 ];

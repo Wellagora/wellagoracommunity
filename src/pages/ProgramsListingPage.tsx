@@ -135,9 +135,9 @@ const CATEGORY_TRANSLATIONS: Record<string, Record<string, string>> = {
 
 // Fallback sponsor for programs without sponsor but marked as sponsored
 const FALLBACK_SPONSOR = {
-  hu: 'Success Inc.',
-  en: 'Success Inc.',
-  de: 'Success GmbH',
+  hu: 'Praktiker',
+  en: 'Praktiker',
+  de: 'Praktiker',
 };
 
 const ProgramsListingPage = () => {
