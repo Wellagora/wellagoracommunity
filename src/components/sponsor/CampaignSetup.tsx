@@ -108,7 +108,35 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
 
     setCreating(true);
     try {
-      // Create content sponsorship
+      // 1. First check if sponsor has enough credits
+      const { data: sponsorCredits, error: creditsCheckError } = await supabase
+        .from('sponsor_credits')
+        .select('available_credits, used_credits')
+        .eq('sponsor_user_id', user.id)
+        .maybeSingle();
+
+      if (creditsCheckError) {
+        console.error('Error checking sponsor credits:', creditsCheckError);
+      }
+
+      const availableCredits = sponsorCredits?.available_credits || 0;
+      
+      console.log('[CampaignSetup] Checking credits:', { 
+        available: availableCredits, 
+        required: totalCreditCost 
+      });
+
+      if (availableCredits < totalCreditCost) {
+        toast.error(
+          language === 'hu'
+            ? `Nincs elég kredit! Szükséges: ${totalCreditCost.toLocaleString()} Ft, Elérhető: ${availableCredits.toLocaleString()} Ft`
+            : `Not enough credits! Required: ${totalCreditCost.toLocaleString()}, Available: ${availableCredits.toLocaleString()}`
+        );
+        setCreating(false);
+        return;
+      }
+
+      // 2. Create content sponsorship
       const { error } = await supabase
         .from('content_sponsorships')
         .insert({
@@ -124,7 +152,7 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
 
       if (error) throw error;
 
-      // Update expert_contents to mark as sponsored
+      // 3. Update expert_contents to mark as sponsored
       await supabase
         .from('expert_contents')
         .update({
@@ -133,6 +161,33 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
           fixed_sponsor_amount: contributionPerSeat
         })
         .eq('id', selectedProgram);
+
+      // 4. Deduct credits from sponsor_credits table
+      if (sponsorCredits) {
+        const { error: creditDeductError } = await supabase
+          .from('sponsor_credits')
+          .update({
+            used_credits: (sponsorCredits.used_credits || 0) + totalCreditCost,
+            available_credits: availableCredits - totalCreditCost
+          })
+          .eq('sponsor_user_id', user.id);
+
+        if (creditDeductError) {
+          console.error('Error deducting credits:', creditDeductError);
+        } else {
+          console.log('[CampaignSetup] Credits deducted:', totalCreditCost);
+        }
+      }
+
+      // 5. Log transaction in credit_transactions for audit trail
+      await supabase
+        .from('credit_transactions')
+        .insert({
+          sponsor_user_id: user.id,
+          credits: totalCreditCost,
+          transaction_type: 'spend',
+          description: `Campaign: ${selectedProgramData?.title || selectedProgram}`
+        });
 
       toast.success(
         language === 'hu' 

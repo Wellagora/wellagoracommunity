@@ -178,23 +178,25 @@ const SponsorDashboardPage = () => {
           setSponsoredPrograms(programs);
         }
 
-        // 4. Credit aggregates
-        const { data: creditData } = await supabase
-          .from('credit_transactions')
-          .select('credits, transaction_type')
-          .eq('sponsor_user_id', user.id);
+        // 4. Credit data from sponsor_credits table (source of truth)
+        const { data: sponsorCreditsData, error: creditsError } = await supabase
+          .from('sponsor_credits')
+          .select('total_credits, used_credits, available_credits')
+          .eq('sponsor_user_id', user.id)
+          .maybeSingle();
 
-        let usedCredits = 0;
-        let earnedCredits = 0;
-        if (creditData) {
-          for (const tx of creditData) {
-            if (tx.transaction_type === 'spend') {
-              usedCredits += tx.credits;
-            } else if (tx.transaction_type === 'purchase' || tx.transaction_type === 'subscription') {
-              earnedCredits += tx.credits;
-            }
-          }
+        if (creditsError && creditsError.code !== 'PGRST116') {
+          console.error('Error fetching sponsor credits:', creditsError);
         }
+
+        // Use real data from sponsor_credits table
+        const realCredits = sponsorCreditsData || { 
+          total_credits: 0, 
+          used_credits: 0, 
+          available_credits: 0 
+        };
+        
+        console.log('[SponsorDashboard] Credits from sponsor_credits table:', realCredits);
 
         // 5. Calculate unique users reached
         let peopleReached = 0;
@@ -242,22 +244,23 @@ const SponsorDashboardPage = () => {
         });
 
         setCreditInfo({
-          usedCredits,
-          totalCredits: earnedCredits || 100,
-          availableCredits: (earnedCredits || 100) - usedCredits
+          usedCredits: realCredits.used_credits || 0,
+          totalCredits: realCredits.total_credits || 0,
+          availableCredits: realCredits.available_credits || 0
         });
 
-        // Generate chart data from real transactions
+        // Generate chart data from real credits data
         const chartPoints: ChartDataPoint[] = [];
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const currentMonth = new Date().getMonth();
+        const usedCreditsValue = realCredits.used_credits || 0;
         
         for (let i = 5; i >= 0; i--) {
           const monthIndex = (currentMonth - i + 12) % 12;
           chartPoints.push({
             month: months[monthIndex],
             reached: Math.round(peopleReached * ((6 - i) / 6)),
-            credits: Math.round(usedCredits * ((6 - i) / 6))
+            credits: Math.round(usedCreditsValue * ((6 - i) / 6))
           });
         }
         setChartData(chartPoints);

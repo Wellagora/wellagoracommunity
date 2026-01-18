@@ -3,6 +3,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
   Collapsible, 
   CollapsibleContent, 
@@ -20,9 +21,12 @@ import {
   Palette, 
   MoreHorizontal,
   Loader2,
-  Bot
+  Bot,
+  AlertTriangle,
+  CreditCard
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import type { ProgramFormData } from "../ProgramCreatorWizard";
 
 interface Step4PreviewProps {
@@ -30,6 +34,7 @@ interface Step4PreviewProps {
   onPublish: () => void;
   onSaveDraft: () => void;
   isPublishing: boolean;
+  hasPayoutMethod?: boolean;
 }
 
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
@@ -41,7 +46,7 @@ const CATEGORY_ICONS: Record<string, React.ElementType> = {
   other: MoreHorizontal,
 };
 
-const Step4Preview = ({ formData, onPublish, onSaveDraft, isPublishing }: Step4PreviewProps) => {
+const Step4Preview = ({ formData, onPublish, onSaveDraft, isPublishing, hasPayoutMethod = false }: Step4PreviewProps) => {
   const { t, language } = useLanguage();
   const [openSections, setOpenSections] = useState<string[]>([]);
 
@@ -61,9 +66,14 @@ const Step4Preview = ({ formData, onPublish, onSaveDraft, isPublishing }: Step4P
     { key: "category", done: !!formData.category, label: t("program_creator.checklist_category") },
     { key: "description", done: formData.description_hu.length >= 20, label: t("program_creator.checklist_description") },
     { key: "translations", done: !!formData.title_en && !!formData.title_de, label: t("program_creator.checklist_translations") },
+    { key: "payout", done: hasPayoutMethod, label: language === "hu" ? "Kifizetési mód beállítva" : "Payout method set" },
   ];
 
+  // Payout method is required for publishing
   const allDone = checklist.filter(c => c.key !== "translations").every(c => c.done);
+  const canPublish = allDone && hasPayoutMethod;
+
+  console.log('[Step4Preview] Publish check:', { allDone, hasPayoutMethod, canPublish });
 
   return (
     <div className="space-y-6">
@@ -214,6 +224,28 @@ const Step4Preview = ({ formData, onPublish, onSaveDraft, isPublishing }: Step4P
         </CardContent>
       </Card>
 
+      {/* Payout Warning */}
+      {!hasPayoutMethod && (
+        <Alert variant="destructive" className="border-amber-200 bg-amber-50">
+          <AlertTriangle className="h-4 w-4 text-amber-600" />
+          <AlertDescription className="text-amber-800">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <span>
+                {language === "hu" 
+                  ? "A közzétételhez állítsd be a kifizetési módot a profilodban."
+                  : "Set up your payout method in your profile to publish."}
+              </span>
+              <Link to="/settings/payout">
+                <Button size="sm" variant="outline" className="gap-2 border-amber-300 text-amber-800 hover:bg-amber-100">
+                  <CreditCard className="w-4 h-4" />
+                  {language === "hu" ? "Beállítás" : "Set up"}
+                </Button>
+              </Link>
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* Action Buttons */}
       <div className="flex gap-4 pt-4">
         <Button
@@ -227,8 +259,9 @@ const Step4Preview = ({ formData, onPublish, onSaveDraft, isPublishing }: Step4P
         </Button>
         <Button
           onClick={onPublish}
-          disabled={!allDone || isPublishing}
-          className="flex-1 h-14 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600"
+          disabled={!canPublish || isPublishing}
+          className="flex-1 h-14 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 disabled:opacity-50"
+          title={!hasPayoutMethod ? (language === "hu" ? "Állítsd be a kifizetési módot" : "Set up payout method first") : ""}
         >
           {isPublishing ? (
             <Loader2 className="w-5 h-5 mr-2 animate-spin" />
