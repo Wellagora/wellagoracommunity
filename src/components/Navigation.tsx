@@ -61,17 +61,17 @@ const Navigation = () => {
   const handleViewChange = (view: 'member' | 'expert' | 'sponsor') => {
     setViewAsRole(view);
     
-    // Redirect to the corresponding dashboard
+    // Redirect to the corresponding dashboard using centralized paths
     switch (view) {
       case 'expert':
-        navigate('/szakertoi-studio');
+        navigate('/expert-studio');
         break;
       case 'sponsor':
-        navigate('/tamogatoi-kozpont');
+        navigate('/sponsor-dashboard');
         break;
       case 'member':
       default:
-        navigate('/iranyitopult');
+        navigate('/programs');
         break;
     }
   };
@@ -208,7 +208,7 @@ const Navigation = () => {
     if (!user || !profile) {
       return [
         { path: "/", label: t("nav.home"), icon: Home },
-        { path: "/piacer", label: t("nav.marketplace"), icon: Store },
+        { path: "/programs", label: t("nav.marketplace"), icon: Store },
         { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
         { path: "/partners", label: t("nav.partners") || "Partnerek", icon: Building2 },
       ];
@@ -217,7 +217,7 @@ const Navigation = () => {
     // Full navigation for logged-in users
     const baseItems = [
       { path: "/", label: t("nav.home"), icon: Home },
-      { path: "/piacer", label: t("nav.marketplace"), icon: Store },
+      { path: "/programs", label: t("nav.marketplace"), icon: Store },
       { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
       { path: "/partners", label: t("nav.partners") || "Partnerek", icon: Building2 },
       { path: "/community", label: t("nav.community"), icon: UsersIcon },
@@ -229,7 +229,7 @@ const Navigation = () => {
       return [
         ...baseItems,
         { 
-          path: "/szakertoi-studio", 
+          path: "/expert-studio", 
           label: t("nav.expert_studio"), 
           icon: Sparkles,
           iconColor: "#00E5FF"
@@ -242,7 +242,7 @@ const Navigation = () => {
       return [
         ...baseItems,
         { 
-          path: "/tamogatoi-kozpont", 
+          path: "/sponsor-dashboard", 
           label: t("nav.sponsor_center"), 
           icon: Building2,
           iconColor: "#FFD700"
@@ -250,10 +250,10 @@ const Navigation = () => {
       ];
     }
 
-    // Member: show Control Panel link
+    // Member: show Programs link (their default dashboard)
     return [
       ...baseItems,
-      { path: "/iranyitopult", label: t("nav.control_panel"), icon: LayoutDashboard },
+      { path: "/programs", label: t("nav.control_panel"), icon: LayoutDashboard },
     ];
   }, [user, profile, t, displayRole]);
 

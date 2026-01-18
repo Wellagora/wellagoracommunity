@@ -120,41 +120,13 @@ function App() {
                             <Route path="/" element={<Index />} />
                           <Route path="/dashboard/handprint" element={<HandprintPage />} />
                           <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
-                          <Route path="/dashboard" element={<Navigate to="/iranyitopult" replace />} />
-                          
-                          {/* Control Panel (Irányítópult) - My Hub */}
-                          <Route
-                            path="/iranyitopult"
-                            element={
-                              <ProtectedRoute allowedRoles={["member"]}>
-                                <MyHubPage />
-                              </ProtectedRoute>
-                            }
-                          />
-                          <Route
-                            path="/sajat-kozpont"
-                            element={
-                              <ProtectedRoute allowedRoles={["member"]}>
-                                <MyHubPage />
-                              </ProtectedRoute>
-                            }
-                          />
-                          <Route
-                            path="/admin"
-                            element={
-                              <ProtectedRoute requireAdmin>
-                                <AdminDashboardPage />
-                              </ProtectedRoute>
-                            }
-                          />
-                          <Route
-                            path="/admin-dashboard"
-                            element={
-                              <ProtectedRoute requireAdmin>
-                                <AdminDashboardPage />
-                              </ProtectedRoute>
-                            }
-                          />
+                          {/* Member routes - redirect legacy paths to /programs */}
+                          <Route path="/dashboard" element={<Navigate to="/programs" replace />} />
+                          <Route path="/iranyitopult" element={<Navigate to="/programs" replace />} />
+                          <Route path="/sajat-kozpont" element={<Navigate to="/programs" replace />} />
+                          {/* Admin routes redirect to admin-panel for super admins */}
+                          <Route path="/admin" element={<Navigate to="/admin-panel" replace />} />
+                          <Route path="/admin-dashboard" element={<Navigate to="/admin-panel" replace />} />
                           <Route path="/regional-hub" element={<Navigate to="/community" replace />} />
                           <Route path="/explore-region" element={<ExploreRegionPage />} />
                           <Route path="/interactive-map" element={<Navigate to="/community" replace />} />
@@ -193,31 +165,19 @@ function App() {
                             }
                           />
                           <Route path="/organization/:organizationId" element={<PublicOrganizationPage />} />
-                          {/* Támogató Panel - Supporter Dashboard */}
-                          <Route
-                            path="/tamogato-panel"
-                            element={
-                              <ProtectedRoute allowedRoles={["sponsor"]}>
-                                <SponsorDashboardPage />
-                              </ProtectedRoute>
-                            }
-                          />
-                          <Route
-                            path="/tamogatoi-kozpont"
-                            element={
-                              <ProtectedRoute allowedRoles={["sponsor"]}>
-                                <SponsorDashboardPage />
-                              </ProtectedRoute>
-                            }
-                          />
+                          {/* Sponsor Dashboard - English canonical path */}
                           <Route
                             path="/sponsor-dashboard"
-                            element={<Navigate to="/tamogatoi-kozpont" replace />}
+                            element={
+                              <ProtectedRoute allowedRoles={["sponsor"]}>
+                                <SponsorDashboardPage />
+                              </ProtectedRoute>
+                            }
                           />
-                          <Route
-                            path="/business-dashboard"
-                            element={<Navigate to="/tamogatoi-kozpont" replace />}
-                          />
+                          {/* Sponsor Dashboard - Hungarian legacy routes (redirect to English) */}
+                          <Route path="/tamogato-panel" element={<Navigate to="/sponsor-dashboard" replace />} />
+                          <Route path="/tamogatoi-kozpont" element={<Navigate to="/sponsor-dashboard" replace />} />
+                          <Route path="/business-dashboard" element={<Navigate to="/sponsor-dashboard" replace />} />
                           <Route path="/browse-programs" element={<Navigate to="/piacer" replace />} />
                           <Route
                             path="/project-admin/:projectId"
@@ -262,9 +222,9 @@ function App() {
                           <Route path="/register/organization" element={<OrganizationRegisterPage />} />
                           <Route path="/join/org/:inviteCode" element={<JoinOrganizationPage />} />
                           
-                          {/* Expert Studio (Szakértői Stúdió) - new Hungarian routes */}
+                          {/* Expert Studio - English canonical path */}
                           <Route
-                            path="/szakertoi-studio"
+                            path="/expert-studio"
                             element={
                               <ProtectedRoute allowedRoles={["expert"]}>
                                 <ExpertStudio />
@@ -272,7 +232,7 @@ function App() {
                             }
                           />
                           <Route
-                            path="/szakertoi-studio/uj"
+                            path="/expert-studio/new"
                             element={
                               <ProtectedRoute allowedRoles={["expert"]}>
                                 <ProgramCreatorWizard />
@@ -280,22 +240,24 @@ function App() {
                             }
                           />
                           <Route
-                            path="/szakertoi-studio/:id/szerkesztes"
+                            path="/expert-studio/:id/edit"
                             element={
                               <ProtectedRoute allowedRoles={["expert"]}>
                                 <ProgramCreatorWizard />
                               </ProtectedRoute>
                             }
-                          />
-                          <Route
-                            path="/szakertoi-studio/uj-utmutato"
-                            element={<Navigate to="/szakertoi-studio/uj" replace />}
                           />
                           
+                          {/* Expert Studio - Hungarian legacy routes (redirect to English) */}
+                          <Route path="/szakertoi-studio" element={<Navigate to="/expert-studio" replace />} />
+                          <Route path="/szakertoi-studio/uj" element={<Navigate to="/expert-studio/new" replace />} />
+                          <Route path="/szakertoi-studio/:id/szerkesztes" element={<Navigate to="/expert-studio/:id/edit" replace />} />
+                          <Route path="/szakertoi-studio/uj-utmutato" element={<Navigate to="/expert-studio/new" replace />} />
+                          
                           {/* Redirects from old creator routes */}
-                          <Route path="/creator/dashboard" element={<Navigate to="/szakertoi-studio" replace />} />
-                          <Route path="/creator/programs/new" element={<Navigate to="/szakertoi-studio/uj-utmutato" replace />} />
-                          <Route path="/creator/programs/:id/edit" element={<Navigate to="/szakertoi-studio/utmutato/:id" replace />} />
+                          <Route path="/creator/dashboard" element={<Navigate to="/expert-studio" replace />} />
+                          <Route path="/creator/programs/new" element={<Navigate to="/expert-studio/new" replace />} />
+                          <Route path="/creator/programs/:id/edit" element={<Navigate to="/expert-studio/:id/edit" replace />} />
                           
                           {/* Marketplace (Piactér) - new Hungarian routes */}
                           <Route path="/piacer" element={<ProgramsListingPage />} />
@@ -330,8 +292,9 @@ function App() {
                           />
                           
                           <Route path="/programs/:id" element={<ProgramDetailPage />} />
-                          <Route path="/programs" element={<Navigate to="/piacer" replace />} />
-                          <Route path="/piactr" element={<Navigate to="/piacer" replace />} />
+                          {/* /programs is the new English canonical path for marketplace */}
+                          <Route path="/programs" element={<ProgramsListingPage />} />
+                          <Route path="/piactr" element={<Navigate to="/programs" replace />} />
                           
                           <Route
                             path="/piacer/:id/learn"

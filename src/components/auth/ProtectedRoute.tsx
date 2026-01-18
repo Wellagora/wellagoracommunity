@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { getEffectiveRole, ROLE_DASHBOARDS } from '@/hooks/useRoleRedirect';
 
 export type UserRole = 'member' | 'expert' | 'sponsor';
 
@@ -25,6 +25,7 @@ interface ProtectedRouteProps {
  * - 1 user = 1 role (member/expert/sponsor)
  * - Super Admin = permission flag, not a role (is_super_admin = true can access EVERYTHING)
  * - No role switching - users select their role at registration
+ * - Wrong role = redirect to their correct dashboard (not just /)
  */
 export const ProtectedRoute = ({ 
   children, 
@@ -61,36 +62,29 @@ export const ProtectedRoute = ({
     return <>{children}</>;
   }
 
+  // Get user's effective role for redirection
+  const userRole = profile?.user_role as string;
+  const effectiveRole = getEffectiveRole(userRole, false);
+  const userDashboard = ROLE_DASHBOARDS[effectiveRole];
+
   // Check for super admin requirement
   if (requireSuperAdmin) {
     toast.error('Super Admin jogosultság szükséges');
-    return <Navigate to={redirectTo || "/"} replace />;
+    return <Navigate to={redirectTo || userDashboard} replace />;
   }
 
   // Check for admin requirement (legacy - treat as super admin check)
   if (requireAdmin) {
     toast.error('Admin jogosultság szükséges');
-    return <Navigate to={redirectTo || "/"} replace />;
+    return <Navigate to={redirectTo || userDashboard} replace />;
   }
 
   // Check role-based access using user_role from profile
   if (allowedRoles && profile) {
-    // Map legacy roles to new roles for backwards compatibility
-    const userRole = profile.user_role as string;
-    
-    // Map: citizen -> member, creator -> expert, business/government/ngo -> sponsor
-    let effectiveRole: UserRole = 'member';
-    if (['expert', 'creator'].includes(userRole)) {
-      effectiveRole = 'expert';
-    } else if (['sponsor', 'business', 'government', 'ngo'].includes(userRole)) {
-      effectiveRole = 'sponsor';
-    } else if (['member', 'citizen', 'user'].includes(userRole)) {
-      effectiveRole = 'member';
-    }
-
-    if (!allowedRoles.includes(effectiveRole)) {
+    if (!allowedRoles.includes(effectiveRole as UserRole)) {
       toast.error('Nincs jogosultságod ehhez az oldalhoz');
-      return <Navigate to={redirectTo || "/"} replace />;
+      // Redirect to their OWN dashboard, not just "/"
+      return <Navigate to={redirectTo || userDashboard} replace />;
     }
   }
 

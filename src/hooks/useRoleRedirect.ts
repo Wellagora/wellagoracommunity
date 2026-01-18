@@ -5,6 +5,38 @@ import { useAuth } from "@/contexts/AuthContext";
 type EffectiveRole = "member" | "expert" | "sponsor" | "admin";
 
 /**
+ * Maps database user_role to effective role for routing
+ */
+export function getEffectiveRole(userRole: string | undefined, isSuperAdmin: boolean = false): EffectiveRole {
+  if (isSuperAdmin) {
+    return "admin";
+  }
+  
+  if (!userRole) return "member";
+  
+  if (["expert", "creator"].includes(userRole)) {
+    return "expert";
+  }
+  
+  if (["sponsor", "business", "government", "ngo"].includes(userRole)) {
+    return "sponsor";
+  }
+  
+  return "member";
+}
+
+/**
+ * Centralized redirect path configuration
+ * PHASE 1/5: Using English paths as specified
+ */
+export const ROLE_DASHBOARDS: Record<EffectiveRole, string> = {
+  member: "/programs",           // Marketplace/Piactér
+  expert: "/expert-studio",      // Expert Studio
+  sponsor: "/sponsor-dashboard", // Sponsor Dashboard
+  admin: "/admin",               // Admin Panel
+};
+
+/**
  * Hook to redirect users to their role-specific dashboard after login
  * Should be used on auth-related pages (login, signup)
  */
@@ -24,29 +56,12 @@ export function useRoleRedirect() {
     if (!location.pathname.includes("/auth")) return;
 
     // Determine effective role
-    const userRole = profile.user_role as string;
-    let effectiveRole: EffectiveRole = "member";
+    const effectiveRole = getEffectiveRole(
+      profile.user_role as string,
+      profile.is_super_admin === true
+    );
 
-    // Super admin goes to admin panel
-    if (profile.is_super_admin) {
-      effectiveRole = "admin";
-    } else if (["expert", "creator"].includes(userRole)) {
-      effectiveRole = "expert";
-    } else if (["sponsor", "business", "government", "ngo"].includes(userRole)) {
-      effectiveRole = "sponsor";
-    } else {
-      effectiveRole = "member";
-    }
-
-    // Get the redirect path based on role
-    const redirectPaths: Record<EffectiveRole, string> = {
-      member: "/iranyitopult",
-      expert: "/szakertoi-studio",
-      sponsor: "/tamogatoi-kozpont",
-      admin: "/admin-panel",
-    };
-
-    const targetPath = redirectPaths[effectiveRole];
+    const targetPath = ROLE_DASHBOARDS[effectiveRole];
     
     // Navigate to role-specific dashboard
     navigate(targetPath, { replace: true });
@@ -57,19 +72,8 @@ export function useRoleRedirect() {
  * Helper to get the dashboard URL for a given role
  */
 export function getDashboardUrl(role: string, isSuperAdmin: boolean = false): string {
-  if (isSuperAdmin) {
-    return "/admin-panel";
-  }
-  
-  if (["expert", "creator"].includes(role)) {
-    return "/szakertoi-studio";
-  }
-  
-  if (["sponsor", "business", "government", "ngo"].includes(role)) {
-    return "/tamogatoi-kozpont";
-  }
-  
-  return "/iranyitopult";
+  const effectiveRole = getEffectiveRole(role, isSuperAdmin);
+  return ROLE_DASHBOARDS[effectiveRole];
 }
 
 export default useRoleRedirect;

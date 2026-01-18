@@ -142,31 +142,17 @@ const AuthPage = () => {
     } else {
       setSuccess(t('auth.login_successful'));
       
-      // Demo-specific redirects based on role
-      if (demoRole) {
-        setTimeout(() => {
-          switch (demoRole) {
-            case 'sponsor':
-              navigate('/tamogatoi-kozpont');
-              break;
-            case 'expert':
-              navigate('/szakertoi-studio');
-              break;
-            case 'admin':
-              navigate('/');
-              break;
-            default:
-              navigate('/iranyitopult');
-          }
-        }, 500);
-      } else {
-        // Normal user redirect - use role-based redirect after profile loads
-        setTimeout(() => {
-          // Profile may not be loaded yet, redirect to generic dashboard
-          // The dashboard will handle the final redirect
-          navigate("/iranyitopult");
-        }, 1000);
-      }
+      // Use centralized role-based redirect logic
+      // demoRole is available for demo accounts, otherwise wait for profile to load
+      setTimeout(() => {
+        if (demoRole) {
+          navigate(getDashboardUrl(demoRole, demoRole === 'admin'));
+        } else {
+          // For real users, redirect to programs (member default) 
+          // The useRoleRedirect hook will handle proper redirect once profile loads
+          navigate('/programs');
+        }
+      }, 500);
     }
 
     setIsLoading(false);
