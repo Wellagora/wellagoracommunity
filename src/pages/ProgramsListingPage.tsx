@@ -85,11 +85,32 @@ interface CreatorProfile {
   expert_title: string | null;
 }
 
-const ImagePlaceholder = ({ icon: Icon }: { icon: typeof Leaf }) => (
-  <div className="w-full h-full flex items-center justify-center bg-muted">
-    <div className="w-16 h-16 rounded-2xl bg-background/60 backdrop-blur flex items-center justify-center shadow-sm border border-border/50">
-      <Icon className="w-8 h-8 text-muted-foreground" />
-    </div>
+// Category-based fallback images with high-quality Unsplash URLs
+const FALLBACK_IMAGES: Record<string, string> = {
+  'sustainability': 'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=800&h=600&fit=crop',
+  'gastronomy': 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&h=600&fit=crop',
+  'wellness': 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=800&h=600&fit=crop',
+  'workshop': 'https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=800&h=600&fit=crop',
+  'community': 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&h=600&fit=crop',
+  'business': 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop',
+  'gardening': 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&h=600&fit=crop',
+  'default': 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&h=600&fit=crop'
+};
+
+const getCategoryFallbackImage = (category: string | null): string => {
+  if (!category) return FALLBACK_IMAGES.default;
+  const normalized = category.toLowerCase().replace(/\s+/g, '-').split('-')[0];
+  return FALLBACK_IMAGES[normalized] || FALLBACK_IMAGES.default;
+};
+
+const ImagePlaceholder = ({ category }: { category?: string | null }) => (
+  <div className="w-full h-full relative">
+    <img
+      src={getCategoryFallbackImage(category)}
+      alt="Program preview"
+      className="w-full h-full object-cover"
+    />
+    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
   </div>
 );
 
@@ -535,14 +556,15 @@ const ProgramsListingPage = () => {
                                 alt={String(program.title)}
                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                                 onError={(e) => {
-                                  e.currentTarget.style.display = "none";
-                                  e.currentTarget.nextElementSibling?.classList.remove("hidden");
+                                  // Replace failed image with category-based fallback
+                                  const fallbackUrl = getCategoryFallbackImage(program.category);
+                                  e.currentTarget.src = fallbackUrl;
+                                  e.currentTarget.onerror = null; // Prevent infinite loop
                                 }}
                               />
-                            ) : null}
-                            <div className={program.thumbnail_url || program.image_url ? "hidden" : ""}>
-                              <ImagePlaceholder icon={Leaf} />
-                            </div>
+                            ) : (
+                              <ImagePlaceholder category={program.category} />
+                            )}
 
                             {/* Featured badge - Premium gradient */}
                             {program.is_featured && (

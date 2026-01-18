@@ -103,12 +103,12 @@ export const SponsorContributionBadge = ({
 
   const getImpactText = () => {
     if (language === 'hu') {
-      return `A ${sponsorName} ${usedSeats} ember részvételét támogatta ennél a programnál.`;
+      return `A ${sponsorName} ${usedSeats} Tag részvételét támogatta ennél a programnál.`;
     }
     if (language === 'de') {
-      return `${sponsorName} hat die Teilnahme von ${usedSeats} Personen unterstützt.`;
+      return `${sponsorName} hat die Teilnahme von ${usedSeats} Mitgliedern unterstützt.`;
     }
-    return `${sponsorName} has supported ${usedSeats} people's participation.`;
+    return `${sponsorName} has supported ${usedSeats} Members' participation.`;
   };
 
   const getSeatStatusText = () => {
