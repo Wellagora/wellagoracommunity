@@ -485,20 +485,46 @@ const ProgramDetailPage = () => {
               <div className="sticky top-24">
                 <Card className="bg-white/80 backdrop-blur-md border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                   <CardContent className="p-6">
-                    {/* Sponsor Info if available - SINGLE ELEGANT BADGE */}
+                    {/* Sponsor Info if available - Professional Badge */}
                     {program.is_sponsored && program.sponsor_name && (
-                      <div className="mb-4 p-4 rounded-lg bg-primary/5 border border-primary/20">
-                        <Badge className="bg-primary/15 text-primary border border-primary/30 text-sm font-medium mb-2">
-                          {t('marketplace.sponsored_by_label')}: {program.sponsor_name}
+                      <div className="mb-4 p-4 rounded-xl bg-emerald-50 border border-emerald-200">
+                        {/* Sponsored/Free Badge */}
+                        <Badge className="bg-emerald-500 text-white border-0 text-sm font-semibold mb-3 px-3 py-1">
+                          TÁMOGATOTT / INGYENES
                         </Badge>
-                        <div className="flex items-center gap-3 mt-2">
-                          <span className="text-xl font-bold text-primary">0 Ft</span>
+                        
+                        {/* Price Display */}
+                        <div className="flex items-center gap-3 mb-3">
                           {program.price_huf && (
-                            <span className="text-muted-foreground line-through">
+                            <span className="text-lg text-muted-foreground line-through">
                               {program.price_huf.toLocaleString()} Ft
                             </span>
                           )}
                         </div>
+                        
+                        {/* Sponsor Logo & Name */}
+                        <Link 
+                          to={`/partners/${program.sponsor_name?.toLowerCase().replace(/\s+/g, '-')}`}
+                          className="flex items-center gap-3 p-2 rounded-lg bg-white/60 hover:bg-white/80 transition-colors group"
+                        >
+                          <div className="w-12 h-12 rounded-lg bg-white border border-border/20 flex items-center justify-center overflow-hidden shadow-sm group-hover:scale-105 transition-transform">
+                            <img 
+                              src={`/partner-logos/${program.sponsor_name?.toLowerCase()}.png`}
+                              alt={program.sponsor_name}
+                              className="w-10 h-10 object-contain"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <p className="text-xs text-muted-foreground">{t('marketplace.sponsored_by_label')}</p>
+                            <p className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                              {program.sponsor_name}
+                            </p>
+                          </div>
+                        </Link>
                       </div>
                     )}
 
