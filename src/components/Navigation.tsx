@@ -14,6 +14,9 @@ import {
   Store,
   Sparkles,
   Building2,
+  Heart,
+  Wallet,
+  BarChart3,
 } from "lucide-react";
 import { WellBotAvatar } from "@/components/ai/WellBotAvatar";
 import { MagneticButton } from "@/components/ui/MagneticButton";
@@ -202,7 +205,7 @@ const Navigation = () => {
     }
   };
 
-  // Build nav items based on user role (WellBot moved to right side)
+  // Build nav items based on user role
   const navItems = useMemo(() => {
     // Simplified navigation for logged-out users
     if (!user || !profile) {
@@ -214,48 +217,45 @@ const Navigation = () => {
       ];
     }
 
-    // Full navigation for logged-in users
-    const baseItems = [
-      { path: "/", label: t("nav.home"), icon: Home },
-      { path: "/programs", label: t("nav.marketplace"), icon: Store },
-      { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
-      { path: "/partners", label: t("nav.partners") || "Partnerek", icon: Building2 },
-      { path: "/community", label: t("nav.community"), icon: UsersIcon },
-    ];
+    // Role-specific navigation
+    const roleToUse = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
 
-    // Use displayRole (which considers activeView for super admins)
-    // Expert: show Expert Studio link
-    if (displayRole === 'expert') {
+    // Member sees: Programok, Saját Központ, Kedvencek
+    if (roleToUse === 'member') {
       return [
-        ...baseItems,
-        { 
-          path: "/expert-studio", 
-          label: t("nav.expert_studio"), 
-          icon: Sparkles,
-          iconColor: "#00E5FF"
-        },
+        { path: "/programs", label: t("nav.marketplace"), icon: Store },
+        { path: "/my-center", label: t("nav.my_center") || "Saját Központ", icon: LayoutDashboard },
+        { path: "/favorites", label: t("nav.favorites") || "Kedvencek", icon: Heart },
+        { path: "/partners", label: t("nav.partners") || "Partnerek", icon: Building2 },
       ];
     }
 
-    // Sponsor: show Sponsor Center link
-    if (displayRole === 'sponsor') {
+    // Expert sees: Programok, Expert Studio, Bevételeim
+    if (roleToUse === 'expert') {
       return [
-        ...baseItems,
-        { 
-          path: "/sponsor-dashboard", 
-          label: t("nav.sponsor_center"), 
-          icon: Building2,
-          iconColor: "#FFD700"
-        },
+        { path: "/programs", label: t("nav.marketplace"), icon: Store },
+        { path: "/expert-studio", label: t("nav.expert_studio"), icon: Sparkles, iconColor: "text-cyan-500" },
+        { path: "/expert-studio", label: t("nav.my_earnings") || "Bevételeim", icon: Wallet },
+        { path: "/partners", label: t("nav.partners") || "Partnerek", icon: Building2 },
       ];
     }
 
-    // Member: show Programs link (their default dashboard)
+    // Sponsor sees: Programok, Kampányaim, Hatásjelentés
+    if (roleToUse === 'sponsor') {
+      return [
+        { path: "/programs", label: t("nav.marketplace"), icon: Store },
+        { path: "/sponsor-dashboard", label: t("nav.my_campaigns") || "Kampányaim", icon: Building2, iconColor: "text-amber-500" },
+        { path: "/sponsor-dashboard", label: t("nav.impact_report") || "Hatásjelentés", icon: BarChart3 },
+        { path: "/partners", label: t("nav.partners") || "Partnerek", icon: Building2 },
+      ];
+    }
+
+    // Default fallback
     return [
-      ...baseItems,
-      { path: "/programs", label: t("nav.control_panel"), icon: LayoutDashboard },
+      { path: "/programs", label: t("nav.marketplace"), icon: Store },
+      { path: "/partners", label: t("nav.partners") || "Partnerek", icon: Building2 },
     ];
-  }, [user, profile, t, displayRole]);
+  }, [user, profile, t, isSuperAdmin, viewAsRole, effectiveRole]);
 
   return (
     <>

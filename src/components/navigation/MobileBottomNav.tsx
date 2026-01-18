@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Store, BookOpen, Bell, User, Sparkles, Building2, LayoutDashboard } from "lucide-react";
+import { Store, BookOpen, Bell, User, Sparkles, Building2, LayoutDashboard, Heart, Wallet, BarChart3 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
@@ -80,41 +80,45 @@ const MobileBottomNav = () => {
 
   // Role-specific navigation items
   const getNavItems = (): NavItem[] => {
-    const baseItems: NavItem[] = [
-      { path: "/programs", icon: Store, labelKey: "mobile_nav.discover" },
-      { path: "/kurzusaim", icon: BookOpen, labelKey: "mobile_nav.my_courses" },
-    ];
-
-    // Role-specific dashboard link
-    if (effectiveRole === 'expert') {
-      baseItems.push({
-        path: "/expert-studio",
-        icon: Sparkles,
-        labelKey: "mobile_nav.my_studio",
-        iconColor: "text-cyan-500"
-      });
-    } else if (effectiveRole === 'sponsor') {
-      baseItems.push({
-        path: "/sponsor-dashboard",
-        icon: Building2,
-        labelKey: "mobile_nav.my_campaigns",
-        iconColor: "text-amber-500"
-      });
-    } else {
-      baseItems.push({
-        path: "/programs",
-        icon: LayoutDashboard,
-        labelKey: "mobile_nav.dashboard"
-      });
+    // Member sees: Programok, Saját Központ, Kedvencek, Értesítések, Profil
+    if (effectiveRole === 'member') {
+      return [
+        { path: "/programs", icon: Store, labelKey: "mobile_nav.discover" },
+        { path: "/my-center", icon: LayoutDashboard, labelKey: "mobile_nav.my_center" },
+        { path: "/favorites", icon: Heart, labelKey: "mobile_nav.favorites" },
+        { path: "/ertesitesek", icon: Bell, labelKey: "mobile_nav.notifications" },
+        { path: "/profile", icon: User, labelKey: "mobile_nav.profile" },
+      ];
     }
 
-    // Notifications and profile for all
-    baseItems.push(
-      { path: "/ertesitesek", icon: Bell, labelKey: "mobile_nav.notifications" },
-      { path: "/profile", icon: User, labelKey: "mobile_nav.profile" }
-    );
+    // Expert sees: Programok, Expert Studio, Bevételeim, Értesítések, Profil
+    if (effectiveRole === 'expert') {
+      return [
+        { path: "/programs", icon: Store, labelKey: "mobile_nav.discover" },
+        { path: "/expert-studio", icon: Sparkles, labelKey: "mobile_nav.my_studio", iconColor: "text-cyan-500" },
+        { path: "/expert-studio", icon: Wallet, labelKey: "mobile_nav.earnings" },
+        { path: "/ertesitesek", icon: Bell, labelKey: "mobile_nav.notifications" },
+        { path: "/profile", icon: User, labelKey: "mobile_nav.profile" },
+      ];
+    }
 
-    return baseItems;
+    // Sponsor sees: Programok, Kampányaim, Hatásjelentés, Értesítések, Profil
+    if (effectiveRole === 'sponsor') {
+      return [
+        { path: "/programs", icon: Store, labelKey: "mobile_nav.discover" },
+        { path: "/sponsor-dashboard", icon: Building2, labelKey: "mobile_nav.my_campaigns", iconColor: "text-amber-500" },
+        { path: "/sponsor-dashboard", icon: BarChart3, labelKey: "mobile_nav.impact_report" },
+        { path: "/ertesitesek", icon: Bell, labelKey: "mobile_nav.notifications" },
+        { path: "/profile", icon: User, labelKey: "mobile_nav.profile" },
+      ];
+    }
+
+    // Default fallback
+    return [
+      { path: "/programs", icon: Store, labelKey: "mobile_nav.discover" },
+      { path: "/ertesitesek", icon: Bell, labelKey: "mobile_nav.notifications" },
+      { path: "/profile", icon: User, labelKey: "mobile_nav.profile" },
+    ];
   };
 
   const navItems = getNavItems();

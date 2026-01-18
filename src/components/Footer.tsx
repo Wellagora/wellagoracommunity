@@ -37,18 +37,18 @@ const Footer = () => {
             <h3 className="font-bold text-foreground mb-3">{t('footer.quick_links')}</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/piacer" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/programs" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                   {t('footer.link_programs')}
                 </Link>
               </li>
               <li>
-                <Link to="/community" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  {t('footer.link_community')}
+                <Link to="/esemenyek" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  {t('nav.events')}
                 </Link>
               </li>
               <li>
-                <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  {t('footer.link_dashboard')}
+                <Link to="/partners" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  {t('nav.partners') || "Partnerek"}
                 </Link>
               </li>
               <li>
