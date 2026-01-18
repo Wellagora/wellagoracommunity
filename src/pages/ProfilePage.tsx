@@ -15,6 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import TeamMembersSection from "@/components/profile/TeamMembersSection";
+import MembershipCard from "@/components/partners/MembershipCard";
 import { 
   Loader2, 
   Building2, 
@@ -328,6 +329,11 @@ const ProfilePage = () => {
       
       <div className="container mx-auto px-4 sm:px-6 pt-20 sm:pt-24 pb-8">
         <div className="max-w-4xl mx-auto">
+          {/* Membership Card - Digital QR Card for offline partner discounts */}
+          <div className="mb-6">
+            <MembershipCard variant="full" className="shadow-xl" />
+          </div>
+
           {/* Profile Header */}
           <ProfileHeader
             avatarUrl={profile.avatar_url}
