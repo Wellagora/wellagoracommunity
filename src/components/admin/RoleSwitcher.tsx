@@ -1,12 +1,15 @@
+import { useNavigate } from "react-router-dom";
 import { useAuth, UserRole } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Shield, User, Sparkles, Heart, Settings } from "lucide-react";
+import { ROLE_DASHBOARDS, getEffectiveRole } from "@/hooks/useRoleRedirect";
 
 export const RoleSwitcher = () => {
   const { profile, viewAsRole, setViewAsRole } = useAuth();
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   // Only show for super admins or specific email
   const isSuperAdmin = profile?.is_super_admin === true || 
@@ -18,6 +21,9 @@ export const RoleSwitcher = () => {
 
   const handleRoleChange = (newRole: string) => {
     setViewAsRole(newRole as UserRole);
+    // Navigate to the role's dashboard using centralized paths
+    const effectiveRole = getEffectiveRole(newRole, newRole === 'admin');
+    navigate(ROLE_DASHBOARDS[effectiveRole]);
   };
 
   const getRoleIcon = (role: string) => {

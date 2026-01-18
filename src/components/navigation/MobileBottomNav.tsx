@@ -81,28 +81,28 @@ const MobileBottomNav = () => {
   // Role-specific navigation items
   const getNavItems = (): NavItem[] => {
     const baseItems: NavItem[] = [
-      { path: "/piacer", icon: Store, labelKey: "mobile_nav.discover" },
+      { path: "/programs", icon: Store, labelKey: "mobile_nav.discover" },
       { path: "/kurzusaim", icon: BookOpen, labelKey: "mobile_nav.my_courses" },
     ];
 
     // Role-specific dashboard link
     if (effectiveRole === 'expert') {
       baseItems.push({
-        path: "/szakertoi-studio",
+        path: "/expert-studio",
         icon: Sparkles,
         labelKey: "mobile_nav.my_studio",
         iconColor: "text-cyan-500"
       });
     } else if (effectiveRole === 'sponsor') {
       baseItems.push({
-        path: "/tamogatoi-kozpont",
+        path: "/sponsor-dashboard",
         icon: Building2,
         labelKey: "mobile_nav.my_campaigns",
         iconColor: "text-amber-500"
       });
     } else {
       baseItems.push({
-        path: "/iranyitopult",
+        path: "/programs",
         icon: LayoutDashboard,
         labelKey: "mobile_nav.dashboard"
       });
@@ -121,8 +121,8 @@ const MobileBottomNav = () => {
 
   const isActive = (path: string) => {
     // Handle exact match or path prefix for nested routes
-    if (path === "/piacer") {
-      return location.pathname.startsWith("/piacer") || location.pathname === "/";
+    if (path === "/programs") {
+      return location.pathname.startsWith("/programs") || location.pathname.startsWith("/piacer") || location.pathname === "/";
     }
     return location.pathname.startsWith(path);
   };
