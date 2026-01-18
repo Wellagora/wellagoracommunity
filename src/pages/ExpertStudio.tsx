@@ -17,6 +17,7 @@ import BalanceCard from "@/components/expert-studio/BalanceCard";
 import MyProgramsList from "@/components/expert-studio/MyProgramsList";
 import MediaLibrary from "@/components/expert-studio/MediaLibrary";
 import ExpertImpactReport from "@/components/expert-studio/ExpertImpactReport";
+import ExpertDashboardStats from "@/components/expert-studio/ExpertDashboardStats";
 import { useExpertMedia, ExpertMedia } from "@/hooks/useExpertMedia";
 
 const ExpertStudio = () => {
@@ -176,6 +177,9 @@ const ExpertStudio = () => {
 
         {/* Studio Tab */}
         <TabsContent value="studio" className="space-y-6">
+          {/* Dashboard Stats - Programs, Bookings, Earnings */}
+          <ExpertDashboardStats userId={user.id} />
+
           {/* Quick Action Bar - Mobile First */}
           <QuickActionBar 
             onVideoCapture={handleVideoCapture}
