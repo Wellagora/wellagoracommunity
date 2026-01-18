@@ -1151,6 +1151,7 @@ export type Database = {
           access_level: string | null
           access_type: string | null
           category: string | null
+          content_type: string | null
           content_url: string | null
           created_at: string | null
           creator_id: string | null
@@ -1163,6 +1164,7 @@ export type Database = {
           is_featured: boolean | null
           is_published: boolean | null
           is_sponsored: boolean | null
+          max_capacity: number | null
           og_image_url: string | null
           price_huf: number | null
           region_id: string | null
@@ -1188,6 +1190,7 @@ export type Database = {
           access_level?: string | null
           access_type?: string | null
           category?: string | null
+          content_type?: string | null
           content_url?: string | null
           created_at?: string | null
           creator_id?: string | null
@@ -1200,6 +1203,7 @@ export type Database = {
           is_featured?: boolean | null
           is_published?: boolean | null
           is_sponsored?: boolean | null
+          max_capacity?: number | null
           og_image_url?: string | null
           price_huf?: number | null
           region_id?: string | null
@@ -1225,6 +1229,7 @@ export type Database = {
           access_level?: string | null
           access_type?: string | null
           category?: string | null
+          content_type?: string | null
           content_url?: string | null
           created_at?: string | null
           creator_id?: string | null
@@ -1237,6 +1242,7 @@ export type Database = {
           is_featured?: boolean | null
           is_published?: boolean | null
           is_sponsored?: boolean | null
+          max_capacity?: number | null
           og_image_url?: string | null
           price_huf?: number | null
           region_id?: string | null
