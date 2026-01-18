@@ -12,6 +12,7 @@ import { useSubscription } from '@/contexts/SubscriptionContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import DashboardLayout from '@/layouts/DashboardLayout';
+import { SponsorDashboardSkeleton } from '@/components/ui/loading-skeleton';
 import {
   Users,
   Calendar,
@@ -22,8 +23,7 @@ import {
   Plus,
   Gift,
   Building2,
-  CreditCard,
-  Loader2
+  CreditCard
 } from 'lucide-react';
 import {
   AreaChart,
@@ -357,9 +357,7 @@ const SponsorDashboardPage = () => {
         iconColor="text-emerald-600"
         backUrl="/"
       >
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-black/40" />
-        </div>
+        <SponsorDashboardSkeleton />
       </DashboardLayout>
     );
   }

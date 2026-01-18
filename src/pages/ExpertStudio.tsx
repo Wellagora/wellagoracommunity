@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sparkles, BarChart3, Wrench } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { DashboardCard } from "@/components/dashboard/DashboardCard";
+import { ExpertStudioSkeleton } from "@/components/ui/loading-skeleton";
 
 // Expert Studio Components
 import QuickActionBar from "@/components/expert-studio/QuickActionBar";
@@ -135,16 +135,7 @@ const ExpertStudio = () => {
     return (
       <div className="min-h-screen bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Skeleton className="h-10 w-64 mb-8" />
-          <div className="grid grid-cols-3 gap-3 mb-8">
-            {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-20 w-full rounded-xl" />
-            ))}
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <Skeleton className="h-80 w-full rounded-2xl" />
-            <Skeleton className="h-80 w-full rounded-2xl" />
-          </div>
+          <ExpertStudioSkeleton />
         </div>
       </div>
     );
