@@ -61,38 +61,50 @@ export const useFavorites = (): UseFavoritesReturn => {
     try {
       if (isCurrentlyFavorite) {
         // Remove from favorites
+        console.log('[useFavorites] Removing favorite:', { userId: user.id, contentId });
+        
         const { error } = await supabase
           .from('favorites')
           .delete()
           .eq('user_id', user.id)
           .eq('content_id', contentId);
 
-        if (error) throw error;
+        if (error) {
+          console.error('[useFavorites] DELETE error:', error);
+          throw error;
+        }
 
+        console.log('[useFavorites] DELETE successful');
         setFavorites(prev => prev.filter(id => id !== contentId));
         toast.success(t('favorites.removed') || 'Eltávolítva a kedvencekből');
       } else {
         // Add to favorites
-        const { error } = await supabase
+        console.log('[useFavorites] Adding favorite:', { userId: user.id, contentId });
+        
+        const { data, error } = await supabase
           .from('favorites')
           .insert({
             user_id: user.id,
             content_id: contentId
-          });
+          })
+          .select()
+          .single();
 
         if (error) {
           if (error.code === '23505') {
-            // Already favorited
+            console.log('[useFavorites] Already favorited (duplicate key)');
             return;
           }
+          console.error('[useFavorites] INSERT error:', error);
           throw error;
         }
 
+        console.log('[useFavorites] INSERT successful:', data);
         setFavorites(prev => [...prev, contentId]);
         toast.success(t('favorites.added') || 'Hozzáadva a kedvencekhez ❤️');
       }
     } catch (err) {
-      console.error('Error toggling favorite:', err);
+      console.error('[useFavorites] Error toggling favorite:', err);
       toast.error(t('common.error') || 'Hiba történt');
     }
   }, [user, favorites, t]);

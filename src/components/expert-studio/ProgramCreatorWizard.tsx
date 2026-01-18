@@ -77,7 +77,7 @@ const STEPS = ["media", "details", "localization", "preview"] as const;
 const ProgramCreatorWizard = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { id: editId } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
 
@@ -408,6 +408,7 @@ const ProgramCreatorWizard = () => {
                 onPublish={handlePublish}
                 onSaveDraft={handleSaveDraft}
                 isPublishing={isPublishing}
+                hasPayoutMethod={!!profile?.payout_preference}
               />
             )}
           </motion.div>
