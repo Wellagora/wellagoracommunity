@@ -28,7 +28,8 @@ import {
   Monitor,
   Video,
   Sparkles,
-  Heart
+  Heart,
+  Clock
 } from "lucide-react";
 import { motion } from "framer-motion";
 import PurchaseModal from "@/components/PurchaseModal";
@@ -533,9 +534,65 @@ const ProgramDetailPage = () => {
                       const contributionAmount = sponsorship?.sponsor_contribution_huf || (program as any).fixed_sponsor_amount || (program.price_huf ? Math.round(program.price_huf * 0.8) : 5000);
                       const memberPayment = Math.max(0, (program.price_huf || 0) - contributionAmount);
                       const formatPrice = (price: number) => `${price.toLocaleString('hu-HU')} Ft`;
+                      const isQuotaExhausted = quotaInfo?.isExhausted || false;
+                      const remainingSeats = quotaInfo?.remainingSeats || 0;
                       
+                      // QUOTA EXHAUSTED: Show impact mode with original price
+                      if (isQuotaExhausted) {
+                        return (
+                          <div className="mb-4 p-4 rounded-xl bg-gradient-to-br from-emerald-500/10 via-emerald-500/15 to-emerald-500/10 border border-emerald-500/30">
+                            {/* Original price - no longer sponsored */}
+                            <div className="flex flex-col gap-1 mb-3">
+                              <span className="text-2xl font-bold text-foreground">
+                                {formatPrice(program.price_huf || 0)}
+                              </span>
+                            </div>
+                            
+                            {/* Impact message */}
+                            <div className="flex items-center gap-2 mb-3 text-emerald-700">
+                              <Heart className="w-4 h-4 fill-emerald-600" />
+                              <span className="text-sm font-medium">
+                                {quotaInfo?.usedSeats || 0} Tag már igénybe vette a támogatott helyet
+                              </span>
+                            </div>
+                            
+                            {/* Sponsor Logo & Name - Still visible for brand awareness */}
+                            <Link 
+                              to={`/partners/${program.sponsor_name?.toLowerCase().replace(/\s+/g, '-')}`}
+                              className="flex items-center gap-3 p-2 rounded-lg bg-white/60 hover:bg-white/80 transition-colors group"
+                            >
+                              <div className="w-10 h-10 rounded-lg bg-white border border-border/20 flex items-center justify-center overflow-hidden">
+                                <img 
+                                  src={`/partner-logos/${program.sponsor_name?.toLowerCase()}.png`}
+                                  alt={program.sponsor_name}
+                                  className="w-8 h-8 object-contain"
+                                  onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.src = `https://logo.clearbit.com/${program.sponsor_name?.toLowerCase()}.hu?size=80`;
+                                  }}
+                                />
+                              </div>
+                              <p className="text-sm text-muted-foreground">
+                                Támogatásával valósult meg
+                              </p>
+                            </Link>
+                          </div>
+                        );
+                      }
+                      
+                      // ACTIVE SPONSORSHIP
                       return (
                         <div className="mb-4 p-4 rounded-xl bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 border border-primary/20">
+                          {/* URGENCY BADGE: Show when <= 3 seats left */}
+                          {remainingSeats > 0 && remainingSeats <= 3 && (
+                            <div className="flex items-center gap-1.5 mb-3 px-3 py-2 rounded-full bg-red-500/15 border border-red-500/30 w-fit animate-pulse">
+                              <Clock className="w-4 h-4 text-red-600" />
+                              <span className="text-sm font-semibold text-red-600">
+                                Már csak {remainingSeats} támogatott hely!
+                              </span>
+                            </div>
+                          )}
+                          
                           {/* Price hierarchy: strikethrough original, then discounted or FREE badge */}
                           <div className="flex flex-col gap-1 mb-3">
                             {/* Original price strikethrough */}
@@ -691,8 +748,10 @@ const ProgramDetailPage = () => {
             alreadyClaimed={alreadyClaimed}
             isClaimingVoucher={isClaimingVoucher}
             onPurchaseClick={() => setIsPurchaseModalOpen(true)}
-            onClaimVoucher={(program as any).is_sponsored ? handleClaimVoucher : undefined}
+            onClaimVoucher={(program as any).is_sponsored && !quotaInfo?.isExhausted ? handleClaimVoucher : undefined}
             accessLevel={program.access_level}
+            remainingSeats={quotaInfo?.remainingSeats}
+            isQuotaExhausted={quotaInfo?.isExhausted}
           />
         )}
       </div>

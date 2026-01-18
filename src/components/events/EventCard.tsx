@@ -84,8 +84,8 @@ const EventCard = ({
           }}
         />
         
-        {/* Bottom gradient ONLY for text readability */}
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+        {/* Bottom gradient ONLY for text readability - vibrant image visible */}
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/80 to-transparent" />
         
         {/* Date badge - top left, glassmorphism */}
         <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg">
