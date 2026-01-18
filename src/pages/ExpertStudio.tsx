@@ -3,7 +3,8 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Sparkles } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Sparkles, BarChart3, Wrench } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { DashboardCard } from "@/components/dashboard/DashboardCard";
@@ -15,6 +16,7 @@ import VoucherManagement from "@/components/expert-studio/VoucherManagement";
 import BalanceCard from "@/components/expert-studio/BalanceCard";
 import MyProgramsList from "@/components/expert-studio/MyProgramsList";
 import MediaLibrary from "@/components/expert-studio/MediaLibrary";
+import ExpertImpactReport from "@/components/expert-studio/ExpertImpactReport";
 import { useExpertMedia, ExpertMedia } from "@/hooks/useExpertMedia";
 
 const ExpertStudio = () => {
@@ -159,56 +161,80 @@ const ExpertStudio = () => {
       iconColor="text-black"
       backUrl="/"
     >
-      {/* Quick Action Bar - Mobile First */}
-      <QuickActionBar 
-        onVideoCapture={handleVideoCapture}
-        onPhotoCapture={handlePhotoCapture}
-        uploading={uploading}
-      />
+      {/* Tabs for Studio vs Impact Report */}
+      <Tabs defaultValue="studio" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 mb-6">
+          <TabsTrigger value="studio" className="flex items-center gap-2">
+            <Wrench className="w-4 h-4" />
+            Műhely
+          </TabsTrigger>
+          <TabsTrigger value="impact" className="flex items-center gap-2">
+            <BarChart3 className="w-4 h-4" />
+            Hatásjelentés
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Media Library - New Section */}
-      <MediaLibrary
-        media={media}
-        loading={mediaLoading}
-        analyzing={analyzing}
-        onDelete={deleteMedia}
-        onConvertToProgram={handleConvertToProgram}
-        onAddToProgram={(mediaItem, programId) => linkMediaToProgram(mediaItem.id, programId)}
-        onDismissSuggestion={dismissSuggestion}
-        onAnalyze={analyzeMedia}
-      />
-
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        {/* Voucher Validator - The Business Heart */}
-        <DashboardCard>
-          <VoucherValidator 
-            userId={user.id}
-            onBalanceUpdate={handleBalanceUpdate}
-            balance={balance}
+        {/* Studio Tab */}
+        <TabsContent value="studio" className="space-y-6">
+          {/* Quick Action Bar - Mobile First */}
+          <QuickActionBar 
+            onVideoCapture={handleVideoCapture}
+            onPhotoCapture={handlePhotoCapture}
+            uploading={uploading}
           />
-        </DashboardCard>
 
-        {/* Balance & Earnings Card */}
-        <DashboardCard delay={0.1}>
-          <BalanceCard 
-            balance={balance}
-            monthlyEarnings={stats.monthlyEarnings}
-            totalEarnings={stats.totalEarnings}
-            pendingAmount={stats.pendingAmount}
+          {/* Media Library - New Section */}
+          <MediaLibrary
+            media={media}
+            loading={mediaLoading}
+            analyzing={analyzing}
+            onDelete={deleteMedia}
+            onConvertToProgram={handleConvertToProgram}
+            onAddToProgram={(mediaItem, programId) => linkMediaToProgram(mediaItem.id, programId)}
+            onDismissSuggestion={dismissSuggestion}
+            onAnalyze={analyzeMedia}
           />
-        </DashboardCard>
-      </div>
 
-      {/* Voucher Management - Full Width */}
-      <DashboardCard delay={0.15} className="mb-6">
-        <VoucherManagement />
-      </DashboardCard>
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* Voucher Validator - The Business Heart */}
+            <DashboardCard>
+              <VoucherValidator 
+                userId={user.id}
+                onBalanceUpdate={handleBalanceUpdate}
+                balance={balance}
+              />
+            </DashboardCard>
 
-      {/* My Programs List */}
-      <DashboardCard delay={0.2}>
-        <MyProgramsList userId={user.id} />
-      </DashboardCard>
+            {/* Balance & Earnings Card */}
+            <DashboardCard delay={0.1}>
+              <BalanceCard 
+                balance={balance}
+                monthlyEarnings={stats.monthlyEarnings}
+                totalEarnings={stats.totalEarnings}
+                pendingAmount={stats.pendingAmount}
+              />
+            </DashboardCard>
+          </div>
+
+          {/* Voucher Management - Full Width */}
+          <DashboardCard delay={0.15} className="mb-6">
+            <VoucherManagement />
+          </DashboardCard>
+
+          {/* My Programs List */}
+          <DashboardCard delay={0.2}>
+            <MyProgramsList userId={user.id} />
+          </DashboardCard>
+        </TabsContent>
+
+        {/* Impact Report Tab */}
+        <TabsContent value="impact">
+          <DashboardCard>
+            <ExpertImpactReport userId={user.id} />
+          </DashboardCard>
+        </TabsContent>
+      </Tabs>
     </DashboardLayout>
   );
 };
