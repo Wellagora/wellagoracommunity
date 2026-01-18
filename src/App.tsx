@@ -76,6 +76,8 @@ const ProgramLearnPage = lazy(() => import("@/pages/ProgramLearnPage"));
 const MyLearningPage = lazy(() => import("@/pages/MyLearningPage"));
 const CreatorPublicProfilePage = lazy(() => import("@/pages/CreatorPublicProfilePage"));
 const ProgramsListingPage = lazy(() => import("@/pages/ProgramsListingPage"));
+const NotificationsPage = lazy(() => import("@/pages/NotificationsPage"));
+const MyCoursesPage = lazy(() => import("@/pages/MyCoursesPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function App() {
@@ -292,6 +294,24 @@ function App() {
                           {/* Marketplace (Piactér) - new Hungarian routes */}
                           <Route path="/piacer" element={<ProgramsListingPage />} />
                           <Route path="/piacer/:id" element={<ProgramDetailPage />} />
+                          
+                          {/* Mobile Navigation Routes */}
+                          <Route
+                            path="/kurzusaim"
+                            element={
+                              <ProtectedRoute>
+                                <MyCoursesPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/ertesitesek"
+                            element={
+                              <ProtectedRoute>
+                                <NotificationsPage />
+                              </ProtectedRoute>
+                            }
+                          />
                           
                           {/* Workshop Secret View (Műhelytitok nézet) */}
                           <Route

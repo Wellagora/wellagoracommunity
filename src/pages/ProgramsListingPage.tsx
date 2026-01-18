@@ -446,26 +446,30 @@ const ProgramsListingPage = () => {
             )}
           </div>
 
-          {/* Categories - Inside sticky header */}
-          <div className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-hide">
-            {CATEGORIES.map((category) => {
-              const Icon = category.icon;
-              const isActive = selectedCategory === category.id;
-              return (
-                <button
-                  key={category.id}
-                  onClick={() => setSelectedCategory(category.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap transition-all duration-300 ${
-                    isActive
-                      ? "bg-black text-white shadow-[0_4px_16px_rgba(0,0,0,0.15)]"
-                      : "bg-white/80 backdrop-blur-sm border border-black/[0.05] text-black/60 hover:border-black/[0.15] hover:text-black hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)]"
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span className="text-sm font-medium">{t(category.labelKey)}</span>
-                </button>
-              );
-            })}
+          {/* Categories - Inside sticky header with horizontal scroll + touch-friendly padding */}
+          <div className="-mx-4 px-4 overflow-x-auto pb-1 scrollbar-hide">
+            <div className="flex gap-2.5 px-1">
+              {CATEGORIES.map((category) => {
+                const Icon = category.icon;
+                const isActive = selectedCategory === category.id;
+                return (
+                  <button
+                    key={category.id}
+                    onClick={() => setSelectedCategory(category.id)}
+                    className={`flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-full whitespace-nowrap transition-all duration-300 touch-manipulation ${
+                      isActive
+                        ? "bg-black text-white shadow-[0_4px_16px_rgba(0,0,0,0.15)]"
+                        : "bg-white/80 backdrop-blur-sm border border-black/[0.05] text-black/60 hover:border-black/[0.15] hover:text-black hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)]"
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span className="text-sm font-medium">{t(category.labelKey)}</span>
+                  </button>
+                );
+              })}
+              {/* End spacer for scroll padding */}
+              <div className="w-4 shrink-0" aria-hidden="true" />
+            </div>
           </div>
         </div>
 
@@ -517,8 +521,11 @@ const ProgramsListingPage = () => {
                       ease: [0.25, 0.46, 0.45, 0.94]
                     }}
                   >
-                    <Link to={`/piacer/${program.id}`} className="block group">
-                      <Card className="overflow-hidden h-full transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:scale-[1.02]">
+                    <Link 
+                      to={`/piacer/${program.id}`} 
+                      className="block group min-h-[44px] touch-manipulation"
+                    >
+                      <Card className="overflow-hidden h-full transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:scale-[1.02] active:scale-[0.98]">
                         <CardContent className="p-0">
                           {/* Image with overlay */}
                           <div className="aspect-[4/3] bg-gradient-to-br from-black/[0.02] to-black/[0.06] relative overflow-hidden">

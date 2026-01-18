@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import MobileBottomNav from "@/components/navigation/MobileBottomNav";
 import { useAuth } from "@/contexts/AuthContext";
 import FeedbackButton from "@/components/feedback/FeedbackButton";
 
@@ -12,9 +13,13 @@ export default function AppLayout() {
         <Navigation />
       </header>
       {/* Nav is fixed (h-16). In demo mode there's an extra 8px banner above it. */}
-      <main className={isDemoMode ? "pt-24" : "pt-16"}>
+      {/* Add bottom padding on mobile for the bottom nav (h-16) */}
+      <main className={`${isDemoMode ? "pt-24" : "pt-16"} pb-16 md:pb-0`}>
         <Outlet />
       </main>
+      
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav />
       
       {/* Feedback Button - appears on all pages for pilot testing */}
       <FeedbackButton />

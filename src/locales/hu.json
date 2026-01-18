@@ -2,6 +2,26 @@
   "landing": {
     "cta_join": "Csatlakozom"
   },
+  "notifications": {
+    "title": "Értesítések",
+    "empty": "Nincs értesítésed",
+    "empty_desc": "Itt fogod látni a legújabb híreket és frissítéseket.",
+    "mark_all_read": "Mind olvasott",
+    "all_marked_read": "Összes olvasottnak jelölve",
+    "all_marked_read_desc": "Az összes értesítésed olvasottként lett megjelölve."
+  },
+  "my_courses": {
+    "title": "Kurzusaim",
+    "total_courses": "Kurzus",
+    "completed": "Befejezve",
+    "in_progress": "Folyamatban",
+    "not_started": "Elkezdetlen",
+    "empty": "Még nincs kurzusod",
+    "empty_desc": "Fedezd fel a Piacteret és jelentkezz egy programra!",
+    "browse_marketplace": "Piactér megtekintése",
+    "sponsored": "Támogatott",
+    "purchased": "Megvásárolt"
+  },
   "admin": {
     "access_denied": "Hozzáférés megtagadva",
     "access_denied_description": "Nincs jogosultságod az admin felülethez.",
@@ -621,6 +641,14 @@
   "common.created_at": "Létrehozva",
   "common.published": "Publikált",
   "common.draft": "Vázlat",
+  "mobile_nav.discover": "Felfedezés",
+  "mobile_nav.my_courses": "Kurzusaim",
+  "mobile_nav.notifications": "Értesítések",
+  "mobile_nav.profile": "Profil",
+  "program.voucher_claimed": "Kupon igényelve!",
+  "program.claim_voucher": "Kupon igénylése",
+  "program.purchase_button": "Jelentkezés",
+  "purchase.sponsor_contribution_label": "támogatásával",
   "sponsor_dashboard.subtitle": "Kövesd nyomon szponzorációid hatását és a közösségi elérést",
   "sponsor_dashboard.select_package": "Válassz csomagot",
   "sponsor_dashboard.package_selected": "Csomag kiválasztva! Stripe fizetés hamarosan elérhető.",
