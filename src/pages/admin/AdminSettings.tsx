@@ -124,7 +124,7 @@ const AdminSettings = () => {
                   <Ticket className="h-5 w-5 text-amber-600" />
                 </div>
                 <div>
-                  <p className="font-medium">Voucher Rendszer</p>
+                  <p className="font-medium">Támogatott helyek rendszere</p>
                   <p className="text-sm text-muted-foreground">
                     Szponzorált program hozzáférés
                   </p>

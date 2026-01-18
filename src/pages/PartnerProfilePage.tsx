@@ -167,12 +167,12 @@ const PartnerProfilePage = () => {
   const description = partner.description[language as keyof typeof partner.description] || partner.description.en;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       <Navigation />
 
       <main className="flex-1 pt-20">
-        {/* Hero Section - Glassmorphism Style */}
-        <section className="bg-white/95 backdrop-blur-xl py-12 border-b border-border/20">
+        {/* Hero Section - Marketplace-consistent Glassmorphism Style */}
+        <section className="bg-white/80 backdrop-blur-xl py-12 border-b border-border/10">
           <div className="container mx-auto px-4 lg:px-10">
             <Link to="/partners" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
               <ChevronLeft className="w-4 h-4 mr-1" />
@@ -180,11 +180,11 @@ const PartnerProfilePage = () => {
             </Link>
 
             <div className="flex flex-col md:flex-row items-start gap-8">
-              {/* Partner Logo - Larger, cleaner */}
+              {/* Partner Logo - Large, high-res, clean */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="w-36 h-36 rounded-2xl bg-white border border-border/20 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.06)] flex-shrink-0 flex items-center justify-center"
+                className="w-40 h-40 rounded-2xl bg-white/80 backdrop-blur-md border border-border/20 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.06)] flex-shrink-0 flex items-center justify-center"
               >
                 <img 
                   src={partner.logo} 
@@ -192,7 +192,7 @@ const PartnerProfilePage = () => {
                   className="w-full h-full object-contain"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.src = `https://logo.clearbit.com/${partner.website.replace('https://', '').replace('www.', '')}?size=200`;
+                    target.src = `https://logo.clearbit.com/${partner.website.replace('https://', '').replace('www.', '')}?size=256`;
                   }}
                 />
               </motion.div>
@@ -206,18 +206,18 @@ const PartnerProfilePage = () => {
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <h1 className="text-3xl font-bold text-foreground">{partner.name}</h1>
-                    <Badge variant="secondary" className="text-sm">{partner.category}</Badge>
+                    <Badge variant="secondary" className="text-sm bg-black/5 text-foreground border-0">{partner.category}</Badge>
                   </div>
                   <p className="text-muted-foreground mb-5 max-w-2xl leading-relaxed">{description}</p>
                   
                   <div className="flex flex-wrap gap-3">
-                    <Button size="default" asChild className="bg-black hover:bg-black/90 text-white font-medium shadow-lg">
+                    <Button size="default" asChild className="bg-black hover:bg-black/90 text-white font-semibold shadow-lg">
                       <a href={partner.website} target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="w-4 h-4 mr-2" />
                         {language === "hu" ? "Irány a webshop" : language === "de" ? "Zum Webshop" : "Visit Webshop"}
                       </a>
                     </Button>
-                    <Button variant="outline" size="default" asChild className="border-border/40">
+                    <Button variant="outline" size="default" asChild className="border-black/10 hover:bg-black/5">
                       <a href={partner.website} target="_blank" rel="noopener noreferrer">
                         <Store className="w-4 h-4 mr-2" />
                         {language === "hu" ? "Weboldal" : "Website"}
@@ -227,7 +227,7 @@ const PartnerProfilePage = () => {
                       variant="ghost" 
                       size="default"
                       onClick={handleFavoriteClick}
-                      className={isFavorite ? "text-red-500 hover:text-red-600" : ""}
+                      className={isFavorite ? "text-red-500 hover:text-red-600" : "hover:bg-black/5"}
                     >
                       <Heart className={`w-4 h-4 mr-2 ${isFavorite ? "fill-current" : ""}`} />
                       {language === "hu" ? "Kedvenc" : "Favorite"}
@@ -239,7 +239,7 @@ const PartnerProfilePage = () => {
           </div>
         </section>
 
-        {/* Offers Section */}
+        {/* Offers Section - Marketplace-consistent card styling */}
         <section className="py-12 bg-white">
           <div className="container mx-auto px-4 lg:px-10">
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
@@ -255,15 +255,19 @@ const PartnerProfilePage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <PartnerOfferCard offer={offer} />
+                  <Card className="bg-white/80 backdrop-blur-md border-[0.5px] border-black/5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.02]">
+                    <CardContent className="p-6">
+                      <PartnerOfferCard offer={offer} />
+                    </CardContent>
+                  </Card>
                 </motion.div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Locations Section */}
-        <section className="py-12 bg-slate-50/50">
+        {/* Locations Section - Consistent styling */}
+        <section className="py-12 bg-slate-50/30">
           <div className="container mx-auto px-4 lg:px-10">
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
               <MapPin className="w-6 h-6 text-primary" />
@@ -272,8 +276,12 @@ const PartnerProfilePage = () => {
 
             <div className="flex flex-wrap gap-3">
               {partner.locations.map((location) => (
-                <Badge key={location} variant="outline" className="text-sm py-2 px-4 bg-white">
-                  <MapPin className="w-3 h-3 mr-1" />
+                <Badge 
+                  key={location} 
+                  variant="outline" 
+                  className="text-sm py-2 px-4 bg-white/80 backdrop-blur-sm border-black/10 shadow-sm"
+                >
+                  <MapPin className="w-3 h-3 mr-1.5" />
                   {location}
                 </Badge>
               ))}
