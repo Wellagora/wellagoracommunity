@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Leaf, ChefHat, Hammer, Heart, Palette, MoreHorizontal, MapPin, Monitor, Video, Calendar, Clock, Link as LinkIcon } from "lucide-react";
+import { Leaf, ChefHat, Hammer, Heart, Palette, MoreHorizontal, MapPin, Monitor, Video, Calendar, Clock, Link as LinkIcon, Users } from "lucide-react";
 import type { ProgramFormData, ContentType } from "../ProgramCreatorWizard";
 
 interface Step2DetailsProps {
@@ -162,6 +162,22 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
                 </div>
               </div>
               <div>
+                <Label htmlFor="maxParticipants" className="text-sm font-medium flex items-center gap-1">
+                  <Users className="w-4 h-4" />
+                  {language === 'hu' ? 'Maximum résztvevők' : 'Max participants'} *
+                </Label>
+                <Input
+                  id="maxParticipants"
+                  type="number"
+                  min={1}
+                  max={100}
+                  value={formData.maxParticipants || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, maxParticipants: parseInt(e.target.value) || 0 }))}
+                  placeholder="10"
+                  className="mt-1"
+                />
+              </div>
+              <div>
                 <Label htmlFor="locationAddress" className="text-sm font-medium flex items-center gap-1">
                   <MapPin className="w-4 h-4" />
                   {language === 'hu' ? 'Helyszín címe' : 'Location Address'} *
@@ -220,6 +236,22 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
                     className="mt-1"
                   />
                 </div>
+              </div>
+              <div>
+                <Label htmlFor="maxParticipantsOnline" className="text-sm font-medium flex items-center gap-1">
+                  <Users className="w-4 h-4" />
+                  {language === 'hu' ? 'Maximum résztvevők' : 'Max participants'} *
+                </Label>
+                <Input
+                  id="maxParticipantsOnline"
+                  type="number"
+                  min={1}
+                  max={500}
+                  value={formData.maxParticipants || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, maxParticipants: parseInt(e.target.value) || 0 }))}
+                  placeholder="50"
+                  className="mt-1"
+                />
               </div>
               <div>
                 <Label htmlFor="meetingLink" className="text-sm font-medium flex items-center gap-1">

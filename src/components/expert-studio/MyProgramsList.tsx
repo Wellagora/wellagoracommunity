@@ -12,6 +12,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   BookOpen,
   Eye,
   Ticket,
@@ -19,7 +29,7 @@ import {
   MoreVertical,
   Pencil,
   Copy,
-  Archive,
+  Trash2,
   LayoutGrid,
   List,
   Filter,
@@ -27,6 +37,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 
 interface Program {
   id: string;
@@ -47,11 +58,14 @@ type ViewMode = "grid" | "list";
 type FilterMode = "all" | "published" | "drafts";
 
 const MyProgramsList = ({ userId }: MyProgramsListProps) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [programs, setPrograms] = useState<Program[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [filterMode, setFilterMode] = useState<FilterMode>("all");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [programToDelete, setProgramToDelete] = useState<Program | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     loadPrograms();
@@ -89,7 +103,41 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
   };
 
   const calculateRevenue = (program: Program) => {
-    return (program.used_licenses || 0) * 500;
+    // Calculate 80% expert share
+    const pricePerBooking = program.price_huf || 5000;
+    const grossRevenue = (program.used_licenses || 0) * pricePerBooking;
+    return Math.round(grossRevenue * 0.80);
+  };
+
+  const handleDeleteClick = (program: Program) => {
+    setProgramToDelete(program);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!programToDelete) return;
+    
+    setIsDeleting(true);
+    try {
+      // Only allow deletion of own programs (RLS should enforce this too)
+      const { error } = await supabase
+        .from("expert_contents")
+        .delete()
+        .eq("id", programToDelete.id)
+        .eq("creator_id", userId);
+
+      if (error) throw error;
+
+      setPrograms(programs.filter(p => p.id !== programToDelete.id));
+      toast.success(language === 'hu' ? 'Program törölve' : 'Program deleted');
+    } catch (error) {
+      console.error("Error deleting program:", error);
+      toast.error(language === 'hu' ? 'Hiba a törlés során' : 'Error deleting program');
+    } finally {
+      setIsDeleting(false);
+      setDeleteDialogOpen(false);
+      setProgramToDelete(null);
+    }
   };
 
   if (isLoading) {
@@ -110,6 +158,7 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
   }
 
   return (
+    <>
     <Card className="bg-white/80 backdrop-blur-md border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
       <CardHeader>
         <div className="flex items-center justify-between">
@@ -231,9 +280,12 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                             <Copy className="w-4 h-4 mr-2" />
                             {t("expert_studio.duplicate")}
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive">
-                            <Archive className="w-4 h-4 mr-2" />
-                            {t("expert_studio.archive")}
+                          <DropdownMenuItem 
+                            className="text-destructive"
+                            onClick={() => handleDeleteClick(program)}
+                          >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            {language === 'hu' ? 'Törlés' : 'Delete'}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -319,9 +371,12 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                       <Copy className="w-4 h-4 mr-2" />
                       {t("expert_studio.duplicate")}
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-destructive">
-                      <Archive className="w-4 h-4 mr-2" />
-                      {t("expert_studio.archive")}
+                    <DropdownMenuItem 
+                      className="text-destructive"
+                      onClick={() => handleDeleteClick(program)}
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      {language === 'hu' ? 'Törlés' : 'Delete'}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -331,6 +386,37 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
         )}
       </CardContent>
     </Card>
+
+    {/* Delete Confirmation Dialog */}
+    <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            {language === 'hu' ? 'Program törlése' : 'Delete Program'}
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            {language === 'hu' 
+              ? `Biztosan törölni szeretné a "${programToDelete?.title}" programot? Ez a művelet nem vonható vissza.`
+              : `Are you sure you want to delete "${programToDelete?.title}"? This action cannot be undone.`}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isDeleting}>
+            {language === 'hu' ? 'Mégse' : 'Cancel'}
+          </AlertDialogCancel>
+          <AlertDialogAction
+            onClick={handleDeleteConfirm}
+            disabled={isDeleting}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            {isDeleting 
+              ? (language === 'hu' ? 'Törlés...' : 'Deleting...') 
+              : (language === 'hu' ? 'Törlés' : 'Delete')}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 };
 

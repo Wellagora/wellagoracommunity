@@ -32,6 +32,7 @@ export interface ProgramFormData {
   contentType: ContentType;
   eventDate: string; // ISO date string
   eventTime: string; // HH:MM format
+  maxParticipants: number; // Max participants for in_person and online_live
   locationAddress: string; // Physical location for in_person
   locationMapUrl: string; // Google Maps link
   meetingLink: string; // Zoom/Teams link for online_live
@@ -58,6 +59,7 @@ const initialFormData: ProgramFormData = {
   contentType: "in_person",
   eventDate: "",
   eventTime: "",
+  maxParticipants: 10,
   locationAddress: "",
   locationMapUrl: "",
   meetingLink: "",
@@ -138,6 +140,7 @@ const ProgramCreatorWizard = () => {
         contentType: (data.content_type as ContentType) || "in_person",
         eventDate: "",
         eventTime: "",
+        maxParticipants: data.max_capacity || 10,
         locationAddress: "",
         locationMapUrl: "",
         meetingLink: data.content_url || "",
@@ -234,6 +237,7 @@ const ProgramCreatorWizard = () => {
         thumbnail_url: imageUrl,
         price_huf: formData.pricingMode === "purchasable" ? formData.price_huf : 0,
         access_type: formData.pricingMode === "purchasable" ? "paid" : "sponsored",
+        max_capacity: formData.contentType !== 'recorded' ? formData.maxParticipants : null,
         is_published: false,
         updated_at: new Date().toISOString(),
       };
