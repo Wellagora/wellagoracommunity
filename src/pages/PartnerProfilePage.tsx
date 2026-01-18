@@ -36,7 +36,7 @@ const PARTNERS_DATA: Record<string, {
 }> = {
   praktiker: {
     name: "Praktiker",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Praktiker_logo.svg/200px-Praktiker_logo.svg.png",
+    logo: "/partner-logos/praktiker.png",
     description: {
       hu: "Magyarország egyik vezető barkács- és kertészeti áruházlánca. Tagjainknak exkluzív kedvezményeket kínálunk kertészeti és fenntarthatósági termékekre.",
       en: "One of Hungary's leading DIY and garden retail chains. We offer exclusive discounts on gardening and sustainability products for our members.",
@@ -51,7 +51,7 @@ const PARTNERS_DATA: Record<string, {
         partnerName: "Praktiker",
         partnerSlug: "praktiker",
         offerTitle: "10% kedvezmény kertészeti eszközökre",
-        offerDescription: "Mutasd fel a WellAgora tagsági kártyádat és vásárolj kedvezményesen!",
+        offerDescription: "A WellAgora közösségnek járó kedvezményt itt éred el.",
         discountType: "percentage",
         discountValue: "10%",
         isOnline: false,
@@ -72,7 +72,7 @@ const PARTNERS_DATA: Record<string, {
   },
   dm: {
     name: "DM",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Dm_Logo.svg/200px-Dm_Logo.svg.png",
+    logo: "/partner-logos/dm.png",
     description: {
       hu: "A dm-drogerie markt a fenntartható szépségápolás és egészség szakértője. Bio és természetes kozmetikumainkra különleges árakat kínálunk WellAgora tagoknak.",
       en: "dm-drogerie markt is the expert in sustainable beauty and health care. We offer special prices on organic and natural cosmetics for WellAgora members.",
@@ -87,7 +87,7 @@ const PARTNERS_DATA: Record<string, {
         partnerName: "DM",
         partnerSlug: "dm",
         offerTitle: "15% kedvezmény alverde termékekre",
-        offerDescription: "Természetes bio kozmetikumok a legmagasabb minőségben.",
+        offerDescription: "A WellAgora közösségnek járó kedvezményt itt éred el.",
         discountType: "percentage",
         discountValue: "15%",
         isOnline: false,
@@ -97,7 +97,7 @@ const PARTNERS_DATA: Record<string, {
   },
   rossmann: {
     name: "Rossmann",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Rossmann_Logo.svg/200px-Rossmann_Logo.svg.png",
+    logo: "/partner-logos/rossmann.png",
     description: {
       hu: "A Rossmann széles választékot kínál egészség- és szépségápolási termékekből. Fenntartható termékvonalunkra különleges kedvezményeket biztosítunk.",
       en: "Rossmann offers a wide range of health and beauty products. We provide special discounts on our sustainable product line.",
@@ -111,10 +111,10 @@ const PARTNERS_DATA: Record<string, {
         id: "r1",
         partnerName: "Rossmann",
         partnerSlug: "rossmann",
-        offerTitle: "Dupla pont a Rossmann kártyán",
-        offerDescription: "WellAgora tagoknak dupla pont minden fenntartható termékvásárlás után.",
-        discountType: "gift",
-        discountValue: "2x pont",
+        offerTitle: "10% kedvezmény fenntartható termékekre",
+        offerDescription: "A WellAgora közösségnek járó kedvezményt itt éred el.",
+        discountType: "percentage",
+        discountValue: "10%",
         isOnline: false,
         redemptionLocation: "Minden Rossmann üzletben"
       }
@@ -190,9 +190,15 @@ const PartnerProfilePage = () => {
                   <p className="text-muted-foreground mb-4 max-w-2xl">{description}</p>
                   
                   <div className="flex flex-wrap gap-3">
-                    <Button variant="outline" size="sm" asChild>
+                    <Button variant="default" size="sm" asChild className="bg-primary hover:bg-primary/90">
                       <a href={partner.website} target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="w-4 h-4 mr-2" />
+                        {language === "hu" ? "Irány a webshop" : language === "de" ? "Zum Webshop" : "Visit Webshop"}
+                      </a>
+                    </Button>
+                    <Button variant="outline" size="sm" asChild>
+                      <a href={partner.website} target="_blank" rel="noopener noreferrer">
+                        <Store className="w-4 h-4 mr-2" />
                         {language === "hu" ? "Weboldal" : "Website"}
                       </a>
                     </Button>
