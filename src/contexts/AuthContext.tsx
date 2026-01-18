@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
+import { notificationTriggers } from '@/lib/notificationTriggers';
 import { DEMO_ACCOUNTS, MOCK_SPONSORS, MOCK_EXPERTS } from '@/data/mockData';
 
 // User roles - simplified to main roles + admin
@@ -265,7 +266,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     bio?: string;
     industry?: string;
   }) => {
-    const { error } = await supabase.auth.signUp({
+    const { data: authData, error } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
         options: {
@@ -281,6 +282,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           },
         },
     });
+
+    // Send welcome email if signup was successful
+    if (!error && authData?.user) {
+      notificationTriggers.onUserRegistration({
+        userId: authData.user.id,
+        email: data.email,
+        name: `${data.firstName} ${data.lastName}`.trim() || undefined,
+        role: data.role
+      }).catch(err => logger.error('Failed to send welcome email', err, 'Auth'));
+    }
 
     return { error };
   };
