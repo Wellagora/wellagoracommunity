@@ -197,12 +197,12 @@ export const SponsorContributionBadge = ({
       className={`${classes.container} rounded-xl bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 border border-primary/20`}
     >
       <div className="flex items-start gap-3">
-        {/* Clickable Partner Logo or default icon */}
+        {/* Clickable Partner Logo - 48px for visibility */}
         <div className="relative flex-shrink-0">
           {partnerInfo ? (
             <Link 
               to={`/partners/${partnerInfo.slug}`}
-              className="block w-11 h-11 rounded-xl overflow-hidden bg-white shadow-md hover:shadow-lg transition-shadow border border-border/50"
+              className="block w-12 h-12 rounded-xl overflow-hidden bg-white shadow-md hover:shadow-lg transition-shadow border border-border/50"
               onClick={(e) => e.stopPropagation()}
             >
               <img 
@@ -214,7 +214,7 @@ export const SponsorContributionBadge = ({
           ) : (
             <>
               <div className="absolute inset-0 bg-primary/20 rounded-full blur-md" />
-              <div className="relative w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/25">
+              <div className="relative w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/25">
                 <Gift className={`${classes.icon} text-white`} />
               </div>
             </>
@@ -263,16 +263,23 @@ export const SponsorContributionBadge = ({
             )}
           </p>
 
-          {/* Price breakdown - STRICT HIERARCHY: Line 1 = Strikethrough, Line 2 = Bold Final Price */}
+          {/* Price breakdown - STRICT HIERARCHY: Line 1 = Strikethrough, Line 2 = Badge or Price */}
           <div className="flex flex-col gap-0.5 mt-2">
             {/* Line 1: Original price with strikethrough */}
             <span className="text-xs text-muted-foreground line-through">
               {formatPrice(originalPrice)}
             </span>
-            {/* Line 2: Final price in bold */}
-            <span className={`${classes.price} font-bold text-primary`}>
-              {memberPayment === 0 ? (language === 'hu' ? '0 Ft' : '0 €') : formatPrice(memberPayment)}
-            </span>
+            {/* Line 2: Professional green badge for FREE, or bold price */}
+            {memberPayment === 0 ? (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 font-semibold text-sm mt-1">
+                <Sparkles className="w-3.5 h-3.5" />
+                {language === 'hu' ? 'TÁMOGATOTT / INGYENES' : language === 'de' ? 'GEFÖRDERT / KOSTENLOS' : 'SPONSORED / FREE'}
+              </span>
+            ) : (
+              <span className={`${classes.price} font-bold text-primary`}>
+                {formatPrice(memberPayment)}
+              </span>
+            )}
           </div>
 
           {/* Quota status with content-type specific label */}

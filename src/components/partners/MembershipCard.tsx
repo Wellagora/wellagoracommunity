@@ -120,7 +120,7 @@ const MembershipCardContent = memo(({
           <div>
             <h3 className="font-bold text-lg">WellAgora</h3>
             <p className="text-xs text-white/60">
-              {language === "hu" ? "Tagsági Kártya" : "Membership Card"}
+              {language === "hu" ? "Digitális Tagsági Kártya" : language === "de" ? "Digitale Mitgliedskarte" : "Digital Membership Card"}
             </p>
           </div>
         </div>
@@ -176,8 +176,10 @@ const MembershipCardContent = memo(({
           <Store className="w-4 h-4" />
           <span>
             {language === "hu" 
-              ? "Mutasd fel partnereink üzleteiben a kedvezményekért!" 
-              : "Show at partner stores for discounts!"}
+              ? "Mutasd fel partnereinknél az exkluzív hozzáféréshez." 
+              : language === "de"
+              ? "Zeigen Sie bei unseren Partnern für exklusiven Zugang."
+              : "Show at our partners for exclusive access."}
           </span>
         </div>
       </div>
