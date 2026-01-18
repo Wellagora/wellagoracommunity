@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Navigation from "@/components/Navigation";
@@ -5,6 +6,7 @@ import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 import { 
   Store, MapPin, ExternalLink, Gift, Percent, Tag, 
   ChevronLeft, Clock, Users, Star, Heart
@@ -125,8 +127,19 @@ const PARTNERS_DATA: Record<string, {
 const PartnerProfilePage = () => {
   const { slug } = useParams<{ slug: string }>();
   const { language } = useLanguage();
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const partner = slug ? PARTNERS_DATA[slug] : null;
+
+  const handleFavoriteClick = () => {
+    setIsFavorite(!isFavorite);
+    toast({
+      title: isFavorite ? "Eltávolítva a kedvencekből" : "Hozzáadva a kedvencekhez ❤️",
+      description: isFavorite 
+        ? "A partner el lett távolítva a kedvenceid közül." 
+        : "A partnert megtalálod a kedvenceid között.",
+    });
+  };
 
   if (!partner) {
     return (
@@ -158,22 +171,30 @@ const PartnerProfilePage = () => {
       <Navigation />
 
       <main className="flex-1 pt-20">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-br from-slate-50 to-slate-100 py-12 border-b border-border/40">
-          <div className="container mx-auto px-4">
-            <Link to="/partners" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6">
+        {/* Hero Section - Glassmorphism Style */}
+        <section className="bg-white/95 backdrop-blur-xl py-12 border-b border-border/20">
+          <div className="container mx-auto px-4 lg:px-10">
+            <Link to="/partners" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
               <ChevronLeft className="w-4 h-4 mr-1" />
               {language === "hu" ? "Minden partner" : "All partners"}
             </Link>
 
-            <div className="flex flex-col md:flex-row items-start gap-6">
-              {/* Partner Logo */}
+            <div className="flex flex-col md:flex-row items-start gap-8">
+              {/* Partner Logo - Larger, cleaner */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="w-32 h-32 rounded-2xl bg-white border border-border/20 p-6 shadow-lg flex-shrink-0"
+                className="w-36 h-36 rounded-2xl bg-white border border-border/20 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.06)] flex-shrink-0 flex items-center justify-center"
               >
-                <img src={partner.logo} alt={partner.name} className="w-full h-full object-contain" />
+                <img 
+                  src={partner.logo} 
+                  alt={partner.name} 
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = `https://logo.clearbit.com/${partner.website.replace('https://', '').replace('www.', '')}?size=200`;
+                  }}
+                />
               </motion.div>
 
               {/* Partner Info */}
@@ -185,25 +206,30 @@ const PartnerProfilePage = () => {
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <h1 className="text-3xl font-bold text-foreground">{partner.name}</h1>
-                    <Badge variant="secondary">{partner.category}</Badge>
+                    <Badge variant="secondary" className="text-sm">{partner.category}</Badge>
                   </div>
-                  <p className="text-muted-foreground mb-4 max-w-2xl">{description}</p>
+                  <p className="text-muted-foreground mb-5 max-w-2xl leading-relaxed">{description}</p>
                   
                   <div className="flex flex-wrap gap-3">
-                    <Button variant="default" size="sm" asChild className="bg-primary hover:bg-primary/90">
+                    <Button size="default" asChild className="bg-black hover:bg-black/90 text-white font-medium shadow-lg">
                       <a href={partner.website} target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="w-4 h-4 mr-2" />
                         {language === "hu" ? "Irány a webshop" : language === "de" ? "Zum Webshop" : "Visit Webshop"}
                       </a>
                     </Button>
-                    <Button variant="outline" size="sm" asChild>
+                    <Button variant="outline" size="default" asChild className="border-border/40">
                       <a href={partner.website} target="_blank" rel="noopener noreferrer">
                         <Store className="w-4 h-4 mr-2" />
                         {language === "hu" ? "Weboldal" : "Website"}
                       </a>
                     </Button>
-                    <Button variant="ghost" size="sm">
-                      <Heart className="w-4 h-4 mr-2" />
+                    <Button 
+                      variant="ghost" 
+                      size="default"
+                      onClick={handleFavoriteClick}
+                      className={isFavorite ? "text-red-500 hover:text-red-600" : ""}
+                    >
+                      <Heart className={`w-4 h-4 mr-2 ${isFavorite ? "fill-current" : ""}`} />
                       {language === "hu" ? "Kedvenc" : "Favorite"}
                     </Button>
                   </div>
@@ -214,8 +240,8 @@ const PartnerProfilePage = () => {
         </section>
 
         {/* Offers Section */}
-        <section className="py-12">
-          <div className="container mx-auto px-4">
+        <section className="py-12 bg-white">
+          <div className="container mx-auto px-4 lg:px-10">
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
               <Gift className="w-6 h-6 text-primary" />
               {language === "hu" ? "Elérhető kedvezmények" : "Available Offers"}
@@ -237,8 +263,8 @@ const PartnerProfilePage = () => {
         </section>
 
         {/* Locations Section */}
-        <section className="py-12 bg-slate-50">
-          <div className="container mx-auto px-4">
+        <section className="py-12 bg-slate-50/50">
+          <div className="container mx-auto px-4 lg:px-10">
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
               <MapPin className="w-6 h-6 text-primary" />
               {language === "hu" ? "Üzletek" : "Locations"}
@@ -246,7 +272,7 @@ const PartnerProfilePage = () => {
 
             <div className="flex flex-wrap gap-3">
               {partner.locations.map((location) => (
-                <Badge key={location} variant="outline" className="text-sm py-2 px-4">
+                <Badge key={location} variant="outline" className="text-sm py-2 px-4 bg-white">
                   <MapPin className="w-3 h-3 mr-1" />
                   {location}
                 </Badge>

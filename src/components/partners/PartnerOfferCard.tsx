@@ -1,9 +1,10 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { ExternalLink, Gift, Percent, Store, Tag } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { ExternalLink, Gift, Percent, Store, Tag, Check, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface PartnerOffer {
@@ -27,16 +28,17 @@ interface PartnerOfferCardProps {
   onTrackClick?: (offerId: string) => void;
 }
 
-// Partner logos mapping
+// Partner logos mapping - Use local assets for reliability
 const PARTNER_LOGOS: Record<string, string> = {
-  praktiker: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Praktiker_logo.svg/200px-Praktiker_logo.svg.png",
-  dm: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Dm_Logo.svg/200px-Dm_Logo.svg.png",
-  rossmann: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Rossmann_Logo.svg/200px-Rossmann_Logo.svg.png",
-  obi: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Obi-Logo.svg/200px-Obi-Logo.svg.png",
-  ikea: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Ikea_logo.svg/200px-Ikea_logo.svg.png",
-  auchan: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Auchan_logo.svg/200px-Auchan_logo.svg.png",
-  tesco: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Tesco_Logo.svg/200px-Tesco_Logo.svg.png",
-  spar: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/SPAR_Logo.svg/200px-SPAR_Logo.svg.png",
+  praktiker: "/partner-logos/praktiker.png",
+  dm: "/partner-logos/dm.png",
+  rossmann: "/partner-logos/rossmann.png",
+  obi: "/partner-logos/obi.png",
+  ikea: "/partner-logos/ikea.png",
+  auchan: "/partner-logos/auchan.png",
+  tesco: "/partner-logos/tesco.png",
+  spar: "/partner-logos/spar.png",
+  muller: "/partner-logos/muller.png",
 };
 
 const getDiscountIcon = (type: string) => {
@@ -56,6 +58,7 @@ export const PartnerOfferCard = memo(({
   onTrackClick 
 }: PartnerOfferCardProps) => {
   const { t, language } = useLanguage();
+  const [isCouponActivated, setIsCouponActivated] = useState(false);
 
   const handleClick = () => {
     if (onTrackClick) {
@@ -64,6 +67,14 @@ export const PartnerOfferCard = memo(({
     if (offer.productUrl) {
       window.open(offer.productUrl, "_blank", "noopener,noreferrer");
     }
+  };
+
+  const handleActivateCoupon = () => {
+    setIsCouponActivated(true);
+    toast({
+      title: "Kupon sikeresen aktiválva! 🎉",
+      description: "A kedvezményt a kosárban vagy a pénztárnál érvényesítheted.",
+    });
   };
 
   const partnerLogo = offer.partnerLogo || PARTNER_LOGOS[offer.partnerSlug.toLowerCase()];
@@ -172,23 +183,32 @@ export const PartnerOfferCard = memo(({
         )}
 
         {/* Action Button */}
-        <Button 
-          onClick={handleClick} 
-          className="w-full bg-black hover:bg-black/90 text-white"
-          disabled={!offer.productUrl && offer.isOnline}
-        >
-          {offer.isOnline ? (
-            <>
-              <ExternalLink className="w-4 h-4 mr-2" />
-              {language === "hu" ? "Ajánlat megtekintése" : "View Offer"}
-            </>
-          ) : (
-            <>
-              <Gift className="w-4 h-4 mr-2" />
-              {language === "hu" ? "Kupon aktiválása" : "Activate Coupon"}
-            </>
-          )}
-        </Button>
+        {offer.isOnline ? (
+          <Button 
+            onClick={handleClick} 
+            className="w-full bg-black hover:bg-black/90 text-white"
+            disabled={!offer.productUrl}
+          >
+            <ExternalLink className="w-4 h-4 mr-2" />
+            {language === "hu" ? "Ajánlat megtekintése" : "View Offer"}
+          </Button>
+        ) : isCouponActivated ? (
+          <Button 
+            className="w-full bg-emerald-500 hover:bg-emerald-500 text-white cursor-default"
+            disabled
+          >
+            <Check className="w-4 h-4 mr-2" />
+            {language === "hu" ? "Kupon aktiválva ✓" : "Coupon Activated ✓"}
+          </Button>
+        ) : (
+          <Button 
+            onClick={handleActivateCoupon} 
+            className="w-full bg-black hover:bg-black/90 text-white"
+          >
+            <Gift className="w-4 h-4 mr-2" />
+            {language === "hu" ? "Kupon aktiválása" : "Activate Coupon"}
+          </Button>
+        )}
 
         {/* Valid until */}
         {offer.validUntil && (
