@@ -22,7 +22,6 @@ import {
   Store,
   Users,
   X,
-  Loader2,
   TrendingUp,
   Sparkles,
   Gift,
@@ -34,6 +33,7 @@ import { SocialProofBadge } from "@/components/marketplace/SocialProofBadge";
 import { VerifiedExpertBadge } from "@/components/marketplace/VerifiedExpertBadge";
 import { SponsorContributionBadge } from "@/components/marketplace/SponsorContributionBadge";
 import { LivePulseToast } from "@/components/marketplace/LivePulseToast";
+import { ProgramGridSkeleton } from "@/components/ui/loading-skeleton";
 import { 
   MOCK_PROGRAMS, 
   getMockExpertById, 
@@ -523,8 +523,8 @@ const ProgramsListingPage = () => {
 
         {/* Loading State */}
         {isLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <div className="py-8">
+            <ProgramGridSkeleton count={6} />
           </div>
         ) : (
           <>
