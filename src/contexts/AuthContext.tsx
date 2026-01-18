@@ -27,6 +27,17 @@ interface Profile {
   stripe_onboarding_complete?: boolean;
   payout_preference?: string | null;
   is_verified_expert?: boolean;
+  bio?: string;
+  website_url?: string;
+  location?: string;
+  industry?: string;
+  sustainability_goals?: string[];
+  preferred_language?: string;
+  company_size?: string;
+  employee_count?: number;
+  role?: string;
+  sponsor_status?: string;
+  credit_balance?: number;
 }
 
 interface AuthContextType {

@@ -61,6 +61,8 @@ const AdminSettings = lazy(() => import("@/pages/admin/AdminSettings"));
 const AdminFeedback = lazy(() => import("@/pages/admin/AdminFeedback"));
 const AdminAnalytics = lazy(() => import("@/pages/admin/AdminAnalytics"));
 const SponsorLandingPage = lazy(() => import("@/pages/SponsorLandingPage"));
+const SponsorOnboardingPage = lazy(() => import("@/pages/SponsorOnboardingPage"));
+const SponsorPublicProfilePage = lazy(() => import("@/pages/SponsorPublicProfilePage"));
 const OrganizationRegisterPage = lazy(() => import("@/pages/OrganizationRegisterPage"));
 const JoinOrganizationPage = lazy(() => import("@/pages/JoinOrganizationPage"));
 const EventsPage = lazy(() => import("@/pages/EventsPage"));
@@ -221,6 +223,15 @@ function App() {
                           <Route path="/sponsor" element={<SponsorLandingPage />} />
                           <Route path="/register/organization" element={<OrganizationRegisterPage />} />
                           <Route path="/join/org/:inviteCode" element={<JoinOrganizationPage />} />
+                          <Route
+                            path="/sponsor-onboarding"
+                            element={
+                              <ProtectedRoute allowedRoles={["sponsor"]}>
+                                <SponsorOnboardingPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route path="/sponsor/:sponsorId" element={<SponsorPublicProfilePage />} />
                           
                           {/* Expert Studio - English canonical path */}
                           <Route
