@@ -82,81 +82,137 @@ const SponsorDashboardPage = () => {
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [creditInfo, setCreditInfo] = useState({
     usedCredits: 0,
-    totalCredits: 100,
-    availableCredits: 100
+    totalCredits: 0,
+    availableCredits: 0
   });
 
-  // Fetch REAL data from Supabase with optimized aggregate queries
+  // Fetch REAL data from Supabase with accurate credit calculations
   useEffect(() => {
     const fetchSponsorData = async () => {
       if (!user) return;
       
       setIsLoading(true);
       try {
-        // 1. Get sponsorship counts (aggregate - no full row fetch)
-        const { count: challengeSponsorshipCount } = await supabase
-          .from('challenge_sponsorships')
-          .select('*', { count: 'exact', head: true })
-          .eq('sponsor_user_id', user.id);
+        // ============================================
+        // 1. CREDIT CALCULATIONS (Source of Truth)
+        // ============================================
+        
+        // Get total credits from credit_transactions (purchases/subscriptions)
+        const { data: creditPurchases } = await supabase
+          .from('credit_transactions')
+          .select('credits, transaction_type')
+          .eq('sponsor_user_id', user.id)
+          .in('transaction_type', ['purchase', 'subscription', 'initial', 'rollover', 'bonus']);
+        
+        const totalCreditsFromPurchases = creditPurchases?.reduce((sum, ct) => sum + (ct.credits || 0), 0) || 0;
 
-        // 2. Fetch content sponsorships (need IDs for further queries)
-        const { data: contentSponsorships } = await supabase
+        // Get used credits from:
+        // Option A: credit_transactions with type 'deduction' or 'sponsorship'
+        const { data: creditDeductions } = await supabase
+          .from('credit_transactions')
+          .select('credits')
+          .eq('sponsor_user_id', user.id)
+          .in('transaction_type', ['deduction', 'sponsorship', 'usage']);
+        
+        const usedCreditsFromDeductions = Math.abs(creditDeductions?.reduce((sum, ct) => sum + (ct.credits || 0), 0) || 0);
+        
+        // Option B: Sum from vouchers where sponsor_credit_deducted is tracked
+        const { data: voucherDeductions } = await supabase
+          .from('vouchers')
+          .select('sponsor_credit_deducted, content_id, status')
+          .not('sponsor_credit_deducted', 'is', null)
+          .eq('status', 'redeemed');
+        
+        // Filter vouchers to only those from this sponsor's content
+        const { data: sponsorContents } = await supabase
           .from('content_sponsorships')
-          .select('id, content_id, total_licenses, used_licenses, expert_contents(id, title, creator_id)')
+          .select('content_id, sponsor_contribution_huf, max_sponsored_seats, sponsored_seats_used, is_active, expert_contents(id, title, creator_id)')
           .eq('sponsor_id', user.id);
+        
+        const sponsorContentIds = sponsorContents?.map(c => c.content_id) || [];
+        
+        const usedCreditsFromVouchers = voucherDeductions
+          ?.filter(v => sponsorContentIds.includes(v.content_id))
+          ?.reduce((sum, v) => sum + (v.sponsor_credit_deducted || 0), 0) || 0;
+        
+        // Alternative: Calculate used credits from sponsored_seats_used * sponsor_contribution_huf
+        const usedCreditsFromSeats = sponsorContents?.reduce((sum, cs) => {
+          return sum + ((cs.sponsored_seats_used || 0) * (cs.sponsor_contribution_huf || 0));
+        }, 0) || 0;
+        
+        // Use the maximum of all calculation methods (they should align, but this ensures accuracy)
+        const calculatedUsedCredits = Math.max(usedCreditsFromDeductions, usedCreditsFromVouchers, usedCreditsFromSeats);
+        
+        // Final credit values
+        const finalTotalCredits = totalCreditsFromPurchases;
+        const finalUsedCredits = calculatedUsedCredits;
+        const finalAvailableCredits = Math.max(0, finalTotalCredits - finalUsedCredits);
+        
+        console.log('[SponsorDashboard] Credit calculation:', {
+          totalCreditsFromPurchases,
+          usedCreditsFromDeductions,
+          usedCreditsFromVouchers,
+          usedCreditsFromSeats,
+          finalTotalCredits,
+          finalUsedCredits,
+          finalAvailableCredits
+        });
 
-        const contentIds = contentSponsorships?.map(c => c.content_id) || [];
-        const totalPrograms = (challengeSponsorshipCount || 0) + (contentSponsorships?.length || 0);
-
-        // 3. Get voucher counts using aggregate (optimized - no full row fetch)
+        // ============================================
+        // 2. SPONSORED PROGRAMS (Only ACTIVE sponsorships)
+        // ============================================
+        
+        // Only include programs where this sponsor has an ACTIVE sponsorship
+        const activeSponsorships = sponsorContents?.filter(cs => cs.is_active !== false) || [];
+        
         let totalVouchersRedeemed = 0;
         let totalLicenses = 0;
+        let peopleReached = 0;
         
-        if (contentIds.length > 0) {
-          // Single aggregate query for all redeemed vouchers
+        if (activeSponsorships.length > 0) {
+          const activeContentIds = activeSponsorships.map(c => c.content_id);
+          
+          // Get voucher counts for active sponsorships only
           const { count: redeemedCount } = await supabase
             .from('vouchers')
             .select('*', { count: 'exact', head: true })
-            .in('content_id', contentIds)
+            .in('content_id', activeContentIds)
             .eq('status', 'redeemed');
           
           totalVouchersRedeemed = redeemedCount || 0;
-          totalLicenses = contentSponsorships?.reduce((sum, cs) => sum + (cs.total_licenses || 50), 0) || 0;
-
-          // Single aggregate for unique users reached
-          const { count: uniqueUserCount } = await supabase
+          totalLicenses = activeSponsorships.reduce((sum, cs) => sum + (cs.max_sponsored_seats || cs.sponsored_seats_used || 0), 0);
+          
+          // Get unique users reached
+          const { data: userIds } = await supabase
             .from('vouchers')
-            .select('user_id', { count: 'exact', head: true })
-            .in('content_id', contentIds);
+            .select('user_id')
+            .in('content_id', activeContentIds);
           
-          // Build programs list with per-content counts (batch where possible)
-          const programs: SponsoredProgram[] = [];
-          
-          // Get all creator IDs at once
-          const creatorIds = contentSponsorships
-            ?.map(cs => cs.expert_contents?.creator_id)
-            .filter(Boolean) as string[];
-          
+          peopleReached = new Set(userIds?.map(v => v.user_id) || []).size;
+        }
+        
+        // Build programs list from ACTIVE sponsorships only
+        const programs: SponsoredProgram[] = [];
+        
+        if (activeSponsorships.length > 0) {
           // Batch fetch all creators
-          interface CreatorProfile {
-            id: string;
-            first_name: string | null;
-            last_name: string | null;
-          }
+          const creatorIds = activeSponsorships
+            .map(cs => cs.expert_contents?.creator_id)
+            .filter(Boolean) as string[];
           
           const { data: creators } = creatorIds.length > 0 
             ? await supabase
                 .from('profiles')
                 .select('id, first_name, last_name')
                 .in('id', creatorIds)
-            : { data: [] as CreatorProfile[] };
+            : { data: [] };
           
-          const creatorMap = new Map<string, CreatorProfile>(
-            (creators || []).map((c: CreatorProfile) => [c.id, c])
+          const creatorMap = new Map(
+            (creators || []).map((c: any) => [c.id, c])
           );
-
+          
           // Get per-content voucher counts
-          for (const cs of contentSponsorships || []) {
+          for (const cs of activeSponsorships) {
             const { count } = await supabase
               .from('vouchers')
               .select('*', { count: 'exact', head: true })
@@ -164,61 +220,44 @@ const SponsorDashboardPage = () => {
               .eq('status', 'redeemed');
 
             const creator = creatorMap.get(cs.expert_contents?.creator_id || '');
+            const totalSeats = cs.max_sponsored_seats || 50;
+            const redeemedSeats = count || cs.sponsored_seats_used || 0;
             
             programs.push({
               id: cs.content_id,
-              programName: cs.expert_contents?.title || 'Program',
-              expertName: creator ? `${creator.first_name} ${creator.last_name}` : 'Szakértő',
-              vouchersRedeemed: count || 0,
-              vouchersTotal: cs.total_licenses || 50,
-              status: (count || 0) >= (cs.total_licenses || 50) ? 'completed' : 'active'
+              programName: cs.expert_contents?.title || t('common.program'),
+              expertName: creator ? `${creator.first_name} ${creator.last_name}` : t('common.expert'),
+              vouchersRedeemed: redeemedSeats,
+              vouchersTotal: totalSeats,
+              status: redeemedSeats >= totalSeats ? 'completed' : 'active'
             });
           }
-          
-          setSponsoredPrograms(programs);
         }
-
-        // 4. Credit data from sponsor_credits table (source of truth)
-        const { data: sponsorCreditsData, error: creditsError } = await supabase
-          .from('sponsor_credits')
-          .select('total_credits, used_credits, available_credits')
-          .eq('sponsor_user_id', user.id)
-          .maybeSingle();
-
-        if (creditsError && creditsError.code !== 'PGRST116') {
-          console.error('Error fetching sponsor credits:', creditsError);
-        }
-
-        // Use real data from sponsor_credits table
-        const realCredits = sponsorCreditsData || { 
-          total_credits: 0, 
-          used_credits: 0, 
-          available_credits: 0 
-        };
         
-        console.log('[SponsorDashboard] Credits from sponsor_credits table:', realCredits);
+        setSponsoredPrograms(programs);
 
-        // 5. Calculate unique users reached
-        let peopleReached = 0;
-        if (contentIds.length > 0) {
-          const { data: userIds } = await supabase
-            .from('vouchers')
-            .select('user_id')
-            .in('content_id', contentIds);
-          
-          peopleReached = new Set(userIds?.map(v => v.user_id) || []).size;
-        }
+        // ============================================
+        // 3. ADDITIONAL STATS
+        // ============================================
+        
+        // Challenge sponsorships count
+        const { count: challengeSponsorshipCount } = await supabase
+          .from('challenge_sponsorships')
+          .select('*', { count: 'exact', head: true })
+          .eq('sponsor_user_id', user.id);
+        
+        const totalPrograms = (challengeSponsorshipCount || 0) + activeSponsorships.length;
 
-        // 6. Monthly growth - compare with last month
+        // Monthly growth - compare with last month
         const comparisonDate = new Date();
         comparisonDate.setMonth(comparisonDate.getMonth() - 1);
         
         let monthlyGrowth = 0;
-        if (contentIds.length > 0) {
+        if (sponsorContentIds.length > 0) {
           const { count: lastMonthCount } = await supabase
             .from('vouchers')
             .select('*', { count: 'exact', head: true })
-            .in('content_id', contentIds)
+            .in('content_id', sponsorContentIds)
             .lt('created_at', comparisonDate.toISOString());
 
           monthlyGrowth = lastMonthCount && lastMonthCount > 0
@@ -226,12 +265,12 @@ const SponsorDashboardPage = () => {
             : totalVouchersRedeemed > 0 ? 100 : 0;
         }
 
-        // Calculate conversion rate
+        // Conversion rate - based on actual data
         const conversionRate = totalLicenses > 0 
           ? Math.round((totalVouchersRedeemed / totalLicenses) * 100) 
           : 0;
 
-        // Calculate CO2 impact (estimate: 2kg per voucher redeemed)
+        // CO2 impact (estimate: 2kg per voucher redeemed)
         const totalImpactCO2 = totalVouchersRedeemed * 2;
 
         setStats({
@@ -244,25 +283,71 @@ const SponsorDashboardPage = () => {
         });
 
         setCreditInfo({
-          usedCredits: realCredits.used_credits || 0,
-          totalCredits: realCredits.total_credits || 0,
-          availableCredits: realCredits.available_credits || 0
+          usedCredits: finalUsedCredits,
+          totalCredits: finalTotalCredits,
+          availableCredits: finalAvailableCredits
         });
 
-        // Generate chart data from real credits data
+        // ============================================
+        // 4. CHART DATA (from transaction history if available)
+        // ============================================
         const chartPoints: ChartDataPoint[] = [];
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const months = ['Jan', 'Feb', 'Már', 'Ápr', 'Máj', 'Jún', 'Júl', 'Aug', 'Szept', 'Okt', 'Nov', 'Dec'];
         const currentMonth = new Date().getMonth();
-        const usedCreditsValue = realCredits.used_credits || 0;
+        
+        // Get actual monthly data from credit_transactions
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
+        
+        const { data: monthlyTransactions } = await supabase
+          .from('credit_transactions')
+          .select('credits, transaction_type, created_at')
+          .eq('sponsor_user_id', user.id)
+          .gte('created_at', sixMonthsAgo.toISOString())
+          .order('created_at', { ascending: true });
+        
+        // Group transactions by month
+        const monthlyData: Record<number, { reached: number; credits: number }> = {};
         
         for (let i = 5; i >= 0; i--) {
           const monthIndex = (currentMonth - i + 12) % 12;
-          chartPoints.push({
-            month: months[monthIndex],
-            reached: Math.round(peopleReached * ((6 - i) / 6)),
-            credits: Math.round(usedCreditsValue * ((6 - i) / 6))
+          monthlyData[monthIndex] = { reached: 0, credits: 0 };
+        }
+        
+        // Calculate cumulative credits used per month
+        let cumulativeCredits = 0;
+        let cumulativeReached = 0;
+        
+        if (monthlyTransactions && monthlyTransactions.length > 0) {
+          monthlyTransactions.forEach(tx => {
+            const txDate = new Date(tx.created_at);
+            const txMonth = txDate.getMonth();
+            if (['deduction', 'sponsorship', 'usage'].includes(tx.transaction_type)) {
+              cumulativeCredits += Math.abs(tx.credits || 0);
+            }
+            if (monthlyData[txMonth]) {
+              monthlyData[txMonth].credits = cumulativeCredits;
+            }
           });
         }
+        
+        // Build chart data
+        for (let i = 5; i >= 0; i--) {
+          const monthIndex = (currentMonth - i + 12) % 12;
+          const monthData = monthlyData[monthIndex] || { reached: 0, credits: 0 };
+          
+          // Estimate reached based on progression (if no real data)
+          const estimatedReached = peopleReached > 0 
+            ? Math.round(peopleReached * ((6 - i) / 6))
+            : 0;
+          
+          chartPoints.push({
+            month: months[monthIndex],
+            reached: monthData.reached || estimatedReached,
+            credits: monthData.credits || (finalUsedCredits > 0 ? Math.round(finalUsedCredits * ((6 - i) / 6)) : 0)
+          });
+        }
+        
         setChartData(chartPoints);
 
       } catch (error) {
@@ -519,36 +604,57 @@ const SponsorDashboardPage = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-6">
-              {/* Progress Bar */}
-              <div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-black/60">{t('sponsor_hub.used_credits')}</span>
-                  <span className="font-medium text-black">{creditUsagePercent}%</span>
+            {creditInfo.totalCredits === 0 ? (
+              /* Empty state when no credits */
+              <div className="text-center py-6">
+                <Wallet className="w-10 h-10 text-black/20 mx-auto mb-3" />
+                <p className="text-black/60 text-sm mb-4">
+                  {t('sponsor_hub.no_credits_yet') || 'Még nincs kredit feltöltve'}
+                </p>
+                <Button
+                  onClick={() => setShowStripeModal(true)}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  {t('sponsor_hub.buy_credits')}
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {/* Progress Bar */}
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-black/60">{t('sponsor_hub.used_credits')}</span>
+                    <span className="font-medium text-black">{creditUsagePercent}%</span>
+                  </div>
+                  <Progress value={creditUsagePercent} className="h-3 bg-black/5" />
+                  <p className="text-xs text-black/50 mt-1">
+                    {creditInfo.usedCredits.toLocaleString()} / {creditInfo.totalCredits.toLocaleString()} {t('common.credit') || 'kredit'}
+                  </p>
                 </div>
-                <Progress value={creditUsagePercent} className="h-3 bg-black/5" />
-                <p className="text-xs text-black/50 mt-1">
-                  {creditInfo.usedCredits} / {creditInfo.totalCredits} kredit
-                </p>
-              </div>
 
-              {/* Available Balance */}
-              <div className="bg-emerald-50 rounded-xl p-4 text-center">
-                <p className="text-sm text-emerald-700 mb-1">{t('sponsor_hub.available_balance')}</p>
-                <p className="text-2xl sm:text-3xl font-bold text-emerald-900">
-                  {creditInfo.availableCredits} kredit
-                </p>
-              </div>
+                {/* Available Balance */}
+                <div className="bg-emerald-50 rounded-xl p-4 text-center">
+                  <p className="text-sm text-emerald-700 mb-1">{t('sponsor_hub.available_balance')}</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-emerald-900">
+                    {creditInfo.availableCredits.toLocaleString()} {t('common.credit') || 'kredit'}
+                  </p>
+                  {/* Show as HUF equivalent (1 credit = 1 HUF) */}
+                  <p className="text-xs text-emerald-600 mt-1">
+                    = {creditInfo.availableCredits.toLocaleString()} Ft
+                  </p>
+                </div>
 
-              {/* Buy Credits Button */}
-              <Button
-                onClick={() => setShowStripeModal(true)}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                {t('sponsor_hub.buy_credits')}
-              </Button>
-            </div>
+                {/* Buy Credits Button */}
+                <Button
+                  onClick={() => setShowStripeModal(true)}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  {t('sponsor_hub.buy_credits')}
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

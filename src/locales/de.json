@@ -3971,7 +3971,11 @@
     "no_programs_title": "Noch keine gesponserten Programme",
     "no_programs_desc": "Entdecken Sie unsere Expert:Innen und starten Sie Ihre erste Kampagne!",
     "explore_programs": "Programme entdecken",
-    "unknown_expert": "Unbekannter Experte"
+    "unknown_expert": "Unbekannter Experte",
+    "no_credits_yet": "Noch keine Kredite geladen",
+    "conversion_rate": "Konversionsrate",
+    "total_impact": "Gesamtwirkung",
+    "your_company": "Ihr Unternehmen"
   },
   "terms": {
     "version": "Version",
