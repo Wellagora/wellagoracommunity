@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -10,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { HungaryMap } from '@/components/admin/HungaryMap';
 import { 
   FolderOpen,
   Plus,
@@ -24,7 +26,9 @@ import {
   Play,
   RefreshCw,
   Edit,
-  Trash2
+  Trash2,
+  Map,
+  List
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -110,9 +114,11 @@ const MOCK_PROJECTS: Project[] = [
 const AdminProjects = () => {
   const { t } = useLanguage();
   const { isDemoMode } = useAuth();
+  const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
   
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -122,6 +128,10 @@ const AdminProjects = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
+  const handleProjectClick = (projectId: string) => {
+    navigate(`/admin-panel/projects/${projectId}`);
+  };
 
   // Form state
   const [formData, setFormData] = useState({
@@ -358,19 +368,46 @@ const AdminProjects = () => {
         </div>
       </div>
 
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder={t('admin.projects.search_placeholder')}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10"
-        />
+      {/* View Toggle + Search */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex items-center gap-2 bg-muted rounded-lg p-1">
+          <Button
+            variant={viewMode === 'list' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setViewMode('list')}
+            className="gap-2"
+          >
+            <List className="h-4 w-4" />
+            Lista
+          </Button>
+          <Button
+            variant={viewMode === 'map' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setViewMode('map')}
+            className="gap-2"
+          >
+            <Map className="h-4 w-4" />
+            Térkép
+          </Button>
+        </div>
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder={t('admin.projects.search_placeholder')}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
       </div>
 
+      {/* Map View */}
+      {viewMode === 'map' && (
+        <HungaryMap projects={filteredProjects} onProjectClick={handleProjectClick} />
+      )}
+
       {/* Projects Grid */}
-      {loading ? (
+      {viewMode === 'list' && (loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3].map(i => (
             <Skeleton key={i} className="h-48" />
