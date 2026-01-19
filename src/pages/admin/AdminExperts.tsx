@@ -159,7 +159,7 @@ const AdminExperts = () => {
 
   // Handle card click - open modal
   const handleCardClick = (expertId: string) => {
-    console.log('[AdminExperts] Card clicked:', expertId);
+    
     setSelectedExpertId(expertId);
     setModalOpen(true);
   };
