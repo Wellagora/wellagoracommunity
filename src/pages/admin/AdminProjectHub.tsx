@@ -243,8 +243,6 @@ const AdminProjectHub = () => {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<{ type: 'program' | 'event'; id: string; name: string } | null>(null);
 
-  // Debug: force insert error box
-  const [forceTestInsertError, setForceTestInsertError] = useState<string | null>(null);
 
   // Fetch project data
   useEffect(() => {
@@ -269,12 +267,12 @@ const AdminProjectHub = () => {
       setProject(projectData);
       console.log('[AdminProjectHub] Project loaded:', projectData);
 
-      // Fetch experts in this project
+      // Fetch experts in this project (user_role = 'expert' OR is_verified_expert = true)
       const { data: expertsData } = await supabase
         .from('profiles')
         .select('id, first_name, last_name, email, avatar_url, user_role, green_pass')
         .eq('project_id', id)
-        .eq('user_role', 'expert');
+        .eq('is_verified_expert', true);
       setExperts(expertsData || []);
       console.log('[AdminProjectHub] Experts loaded:', expertsData?.length || 0);
 
@@ -348,7 +346,7 @@ const AdminProjectHub = () => {
         .from('profiles')
         .select('*', { count: 'exact', head: true })
         .eq('project_id', id)
-        .eq('user_role', 'expert');
+        .eq('is_verified_expert', true);
 
       const { count: programCount } = await supabase
         .from('expert_contents')
@@ -448,7 +446,6 @@ const AdminProjectHub = () => {
   };
 
   const handleSaveProgram = async () => {
-    alert('Button Clicked!');
 
     if (!project || !id) {
       console.error('DB ERROR:', { message: 'Missing project/id', project: !!project, id });
@@ -475,7 +472,7 @@ const AdminProjectHub = () => {
           is_published: programForm.is_published,
         };
 
-        alert('Data to send: ' + JSON.stringify(payload));
+        console.log('[handleSaveProgram] UPDATE payload:', payload);
 
         // UPDATE existing program
         const { data, error } = await supabase
@@ -502,7 +499,7 @@ const AdminProjectHub = () => {
           creator_id: user.id,
         };
 
-        alert('Data to send: ' + JSON.stringify(payload));
+        console.log('[handleSaveProgram] INSERT payload:', payload);
 
         // INSERT new program
         const { data, error } = await supabase
@@ -597,7 +594,6 @@ const AdminProjectHub = () => {
   };
 
   const handleSaveEvent = async () => {
-    alert('Button Clicked!');
 
     if (!project || !id) {
       console.error('DB ERROR:', { message: 'Missing project/id', project: !!project, id });
@@ -625,7 +621,7 @@ const AdminProjectHub = () => {
           status: eventForm.status,
         };
 
-        alert('Data to send: ' + JSON.stringify(payload));
+        console.log('[handleSaveEvent] UPDATE payload:', payload);
 
         // UPDATE existing event
         const { data, error } = await supabase
@@ -654,7 +650,7 @@ const AdminProjectHub = () => {
           village: project?.region_name,
         };
 
-        alert('Data to send: ' + JSON.stringify(payload));
+        console.log('[handleSaveEvent] INSERT payload:', payload);
 
         // INSERT new event
         const { data, error } = await supabase
@@ -680,53 +676,6 @@ const AdminProjectHub = () => {
     }
   };
 
-  const handleForceTestInsert = async () => {
-    if (!id) return;
-    if (!user?.id) {
-      setForceTestInsertError('Not authenticated: missing user.id');
-      return;
-    }
-
-    setForceTestInsertError(null);
-
-    try {
-      const payload = {
-        title: `FORCE TEST INSERT ${new Date().toISOString()}`,
-        region_id: id,
-        creator_id: user.id,
-      };
-
-      console.log('[FORCE TEST INSERT] payload:', payload);
-
-      const { data, error } = await supabase
-        .from('expert_contents')
-        .insert(payload)
-        .select('*')
-        .single();
-
-      if (error) throw error;
-
-      console.log('DB SUCCESS:', data);
-
-      if (!data?.id) throw new Error('Insert succeeded but no row/id returned');
-
-      toast.success(`Force insert OK: ${data.id}`);
-      await fetchProjectData();
-    } catch (e: any) {
-      const msg = [
-        e?.message,
-        e?.details,
-        e?.hint,
-        e?.code,
-        typeof e === 'string' ? e : null,
-      ]
-        .filter(Boolean)
-        .join(' | ');
-
-      console.error('DB ERROR:', e);
-      setForceTestInsertError(msg || JSON.stringify(e) || 'Unknown error');
-    }
-  };
 
   // ===== DELETE OPERATIONS =====
   const confirmDelete = (type: 'program' | 'event', id: string, name: string) => {
@@ -773,11 +722,11 @@ const AdminProjectHub = () => {
   // ===== EXPERT LINKING =====
   const openExpertModal = async () => {
     try {
-      // Fetch experts not already in this project
+      // Fetch verified experts not already in this project
       const { data, error } = await supabase
         .from('profiles')
         .select('id, first_name, last_name, email')
-        .eq('user_role', 'expert')
+        .eq('is_verified_expert', true)
         .or(`project_id.is.null,project_id.neq.${id}`);
 
       if (error) throw error;
@@ -915,13 +864,6 @@ const AdminProjectHub = () => {
 
   return (
     <div className="space-y-6">
-      {forceTestInsertError && (
-        <div className="fixed top-0 left-0 right-0 z-50">
-          <div className="bg-destructive text-destructive-foreground px-4 py-3 text-sm font-medium whitespace-pre-wrap">
-            FORCE TEST INSERT ERROR: {forceTestInsertError}
-          </div>
-        </div>
-      )}
 
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -970,9 +912,6 @@ const AdminProjectHub = () => {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="destructive" size="sm" onClick={handleForceTestInsert}>
-            FORCE TEST INSERT
-          </Button>
           <Button variant="outline" size="sm" onClick={fetchProjectData}>
             <RefreshCw className="h-4 w-4 mr-2" />
             Frissítés
