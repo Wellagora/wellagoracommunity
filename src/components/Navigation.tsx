@@ -150,7 +150,7 @@ const Navigation = () => {
   };
 
   // Get dashboard route based on user's role (or viewAsRole for super admins)
-  // Dynamic: admin -> /admin-panel, sponsor -> /sponsor-dashboard, expert -> /expert-studio, member -> /my-agora
+  // ALIGNED with useRoleRedirect.ts: member -> /programs, expert -> /expert-studio, sponsor -> /sponsor-dashboard
   const getDashboardRoute = useCallback((): string => {
     if (!user) return '/auth';
     
@@ -159,7 +159,7 @@ const Navigation = () => {
       switch (viewAsRole) {
         case 'expert': return '/expert-studio';
         case 'sponsor': return '/sponsor-dashboard';
-        case 'member': return '/my-agora';
+        case 'member': return '/programs';
         default: return '/admin-panel';
       }
     }
@@ -167,12 +167,12 @@ const Navigation = () => {
     // Super admin without viewAsRole goes to admin panel
     if (isSuperAdmin) return '/admin-panel';
     
-    // Regular users based on their actual role
+    // Regular users based on their actual role - ALIGNED with ROLE_DASHBOARDS
     switch (effectiveRole) {
       case 'expert': return '/expert-studio';
       case 'sponsor': return '/sponsor-dashboard';
       case 'member':
-      default: return '/my-agora';
+      default: return '/programs';
     }
   }, [user, isSuperAdmin, viewAsRole, effectiveRole]);
 
@@ -234,13 +234,13 @@ const Navigation = () => {
     // Role-specific navigation
     const roleToUse = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
 
-    // Members see: Piactér, Események, Partnerek, Agórám
+    // Members see: Piactér, Események, Partnerek, Kedvencek
     if (roleToUse === 'member') {
       return [
         { path: "/programs", label: t("nav.marketplace"), icon: Store },
         { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
         { path: "/partners", label: t("nav.partners") || "Partnerek", icon: Building2 },
-        { path: "/my-agora", label: t("nav.control_panel"), icon: LayoutDashboard },
+        { path: "/kedvencek", label: t("nav.favorites") || "Kedvencek", icon: Heart },
       ];
     }
 
