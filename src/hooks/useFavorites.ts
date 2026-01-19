@@ -27,6 +27,8 @@ export const useFavorites = (): UseFavoritesReturn => {
 
     setIsLoading(true);
     try {
+      console.log('[useFavorites] Fetching favorites for user:', user.id);
+      
       const { data, error } = await supabase
         .from('favorites')
         .select('content_id')
@@ -34,9 +36,10 @@ export const useFavorites = (): UseFavoritesReturn => {
 
       if (error) throw error;
 
+      console.log('[useFavorites] Fetched favorites:', data?.length || 0, 'items');
       setFavorites(data?.map(f => f.content_id) || []);
     } catch (err) {
-      console.error('Error fetching favorites:', err);
+      console.error('[useFavorites] Error fetching favorites:', err);
     } finally {
       setIsLoading(false);
     }

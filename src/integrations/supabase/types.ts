@@ -1167,6 +1167,7 @@ export type Database = {
           max_capacity: number | null
           og_image_url: string | null
           price_huf: number | null
+          problem_solution: Json | null
           region_id: string | null
           rejected_at: string | null
           rejection_reason: string | null
@@ -1206,6 +1207,7 @@ export type Database = {
           max_capacity?: number | null
           og_image_url?: string | null
           price_huf?: number | null
+          problem_solution?: Json | null
           region_id?: string | null
           rejected_at?: string | null
           rejection_reason?: string | null
@@ -1245,6 +1247,7 @@ export type Database = {
           max_capacity?: number | null
           og_image_url?: string | null
           price_huf?: number | null
+          problem_solution?: Json | null
           region_id?: string | null
           rejected_at?: string | null
           rejection_reason?: string | null

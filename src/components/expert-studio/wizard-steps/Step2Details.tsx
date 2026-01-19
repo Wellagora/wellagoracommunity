@@ -80,6 +80,51 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
         </p>
       </div>
 
+      {/* Problem-Solution for AI indexing */}
+      <Card className="border-amber-200 bg-gradient-to-br from-amber-50/50 to-yellow-50/50">
+        <CardContent className="p-6 space-y-4">
+          <div>
+            <Label className="text-base font-medium mb-2 block flex items-center gap-2">
+              💡 {language === 'hu' ? 'Milyen problémát old meg?' : 'What problem does this solve?'}
+            </Label>
+            <textarea
+              value={formData.problemStatement}
+              onChange={(e) => setFormData(prev => ({ ...prev, problemStatement: e.target.value }))}
+              placeholder={language === 'hu' 
+                ? 'pl. Sokan nem tudják, hogyan kezdjék el a komposztálást...' 
+                : 'e.g. Many people don\'t know how to start composting...'}
+              className="w-full min-h-[80px] p-3 text-sm rounded-lg border border-input bg-background resize-none focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+              maxLength={300}
+            />
+            <p className="text-xs text-muted-foreground text-right mt-1">
+              {formData.problemStatement.length}/300
+            </p>
+          </div>
+          <div>
+            <Label className="text-base font-medium mb-2 block flex items-center gap-2">
+              ✅ {language === 'hu' ? 'Hogyan segít ez a program?' : 'How does this program help?'}
+            </Label>
+            <textarea
+              value={formData.solutionStatement}
+              onChange={(e) => setFormData(prev => ({ ...prev, solutionStatement: e.target.value }))}
+              placeholder={language === 'hu' 
+                ? 'pl. Lépésről lépésre megmutatom a komposztálás alapjait...' 
+                : 'e.g. I\'ll show you step-by-step the basics of composting...'}
+              className="w-full min-h-[80px] p-3 text-sm rounded-lg border border-input bg-background resize-none focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+              maxLength={300}
+            />
+            <p className="text-xs text-muted-foreground text-right mt-1">
+              {formData.solutionStatement.length}/300
+            </p>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {language === 'hu' 
+              ? '💡 Ezek a mezők segítenek a felhasználóknak megtalálni a programodat, és az AI-nak is könnyebb lesz ajánlani.' 
+              : '💡 These fields help users find your program and make it easier for AI to recommend.'}
+          </p>
+        </CardContent>
+      </Card>
+
       {/* Program Type - NEW */}
       <Card className="border-blue-200 bg-gradient-to-br from-blue-50/50 to-indigo-50/50">
         <CardContent className="p-6">

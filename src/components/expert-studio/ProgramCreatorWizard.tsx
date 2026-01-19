@@ -28,6 +28,10 @@ export interface ProgramFormData {
   pricingMode: "sponsor_only" | "purchasable";
   price_huf: number;
   
+  // Problem-Solution for AI indexing
+  problemStatement: string;
+  solutionStatement: string;
+  
   // Program Type & Conditional Fields
   contentType: ContentType;
   eventDate: string; // ISO date string
@@ -56,6 +60,8 @@ const initialFormData: ProgramFormData = {
   category: "",
   pricingMode: "sponsor_only",
   price_huf: 0,
+  problemStatement: "",
+  solutionStatement: "",
   contentType: "in_person",
   eventDate: "",
   eventTime: "",
@@ -129,6 +135,9 @@ const ProgramCreatorWizard = () => {
         return;
       }
 
+      // Parse problem_solution JSON if exists
+      const problemSolution = data.problem_solution as { problem?: string; solution?: string } | null;
+      
       setFormData({
         mediaFile: null,
         mediaUrl: data.image_url || data.thumbnail_url || "",
@@ -137,6 +146,8 @@ const ProgramCreatorWizard = () => {
         category: data.category || "",
         pricingMode: data.price_huf && data.price_huf > 0 ? "purchasable" : "sponsor_only",
         price_huf: data.price_huf || 0,
+        problemStatement: problemSolution?.problem || "",
+        solutionStatement: problemSolution?.solution || "",
         contentType: (data.content_type as ContentType) || "in_person",
         eventDate: "",
         eventTime: "",
@@ -240,6 +251,11 @@ const ProgramCreatorWizard = () => {
         max_capacity: formData.contentType !== 'recorded' ? formData.maxParticipants : null,
         is_published: false,
         updated_at: new Date().toISOString(),
+        // Add problem_solution metadata for AI indexing
+        problem_solution: {
+          problem: formData.problemStatement || null,
+          solution: formData.solutionStatement || null,
+        },
       };
 
       let savedContentId = contentId;
