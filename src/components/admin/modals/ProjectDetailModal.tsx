@@ -95,7 +95,7 @@ export function ProjectDetailModal(props: {
     if (!project) return;
     setSaving(true);
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("projects")
         .update({
           name: project.name,
@@ -104,13 +104,17 @@ export function ProjectDetailModal(props: {
           region_name: project.region_name,
           is_active: project.is_active,
         })
-        .eq("id", project.id);
+        .eq("id", project.id)
+        .select("*")
+        .single();
       if (error) throw error;
+      console.log('DB SUCCESS:', data);
       toast.success("Mentve!");
       setIsEditing(false);
       onSaved?.();
       await load();
     } catch (e: any) {
+      console.error('DB ERROR:', e);
       toast.error(e?.message || "Mentés sikertelen");
     } finally {
       setSaving(false);
@@ -121,16 +125,21 @@ export function ProjectDetailModal(props: {
     if (!project) return;
     setSaving(true);
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("projects")
         .delete()
-        .eq("id", project.id);
+        .eq("id", project.id)
+        .select("*")
+        .maybeSingle();
       if (error) throw error;
+
+      console.log('DB SUCCESS:', data);
 
       toast.success("Projekt törölve!");
       onSaved?.();
       onOpenChange(false);
     } catch (e: any) {
+      console.error('DB ERROR:', e);
       toast.error(e?.message || "Törlés sikertelen");
     } finally {
       setSaving(false);
