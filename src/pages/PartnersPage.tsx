@@ -6,24 +6,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  Store, Search, Gift, Star, ExternalLink, 
-  MapPin, ShoppingBag, Leaf, Heart
+  Store, Search, Gift, Leaf
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import MembershipCard from "@/components/partners/MembershipCard";
-import PartnerOfferCard from "@/components/partners/PartnerOfferCard";
 
-// All partners data
+// All partners data with Hungarian categories
 const ALL_PARTNERS = [
   {
     id: "1",
     name: "Praktiker",
     slug: "praktiker",
     logo: "/partner-logos/praktiker.png",
-    category: "DIY & Garden",
+    categoryKey: "diy_garden",
     offerCount: 2
   },
   {
@@ -31,7 +28,7 @@ const ALL_PARTNERS = [
     name: "DM",
     slug: "dm",
     logo: "/partner-logos/dm.png",
-    category: "Health & Beauty",
+    categoryKey: "health_beauty",
     offerCount: 1
   },
   {
@@ -39,7 +36,7 @@ const ALL_PARTNERS = [
     name: "Rossmann",
     slug: "rossmann",
     logo: "/partner-logos/rossmann.png",
-    category: "Health & Beauty",
+    categoryKey: "health_beauty",
     offerCount: 1
   },
   {
@@ -47,7 +44,7 @@ const ALL_PARTNERS = [
     name: "OBI",
     slug: "obi",
     logo: "/partner-logos/obi.png",
-    category: "DIY & Garden",
+    categoryKey: "diy_garden",
     offerCount: 0
   },
   {
@@ -55,7 +52,7 @@ const ALL_PARTNERS = [
     name: "IKEA",
     slug: "ikea",
     logo: "/partner-logos/ikea.png",
-    category: "Home & Living",
+    categoryKey: "home_living",
     offerCount: 0
   },
   {
@@ -63,50 +60,60 @@ const ALL_PARTNERS = [
     name: "Auchan",
     slug: "auchan",
     logo: "/partner-logos/auchan.png",
-    category: "Grocery",
+    categoryKey: "grocery",
     offerCount: 0
   },
 ];
 
-const CATEGORIES = ["All", "DIY & Garden", "Health & Beauty", "Grocery", "Home & Living"];
+const CATEGORY_KEYS = ["all", "diy_garden", "health_beauty", "grocery", "home_living"];
 
 const PartnersPage = () => {
-  const { language } = useLanguage();
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
+  // Category translations
+  const getCategoryLabel = (key: string) => {
+    const labels: Record<string, string> = {
+      all: t("partners.category_all") || "Összes",
+      diy_garden: t("partners.category_diy") || "Barkács & Kert",
+      health_beauty: t("partners.category_health") || "Egészség & Szépség",
+      grocery: t("partners.category_grocery") || "Élelmiszer",
+      home_living: t("partners.category_home") || "Otthon & Lakás"
+    };
+    return labels[key] || key;
+  };
 
   const filteredPartners = ALL_PARTNERS.filter((partner) => {
     const matchesSearch = partner.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === "All" || partner.category === selectedCategory;
+    const matchesCategory = selectedCategory === "all" || partner.categoryKey === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-slate-50 flex flex-col">
       <Navigation />
 
       <main className="flex-1 pt-16">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-16">
+        {/* Hero Section - Clean Glassmorphism */}
+        <section className="bg-gradient-to-br from-slate-100 via-white to-emerald-50/30 py-16 border-b border-slate-200/60">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-8">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
               >
-                <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
-                  <Gift className="w-4 h-4 text-amber-400" />
-                  <span className="text-sm">
-                    {language === "hu" ? "Exkluzív kedvezmények tagjainknak" : "Exclusive discounts for members"}
+                <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-emerald-200/50 rounded-full px-4 py-2 mb-6 shadow-sm">
+                  <Gift className="w-4 h-4 text-emerald-600" />
+                  <span className="text-sm text-slate-700 font-medium">
+                    {t("partners.hero_badge") || "Exkluzív kedvezmények tagjainknak"}
                   </span>
                 </div>
-                <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                  {language === "hu" ? "Partner Ajánlatok" : "Partner Offers"}
+                <h1 className="text-4xl md:text-5xl font-bold mb-4 text-slate-900">
+                  {t("partners.hero_title") || "Partner Ajánlatok"}
                 </h1>
-                <p className="text-lg text-white/70">
-                  {language === "hu" 
-                    ? "Fedezd fel partnereink exkluzív kedvezményeit és használd a tagsági kártyádat az üzletekben!" 
-                    : "Discover exclusive discounts from our partners and use your membership card in stores!"}
+                <p className="text-lg text-slate-600">
+                  {t("partners.hero_subtitle") || "Fedezd fel partnereink exkluzív kedvezményeit és használd a tagsági kártyádat az üzletekben!"}
                 </p>
               </motion.div>
             </div>
@@ -118,29 +125,33 @@ const PartnersPage = () => {
           </div>
         </section>
 
-        {/* Search & Filters */}
-        <section className="py-8 border-b border-border/40 bg-white sticky top-0 z-30">
+        {/* Search & Filters - Sticky with Glassmorphism */}
+        <section className="py-6 border-b border-slate-200/60 bg-white/95 backdrop-blur-md sticky top-16 z-30 shadow-sm">
           <div className="container mx-auto px-4">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <Input
-                  placeholder={language === "hu" ? "Partner keresése..." : "Search partners..."}
+                  placeholder={t("partners.search_placeholder") || "Partner keresése..."}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 bg-slate-50 border-slate-200 focus:border-emerald-400 focus:ring-emerald-400/20"
                 />
               </div>
               <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide">
-                {CATEGORIES.map((category) => (
+                {CATEGORY_KEYS.map((categoryKey) => (
                   <Button
-                    key={category}
-                    variant={selectedCategory === category ? "default" : "outline"}
+                    key={categoryKey}
+                    variant={selectedCategory === categoryKey ? "default" : "outline"}
                     size="sm"
-                    onClick={() => setSelectedCategory(category)}
-                    className="flex-shrink-0"
+                    onClick={() => setSelectedCategory(categoryKey)}
+                    className={`flex-shrink-0 ${
+                      selectedCategory === categoryKey 
+                        ? "bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/25" 
+                        : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300"
+                    }`}
                   >
-                    {category === "All" ? (language === "hu" ? "Összes" : "All") : category}
+                    {getCategoryLabel(categoryKey)}
                   </Button>
                 ))}
               </div>
@@ -149,12 +160,14 @@ const PartnersPage = () => {
         </section>
 
         {/* Partners Grid */}
-        <section className="py-12">
+        <section className="py-12 bg-slate-50">
           <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              <Store className="w-6 h-6" />
-              {language === "hu" ? "Partnereink" : "Our Partners"}
-              <Badge variant="secondary">{filteredPartners.length}</Badge>
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-slate-900">
+              <Store className="w-6 h-6 text-emerald-600" />
+              {t("partners.list_title") || "Partnereink"}
+              <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 border-emerald-200">
+                {filteredPartners.length}
+              </Badge>
             </h2>
 
             <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -166,10 +179,10 @@ const PartnersPage = () => {
                   transition={{ delay: index * 0.05 }}
                 >
                   <Link to={`/partners/${partner.slug}`}>
-                    <Card className="h-full hover:shadow-xl transition-all group bg-white border-border/40 hover:border-primary/20">
+                    <Card className="h-full hover:shadow-xl transition-all duration-300 group bg-white/80 backdrop-blur-sm border-slate-200/60 hover:border-emerald-300/50 hover:-translate-y-1">
                       <CardContent className="p-6">
-                        {/* Logo - Boosted to 80px with premium styling */}
-                        <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-white border border-border/30 p-3 group-hover:scale-110 transition-transform shadow-sm group-hover:shadow-lg">
+                        {/* Logo - Premium styling */}
+                        <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-white border border-slate-100 p-3 group-hover:scale-110 transition-transform shadow-sm group-hover:shadow-lg group-hover:shadow-emerald-500/10">
                           <img 
                             src={partner.logo} 
                             alt={partner.name} 
@@ -179,24 +192,23 @@ const PartnersPage = () => {
 
                         {/* Info */}
                         <div className="text-center">
-                          <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">
+                          <h3 className="font-semibold text-lg mb-1 text-slate-900 group-hover:text-emerald-600 transition-colors">
                             {partner.name}
                           </h3>
-                          <Badge variant="outline" className="text-xs mb-3">
-                            {partner.category}
+                          <Badge variant="outline" className="text-xs mb-3 bg-slate-50 border-slate-200 text-slate-600">
+                            {getCategoryLabel(partner.categoryKey)}
                           </Badge>
                           
                           {partner.offerCount > 0 ? (
-                            <div className="flex items-center justify-center gap-1 text-sm text-emerald-600">
+                            <div className="flex items-center justify-center gap-1 text-sm text-emerald-600 font-medium">
                               <Gift className="w-4 h-4" />
                               <span>
-                                {partner.offerCount} {language === "hu" ? "ajánlat" : "offer"}
-                                {partner.offerCount > 1 && !language.startsWith("hu") ? "s" : ""}
+                                {partner.offerCount} {t("partners.offer_label") || "ajánlat"}
                               </span>
                             </div>
                           ) : (
-                            <p className="text-xs text-muted-foreground">
-                              {language === "hu" ? "Hamarosan" : "Coming soon"}
+                            <p className="text-xs text-slate-500">
+                              {t("partners.coming_soon") || "Hamarosan"}
                             </p>
                           )}
                         </div>
@@ -210,22 +222,25 @@ const PartnersPage = () => {
         </section>
 
         {/* Become a Partner CTA */}
-        <section className="py-16 bg-slate-50">
+        <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
-            <Card className="bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20">
+            <Card className="bg-gradient-to-br from-emerald-50/80 to-slate-50 border-emerald-200/50 shadow-lg">
               <CardContent className="p-8 text-center">
-                <Leaf className="w-12 h-12 mx-auto mb-4 text-primary" />
-                <h2 className="text-2xl font-bold mb-2">
-                  {language === "hu" ? "Legyél te is partnerünk!" : "Become our partner!"}
+                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-emerald-100 flex items-center justify-center">
+                  <Leaf className="w-8 h-8 text-emerald-600" />
+                </div>
+                <h2 className="text-2xl font-bold mb-2 text-slate-900">
+                  {t("partners.cta_title") || "Legyél te is partnerünk!"}
                 </h2>
-                <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
-                  {language === "hu"
-                    ? "Csatlakozz fenntartható közösségünkhöz és mutasd be termékeidet több ezer elkötelezett tagunknak."
-                    : "Join our sustainable community and showcase your products to thousands of committed members."}
+                <p className="text-slate-600 mb-6 max-w-xl mx-auto">
+                  {t("partners.cta_description") || "Csatlakozz fenntartható közösségünkhöz és mutasd be termékeidet több ezer elkötelezett tagunknak."}
                 </p>
                 <Link to="/contact">
-                  <Button size="lg" className="bg-black hover:bg-black/90 text-white">
-                    {language === "hu" ? "Kapcsolatfelvétel" : "Contact us"}
+                  <Button 
+                    size="lg" 
+                    className="bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/30 transition-all"
+                  >
+                    {t("partners.cta_button") || "Kapcsolatfelvétel"}
                   </Button>
                 </Link>
               </CardContent>

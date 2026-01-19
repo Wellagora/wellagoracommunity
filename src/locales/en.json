@@ -4312,5 +4312,24 @@
     "gabor_comment": "Gábor commented: 'When is the next one?'",
     "time_now": "now",
     "time_minutes_ago": "min ago"
+  },
+  "partners": {
+    "hero_badge": "Exclusive discounts for members",
+    "hero_title": "Partner Offers",
+    "hero_subtitle": "Discover exclusive discounts from our partners and use your membership card in stores!",
+    "search_placeholder": "Search partners...",
+    "category_all": "All",
+    "category_diy": "DIY & Garden",
+    "category_health": "Health & Beauty",
+    "category_grocery": "Grocery",
+    "category_home": "Home & Living",
+    "list_title": "Our Partners",
+    "offer_label": "offers",
+    "coming_soon": "Coming soon",
+    "cta_title": "Become our partner!",
+    "cta_description": "Join our sustainable community and showcase your products to thousands of committed members.",
+    "cta_button": "Contact us",
+    "not_found": "Partner not found",
+    "go_back": "Back to partners"
   }
 }

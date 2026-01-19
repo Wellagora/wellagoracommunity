@@ -4423,5 +4423,24 @@
     "gabor_comment": "Gábor hozzászólt: 'Mikor lesz a következő?'",
     "time_now": "most",
     "time_minutes_ago": "perce"
+  },
+  "partners": {
+    "hero_badge": "Exkluzív kedvezmények tagjainknak",
+    "hero_title": "Partner Ajánlatok",
+    "hero_subtitle": "Fedezd fel partnereink exkluzív kedvezményeit és használd a tagsági kártyádat az üzletekben!",
+    "search_placeholder": "Partner keresése...",
+    "category_all": "Összes",
+    "category_diy": "Barkács & Kert",
+    "category_health": "Egészség & Szépség",
+    "category_grocery": "Élelmiszer",
+    "category_home": "Otthon & Lakás",
+    "list_title": "Partnereink",
+    "offer_label": "ajánlat",
+    "coming_soon": "Hamarosan",
+    "cta_title": "Legyél te is partnerünk!",
+    "cta_description": "Csatlakozz fenntartható közösségünkhöz és mutasd be termékeidet több ezer elkötelezett tagunknak.",
+    "cta_button": "Kapcsolatfelvétel",
+    "not_found": "Partner nem található",
+    "go_back": "Vissza a partnerekhez"
   }
 }
