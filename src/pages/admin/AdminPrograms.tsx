@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
@@ -16,24 +15,17 @@ import {
   CheckCircle2,
   Clock,
   XCircle,
-  Eye,
   ThumbsUp,
   ThumbsDown,
-  MoreHorizontal,
   User,
   Tag,
   Plus,
   Building2,
   Users
 } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
+import { ProgramDetailModal } from '@/components/admin/modals/ProgramDetailModal';
 
 interface Program {
   id: string;
@@ -52,7 +44,7 @@ interface Program {
   seats_max?: number;
 }
 
-// New mock programs with different statuses for workflow testing
+// Mock programs for demo mode
 const MOCK_PROGRAMS: Program[] = [
   { 
     id: 'p1', 
@@ -93,32 +85,6 @@ const MOCK_PROGRAMS: Program[] = [
     project_id: 'kali-medence',
     expert_id: 'expert-3'
   },
-  { 
-    id: 'p4', 
-    title: 'Méhészkedés Kezdőknek', 
-    description: 'Ismerd meg a méhészet alapjait.', 
-    expert_name: 'Kiss Gábor', 
-    category: 'Mezőgazdaság', 
-    publication_status: 'draft', 
-    price: 10000,
-    created_at: '2026-01-02T10:00:00Z',
-    image_url: null,
-    project_id: 'kali-medence',
-    expert_id: 'expert-4'
-  },
-  { 
-    id: 'p5', 
-    title: 'Jóga a Természetben', 
-    description: 'Relaxáció és mozgás a szabadban.', 
-    expert_name: 'Tóth Anna', 
-    category: 'Jóllét', 
-    publication_status: 'published', 
-    price: 5000,
-    created_at: '2025-12-20T10:00:00Z',
-    image_url: null,
-    project_id: 'kali-medence',
-    expert_id: 'expert-5'
-  },
 ];
 
 const formatPrice = (price: number): string => {
@@ -126,13 +92,16 @@ const formatPrice = (price: number): string => {
 };
 
 const AdminPrograms = () => {
-  const { t } = useLanguage();
   const { isDemoMode } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [programs, setPrograms] = useState<Program[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || 'all');
+  
+  // Modal state
+  const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const fetchPrograms = async () => {
     setLoading(true);
@@ -143,7 +112,6 @@ const AdminPrograms = () => {
         return;
       }
 
-      // Fetch programs from expert_contents table (the actual programs table)
       const { data, error } = await supabase
         .from('expert_contents')
         .select('*')
@@ -151,7 +119,7 @@ const AdminPrograms = () => {
 
       if (error) throw error;
       
-      // Fetch expert names (creator_id is the expert)
+      // Fetch expert names
       const creatorIds = data?.filter(d => d.creator_id).map(d => d.creator_id) || [];
       let expertsMap: Record<string, string> = {};
       
@@ -166,7 +134,7 @@ const AdminPrograms = () => {
         });
       }
       
-      // Fetch sponsor information for each program from content_sponsorships
+      // Fetch sponsor information
       const programIds = data?.map(d => d.id) || [];
       let sponsorshipsMap: Record<string, { sponsor_name: string; seats_used: number; seats_max: number }> = {};
       
@@ -186,8 +154,6 @@ const AdminPrograms = () => {
         });
       }
       
-      // Map expert_contents to our Program interface
-      // is_published: true = published, false + reviewed_at = rejected, else draft/pending
       setPrograms(data?.map(d => {
         let publication_status = 'draft';
         if (d.is_published) {
@@ -195,7 +161,6 @@ const AdminPrograms = () => {
         } else if (d.rejected_at) {
           publication_status = 'rejected';
         } else if (d.reviewed_at === null && d.is_published === false) {
-          // Could be pending or draft based on context
           publication_status = 'pending_review';
         }
         
@@ -220,7 +185,7 @@ const AdminPrograms = () => {
       }) || []);
     } catch (error) {
       console.error('Error fetching programs:', error);
-      toast.error(t('admin.programs.fetch_error') || 'Error fetching programs');
+      toast.error('Hiba a programok betöltésekor');
     } finally {
       setLoading(false);
     }
@@ -229,6 +194,13 @@ const AdminPrograms = () => {
   useEffect(() => {
     fetchPrograms();
   }, [isDemoMode]);
+
+  // Handle card click - open modal
+  const handleCardClick = (programId: string) => {
+    console.log('[AdminPrograms] Card clicked:', programId);
+    setSelectedProgramId(programId);
+    setModalOpen(true);
+  };
 
   const handleStatusFilterChange = (status: string) => {
     setStatusFilter(status);
@@ -240,12 +212,14 @@ const AdminPrograms = () => {
     setSearchParams(searchParams);
   };
 
-  const approveProgram = async (programId: string) => {
+  const approveProgram = async (programId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
     if (isDemoMode) {
       setPrograms(prev => prev.map(p => 
         p.id === programId ? { ...p, publication_status: 'published' } : p
       ));
-      toast.success(t('admin.programs.approved') || 'Program approved');
+      toast.success('Program jóváhagyva!');
       return;
     }
 
@@ -260,19 +234,21 @@ const AdminPrograms = () => {
       setPrograms(prev => prev.map(p => 
         p.id === programId ? { ...p, publication_status: 'published' } : p
       ));
-      toast.success(t('admin.programs.approved') || 'Program approved');
+      toast.success('Program jóváhagyva!');
     } catch (error) {
       console.error('Error approving program:', error);
-      toast.error(t('admin.programs.approve_error') || 'Error approving program');
+      toast.error('Hiba a jóváhagyás során');
     }
   };
 
-  const rejectProgram = async (programId: string) => {
+  const rejectProgram = async (programId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
     if (isDemoMode) {
       setPrograms(prev => prev.map(p =>
         p.id === programId ? { ...p, publication_status: 'rejected' } : p
       ));
-      toast.success(t('admin.programs.rejected') || 'Program rejected');
+      toast.success('Program elutasítva');
       return;
     }
 
@@ -287,23 +263,23 @@ const AdminPrograms = () => {
       setPrograms(prev => prev.map(p => 
         p.id === programId ? { ...p, publication_status: 'rejected' } : p
       ));
-      toast.success(t('admin.programs.rejected') || 'Program rejected');
+      toast.success('Program elutasítva');
     } catch (error) {
       console.error('Error rejecting program:', error);
-      toast.error(t('admin.programs.reject_error') || 'Error rejecting program');
+      toast.error('Hiba az elutasítás során');
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'published':
-        return <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200"><CheckCircle2 className="h-3 w-3 mr-1" />{t('admin.programs.status_published')}</Badge>;
+        return <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200"><CheckCircle2 className="h-3 w-3 mr-1" />Publikált</Badge>;
       case 'pending_review':
-        return <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200"><Clock className="h-3 w-3 mr-1" />{t('admin.programs.status_pending')}</Badge>;
+        return <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200"><Clock className="h-3 w-3 mr-1" />Függőben</Badge>;
       case 'rejected':
-        return <Badge className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"><XCircle className="h-3 w-3 mr-1" />{t('admin.programs.status_rejected')}</Badge>;
+        return <Badge className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"><XCircle className="h-3 w-3 mr-1" />Elutasított</Badge>;
       case 'draft':
-        return <Badge variant="secondary">{t('admin.programs.status_draft')}</Badge>;
+        return <Badge variant="secondary">Piszkozat</Badge>;
       default:
         return <Badge variant="secondary">{status}</Badge>;
     }
@@ -354,15 +330,21 @@ const AdminPrograms = () => {
         <div>
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <ClipboardList className="h-6 w-6 text-purple-600" />
-            {t('admin.programs.title')}
+            Programok
           </h1>
           <p className="text-muted-foreground">
-            {t('admin.programs.subtitle')}
+            Programok és workshopok kezelése
           </p>
         </div>
-        <Button onClick={fetchPrograms} variant="outline" size="icon">
-          <RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button onClick={fetchPrograms} variant="outline" size="icon">
+            <RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />
+          </Button>
+          <Button className="gap-2">
+            <Plus className="h-4 w-4" />
+            Új program
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -370,7 +352,7 @@ const AdminPrograms = () => {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder={t('admin.programs.search_placeholder')}
+            placeholder="Keresés program vagy szakértő alapján..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"
@@ -379,16 +361,16 @@ const AdminPrograms = () => {
         <Tabs value={statusFilter} onValueChange={handleStatusFilterChange}>
           <TabsList>
             <TabsTrigger value="all">
-              {t('admin.programs.filter_all')} ({counts.all})
+              Összes ({counts.all})
             </TabsTrigger>
             <TabsTrigger value="pending" className={cn(counts.pending > 0 && "text-amber-600")}>
-              {t('admin.programs.filter_pending')} ({counts.pending})
+              Függőben ({counts.pending})
             </TabsTrigger>
             <TabsTrigger value="published">
-              {t('admin.programs.filter_published')} ({counts.published})
+              Publikált ({counts.published})
             </TabsTrigger>
             <TabsTrigger value="draft">
-              {t('admin.programs.filter_draft')} ({counts.draft})
+              Piszkozat ({counts.draft})
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -405,10 +387,10 @@ const AdminPrograms = () => {
         <Card>
           <CardContent className="py-12 text-center">
             <ClipboardList className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-muted-foreground mb-4">{t('admin.programs.no_programs')}</p>
+            <p className="text-muted-foreground mb-4">Nincs program</p>
             <Button>
               <Plus className="h-4 w-4 mr-2" />
-              {t('admin.programs.create_first') || 'Első program létrehozása'}
+              Első program létrehozása
             </Button>
           </CardContent>
         </Card>
@@ -418,9 +400,10 @@ const AdminPrograms = () => {
             <Card 
               key={program.id}
               className={cn(
-                "hover:shadow-md transition-shadow",
+                "cursor-pointer hover:shadow-md transition-all",
                 program.publication_status === 'pending_review' && "ring-2 ring-amber-400"
               )}
+              onClick={() => handleCardClick(program.id)}
             >
               <CardContent className="p-4">
                 <div className="flex items-start gap-4">
@@ -472,34 +455,21 @@ const AdminPrograms = () => {
                         <Button 
                           size="sm" 
                           className="bg-emerald-600 hover:bg-emerald-700"
-                          onClick={() => approveProgram(program.id)}
+                          onClick={(e) => approveProgram(program.id, e)}
                         >
                           <ThumbsUp className="h-4 w-4 mr-1" />
-                          {t('admin.programs.approve')}
+                          Jóváhagyás
                         </Button>
                         <Button 
                           size="sm" 
                           variant="destructive"
-                          onClick={() => rejectProgram(program.id)}
+                          onClick={(e) => rejectProgram(program.id, e)}
                         >
                           <ThumbsDown className="h-4 w-4 mr-1" />
-                          {t('admin.programs.reject')}
+                          Elutasítás
                         </Button>
                       </>
                     )}
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem>
-                          <Eye className="h-4 w-4 mr-2" />
-                          {t('admin.programs.view')}
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
                   </div>
                 </div>
               </CardContent>
@@ -507,6 +477,13 @@ const AdminPrograms = () => {
           ))}
         </div>
       )}
+
+      {/* Program Detail Modal */}
+      <ProgramDetailModal
+        programId={selectedProgramId}
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+      />
     </div>
   );
 };

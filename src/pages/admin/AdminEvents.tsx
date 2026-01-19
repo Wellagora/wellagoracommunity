@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
@@ -15,21 +14,12 @@ import {
   MapPin,
   Users,
   Clock,
-  Plus,
-  MoreHorizontal,
-  Eye,
-  Edit,
-  Trash2
+  Plus
 } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
-import { hu, enUS, de } from 'date-fns/locale';
+import { hu } from 'date-fns/locale';
+import { EventDetailModal } from '@/components/admin/modals/EventDetailModal';
 
 interface Event {
   id: string;
@@ -88,13 +78,14 @@ const MOCK_EVENTS: Event[] = [
 ];
 
 const AdminEvents = () => {
-  const { t, language } = useLanguage();
   const { isDemoMode } = useAuth();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-
-  const dateLocale = language === 'hu' ? hu : language === 'de' ? de : enUS;
+  
+  // Modal state
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const fetchEvents = async () => {
     setLoading(true);
@@ -114,7 +105,7 @@ const AdminEvents = () => {
       setEvents(data || []);
     } catch (error) {
       console.error('Error fetching events:', error);
-      toast.error(t('admin.events.fetch_error'));
+      toast.error('Hiba az események betöltésekor');
     } finally {
       setLoading(false);
     }
@@ -124,15 +115,22 @@ const AdminEvents = () => {
     fetchEvents();
   }, [isDemoMode]);
 
+  // Handle card click - open modal
+  const handleCardClick = (eventId: string) => {
+    console.log('[AdminEvents] Card clicked:', eventId);
+    setSelectedEventId(eventId);
+    setModalOpen(true);
+  };
+
   const getStatusBadge = (status: string, isPublic: boolean) => {
     if (status === 'published' && isPublic) {
-      return <Badge className="bg-emerald-100 text-emerald-800">{t('admin.events.status_public')}</Badge>;
+      return <Badge className="bg-emerald-100 text-emerald-800">Nyilvános</Badge>;
     }
     if (status === 'published' && !isPublic) {
-      return <Badge className="bg-blue-100 text-blue-800">{t('admin.events.status_private')}</Badge>;
+      return <Badge className="bg-blue-100 text-blue-800">Privát</Badge>;
     }
     if (status === 'draft') {
-      return <Badge variant="secondary">{t('admin.events.status_draft')}</Badge>;
+      return <Badge variant="secondary">Piszkozat</Badge>;
     }
     return <Badge variant="outline">{status}</Badge>;
   };
@@ -149,10 +147,10 @@ const AdminEvents = () => {
         <div>
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Calendar className="h-6 w-6 text-blue-600" />
-            {t('admin.events.title')}
+            Események
           </h1>
           <p className="text-muted-foreground">
-            {t('admin.events.subtitle')}
+            Közösségi események kezelése
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -161,7 +159,7 @@ const AdminEvents = () => {
           </Button>
           <Button className="gap-2">
             <Plus className="h-4 w-4" />
-            {t('admin.events.create')}
+            Új esemény
           </Button>
         </div>
       </div>
@@ -170,7 +168,7 @@ const AdminEvents = () => {
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder={t('admin.events.search_placeholder')}
+          placeholder="Keresés esemény vagy helyszín alapján..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-10"
@@ -188,18 +186,22 @@ const AdminEvents = () => {
         <Card>
           <CardContent className="py-12 text-center">
             <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">{t('admin.events.no_events')}</p>
+            <p className="text-muted-foreground">Nincs esemény</p>
           </CardContent>
         </Card>
       ) : (
         <div className="space-y-4">
           {filteredEvents.map((event) => (
-            <Card key={event.id} className="hover:shadow-md transition-shadow">
+            <Card 
+              key={event.id} 
+              className="cursor-pointer hover:shadow-md transition-all"
+              onClick={() => handleCardClick(event.id)}
+            >
               <CardContent className="p-4">
                 <div className="flex items-start gap-4">
                   <div className="h-14 w-14 rounded-lg bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 flex flex-col items-center justify-center flex-shrink-0">
                     <span className="text-xs font-medium text-blue-600 uppercase">
-                      {format(new Date(event.start_date), 'MMM', { locale: dateLocale })}
+                      {format(new Date(event.start_date), 'MMM', { locale: hu })}
                     </span>
                     <span className="text-lg font-bold text-blue-800 dark:text-blue-200">
                       {format(new Date(event.start_date), 'd')}
@@ -214,7 +216,7 @@ const AdminEvents = () => {
                     <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mt-2">
                       <span className="flex items-center gap-1">
                         <Clock className="h-4 w-4" />
-                        {format(new Date(event.start_date), 'HH:mm', { locale: dateLocale })}
+                        {format(new Date(event.start_date), 'HH:mm', { locale: hu })}
                       </span>
                       {event.location_name && (
                         <span className="flex items-center gap-1">
@@ -229,34 +231,20 @@ const AdminEvents = () => {
                       </span>
                     </div>
                   </div>
-
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
-                        <Eye className="h-4 w-4 mr-2" />
-                        {t('admin.events.view')}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Edit className="h-4 w-4 mr-2" />
-                        {t('admin.events.edit')}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="text-destructive">
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        {t('admin.events.delete')}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
       )}
+
+      {/* Event Detail Modal */}
+      <EventDetailModal
+        eventId={selectedEventId}
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        onSaved={fetchEvents}
+      />
     </div>
   );
 };
