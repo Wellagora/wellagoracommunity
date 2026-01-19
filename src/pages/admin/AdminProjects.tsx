@@ -516,7 +516,7 @@ const AdminProjects = () => {
             </Card>
           ))}
         </div>
-      )}
+      ))}
 
       {/* Create/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
