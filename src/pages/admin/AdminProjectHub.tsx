@@ -358,15 +358,53 @@ const AdminProjectHub = () => {
         .select('*', { count: 'exact', head: true })
         .eq('project_id', id);
 
+      // Fetch participants: users who have accessed programs in this project
+      const programIds = programsData?.map(p => p.id) || [];
+      let participantsData: Participant[] = [];
+      
+      if (programIds.length > 0) {
+        const { data: accessData } = await supabase
+          .from('content_access')
+          .select('id, user_id, content_id, purchased_at')
+          .in('content_id', programIds);
+
+        if (accessData && accessData.length > 0) {
+          const userIds = [...new Set(accessData.map(a => a.user_id))];
+          const { data: userProfiles } = await supabase
+            .from('profiles')
+            .select('id, first_name, last_name, email')
+            .in('id', userIds);
+
+          const programTitleMap = new Map(programsData?.map(p => [p.id, p.title]) || []);
+          const userMap = new Map(userProfiles?.map(u => [u.id, u]) || []);
+
+          participantsData = accessData.map(a => {
+            const user = userMap.get(a.user_id);
+            return {
+              id: a.id,
+              user_name: user ? `${user.first_name} ${user.last_name}` : 'Ismeretlen',
+              email: user?.email || '-',
+              program_title: programTitleMap.get(a.content_id) || '-',
+              claimed_at: a.purchased_at,
+            };
+          });
+        }
+      }
+      setParticipants(participantsData);
+      console.log('[AdminProjectHub] Participants loaded:', participantsData.length);
+
+      // Calculate stats - use content_access count for participants
+      const accessParticipantCount = participantsData.length;
+
       setStats({
-        totalParticipants: participantCount || 0,
+        totalParticipants: accessParticipantCount || participantCount || 0,
         totalExperts: expertCount || 0,
         totalPrograms: programCount || 0,
         totalEvents: eventCount || 0,
         totalBudgetUsed: totalBudget,
         activeSponsorships: sponsorshipsData?.length || 0,
       });
-      console.log('[AdminProjectHub] Stats calculated:', { participantCount, expertCount, programCount, eventCount, totalBudget });
+      console.log('[AdminProjectHub] Stats calculated:', { accessParticipantCount, expertCount, programCount, eventCount, totalBudget });
 
     } catch (error: any) {
       console.error('[AdminProjectHub] Error fetching project:', error);
