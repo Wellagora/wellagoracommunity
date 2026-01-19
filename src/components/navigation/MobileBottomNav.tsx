@@ -78,45 +78,41 @@ const MobileBottomNav = () => {
     };
   }, [user]);
 
-  // Role-specific navigation items
+  // STRICT Role-specific navigation items - each role sees ONLY their items
   const getNavItems = (): NavItem[] => {
-    // Member sees: Programok, Saját Központ, Kedvencek, Értesítések, Profil
+    // Members ONLY see: Piactér, Események, Partnerek, Profil
     if (effectiveRole === 'member') {
       return [
         { path: "/programs", icon: Store, labelKey: "mobile_nav.discover" },
-        { path: "/my-center", icon: LayoutDashboard, labelKey: "mobile_nav.my_center" },
-        { path: "/favorites", icon: Heart, labelKey: "mobile_nav.favorites" },
-        { path: "/ertesitesek", icon: Bell, labelKey: "mobile_nav.notifications" },
+        { path: "/esemenyek", icon: BookOpen, labelKey: "mobile_nav.events" },
+        { path: "/partners", icon: Building2, labelKey: "mobile_nav.partners" },
         { path: "/profile", icon: User, labelKey: "mobile_nav.profile" },
       ];
     }
 
-    // Expert sees: Programok, Expert Studio, Bevételeim, Értesítések, Profil
+    // Experts ONLY see: Stúdió, Analitika, Profil (NO marketplace unless explicit)
     if (effectiveRole === 'expert') {
       return [
-        { path: "/programs", icon: Store, labelKey: "mobile_nav.discover" },
-        { path: "/expert-studio", icon: Sparkles, labelKey: "mobile_nav.my_studio", iconColor: "text-cyan-500" },
-        { path: "/expert-studio", icon: Wallet, labelKey: "mobile_nav.earnings" },
+        { path: "/expert-studio", icon: Sparkles, labelKey: "mobile_nav.my_studio", iconColor: "text-amber-500" },
+        { path: "/expert-studio", icon: BarChart3, labelKey: "mobile_nav.analytics" },
         { path: "/ertesitesek", icon: Bell, labelKey: "mobile_nav.notifications" },
         { path: "/profile", icon: User, labelKey: "mobile_nav.profile" },
       ];
     }
 
-    // Sponsor sees: Programok, Kampányaim, Hatásjelentés, Értesítések, Profil
+    // Sponsors ONLY see: Dashboard, Kampányok, Kredit, Profil
     if (effectiveRole === 'sponsor') {
       return [
-        { path: "/programs", icon: Store, labelKey: "mobile_nav.discover" },
-        { path: "/sponsor-dashboard", icon: Building2, labelKey: "mobile_nav.my_campaigns", iconColor: "text-amber-500" },
-        { path: "/sponsor-dashboard", icon: BarChart3, labelKey: "mobile_nav.impact_report" },
+        { path: "/sponsor-dashboard", icon: Building2, labelKey: "mobile_nav.dashboard", iconColor: "text-blue-500" },
+        { path: "/sponsor-dashboard", icon: Wallet, labelKey: "mobile_nav.credits" },
         { path: "/ertesitesek", icon: Bell, labelKey: "mobile_nav.notifications" },
         { path: "/profile", icon: User, labelKey: "mobile_nav.profile" },
       ];
     }
 
-    // Default fallback
+    // Default fallback (logged out - should not show)
     return [
       { path: "/programs", icon: Store, labelKey: "mobile_nav.discover" },
-      { path: "/ertesitesek", icon: Bell, labelKey: "mobile_nav.notifications" },
       { path: "/profile", icon: User, labelKey: "mobile_nav.profile" },
     ];
   };

@@ -1,4 +1,19 @@
 {
+  "mobile_nav.discover": "Entdecken",
+  "mobile_nav.my_courses": "Meine Kurse",
+  "mobile_nav.notifications": "Benachrichtigungen",
+  "mobile_nav.profile": "Profil",
+  "mobile_nav.my_studio": "Mein Studio",
+  "mobile_nav.my_campaigns": "Kampagnen",
+  "mobile_nav.dashboard": "Dashboard",
+  "mobile_nav.events": "Events",
+  "mobile_nav.partners": "Partner",
+  "mobile_nav.analytics": "Analytik",
+  "mobile_nav.credits": "Guthaben",
+  "mobile_nav.favorites": "Favoriten",
+  "mobile_nav.my_center": "Mein Hub",
+  "mobile_nav.earnings": "Einnahmen",
+  "mobile_nav.impact_report": "Impact",
   "landing": {
     "cta_join": "Beitreten"
   },
