@@ -246,6 +246,93 @@ export type Database = {
         }
         Relationships: []
       }
+      audit_log: {
+        Row: {
+          action: string
+          changes: Json | null
+          created_at: string | null
+          id: string
+          ip_address: string | null
+          new_values: Json | null
+          old_values: Json | null
+          record_id: string | null
+          table_name: string
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          changes?: Json | null
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          record_id?: string | null
+          table_name: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          changes?: Json | null
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          record_id?: string | null
+          table_name?: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      broadcasts: {
+        Row: {
+          body: string
+          channel: string
+          created_at: string | null
+          created_by: string | null
+          delivery_count: number | null
+          id: string
+          scheduled_for: string | null
+          sent_at: string | null
+          status: string | null
+          target_role: string | null
+          title: string
+        }
+        Insert: {
+          body: string
+          channel: string
+          created_at?: string | null
+          created_by?: string | null
+          delivery_count?: number | null
+          id?: string
+          scheduled_for?: string | null
+          sent_at?: string | null
+          status?: string | null
+          target_role?: string | null
+          title: string
+        }
+        Update: {
+          body?: string
+          channel?: string
+          created_at?: string | null
+          created_by?: string | null
+          delivery_count?: number | null
+          id?: string
+          scheduled_for?: string | null
+          sent_at?: string | null
+          status?: string | null
+          target_role?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
       carbon_handprint_entries: {
         Row: {
           action_type: string
@@ -1175,6 +1262,7 @@ export type Database = {
           reviewed_by: string | null
           seo_description: string | null
           seo_title: string | null
+          sort_order: number | null
           sponsor_id: string | null
           sponsor_logo_url: string | null
           sponsor_name: string | null
@@ -1215,6 +1303,7 @@ export type Database = {
           reviewed_by?: string | null
           seo_description?: string | null
           seo_title?: string | null
+          sort_order?: number | null
           sponsor_id?: string | null
           sponsor_logo_url?: string | null
           sponsor_name?: string | null
@@ -1255,6 +1344,7 @@ export type Database = {
           reviewed_by?: string | null
           seo_description?: string | null
           seo_title?: string | null
+          sort_order?: number | null
           sponsor_id?: string | null
           sponsor_logo_url?: string | null
           sponsor_name?: string | null
@@ -1976,6 +2066,60 @@ export type Database = {
           },
         ]
       }
+      payouts: {
+        Row: {
+          amount_huf: number
+          bookings_count: number | null
+          created_at: string | null
+          expert_id: string
+          gross_revenue_huf: number
+          id: string
+          notes: string | null
+          paid_at: string | null
+          payment_reference: string | null
+          period_end: string
+          period_start: string
+          platform_fee_huf: number
+          programs_count: number | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          amount_huf: number
+          bookings_count?: number | null
+          created_at?: string | null
+          expert_id: string
+          gross_revenue_huf: number
+          id?: string
+          notes?: string | null
+          paid_at?: string | null
+          payment_reference?: string | null
+          period_end: string
+          period_start: string
+          platform_fee_huf: number
+          programs_count?: number | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          amount_huf?: number
+          bookings_count?: number | null
+          created_at?: string | null
+          expert_id?: string
+          gross_revenue_huf?: number
+          id?: string
+          notes?: string | null
+          paid_at?: string | null
+          payment_reference?: string | null
+          period_end?: string
+          period_start?: string
+          platform_fee_huf?: number
+          programs_count?: number | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           accepted_terms_at: string | null
@@ -1999,6 +2143,7 @@ export type Database = {
           expert_title_en: string | null
           expertise_areas: string[] | null
           first_name: string
+          green_pass: boolean | null
           id: string
           industry: string | null
           is_premium: boolean | null
@@ -2042,6 +2187,7 @@ export type Database = {
           sustainability_goals: string[] | null
           updated_at: string
           user_role: Database["public"]["Enums"]["user_role"]
+          verification_expires_at: string | null
           verification_status: string | null
           visibility_radius_km: number | null
           website_url: string | null
@@ -2070,6 +2216,7 @@ export type Database = {
           expert_title_en?: string | null
           expertise_areas?: string[] | null
           first_name: string
+          green_pass?: boolean | null
           id: string
           industry?: string | null
           is_premium?: boolean | null
@@ -2113,6 +2260,7 @@ export type Database = {
           sustainability_goals?: string[] | null
           updated_at?: string
           user_role?: Database["public"]["Enums"]["user_role"]
+          verification_expires_at?: string | null
           verification_status?: string | null
           visibility_radius_km?: number | null
           website_url?: string | null
@@ -2141,6 +2289,7 @@ export type Database = {
           expert_title_en?: string | null
           expertise_areas?: string[] | null
           first_name?: string
+          green_pass?: boolean | null
           id?: string
           industry?: string | null
           is_premium?: boolean | null
@@ -2184,6 +2333,7 @@ export type Database = {
           sustainability_goals?: string[] | null
           updated_at?: string
           user_role?: Database["public"]["Enums"]["user_role"]
+          verification_expires_at?: string | null
           verification_status?: string | null
           visibility_radius_km?: number | null
           website_url?: string | null
@@ -3846,6 +3996,7 @@ export type Database = {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      get_financial_overview: { Args: never; Returns: Json }
       get_organization_member_profiles: {
         Args: { _organization_id: string }
         Returns: {
@@ -3948,6 +4099,16 @@ export type Database = {
         Returns: boolean
       }
       is_super_admin: { Args: { check_user_id?: string }; Returns: boolean }
+      log_audit: {
+        Args: {
+          p_action: string
+          p_new_values?: Json
+          p_old_values?: Json
+          p_record_id: string
+          p_table_name: string
+        }
+        Returns: string
+      }
       longtransactionsenabled: { Args: never; Returns: boolean }
       mark_voucher_noshow: { Args: { p_voucher_code: string }; Returns: Json }
       populate_geometry_columns:
