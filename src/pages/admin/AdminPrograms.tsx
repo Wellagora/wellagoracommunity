@@ -483,6 +483,7 @@ const AdminPrograms = () => {
         programId={selectedProgramId}
         open={modalOpen}
         onOpenChange={setModalOpen}
+        onSaved={fetchPrograms}
       />
     </div>
   );

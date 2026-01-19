@@ -173,7 +173,7 @@ const AdminProjectHub = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const { isDemoMode, user } = useAuth();
+  const { user } = useAuth();
 
   // State
   const [project, setProject] = useState<Project | null>(null);
@@ -247,52 +247,13 @@ const AdminProjectHub = () => {
   useEffect(() => {
     if (!id) return;
     fetchProjectData();
-  }, [id, isDemoMode]);
+  }, [id]);
 
   const fetchProjectData = async () => {
     if (!id) return;
     setLoading(true);
 
     try {
-      if (isDemoMode) {
-        // Demo data
-        setProject({
-          id: 'proj-1',
-          name: 'Káli-medence Közösség',
-          slug: 'kali-medence',
-          description: 'A Balaton-felvidék szívében működő fenntartható közösség.',
-          region_name: 'Balaton-felvidék',
-          is_active: true,
-          created_at: '2024-01-15T10:00:00Z',
-          currency_code: 'HUF',
-          country_code: 'HU',
-        });
-        setStats({
-          totalParticipants: 156,
-          totalExperts: 12,
-          totalPrograms: 24,
-          totalEvents: 8,
-          totalBudgetUsed: 450000,
-          activeSponsorships: 3,
-        });
-        setExperts([
-          { id: '1', first_name: 'Kovács', last_name: 'Anna', email: 'anna@example.com', avatar_url: null, user_role: 'expert', green_pass: true },
-          { id: '2', first_name: 'Nagy', last_name: 'Péter', email: 'peter@example.com', avatar_url: null, user_role: 'expert', green_pass: false },
-        ]);
-        setPrograms([
-          { id: '1', title: 'Reggeli jóga', category: 'wellness', price_huf: 3500, is_published: true, used_licenses: 8, max_capacity: 15, creator_id: '1', expert_name: 'Kovács Anna' },
-          { id: '2', title: 'Fűszernövények', category: 'gardening', price_huf: 2500, is_published: true, used_licenses: 12, max_capacity: 20, creator_id: '2', expert_name: 'Nagy Péter' },
-        ]);
-        setEvents([
-          { id: '1', title: 'Közösségi piknik', start_date: '2025-02-15T10:00:00Z', location_name: 'Káli-völgy', status: 'upcoming', current_participants: 25, max_participants: 50 },
-        ]);
-        setSponsors([
-          { id: '1', company_name: 'DM', logo_url: null, sponsor_credits: 50000, is_active: true },
-          { id: '2', company_name: 'OBI', logo_url: null, sponsor_credits: 30000, is_active: true },
-        ]);
-        setLoading(false);
-        return;
-      }
 
       // Fetch real project
       const { data: projectData, error: projectError } = await supabase
@@ -406,9 +367,9 @@ const AdminProjectHub = () => {
       });
       console.log('[AdminProjectHub] Stats calculated:', { participantCount, expertCount, programCount, eventCount, totalBudget });
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('[AdminProjectHub] Error fetching project:', error);
-      toast.error('Hiba a projekt betöltésekor');
+      toast.error(error?.message || 'Hiba a projekt betöltésekor');
     } finally {
       setLoading(false);
     }
@@ -431,15 +392,7 @@ const AdminProjectHub = () => {
     setSaving(true);
 
     try {
-      if (isDemoMode) {
-        setProject({ ...project, ...editForm });
-        toast.success('Projekt frissítve!');
-        setIsEditModalOpen(false);
-        setSaving(false);
-        return;
-      }
-
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('projects')
         .update({
           name: editForm.name,
@@ -447,17 +400,19 @@ const AdminProjectHub = () => {
           region_name: editForm.region_name,
           is_active: editForm.is_active,
         })
-        .eq('id', project.id);
+        .eq('id', project.id)
+        .select('*')
+        .single();
 
       if (error) throw error;
-      
-      console.log('[AdminProjectHub] Project updated successfully:', project.id);
+
+      console.log('DB SUCCESS:', data);
       setProject({ ...project, ...editForm });
       toast.success('Projekt frissítve!');
       setIsEditModalOpen(false);
-    } catch (error) {
-      console.error('[AdminProjectHub] Error saving project:', error);
-      toast.error('Hiba a mentéskor');
+    } catch (error: any) {
+      console.error('DB ERROR:', error);
+      toast.error(error?.message || 'Hiba a mentéskor');
     } finally {
       setSaving(false);
     }
@@ -494,16 +449,9 @@ const AdminProjectHub = () => {
     setSaving(true);
 
     try {
-      if (isDemoMode) {
-        toast.success(editingProgram ? 'Program frissítve!' : 'Program létrehozva!');
-        setIsProgramModalOpen(false);
-        setSaving(false);
-        return;
-      }
-
       if (editingProgram) {
         // UPDATE existing program
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('expert_contents')
           .update({
             title: programForm.title,
@@ -513,14 +461,16 @@ const AdminProjectHub = () => {
             max_capacity: programForm.max_capacity,
             is_published: programForm.is_published,
           })
-          .eq('id', editingProgram.id);
+          .eq('id', editingProgram.id)
+          .select('*')
+          .single();
 
         if (error) throw error;
-        console.log('[AdminProjectHub] Program updated:', editingProgram.id);
+        console.log('DB SUCCESS:', data);
         toast.success('Program frissítve!');
       } else {
         // INSERT new program
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('expert_contents')
           .insert({
             title: programForm.title,
@@ -531,18 +481,20 @@ const AdminProjectHub = () => {
             is_published: programForm.is_published,
             region_id: id, // Link to project
             creator_id: user?.id,
-          });
+          })
+          .select('*')
+          .single();
 
         if (error) throw error;
-        console.log('[AdminProjectHub] Program created for project:', id);
+        console.log('DB SUCCESS:', data);
         toast.success('Program létrehozva!');
       }
 
       setIsProgramModalOpen(false);
       fetchProjectData();
-    } catch (error) {
-      console.error('[AdminProjectHub] Error saving program:', error);
-      toast.error('Hiba a mentéskor');
+    } catch (error: any) {
+      console.error('DB ERROR:', error);
+      toast.error(error?.message || 'Hiba a mentéskor');
     } finally {
       setSaving(false);
     }
@@ -550,45 +502,39 @@ const AdminProjectHub = () => {
 
   const handleApproveProgram = async (programId: string) => {
     try {
-      if (isDemoMode) {
-        toast.success('Program jóváhagyva!');
-        return;
-      }
-
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('expert_contents')
         .update({ is_published: true })
-        .eq('id', programId);
+        .eq('id', programId)
+        .select('*')
+        .single();
 
       if (error) throw error;
-      console.log('[AdminProjectHub] Program approved:', programId);
+      console.log('DB SUCCESS:', data);
       toast.success('Program jóváhagyva!');
       fetchProjectData();
-    } catch (error) {
-      console.error('[AdminProjectHub] Error approving program:', error);
-      toast.error('Hiba a jóváhagyáskor');
+    } catch (error: any) {
+      console.error('DB ERROR:', error);
+      toast.error(error?.message || 'Hiba a jóváhagyáskor');
     }
   };
 
   const handleRejectProgram = async (programId: string) => {
     try {
-      if (isDemoMode) {
-        toast.success('Program elutasítva!');
-        return;
-      }
-
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('expert_contents')
         .update({ is_published: false })
-        .eq('id', programId);
+        .eq('id', programId)
+        .select('*')
+        .single();
 
       if (error) throw error;
-      console.log('[AdminProjectHub] Program rejected:', programId);
+      console.log('DB SUCCESS:', data);
       toast.success('Program elutasítva!');
       fetchProjectData();
-    } catch (error) {
-      console.error('[AdminProjectHub] Error rejecting program:', error);
-      toast.error('Hiba az elutasításkor');
+    } catch (error: any) {
+      console.error('DB ERROR:', error);
+      toast.error(error?.message || 'Hiba az elutasításkor');
     }
   };
 
@@ -627,16 +573,9 @@ const AdminProjectHub = () => {
     setSaving(true);
 
     try {
-      if (isDemoMode) {
-        toast.success(editingEvent ? 'Esemény frissítve!' : 'Esemény létrehozva!');
-        setIsEventModalOpen(false);
-        setSaving(false);
-        return;
-      }
-
       if (editingEvent) {
         // UPDATE existing event
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('events')
           .update({
             title: eventForm.title,
@@ -647,14 +586,16 @@ const AdminProjectHub = () => {
             max_participants: eventForm.max_participants,
             status: eventForm.status,
           })
-          .eq('id', editingEvent.id);
+          .eq('id', editingEvent.id)
+          .select('*')
+          .single();
 
         if (error) throw error;
-        console.log('[AdminProjectHub] Event updated:', editingEvent.id);
+        console.log('DB SUCCESS:', data);
         toast.success('Esemény frissítve!');
       } else {
         // INSERT new event
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('events')
           .insert({
             title: eventForm.title,
@@ -667,18 +608,20 @@ const AdminProjectHub = () => {
             project_id: id, // Link to project
             created_by: user?.id,
             village: project?.region_name,
-          });
+          })
+          .select('*')
+          .single();
 
         if (error) throw error;
-        console.log('[AdminProjectHub] Event created for project:', id);
+        console.log('DB SUCCESS:', data);
         toast.success('Esemény létrehozva!');
       }
 
       setIsEventModalOpen(false);
       fetchProjectData();
-    } catch (error) {
-      console.error('[AdminProjectHub] Error saving event:', error);
-      toast.error('Hiba a mentéskor');
+    } catch (error: any) {
+      console.error('DB ERROR:', error);
+      toast.error(error?.message || 'Hiba a mentéskor');
     } finally {
       setSaving(false);
     }
@@ -694,66 +637,56 @@ const AdminProjectHub = () => {
     if (!deleteTarget) return;
 
     try {
-      if (isDemoMode) {
-        toast.success(`${deleteTarget.type === 'program' ? 'Program' : 'Esemény'} törölve!`);
-        setDeleteConfirmOpen(false);
-        setDeleteTarget(null);
-        return;
-      }
-
       if (deleteTarget.type === 'program') {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('expert_contents')
           .delete()
-          .eq('id', deleteTarget.id);
+          .eq('id', deleteTarget.id)
+          .select('*')
+          .maybeSingle();
 
         if (error) throw error;
-        console.log('[AdminProjectHub] Program deleted:', deleteTarget.id);
+        console.log('DB SUCCESS:', data);
       } else {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('events')
           .delete()
-          .eq('id', deleteTarget.id);
+          .eq('id', deleteTarget.id)
+          .select('*')
+          .maybeSingle();
 
         if (error) throw error;
-        console.log('[AdminProjectHub] Event deleted:', deleteTarget.id);
+        console.log('DB SUCCESS:', data);
       }
 
       toast.success(`${deleteTarget.type === 'program' ? 'Program' : 'Esemény'} törölve!`);
       setDeleteConfirmOpen(false);
       setDeleteTarget(null);
       fetchProjectData();
-    } catch (error) {
-      console.error('[AdminProjectHub] Error deleting:', error);
-      toast.error('Hiba a törléskor');
+    } catch (error: any) {
+      console.error('DB ERROR:', error);
+      toast.error(error?.message || 'Hiba a törléskor');
     }
   };
 
   // ===== EXPERT LINKING =====
   const openExpertModal = async () => {
     try {
-      if (isDemoMode) {
-        setAvailableExperts([
-          { id: '3', first_name: 'Szabó', last_name: 'Mari', email: 'mari@example.com' },
-          { id: '4', first_name: 'Kiss', last_name: 'János', email: 'janos@example.com' },
-        ]);
-        setIsExpertModalOpen(true);
-        return;
-      }
-
       // Fetch experts not already in this project
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .select('id, first_name, last_name, email')
         .eq('user_role', 'expert')
         .or(`project_id.is.null,project_id.neq.${id}`);
 
+      if (error) throw error;
+
       setAvailableExperts(data || []);
-      console.log('[AdminProjectHub] Available experts loaded:', data?.length || 0);
+      console.log('DB SUCCESS:', data);
       setIsExpertModalOpen(true);
-    } catch (error) {
-      console.error('[AdminProjectHub] Error loading experts:', error);
-      toast.error('Hiba a szakértők betöltésekor');
+    } catch (error: any) {
+      console.error('DB ERROR:', error);
+      toast.error(error?.message || 'Hiba a szakértők betöltésekor');
     }
   };
 
@@ -762,28 +695,22 @@ const AdminProjectHub = () => {
     setSaving(true);
 
     try {
-      if (isDemoMode) {
-        toast.success('Szakértő hozzáadva a projekthez!');
-        setIsExpertModalOpen(false);
-        setSelectedExpertId('');
-        setSaving(false);
-        return;
-      }
-
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .update({ project_id: id })
-        .eq('id', selectedExpertId);
+        .eq('id', selectedExpertId)
+        .select('*')
+        .single();
 
       if (error) throw error;
-      console.log('[AdminProjectHub] Expert linked to project:', selectedExpertId, '->', id);
+      console.log('DB SUCCESS:', data);
       toast.success('Szakértő hozzáadva a projekthez!');
       setIsExpertModalOpen(false);
       setSelectedExpertId('');
       fetchProjectData();
-    } catch (error) {
-      console.error('[AdminProjectHub] Error linking expert:', error);
-      toast.error('Hiba a szakértő hozzáadásakor');
+    } catch (error: any) {
+      console.error('DB ERROR:', error);
+      toast.error(error?.message || 'Hiba a szakértő hozzáadásakor');
     } finally {
       setSaving(false);
     }
@@ -792,27 +719,20 @@ const AdminProjectHub = () => {
   // ===== SPONSOR LINKING =====
   const openSponsorModal = async () => {
     try {
-      if (isDemoMode) {
-        setAvailableSponsors([
-          { id: '3', organization_name: 'SPAR', email: 'spar@example.com', credit_balance: 100000 },
-          { id: '4', organization_name: 'TESCO', email: 'tesco@example.com', credit_balance: 75000 },
-        ]);
-        setIsSponsorModalOpen(true);
-        return;
-      }
-
       // Fetch sponsors
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .select('id, organization_name, email, credit_balance')
         .eq('user_role', 'sponsor');
 
+      if (error) throw error;
+
       setAvailableSponsors(data || []);
-      console.log('[AdminProjectHub] Available sponsors loaded:', data?.length || 0);
+      console.log('DB SUCCESS:', data);
       setIsSponsorModalOpen(true);
-    } catch (error) {
-      console.error('[AdminProjectHub] Error loading sponsors:', error);
-      toast.error('Hiba a szponzorok betöltésekor');
+    } catch (error: any) {
+      console.error('DB ERROR:', error);
+      toast.error(error?.message || 'Hiba a szponzorok betöltésekor');
     }
   };
 
@@ -821,16 +741,8 @@ const AdminProjectHub = () => {
     setSaving(true);
 
     try {
-      if (isDemoMode) {
-        toast.success('Szponzor csatolva a projekthez!');
-        setIsSponsorModalOpen(false);
-        setSelectedSponsorId('');
-        setSaving(false);
-        return;
-      }
-
       // Create a challenge sponsorship to link sponsor to project
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('challenge_sponsorships')
         .insert({
           sponsor_user_id: selectedSponsorId,
@@ -841,18 +753,20 @@ const AdminProjectHub = () => {
           credit_cost: sponsorCredits,
           status: 'active',
           start_date: new Date().toISOString(),
-        });
+        })
+        .select('*')
+        .single();
 
       if (error) throw error;
-      console.log('[AdminProjectHub] Sponsor linked to project:', selectedSponsorId, '->', id, 'credits:', sponsorCredits);
+      console.log('DB SUCCESS:', data);
       toast.success('Szponzor csatolva a projekthez!');
       setIsSponsorModalOpen(false);
       setSelectedSponsorId('');
       setSponsorCredits(10000);
       fetchProjectData();
-    } catch (error) {
-      console.error('[AdminProjectHub] Error linking sponsor:', error);
-      toast.error('Hiba a szponzor csatolásakor');
+    } catch (error: any) {
+      console.error('DB ERROR:', error);
+      toast.error(error?.message || 'Hiba a szponzor csatolásakor');
     } finally {
       setSaving(false);
     }

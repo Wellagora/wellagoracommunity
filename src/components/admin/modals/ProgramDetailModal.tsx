@@ -113,7 +113,7 @@ export function ProgramDetailModal(props: {
     if (!program) return;
     setSaving(true);
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("expert_contents")
         .update({
           title: program.title,
@@ -124,14 +124,20 @@ export function ProgramDetailModal(props: {
           is_published: program.is_published,
           is_featured: program.is_featured,
         })
-        .eq("id", program.id);
+        .eq("id", program.id)
+        .select("*")
+        .single();
+
       if (error) throw error;
+
+      console.log('DB SUCCESS:', data);
 
       toast.success("Mentve!");
       setIsEditing(false);
       onSaved?.();
       await load();
     } catch (e: any) {
+      console.error('DB ERROR:', e);
       toast.error(e?.message || "Mentés sikertelen");
     } finally {
       setSaving(false);
@@ -142,16 +148,21 @@ export function ProgramDetailModal(props: {
     if (!program) return;
     setSaving(true);
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("expert_contents")
         .update({ is_published: true })
-        .eq("id", program.id);
+        .eq("id", program.id)
+        .select("*")
+        .single();
       if (error) throw error;
+
+      console.log('DB SUCCESS:', data);
 
       toast.success("Program jóváhagyva!");
       onSaved?.();
       await load();
     } catch (e: any) {
+      console.error('DB ERROR:', e);
       toast.error(e?.message || "Jóváhagyás sikertelen");
     } finally {
       setSaving(false);
@@ -162,16 +173,21 @@ export function ProgramDetailModal(props: {
     if (!program) return;
     setSaving(true);
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("expert_contents")
         .update({ is_published: false })
-        .eq("id", program.id);
+        .eq("id", program.id)
+        .select("*")
+        .single();
       if (error) throw error;
+
+      console.log('DB SUCCESS:', data);
 
       toast.success("Program elutasítva!");
       onSaved?.();
       await load();
     } catch (e: any) {
+      console.error('DB ERROR:', e);
       toast.error(e?.message || "Elutasítás sikertelen");
     } finally {
       setSaving(false);
@@ -182,16 +198,21 @@ export function ProgramDetailModal(props: {
     if (!program) return;
     setSaving(true);
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("expert_contents")
         .delete()
-        .eq("id", program.id);
+        .eq("id", program.id)
+        .select("*")
+        .maybeSingle();
       if (error) throw error;
+
+      console.log('DB SUCCESS:', data);
 
       toast.success("Program törölve!");
       onSaved?.();
       onOpenChange(false);
     } catch (e: any) {
+      console.error('DB ERROR:', e);
       toast.error(e?.message || "Törlés sikertelen");
     } finally {
       setSaving(false);
@@ -203,15 +224,20 @@ export function ProgramDetailModal(props: {
     if (!program) return;
     setSaving(true);
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("expert_contents")
         .update({ is_featured: !program.is_featured })
-        .eq("id", program.id);
+        .eq("id", program.id)
+        .select("*")
+        .single();
       if (error) throw error;
+
+      console.log('DB SUCCESS:', data);
 
       toast.success(program.is_featured ? "Kiemelt státusz eltávolítva" : "Kiemeltté téve!");
       await load();
     } catch (e: any) {
+      console.error('DB ERROR:', e);
       toast.error(e?.message || "Művelet sikertelen");
     } finally {
       setSaving(false);

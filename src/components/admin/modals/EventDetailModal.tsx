@@ -102,7 +102,7 @@ export function EventDetailModal(props: {
     setSaving(true);
     try {
       console.log("[EventDetailModal] save", event.id);
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("events")
         .update({
           title: event.title,
@@ -116,14 +116,17 @@ export function EventDetailModal(props: {
           is_all_day: event.is_all_day,
           max_participants: event.max_participants,
         })
-        .eq("id", event.id);
+        .eq("id", event.id)
+        .select("*")
+        .single();
       if (error) throw error;
+      console.log('DB SUCCESS:', data);
       toast.success("Mentve!");
       setIsEditing(false);
       onSaved?.();
       await load();
     } catch (e: any) {
-      console.error("[EventDetailModal] save error", e);
+      console.error('DB ERROR:', e);
       toast.error(e?.message || "Mentés sikertelen");
     } finally {
       setSaving(false);
@@ -134,16 +137,21 @@ export function EventDetailModal(props: {
     if (!event) return;
     setSaving(true);
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("events")
         .delete()
-        .eq("id", event.id);
+        .eq("id", event.id)
+        .select("*")
+        .maybeSingle();
       if (error) throw error;
+
+      console.log('DB SUCCESS:', data);
 
       toast.success("Esemény törölve!");
       onSaved?.();
       onOpenChange(false);
     } catch (e: any) {
+      console.error('DB ERROR:', e);
       toast.error(e?.message || "Törlés sikertelen");
     } finally {
       setSaving(false);
