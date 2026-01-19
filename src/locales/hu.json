@@ -4386,7 +4386,11 @@
     "no_programs_title": "Még nincsenek támogatott programjaid",
     "no_programs_desc": "Fedezd fel a szakértőinket és indítsd el az első kampányodat!",
     "explore_programs": "Programok felfedezése",
-    "unknown_expert": "Ismeretlen szakértő"
+    "unknown_expert": "Ismeretlen szakértő",
+    "no_credits_yet": "Még nincs kredit feltöltve",
+    "conversion_rate": "Konverziós arány",
+    "total_impact": "Összesített hatás",
+    "your_company": "A céged"
   },
   "terms": {
     "version": "Verzió",

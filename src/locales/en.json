@@ -4274,7 +4274,11 @@
     "no_programs_title": "No sponsored programs yet",
     "no_programs_desc": "Explore our experts and start your first campaign!",
     "explore_programs": "Explore Programs",
-    "unknown_expert": "Unknown expert"
+    "unknown_expert": "Unknown expert",
+    "no_credits_yet": "No credits loaded yet",
+    "conversion_rate": "Conversion Rate",
+    "total_impact": "Total Impact",
+    "your_company": "Your Company"
   },
   "terms": {
     "version": "Version",
