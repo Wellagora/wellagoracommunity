@@ -405,8 +405,8 @@
   "auth.email_placeholder": "pelda@email.hu",
   "auth.password": "Jelszó",
   "auth.confirm_password": "Jelszó megerősítése",
-  "auth.expertise": "Szakterületed (röviden)",
-  "auth.expertise_placeholder": "pl. Hagyományos kézművesség, lekvárfőzés...",
+  "auth.expertise": "Szakterület",
+  "auth.expertise_placeholder": "Írd le a szakterületedet és tapasztalatodat...",
 "voucher": {
     "title": "Támogatott hely",
     "subtitle": "Mutasd fel a Szakértőnél",
