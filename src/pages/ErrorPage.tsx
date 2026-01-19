@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Home, RefreshCw, AlertCircle } from "lucide-react";
@@ -11,7 +10,6 @@ interface ErrorPageProps {
 }
 
 const ErrorPage = ({ error, resetError }: ErrorPageProps) => {
-  const navigate = useNavigate();
   const { t } = useLanguage();
 
   const handleRetry = () => {
@@ -20,6 +18,11 @@ const ErrorPage = ({ error, resetError }: ErrorPageProps) => {
     } else {
       window.location.reload();
     }
+  };
+
+  const handleGoHome = () => {
+    // Use window.location instead of useNavigate to avoid Router context dependency
+    window.location.href = "/";
   };
 
   return (
@@ -79,7 +82,7 @@ const ErrorPage = ({ error, resetError }: ErrorPageProps) => {
             {t("common.try_again")}
           </Button>
           <Button
-            onClick={() => navigate("/")}
+            onClick={handleGoHome}
             className="bg-gradient-to-r from-[hsl(var(--cyan))] to-[hsl(var(--primary))] hover:opacity-90 text-white px-6 py-5"
           >
             <Home className="w-4 h-4 mr-2" />
