@@ -197,5 +197,9 @@
   "admin.translating": "Translating...",
   "admin.translation_success": "Translated: {{contents}} contents and {{profiles}} profiles",
   "admin.translation_error": "Translation failed",
-  "admin.tab_settings": "Settings"
+  "admin.tab_settings": "Settings",
+  "roles.member": "Member",
+  "roles.expert": "Expert",
+  "roles.sponsor": "Sponsor",
+  "roles.admin": "Admin"
 }

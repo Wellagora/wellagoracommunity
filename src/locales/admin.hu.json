@@ -228,5 +228,9 @@
   "admin.translating": "Fordítás folyamatban...",
   "admin.translation_success": "Lefordítva: {{contents}} tartalom és {{profiles}} profil",
   "admin.translation_error": "Fordítási hiba",
-  "admin.tab_settings": "Beállítások"
+  "admin.tab_settings": "Beállítások",
+  "roles.member": "Tag",
+  "roles.expert": "Szakértő",
+  "roles.sponsor": "Szponzor",
+  "roles.admin": "Admin"
 }
