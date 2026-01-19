@@ -2,14 +2,18 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import huTranslations from '@/locales/hu.json';
 import enTranslations from '@/locales/en.json';
 import deTranslations from '@/locales/de.json';
+import adminHuTranslations from '@/locales/admin.hu.json';
+import adminEnTranslations from '@/locales/admin.en.json';
+import adminDeTranslations from '@/locales/admin.de.json';
 import { logger } from '@/lib/logger';
 
 export type Language = 'hu' | 'en' | 'de';
 
+// Merge main translations with admin translations
 const translations: Record<Language, any> = {
-  hu: huTranslations,
-  en: enTranslations,
-  de: deTranslations,
+  hu: { ...huTranslations, ...adminHuTranslations },
+  en: { ...enTranslations, ...adminEnTranslations },
+  de: { ...deTranslations, ...adminDeTranslations },
 };
 
 interface LanguageContextType {
