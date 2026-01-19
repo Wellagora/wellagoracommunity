@@ -4042,5 +4042,19 @@
     "cta_button": "Kontaktieren Sie uns",
     "not_found": "Partner nicht gefunden",
     "go_back": "Zurück zu den Partnern"
-  }
+  },
+
+  "expert_studio.title": "Expert:In Studio",
+  "expert_studio.subtitle": "Erstelle, verwalte und inspiriere die Gemeinschaft",
+  "expert_studio.record_video": "Video aufnehmen",
+  "expert_studio.upload_photo": "Foto hochladen",
+  "expert_studio.new_program": "Neues Programm",
+
+  "dashboard.welcome": "Willkommen",
+
+  "common.back": "Zurück",
+  "common.logout": "Abmelden",
+  "common.user": "Benutzer",
+
+  "roles.admin": "Admin"
 }
