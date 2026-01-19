@@ -150,7 +150,7 @@ const Navigation = () => {
   };
 
   // Get dashboard route based on user's role (or viewAsRole for super admins)
-  // ALIGNED with useRoleRedirect.ts: member -> /programs, expert -> /expert-studio, sponsor -> /sponsor-dashboard
+  // member -> /my-agora, expert -> /expert-studio, sponsor -> /sponsor-dashboard
   const getDashboardRoute = useCallback((): string => {
     if (!user) return '/auth';
     
@@ -159,7 +159,7 @@ const Navigation = () => {
       switch (viewAsRole) {
         case 'expert': return '/expert-studio';
         case 'sponsor': return '/sponsor-dashboard';
-        case 'member': return '/programs';
+        case 'member': return '/my-agora';
         default: return '/admin-panel';
       }
     }
@@ -167,12 +167,12 @@ const Navigation = () => {
     // Super admin without viewAsRole goes to admin panel
     if (isSuperAdmin) return '/admin-panel';
     
-    // Regular users based on their actual role - ALIGNED with ROLE_DASHBOARDS
+    // Regular users based on their actual role
     switch (effectiveRole) {
       case 'expert': return '/expert-studio';
       case 'sponsor': return '/sponsor-dashboard';
       case 'member':
-      default: return '/programs';
+      default: return '/my-agora';
     }
   }, [user, isSuperAdmin, viewAsRole, effectiveRole]);
 
@@ -234,29 +234,31 @@ const Navigation = () => {
     // Role-specific navigation
     const roleToUse = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
 
-    // Members see: Piactér, Események, Partnerek, Kedvencek
+    // MEMBER: Piactér, Események, Partnerek, Agórám
     if (roleToUse === 'member') {
       return [
         { path: "/programs", label: t("nav.marketplace"), icon: Store },
         { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
-        { path: "/partners", label: t("nav.partners") || "Partnerek", icon: Building2 },
-        { path: "/kedvencek", label: t("nav.favorites") || "Kedvencek", icon: Heart },
+        { path: "/partners", label: t("nav.partners"), icon: Building2 },
+        { path: "/my-agora", label: t("nav.my_agora"), icon: LayoutDashboard },
       ];
     }
 
-    // Experts ONLY see: Stúdió, Analitika (NO marketplace in nav)
+    // EXPERT: Stúdió, Programjaim, Analitika
     if (roleToUse === 'expert') {
       return [
-        { path: "/expert-studio", label: t("nav.expert_studio") || "Expert Studio", icon: Sparkles, iconColor: "text-amber-500" },
-        { path: "/expert-studio", label: t("nav.analytics") || "Analitika", icon: BarChart3 },
+        { path: "/expert-studio", label: t("nav.expert_studio"), icon: Sparkles, iconColor: "text-amber-500" },
+        { path: "/expert-studio/programs", label: t("nav.my_programs"), icon: Store },
+        { path: "/expert-studio/analytics", label: t("nav.analytics"), icon: BarChart3 },
       ];
     }
 
-    // Sponsors ONLY see: Dashboard, Kampányok, Kredit
+    // SPONSOR: Központ, Kampányaim, Pénzügyeim
     if (roleToUse === 'sponsor') {
       return [
-        { path: "/sponsor-dashboard", label: t("nav.dashboard") || "Dashboard", icon: Building2, iconColor: "text-blue-500" },
-        { path: "/sponsor-dashboard", label: t("nav.my_campaigns") || "Kampányok", icon: Wallet },
+        { path: "/sponsor-dashboard", label: t("nav.sponsor_center"), icon: Building2, iconColor: "text-blue-500" },
+        { path: "/sponsor-dashboard/campaigns", label: t("nav.my_campaigns"), icon: Wallet },
+        { path: "/sponsor-dashboard/finances", label: t("nav.finances"), icon: BarChart3 },
       ];
     }
 

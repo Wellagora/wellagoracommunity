@@ -84,31 +84,31 @@ const MobileBottomNav = () => {
 
   // STRICT Role-specific navigation items - each role sees ONLY their items
   const getNavItems = (): NavItem[] => {
-    // Members see: Piactér, Kedvencek, Értesítések, Profil
+    // MEMBER: Piactér, Agórám, Értesítések, Profil
     if (effectiveRole === 'member') {
       return [
         { path: "/programs", icon: Store, labelKey: "mobile_nav.discover" },
-        { path: "/kedvencek", icon: Heart, labelKey: "mobile_nav.favorites" },
+        { path: "/my-agora", icon: LayoutDashboard, labelKey: "mobile_nav.my_agora" },
         { path: "/ertesitesek", icon: Bell, labelKey: "mobile_nav.notifications" },
         { path: "/profile", icon: User, labelKey: "mobile_nav.profile" },
       ];
     }
 
-    // Experts ONLY see: Stúdió, Analitika, Profil (NO marketplace unless explicit)
+    // EXPERT: Stúdió, Programjaim, Értesítések, Profil
     if (effectiveRole === 'expert') {
       return [
         { path: "/expert-studio", icon: Sparkles, labelKey: "mobile_nav.my_studio", iconColor: "text-amber-500" },
-        { path: "/expert-studio", icon: BarChart3, labelKey: "mobile_nav.analytics" },
+        { path: "/expert-studio/programs", icon: Store, labelKey: "mobile_nav.my_programs" },
         { path: "/ertesitesek", icon: Bell, labelKey: "mobile_nav.notifications" },
         { path: "/profile", icon: User, labelKey: "mobile_nav.profile" },
       ];
     }
 
-    // Sponsors ONLY see: Dashboard, Kampányok, Kredit, Profil
+    // SPONSOR: Központ, Kampányok, Értesítések, Profil
     if (effectiveRole === 'sponsor') {
       return [
         { path: "/sponsor-dashboard", icon: Building2, labelKey: "mobile_nav.dashboard", iconColor: "text-blue-500" },
-        { path: "/sponsor-dashboard", icon: Wallet, labelKey: "mobile_nav.credits" },
+        { path: "/sponsor-dashboard/campaigns", icon: Wallet, labelKey: "mobile_nav.campaigns" },
         { path: "/ertesitesek", icon: Bell, labelKey: "mobile_nav.notifications" },
         { path: "/profile", icon: User, labelKey: "mobile_nav.profile" },
       ];
