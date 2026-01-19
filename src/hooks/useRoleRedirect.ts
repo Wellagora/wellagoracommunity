@@ -30,10 +30,10 @@ export function getEffectiveRole(userRole: string | undefined, isSuperAdmin: boo
  * PHASE 1/5: Using English paths as specified
  */
 export const ROLE_DASHBOARDS: Record<EffectiveRole, string> = {
-  member: "/programs",           // Marketplace/Piactér
-  expert: "/expert-studio",      // Expert Studio
-  sponsor: "/sponsor-dashboard", // Sponsor Dashboard
-  admin: "/admin",               // Admin Panel
+  member: "/my-agora",           // Agórám (Member Dashboard)
+  expert: "/expert-studio",      // Szakértői Stúdió
+  sponsor: "/sponsor-dashboard", // Támogatói Központ
+  admin: "/admin-panel",         // Admin Panel
 };
 
 /**
