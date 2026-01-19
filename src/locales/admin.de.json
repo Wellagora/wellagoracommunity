@@ -228,9 +228,5 @@
   "admin.translating": "Übersetzung läuft...",
   "admin.translation_success": "Übersetzt: {{contents}} Inhalte und {{profiles}} Profile",
   "admin.translation_error": "Übersetzung fehlgeschlagen",
-  "admin.tab_settings": "Einstellungen",
-  "roles.member": "Mitglied",
-  "roles.expert": "Expert:in",
-  "roles.sponsor": "Sponsor:in",
-  "roles.admin": "Admin"
+  "admin.tab_settings": "Einstellungen"
 }
