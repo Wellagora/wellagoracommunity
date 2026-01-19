@@ -11,7 +11,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { HungaryMap } from '@/components/admin/HungaryMap';
+import { WorldMap } from '@/components/admin/WorldMap';
+import { COUNTRIES, getCountryFlag, getCountryByCode } from '@/lib/countries';
+import { COMMON_CURRENCIES, CURRENCY_SYMBOLS } from '@/lib/currency';
 import { 
   FolderOpen,
   Plus,
@@ -28,7 +30,8 @@ import {
   Edit,
   Trash2,
   Map,
-  List
+  List,
+  Globe
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -74,6 +77,12 @@ interface Project {
   is_active: boolean;
   created_at: string;
   user_count?: number;
+  country_code?: string | null;
+  currency_code?: string | null;
+  city?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  timezone?: string | null;
 }
 
 type ProjectStatus = 'active' | 'suspended' | 'archived';
@@ -139,8 +148,23 @@ const AdminProjects = () => {
     slug: '',
     description: '',
     region_name: '',
-    is_active: true
+    is_active: true,
+    country_code: 'HU',
+    currency_code: 'HUF',
+    city: '',
+    timezone: 'Europe/Budapest',
   });
+
+  // Handle country change - auto-set currency and timezone
+  const handleCountryChange = (countryCode: string) => {
+    const country = getCountryByCode(countryCode);
+    setFormData(prev => ({
+      ...prev,
+      country_code: countryCode,
+      currency_code: country?.defaultCurrency || prev.currency_code,
+      timezone: country?.defaultTimezone || prev.timezone,
+    }));
+  };
 
   const fetchProjects = async () => {
     setLoading(true);
@@ -201,7 +225,11 @@ const AdminProjects = () => {
         slug: project.slug,
         description: project.description || '',
         region_name: project.region_name || '',
-        is_active: project.is_active
+        is_active: project.is_active,
+        country_code: project.country_code || 'HU',
+        currency_code: project.currency_code || 'HUF',
+        city: project.city || '',
+        timezone: project.timezone || 'Europe/Budapest',
       });
     } else {
       setEditingProject(null);
@@ -210,7 +238,11 @@ const AdminProjects = () => {
         slug: '',
         description: '',
         region_name: '',
-        is_active: true
+        is_active: true,
+        country_code: 'HU',
+        currency_code: 'HUF',
+        city: '',
+        timezone: 'Europe/Budapest',
       });
     }
     setIsModalOpen(true);
@@ -403,7 +435,7 @@ const AdminProjects = () => {
 
       {/* Map View */}
       {viewMode === 'map' && (
-        <HungaryMap projects={filteredProjects} onProjectClick={handleProjectClick} />
+        <WorldMap projects={filteredProjects} onProjectClick={handleProjectClick} />
       )}
 
       {/* Projects Grid */}
@@ -532,43 +564,99 @@ const AdminProjects = () => {
               }
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">{t('admin.projects.name')} *</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => {
-                  setFormData({
-                    ...formData,
-                    name: e.target.value,
-                    slug: editingProject ? formData.slug : generateSlug(e.target.value)
-                  });
-                }}
-                placeholder="pl. Káli-medence Közösség"
-              />
+          <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">{t('admin.projects.name')} *</Label>
+                <Input
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => {
+                    setFormData({
+                      ...formData,
+                      name: e.target.value,
+                      slug: editingProject ? formData.slug : generateSlug(e.target.value)
+                    });
+                  }}
+                  placeholder="Project name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="slug">{t('admin.projects.slug')} *</Label>
+                <Input
+                  id="slug"
+                  value={formData.slug}
+                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                  placeholder="project-slug"
+                />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="slug">{t('admin.projects.slug')} *</Label>
-              <Input
-                id="slug"
-                value={formData.slug}
-                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                placeholder="pl. kali-medence"
-              />
-              <p className="text-xs text-muted-foreground">
-                URL: wellagora.com/{formData.slug || 'projekt-neve'}
-              </p>
+
+            {/* Country & City */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>
+                  <Globe className="inline h-4 w-4 mr-1" />
+                  Ország
+                </Label>
+                <Select
+                  value={formData.country_code}
+                  onValueChange={handleCountryChange}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Válassz országot" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    {COUNTRIES.map((country) => (
+                      <SelectItem key={country.code} value={country.code}>
+                        {getCountryFlag(country.code)} {country.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="city">Város</Label>
+                <Input
+                  id="city"
+                  value={formData.city}
+                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                  placeholder="Budapest, Berlin, Vienna..."
+                />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="region">{t('admin.projects.region')}</Label>
-              <Input
-                id="region"
-                value={formData.region_name}
-                onChange={(e) => setFormData({ ...formData, region_name: e.target.value })}
-                placeholder="pl. Balaton-felvidék"
-              />
+
+            {/* Currency & Timezone */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Pénznem</Label>
+                <Select
+                  value={formData.currency_code}
+                  onValueChange={(v) => setFormData({ ...formData, currency_code: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {COMMON_CURRENCIES.map((code) => (
+                      <SelectItem key={code} value={code}>
+                        {CURRENCY_SYMBOLS[code]} {code}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="region">{t('admin.projects.region')}</Label>
+                <Input
+                  id="region"
+                  value={formData.region_name}
+                  onChange={(e) => setFormData({ ...formData, region_name: e.target.value })}
+                  placeholder="Régió neve"
+                />
+              </div>
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="description">{t('admin.projects.description')}</Label>
               <Textarea
@@ -576,9 +664,10 @@ const AdminProjects = () => {
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="A projekt rövid leírása..."
-                rows={3}
+                rows={2}
               />
             </div>
+
             <div className="space-y-2">
               <Label>{t('admin.projects.status')}</Label>
               <Select
