@@ -1,7 +1,5 @@
-import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Home, RefreshCw, AlertCircle } from "lucide-react";
-import { motion } from "framer-motion";
 import wellagoraLogo from "@/assets/wellagora-logo.png";
 
 interface ErrorPageProps {
@@ -9,9 +7,12 @@ interface ErrorPageProps {
   resetError?: () => void;
 }
 
+/**
+ * Error page component - MUST NOT use any context hooks (useLanguage, useAuth, etc.)
+ * because it renders inside ErrorBoundary which is above all providers.
+ * Also MUST NOT use framer-motion to avoid cascading failures.
+ */
 const ErrorPage = ({ error, resetError }: ErrorPageProps) => {
-  const { t } = useLanguage();
-
   const handleRetry = () => {
     if (resetError) {
       resetError();
@@ -27,11 +28,7 @@ const ErrorPage = ({ error, resetError }: ErrorPageProps) => {
 
   return (
     <div className="min-h-screen bg-[#0A1930] flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center max-w-md"
-      >
+      <div className="text-center max-w-md animate-fade-in">
         {/* Logo */}
         <div className="mb-8">
           <img
@@ -46,25 +43,25 @@ const ErrorPage = ({ error, resetError }: ErrorPageProps) => {
           <AlertCircle className="w-10 h-10 text-red-400" />
         </div>
 
-        {/* Message */}
-        <h2 className="text-2xl font-bold text-foreground mb-3">
-          {t("error.500_title")}
+        {/* Message - Static text, no translation hooks */}
+        <h2 className="text-2xl font-bold text-white mb-3">
+          Hiba történt
         </h2>
-        <p className="text-muted-foreground mb-8">
-          {t("error.500_description")}
+        <p className="text-white/60 mb-8">
+          Valami hiba történt az oldal betöltése közben. Kérjük, próbáld újra.
         </p>
 
         {/* Error Details (dev mode) */}
-        {error && process.env.NODE_ENV === "development" && (
+        {error && import.meta.env.DEV && (
           <details className="text-left text-sm bg-[#112240] p-4 rounded-lg mb-6 border border-red-500/20">
-            <summary className="cursor-pointer font-medium text-foreground mb-2">
+            <summary className="cursor-pointer font-medium text-white mb-2">
               Technical details
             </summary>
             <p className="text-red-400 break-words font-mono text-xs">
               {error.message}
             </p>
             {error.stack && (
-              <pre className="text-muted-foreground mt-2 text-xs overflow-auto max-h-40">
+              <pre className="text-white/50 mt-2 text-xs overflow-auto max-h-40">
                 {error.stack}
               </pre>
             )}
@@ -76,20 +73,20 @@ const ErrorPage = ({ error, resetError }: ErrorPageProps) => {
           <Button
             onClick={handleRetry}
             variant="outline"
-            className="border-[hsl(var(--cyan))]/30 hover:border-[hsl(var(--cyan))] px-6 py-5"
+            className="border-cyan-500/30 hover:border-cyan-500 text-white px-6 py-5"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
-            {t("common.try_again")}
+            Próbáld újra
           </Button>
           <Button
             onClick={handleGoHome}
-            className="bg-gradient-to-r from-[hsl(var(--cyan))] to-[hsl(var(--primary))] hover:opacity-90 text-white px-6 py-5"
+            className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:opacity-90 text-white px-6 py-5"
           >
             <Home className="w-4 h-4 mr-2" />
-            {t("common.back_home")}
+            Főoldal
           </Button>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };
