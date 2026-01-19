@@ -3947,6 +3947,7 @@ export type Database = {
         Args: { _project_id: string; _user_id: string }
         Returns: boolean
       }
+      is_super_admin: { Args: { check_user_id?: string }; Returns: boolean }
       longtransactionsenabled: { Args: never; Returns: boolean }
       mark_voucher_noshow: { Args: { p_voucher_code: string }; Returns: Json }
       populate_geometry_columns:
