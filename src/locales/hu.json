@@ -1438,6 +1438,7 @@
 "roles.expert": "Szakértő",
 "roles.sponsor": "Támogató",
 "roles.member": "Tag",
+"roles.admin": "Admin",
   "impact_counter.badge": "Élő hatás",
   "impact_counter.title": "Közösségünk számokban",
   "impact_counter.subtitle": "Láthatja elkötelezett közösségi tagjaink együttműködésének kollektív erejét",

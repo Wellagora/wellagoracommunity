@@ -1244,6 +1244,7 @@
 "roles.expert": "Expert",
 "roles.sponsor": "Supporter",
 "roles.member": "Member",
+"roles.admin": "Admin",
   "impact_counter.badge": "Live Impact",
   "impact_counter.title": "Our Community in Numbers",
   "impact_counter.subtitle": "See the collective power of our engaged community members working together",
