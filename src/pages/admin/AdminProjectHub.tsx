@@ -243,6 +243,9 @@ const AdminProjectHub = () => {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<{ type: 'program' | 'event'; id: string; name: string } | null>(null);
 
+  // Debug: force insert error box
+  const [forceTestInsertError, setForceTestInsertError] = useState<string | null>(null);
+
   // Fetch project data
   useEffect(() => {
     if (!id) return;
@@ -445,56 +448,81 @@ const AdminProjectHub = () => {
   };
 
   const handleSaveProgram = async () => {
-    if (!project || !id) return;
+    alert('Button Clicked!');
+
+    if (!project || !id) {
+      console.error('DB ERROR:', { message: 'Missing project/id', project: !!project, id });
+      toast.error('Hiányzó projekt azonosító');
+      return;
+    }
+
+    if (!user?.id) {
+      console.error('DB ERROR:', { message: 'Missing user.id (not authenticated?)', user });
+      toast.error('Nincs bejelentkezett felhasználó (auth)');
+      return;
+    }
+
     setSaving(true);
 
     try {
       if (editingProgram) {
+        const payload = {
+          title: programForm.title,
+          description: programForm.description,
+          category: programForm.category,
+          price_huf: programForm.price_huf,
+          max_capacity: programForm.max_capacity,
+          is_published: programForm.is_published,
+        };
+
+        alert('Data to send: ' + JSON.stringify(payload));
+
         // UPDATE existing program
         const { data, error } = await supabase
           .from('expert_contents')
-          .update({
-            title: programForm.title,
-            description: programForm.description,
-            category: programForm.category,
-            price_huf: programForm.price_huf,
-            max_capacity: programForm.max_capacity,
-            is_published: programForm.is_published,
-          })
+          .update(payload)
           .eq('id', editingProgram.id)
           .select('*')
           .single();
 
         if (error) throw error;
+        if (!data) throw new Error('No row returned from update');
+
         console.log('DB SUCCESS:', data);
         toast.success('Program frissítve!');
       } else {
+        const payload = {
+          title: programForm.title,
+          description: programForm.description,
+          category: programForm.category,
+          price_huf: programForm.price_huf,
+          max_capacity: programForm.max_capacity,
+          is_published: programForm.is_published,
+          region_id: id, // Link to project (expert_contents uses region_id)
+          creator_id: user.id,
+        };
+
+        alert('Data to send: ' + JSON.stringify(payload));
+
         // INSERT new program
         const { data, error } = await supabase
           .from('expert_contents')
-          .insert({
-            title: programForm.title,
-            description: programForm.description,
-            category: programForm.category,
-            price_huf: programForm.price_huf,
-            max_capacity: programForm.max_capacity,
-            is_published: programForm.is_published,
-            region_id: id, // Link to project
-            creator_id: user?.id,
-          })
+          .insert(payload)
           .select('*')
           .single();
 
         if (error) throw error;
+        if (!data) throw new Error('No row returned from insert');
+
         console.log('DB SUCCESS:', data);
         toast.success('Program létrehozva!');
       }
 
       setIsProgramModalOpen(false);
-      fetchProjectData();
+      await fetchProjectData();
     } catch (error: any) {
       console.error('DB ERROR:', error);
-      toast.error(error?.message || 'Hiba a mentéskor');
+      toast.error(error?.message || error?.error_description || JSON.stringify(error) || 'Hiba a mentéskor');
     } finally {
       setSaving(false);
     }
@@ -569,61 +597,134 @@ const AdminProjectHub = () => {
   };
 
   const handleSaveEvent = async () => {
-    if (!project || !id) return;
+    alert('Button Clicked!');
+
+    if (!project || !id) {
+      console.error('DB ERROR:', { message: 'Missing project/id', project: !!project, id });
+      toast.error('Hiányzó projekt azonosító');
+      return;
+    }
+
+    if (!user?.id) {
+      console.error('DB ERROR:', { message: 'Missing user.id (not authenticated?)', user });
+      toast.error('Nincs bejelentkezett felhasználó (auth)');
+      return;
+    }
+
     setSaving(true);
 
     try {
       if (editingEvent) {
+        const payload = {
+          title: eventForm.title,
+          description: eventForm.description,
+          start_date: eventForm.start_date,
+          end_date: eventForm.end_date || null,
+          location_name: eventForm.location_name,
+          max_participants: eventForm.max_participants,
+          status: eventForm.status,
+        };
+
+        alert('Data to send: ' + JSON.stringify(payload));
+
         // UPDATE existing event
         const { data, error } = await supabase
           .from('events')
-          .update({
-            title: eventForm.title,
-            description: eventForm.description,
-            start_date: eventForm.start_date,
-            end_date: eventForm.end_date || null,
-            location_name: eventForm.location_name,
-            max_participants: eventForm.max_participants,
-            status: eventForm.status,
-          })
+          .update(payload)
           .eq('id', editingEvent.id)
           .select('*')
           .single();
 
         if (error) throw error;
+        if (!data) throw new Error('No row returned from update');
+
         console.log('DB SUCCESS:', data);
         toast.success('Esemény frissítve!');
       } else {
+        const payload = {
+          title: eventForm.title,
+          description: eventForm.description,
+          start_date: eventForm.start_date,
+          end_date: eventForm.end_date || null,
+          location_name: eventForm.location_name,
+          max_participants: eventForm.max_participants,
+          status: eventForm.status,
+          project_id: id, // Link to project (events uses project_id)
+          created_by: user.id,
+          village: project?.region_name,
+        };
+
+        alert('Data to send: ' + JSON.stringify(payload));
+
         // INSERT new event
         const { data, error } = await supabase
           .from('events')
-          .insert({
-            title: eventForm.title,
-            description: eventForm.description,
-            start_date: eventForm.start_date,
-            end_date: eventForm.end_date || null,
-            location_name: eventForm.location_name,
-            max_participants: eventForm.max_participants,
-            status: eventForm.status,
-            project_id: id, // Link to project
-            created_by: user?.id,
-            village: project?.region_name,
-          })
+          .insert(payload)
           .select('*')
           .single();
 
         if (error) throw error;
+        if (!data) throw new Error('No row returned from insert');
+
         console.log('DB SUCCESS:', data);
         toast.success('Esemény létrehozva!');
       }
 
       setIsEventModalOpen(false);
-      fetchProjectData();
+      await fetchProjectData();
     } catch (error: any) {
       console.error('DB ERROR:', error);
-      toast.error(error?.message || 'Hiba a mentéskor');
+      toast.error(error?.message || error?.error_description || JSON.stringify(error) || 'Hiba a mentéskor');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleForceTestInsert = async () => {
+    if (!id) return;
+    if (!user?.id) {
+      setForceTestInsertError('Not authenticated: missing user.id');
+      return;
+    }
+
+    setForceTestInsertError(null);
+
+    try {
+      const payload = {
+        title: `FORCE TEST INSERT ${new Date().toISOString()}`,
+        region_id: id,
+        creator_id: user.id,
+      };
+
+      console.log('[FORCE TEST INSERT] payload:', payload);
+
+      const { data, error } = await supabase
+        .from('expert_contents')
+        .insert(payload)
+        .select('*')
+        .single();
+
+      if (error) throw error;
+
+      console.log('DB SUCCESS:', data);
+
+      if (!data?.id) throw new Error('Insert succeeded but no row/id returned');
+
+      toast.success(`Force insert OK: ${data.id}`);
+      await fetchProjectData();
+    } catch (e: any) {
+      const msg = [
+        e?.message,
+        e?.details,
+        e?.hint,
+        e?.code,
+        typeof e === 'string' ? e : null,
+      ]
+        .filter(Boolean)
+        .join(' | ');
+
+      console.error('DB ERROR:', e);
+      setForceTestInsertError(msg || JSON.stringify(e) || 'Unknown error');
     }
   };
 
@@ -814,6 +915,14 @@ const AdminProjectHub = () => {
 
   return (
     <div className="space-y-6">
+      {forceTestInsertError && (
+        <div className="fixed top-0 left-0 right-0 z-50">
+          <div className="bg-destructive text-destructive-foreground px-4 py-3 text-sm font-medium whitespace-pre-wrap">
+            FORCE TEST INSERT ERROR: {forceTestInsertError}
+          </div>
+        </div>
+      )}
+
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <Button
@@ -861,6 +970,9 @@ const AdminProjectHub = () => {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="destructive" size="sm" onClick={handleForceTestInsert}>
+            FORCE TEST INSERT
+          </Button>
           <Button variant="outline" size="sm" onClick={fetchProjectData}>
             <RefreshCw className="h-4 w-4 mr-2" />
             Frissítés
