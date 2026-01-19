@@ -34,6 +34,8 @@ import {
 import { motion } from "framer-motion";
 import PurchaseModal from "@/components/PurchaseModal";
 import MobileStickyPurchaseBar from "@/components/program/MobileStickyPurchaseBar";
+import ProblemSolutionSection from "@/components/program/ProblemSolutionSection";
+import ProgramJsonLd from "@/components/seo/ProgramJsonLd";
 import ReviewSection from "@/components/reviews/ReviewSection";
 import StarRating from "@/components/reviews/StarRating";
 import GracefulPlaceholder from "@/components/GracefulPlaceholder";
@@ -405,8 +407,39 @@ const ProgramDetailPage = () => {
   const localizedTitle = getLocalizedField(program, 'title');
   const localizedDescription = getLocalizedField(program, 'description') || program.description || t('program.no_description');
 
+  // Calculate sponsor contribution for JSON-LD
+  const sponsorContributionForSeo = sponsorship?.sponsor_contribution_huf || (program as any)?.fixed_sponsor_amount || 0;
+  const memberPaymentForSeo = Math.max(0, (program?.price_huf || 0) - sponsorContributionForSeo);
+  
+  // Extract problem_solution from program (cast as extended type since DB was updated)
+  const programWithExtras = program as typeof program & { 
+    problem_solution?: { problem?: string; solution?: string } | null 
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      {/* JSON-LD Schema for AI/GEO optimization */}
+      {program && (
+        <ProgramJsonLd 
+          program={{
+            id: program.id,
+            title: localizedTitle,
+            description: localizedDescription,
+            image_url: program.image_url,
+            price_huf: program.price_huf,
+            category: program.category,
+            content_type: program.content_type,
+            is_sponsored: program.is_sponsored,
+            sponsor_name: program.sponsor_name,
+            problem_solution: programWithExtras.problem_solution || null
+          }}
+          creator={creator}
+          sponsorContribution={sponsorContributionForSeo}
+          memberPayment={memberPaymentForSeo}
+          rating={avgRating || undefined}
+          reviewCount={reviewCount || undefined}
+        />
+      )}
       <div className="container mx-auto px-4 py-8">
         {/* Back Button */}
         <Button 
@@ -506,6 +539,14 @@ const ProgramDetailPage = () => {
                     </div>
                   </div>
                 </Link>
+              )}
+
+              {/* Problem-Solution Section for AI/GEO optimization */}
+              {programWithExtras.problem_solution && (
+                <ProblemSolutionSection 
+                  problem={programWithExtras.problem_solution?.problem}
+                  solution={programWithExtras.problem_solution?.solution}
+                />
               )}
 
               {/* Description */}
