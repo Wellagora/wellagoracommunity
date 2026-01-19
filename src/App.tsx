@@ -60,6 +60,8 @@ const AdminEvents = lazy(() => import("@/pages/admin/AdminEvents"));
 const AdminSettings = lazy(() => import("@/pages/admin/AdminSettings"));
 const AdminFeedback = lazy(() => import("@/pages/admin/AdminFeedback"));
 const AdminAnalytics = lazy(() => import("@/pages/admin/AdminAnalytics"));
+const AdminFinancials = lazy(() => import("@/pages/admin/AdminFinancials"));
+const AdminAudit = lazy(() => import("@/pages/admin/AdminAudit"));
 const SponsorLandingPage = lazy(() => import("@/pages/SponsorLandingPage"));
 const SponsorOnboardingPage = lazy(() => import("@/pages/SponsorOnboardingPage"));
 const SponsorPublicProfilePage = lazy(() => import("@/pages/SponsorPublicProfilePage"));
@@ -375,6 +377,8 @@ function App() {
                           <Route path="events" element={<AdminEvents />} />
                           <Route path="feedback" element={<AdminFeedback />} />
                           <Route path="analytics" element={<AdminAnalytics />} />
+                          <Route path="financials" element={<AdminFinancials />} />
+                          <Route path="audit" element={<AdminAudit />} />
                           <Route path="settings" element={<AdminSettings />} />
                         </Route>
                       </Routes>

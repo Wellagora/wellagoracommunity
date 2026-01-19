@@ -23,7 +23,9 @@ import {
   UserCheck,
   Building2,
   CalendarDays,
-  FolderKanban
+  FolderKanban,
+  Wallet,
+  History
 } from 'lucide-react';
 
 const AdminLayout = () => {
@@ -100,6 +102,11 @@ const AdminLayout = () => {
   // Secondary navigation items
   const secondaryNavItems = [
     { 
+      path: '/admin-panel/financials', 
+      icon: Wallet, 
+      label: 'Pénzügyek'
+    },
+    { 
       path: '/admin-panel/users', 
       icon: Users, 
       label: t('admin.nav.users') 
@@ -113,6 +120,11 @@ const AdminLayout = () => {
       path: '/admin-panel/analytics', 
       icon: BarChart3, 
       label: t('admin.nav.analytics') 
+    },
+    { 
+      path: '/admin-panel/audit', 
+      icon: History, 
+      label: 'Rendszernapló'
     },
     { 
       path: '/admin-panel/settings', 
