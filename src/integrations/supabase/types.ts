@@ -1233,6 +1233,30 @@ export type Database = {
           },
         ]
       }
+      exchange_rates: {
+        Row: {
+          from_currency: string
+          id: string
+          rate: number
+          to_currency: string
+          updated_at: string
+        }
+        Insert: {
+          from_currency: string
+          id?: string
+          rate: number
+          to_currency: string
+          updated_at?: string
+        }
+        Update: {
+          from_currency?: string
+          id?: string
+          rate?: number
+          to_currency?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       expert_contents: {
         Row: {
           access_level: string | null
@@ -2445,45 +2469,63 @@ export type Database = {
       projects: {
         Row: {
           branding: Json | null
+          city: string | null
+          country_code: string | null
           created_at: string | null
           created_by: string | null
+          currency_code: string | null
           description: string | null
           id: string
           is_active: boolean | null
+          latitude: number | null
+          longitude: number | null
           name: string
           region_name: string
           settings: Json | null
           slug: string
+          timezone: string | null
           translations: Json | null
           updated_at: string | null
           villages: string[] | null
         }
         Insert: {
           branding?: Json | null
+          city?: string | null
+          country_code?: string | null
           created_at?: string | null
           created_by?: string | null
+          currency_code?: string | null
           description?: string | null
           id?: string
           is_active?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
           name: string
           region_name: string
           settings?: Json | null
           slug: string
+          timezone?: string | null
           translations?: Json | null
           updated_at?: string | null
           villages?: string[] | null
         }
         Update: {
           branding?: Json | null
+          city?: string | null
+          country_code?: string | null
           created_at?: string | null
           created_by?: string | null
+          currency_code?: string | null
           description?: string | null
           id?: string
           is_active?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
           name?: string
           region_name?: string
           settings?: Json | null
           slug?: string
+          timezone?: string | null
           translations?: Json | null
           updated_at?: string | null
           villages?: string[] | null
