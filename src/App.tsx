@@ -86,6 +86,7 @@ const MyCoursesPage = lazy(() => import("@/pages/MyCoursesPage"));
 const PartnersPage = lazy(() => import("@/pages/PartnersPage"));
 const PartnerProfilePage = lazy(() => import("@/pages/PartnerProfilePage"));
 const FavoritesPage = lazy(() => import("@/pages/FavoritesPage"));
+const MyAgoraPage = lazy(() => import("@/pages/MyAgoraPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function App() {
@@ -312,6 +313,16 @@ function App() {
                             element={
                               <ProtectedRoute>
                                 <MyHubPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          
+                          {/* My Agora - Member dashboard */}
+                          <Route
+                            path="/my-agora"
+                            element={
+                              <ProtectedRoute>
+                                <MyAgoraPage />
                               </ProtectedRoute>
                             }
                           />
