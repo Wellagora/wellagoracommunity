@@ -142,8 +142,28 @@ const MobileBottomNav = () => {
           const Icon = item.icon;
           const active = isActive(item.path);
           const isNotifications = item.path === "/ertesitesek";
-          // Use unique key combining path and labelKey to avoid duplicate key warning
           const uniqueKey = `${item.path}-${item.labelKey}-${index}`;
+          
+          // Role-specific glow colors
+          const getGlowColor = () => {
+            if (!active) return "";
+            switch (effectiveRole) {
+              case 'member': return "text-emerald-600";
+              case 'expert': return "text-amber-500";
+              case 'sponsor': return "text-blue-500";
+              default: return "text-black";
+            }
+          };
+          
+          const getGlowShadow = () => {
+            if (!active) return "";
+            switch (effectiveRole) {
+              case 'member': return "drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]";
+              case 'expert': return "drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]";
+              case 'sponsor': return "drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]";
+              default: return "";
+            }
+          };
 
           return (
             <Link
@@ -152,13 +172,14 @@ const MobileBottomNav = () => {
               className="flex flex-col items-center justify-center flex-1 h-full min-w-[56px] min-h-[44px] relative group"
             >
               <motion.div
-                className={`flex flex-col items-center justify-center transition-colors duration-200 ${
-                  active ? "text-black" : "text-black/40"
+                className={`flex flex-col items-center justify-center transition-all duration-200 ${
+                  active ? getGlowColor() : "text-black/40"
                 }`}
-                whileTap={{ scale: 0.9 }}
+                whileTap={{ scale: 0.92 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
               >
-                <div className="relative">
-                  <Icon className={`w-5 h-5 ${active ? "stroke-[2.5]" : "stroke-[1.5]"} ${item.iconColor && active ? item.iconColor : ""}`} />
+                <div className={`relative transition-all duration-300 ${active ? getGlowShadow() : ""}`}>
+                  <Icon className={`w-5 h-5 ${active ? "stroke-[2.5]" : "stroke-[1.5]"}`} />
                   {isNotifications && unreadCount > 0 && (
                     <Badge
                       className="absolute -top-1 -right-1 h-4 min-w-[16px] flex items-center justify-center p-0 text-[10px] bg-red-500 text-white border-0"
@@ -171,11 +192,15 @@ const MobileBottomNav = () => {
                   {t(item.labelKey)}
                 </span>
                 
-                {/* Active indicator dot */}
+                {/* Active indicator - role-colored dot */}
                 {active && (
                   <motion.div
                     layoutId="bottomNavIndicator"
-                    className="absolute bottom-1 w-1 h-1 rounded-full bg-black"
+                    className={`absolute bottom-1 w-1.5 h-1.5 rounded-full ${
+                      effectiveRole === 'member' ? 'bg-emerald-500' :
+                      effectiveRole === 'expert' ? 'bg-amber-500' :
+                      effectiveRole === 'sponsor' ? 'bg-blue-500' : 'bg-black'
+                    }`}
                     initial={false}
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />

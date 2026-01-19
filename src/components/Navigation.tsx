@@ -251,10 +251,14 @@ const Navigation = () => {
     ];
   }, [user, profile, t, isSuperAdmin, viewAsRole, effectiveRole]);
 
-  // Role-based accent color for header
+  // Role-based accent color for header - Admin gets Indigo
   const getRoleAccentColor = (): string => {
     if (!user || !profile) return "border-slate-200";
-    const roleToUse = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
+    
+    // Super Admin always gets Indigo regardless of viewAsRole
+    if (isSuperAdmin) return "border-indigo-600";
+    
+    const roleToUse = effectiveRole;
     switch (roleToUse) {
       case 'member': return "border-emerald-500";
       case 'expert': return "border-amber-500";
@@ -359,13 +363,21 @@ const Navigation = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="flex items-center gap-2 h-auto p-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={profile?.avatar_url || undefined} />
-                        <AvatarFallback className="bg-primary text-primary-foreground">
-                          {profile?.first_name?.[0]}
-                          {profile?.last_name?.[0]}
-                        </AvatarFallback>
-                      </Avatar>
+                      <div className="relative">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={profile?.avatar_url || undefined} />
+                          <AvatarFallback className="bg-primary text-primary-foreground">
+                            {profile?.first_name?.[0]}
+                            {profile?.last_name?.[0]}
+                          </AvatarFallback>
+                        </Avatar>
+                        {/* Admin Badge - Elegant indicator */}
+                        {isSuperAdmin && (
+                          <span className="absolute -bottom-1 -right-1 px-1 py-0.5 text-[8px] font-bold bg-indigo-600 text-white rounded-sm leading-none">
+                            ADMIN
+                          </span>
+                        )}
+                      </div>
                       <span className="text-sm font-medium hidden xl:inline">{profile?.first_name}</span>
                       <ChevronDown className="h-4 w-4 text-foreground/70" />
                     </Button>

@@ -14,6 +14,14 @@
   "mobile_nav.my_center": "Mein Hub",
   "mobile_nav.earnings": "Einnahmen",
   "mobile_nav.impact_report": "Impact",
+  "favorites.title": "Meine Favoriten",
+  "favorites.subtitle": "Deine gespeicherten Programme",
+  "favorites.empty_title": "Noch keine Favoriten",
+  "favorites.empty_description": "Entdecke den Marktplatz und speichere interessante Programme! Sie werden hier erscheinen.",
+  "favorites.browse_programs": "Weiter stöbern",
+  "favorites.removed": "Aus Favoriten entfernt",
+  "favorites.remove": "Entfernen",
+  "favorites.added": "Zu Favoriten hinzugefügt ❤️",
   "landing": {
     "cta_join": "Beitreten"
   },
