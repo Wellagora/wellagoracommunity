@@ -248,57 +248,57 @@ const OverviewTab = ({ onNavigate }: { onNavigate: (tab: string) => void }) => {
 
       {/* Hero Stats Row */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="bg-card/30 backdrop-blur border-border/50 hover:bg-card/40 transition-all">
+        <Card className="bg-white/80 backdrop-blur border-slate-200 hover:shadow-lg transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-slate-600">
               Összes Felhasználó
             </CardTitle>
-            <Users className="h-5 w-5 text-green-500" />
+            <Users className="h-5 w-5 text-emerald-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">
+            <div className="text-3xl font-bold text-slate-900">
               {(stats?.total_users || 0).toLocaleString()}
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-card/30 backdrop-blur border-border/50 hover:bg-card/40 transition-all">
+        <Card className="bg-white/80 backdrop-blur border-slate-200 hover:shadow-lg transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-slate-600">
               Kreátorok
             </CardTitle>
-            <Sparkles className="h-5 w-5 text-[#FFD700]" />
+            <Sparkles className="h-5 w-5 text-amber-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">
+            <div className="text-3xl font-bold text-slate-900">
               {(stats?.total_creators || 0).toLocaleString()}
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-card/30 backdrop-blur border-border/50 hover:bg-card/40 transition-all">
+        <Card className="bg-white/80 backdrop-blur border-slate-200 hover:shadow-lg transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-slate-600">
               Aktív Programok
             </CardTitle>
-            <Target className="h-5 w-5 text-purple-500" />
+            <Target className="h-5 w-5 text-indigo-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">
+            <div className="text-3xl font-bold text-slate-900">
               {(stats?.total_programs || 0).toLocaleString()}
             </div>
           </CardContent>
         </Card>
 
-        <Card className={`bg-card/30 backdrop-blur border-border/50 hover:bg-card/40 transition-all ${(stats?.pending_content || 0) > 0 ? 'border-orange-500/50' : ''}`}>
+        <Card className={`bg-white/80 backdrop-blur border-slate-200 hover:shadow-lg transition-all ${(stats?.pending_content || 0) > 0 ? 'border-orange-400 ring-2 ring-orange-200' : ''}`}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-slate-600">
               Függő Tartalmak
             </CardTitle>
-            <Clock className={`h-5 w-5 ${(stats?.pending_content || 0) > 0 ? 'text-orange-500 animate-pulse' : 'text-muted-foreground'}`} />
+            <Clock className={`h-5 w-5 ${(stats?.pending_content || 0) > 0 ? 'text-orange-500 animate-pulse' : 'text-slate-400'}`} />
           </CardHeader>
           <CardContent>
-            <div className={`text-3xl font-bold ${(stats?.pending_content || 0) > 0 ? 'text-orange-500' : ''}`}>
+            <div className={`text-3xl font-bold ${(stats?.pending_content || 0) > 0 ? 'text-orange-600' : 'text-slate-900'}`}>
               {(stats?.pending_content || 0).toLocaleString()}
             </div>
           </CardContent>
@@ -307,36 +307,36 @@ const OverviewTab = ({ onNavigate }: { onNavigate: (tab: string) => void }) => {
 
       {/* Quick Action Cards Row */}
       <div className="grid gap-6 md:grid-cols-3">
-        <Card className={`bg-[#112240] border-border/50 hover:border-[#FFD700] transition-all cursor-pointer ${unverifiedCreators > 0 ? 'border-[#FFD700]/50' : ''}`}
+        <Card className={`bg-white border-slate-200 hover:border-amber-400 hover:shadow-lg transition-all cursor-pointer ${unverifiedCreators > 0 ? 'border-amber-400 ring-2 ring-amber-100' : ''}`}
           onClick={() => onNavigate('creators')}
         >
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-[#FFD700]" />
+            <CardTitle className="flex items-center gap-2 text-slate-800">
+              <Sparkles className="h-5 w-5 text-amber-500" />
               Kreátor Jóváhagyások
               {unverifiedCreators > 0 && (
-                <Badge className="ml-auto bg-[#FFD700] text-black">
+                <Badge className="ml-auto bg-amber-500 text-white">
                   {unverifiedCreators}
                 </Badge>
               )}
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-slate-600">
               Hitelesítésre váró szakértők
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button variant="ghost" className="w-full justify-between hover:bg-[#FFD700]/10">
+            <Button variant="ghost" className="w-full justify-between text-slate-700 hover:bg-amber-50 hover:text-amber-700">
               Megtekintés
               <ChevronRight className="h-4 w-4" />
             </Button>
           </CardContent>
         </Card>
 
-        <Card className={`bg-[#112240] border-border/50 hover:border-orange-500 transition-all cursor-pointer ${(stats?.pending_content || 0) > 0 ? 'border-orange-500/50' : ''}`}
+        <Card className={`bg-white border-slate-200 hover:border-orange-400 hover:shadow-lg transition-all cursor-pointer ${(stats?.pending_content || 0) > 0 ? 'border-orange-400 ring-2 ring-orange-100' : ''}`}
           onClick={() => onNavigate('content-moderation')}
         >
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-slate-800">
               <FileCheck className="h-5 w-5 text-orange-500" />
               Tartalom Moderáció
               {(stats?.pending_content || 0) > 0 && (
@@ -345,32 +345,32 @@ const OverviewTab = ({ onNavigate }: { onNavigate: (tab: string) => void }) => {
                 </Badge>
               )}
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-slate-600">
               Jóváhagyásra váró tartalmak
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button variant="ghost" className="w-full justify-between hover:bg-orange-500/10">
+            <Button variant="ghost" className="w-full justify-between text-slate-700 hover:bg-orange-50 hover:text-orange-700">
               Moderálás
               <ChevronRight className="h-4 w-4" />
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="bg-[#112240] border-border/50 hover:border-[#FFD700] transition-all cursor-pointer"
+        <Card className="bg-white border-slate-200 hover:border-indigo-400 hover:shadow-lg transition-all cursor-pointer"
           onClick={() => onNavigate('financial')}
         >
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-[#FFD700]" />
+            <CardTitle className="flex items-center gap-2 text-slate-800">
+              <TrendingUp className="h-5 w-5 text-indigo-500" />
               Platform Áttekintés
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-slate-600">
               {stats?.total_programs || 0} program, {stats?.total_events || 0} esemény
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button variant="ghost" className="w-full justify-between hover:bg-[#FFD700]/10">
+            <Button variant="ghost" className="w-full justify-between text-slate-700 hover:bg-indigo-50 hover:text-indigo-700">
               Részletek
               <ChevronRight className="h-4 w-4" />
             </Button>
@@ -378,15 +378,15 @@ const OverviewTab = ({ onNavigate }: { onNavigate: (tab: string) => void }) => {
         </Card>
       </div>
 
-      <Card className="border-dashed bg-card/30 backdrop-blur border-border/50">
+      <Card className="border-dashed bg-white/80 backdrop-blur border-slate-300">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Activity className="h-5 w-5" />
+          <CardTitle className="flex items-center gap-2 text-slate-800">
+            <Activity className="h-5 w-5 text-slate-600" />
             További Funkciók
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">
+          <p className="text-slate-600">
             További admin funkciók (Projektek, Szervezetek, Felhasználók, Előfizetések, stb.) a bal oldali menüből elérhetők.
           </p>
         </CardContent>
@@ -478,7 +478,7 @@ const SuperAdminPage = () => {
         <div className="flex flex-1 w-full">
           <SuperAdminSidebar activeTab={activeTab} onTabChange={handleTabChange} pendingCount={sidebarStats?.pending_content} />
           
-          <main className="flex-1 overflow-auto bg-background">
+          <main className="flex-1 overflow-auto bg-slate-50">
             <div className="container mx-auto p-6 lg:p-8">
               <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-2">

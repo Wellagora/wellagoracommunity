@@ -48,6 +48,7 @@ const TestDataManager = () => {
   const { language } = useLanguage();
   const [seeding, setSeeding] = useState(false);
   const [wiping, setWiping] = useState(false);
+  const [wipingAdmin, setWipingAdmin] = useState(false);
   const [lastResult, setLastResult] = useState<SeedResult | null>(null);
 
   const handleSeedData = async () => {
@@ -129,8 +130,47 @@ const TestDataManager = () => {
     }
   };
 
+  // Wipe only TEST_ADMIN_ prefixed data (from Super Admin migrations)
+  const handleWipeAdminData = async () => {
+    setWipingAdmin(true);
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const response = await supabase.functions.invoke('seed-test-data', {
+        body: { action: 'wipe_admin' },
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`
+        }
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message || 'Failed to wipe admin test data');
+      }
+
+      if (response.data?.success) {
+        toast.success(
+          language === 'hu' 
+            ? 'Admin teszt adatok sikeresen törölve!' 
+            : 'Admin test data wiped successfully!'
+        );
+      } else {
+        throw new Error(response.data?.error || 'Unknown error');
+      }
+    } catch (error) {
+      console.error('Wipe admin error:', error);
+      toast.error(
+        language === 'hu' 
+          ? 'Hiba történt az admin teszt adatok törlése során' 
+          : 'Error wiping admin test data'
+      );
+    } finally {
+      setWipingAdmin(false);
+    }
+  };
+
   return (
-    <Card className="border-dashed border-2 border-amber-500/50 bg-amber-50/30">
+    <Card className="border-dashed border-2 border-amber-500/50 bg-amber-50/30 dark:bg-amber-950/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-amber-700">
           <Beaker className="w-5 h-5" />
@@ -207,7 +247,7 @@ const TestDataManager = () => {
         <div className="flex flex-wrap gap-3 pt-2">
           <Button
             onClick={handleSeedData}
-            disabled={seeding || wiping}
+            disabled={seeding || wiping || wipingAdmin}
             className="bg-emerald-600 hover:bg-emerald-700 text-white"
           >
             {seeding ? (
@@ -223,11 +263,58 @@ const TestDataManager = () => {
             )}
           </Button>
 
+          {/* Wipe TEST_ADMIN_ data (from Super Admin migrations) */}
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="outline"
+                disabled={seeding || wiping || wipingAdmin}
+                className="border-indigo-500 text-indigo-600 hover:bg-indigo-50"
+              >
+                {wipingAdmin ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    {language === 'hu' ? 'Törlés...' : 'Wiping...'}
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    {language === 'hu' ? 'ADMIN TESZT TÖRLÉSE' : 'WIPE ADMIN TEST DATA'}
+                  </>
+                )}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle className="flex items-center gap-2 text-indigo-600">
+                  <AlertTriangle className="w-5 h-5" />
+                  {language === 'hu' ? 'Admin teszt adatok törlése' : 'Wipe Admin Test Data'}
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  {language === 'hu' 
+                    ? 'Ez a művelet törli az összes TEST_ADMIN_ prefixszel jelölt adatot (Öko Kert, Béke Biztosító, stb.). A valódi tartalom megmarad.'
+                    : 'This will delete all data marked with TEST_ADMIN_ prefix (Öko Kert, Béke Biztosító, etc.). Real content will remain.'}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>
+                  {language === 'hu' ? 'Mégse' : 'Cancel'}
+                </AlertDialogCancel>
+                <AlertDialogAction 
+                  onClick={handleWipeAdminData}
+                  className="bg-indigo-600 hover:bg-indigo-700"
+                >
+                  {language === 'hu' ? 'Igen, törlés' : 'Yes, wipe data'}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button
                 variant="destructive"
-                disabled={seeding || wiping}
+                disabled={seeding || wiping || wipingAdmin}
                 className="bg-red-600 hover:bg-red-700"
               >
                 {wiping ? (
