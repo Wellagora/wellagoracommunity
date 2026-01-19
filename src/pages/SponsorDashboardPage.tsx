@@ -289,7 +289,7 @@ const SponsorDashboardPage = () => {
         });
 
         // ============================================
-        // 4. CHART DATA (from transaction history if available)
+        // 4. CHART DATA (REAL DATA ONLY - NO ESTIMATES)
         // ============================================
         const chartPoints: ChartDataPoint[] = [];
         const months = ['Jan', 'Feb', 'Már', 'Ápr', 'Máj', 'Jún', 'Júl', 'Aug', 'Szept', 'Okt', 'Nov', 'Dec'];
@@ -306,45 +306,65 @@ const SponsorDashboardPage = () => {
           .gte('created_at', sixMonthsAgo.toISOString())
           .order('created_at', { ascending: true });
         
-        // Group transactions by month
-        const monthlyData: Record<number, { reached: number; credits: number }> = {};
+        // Group transactions by month - REAL DATA ONLY
+        const monthlyCreditsUsed: Record<number, number> = {};
+        const monthlyVouchersClaimed: Record<number, number> = {};
         
+        // Initialize all months to 0
         for (let i = 5; i >= 0; i--) {
           const monthIndex = (currentMonth - i + 12) % 12;
-          monthlyData[monthIndex] = { reached: 0, credits: 0 };
+          monthlyCreditsUsed[monthIndex] = 0;
+          monthlyVouchersClaimed[monthIndex] = 0;
         }
         
-        // Calculate cumulative credits used per month
-        let cumulativeCredits = 0;
-        let cumulativeReached = 0;
-        
+        // Sum credits used per month from REAL transactions
         if (monthlyTransactions && monthlyTransactions.length > 0) {
           monthlyTransactions.forEach(tx => {
             const txDate = new Date(tx.created_at);
             const txMonth = txDate.getMonth();
-            if (['deduction', 'sponsorship', 'usage'].includes(tx.transaction_type)) {
-              cumulativeCredits += Math.abs(tx.credits || 0);
-            }
-            if (monthlyData[txMonth]) {
-              monthlyData[txMonth].credits = cumulativeCredits;
+            if (['deduction', 'sponsorship', 'usage', 'spend'].includes(tx.transaction_type)) {
+              if (monthlyCreditsUsed[txMonth] !== undefined) {
+                monthlyCreditsUsed[txMonth] += Math.abs(tx.credits || 0);
+              }
             }
           });
         }
         
-        // Build chart data
+        // Get REAL monthly voucher claims for this sponsor's content
+        if (sponsorContentIds.length > 0) {
+          const { data: monthlyVouchers } = await supabase
+            .from('vouchers')
+            .select('created_at')
+            .in('content_id', sponsorContentIds)
+            .eq('status', 'redeemed')
+            .gte('created_at', sixMonthsAgo.toISOString());
+          
+          if (monthlyVouchers) {
+            monthlyVouchers.forEach(v => {
+              const vDate = new Date(v.created_at);
+              const vMonth = vDate.getMonth();
+              if (monthlyVouchersClaimed[vMonth] !== undefined) {
+                monthlyVouchersClaimed[vMonth] += 1;
+              }
+            });
+          }
+        }
+        
+        // Build chart data with CUMULATIVE values (0 if no data)
+        let cumulativeReached = 0;
+        let cumulativeCredits = 0;
+        
         for (let i = 5; i >= 0; i--) {
           const monthIndex = (currentMonth - i + 12) % 12;
-          const monthData = monthlyData[monthIndex] || { reached: 0, credits: 0 };
           
-          // Estimate reached based on progression (if no real data)
-          const estimatedReached = peopleReached > 0 
-            ? Math.round(peopleReached * ((6 - i) / 6))
-            : 0;
+          // Add this month's values to cumulative totals
+          cumulativeReached += monthlyVouchersClaimed[monthIndex] || 0;
+          cumulativeCredits += monthlyCreditsUsed[monthIndex] || 0;
           
           chartPoints.push({
             month: months[monthIndex],
-            reached: monthData.reached || estimatedReached,
-            credits: monthData.credits || (finalUsedCredits > 0 ? Math.round(finalUsedCredits * ((6 - i) / 6)) : 0)
+            reached: cumulativeReached,
+            credits: cumulativeCredits
           });
         }
         
