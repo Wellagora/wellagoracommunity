@@ -129,7 +129,7 @@ const PARTNERS_DATA: Record<string, {
 
 const PartnerProfilePage = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [isFavorite, setIsFavorite] = useState(false);
 
   // Use static data for now, but also fetch sponsored programs from DB
@@ -145,73 +145,100 @@ const PartnerProfilePage = () => {
       const partnerName = PARTNERS_DATA[slug]?.name;
       if (!partnerName) return [];
       
-      // Find content sponsorships where expert_contents.sponsor_name matches
-      const { data: sponsorships } = await supabase
-        .from('content_sponsorships')
-        .select(`
-          id,
-          content_id,
-          max_sponsored_seats,
-          sponsored_seats_used,
-          sponsor_contribution_huf,
-          expert_contents!inner (
+      try {
+        // Find content sponsorships where expert_contents.sponsor_name matches
+        const { data: sponsorships, error } = await supabase
+          .from('content_sponsorships')
+          .select(`
             id,
-            title,
-            description,
-            image_url,
-            price_huf,
-            sponsor_name,
-            category,
-            is_published,
-            creator:profiles!expert_contents_creator_id_fkey (
-              first_name,
-              last_name
+            content_id,
+            max_sponsored_seats,
+            sponsored_seats_used,
+            sponsor_contribution_huf,
+            expert_contents!inner (
+              id,
+              title,
+              description,
+              image_url,
+              price_huf,
+              sponsor_name,
+              category,
+              is_published,
+              creator:profiles!expert_contents_creator_id_fkey (
+                first_name,
+                last_name
+              )
             )
-          )
-        `)
-        .eq('is_active', true);
+          `)
+          .eq('is_active', true);
 
-      // Filter to match sponsor name
-      const matchingPrograms = sponsorships?.filter(s => {
-        const content = s.expert_contents as any;
-        return content?.sponsor_name?.toLowerCase() === partnerName.toLowerCase() && content?.is_published;
-      }) || [];
+        if (error) {
+          console.error('Error fetching sponsorships:', error);
+          return [];
+        }
 
-      return matchingPrograms.map(s => {
-        const content = s.expert_contents as any;
-        const creator = content?.creator;
-        return {
-          id: content?.id,
-          title: content?.title,
-          description: content?.description,
-          image_url: content?.image_url,
-          price_huf: content?.price_huf,
-          category: content?.category,
-          expert_name: creator ? `${creator.first_name} ${creator.last_name}` : 'Szakértő',
-          max_seats: s.max_sponsored_seats,
-          used_seats: s.sponsored_seats_used,
-          contribution: s.sponsor_contribution_huf
-        };
-      });
+        // Filter to match sponsor name - safely handle null/undefined
+        const matchingPrograms = (sponsorships || []).filter(s => {
+          const content = s.expert_contents as any;
+          return content?.sponsor_name?.toLowerCase() === partnerName.toLowerCase() && content?.is_published;
+        });
+
+        return matchingPrograms.map(s => {
+          const content = s.expert_contents as any;
+          const creator = content?.creator;
+          return {
+            id: content?.id || '',
+            title: content?.title || '',
+            description: content?.description || '',
+            image_url: content?.image_url || null,
+            price_huf: content?.price_huf || 0,
+            category: content?.category || '',
+            expert_name: creator ? `${creator.first_name || ''} ${creator.last_name || ''}`.trim() : 'Szakértő',
+            max_seats: s.max_sponsored_seats || 0,
+            used_seats: s.sponsored_seats_used || 0,
+            contribution: s.sponsor_contribution_huf || 0
+          };
+        });
+      } catch (error) {
+        console.error('Error in sponsorship query:', error);
+        return [];
+      }
     },
     enabled: !!slug
   });
 
-  // Calculate impact stats
+  // Calculate impact stats - safely handle empty arrays
   const impactStats = {
-    programsSupported: sponsoredPrograms?.length || 0,
-    membersReached: sponsoredPrograms?.reduce((sum, p) => sum + (p.used_seats || 0), 0) || 0
+    programsSupported: sponsoredPrograms?.length ?? 0,
+    membersReached: sponsoredPrograms?.reduce((sum, p) => sum + (p?.used_seats ?? 0), 0) ?? 0
   };
 
   const handleFavoriteClick = () => {
     setIsFavorite(!isFavorite);
     toast({
-      title: isFavorite ? "Eltávolítva a kedvencekből" : "Hozzáadva a kedvencekhez ❤️",
+      title: isFavorite 
+        ? (t('partner.removed_favorite') || "Eltávolítva a kedvencekből") 
+        : (t('partner.added_favorite') || "Hozzáadva a kedvencekhez ❤️"),
       description: isFavorite 
-        ? "A partner el lett távolítva a kedvenceid közül." 
-        : "A partnert megtalálod a kedvenceid között.",
+        ? (t('partner.removed_favorite_desc') || "A partner el lett távolítva a kedvenceid közül.")
+        : (t('partner.added_favorite_desc') || "A partnert megtalálod a kedvenceid között."),
     });
   };
+
+  // Loading state
+  if (programsLoading && !partner) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <Navigation />
+        <main className="flex-1 container mx-auto px-4 py-20">
+          <div className="flex items-center justify-center h-64">
+            <Skeleton className="w-full max-w-2xl h-64 rounded-2xl" />
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!partner) {
     return (
@@ -221,12 +248,12 @@ const PartnerProfilePage = () => {
           <div className="text-center">
             <Store className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
             <h1 className="text-2xl font-bold mb-2">
-              {language === "hu" ? "Partner nem található" : "Partner not found"}
+              {t('partner.not_found') || (language === "hu" ? "Partner nem található" : "Partner not found")}
             </h1>
             <Link to="/partners">
               <Button variant="outline" className="mt-4">
                 <ChevronLeft className="w-4 h-4 mr-2" />
-                {language === "hu" ? "Vissza a partnerekhez" : "Back to partners"}
+                {t('partner.back_to_partners') || (language === "hu" ? "Vissza a partnerekhez" : "Back to partners")}
               </Button>
             </Link>
           </div>

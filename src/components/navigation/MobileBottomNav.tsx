@@ -142,14 +142,16 @@ const MobileBottomNav = () => {
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-t border-black/[0.05] shadow-[0_-4px_20px_rgba(0,0,0,0.05)] safe-area-inset-bottom">
       <div className="flex items-center justify-around h-16 px-1">
-        {navItems.map((item) => {
+        {navItems.map((item, index) => {
           const Icon = item.icon;
           const active = isActive(item.path);
           const isNotifications = item.path === "/ertesitesek";
+          // Use unique key combining path and labelKey to avoid duplicate key warning
+          const uniqueKey = `${item.path}-${item.labelKey}-${index}`;
 
           return (
             <Link
-              key={item.path}
+              key={uniqueKey}
               to={item.path}
               className="flex flex-col items-center justify-center flex-1 h-full min-w-[56px] min-h-[44px] relative group"
             >
