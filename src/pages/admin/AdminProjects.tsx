@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,7 +13,7 @@ import { cn } from '@/lib/utils';
 import { WorldMap } from '@/components/admin/WorldMap';
 import { COUNTRIES, getCountryFlag, getCountryByCode } from '@/lib/countries';
 import { COMMON_CURRENCIES, CURRENCY_SYMBOLS } from '@/lib/currency';
-import { 
+import {
   FolderOpen,
   Plus,
   Search,
@@ -87,48 +86,14 @@ interface Project {
 
 type ProjectStatus = 'active' | 'suspended' | 'archived';
 
-const MOCK_PROJECTS: Project[] = [
-  { 
-    id: 'proj-1', 
-    name: 'Káli-medence Közösség', 
-    slug: 'kali-medence',
-    description: 'A Balaton-felvidék szívében működő fenntartható közösség. Helyi termelők, szakértők és támogatók hálózata.',
-    region_name: 'Balaton-felvidék',
-    is_active: true,
-    created_at: '2024-01-15T10:00:00Z',
-    user_count: 156
-  },
-  { 
-    id: 'proj-2', 
-    name: 'Zöld Városi Program', 
-    slug: 'green-city',
-    description: 'Városi fenntarthatósági kezdeményezés Budapest belvárosában.',
-    region_name: 'Budapest',
-    is_active: true,
-    created_at: '2024-03-01T10:00:00Z',
-    user_count: 89
-  },
-  { 
-    id: 'proj-3', 
-    name: 'Őrségi Hagyományok', 
-    slug: 'orseg',
-    description: 'Hagyományőrző és természetvédelmi program az Őrség régióban.',
-    region_name: 'Őrség',
-    is_active: false,
-    created_at: '2024-02-20T10:00:00Z',
-    user_count: 42
-  },
-];
-
 const AdminProjects = () => {
   const { t } = useLanguage();
-  const { isDemoMode } = useAuth();
   const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
-  
+
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -169,19 +134,13 @@ const AdminProjects = () => {
   const fetchProjects = async () => {
     setLoading(true);
     try {
-      if (isDemoMode) {
-        setProjects(MOCK_PROJECTS);
-        setLoading(false);
-        return;
-      }
-
       const { data, error } = await supabase
         .from('projects')
         .select('*')
         .order('name');
 
       if (error) throw error;
-      
+
       // Get member counts for each project
       const projectsWithCounts = await Promise.all(
         (data || []).map(async (project) => {
@@ -192,7 +151,7 @@ const AdminProjects = () => {
           return { ...project, user_count: count || 0 };
         })
       );
-      
+
       setProjects(projectsWithCounts);
     } catch (error) {
       console.error('Error fetching projects:', error);
@@ -204,7 +163,8 @@ const AdminProjects = () => {
 
   useEffect(() => {
     fetchProjects();
-  }, [isDemoMode]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Generate slug from name
   const generateSlug = (name: string) => {
@@ -257,57 +217,42 @@ const AdminProjects = () => {
 
     setIsSaving(true);
     try {
-      if (isDemoMode) {
-        if (editingProject) {
-          setProjects(prev => prev.map(p =>
-            p.id === editingProject.id
-              ? { ...p, ...formData }
-              : p
-          ));
-          toast.success(t('admin.projects.update_success'));
-        } else {
-          const newProject: Project = {
-            id: `mock-${Date.now()}`,
+      if (editingProject) {
+        const { error } = await supabase
+          .from('projects')
+          .update({
             name: formData.name,
             slug: formData.slug,
             description: formData.description,
             region_name: formData.region_name,
             is_active: formData.is_active,
-            created_at: new Date().toISOString(),
-            user_count: 0
-          };
-          setProjects(prev => [newProject, ...prev]);
-          toast.success(t('admin.projects.create_success'));
-        }
+            country_code: formData.country_code,
+            currency_code: formData.currency_code,
+            city: formData.city,
+            timezone: formData.timezone,
+          })
+          .eq('id', editingProject.id);
+        if (error) throw error;
+        toast.success(t('admin.projects.update_success'));
       } else {
-        if (editingProject) {
-          const { error } = await supabase
-            .from('projects')
-            .update({
-              name: formData.name,
-              slug: formData.slug,
-              description: formData.description,
-              region_name: formData.region_name,
-              is_active: formData.is_active
-            })
-            .eq('id', editingProject.id);
-          if (error) throw error;
-          toast.success(t('admin.projects.update_success'));
-        } else {
-          const { error } = await supabase
-            .from('projects')
-            .insert({
-              name: formData.name,
-              slug: formData.slug,
-              description: formData.description,
-              region_name: formData.region_name,
-              is_active: formData.is_active
-            });
-          if (error) throw error;
-          toast.success(t('admin.projects.create_success'));
-        }
-        fetchProjects();
+        const { error } = await supabase
+          .from('projects')
+          .insert({
+            name: formData.name,
+            slug: formData.slug,
+            description: formData.description,
+            region_name: formData.region_name,
+            is_active: formData.is_active,
+            country_code: formData.country_code,
+            currency_code: formData.currency_code,
+            city: formData.city,
+            timezone: formData.timezone,
+          });
+        if (error) throw error;
+        toast.success(t('admin.projects.create_success'));
       }
+
+      await fetchProjects();
       setIsModalOpen(false);
     } catch (error) {
       console.error('Error saving project:', error);
@@ -322,18 +267,13 @@ const AdminProjects = () => {
     if (!projectToDelete) return;
 
     try {
-      if (isDemoMode) {
-        setProjects(prev => prev.filter(p => p.id !== projectToDelete.id));
-        toast.success(t('admin.projects.delete_success'));
-      } else {
-        const { error } = await supabase
-          .from('projects')
-          .delete()
-          .eq('id', projectToDelete.id);
-        if (error) throw error;
-        toast.success(t('admin.projects.delete_success'));
-        fetchProjects();
-      }
+      const { error } = await supabase
+        .from('projects')
+        .delete()
+        .eq('id', projectToDelete.id);
+      if (error) throw error;
+      toast.success(t('admin.projects.delete_success'));
+      await fetchProjects();
     } catch (error) {
       console.error('Error deleting project:', error);
       toast.error(t('admin.projects.error'));
@@ -344,14 +284,6 @@ const AdminProjects = () => {
   };
 
   const toggleProjectStatus = async (project: Project) => {
-    if (isDemoMode) {
-      setProjects(prev => prev.map(p => 
-        p.id === project.id ? { ...p, is_active: !p.is_active } : p
-      ));
-      toast.success(project.is_active ? t('admin.projects.suspended') : t('admin.projects.activated'));
-      return;
-    }
-
     try {
       const { error } = await supabase
         .from('projects')
@@ -359,8 +291,8 @@ const AdminProjects = () => {
         .eq('id', project.id);
 
       if (error) throw error;
-      
-      setProjects(prev => prev.map(p => 
+
+      setProjects(prev => prev.map(p =>
         p.id === project.id ? { ...p, is_active: !p.is_active } : p
       ));
       toast.success(project.is_active ? t('admin.projects.suspended') : t('admin.projects.activated'));
@@ -370,7 +302,7 @@ const AdminProjects = () => {
     }
   };
 
-  const filteredProjects = projects.filter(p => 
+  const filteredProjects = projects.filter(p =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     p.slug.toLowerCase().includes(searchQuery.toLowerCase()) ||
     p.region_name?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -465,7 +397,7 @@ const AdminProjects = () => {
                 "hover:shadow-md transition-shadow cursor-pointer",
                 !project.is_active && "opacity-60"
               )}
-              onClick={() => { setSelectedProjectId(project.id); setIsDetailModalOpen(true); }}
+              onClick={() => handleProjectClick(project.id)}
             >
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
@@ -482,25 +414,50 @@ const AdminProjects = () => {
                   </div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => openModal(project)}>
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openModal(project);
+                        }}
+                      >
                         <Edit className="h-4 w-4 mr-2" />
                         {t('admin.projects.edit')}
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedProjectId(project.id);
+                          setIsDetailModalOpen(true);
+                        }}
+                      >
                         <Eye className="h-4 w-4 mr-2" />
                         {t('admin.projects.view')}
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleProjectClick(project.id);
+                        }}
+                      >
                         <Settings className="h-4 w-4 mr-2" />
                         {t('admin.projects.settings')}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => toggleProjectStatus(project)}>
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleProjectStatus(project);
+                        }}
+                      >
                         {project.is_active ? (
                           <>
                             <Pause className="h-4 w-4 mr-2" />
@@ -513,8 +470,9 @@ const AdminProjects = () => {
                           </>
                         )}
                       </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        onClick={() => {
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setProjectToDelete(project);
                           setIsDeleteDialogOpen(true);
                         }}
