@@ -7,8 +7,10 @@ const corsHeaders = {
 };
 
 interface SeedRequest {
-  action: 'seed' | 'wipe';
+  action: 'seed' | 'wipe' | 'wipe_admin';
 }
+
+const TEST_ADMIN_PREFIX = 'TEST_ADMIN_';
 
 // Helper to generate random date in last N days
 const randomDateInPast = (days: number): string => {
@@ -189,13 +191,32 @@ serve(async (req) => {
 
     const { action } = await req.json() as SeedRequest;
 
+    // WIPE ADMIN TEST DATA (TEST_ADMIN_ prefix from Super Admin migrations)
+    if (action === 'wipe_admin') {
+      console.log('Wiping admin test data (TEST_ADMIN_ prefix)...');
+      
+      // Delete in correct order due to foreign keys
+      await supabase.from('vouchers').delete().ilike('code', `%${TEST_ADMIN_PREFIX}%`);
+      await supabase.from('content_sponsorships').delete().ilike('discount_description', `%${TEST_ADMIN_PREFIX}%`);
+      await supabase.from('expert_contents').delete().ilike('description', `%${TEST_ADMIN_PREFIX}%`);
+      await supabase.from('sponsors').delete().ilike('description', `%${TEST_ADMIN_PREFIX}%`);
+
+      return new Response(JSON.stringify({ 
+        success: true, 
+        message: 'Admin test data (TEST_ADMIN_) wiped successfully' 
+      }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     if (action === 'wipe') {
       // Wipe all test data (identifiable by TEST_ prefix in notes/descriptions)
       console.log('Wiping test data...');
       
       // Delete in correct order due to foreign keys
       await supabase.from('voucher_settlements').delete().ilike('notes', `%${TEST_PREFIX}%`);
-      await supabase.from('vouchers').delete().ilike('unique_code', `%${TEST_PREFIX}%`);
+      await supabase.from('vouchers').delete().ilike('code', `%${TEST_PREFIX}%`);
       await supabase.from('content_access').delete().ilike('payment_reference', `%${TEST_PREFIX}%`);
       await supabase.from('transactions').delete().ilike('notes', `%${TEST_PREFIX}%`);
       await supabase.from('credit_transactions').delete().ilike('description', `%${TEST_PREFIX}%`);
