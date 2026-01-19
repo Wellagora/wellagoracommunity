@@ -52,10 +52,11 @@ export function useRoleRedirect() {
     // Only redirect if user is logged in
     if (!user || !profile) return;
 
-    // Don't redirect if we're not on auth page
-    if (!location.pathname.includes("/auth")) return;
+    // Only redirect from auth pages or root after login
+    const isAuthPage = location.pathname.includes("/auth");
+    if (!isAuthPage) return;
 
-    // Determine effective role
+    // Determine effective role and redirect
     const effectiveRole = getEffectiveRole(
       profile.user_role as string,
       profile.is_super_admin === true
@@ -63,7 +64,8 @@ export function useRoleRedirect() {
 
     const targetPath = ROLE_DASHBOARDS[effectiveRole];
     
-    // Navigate to role-specific dashboard
+    // Navigate to role-specific dashboard with toast
+    console.log(`[useRoleRedirect] Redirecting ${effectiveRole} to ${targetPath}`);
     navigate(targetPath, { replace: true });
   }, [user, profile, loading, navigate, location.pathname]);
 }

@@ -82,6 +82,7 @@ const NotificationsPage = lazy(() => import("@/pages/NotificationsPage"));
 const MyCoursesPage = lazy(() => import("@/pages/MyCoursesPage"));
 const PartnersPage = lazy(() => import("@/pages/PartnersPage"));
 const PartnerProfilePage = lazy(() => import("@/pages/PartnerProfilePage"));
+const FavoritesPage = lazy(() => import("@/pages/FavoritesPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function App() {
@@ -288,6 +289,26 @@ function App() {
                             element={
                               <ProtectedRoute>
                                 <NotificationsPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          
+                          {/* Favorites page for members */}
+                          <Route
+                            path="/favorites"
+                            element={
+                              <ProtectedRoute>
+                                <FavoritesPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          
+                          {/* My Center / My Hub for members */}
+                          <Route
+                            path="/my-center"
+                            element={
+                              <ProtectedRoute>
+                                <MyHubPage />
                               </ProtectedRoute>
                             }
                           />

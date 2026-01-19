@@ -205,9 +205,9 @@ const Navigation = () => {
     }
   };
 
-  // Build nav items based on user role
+  // STRICT Role-based navigation - each role sees ONLY their items
   const navItems = useMemo(() => {
-    // Simplified navigation for logged-out users
+    // Logged-out users: Home, Marketplace, Events, Partners
     if (!user || !profile) {
       return [
         { path: "/", label: t("nav.home"), icon: Home },
@@ -220,42 +220,48 @@ const Navigation = () => {
     // Role-specific navigation
     const roleToUse = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
 
-    // Member sees: Programok, Saját Központ, Kedvencek
+    // Members ONLY see: Piactér, Események, Partnerek, Profil
     if (roleToUse === 'member') {
       return [
         { path: "/programs", label: t("nav.marketplace"), icon: Store },
-        { path: "/my-center", label: t("nav.my_center") || "Saját Központ", icon: LayoutDashboard },
-        { path: "/favorites", label: t("nav.favorites") || "Kedvencek", icon: Heart },
+        { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
         { path: "/partners", label: t("nav.partners") || "Partnerek", icon: Building2 },
       ];
     }
 
-    // Expert sees: Programok, Expert Studio, Bevételeim
+    // Experts ONLY see: Stúdió, Analitika (NO marketplace in nav)
     if (roleToUse === 'expert') {
       return [
-        { path: "/programs", label: t("nav.marketplace"), icon: Store },
-        { path: "/expert-studio", label: t("nav.expert_studio"), icon: Sparkles, iconColor: "text-cyan-500" },
-        { path: "/expert-studio", label: t("nav.my_earnings") || "Bevételeim", icon: Wallet },
-        { path: "/partners", label: t("nav.partners") || "Partnerek", icon: Building2 },
+        { path: "/expert-studio", label: t("nav.expert_studio") || "Expert Studio", icon: Sparkles, iconColor: "text-amber-500" },
+        { path: "/expert-studio", label: t("nav.analytics") || "Analitika", icon: BarChart3 },
       ];
     }
 
-    // Sponsor sees: Programok, Kampányaim, Hatásjelentés
+    // Sponsors ONLY see: Dashboard, Kampányok, Kredit
     if (roleToUse === 'sponsor') {
       return [
-        { path: "/programs", label: t("nav.marketplace"), icon: Store },
-        { path: "/sponsor-dashboard", label: t("nav.my_campaigns") || "Kampányaim", icon: Building2, iconColor: "text-amber-500" },
-        { path: "/sponsor-dashboard", label: t("nav.impact_report") || "Hatásjelentés", icon: BarChart3 },
-        { path: "/partners", label: t("nav.partners") || "Partnerek", icon: Building2 },
+        { path: "/sponsor-dashboard", label: t("nav.dashboard") || "Dashboard", icon: Building2, iconColor: "text-blue-500" },
+        { path: "/sponsor-dashboard", label: t("nav.my_campaigns") || "Kampányok", icon: Wallet },
       ];
     }
 
     // Default fallback
     return [
       { path: "/programs", label: t("nav.marketplace"), icon: Store },
-      { path: "/partners", label: t("nav.partners") || "Partnerek", icon: Building2 },
     ];
   }, [user, profile, t, isSuperAdmin, viewAsRole, effectiveRole]);
+
+  // Role-based accent color for header
+  const getRoleAccentColor = (): string => {
+    if (!user || !profile) return "border-slate-200";
+    const roleToUse = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
+    switch (roleToUse) {
+      case 'member': return "border-emerald-500";
+      case 'expert': return "border-amber-500";
+      case 'sponsor': return "border-blue-500";
+      default: return "border-slate-200";
+    }
+  };
 
   return (
     <>
@@ -277,7 +283,7 @@ const Navigation = () => {
         </div>
       )}
       
-      <nav className={`fixed left-0 right-0 z-[100] w-full bg-white/95 backdrop-blur-md border-b border-slate-200 ${isDemoMode ? 'top-8' : 'top-0'}`}>
+      <nav className={`fixed left-0 right-0 z-[100] w-full bg-white/95 backdrop-blur-md border-b-2 ${getRoleAccentColor()} ${isDemoMode ? 'top-8' : 'top-0'}`}>
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="flex items-center justify-between h-16">
             {/* Logo - Left */}

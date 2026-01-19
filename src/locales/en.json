@@ -6,6 +6,14 @@
   "mobile_nav.my_studio": "Studio",
   "mobile_nav.my_campaigns": "Campaigns",
   "mobile_nav.dashboard": "Dashboard",
+  "mobile_nav.events": "Events",
+  "mobile_nav.partners": "Partners",
+  "mobile_nav.analytics": "Analytics",
+  "mobile_nav.credits": "Credits",
+  "mobile_nav.favorites": "Favorites",
+  "mobile_nav.my_center": "My Hub",
+  "mobile_nav.earnings": "Earnings",
+  "mobile_nav.impact_report": "Impact",
   "landing": {
     "cta_join": "Join Us"
   },
