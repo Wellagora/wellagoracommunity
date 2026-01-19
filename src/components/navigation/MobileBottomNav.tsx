@@ -80,12 +80,12 @@ const MobileBottomNav = () => {
 
   // STRICT Role-specific navigation items - each role sees ONLY their items
   const getNavItems = (): NavItem[] => {
-    // Members ONLY see: Piactér, Események, Partnerek, Profil
+    // Members see: Piactér, Agórám, Értesítések, Profil
     if (effectiveRole === 'member') {
       return [
         { path: "/programs", icon: Store, labelKey: "mobile_nav.discover" },
-        { path: "/esemenyek", icon: BookOpen, labelKey: "mobile_nav.events" },
-        { path: "/partners", icon: Building2, labelKey: "mobile_nav.partners" },
+        { path: "/my-agora", icon: LayoutDashboard, labelKey: "mobile_nav.my_agora" },
+        { path: "/ertesitesek", icon: Bell, labelKey: "mobile_nav.notifications" },
         { path: "/profile", icon: User, labelKey: "mobile_nav.profile" },
       ];
     }

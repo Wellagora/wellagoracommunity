@@ -150,41 +150,55 @@ const Navigation = () => {
   };
 
   // Get dashboard route based on user's role (or viewAsRole for super admins)
+  // Dynamic: admin -> /admin-panel, sponsor -> /sponsor-dashboard, expert -> /expert-studio, member -> /my-agora
   const getDashboardRoute = useCallback((): string => {
     if (!user) return '/auth';
     
-    // For super admins with viewAsRole, route to the corresponding dashboard
-    const roleToUse = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
+    // Super admin viewing as a role
+    if (isSuperAdmin && viewAsRole) {
+      switch (viewAsRole) {
+        case 'expert': return '/expert-studio';
+        case 'sponsor': return '/sponsor-dashboard';
+        case 'member': return '/my-agora';
+        default: return '/admin-panel';
+      }
+    }
     
-    switch (roleToUse) {
-      case 'expert':
-        return '/szakertoi-studio';
-      case 'sponsor':
-        return '/tamogatoi-kozpont';
-      case 'admin':
-        return '/admin-panel';
+    // Super admin without viewAsRole goes to admin panel
+    if (isSuperAdmin) return '/admin-panel';
+    
+    // Regular users based on their actual role
+    switch (effectiveRole) {
+      case 'expert': return '/expert-studio';
+      case 'sponsor': return '/sponsor-dashboard';
       case 'member':
-      default:
-        return '/iranyitopult';
+      default: return '/my-agora';
     }
   }, [user, isSuperAdmin, viewAsRole, effectiveRole]);
 
-  // Get dashboard label based on role
+  // Get dashboard label based on role - matches current route context
   const getDashboardLabel = useCallback((): string => {
     if (!user) return t('nav.sign_in');
     
-    const roleToUse = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
+    // Super admin viewing as a role
+    if (isSuperAdmin && viewAsRole) {
+      switch (viewAsRole) {
+        case 'expert': return t('nav.expert_studio');
+        case 'sponsor': return t('nav.sponsor_center');
+        case 'member': return t('nav.control_panel');
+        default: return 'Admin Panel';
+      }
+    }
     
-    switch (roleToUse) {
-      case 'expert':
-        return t('nav.expert_studio');
-      case 'sponsor':
-        return t('nav.sponsor_center');
-      case 'admin':
-        return 'Admin Panel';
+    // Super admin without viewAsRole
+    if (isSuperAdmin) return 'Admin Panel';
+    
+    // Regular users
+    switch (effectiveRole) {
+      case 'expert': return t('nav.expert_studio');
+      case 'sponsor': return t('nav.sponsor_center');
       case 'member':
-      default:
-        return t('nav.control_panel');
+      default: return t('nav.control_panel');
     }
   }, [user, isSuperAdmin, viewAsRole, effectiveRole, t]);
 
@@ -220,12 +234,13 @@ const Navigation = () => {
     // Role-specific navigation
     const roleToUse = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
 
-    // Members ONLY see: Piactér, Események, Partnerek, Profil
+    // Members see: Piactér, Események, Partnerek, Agórám
     if (roleToUse === 'member') {
       return [
         { path: "/programs", label: t("nav.marketplace"), icon: Store },
         { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
         { path: "/partners", label: t("nav.partners") || "Partnerek", icon: Building2 },
+        { path: "/my-agora", label: t("nav.control_panel"), icon: LayoutDashboard },
       ];
     }
 
