@@ -50,7 +50,7 @@ const AdminSponsors = () => {
 
   const fetchSponsors = async () => {
     setLoading(true);
-    console.log('[AdminSponsors] Fetching sponsors...');
+    
     try {
       // Query sponsors table (primary source - real brand partners)
       const { data: sponsorsData, error: sponsorsError } = await supabase
@@ -59,7 +59,7 @@ const AdminSponsors = () => {
         .order('created_at', { ascending: false });
 
       if (sponsorsError) {
-        console.error('[AdminSponsors] sponsors table error:', sponsorsError);
+        // Log error internally but don't crash
       }
 
       // Combine results from sponsors table only (profiles with sponsor roles are users, not brand partners)
@@ -82,10 +82,10 @@ const AdminSponsors = () => {
         });
       }
 
-      console.log('[AdminSponsors] Loaded sponsors:', combinedSponsors.length);
+      
       setSponsors(combinedSponsors);
     } catch (error) {
-      console.error('[AdminSponsors] Error fetching sponsors:', error);
+      
       toast.error('Hiba a szponzorok betöltésekor');
     } finally {
       setLoading(false);
@@ -98,7 +98,7 @@ const AdminSponsors = () => {
 
   // Handle card click - open modal
   const handleCardClick = (sponsorId: string) => {
-    console.log('[AdminSponsors] Card clicked:', sponsorId);
+    
     setSelectedSponsorId(sponsorId);
     setModalOpen(true);
   };

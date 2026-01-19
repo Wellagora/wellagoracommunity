@@ -203,7 +203,7 @@ export const WorldMap = ({ projects, onProjectClick }: WorldMapProps) => {
             if (item.type === 'cluster') {
               handleClusterClick(item.id);
             } else {
-              console.log('[WorldMap] Project clicked, navigating to:', item.id);
+              
               onProjectClick(item.id);
             }
           }}
