@@ -14,5 +14,11 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    // Prevent multiple React copies in the bundle (fixes hooks dispatcher null errors)
+    dedupe: ["react", "react-dom", "react/jsx-runtime"],
+  },
+  optimizeDeps: {
+    // Make sure these are pre-bundled consistently in dev
+    include: ["react", "react-dom", "react-router-dom", "framer-motion"],
   },
 }));
