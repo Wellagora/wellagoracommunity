@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   Table,
   TableBody,
@@ -30,7 +31,18 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 // Icons
 import {
@@ -50,7 +62,15 @@ import {
   Target,
   Award,
   UserCheck,
+  Trash2,
+  Check,
+  X,
+  UserPlus,
+  Link2,
 } from 'lucide-react';
+
+// Currency utilities
+import { formatCurrency, CURRENCY_SYMBOLS } from '@/lib/currency';
 
 interface Project {
   id: string;
@@ -60,6 +80,8 @@ interface Project {
   region_name: string;
   is_active: boolean;
   created_at: string;
+  currency_code?: string | null;
+  country_code?: string | null;
 }
 
 interface ProjectStats {
@@ -84,6 +106,7 @@ interface Expert {
 interface Program {
   id: string;
   title: string;
+  description?: string | null;
   category: string | null;
   price_huf: number | null;
   is_published: boolean;
@@ -96,7 +119,9 @@ interface Program {
 interface Event {
   id: string;
   title: string;
+  description?: string | null;
   start_date: string;
+  end_date?: string | null;
   location_name: string | null;
   status: string | null;
   current_participants: number;
@@ -119,11 +144,36 @@ interface Sponsor {
   is_active: boolean;
 }
 
+interface AvailableExpert {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+}
+
+interface AvailableSponsor {
+  id: string;
+  organization_name: string;
+  email: string;
+  credit_balance: number;
+}
+
+const PROGRAM_CATEGORIES = [
+  { value: 'wellness', label: 'Wellness' },
+  { value: 'gardening', label: 'Kertészet' },
+  { value: 'cooking', label: 'Főzés' },
+  { value: 'crafts', label: 'Kézművesség' },
+  { value: 'education', label: 'Oktatás' },
+  { value: 'community', label: 'Közösség' },
+  { value: 'sustainability', label: 'Fenntarthatóság' },
+  { value: 'other', label: 'Egyéb' },
+];
+
 const AdminProjectHub = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const { isDemoMode } = useAuth();
+  const { isDemoMode, user } = useAuth();
 
   // State
   const [project, setProject] = useState<Project | null>(null);
@@ -153,6 +203,46 @@ const AdminProjectHub = () => {
   });
   const [saving, setSaving] = useState(false);
 
+  // Program modal state
+  const [isProgramModalOpen, setIsProgramModalOpen] = useState(false);
+  const [editingProgram, setEditingProgram] = useState<Program | null>(null);
+  const [programForm, setProgramForm] = useState({
+    title: '',
+    description: '',
+    category: 'other',
+    price_huf: 0,
+    max_capacity: 20,
+    is_published: false,
+  });
+
+  // Event modal state
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+  const [eventForm, setEventForm] = useState({
+    title: '',
+    description: '',
+    start_date: '',
+    end_date: '',
+    location_name: '',
+    max_participants: 50,
+    status: 'upcoming',
+  });
+
+  // Expert linking modal
+  const [isExpertModalOpen, setIsExpertModalOpen] = useState(false);
+  const [availableExperts, setAvailableExperts] = useState<AvailableExpert[]>([]);
+  const [selectedExpertId, setSelectedExpertId] = useState<string>('');
+
+  // Sponsor linking modal
+  const [isSponsorModalOpen, setIsSponsorModalOpen] = useState(false);
+  const [availableSponsors, setAvailableSponsors] = useState<AvailableSponsor[]>([]);
+  const [selectedSponsorId, setSelectedSponsorId] = useState<string>('');
+  const [sponsorCredits, setSponsorCredits] = useState(10000);
+
+  // Delete confirmation
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'program' | 'event'; id: string; name: string } | null>(null);
+
   // Fetch project data
   useEffect(() => {
     if (!id) return;
@@ -174,6 +264,8 @@ const AdminProjectHub = () => {
           region_name: 'Balaton-felvidék',
           is_active: true,
           created_at: '2024-01-15T10:00:00Z',
+          currency_code: 'HUF',
+          country_code: 'HU',
         });
         setStats({
           totalParticipants: 156,
@@ -211,6 +303,7 @@ const AdminProjectHub = () => {
 
       if (projectError) throw projectError;
       setProject(projectData);
+      console.log('[AdminProjectHub] Project loaded:', projectData);
 
       // Fetch experts in this project
       const { data: expertsData } = await supabase
@@ -219,40 +312,67 @@ const AdminProjectHub = () => {
         .eq('project_id', id)
         .eq('user_role', 'expert');
       setExperts(expertsData || []);
+      console.log('[AdminProjectHub] Experts loaded:', expertsData?.length || 0);
 
       // Fetch programs in this project
       const { data: programsData } = await supabase
         .from('expert_contents')
-        .select('id, title, category, price_huf, is_published, used_licenses, max_capacity, creator_id')
-        .or(`region_id.eq.${id}`);
+        .select('id, title, description, category, price_huf, is_published, used_licenses, max_capacity, creator_id')
+        .eq('region_id', id);
       
       const formattedPrograms = (programsData || []).map(p => ({
         ...p,
+        used_licenses: p.used_licenses || 0,
         expert_name: '-',
       }));
       setPrograms(formattedPrograms as Program[]);
+      console.log('[AdminProjectHub] Programs loaded:', programsData?.length || 0);
 
       // Fetch events in this project
       const { data: eventsData } = await supabase
         .from('events')
-        .select('id, title, start_date, location_name, status, current_participants, max_participants')
+        .select('id, title, description, start_date, end_date, location_name, status, current_participants, max_participants')
         .eq('project_id', id);
-      setEvents(eventsData || []);
+      setEvents((eventsData || []).map(e => ({
+        ...e,
+        current_participants: e.current_participants || 0,
+      })) as Event[]);
+      console.log('[AdminProjectHub] Events loaded:', eventsData?.length || 0);
 
-      // Fetch sponsors from profiles with sponsor role
-      const { data: sponsorsData } = await supabase
-        .from('profiles')
-        .select('id, organization_name, organization_logo_url, credit_balance, user_role')
-        .eq('user_role', 'sponsor');
-      
-      const mappedSponsors = (sponsorsData || []).map(s => ({
-        id: s.id,
-        company_name: s.organization_name || 'Unknown',
-        logo_url: s.organization_logo_url,
-        sponsor_credits: s.credit_balance || 0,
-        is_active: true,
-      }));
-      setSponsors(mappedSponsors);
+      // Fetch sponsors linked to this project via challenge_sponsorships
+      const { data: sponsorshipsData } = await supabase
+        .from('challenge_sponsorships')
+        .select(`
+          id,
+          credit_cost,
+          status,
+          sponsor_user_id
+        `)
+        .eq('project_id', id)
+        .eq('status', 'active');
+
+      // Get sponsor profiles
+      const sponsorIds = sponsorshipsData?.map(s => s.sponsor_user_id) || [];
+      if (sponsorIds.length > 0) {
+        const { data: sponsorProfiles } = await supabase
+          .from('profiles')
+          .select('id, organization_name, organization_logo_url, credit_balance')
+          .in('id', sponsorIds);
+        
+        const mappedSponsors = (sponsorProfiles || []).map(s => ({
+          id: s.id,
+          company_name: s.organization_name || 'Unknown',
+          logo_url: s.organization_logo_url,
+          sponsor_credits: s.credit_balance || 0,
+          is_active: true,
+        }));
+        setSponsors(mappedSponsors);
+      } else {
+        setSponsors([]);
+      }
+
+      // Calculate total budget from sponsorships
+      const totalBudget = sponsorshipsData?.reduce((sum, s) => sum + (s.credit_cost || 0), 0) || 0;
 
       // Calculate stats
       const { count: participantCount } = await supabase
@@ -269,7 +389,7 @@ const AdminProjectHub = () => {
       const { count: programCount } = await supabase
         .from('expert_contents')
         .select('*', { count: 'exact', head: true })
-        .or(`region_id.eq.${id}`);
+        .eq('region_id', id);
 
       const { count: eventCount } = await supabase
         .from('events')
@@ -281,18 +401,20 @@ const AdminProjectHub = () => {
         totalExperts: expertCount || 0,
         totalPrograms: programCount || 0,
         totalEvents: eventCount || 0,
-        totalBudgetUsed: 0,
-        activeSponsorships: sponsorsData?.length || 0,
+        totalBudgetUsed: totalBudget,
+        activeSponsorships: sponsorshipsData?.length || 0,
       });
+      console.log('[AdminProjectHub] Stats calculated:', { participantCount, expertCount, programCount, eventCount, totalBudget });
 
     } catch (error) {
-      console.error('Error fetching project:', error);
+      console.error('[AdminProjectHub] Error fetching project:', error);
       toast.error('Hiba a projekt betöltésekor');
     } finally {
       setLoading(false);
     }
   };
 
+  // ===== PROJECT EDITING =====
   const handleEditProject = () => {
     if (!project) return;
     setEditForm({
@@ -329,12 +451,408 @@ const AdminProjectHub = () => {
 
       if (error) throw error;
       
+      console.log('[AdminProjectHub] Project updated successfully:', project.id);
       setProject({ ...project, ...editForm });
       toast.success('Projekt frissítve!');
       setIsEditModalOpen(false);
     } catch (error) {
-      console.error('Error saving project:', error);
+      console.error('[AdminProjectHub] Error saving project:', error);
       toast.error('Hiba a mentéskor');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // ===== PROGRAM CRUD =====
+  const openProgramModal = (program?: Program) => {
+    if (program) {
+      setEditingProgram(program);
+      setProgramForm({
+        title: program.title,
+        description: program.description || '',
+        category: program.category || 'other',
+        price_huf: program.price_huf || 0,
+        max_capacity: program.max_capacity || 20,
+        is_published: program.is_published,
+      });
+    } else {
+      setEditingProgram(null);
+      setProgramForm({
+        title: '',
+        description: '',
+        category: 'other',
+        price_huf: 0,
+        max_capacity: 20,
+        is_published: false,
+      });
+    }
+    setIsProgramModalOpen(true);
+  };
+
+  const handleSaveProgram = async () => {
+    if (!project || !id) return;
+    setSaving(true);
+
+    try {
+      if (isDemoMode) {
+        toast.success(editingProgram ? 'Program frissítve!' : 'Program létrehozva!');
+        setIsProgramModalOpen(false);
+        setSaving(false);
+        return;
+      }
+
+      if (editingProgram) {
+        // UPDATE existing program
+        const { error } = await supabase
+          .from('expert_contents')
+          .update({
+            title: programForm.title,
+            description: programForm.description,
+            category: programForm.category,
+            price_huf: programForm.price_huf,
+            max_capacity: programForm.max_capacity,
+            is_published: programForm.is_published,
+          })
+          .eq('id', editingProgram.id);
+
+        if (error) throw error;
+        console.log('[AdminProjectHub] Program updated:', editingProgram.id);
+        toast.success('Program frissítve!');
+      } else {
+        // INSERT new program
+        const { error } = await supabase
+          .from('expert_contents')
+          .insert({
+            title: programForm.title,
+            description: programForm.description,
+            category: programForm.category,
+            price_huf: programForm.price_huf,
+            max_capacity: programForm.max_capacity,
+            is_published: programForm.is_published,
+            region_id: id, // Link to project
+            creator_id: user?.id,
+          });
+
+        if (error) throw error;
+        console.log('[AdminProjectHub] Program created for project:', id);
+        toast.success('Program létrehozva!');
+      }
+
+      setIsProgramModalOpen(false);
+      fetchProjectData();
+    } catch (error) {
+      console.error('[AdminProjectHub] Error saving program:', error);
+      toast.error('Hiba a mentéskor');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleApproveProgram = async (programId: string) => {
+    try {
+      if (isDemoMode) {
+        toast.success('Program jóváhagyva!');
+        return;
+      }
+
+      const { error } = await supabase
+        .from('expert_contents')
+        .update({ is_published: true })
+        .eq('id', programId);
+
+      if (error) throw error;
+      console.log('[AdminProjectHub] Program approved:', programId);
+      toast.success('Program jóváhagyva!');
+      fetchProjectData();
+    } catch (error) {
+      console.error('[AdminProjectHub] Error approving program:', error);
+      toast.error('Hiba a jóváhagyáskor');
+    }
+  };
+
+  const handleRejectProgram = async (programId: string) => {
+    try {
+      if (isDemoMode) {
+        toast.success('Program elutasítva!');
+        return;
+      }
+
+      const { error } = await supabase
+        .from('expert_contents')
+        .update({ is_published: false })
+        .eq('id', programId);
+
+      if (error) throw error;
+      console.log('[AdminProjectHub] Program rejected:', programId);
+      toast.success('Program elutasítva!');
+      fetchProjectData();
+    } catch (error) {
+      console.error('[AdminProjectHub] Error rejecting program:', error);
+      toast.error('Hiba az elutasításkor');
+    }
+  };
+
+  // ===== EVENT CRUD =====
+  const openEventModal = (event?: Event) => {
+    if (event) {
+      setEditingEvent(event);
+      setEventForm({
+        title: event.title,
+        description: event.description || '',
+        start_date: event.start_date?.slice(0, 16) || '',
+        end_date: event.end_date?.slice(0, 16) || '',
+        location_name: event.location_name || '',
+        max_participants: event.max_participants || 50,
+        status: event.status || 'upcoming',
+      });
+    } else {
+      setEditingEvent(null);
+      const now = new Date();
+      now.setHours(now.getHours() + 24);
+      setEventForm({
+        title: '',
+        description: '',
+        start_date: now.toISOString().slice(0, 16),
+        end_date: '',
+        location_name: project?.region_name || '',
+        max_participants: 50,
+        status: 'upcoming',
+      });
+    }
+    setIsEventModalOpen(true);
+  };
+
+  const handleSaveEvent = async () => {
+    if (!project || !id) return;
+    setSaving(true);
+
+    try {
+      if (isDemoMode) {
+        toast.success(editingEvent ? 'Esemény frissítve!' : 'Esemény létrehozva!');
+        setIsEventModalOpen(false);
+        setSaving(false);
+        return;
+      }
+
+      if (editingEvent) {
+        // UPDATE existing event
+        const { error } = await supabase
+          .from('events')
+          .update({
+            title: eventForm.title,
+            description: eventForm.description,
+            start_date: eventForm.start_date,
+            end_date: eventForm.end_date || null,
+            location_name: eventForm.location_name,
+            max_participants: eventForm.max_participants,
+            status: eventForm.status,
+          })
+          .eq('id', editingEvent.id);
+
+        if (error) throw error;
+        console.log('[AdminProjectHub] Event updated:', editingEvent.id);
+        toast.success('Esemény frissítve!');
+      } else {
+        // INSERT new event
+        const { error } = await supabase
+          .from('events')
+          .insert({
+            title: eventForm.title,
+            description: eventForm.description,
+            start_date: eventForm.start_date,
+            end_date: eventForm.end_date || null,
+            location_name: eventForm.location_name,
+            max_participants: eventForm.max_participants,
+            status: eventForm.status,
+            project_id: id, // Link to project
+            created_by: user?.id,
+            village: project?.region_name,
+          });
+
+        if (error) throw error;
+        console.log('[AdminProjectHub] Event created for project:', id);
+        toast.success('Esemény létrehozva!');
+      }
+
+      setIsEventModalOpen(false);
+      fetchProjectData();
+    } catch (error) {
+      console.error('[AdminProjectHub] Error saving event:', error);
+      toast.error('Hiba a mentéskor');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // ===== DELETE OPERATIONS =====
+  const confirmDelete = (type: 'program' | 'event', id: string, name: string) => {
+    setDeleteTarget({ type, id, name });
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+
+    try {
+      if (isDemoMode) {
+        toast.success(`${deleteTarget.type === 'program' ? 'Program' : 'Esemény'} törölve!`);
+        setDeleteConfirmOpen(false);
+        setDeleteTarget(null);
+        return;
+      }
+
+      if (deleteTarget.type === 'program') {
+        const { error } = await supabase
+          .from('expert_contents')
+          .delete()
+          .eq('id', deleteTarget.id);
+
+        if (error) throw error;
+        console.log('[AdminProjectHub] Program deleted:', deleteTarget.id);
+      } else {
+        const { error } = await supabase
+          .from('events')
+          .delete()
+          .eq('id', deleteTarget.id);
+
+        if (error) throw error;
+        console.log('[AdminProjectHub] Event deleted:', deleteTarget.id);
+      }
+
+      toast.success(`${deleteTarget.type === 'program' ? 'Program' : 'Esemény'} törölve!`);
+      setDeleteConfirmOpen(false);
+      setDeleteTarget(null);
+      fetchProjectData();
+    } catch (error) {
+      console.error('[AdminProjectHub] Error deleting:', error);
+      toast.error('Hiba a törléskor');
+    }
+  };
+
+  // ===== EXPERT LINKING =====
+  const openExpertModal = async () => {
+    try {
+      if (isDemoMode) {
+        setAvailableExperts([
+          { id: '3', first_name: 'Szabó', last_name: 'Mari', email: 'mari@example.com' },
+          { id: '4', first_name: 'Kiss', last_name: 'János', email: 'janos@example.com' },
+        ]);
+        setIsExpertModalOpen(true);
+        return;
+      }
+
+      // Fetch experts not already in this project
+      const { data } = await supabase
+        .from('profiles')
+        .select('id, first_name, last_name, email')
+        .eq('user_role', 'expert')
+        .or(`project_id.is.null,project_id.neq.${id}`);
+
+      setAvailableExperts(data || []);
+      console.log('[AdminProjectHub] Available experts loaded:', data?.length || 0);
+      setIsExpertModalOpen(true);
+    } catch (error) {
+      console.error('[AdminProjectHub] Error loading experts:', error);
+      toast.error('Hiba a szakértők betöltésekor');
+    }
+  };
+
+  const handleLinkExpert = async () => {
+    if (!selectedExpertId || !id) return;
+    setSaving(true);
+
+    try {
+      if (isDemoMode) {
+        toast.success('Szakértő hozzáadva a projekthez!');
+        setIsExpertModalOpen(false);
+        setSelectedExpertId('');
+        setSaving(false);
+        return;
+      }
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({ project_id: id })
+        .eq('id', selectedExpertId);
+
+      if (error) throw error;
+      console.log('[AdminProjectHub] Expert linked to project:', selectedExpertId, '->', id);
+      toast.success('Szakértő hozzáadva a projekthez!');
+      setIsExpertModalOpen(false);
+      setSelectedExpertId('');
+      fetchProjectData();
+    } catch (error) {
+      console.error('[AdminProjectHub] Error linking expert:', error);
+      toast.error('Hiba a szakértő hozzáadásakor');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // ===== SPONSOR LINKING =====
+  const openSponsorModal = async () => {
+    try {
+      if (isDemoMode) {
+        setAvailableSponsors([
+          { id: '3', organization_name: 'SPAR', email: 'spar@example.com', credit_balance: 100000 },
+          { id: '4', organization_name: 'TESCO', email: 'tesco@example.com', credit_balance: 75000 },
+        ]);
+        setIsSponsorModalOpen(true);
+        return;
+      }
+
+      // Fetch sponsors
+      const { data } = await supabase
+        .from('profiles')
+        .select('id, organization_name, email, credit_balance')
+        .eq('user_role', 'sponsor');
+
+      setAvailableSponsors(data || []);
+      console.log('[AdminProjectHub] Available sponsors loaded:', data?.length || 0);
+      setIsSponsorModalOpen(true);
+    } catch (error) {
+      console.error('[AdminProjectHub] Error loading sponsors:', error);
+      toast.error('Hiba a szponzorok betöltésekor');
+    }
+  };
+
+  const handleLinkSponsor = async () => {
+    if (!selectedSponsorId || !id) return;
+    setSaving(true);
+
+    try {
+      if (isDemoMode) {
+        toast.success('Szponzor csatolva a projekthez!');
+        setIsSponsorModalOpen(false);
+        setSelectedSponsorId('');
+        setSaving(false);
+        return;
+      }
+
+      // Create a challenge sponsorship to link sponsor to project
+      const { error } = await supabase
+        .from('challenge_sponsorships')
+        .insert({
+          sponsor_user_id: selectedSponsorId,
+          project_id: id,
+          challenge_id: 'project-sponsorship', // Generic sponsorship
+          region: project?.region_name || 'default',
+          package_type: 'project',
+          credit_cost: sponsorCredits,
+          status: 'active',
+          start_date: new Date().toISOString(),
+        });
+
+      if (error) throw error;
+      console.log('[AdminProjectHub] Sponsor linked to project:', selectedSponsorId, '->', id, 'credits:', sponsorCredits);
+      toast.success('Szponzor csatolva a projekthez!');
+      setIsSponsorModalOpen(false);
+      setSelectedSponsorId('');
+      setSponsorCredits(10000);
+      fetchProjectData();
+    } catch (error) {
+      console.error('[AdminProjectHub] Error linking sponsor:', error);
+      toast.error('Hiba a szponzor csatolásakor');
     } finally {
       setSaving(false);
     }
@@ -352,6 +870,11 @@ const AdminProjectHub = () => {
     a.href = url;
     a.download = `${project?.slug || 'project'}-participants.csv`;
     a.click();
+  };
+
+  // Get currency symbol for display
+  const getCurrencySymbol = () => {
+    return CURRENCY_SYMBOLS[project?.currency_code || 'HUF'] || 'Ft';
   };
 
   if (loading) {
@@ -390,6 +913,12 @@ const AdminProjectHub = () => {
         </Button>
         <span>/</span>
         <span>Projektek</span>
+        {project.country_code && (
+          <>
+            <span>/</span>
+            <span>{project.country_code}</span>
+          </>
+        )}
         <span>/</span>
         <span className="text-foreground font-medium">{project.name}</span>
       </div>
@@ -402,6 +931,9 @@ const AdminProjectHub = () => {
             <Badge variant={project.is_active ? 'default' : 'secondary'}>
               {project.is_active ? 'Aktív' : 'Inaktív'}
             </Badge>
+            {project.currency_code && (
+              <Badge variant="outline">{project.currency_code}</Badge>
+            )}
           </div>
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
@@ -505,7 +1037,7 @@ const AdminProjectHub = () => {
                   </div>
                   <div>
                     <p className="text-2xl font-bold">{stats.totalBudgetUsed.toLocaleString('hu-HU')}</p>
-                    <p className="text-xs text-muted-foreground">HUF költség</p>
+                    <p className="text-xs text-muted-foreground">{getCurrencySymbol()} költség</p>
                   </div>
                 </div>
               </CardContent>
@@ -530,7 +1062,7 @@ const AdminProjectHub = () => {
                     {stats.totalParticipants > 0 
                       ? Math.round(stats.totalBudgetUsed / stats.totalParticipants).toLocaleString('hu-HU')
                       : 0
-                    } Ft
+                    } {getCurrencySymbol()}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
                     Költség / résztvevő
@@ -576,9 +1108,9 @@ const AdminProjectHub = () => {
         <TabsContent value="sponsors" className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">Projekt szponzorok</h3>
-            <Button size="sm" className="gap-2">
-              <Plus className="h-4 w-4" />
-              Szponzor hozzárendelése
+            <Button size="sm" className="gap-2" onClick={openSponsorModal}>
+              <Link2 className="h-4 w-4" />
+              Szponzor csatolása
             </Button>
           </div>
 
@@ -597,7 +1129,7 @@ const AdminProjectHub = () => {
                     <div className="flex-1">
                       <p className="font-semibold">{sponsor.company_name}</p>
                       <p className="text-sm text-muted-foreground">
-                        {sponsor.sponsor_credits.toLocaleString('hu-HU')} kredit
+                        {sponsor.sponsor_credits.toLocaleString('hu-HU')} {getCurrencySymbol()}
                       </p>
                     </div>
                     <Badge variant={sponsor.is_active ? 'default' : 'secondary'}>
@@ -613,6 +1145,10 @@ const AdminProjectHub = () => {
                 <CardContent className="py-12 text-center">
                   <Building2 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                   <p className="text-muted-foreground">Nincs szponzor hozzárendelve</p>
+                  <Button className="mt-4" onClick={openSponsorModal}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Szponzor hozzáadása
+                  </Button>
                 </CardContent>
               </Card>
             )}
@@ -623,10 +1159,16 @@ const AdminProjectHub = () => {
         <TabsContent value="programs" className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">Programok & Szakértők</h3>
-            <Button size="sm" className="gap-2">
-              <Plus className="h-4 w-4" />
-              Új program
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" className="gap-2" onClick={openExpertModal}>
+                <UserPlus className="h-4 w-4" />
+                Szakértő hozzáadása
+              </Button>
+              <Button size="sm" className="gap-2" onClick={() => openProgramModal()}>
+                <Plus className="h-4 w-4" />
+                Új program
+              </Button>
+            </div>
           </div>
 
           {/* Experts Section */}
@@ -672,27 +1214,66 @@ const AdminProjectHub = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Program</TableHead>
-                    <TableHead>Szakértő</TableHead>
                     <TableHead>Kategória</TableHead>
                     <TableHead>Ár</TableHead>
                     <TableHead>Helyek</TableHead>
                     <TableHead>Státusz</TableHead>
+                    <TableHead className="text-right">Műveletek</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {programs.map(program => (
-                    <TableRow key={program.id} className="cursor-pointer hover:bg-muted/50">
+                    <TableRow key={program.id}>
                       <TableCell className="font-medium">{program.title}</TableCell>
-                      <TableCell>{program.expert_name}</TableCell>
                       <TableCell>
                         <Badge variant="outline">{program.category || '-'}</Badge>
                       </TableCell>
-                      <TableCell>{program.price_huf?.toLocaleString('hu-HU')} Ft</TableCell>
+                      <TableCell>{program.price_huf?.toLocaleString('hu-HU')} {getCurrencySymbol()}</TableCell>
                       <TableCell>{program.used_licenses || 0}/{program.max_capacity || '-'}</TableCell>
                       <TableCell>
                         <Badge variant={program.is_published ? 'default' : 'secondary'}>
                           {program.is_published ? 'Publikált' : 'Piszkozat'}
                         </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-1">
+                          {!program.is_published && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleApproveProgram(program.id)}
+                              title="Jóváhagyás"
+                            >
+                              <Check className="h-4 w-4 text-emerald-600" />
+                            </Button>
+                          )}
+                          {program.is_published && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleRejectProgram(program.id)}
+                              title="Elutasítás"
+                            >
+                              <X className="h-4 w-4 text-orange-600" />
+                            </Button>
+                          )}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => openProgramModal(program)}
+                            title="Szerkesztés"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => confirmDelete('program', program.id, program.title)}
+                            title="Törlés"
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -713,7 +1294,7 @@ const AdminProjectHub = () => {
         <TabsContent value="events" className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">Események</h3>
-            <Button size="sm" className="gap-2">
+            <Button size="sm" className="gap-2" onClick={() => openEventModal()}>
               <Plus className="h-4 w-4" />
               Új esemény
             </Button>
@@ -721,7 +1302,7 @@ const AdminProjectHub = () => {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {events.map(event => (
-              <Card key={event.id} className="hover:shadow-md transition-shadow cursor-pointer">
+              <Card key={event.id} className="hover:shadow-md transition-shadow">
                 <CardContent className="pt-6">
                   <div className="space-y-3">
                     <div className="flex items-start justify-between">
@@ -745,6 +1326,23 @@ const AdminProjectHub = () => {
                         {event.max_participants && ` / ${event.max_participants}`} résztvevő
                       </span>
                     </div>
+                    <div className="flex justify-end gap-1 pt-2 border-t">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => openEventModal(event)}
+                      >
+                        <Edit className="h-4 w-4 mr-1" />
+                        Szerkesztés
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => confirmDelete('event', event.id, event.title)}
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -755,6 +1353,10 @@ const AdminProjectHub = () => {
                 <CardContent className="py-12 text-center">
                   <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                   <p className="text-muted-foreground">Nincs esemény ebben a projektben</p>
+                  <Button className="mt-4" onClick={() => openEventModal()}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Esemény létrehozása
+                  </Button>
                 </CardContent>
               </Card>
             )}
@@ -806,7 +1408,7 @@ const AdminProjectHub = () => {
         </TabsContent>
       </Tabs>
 
-      {/* Edit Modal */}
+      {/* Edit Project Modal */}
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
@@ -853,6 +1455,278 @@ const AdminProjectHub = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Program Modal */}
+      <Dialog open={isProgramModalOpen} onOpenChange={setIsProgramModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>{editingProgram ? 'Program szerkesztése' : 'Új program létrehozása'}</DialogTitle>
+            <DialogDescription>
+              Projekt: {project.name} ({project.region_name})
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Cím *</Label>
+              <Input
+                value={programForm.title}
+                onChange={(e) => setProgramForm({ ...programForm, title: e.target.value })}
+                placeholder="Program neve"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Leírás</Label>
+              <Textarea
+                value={programForm.description}
+                onChange={(e) => setProgramForm({ ...programForm, description: e.target.value })}
+                rows={3}
+                placeholder="Program részletes leírása"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Kategória</Label>
+                <Select
+                  value={programForm.category}
+                  onValueChange={(v) => setProgramForm({ ...programForm, category: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PROGRAM_CATEGORIES.map(cat => (
+                      <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Ár ({getCurrencySymbol()})</Label>
+                <Input
+                  type="number"
+                  value={programForm.price_huf}
+                  onChange={(e) => setProgramForm({ ...programForm, price_huf: parseInt(e.target.value) || 0 })}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Max résztvevők</Label>
+              <Input
+                type="number"
+                value={programForm.max_capacity}
+                onChange={(e) => setProgramForm({ ...programForm, max_capacity: parseInt(e.target.value) || 20 })}
+              />
+            </div>
+            <div className="flex items-center gap-3">
+              <Switch
+                checked={programForm.is_published}
+                onCheckedChange={(v) => setProgramForm({ ...programForm, is_published: v })}
+              />
+              <Label>Publikálva</Label>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsProgramModalOpen(false)}>
+              Mégse
+            </Button>
+            <Button onClick={handleSaveProgram} disabled={saving || !programForm.title}>
+              {saving ? 'Mentés...' : 'Mentés'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Event Modal */}
+      <Dialog open={isEventModalOpen} onOpenChange={setIsEventModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>{editingEvent ? 'Esemény szerkesztése' : 'Új esemény létrehozása'}</DialogTitle>
+            <DialogDescription>
+              Projekt: {project.name} ({project.region_name})
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Cím *</Label>
+              <Input
+                value={eventForm.title}
+                onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })}
+                placeholder="Esemény neve"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Leírás</Label>
+              <Textarea
+                value={eventForm.description}
+                onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })}
+                rows={3}
+                placeholder="Esemény részletes leírása"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Kezdés *</Label>
+                <Input
+                  type="datetime-local"
+                  value={eventForm.start_date}
+                  onChange={(e) => setEventForm({ ...eventForm, start_date: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Befejezés</Label>
+                <Input
+                  type="datetime-local"
+                  value={eventForm.end_date}
+                  onChange={(e) => setEventForm({ ...eventForm, end_date: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Helyszín</Label>
+              <Input
+                value={eventForm.location_name}
+                onChange={(e) => setEventForm({ ...eventForm, location_name: e.target.value })}
+                placeholder="Esemény helyszíne"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Max résztvevők</Label>
+                <Input
+                  type="number"
+                  value={eventForm.max_participants}
+                  onChange={(e) => setEventForm({ ...eventForm, max_participants: parseInt(e.target.value) || 50 })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Státusz</Label>
+                <Select
+                  value={eventForm.status}
+                  onValueChange={(v) => setEventForm({ ...eventForm, status: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="upcoming">Közelgő</SelectItem>
+                    <SelectItem value="ongoing">Folyamatban</SelectItem>
+                    <SelectItem value="completed">Befejezett</SelectItem>
+                    <SelectItem value="cancelled">Lemondva</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEventModalOpen(false)}>
+              Mégse
+            </Button>
+            <Button onClick={handleSaveEvent} disabled={saving || !eventForm.title || !eventForm.start_date}>
+              {saving ? 'Mentés...' : 'Mentés'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Expert Linking Modal */}
+      <Dialog open={isExpertModalOpen} onOpenChange={setIsExpertModalOpen}>
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>Szakértő hozzáadása a projekthez</DialogTitle>
+            <DialogDescription>
+              Válassz egy szakértőt, akit ehhez a projekthez szeretnél rendelni.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Szakértő</Label>
+              <Select value={selectedExpertId} onValueChange={setSelectedExpertId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Válassz szakértőt..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableExperts.map(expert => (
+                    <SelectItem key={expert.id} value={expert.id}>
+                      {expert.first_name} {expert.last_name} ({expert.email})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsExpertModalOpen(false)}>
+              Mégse
+            </Button>
+            <Button onClick={handleLinkExpert} disabled={saving || !selectedExpertId}>
+              {saving ? 'Hozzáadás...' : 'Hozzáadás'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Sponsor Linking Modal */}
+      <Dialog open={isSponsorModalOpen} onOpenChange={setIsSponsorModalOpen}>
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>Szponzor csatolása a projekthez</DialogTitle>
+            <DialogDescription>
+              Válassz egy szponzort és add meg a hozzájárulás összegét.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Szponzor</Label>
+              <Select value={selectedSponsorId} onValueChange={setSelectedSponsorId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Válassz szponzort..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableSponsors.map(sponsor => (
+                    <SelectItem key={sponsor.id} value={sponsor.id}>
+                      {sponsor.organization_name} ({sponsor.credit_balance.toLocaleString('hu-HU')} {getCurrencySymbol()})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Hozzájárulás ({getCurrencySymbol()})</Label>
+              <Input
+                type="number"
+                value={sponsorCredits}
+                onChange={(e) => setSponsorCredits(parseInt(e.target.value) || 0)}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsSponsorModalOpen(false)}>
+              Mégse
+            </Button>
+            <Button onClick={handleLinkSponsor} disabled={saving || !selectedSponsorId}>
+              {saving ? 'Csatolás...' : 'Csatolás'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Biztosan törölni szeretnéd?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Ez a művelet nem vonható vissza. A(z) "{deleteTarget?.name}" {deleteTarget?.type === 'program' ? 'program' : 'esemény'} véglegesen törlődik.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Mégse</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Törlés
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
