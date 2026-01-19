@@ -161,8 +161,7 @@ export const useVouchers = (): UseVouchersReturn => {
     }
 
     try {
-      // First, check if there's an active sponsorship and if quota is available
-      // Using FOR UPDATE equivalent by checking twice to prevent race conditions
+      // First, check if there's an active sponsorship
       const { data: sponsorship, error: sponsorError } = await supabase
         .from('content_sponsorships')
         .select('id, total_licenses, used_licenses, max_sponsored_seats, sponsored_seats_used, is_active')
@@ -171,10 +170,10 @@ export const useVouchers = (): UseVouchersReturn => {
         .maybeSingle();
 
       if (sponsorError) {
-        console.error('Error checking sponsorship:', sponsorError);
+        console.error('[useVouchers] Error checking sponsorship:', sponsorError);
       }
 
-      console.log('[useVouchers] Sponsorship quota check:', {
+      console.log('[useVouchers] Sponsorship found:', {
         contentId,
         sponsorship: sponsorship ? {
           id: sponsorship.id,
@@ -183,23 +182,45 @@ export const useVouchers = (): UseVouchersReturn => {
         } : null
       });
 
-      // Check quota if sponsorship exists - atomic check
+      // Use atomic RPC function to check and reserve seat (prevents race conditions)
       if (sponsorship) {
-        const maxSeats = sponsorship.max_sponsored_seats || sponsorship.total_licenses || 10;
-        const usedSeats = sponsorship.sponsored_seats_used || sponsorship.used_licenses || 0;
+        console.log('[useVouchers] Calling atomic RPC: check_and_reserve_sponsored_seat');
         
-        console.log('[useVouchers] Quota:', { maxSeats, usedSeats, remaining: maxSeats - usedSeats });
-        
-        if (usedSeats >= maxSeats) {
-          toast.error(t('voucher.quota_exhausted') || 'A támogatott helyek elfogytak');
-          return { success: false, error: 'quota_exhausted' };
+        const { data: rpcResult, error: rpcError } = await supabase
+          .rpc('check_and_reserve_sponsored_seat', {
+            p_sponsorship_id: sponsorship.id,
+            p_user_id: user.id
+          });
+
+        if (rpcError) {
+          console.error('[useVouchers] RPC error:', rpcError);
+          // Fall back to manual check if RPC fails - check quota manually
+          const maxSeats = sponsorship.max_sponsored_seats || sponsorship.total_licenses || 10;
+          const usedSeats = sponsorship.sponsored_seats_used || sponsorship.used_licenses || 0;
+          if (usedSeats >= maxSeats) {
+            toast.error(t('voucher.quota_exhausted') || 'A támogatott helyek elfogytak');
+            return { success: false, error: 'quota_exhausted' };
+          }
+        } else if (rpcResult && rpcResult.length > 0) {
+          const result = rpcResult[0];
+          console.log('[useVouchers] RPC result:', result);
+          
+          if (!result.success) {
+            toast.error(t('voucher.quota_exhausted') || 'A támogatott helyek elfogytak');
+            return { success: false, error: 'quota_exhausted' };
+          }
+          
+          // Seat was atomically reserved, continue with voucher creation
+          console.log('[useVouchers] Seat reserved atomically, remaining:', result.seats_remaining);
         }
       }
 
+      // Generate voucher code and expiry
       const voucherCode = generateVoucherCode();
       const expiresAt = new Date();
       expiresAt.setFullYear(expiresAt.getFullYear() + 1); // 1 year expiry
 
+      // Create the voucher
       const { data, error: insertError } = await supabase
         .from('vouchers')
         .insert({
@@ -241,43 +262,6 @@ export const useVouchers = (): UseVouchersReturn => {
           return { success: false, error: 'already_claimed' };
         }
         throw insertError;
-      }
-
-      // Decrement sponsorship quota if exists - with re-check for concurrency
-      if (sponsorship) {
-        // Re-fetch to get current value (optimistic locking pattern)
-        const { data: currentSponsorship } = await supabase
-          .from('content_sponsorships')
-          .select('sponsored_seats_used, used_licenses, max_sponsored_seats, total_licenses')
-          .eq('id', sponsorship.id)
-          .single();
-
-        if (currentSponsorship) {
-          const currentUsed = currentSponsorship.sponsored_seats_used || currentSponsorship.used_licenses || 0;
-          const maxSeats = currentSponsorship.max_sponsored_seats || currentSponsorship.total_licenses || 10;
-          
-          // Final check before increment
-          if (currentUsed >= maxSeats) {
-            console.warn('[useVouchers] Concurrency detected - quota exhausted between checks');
-            // Voucher was already created, but don't increment quota
-            toast.warning(t('voucher.last_seat') || 'Ez volt az utolsó támogatott hely!');
-          } else {
-            const newUsedSeats = currentUsed + 1;
-            const { error: updateError } = await supabase
-              .from('content_sponsorships')
-              .update({
-                sponsored_seats_used: newUsedSeats,
-                used_licenses: newUsedSeats
-              })
-              .eq('id', sponsorship.id);
-
-            if (updateError) {
-              console.error('[useVouchers] Error updating quota:', updateError);
-            } else {
-              console.log('[useVouchers] Quota updated:', { newUsedSeats, maxSeats });
-            }
-          }
-        }
       }
 
       // Transform the new voucher
