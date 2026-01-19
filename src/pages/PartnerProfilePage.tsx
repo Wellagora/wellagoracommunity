@@ -1,19 +1,22 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import { 
   Store, MapPin, ExternalLink, Gift, Percent, Tag, 
-  ChevronLeft, Clock, Users, Star, Heart
+  ChevronLeft, Clock, Users, Star, Heart, Sparkles
 } from "lucide-react";
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import PartnerOfferCard from "@/components/partners/PartnerOfferCard";
+import PartnerJsonLd from "@/components/seo/PartnerJsonLd";
 
 // Partner data (would come from database in production)
 const PARTNERS_DATA: Record<string, {
@@ -129,7 +132,76 @@ const PartnerProfilePage = () => {
   const { language } = useLanguage();
   const [isFavorite, setIsFavorite] = useState(false);
 
+  // Use static data for now, but also fetch sponsored programs from DB
   const partner = slug ? PARTNERS_DATA[slug] : null;
+  
+  // Fetch sponsored programs by this partner from database
+  const { data: sponsoredPrograms, isLoading: programsLoading } = useQuery({
+    queryKey: ['partnerSponsoredPrograms', slug],
+    queryFn: async () => {
+      if (!slug) return [];
+      
+      // First try to find sponsor in sponsors table by name (case-insensitive match)
+      const partnerName = PARTNERS_DATA[slug]?.name;
+      if (!partnerName) return [];
+      
+      // Find content sponsorships where expert_contents.sponsor_name matches
+      const { data: sponsorships } = await supabase
+        .from('content_sponsorships')
+        .select(`
+          id,
+          content_id,
+          max_sponsored_seats,
+          sponsored_seats_used,
+          sponsor_contribution_huf,
+          expert_contents!inner (
+            id,
+            title,
+            description,
+            image_url,
+            price_huf,
+            sponsor_name,
+            category,
+            is_published,
+            creator:profiles!expert_contents_creator_id_fkey (
+              first_name,
+              last_name
+            )
+          )
+        `)
+        .eq('is_active', true);
+
+      // Filter to match sponsor name
+      const matchingPrograms = sponsorships?.filter(s => {
+        const content = s.expert_contents as any;
+        return content?.sponsor_name?.toLowerCase() === partnerName.toLowerCase() && content?.is_published;
+      }) || [];
+
+      return matchingPrograms.map(s => {
+        const content = s.expert_contents as any;
+        const creator = content?.creator;
+        return {
+          id: content?.id,
+          title: content?.title,
+          description: content?.description,
+          image_url: content?.image_url,
+          price_huf: content?.price_huf,
+          category: content?.category,
+          expert_name: creator ? `${creator.first_name} ${creator.last_name}` : 'Szakértő',
+          max_seats: s.max_sponsored_seats,
+          used_seats: s.sponsored_seats_used,
+          contribution: s.sponsor_contribution_huf
+        };
+      });
+    },
+    enabled: !!slug
+  });
+
+  // Calculate impact stats
+  const impactStats = {
+    programsSupported: sponsoredPrograms?.length || 0,
+    membersReached: sponsoredPrograms?.reduce((sum, p) => sum + (p.used_seats || 0), 0) || 0
+  };
 
   const handleFavoriteClick = () => {
     setIsFavorite(!isFavorite);
@@ -168,6 +240,22 @@ const PartnerProfilePage = () => {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
+      {/* JSON-LD Schema for AI/GEO optimization */}
+      {slug && (
+        <PartnerJsonLd 
+          partner={{
+            name: partner.name,
+            description: description,
+            logo_url: partner.logo,
+            website_url: partner.website,
+            category: partner.category,
+            locations: partner.locations
+          }}
+          slug={slug}
+          programsSupported={impactStats.programsSupported}
+          membersReached={impactStats.membersReached}
+        />
+      )}
       <Navigation />
 
       <main className="flex-1 pt-20">

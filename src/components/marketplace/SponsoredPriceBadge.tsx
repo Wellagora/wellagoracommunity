@@ -69,14 +69,20 @@ const SponsoredPriceBadge = ({
     <div className="space-y-2">
       {/* Price Display - Shows Member Payment prominently */}
       <div className="flex items-baseline gap-2 flex-wrap">
-        {/* Original Expert Price (crossed out) */}
+        {/* Original Expert Price (crossed out) - ALWAYS SHOWN for perceived value */}
         <span className={`text-black/40 line-through ${classes.original}`}>
           {formatPrice(originalPrice)}
         </span>
-        {/* Member Payment - What they actually pay */}
-        <span className={`font-bold text-emerald-600 ${classes.price}`}>
-          {memberPayment > 0 ? formatPrice(memberPayment) : '0 Ft'}
-        </span>
+        {/* Member Payment - Show "INGYENES / TÁMOGATOTT" instead of "0 Ft" */}
+        {memberPayment > 0 ? (
+          <span className={`font-bold text-emerald-600 ${classes.price}`}>
+            {formatPrice(memberPayment)}
+          </span>
+        ) : (
+          <span className={`font-bold text-emerald-600 ${classes.price} bg-emerald-500/10 px-2 py-0.5 rounded-md`}>
+            {language === 'hu' ? 'INGYENES / TÁMOGATOTT' : 'FREE / SPONSORED'}
+          </span>
+        )}
       </div>
 
       {/* Sponsor Badge */}
