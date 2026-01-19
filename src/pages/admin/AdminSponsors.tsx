@@ -102,10 +102,11 @@ const AdminSponsors = () => {
         return;
       }
 
+      // Query for all sponsor-type roles including legacy 'sponsor' role
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .in('user_role', ['business', 'government', 'ngo'])
+        .in('user_role', ['sponsor', 'business', 'government', 'ngo'])
         .order('created_at', { ascending: false });
 
       if (error) throw error;

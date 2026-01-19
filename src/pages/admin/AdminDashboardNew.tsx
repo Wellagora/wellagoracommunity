@@ -128,8 +128,8 @@ const AdminDashboardNew = () => {
         programsResult
       ] = await Promise.all([
         supabase.from('profiles').select('*', { count: 'exact', head: true }),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('user_role', 'creator'),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).in('user_role', ['business', 'government', 'ngo']),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).in('user_role', ['expert', 'creator']),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).in('user_role', ['sponsor', 'business', 'government', 'ngo']),
         supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('user_role', 'member'),
         supabase.from('feedback').select('*', { count: 'exact', head: true }).eq('status', 'new'),
         supabase.from('challenge_definitions').select('*', { count: 'exact', head: true }).eq('is_active', true)
