@@ -59,6 +59,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { ProjectDetailModal } from '@/components/admin/modals/ProjectDetailModal';
 
 interface Project {
   id: string;
@@ -119,6 +120,8 @@ const AdminProjects = () => {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -390,9 +393,10 @@ const AdminProjects = () => {
             <Card 
               key={project.id}
               className={cn(
-                "hover:shadow-md transition-shadow",
+                "hover:shadow-md transition-shadow cursor-pointer",
                 !project.is_active && "opacity-60"
               )}
+              onClick={() => { setSelectedProjectId(project.id); setIsDetailModalOpen(true); }}
             >
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
@@ -584,6 +588,14 @@ const AdminProjects = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Project Detail Modal */}
+      <ProjectDetailModal
+        projectId={selectedProjectId}
+        open={isDetailModalOpen}
+        onOpenChange={setIsDetailModalOpen}
+        onSaved={fetchProjects}
+      />
     </div>
   );
 };
