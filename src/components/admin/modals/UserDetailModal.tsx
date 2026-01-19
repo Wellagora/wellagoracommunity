@@ -9,12 +9,14 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 
+type UserRoleType = "business" | "citizen" | "creator" | "expert" | "government" | "member" | "ngo" | "sponsor";
+
 interface UserProfile {
   id: string;
   email: string;
   first_name: string | null;
   last_name: string | null;
-  user_role: string;
+  user_role: UserRoleType;
   is_super_admin: boolean | null;
   created_at: string;
   organization_name: string | null;
@@ -126,7 +128,7 @@ export function UserDetailModal(props: {
                 </div>
                 <div className="space-y-2 sm:col-span-2">
                   <Label>Szerepkör</Label>
-                  <Select value={profile.user_role} onValueChange={(v) => setProfile({ ...profile, user_role: v })}>
+                  <Select value={profile.user_role} onValueChange={(v) => setProfile({ ...profile, user_role: v as UserRoleType })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="member">Tag</SelectItem>
