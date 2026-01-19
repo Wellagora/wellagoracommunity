@@ -163,6 +163,19 @@ const AdminProjects = () => {
 
   useEffect(() => {
     fetchProjects();
+
+    // Extra refresh to pick up newly created "Teszt Projekt" without reload
+    const t = window.setTimeout(() => fetchProjects(), 600);
+
+    const onFocus = () => fetchProjects();
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onFocus);
+
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onFocus);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
