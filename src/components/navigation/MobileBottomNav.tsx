@@ -24,12 +24,16 @@ const getEffectiveRole = (userRole: string | undefined): 'member' | 'expert' | '
 
 const MobileBottomNav = () => {
   const { t } = useLanguage();
-  const { user, profile } = useAuth();
+  const { user, profile, viewAsRole } = useAuth();
   const location = useLocation();
   const [unreadCount, setUnreadCount] = useState(0);
 
   // Determine user's role from profile
-  const effectiveRole = getEffectiveRole(profile?.user_role);
+  const baseRole = getEffectiveRole(profile?.user_role);
+  const isSuperAdmin = profile?.is_super_admin === true;
+  
+  // Super admin can view as different role
+  const effectiveRole = (isSuperAdmin && viewAsRole) ? viewAsRole : baseRole;
 
   // Load unread notifications count
   useEffect(() => {
@@ -80,11 +84,11 @@ const MobileBottomNav = () => {
 
   // STRICT Role-specific navigation items - each role sees ONLY their items
   const getNavItems = (): NavItem[] => {
-    // Members see: Piactér, Agórám, Értesítések, Profil
+    // Members see: Piactér, Kedvencek, Értesítések, Profil
     if (effectiveRole === 'member') {
       return [
         { path: "/programs", icon: Store, labelKey: "mobile_nav.discover" },
-        { path: "/my-agora", icon: LayoutDashboard, labelKey: "mobile_nav.my_agora" },
+        { path: "/kedvencek", icon: Heart, labelKey: "mobile_nav.favorites" },
         { path: "/ertesitesek", icon: Bell, labelKey: "mobile_nav.notifications" },
         { path: "/profile", icon: User, labelKey: "mobile_nav.profile" },
       ];
