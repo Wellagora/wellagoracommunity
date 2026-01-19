@@ -22,7 +22,9 @@ import {
   MoreHorizontal,
   User,
   Tag,
-  Plus
+  Plus,
+  Building2,
+  Users
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -45,6 +47,9 @@ interface Program {
   project_id: string | null;
   expert_id: string | null;
   expert_name?: string;
+  sponsor_name?: string;
+  seats_used?: number;
+  seats_max?: number;
 }
 
 // New mock programs with different statuses for workflow testing
@@ -161,6 +166,26 @@ const AdminPrograms = () => {
         });
       }
       
+      // Fetch sponsor information for each program from content_sponsorships
+      const programIds = data?.map(d => d.id) || [];
+      let sponsorshipsMap: Record<string, { sponsor_name: string; seats_used: number; seats_max: number }> = {};
+      
+      if (programIds.length > 0) {
+        const { data: sponsorshipsData } = await supabase
+          .from('content_sponsorships')
+          .select('content_id, max_sponsored_seats, sponsored_seats_used, sponsors(name)')
+          .in('content_id', programIds)
+          .eq('is_active', true);
+        
+        sponsorshipsData?.forEach((s: any) => {
+          sponsorshipsMap[s.content_id] = {
+            sponsor_name: s.sponsors?.name || 'Támogatott',
+            seats_used: s.sponsored_seats_used || 0,
+            seats_max: s.max_sponsored_seats || 0
+          };
+        });
+      }
+      
       // Map expert_contents to our Program interface
       // is_published: true = published, false + reviewed_at = rejected, else draft/pending
       setPrograms(data?.map(d => {
@@ -174,6 +199,8 @@ const AdminPrograms = () => {
           publication_status = 'pending_review';
         }
         
+        const sponsorInfo = sponsorshipsMap[d.id];
+        
         return {
           id: d.id,
           title: d.title,
@@ -185,7 +212,10 @@ const AdminPrograms = () => {
           image_url: d.image_url,
           project_id: d.region_id,
           expert_id: d.creator_id,
-          expert_name: d.creator_id ? expertsMap[d.creator_id] : undefined
+          expert_name: d.creator_id ? expertsMap[d.creator_id] : undefined,
+          sponsor_name: sponsorInfo?.sponsor_name,
+          seats_used: sponsorInfo?.seats_used,
+          seats_max: sponsorInfo?.seats_max
         };
       }) || []);
     } catch (error) {
@@ -407,11 +437,27 @@ const AdminPrograms = () => {
                     <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                       {program.description}
                     </p>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2 flex-wrap">
                       {program.expert_name && (
                         <span className="flex items-center gap-1">
                           <User className="h-4 w-4" />
                           {program.expert_name}
+                        </span>
+                      )}
+                      {program.sponsor_name && (
+                        <span className="flex items-center gap-1 text-amber-600">
+                          <Building2 className="h-4 w-4" />
+                          {program.sponsor_name}
+                        </span>
+                      )}
+                      {program.seats_max !== undefined && program.seats_max > 0 && (
+                        <span className={cn(
+                          "flex items-center gap-1",
+                          program.seats_used === program.seats_max ? "text-red-600 font-medium" : ""
+                        )}>
+                          <Users className="h-4 w-4" />
+                          {program.seats_used}/{program.seats_max}
+                          {program.seats_used === program.seats_max && " (TELT)"}
                         </span>
                       )}
                       <span className="font-medium text-foreground">

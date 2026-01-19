@@ -233,10 +233,19 @@ const AdminUsers = () => {
   const filteredUsers = useMemo(() => {
     let result = users;
 
-    // Filter by role tab
+    // Filter by role tab - map tab values to actual database roles
     if (activeTab !== 'all') {
       if (activeTab === 'superAdmin') {
         result = result.filter(user => user.is_super_admin);
+      } else if (activeTab === 'expert') {
+        // 'expert' tab shows both 'expert' and 'creator' roles
+        result = result.filter(user => ['expert', 'creator'].includes(user.user_role));
+      } else if (activeTab === 'sponsor') {
+        // 'sponsor' tab shows all sponsor-type roles
+        result = result.filter(user => ['sponsor', 'business', 'government', 'ngo'].includes(user.user_role));
+      } else if (activeTab === 'creator') {
+        // Handle direct URL param for creator role
+        result = result.filter(user => ['expert', 'creator'].includes(user.user_role));
       } else {
         result = result.filter(user => user.user_role === activeTab);
       }
@@ -255,11 +264,12 @@ const AdminUsers = () => {
   }, [users, activeTab, searchQuery]);
 
   // Role counts - use is_super_admin for admin count since there's no 'admin' role
+  // Map both 'expert' and 'creator' to expert count, 'sponsor' and business roles to sponsor count
   const roleCounts = useMemo(() => ({
     all: users.length,
     member: users.filter(u => u.user_role === 'member').length,
-    expert: users.filter(u => u.user_role === 'expert').length,
-    sponsor: users.filter(u => u.user_role === 'sponsor').length,
+    expert: users.filter(u => ['expert', 'creator'].includes(u.user_role)).length,
+    sponsor: users.filter(u => ['sponsor', 'business', 'government', 'ngo'].includes(u.user_role)).length,
     superAdmin: users.filter(u => u.is_super_admin).length,
   }), [users]);
 

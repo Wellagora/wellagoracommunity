@@ -135,10 +135,11 @@ const AdminExperts = () => {
       if (isDemoMode) {
         setExperts(MOCK_EXPERTS);
       } else {
+        // Query for both 'expert' and 'creator' roles to match all expert profiles
         const { data, error } = await supabase
           .from('profiles')
           .select('id, first_name, last_name, email, avatar_url, expert_title, verification_status, created_at')
-          .eq('user_role', 'expert')
+          .in('user_role', ['expert', 'creator'])
           .order('created_at', { ascending: false });
 
         if (error) throw error;
