@@ -60,7 +60,6 @@ import {
   Download,
   RefreshCw,
   Wallet,
-  Target,
   Award,
   UserCheck,
   Trash2,
@@ -90,7 +89,8 @@ interface ProjectStats {
   totalExperts: number;
   totalPrograms: number;
   totalEvents: number;
-  totalBudgetUsed: number;
+  totalSponsorBudget: number;
+  usedBudget: number;
   activeSponsorships: number;
 }
 
@@ -183,7 +183,8 @@ const AdminProjectHub = () => {
     totalExperts: 0,
     totalPrograms: 0,
     totalEvents: 0,
-    totalBudgetUsed: 0,
+    totalSponsorBudget: 0,
+    usedBudget: 0,
     activeSponsorships: 0,
   });
   const [experts, setExperts] = useState<Expert[]>([]);
@@ -330,8 +331,8 @@ const AdminProjectHub = () => {
         setSponsors([]);
       }
 
-      // Calculate total budget from sponsorships
-      const totalBudget = sponsorshipsData?.reduce((sum, s) => sum + (s.credit_cost || 0), 0) || 0;
+      // Calculate total sponsor budget from sponsorships
+      const totalSponsorBudget = sponsorshipsData?.reduce((sum, s) => sum + (s.credit_cost || 0), 0) || 0;
 
       // Calculate stats
       const { count: participantCount } = await supabase
@@ -392,12 +393,23 @@ const AdminProjectHub = () => {
       // Calculate stats - use content_access count for participants
       const accessParticipantCount = participantsData.length;
 
+      // Calculate used budget from content_access (amount_paid)
+      let usedBudget = 0;
+      if (programIds.length > 0) {
+        const { data: accessAmounts } = await supabase
+          .from('content_access')
+          .select('amount_paid')
+          .in('content_id', programIds);
+        usedBudget = accessAmounts?.reduce((sum, a) => sum + (a.amount_paid || 0), 0) || 0;
+      }
+
       setStats({
         totalParticipants: accessParticipantCount || participantCount || 0,
         totalExperts: expertCount || 0,
         totalPrograms: programCount || 0,
         totalEvents: eventCount || 0,
-        totalBudgetUsed: totalBudget,
+        totalSponsorBudget,
+        usedBudget,
         activeSponsorships: sponsorshipsData?.length || 0,
       });
 
@@ -950,7 +962,7 @@ const AdminProjectHub = () => {
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6">
           {/* KPI Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <Card>
               <CardContent className="pt-6">
                 <div className="flex items-center gap-3">
@@ -992,66 +1004,45 @@ const AdminProjectHub = () => {
                 </div>
               </CardContent>
             </Card>
-
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/30">
-                    <Wallet className="h-5 w-5 text-amber-600" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold">{stats.totalBudgetUsed.toLocaleString('hu-HU')}</p>
-                    <p className="text-xs text-muted-foreground">{getCurrencySymbol()} költség</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </div>
 
-          {/* Regional ROI */}
+          {/* Aktuális Egyenleg (Current Balance) */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5" />
-                Regionális ROI
+                <Wallet className="h-5 w-5" />
+                Aktuális Egyenleg
               </CardTitle>
               <CardDescription>
-                Költség per elért állampolgár ebben a régióban
+                Szponzori keret és felhasználás ezen a projekten
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid sm:grid-cols-3 gap-6">
+              <div className="grid sm:grid-cols-2 gap-6">
                 <div className="text-center p-4 rounded-lg bg-muted/50">
                   <p className="text-3xl font-bold text-emerald-600">
-                    {stats.totalParticipants > 0 
-                      ? Math.round(stats.totalBudgetUsed / stats.totalParticipants).toLocaleString('hu-HU')
-                      : 0
-                    } {getCurrencySymbol()}
+                    {stats.totalSponsorBudget.toLocaleString('hu-HU')} {getCurrencySymbol()}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Költség / résztvevő
+                    Összes szponzori keret
                   </p>
                 </div>
                 <div className="text-center p-4 rounded-lg bg-muted/50">
                   <p className="text-3xl font-bold text-blue-600">
-                    {stats.totalPrograms > 0 
-                      ? Math.round(stats.totalParticipants / stats.totalPrograms)
-                      : 0
-                    }
+                    {stats.usedBudget.toLocaleString('hu-HU')} {getCurrencySymbol()}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Átlag résztvevő / program
-                  </p>
-                </div>
-                <div className="text-center p-4 rounded-lg bg-muted/50">
-                  <p className="text-3xl font-bold text-purple-600">
-                    {stats.activeSponsorships}
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Aktív szponzor
+                    Felhasznált keret
                   </p>
                 </div>
               </div>
+              {stats.totalSponsorBudget > 0 && (
+                <div className="mt-4 text-center text-sm text-muted-foreground">
+                  Fennmaradó keret: <span className="font-semibold text-foreground">
+                    {(stats.totalSponsorBudget - stats.usedBudget).toLocaleString('hu-HU')} {getCurrencySymbol()}
+                  </span>
+                </div>
+              )}
             </CardContent>
           </Card>
 
