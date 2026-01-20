@@ -221,13 +221,14 @@ const Navigation = () => {
 
   // STRICT Role-based navigation - each role sees ONLY their items
   const navItems = useMemo(() => {
-    // Logged-out users: Home, Marketplace, Events, Partners
+    // Logged-out users: Home, Marketplace, Events, Partners, Community
     if (!user || !profile) {
       return [
         { path: "/", label: t("nav.home"), icon: Home },
         { path: "/programs", label: t("nav.marketplace"), icon: Store },
         { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
         { path: "/partners", label: t("nav.partners") || "Partnerek", icon: Building2 },
+        { path: "/community", label: t("nav.community"), icon: UsersIcon },
       ];
     }
 
