@@ -135,10 +135,11 @@ function App() {
                             <Route path="/" element={<Index />} />
                           <Route path="/dashboard/handprint" element={<HandprintPage />} />
                           <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
-                          {/* Member routes - redirect legacy paths to /programs */}
-                          <Route path="/dashboard" element={<Navigate to="/programs" replace />} />
-                          <Route path="/iranyitopult" element={<Navigate to="/programs" replace />} />
-                          <Route path="/sajat-kozpont" element={<Navigate to="/programs" replace />} />
+                          {/* Member routes - redirect legacy paths to /my-agora */}
+                          <Route path="/dashboard" element={<Navigate to="/my-agora" replace />} />
+                          <Route path="/member-dashboard" element={<Navigate to="/my-agora" replace />} />
+                          <Route path="/iranyitopult" element={<Navigate to="/my-agora" replace />} />
+                          <Route path="/sajat-kozpont" element={<Navigate to="/my-agora" replace />} />
                           {/* Admin routes redirect to admin-panel for super admins */}
                           <Route path="/admin" element={<Navigate to="/admin-panel" replace />} />
                           <Route path="/admin-dashboard" element={<Navigate to="/admin-panel" replace />} />
