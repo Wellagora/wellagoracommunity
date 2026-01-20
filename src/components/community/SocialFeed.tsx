@@ -152,7 +152,7 @@ const SocialFeed = () => {
 
       {/* Post Creator */}
       {user && (
-        <Card className="mb-6 border-dashed border-2 border-primary/20 hover:border-primary/40 transition-colors">
+        <Card className="mb-6 border border-border/50 hover:border-border transition-colors bg-card/80 backdrop-blur-sm shadow-sm">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <Avatar>

@@ -146,7 +146,7 @@ const EventsPage = () => {
         <div className="container mx-auto px-4 pt-0 pb-8">
           {/* Sticky Header Section - Title, Subtitle, Search and Filters */}
           <div className="sticky top-0 z-30 -mx-4 px-4 pt-6 pb-5 mb-6 bg-white/95 backdrop-blur-sm border-b border-border/50 shadow-sm">
-            <h1 className="text-3xl font-bold mb-1">{t("events.title")}</h1>
+            <h1 className="text-3xl font-bold mb-1">{t("events.upcoming")}</h1>
             <p className="text-muted-foreground mb-5">{t("events.discover_subtitle")}</p>
 
             {/* Filters - Inside sticky header */}

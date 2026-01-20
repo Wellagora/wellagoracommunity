@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useLocalizedEvent } from "@/hooks/useLocalizedEvent";
 import { Calendar, MapPin, Clock, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 import { hu, de, enUS } from "date-fns/locale";
@@ -20,6 +21,8 @@ const villageColors: Record<string, string> = {
 interface Event {
   id: string;
   title: string;
+  title_en?: string | null;
+  title_de?: string | null;
   start_date: string;
   location_name: string | null;
   village: string | null;
@@ -27,6 +30,7 @@ interface Event {
 
 export function UpcomingEventsSection() {
   const { t, language } = useLanguage();
+  const { getLocalizedTitle } = useLocalizedEvent();
   const dateLocale = language === "hu" ? hu : language === "de" ? de : enUS;
 
   const { data: events, isLoading } = useQuery({
@@ -34,7 +38,7 @@ export function UpcomingEventsSection() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("events")
-        .select("id, title, start_date, location_name, village")
+        .select("id, title, title_en, title_de, start_date, location_name, village")
         .gte("start_date", new Date().toISOString())
         .eq("is_public", true)
         .order("start_date", { ascending: true })
@@ -95,7 +99,7 @@ export function UpcomingEventsSection() {
               <Calendar className="w-6 h-6 text-primary" />
               <h2 className="text-2xl font-bold">{t("events.upcoming")}</h2>
             </div>
-            <Link to="/events">
+            <Link to="/esemenyek">
               <Button variant="ghost" className="gap-2">
                 {t("events.view_all")}
                 <ChevronRight className="w-4 h-4" />
@@ -132,7 +136,7 @@ export function UpcomingEventsSection() {
                         {/* Event details */}
                         <div className="flex-1 min-w-0">
                           <h3 className="font-semibold text-foreground mb-2 line-clamp-2">
-                            {event.title}
+                            {getLocalizedTitle(event)}
                           </h3>
 
                           <div className="space-y-1 text-sm text-muted-foreground">
@@ -158,7 +162,7 @@ export function UpcomingEventsSection() {
                         </div>
                       </div>
 
-                      <Link to="/events" className="block mt-4">
+                      <Link to={`/esemenyek/${event.id}`} className="block mt-4">
                         <Button variant="secondary" size="sm" className="w-full">
                           {t("common.details")}
                         </Button>
