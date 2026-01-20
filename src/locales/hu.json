@@ -4295,6 +4295,11 @@
   "events.notGoing": "Nem",
   "events.youMaybeGoing": "Talán részt veszel",
   "events.getDirections": "Útvonaltervezés",
+  "events.sponsors": "Támogatók",
+  "events.noSponsorsYet": "Ez az esemény még nem rendelkezik támogatóval.",
+  "events.becomeSponsor": "Támogasd ezt az eseményt",
+  "events.sponsorCTA": "Szeretnéd támogatni ezt az eseményt?",
+  "events.learnAboutSponsorship": "Tudj meg többet a szponzorációról",
   "dashboard.activity_hint": "Böngéssz a programok között eseményekért",
   "nearby.title": "Keresés a közelemben",
   "nearby.partners": "Közeli partnerek",
@@ -4652,7 +4657,8 @@
     "complete_setup": "Befejezés",
     "error": "Hiba",
     "success": "Sikeres",
-    "confirm_delete": "Biztosan törölni szeretnéd?"
+    "confirm_delete": "Biztosan törölni szeretnéd?",
+    "login": "Bejelentkezés"
   },
   "admin": {
     "modal": {

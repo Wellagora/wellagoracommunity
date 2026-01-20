@@ -4189,6 +4189,11 @@
   "events.notGoing": "No",
   "events.youMaybeGoing": "You might attend",
   "events.getDirections": "Get Directions",
+  "events.sponsors": "Sponsors",
+  "events.noSponsorsYet": "This event doesn't have sponsors yet.",
+  "events.becomeSponsor": "Sponsor this event",
+  "events.sponsorCTA": "Would you like to sponsor this event?",
+  "events.learnAboutSponsorship": "Learn about sponsorship",
   "dashboard.activity_hint": "Browse programs for events",
   "nearby.title": "Search nearby",
   "nearby.partners": "Nearby partners",
@@ -4534,7 +4539,8 @@
     "complete_setup": "Complete Setup",
     "error": "Error",
     "success": "Success",
-    "confirm_delete": "Are you sure you want to delete this?"
+    "confirm_delete": "Are you sure you want to delete this?",
+    "login": "Login"
   },
   "admin": {
     "modal": {

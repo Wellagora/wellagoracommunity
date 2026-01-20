@@ -1133,6 +1133,51 @@ export type Database = {
           },
         ]
       }
+      event_sponsors: {
+        Row: {
+          contribution_amount: number | null
+          created_at: string | null
+          event_id: string
+          id: string
+          is_active: boolean | null
+          sponsor_id: string
+          tier: string | null
+        }
+        Insert: {
+          contribution_amount?: number | null
+          created_at?: string | null
+          event_id: string
+          id?: string
+          is_active?: boolean | null
+          sponsor_id: string
+          tier?: string | null
+        }
+        Update: {
+          contribution_amount?: number | null
+          created_at?: string | null
+          event_id?: string
+          id?: string
+          is_active?: boolean | null
+          sponsor_id?: string
+          tier?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_sponsors_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_sponsors_sponsor_id_fkey"
+            columns: ["sponsor_id"]
+            isOneToOne: false
+            referencedRelation: "sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           created_at: string | null

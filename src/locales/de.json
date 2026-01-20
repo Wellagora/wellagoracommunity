@@ -3902,6 +3902,11 @@
   "events.notGoing": "Nein",
   "events.youMaybeGoing": "Vielleicht dabei",
   "events.getDirections": "Route planen",
+  "events.sponsors": "Sponsoren",
+  "events.noSponsorsYet": "Diese Veranstaltung hat noch keine Sponsoren.",
+  "events.becomeSponsor": "Diese Veranstaltung sponsern",
+  "events.sponsorCTA": "Möchten Sie diese Veranstaltung sponsern?",
+  "events.learnAboutSponsorship": "Mehr über Sponsoring erfahren",
   "dashboard.activity_hint": "Durchsuche Programme nach Veranstaltungen",
   "nearby.title": "In der Nähe suchen",
   "nearby.partners": "Partner in der Nähe",
@@ -4246,7 +4251,8 @@
     "complete_setup": "Einrichtung abschließen",
     "error": "Fehler",
     "success": "Erfolgreich",
-    "confirm_delete": "Möchten Sie dies wirklich löschen?"
+    "confirm_delete": "Möchten Sie dies wirklich löschen?",
+    "login": "Anmelden"
   },
   "admin": {
     "modal": {
