@@ -124,11 +124,48 @@ const EventDetailPage = () => {
           .insert({ event_id: id, user_id: user.id, status });
         if (error) throw error;
       }
+
+      // Send confirmation email for "going" status
+      if (status === "going" && event) {
+        const dateInfo = formatEventDate(event.start_date);
+        const isOnlineEvent = event.location_name?.toLowerCase().includes("online") || false;
+
+        try {
+          // Fetch user profile for name
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("first_name, email, preferred_language")
+            .eq("id", user.id)
+            .single();
+
+          await supabase.functions.invoke("send-event-rsvp-confirmation", {
+            body: {
+              user_id: user.id,
+              user_email: profile?.email || user.email,
+              user_name: profile?.first_name,
+              event_id: id,
+              event_title: event.title,
+              event_date: event.start_date,
+              event_time: dateInfo.time,
+              event_location: event.location_name || event.location_address,
+              meeting_link: isOnlineEvent ? "https://meet.google.com/example" : undefined,
+              is_online: isOnlineEvent,
+              language: (profile?.preferred_language as "hu" | "en" | "de") || language,
+            },
+          });
+          console.log("RSVP confirmation email sent");
+        } catch (emailError) {
+          console.error("Failed to send confirmation email:", emailError);
+          // Don't fail the RSVP if email fails
+        }
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["eventRsvp", id] });
       queryClient.invalidateQueries({ queryKey: ["event", id] });
       queryClient.invalidateQueries({ queryKey: ["eventParticipants", id] });
+      queryClient.invalidateQueries({ queryKey: ["myEvents"] });
+      queryClient.invalidateQueries({ queryKey: ["myEventsCount"] });
       toast.success(t("events.rsvpSuccess") || "RSVP updated!");
     },
     onError: () => {
