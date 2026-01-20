@@ -4113,5 +4113,25 @@
   "common.logout": "Abmelden",
   "common.user": "Benutzer",
 
-  "roles.admin": "Admin"
+  "roles.admin": "Admin",
+
+  "my_agora": {
+    "title": "Meine Agora",
+    "subtitle": "Deine Programme und Gutscheine an einem Ort",
+    "my_programs": "Meine Programme",
+    "my_vouchers": "Meine Gutscheine",
+    "favorites": "Favoriten",
+    "events": "Veranstaltungen",
+    "programs_title": "Meine Programme",
+    "programs_description": "Von dir gestartete oder abgeschlossene Programme",
+    "no_programs": "Du hast noch an keinem Programm teilgenommen",
+    "browse_programs": "Programme durchsuchen",
+    "view_all": "Alle anzeigen",
+    "vouchers_title": "Meine Gutscheine",
+    "vouchers_description": "Gesponserte Zugänge und Gutscheine",
+    "no_vouchers": "Du hast noch keine Gutscheine",
+    "sponsored": "Gesponsert",
+    "voucher": "Gutschein",
+    "active": "Aktiv"
+  }
 }

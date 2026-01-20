@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useLanguage, Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +10,16 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BookOpen, Ticket, Star, ArrowRight, Calendar, Heart } from "lucide-react";
 import { format } from "date-fns";
-import { hu } from "date-fns/locale";
+import { hu, de, enUS } from "date-fns/locale";
+
+const getDateLocale = (language: Language) => {
+  switch (language) {
+    case 'hu': return hu;
+    case 'de': return de;
+    case 'en': return enUS;
+    default: return enUS;
+  }
+};
 
 interface JoinedProgram {
   id: string;
@@ -30,8 +39,9 @@ interface UserVoucher {
 
 const MyAgoraPage = () => {
   const { user, profile, loading: authLoading } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
+  const dateLocale = getDateLocale(language);
   const [loading, setLoading] = useState(true);
   const [programs, setPrograms] = useState<JoinedProgram[]>([]);
   const [vouchers, setVouchers] = useState<UserVoucher[]>([]);
@@ -97,7 +107,7 @@ const MyAgoraPage = () => {
 
   if (authLoading) {
     return (
-      <DashboardLayout title="Az én Agórám" icon={Star} iconColor="text-emerald-500">
+      <DashboardLayout title={t("my_agora.title")} icon={Star} iconColor="text-emerald-500">
         <div className="space-y-4">
           <Skeleton className="h-32 w-full" />
           <Skeleton className="h-32 w-full" />
@@ -113,8 +123,8 @@ const MyAgoraPage = () => {
 
   return (
     <DashboardLayout
-      title="Az én Agórám"
-      subtitle="Programjaid és kuponjaid egy helyen"
+      title={t("my_agora.title")}
+      subtitle={t("my_agora.subtitle")}
       icon={Star}
       iconColor="text-emerald-500"
     >
@@ -129,7 +139,7 @@ const MyAgoraPage = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{programs.length}</p>
-                  <p className="text-xs text-muted-foreground">Programom</p>
+                  <p className="text-xs text-muted-foreground">{t("my_agora.my_programs")}</p>
                 </div>
               </div>
             </CardContent>
@@ -143,7 +153,7 @@ const MyAgoraPage = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{vouchers.length}</p>
-                  <p className="text-xs text-muted-foreground">Kuponom</p>
+                  <p className="text-xs text-muted-foreground">{t("my_agora.my_vouchers")}</p>
                 </div>
               </div>
             </CardContent>
@@ -157,7 +167,7 @@ const MyAgoraPage = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold">0</p>
-                  <p className="text-xs text-muted-foreground">Kedvenc</p>
+                  <p className="text-xs text-muted-foreground">{t("my_agora.favorites")}</p>
                 </div>
               </div>
             </CardContent>
@@ -171,7 +181,7 @@ const MyAgoraPage = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold">0</p>
-                  <p className="text-xs text-muted-foreground">Esemény</p>
+                  <p className="text-xs text-muted-foreground">{t("my_agora.events")}</p>
                 </div>
               </div>
             </CardContent>
@@ -183,10 +193,10 @@ const MyAgoraPage = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BookOpen className="h-5 w-5" />
-              Programjaim
+              {t("my_agora.programs_title")}
             </CardTitle>
             <CardDescription>
-              Az általad elindított vagy befejezett programok
+              {t("my_agora.programs_description")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -198,9 +208,9 @@ const MyAgoraPage = () => {
             ) : programs.length === 0 ? (
               <div className="text-center py-8">
                 <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                <p className="text-muted-foreground mb-4">Még nem csatlakoztál egyetlen programhoz sem</p>
+                <p className="text-muted-foreground mb-4">{t("my_agora.no_programs")}</p>
                 <Button onClick={() => navigate("/programs")}>
-                  Programok böngészése
+                  {t("my_agora.browse_programs")}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
@@ -226,7 +236,7 @@ const MyAgoraPage = () => {
                           {program.category}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
-                          {format(new Date(program.purchased_at), "yyyy. MMM d.", { locale: hu })}
+                          {format(new Date(program.purchased_at), "PPP", { locale: dateLocale })}
                         </span>
                       </div>
                     </div>
@@ -235,7 +245,7 @@ const MyAgoraPage = () => {
                 ))}
                 {programs.length > 5 && (
                   <Button variant="outline" className="w-full" onClick={() => navigate("/my-learning")}>
-                    Összes megtekintése ({programs.length})
+                    {t("my_agora.view_all")} ({programs.length})
                   </Button>
                 )}
               </div>
@@ -248,10 +258,10 @@ const MyAgoraPage = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Ticket className="h-5 w-5" />
-              Kuponjaim
+              {t("my_agora.vouchers_title")}
             </CardTitle>
             <CardDescription>
-              Szponzorált hozzáférések és kuponok
+              {t("my_agora.vouchers_description")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -260,7 +270,7 @@ const MyAgoraPage = () => {
             ) : vouchers.length === 0 ? (
               <div className="text-center py-8">
                 <Ticket className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                <p className="text-muted-foreground">Még nincsenek kuponjaid</p>
+                <p className="text-muted-foreground">{t("my_agora.no_vouchers")}</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -275,11 +285,11 @@ const MyAgoraPage = () => {
                     <div className="flex-1 min-w-0">
                       <p className="font-medium truncate">{voucher.content_title}</p>
                       <p className="text-xs text-muted-foreground">
-                        {voucher.access_type === "sponsored" ? "Szponzorált" : "Kupon"} • {format(new Date(voucher.purchased_at), "yyyy. MMM d.", { locale: hu })}
+                        {voucher.access_type === "sponsored" ? t("my_agora.sponsored") : t("my_agora.voucher")} • {format(new Date(voucher.purchased_at), "PPP", { locale: dateLocale })}
                       </p>
                     </div>
                     <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-300">
-                      Aktív
+                      {t("my_agora.active")}
                     </Badge>
                   </div>
                 ))}

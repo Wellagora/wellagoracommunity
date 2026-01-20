@@ -4402,5 +4402,24 @@
     "cta_button": "Contact us",
     "not_found": "Partner not found",
     "go_back": "Back to partners"
+  },
+  "my_agora": {
+    "title": "My Agora",
+    "subtitle": "Your programs and vouchers in one place",
+    "my_programs": "My Programs",
+    "my_vouchers": "My Vouchers",
+    "favorites": "Favorites",
+    "events": "Events",
+    "programs_title": "My Programs",
+    "programs_description": "Programs you've started or completed",
+    "no_programs": "You haven't joined any programs yet",
+    "browse_programs": "Browse Programs",
+    "view_all": "View all",
+    "vouchers_title": "My Vouchers",
+    "vouchers_description": "Sponsored access and vouchers",
+    "no_vouchers": "You don't have any vouchers yet",
+    "sponsored": "Sponsored",
+    "voucher": "Voucher",
+    "active": "Active"
   }
 }
