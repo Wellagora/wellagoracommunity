@@ -20,6 +20,13 @@ interface Event {
   image_url: string | null;
 }
 
+// Hardcoded translations for seed events (until DB has title_en/title_de columns)
+const EVENT_TITLE_TRANSLATIONS: Record<string, { en: string; de: string }> = {
+  "Wellness Hétvége": { en: "Wellness Weekend", de: "Wellness-Wochenende" },
+  "Közösségi Főzés": { en: "Community Cooking", de: "Gemeinschaftskochen" },
+  "Tavaszi Kertészkedés": { en: "Spring Gardening", de: "Frühlingsgärtnerei" },
+};
+
 const FeaturedEventsGrid = () => {
   const { t, language } = useLanguage();
   const dateLocale = language === "hu" ? hu : language === "de" ? de : enUS;
@@ -39,6 +46,15 @@ const FeaturedEventsGrid = () => {
       return data as Event[];
     },
   });
+
+  const getLocalizedEventTitle = (event: Event): string => {
+    if (language === "hu") return event.title;
+    const translations = EVENT_TITLE_TRANSLATIONS[event.title];
+    if (translations) {
+      return language === "en" ? translations.en : translations.de;
+    }
+    return event.title; // Fallback to Hungarian
+  };
 
   const formatEventDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -96,7 +112,7 @@ const FeaturedEventsGrid = () => {
               </div>
               <h2 className="text-2xl md:text-3xl font-bold">{t("index.featured_events_title")}</h2>
             </div>
-            <Link to="/events">
+            <Link to="/esemenyek">
               <Button variant="ghost" className="gap-2">
                 {t("events.view_all")}
                 <ChevronRight className="w-4 h-4" />
@@ -121,7 +137,7 @@ const FeaturedEventsGrid = () => {
                     <div className="aspect-video bg-gradient-to-br from-primary/10 to-accent/10 relative overflow-hidden">
                       <img
                         src={event.image_url || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80'}
-                        alt={event.title}
+                        alt={getLocalizedEventTitle(event)}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         onError={(e) => {
                           e.currentTarget.src = 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80';
@@ -136,7 +152,7 @@ const FeaturedEventsGrid = () => {
 
                     <CardContent className="p-5">
                       <h3 className="font-semibold text-lg text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors">
-                        {event.title}
+                        {getLocalizedEventTitle(event)}
                       </h3>
 
                       <div className="space-y-2 text-sm text-muted-foreground mb-4">
@@ -158,7 +174,7 @@ const FeaturedEventsGrid = () => {
                         </Badge>
                       )}
 
-                      <Link to="/events">
+                      <Link to={`/esemenyek/${event.id}`}>
                         <Button className="w-full" variant="outline">
                           {t("common.details")}
                         </Button>
