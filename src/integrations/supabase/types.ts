@@ -3918,6 +3918,7 @@ export type Database = {
         Args: { p_content_id: string; p_user_id: string }
         Returns: boolean
       }
+      current_user_is_super_admin: { Args: never; Returns: boolean }
       disablelongtransactions: { Args: never; Returns: string }
       dropgeometrycolumn:
         | {
@@ -4198,6 +4199,10 @@ export type Database = {
         Returns: boolean
       }
       is_super_admin: { Args: { check_user_id?: string }; Returns: boolean }
+      is_super_admin_from_permissions: {
+        Args: { check_user_id: string }
+        Returns: boolean
+      }
       log_audit: {
         Args: {
           p_action: string
