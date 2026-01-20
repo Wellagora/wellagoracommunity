@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -46,6 +47,7 @@ const EventCard = ({
   showRsvpButtons = true,
   variant = "default" 
 }: EventCardProps) => {
+  const navigate = useNavigate();
   const { t, language } = useLanguage();
   const dateLocale = language === "hu" ? hu : language === "de" ? de : enUS;
 
@@ -71,8 +73,15 @@ const EventCard = ({
 
   const imageHeight = variant === "compact" ? "h-32" : "h-44";
 
+  const handleCardClick = () => {
+    navigate(`/esemenyek/${event.id}`);
+  };
+
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow group bg-white border-border/40">
+    <Card 
+      className="overflow-hidden hover:shadow-lg transition-shadow group bg-white border-border/40 cursor-pointer"
+      onClick={handleCardClick}
+    >
       {/* Event Image - VIBRANT, no dark filters */}
       <div className={`relative ${imageHeight} overflow-hidden`}>
         <img
@@ -143,7 +152,7 @@ const EventCard = ({
 
         {/* RSVP Buttons */}
         {showRsvpButtons && onRsvp && (
-          <div className="flex gap-2 pt-2">
+          <div className="flex gap-2 pt-2" onClick={(e) => e.stopPropagation()}>
             <Button
               variant={rsvpStatus === "going" ? "default" : "outline"}
               size="sm"

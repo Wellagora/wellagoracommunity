@@ -76,6 +76,7 @@ const SponsorPublicProfilePage = lazy(() => import("@/pages/SponsorPublicProfile
 const OrganizationRegisterPage = lazy(() => import("@/pages/OrganizationRegisterPage"));
 const JoinOrganizationPage = lazy(() => import("@/pages/JoinOrganizationPage"));
 const EventsPage = lazy(() => import("@/pages/EventsPage"));
+const EventDetailPage = lazy(() => import("@/pages/EventDetailPage"));
 const CreatorDashboardPage = lazy(() => import("@/pages/CreatorDashboardPage"));
 const CreatorProgramNewPage = lazy(() => import("@/pages/CreatorProgramNewPage"));
 const CreatorProgramEditPage = lazy(() => import("@/pages/CreatorProgramEditPage"));
@@ -152,6 +153,7 @@ function App() {
                           <Route path="/events" element={<Navigate to="/esemenyek" replace />} />
                           <Route path="/elo-alkalmak" element={<Navigate to="/esemenyek" replace />} />
                           <Route path="/esemenyek" element={<EventsPage />} />
+                          <Route path="/esemenyek/:id" element={<EventDetailPage />} />
                           
                           {/* Partner routes */}
                           <Route path="/partners" element={<PartnersPage />} />
