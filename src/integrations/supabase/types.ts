@@ -1184,6 +1184,8 @@ export type Database = {
           created_by: string | null
           current_participants: number | null
           description: string | null
+          description_de: string | null
+          description_en: string | null
           end_date: string | null
           id: string
           image_url: string | null
@@ -1201,6 +1203,8 @@ export type Database = {
           start_date: string
           status: string | null
           title: string
+          title_de: string | null
+          title_en: string | null
           updated_at: string | null
           village: string | null
         }
@@ -1209,6 +1213,8 @@ export type Database = {
           created_by?: string | null
           current_participants?: number | null
           description?: string | null
+          description_de?: string | null
+          description_en?: string | null
           end_date?: string | null
           id?: string
           image_url?: string | null
@@ -1226,6 +1232,8 @@ export type Database = {
           start_date: string
           status?: string | null
           title: string
+          title_de?: string | null
+          title_en?: string | null
           updated_at?: string | null
           village?: string | null
         }
@@ -1234,6 +1242,8 @@ export type Database = {
           created_by?: string | null
           current_participants?: number | null
           description?: string | null
+          description_de?: string | null
+          description_en?: string | null
           end_date?: string | null
           id?: string
           image_url?: string | null
@@ -1251,6 +1261,8 @@ export type Database = {
           start_date?: string
           status?: string | null
           title?: string
+          title_de?: string | null
+          title_en?: string | null
           updated_at?: string | null
           village?: string | null
         }
