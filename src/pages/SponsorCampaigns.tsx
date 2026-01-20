@@ -9,8 +9,32 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
-import { Wallet, Plus, Users, Target, TrendingUp, ExternalLink } from "lucide-react";
+import { 
+  Wallet, 
+  Plus, 
+  Users, 
+  Target, 
+  TrendingUp, 
+  ExternalLink,
+  MoreVertical,
+  Pause,
+  Play,
+  FileBarChart,
+  Pencil,
+  Calendar,
+  Banknote
+} from "lucide-react";
+import { format } from "date-fns";
+import { hu, enUS, de } from "date-fns/locale";
+import { toast } from "sonner";
 
 interface Campaign {
   id: string;
@@ -22,16 +46,25 @@ interface Campaign {
   sponsored_seats_used: number;
   is_active: boolean;
   created_at: string;
+  status: 'active' | 'planned' | 'completed' | 'paused';
+  total_budget: number;
+  spent_budget: number;
+  campaign_type: string;
 }
+
+type StatusFilter = 'all' | 'active' | 'planned' | 'completed';
 
 const SponsorCampaigns = () => {
   const { user, profile, loading } = useAuth();
   const { t, language } = useLanguage();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [stats, setStats] = useState({
     totalCampaigns: 0,
     activeCampaigns: 0,
+    plannedCampaigns: 0,
+    completedCampaigns: 0,
     totalSeatsSponsored: 0,
     seatsUsed: 0,
   });
@@ -41,6 +74,14 @@ const SponsorCampaigns = () => {
       loadCampaigns();
     }
   }, [user]);
+
+  const getLocale = () => {
+    switch (language) {
+      case 'hu': return hu;
+      case 'de': return de;
+      default: return enUS;
+    }
+  };
 
   const loadCampaigns = async () => {
     if (!user) return;
@@ -57,9 +98,13 @@ const SponsorCampaigns = () => {
           sponsored_seats_used,
           is_active,
           created_at,
+          total_licenses,
+          used_licenses,
+          supported_category,
           expert_contents (
             id,
             title,
+            category,
             creator_id,
             profiles:creator_id (
               first_name,
@@ -72,30 +117,56 @@ const SponsorCampaigns = () => {
 
       if (error) throw error;
 
-      const formattedCampaigns: Campaign[] = (data || []).map((c: any) => ({
-        id: c.id,
-        content_id: c.content_id,
-        program_title: c.expert_contents?.title || 'Unknown Program',
-        expert_name: c.expert_contents?.profiles 
-          ? `${c.expert_contents.profiles.first_name} ${c.expert_contents.profiles.last_name}`
-          : 'Unknown Expert',
-        sponsor_contribution_huf: c.sponsor_contribution_huf || 0,
-        max_sponsored_seats: c.max_sponsored_seats || 0,
-        sponsored_seats_used: c.sponsored_seats_used || 0,
-        is_active: c.is_active !== false,
-        created_at: c.created_at,
-      }));
+      const formattedCampaigns: Campaign[] = (data || []).map((c: any) => {
+        const maxSeats = c.max_sponsored_seats || c.total_licenses || 0;
+        const usedSeats = c.sponsored_seats_used || c.used_licenses || 0;
+        const contributionPerSeat = c.sponsor_contribution_huf || 0;
+        const totalBudget = maxSeats * contributionPerSeat;
+        const spentBudget = usedSeats * contributionPerSeat;
+        
+        // Determine campaign status
+        let status: Campaign['status'] = 'active';
+        if (!c.is_active) {
+          status = usedSeats >= maxSeats ? 'completed' : 'paused';
+        } else if (usedSeats >= maxSeats && maxSeats > 0) {
+          status = 'completed';
+        } else if (usedSeats === 0) {
+          status = 'planned';
+        }
+        
+        return {
+          id: c.id,
+          content_id: c.content_id,
+          program_title: c.expert_contents?.title || 'Unknown Program',
+          expert_name: c.expert_contents?.profiles 
+            ? `${c.expert_contents.profiles.first_name} ${c.expert_contents.profiles.last_name}`
+            : 'Unknown Expert',
+          sponsor_contribution_huf: contributionPerSeat,
+          max_sponsored_seats: maxSeats,
+          sponsored_seats_used: usedSeats,
+          is_active: c.is_active !== false,
+          created_at: c.created_at,
+          status,
+          total_budget: totalBudget,
+          spent_budget: spentBudget,
+          campaign_type: c.supported_category || c.expert_contents?.category || 'general',
+        };
+      });
 
       setCampaigns(formattedCampaigns);
 
       // Calculate stats
-      const activeCampaigns = formattedCampaigns.filter(c => c.is_active);
+      const activeCampaigns = formattedCampaigns.filter(c => c.status === 'active');
+      const plannedCampaigns = formattedCampaigns.filter(c => c.status === 'planned');
+      const completedCampaigns = formattedCampaigns.filter(c => c.status === 'completed');
       const totalSeats = formattedCampaigns.reduce((sum, c) => sum + c.max_sponsored_seats, 0);
       const usedSeats = formattedCampaigns.reduce((sum, c) => sum + c.sponsored_seats_used, 0);
 
       setStats({
         totalCampaigns: formattedCampaigns.length,
         activeCampaigns: activeCampaigns.length,
+        plannedCampaigns: plannedCampaigns.length,
+        completedCampaigns: completedCampaigns.length,
         totalSeatsSponsored: totalSeats,
         seatsUsed: usedSeats,
       });
@@ -106,9 +177,75 @@ const SponsorCampaigns = () => {
     }
   };
 
+  const handleToggleCampaignStatus = async (campaignId: string, currentlyActive: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("content_sponsorships")
+        .update({ is_active: !currentlyActive })
+        .eq("id", campaignId);
+
+      if (error) throw error;
+
+      toast.success(
+        currentlyActive 
+          ? (language === 'hu' ? 'Kampány szüneteltetve' : 'Campaign paused')
+          : (language === 'hu' ? 'Kampány aktiválva' : 'Campaign activated')
+      );
+      
+      loadCampaigns();
+    } catch (error) {
+      console.error("Error toggling campaign:", error);
+      toast.error(language === 'hu' ? 'Hiba történt' : 'An error occurred');
+    }
+  };
+
   const formatCurrency = (amount: number) => {
     return `${amount.toLocaleString('hu-HU')} Ft`;
   };
+
+  const getStatusBadge = (status: Campaign['status']) => {
+    const badges = {
+      active: { 
+        className: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20", 
+        label: { hu: 'Aktív', en: 'Active', de: 'Aktiv' }
+      },
+      planned: { 
+        className: "bg-blue-500/10 text-blue-600 border-blue-500/20", 
+        label: { hu: 'Tervezett', en: 'Planned', de: 'Geplant' }
+      },
+      completed: { 
+        className: "bg-slate-500/10 text-slate-600 border-slate-500/20", 
+        label: { hu: 'Befejezett', en: 'Completed', de: 'Abgeschlossen' }
+      },
+      paused: { 
+        className: "bg-amber-500/10 text-amber-600 border-amber-500/20", 
+        label: { hu: 'Szüneteltetve', en: 'Paused', de: 'Pausiert' }
+      },
+    };
+    const badge = badges[status];
+    return (
+      <Badge className={badge.className}>
+        {badge.label[language as keyof typeof badge.label] || badge.label.en}
+      </Badge>
+    );
+  };
+
+  const getCampaignTypeLabel = (type: string) => {
+    const types: Record<string, { hu: string; en: string; de: string }> = {
+      sustainability: { hu: 'Fenntarthatóság', en: 'Sustainability', de: 'Nachhaltigkeit' },
+      workshop: { hu: 'Workshop', en: 'Workshop', de: 'Workshop' },
+      education: { hu: 'Oktatás', en: 'Education', de: 'Bildung' },
+      health: { hu: 'Egészség', en: 'Health', de: 'Gesundheit' },
+      general: { hu: 'Általános', en: 'General', de: 'Allgemein' },
+    };
+    const typeData = types[type] || types.general;
+    return typeData[language as keyof typeof typeData] || typeData.en;
+  };
+
+  const filteredCampaigns = campaigns.filter(campaign => {
+    if (statusFilter === 'all') return true;
+    return campaign.status === statusFilter;
+  });
 
   if (loading) {
     return <SponsorDashboardSkeleton />;
@@ -118,7 +255,6 @@ const SponsorCampaigns = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  // Check if user is sponsor or super admin
   const isSponsor = profile?.user_role && ['business', 'government', 'ngo', 'sponsor'].includes(profile.user_role);
   const isSuperAdmin = profile?.is_super_admin === true;
   
@@ -128,8 +264,8 @@ const SponsorCampaigns = () => {
 
   return (
     <DashboardLayout
-      title={t("nav.my_campaigns") || "Kampányaim"}
-      subtitle={t("sponsor.campaigns_subtitle") || "Manage your active sponsorships"}
+      title={t("sponsor.campaigns_title") || (language === 'hu' ? "Kampányaim" : "My Campaigns")}
+      subtitle={t("sponsor.campaigns_subtitle") || (language === 'hu' ? "Aktív szponzorációk kezelése" : "Manage your active sponsorships")}
       icon={Wallet}
       iconColor="text-blue-500"
     >
@@ -141,7 +277,7 @@ const SponsorCampaigns = () => {
               <div className="text-center">
                 <p className="text-3xl font-bold text-foreground">{stats.totalCampaigns}</p>
                 <p className="text-sm text-muted-foreground">
-                  {language === 'hu' ? 'Összes kampány' : 'Total Campaigns'}
+                  {language === 'hu' ? 'Összes kampány' : language === 'de' ? 'Alle Kampagnen' : 'Total Campaigns'}
                 </p>
               </div>
             </CardContent>
@@ -152,7 +288,7 @@ const SponsorCampaigns = () => {
               <div className="text-center">
                 <p className="text-3xl font-bold text-emerald-600">{stats.activeCampaigns}</p>
                 <p className="text-sm text-muted-foreground">
-                  {language === 'hu' ? 'Aktív kampány' : 'Active'}
+                  {language === 'hu' ? 'Aktív' : language === 'de' ? 'Aktiv' : 'Active'}
                 </p>
               </div>
             </CardContent>
@@ -163,7 +299,7 @@ const SponsorCampaigns = () => {
               <div className="text-center">
                 <p className="text-3xl font-bold text-foreground">{stats.totalSeatsSponsored}</p>
                 <p className="text-sm text-muted-foreground">
-                  {language === 'hu' ? 'Szponzorált helyek' : 'Sponsored Seats'}
+                  {language === 'hu' ? 'Szponzorált helyek' : language === 'de' ? 'Gesponserte Plätze' : 'Sponsored Seats'}
                 </p>
               </div>
             </CardContent>
@@ -174,41 +310,57 @@ const SponsorCampaigns = () => {
               <div className="text-center">
                 <p className="text-3xl font-bold text-blue-600">{stats.seatsUsed}</p>
                 <p className="text-sm text-muted-foreground">
-                  {language === 'hu' ? 'Felhasznált' : 'Used'}
+                  {language === 'hu' ? 'Felhasznált' : language === 'de' ? 'Verwendet' : 'Used'}
                 </p>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Campaign Actions */}
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold">
-            {language === 'hu' ? 'Aktív szponzorációk' : 'Active Sponsorships'}
-          </h2>
+        {/* Filters and Actions */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as StatusFilter)}>
+            <TabsList className="bg-white/80 backdrop-blur-md">
+              <TabsTrigger value="all" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                {language === 'hu' ? 'Mind' : language === 'de' ? 'Alle' : 'All'} ({stats.totalCampaigns})
+              </TabsTrigger>
+              <TabsTrigger value="active" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white">
+                {language === 'hu' ? 'Aktív' : language === 'de' ? 'Aktiv' : 'Active'} ({stats.activeCampaigns})
+              </TabsTrigger>
+              <TabsTrigger value="planned" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
+                {language === 'hu' ? 'Tervezett' : language === 'de' ? 'Geplant' : 'Planned'} ({stats.plannedCampaigns})
+              </TabsTrigger>
+              <TabsTrigger value="completed" className="data-[state=active]:bg-slate-500 data-[state=active]:text-white">
+                {language === 'hu' ? 'Befejezett' : language === 'de' ? 'Abgeschlossen' : 'Completed'} ({stats.completedCampaigns})
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+
           <Link to="/programs">
             <Button className="bg-primary hover:bg-primary/90">
               <Plus className="w-4 h-4 mr-2" />
-              {language === 'hu' ? 'Új szponzoráció' : 'New Sponsorship'}
+              {language === 'hu' ? 'Új szponzoráció' : language === 'de' ? 'Neue Sponsoring' : 'New Sponsorship'}
             </Button>
           </Link>
         </div>
 
         {/* Campaigns List */}
         {isLoading ? (
-          <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-32 w-full rounded-xl" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[1, 2, 3, 4].map((i) => (
+              <Skeleton key={i} className="h-64 w-full rounded-xl" />
             ))}
           </div>
-        ) : campaigns.length === 0 ? (
+        ) : filteredCampaigns.length === 0 ? (
           <Card className="bg-white/80 backdrop-blur-md border-white/40">
             <CardContent className="py-12 text-center">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
                 <Wallet className="w-8 h-8 text-primary" />
               </div>
               <h3 className="font-semibold text-lg mb-2">
-                {language === 'hu' ? 'Még nincs szponzorációd' : 'No sponsorships yet'}
+                {statusFilter === 'all' 
+                  ? (language === 'hu' ? 'Még nincs szponzorációd' : 'No sponsorships yet')
+                  : (language === 'hu' ? 'Nincs ilyen státuszú kampány' : 'No campaigns with this status')}
               </h3>
               <p className="text-muted-foreground mb-4">
                 {language === 'hu' 
@@ -225,9 +377,12 @@ const SponsorCampaigns = () => {
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {campaigns.map((campaign) => {
+            {filteredCampaigns.map((campaign) => {
               const progress = campaign.max_sponsored_seats > 0 
                 ? Math.round((campaign.sponsored_seats_used / campaign.max_sponsored_seats) * 100)
+                : 0;
+              const budgetProgress = campaign.total_budget > 0
+                ? Math.round((campaign.spent_budget / campaign.total_budget) * 100)
                 : 0;
               
               return (
@@ -235,27 +390,79 @@ const SponsorCampaigns = () => {
                   <CardHeader className="pb-2">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Badge variant="outline" className="text-xs">
+                            {getCampaignTypeLabel(campaign.campaign_type)}
+                          </Badge>
+                          {getStatusBadge(campaign.status)}
+                        </div>
                         <CardTitle className="text-lg line-clamp-1">{campaign.program_title}</CardTitle>
-                        <CardDescription>{campaign.expert_name}</CardDescription>
+                        <CardDescription className="flex items-center gap-1">
+                          <Users className="w-3 h-3" />
+                          {campaign.expert_name}
+                        </CardDescription>
                       </div>
-                      <Badge 
-                        className={campaign.is_active 
-                          ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
-                          : "bg-slate-100 text-slate-600"}
-                      >
-                        {campaign.is_active 
-                          ? (language === 'hu' ? 'Aktív' : 'Active')
-                          : (language === 'hu' ? 'Befejezett' : 'Completed')}
-                      </Badge>
+                      
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem asChild>
+                            <Link to={`/programs/${campaign.content_id}`} className="flex items-center">
+                              <Pencil className="w-4 h-4 mr-2" />
+                              {language === 'hu' ? 'Szerkesztés' : 'Edit'}
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleToggleCampaignStatus(campaign.id, campaign.is_active)}>
+                            {campaign.is_active ? (
+                              <>
+                                <Pause className="w-4 h-4 mr-2" />
+                                {language === 'hu' ? 'Szüneteltetés' : 'Pause'}
+                              </>
+                            ) : (
+                              <>
+                                <Play className="w-4 h-4 mr-2" />
+                                {language === 'hu' ? 'Aktiválás' : 'Activate'}
+                              </>
+                            )}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link to={`/sponsor-dashboard`} className="flex items-center">
+                              <FileBarChart className="w-4 h-4 mr-2" />
+                              {language === 'hu' ? 'Riport' : 'View Report'}
+                            </Link>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {/* Progress */}
+                      {/* Budget info */}
+                      <div className="grid grid-cols-2 gap-4 p-3 bg-muted/30 rounded-lg">
+                        <div>
+                          <p className="text-xs text-muted-foreground">
+                            {language === 'hu' ? 'Teljes keret' : 'Total Budget'}
+                          </p>
+                          <p className="font-semibold text-sm">{formatCurrency(campaign.total_budget)}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground">
+                            {language === 'hu' ? 'Elköltve' : 'Spent'}
+                          </p>
+                          <p className="font-semibold text-sm text-blue-600">{formatCurrency(campaign.spent_budget)}</p>
+                        </div>
+                      </div>
+
+                      {/* Seats Progress */}
                       <div>
                         <div className="flex justify-between text-sm mb-1">
-                          <span className="text-muted-foreground">
-                            {language === 'hu' ? 'Felhasználás' : 'Usage'}
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <Users className="w-3 h-3" />
+                            {language === 'hu' ? 'Résztvevők' : 'Participants'}
                           </span>
                           <span className="font-medium">
                             {campaign.sponsored_seats_used} / {campaign.max_sponsored_seats}
@@ -264,20 +471,28 @@ const SponsorCampaigns = () => {
                         <Progress value={progress} className="h-2" />
                       </div>
 
-                      {/* Stats */}
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4 text-muted-foreground" />
-                          <span className="text-sm">
-                            {campaign.sponsored_seats_used} {language === 'hu' ? 'fő támogatva' : 'supported'}
+                      {/* Budget Progress */}
+                      <div>
+                        <div className="flex justify-between text-sm mb-1">
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <Banknote className="w-3 h-3" />
+                            {language === 'hu' ? 'Költségvetés' : 'Budget'}
                           </span>
+                          <span className="font-medium">{budgetProgress}%</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <TrendingUp className="w-4 h-4 text-muted-foreground" />
-                          <span className="text-sm">
-                            {formatCurrency(campaign.sponsor_contribution_huf)} / fő
-                          </span>
-                        </div>
+                        <Progress value={budgetProgress} className="h-2 [&>div]:bg-blue-500" />
+                      </div>
+
+                      {/* Meta Info */}
+                      <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-3 h-3" />
+                          {format(new Date(campaign.created_at), 'MMM d, yyyy', { locale: getLocale() })}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <TrendingUp className="w-3 h-3" />
+                          {formatCurrency(campaign.sponsor_contribution_huf)} / fő
+                        </span>
                       </div>
 
                       {/* View Program Link */}
