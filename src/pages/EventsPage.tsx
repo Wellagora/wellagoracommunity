@@ -68,7 +68,7 @@ const EventsPage = () => {
     queryFn: async () => {
       let query = supabase
         .from("events")
-        .select("*, image_url")
+        .select("*, title_en, title_de, description_en, description_de, image_url")
         .gte("start_date", new Date().toISOString())
         .eq("is_public", true)
         .order("start_date", { ascending: true });
@@ -79,7 +79,7 @@ const EventsPage = () => {
 
       const { data, error } = await query;
       if (error) throw error;
-      return data as Event[];
+      return data as (Event & { title_en?: string | null; title_de?: string | null; description_en?: string | null; description_de?: string | null })[];
     },
   });
 
@@ -147,7 +147,7 @@ const EventsPage = () => {
           {/* Sticky Header Section - Title, Subtitle, Search and Filters */}
           <div className="sticky top-0 z-30 -mx-4 px-4 pt-6 pb-5 mb-6 bg-white/95 backdrop-blur-sm border-b border-border/50 shadow-sm">
             <h1 className="text-3xl font-bold mb-1">{t("events.title")}</h1>
-            <p className="text-muted-foreground mb-5">{t("events.subtitle")}</p>
+            <p className="text-muted-foreground mb-5">{t("events.discover_subtitle")}</p>
 
             {/* Filters - Inside sticky header */}
             <div className="flex flex-col sm:flex-row gap-3">

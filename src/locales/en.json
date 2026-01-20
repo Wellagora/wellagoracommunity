@@ -1099,6 +1099,7 @@
 
   "events.title": "Events",
   "events.subtitle": "Meet the community",
+  "events.discover_subtitle": "Discover upcoming community events",
   "events.upcoming": "Upcoming events",
   "events.past": "Past events",
   "events.register": "Register",
