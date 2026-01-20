@@ -38,6 +38,13 @@ interface Profile {
   role?: string;
   sponsor_status?: string;
   credit_balance?: number;
+  // Expert-specific fields
+  expert_title?: string;
+  expertise_areas?: string[];
+  wise_iban?: string;
+  wise_email?: string;
+  auto_create_drafts?: boolean;
+  green_pass?: boolean;
 }
 
 interface AuthContextType {

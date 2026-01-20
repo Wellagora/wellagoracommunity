@@ -40,6 +40,11 @@ const MemberDashboard = lazy(() => import("@/pages/MemberDashboard"));
 const ExpertStudio = lazy(() => import("@/pages/ExpertStudio"));
 const ExpertPrograms = lazy(() => import("@/pages/ExpertPrograms"));
 const ExpertAnalytics = lazy(() => import("@/pages/ExpertAnalytics"));
+const ExpertMedia = lazy(() => import("@/pages/ExpertMedia"));
+const ExpertSettings = lazy(() => import("@/pages/ExpertSettings"));
+const ExpertPayouts = lazy(() => import("@/pages/ExpertPayouts"));
+const SponsorCampaigns = lazy(() => import("@/pages/SponsorCampaigns"));
+const SponsorFinances = lazy(() => import("@/pages/SponsorFinances"));
 const ProjectAdminPage = lazy(() => import("@/pages/ProjectAdminPage"));
 const JoinProjectPage = lazy(() => import("@/pages/JoinProjectPage"));
 const ProjectsListPage = lazy(() => import("@/pages/ProjectsListPage"));
@@ -278,6 +283,48 @@ function App() {
                             element={
                               <ProtectedRoute allowedRoles={["expert"]}>
                                 <ExpertAnalytics />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/expert-studio/media"
+                            element={
+                              <ProtectedRoute allowedRoles={["expert"]}>
+                                <ExpertMedia />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/expert-studio/settings"
+                            element={
+                              <ProtectedRoute allowedRoles={["expert"]}>
+                                <ExpertSettings />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/expert-studio/payouts"
+                            element={
+                              <ProtectedRoute allowedRoles={["expert"]}>
+                                <ExpertPayouts />
+                              </ProtectedRoute>
+                            }
+                          />
+                          
+                          {/* Sponsor Dashboard sub-pages */}
+                          <Route
+                            path="/sponsor-dashboard/campaigns"
+                            element={
+                              <ProtectedRoute allowedRoles={["sponsor"]}>
+                                <SponsorCampaigns />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/sponsor-dashboard/finances"
+                            element={
+                              <ProtectedRoute allowedRoles={["sponsor"]}>
+                                <SponsorFinances />
                               </ProtectedRoute>
                             }
                           />
