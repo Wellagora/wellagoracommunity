@@ -234,12 +234,13 @@ const Navigation = () => {
     // Role-specific navigation
     const roleToUse = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
 
-    // MEMBER: Piactér, Események, Partnerek, Agórám
+    // MEMBER: Piactér, Események, Partnerek, Közösség, Agórám
     if (roleToUse === 'member') {
       return [
         { path: "/programs", label: t("nav.marketplace"), icon: Store },
         { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
         { path: "/partners", label: t("nav.partners"), icon: Building2 },
+        { path: "/community", label: t("nav.community"), icon: UsersIcon },
         { path: "/my-agora", label: t("nav.my_agora"), icon: LayoutDashboard },
       ];
     }
