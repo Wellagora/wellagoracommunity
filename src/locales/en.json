@@ -852,13 +852,6 @@
   "purchase.error": "An error occurred",
   "purchase.error_description": "The purchase failed. Please try again.",
 
-  "my_agora.title": "My Agora",
-  "my_agora.subtitle": "Your Workshop Secrets and tickets",
-  "my_agora.saved_guides": "Saved Workshop Secrets",
-  "my_agora.my_tickets": "My Tickets",
-  "my_agora.empty": "No Workshop Secrets yet",
-  "my_agora.browse": "Browse Marketplace",
-  "my_agora.continue": "Continue",
 
   "learning.my_learning": "My Agora",
   "learning.my_learning_description": "View your Workshop Secrets",
