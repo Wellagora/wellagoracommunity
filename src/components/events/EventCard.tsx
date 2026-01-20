@@ -3,6 +3,7 @@ import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useLocalizedEvent } from "@/hooks/useLocalizedEvent";
 import { Calendar, MapPin, Users, Clock, Check } from "lucide-react";
 import { format } from "date-fns";
 import { hu, de, enUS } from "date-fns/locale";
@@ -11,7 +12,11 @@ interface EventCardProps {
   event: {
     id: string;
     title: string;
+    title_en?: string | null;
+    title_de?: string | null;
     description: string | null;
+    description_en?: string | null;
+    description_de?: string | null;
     start_date: string;
     end_date?: string | null;
     location_name: string | null;
@@ -49,6 +54,7 @@ const EventCard = ({
 }: EventCardProps) => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
+  const { getLocalizedTitle, getLocalizedDescription } = useLocalizedEvent();
   const dateLocale = language === "hu" ? hu : language === "de" ? de : enUS;
 
   const formatEventDate = (dateStr: string) => {
@@ -86,7 +92,7 @@ const EventCard = ({
       <div className={`relative ${imageHeight} overflow-hidden`}>
         <img
           src={event.image_url || getFallbackImage()}
-          alt={event.title}
+          alt={getLocalizedTitle(event)}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           onError={(e) => {
             e.currentTarget.src = getFallbackImage();
@@ -112,7 +118,7 @@ const EventCard = ({
         {/* Title overlay at bottom */}
         <div className="absolute bottom-0 left-0 right-0 p-4">
           <h3 className="font-semibold text-lg text-white leading-tight line-clamp-2 drop-shadow-sm">
-            {event.title}
+            {getLocalizedTitle(event)}
           </h3>
         </div>
       </div>
@@ -147,7 +153,7 @@ const EventCard = ({
 
         {/* Description */}
         {event.description && variant !== "compact" && (
-          <p className="text-sm text-muted-foreground line-clamp-2">{event.description}</p>
+          <p className="text-sm text-muted-foreground line-clamp-2">{getLocalizedDescription(event)}</p>
         )}
 
         {/* RSVP Buttons */}

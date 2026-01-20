@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useLocalizedEvent } from "@/hooks/useLocalizedEvent";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -41,7 +42,11 @@ const EVENT_FALLBACK_IMAGES = [
 interface Event {
   id: string;
   title: string;
+  title_en?: string | null;
+  title_de?: string | null;
   description: string | null;
+  description_en?: string | null;
+  description_de?: string | null;
   start_date: string;
   end_date: string | null;
   location_name: string | null;
@@ -63,6 +68,7 @@ const EventDetailPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { t, language } = useLanguage();
+  const { getLocalizedTitle, getLocalizedDescription } = useLocalizedEvent();
   const queryClient = useQueryClient();
   const dateLocale = language === "hu" ? hu : language === "de" ? de : enUS;
 
@@ -278,7 +284,7 @@ const EventDetailPage = () => {
       <div className="relative h-72 md:h-[28rem] w-full overflow-hidden">
         <img
           src={event.image_url || getFallbackImage()}
-          alt={event.title}
+          alt={getLocalizedTitle(event)}
           className="w-full h-full object-cover"
           onError={(e) => {
             e.currentTarget.src = getFallbackImage();
@@ -323,7 +329,7 @@ const EventDetailPage = () => {
               )}
             </div>
             <h1 className="text-2xl md:text-4xl font-bold text-white drop-shadow-lg">
-              {event.title}
+              {getLocalizedTitle(event)}
             </h1>
             <div className="flex items-center gap-4 mt-3 text-white/90">
               <div className="flex items-center gap-2">
@@ -425,7 +431,7 @@ const EventDetailPage = () => {
                 <CardContent className="p-6">
                   <h2 className="font-semibold text-lg mb-4">{t("events.about") || "About this event"}</h2>
                   <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
-                    {event.description}
+                    {getLocalizedDescription(event)}
                   </p>
                 </CardContent>
               </Card>
