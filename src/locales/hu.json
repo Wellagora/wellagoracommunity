@@ -4513,5 +4513,24 @@
     "cta_button": "Kapcsolatfelvétel",
     "not_found": "Partner nem található",
     "go_back": "Vissza a partnerekhez"
+  },
+  "my_agora": {
+    "title": "Az én Agórám",
+    "subtitle": "Programjaid és kuponjaid egy helyen",
+    "my_programs": "Programom",
+    "my_vouchers": "Kuponom",
+    "favorites": "Kedvenc",
+    "events": "Esemény",
+    "programs_title": "Programjaim",
+    "programs_description": "Az általad elindított vagy befejezett programok",
+    "no_programs": "Még nem csatlakoztál egyetlen programhoz sem",
+    "browse_programs": "Programok böngészése",
+    "view_all": "Összes megtekintése",
+    "vouchers_title": "Kuponjaim",
+    "vouchers_description": "Szponzorált hozzáférések és kuponok",
+    "no_vouchers": "Még nincsenek kuponjaid",
+    "sponsored": "Szponzorált",
+    "voucher": "Kupon",
+    "active": "Aktív"
   }
 }
