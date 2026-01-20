@@ -23,6 +23,7 @@ import RelatedEvents from "@/components/events/detail/RelatedEvents";
 import EventMeetingLink from "@/components/events/detail/EventMeetingLink";
 import EventOrganizerCard from "@/components/events/detail/EventOrganizerCard";
 import EventRSVPCard from "@/components/events/detail/EventRSVPCard";
+import EventSponsorsSection from "@/components/events/detail/EventSponsorsSection";
 
 const villageColors: Record<string, string> = {
   "Kővágóörs": "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-500/30",
@@ -392,6 +393,9 @@ const EventDetailPage = () => {
                 </CardContent>
               </Card>
             )}
+
+            {/* Sponsors Section */}
+            <EventSponsorsSection eventId={event.id} />
 
             {/* Participants */}
             <EventParticipants eventId={event.id} />
