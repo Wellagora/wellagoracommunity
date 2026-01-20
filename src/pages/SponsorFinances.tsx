@@ -243,8 +243,8 @@ const SponsorFinances = () => {
 
   return (
     <DashboardLayout
-      title={t("sponsor.finances_title") || (language === 'hu' ? "Pénzügyeim" : "My Finances")}
-      subtitle={t("sponsor.finances_subtitle") || (language === 'hu' ? "Kreditek és tranzakciók követése" : "Track your credits and transactions")}
+      title={t("sponsor.finances_title")}
+      subtitle={t("sponsor.finances_subtitle")}
       icon={BarChart3}
       iconColor="text-blue-500"
     >
@@ -255,9 +255,7 @@ const SponsorFinances = () => {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">
-                    {language === 'hu' ? 'Összes kredit' : language === 'de' ? 'Gesamtkredit' : 'Total Credits'}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{t("sponsor.total_credits")}</p>
                   <p className="text-2xl font-bold text-foreground">
                     {formatCurrency(creditInfo.totalCredits)}
                   </p>
@@ -273,9 +271,7 @@ const SponsorFinances = () => {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">
-                    {language === 'hu' ? 'Felhasznált' : language === 'de' ? 'Verwendet' : 'Used'}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{t("sponsor.used_credits")}</p>
                   <p className="text-2xl font-bold text-foreground">
                     {formatCurrency(creditInfo.usedCredits)}
                   </p>
@@ -291,9 +287,7 @@ const SponsorFinances = () => {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">
-                    {language === 'hu' ? 'Elérhető' : language === 'de' ? 'Verfügbar' : 'Available'}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{t("sponsor.available_credits")}</p>
                   <p className="text-2xl font-bold text-emerald-600">
                     {formatCurrency(creditInfo.availableCredits)}
                   </p>
@@ -311,11 +305,9 @@ const SponsorFinances = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-primary" />
-              {language === 'hu' ? 'Kredit Használat' : language === 'de' ? 'Kreditnutzung' : 'Credit Usage'}
+              {t("sponsor.credit_usage")}
             </CardTitle>
-            <CardDescription>
-              {language === 'hu' ? 'Elmúlt 30 nap aktivitás' : language === 'de' ? 'Aktivität der letzten 30 Tage' : 'Last 30 days activity'}
-            </CardDescription>
+            <CardDescription>{t("sponsor.last_30_days")}</CardDescription>
           </CardHeader>
           <CardContent>
             {isLoading ? (

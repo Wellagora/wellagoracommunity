@@ -186,16 +186,11 @@ const SponsorCampaigns = () => {
 
       if (error) throw error;
 
-      toast.success(
-        currentlyActive 
-          ? (language === 'hu' ? 'Kampány szüneteltetve' : 'Campaign paused')
-          : (language === 'hu' ? 'Kampány aktiválva' : 'Campaign activated')
-      );
-      
+      toast.success(currentlyActive ? t("sponsor.campaign_paused") : t("sponsor.campaign_activated"));
       loadCampaigns();
     } catch (error) {
       console.error("Error toggling campaign:", error);
-      toast.error(language === 'hu' ? 'Hiba történt' : 'An error occurred');
+      toast.error(t("sponsor.error_occurred"));
     }
   };
 
@@ -205,41 +200,20 @@ const SponsorCampaigns = () => {
 
   const getStatusBadge = (status: Campaign['status']) => {
     const badges = {
-      active: { 
-        className: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20", 
-        label: { hu: 'Aktív', en: 'Active', de: 'Aktiv' }
-      },
-      planned: { 
-        className: "bg-blue-500/10 text-blue-600 border-blue-500/20", 
-        label: { hu: 'Tervezett', en: 'Planned', de: 'Geplant' }
-      },
-      completed: { 
-        className: "bg-slate-500/10 text-slate-600 border-slate-500/20", 
-        label: { hu: 'Befejezett', en: 'Completed', de: 'Abgeschlossen' }
-      },
-      paused: { 
-        className: "bg-amber-500/10 text-amber-600 border-amber-500/20", 
-        label: { hu: 'Szüneteltetve', en: 'Paused', de: 'Pausiert' }
-      },
+      active: { className: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20", key: "sponsor.active" },
+      planned: { className: "bg-blue-500/10 text-blue-600 border-blue-500/20", key: "sponsor.planned" },
+      completed: { className: "bg-slate-500/10 text-slate-600 border-slate-500/20", key: "sponsor.completed" },
+      paused: { className: "bg-amber-500/10 text-amber-600 border-amber-500/20", key: "sponsor.paused" },
     };
     const badge = badges[status];
-    return (
-      <Badge className={badge.className}>
-        {badge.label[language as keyof typeof badge.label] || badge.label.en}
-      </Badge>
-    );
+    return <Badge className={badge.className}>{t(badge.key)}</Badge>;
   };
 
   const getCampaignTypeLabel = (type: string) => {
-    const types: Record<string, { hu: string; en: string; de: string }> = {
-      sustainability: { hu: 'Fenntarthatóság', en: 'Sustainability', de: 'Nachhaltigkeit' },
-      workshop: { hu: 'Workshop', en: 'Workshop', de: 'Workshop' },
-      education: { hu: 'Oktatás', en: 'Education', de: 'Bildung' },
-      health: { hu: 'Egészség', en: 'Health', de: 'Gesundheit' },
-      general: { hu: 'Általános', en: 'General', de: 'Allgemein' },
-    };
-    const typeData = types[type] || types.general;
-    return typeData[language as keyof typeof typeData] || typeData.en;
+    const typeKey = `category.${type}`;
+    const translated = t(typeKey);
+    // If no translation found, return type capitalized
+    return translated !== typeKey ? translated : type.charAt(0).toUpperCase() + type.slice(1);
   };
 
   const filteredCampaigns = campaigns.filter(campaign => {
@@ -264,8 +238,8 @@ const SponsorCampaigns = () => {
 
   return (
     <DashboardLayout
-      title={t("sponsor.campaigns_title") || (language === 'hu' ? "Kampányaim" : "My Campaigns")}
-      subtitle={t("sponsor.campaigns_subtitle") || (language === 'hu' ? "Aktív szponzorációk kezelése" : "Manage your active sponsorships")}
+      title={t("sponsor.campaigns_title")}
+      subtitle={t("sponsor.campaigns_subtitle")}
       icon={Wallet}
       iconColor="text-blue-500"
     >
@@ -276,9 +250,7 @@ const SponsorCampaigns = () => {
             <CardContent className="pt-6">
               <div className="text-center">
                 <p className="text-3xl font-bold text-foreground">{stats.totalCampaigns}</p>
-                <p className="text-sm text-muted-foreground">
-                  {language === 'hu' ? 'Összes kampány' : language === 'de' ? 'Alle Kampagnen' : 'Total Campaigns'}
-                </p>
+                <p className="text-sm text-muted-foreground">{t("sponsor.total_campaigns")}</p>
               </div>
             </CardContent>
           </Card>
@@ -287,9 +259,7 @@ const SponsorCampaigns = () => {
             <CardContent className="pt-6">
               <div className="text-center">
                 <p className="text-3xl font-bold text-emerald-600">{stats.activeCampaigns}</p>
-                <p className="text-sm text-muted-foreground">
-                  {language === 'hu' ? 'Aktív' : language === 'de' ? 'Aktiv' : 'Active'}
-                </p>
+                <p className="text-sm text-muted-foreground">{t("sponsor.active")}</p>
               </div>
             </CardContent>
           </Card>
@@ -298,9 +268,7 @@ const SponsorCampaigns = () => {
             <CardContent className="pt-6">
               <div className="text-center">
                 <p className="text-3xl font-bold text-foreground">{stats.totalSeatsSponsored}</p>
-                <p className="text-sm text-muted-foreground">
-                  {language === 'hu' ? 'Szponzorált helyek' : language === 'de' ? 'Gesponserte Plätze' : 'Sponsored Seats'}
-                </p>
+                <p className="text-sm text-muted-foreground">{t("sponsor.sponsored_seats")}</p>
               </div>
             </CardContent>
           </Card>
@@ -309,9 +277,7 @@ const SponsorCampaigns = () => {
             <CardContent className="pt-6">
               <div className="text-center">
                 <p className="text-3xl font-bold text-blue-600">{stats.seatsUsed}</p>
-                <p className="text-sm text-muted-foreground">
-                  {language === 'hu' ? 'Felhasznált' : language === 'de' ? 'Verwendet' : 'Used'}
-                </p>
+                <p className="text-sm text-muted-foreground">{t("sponsor.used")}</p>
               </div>
             </CardContent>
           </Card>
@@ -358,19 +324,13 @@ const SponsorCampaigns = () => {
                 <Wallet className="w-8 h-8 text-primary" />
               </div>
               <h3 className="font-semibold text-lg mb-2">
-                {statusFilter === 'all' 
-                  ? (language === 'hu' ? 'Még nincs szponzorációd' : 'No sponsorships yet')
-                  : (language === 'hu' ? 'Nincs ilyen státuszú kampány' : 'No campaigns with this status')}
+                {statusFilter === 'all' ? t("sponsor.no_sponsorships") : t("sponsor.no_campaigns_status")}
               </h3>
-              <p className="text-muted-foreground mb-4">
-                {language === 'hu' 
-                  ? 'Böngészd a Piacteret és támogass programokat a közösség számára!'
-                  : 'Browse the Marketplace and sponsor programs for the community!'}
-              </p>
+              <p className="text-muted-foreground mb-4">{t("sponsor.browse_marketplace_hint")}</p>
               <Link to="/programs">
                 <Button className="bg-primary hover:bg-primary/90">
                   <Target className="w-4 h-4 mr-2" />
-                  {language === 'hu' ? 'Piactér böngészése' : 'Browse Marketplace'}
+                  {t("sponsor.browse_marketplace")}
                 </Button>
               </Link>
             </CardContent>
@@ -413,26 +373,26 @@ const SponsorCampaigns = () => {
                           <DropdownMenuItem asChild>
                             <Link to={`/programs/${campaign.content_id}`} className="flex items-center">
                               <Pencil className="w-4 h-4 mr-2" />
-                              {language === 'hu' ? 'Szerkesztés' : 'Edit'}
+                              {t("sponsor.edit")}
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleToggleCampaignStatus(campaign.id, campaign.is_active)}>
                             {campaign.is_active ? (
                               <>
                                 <Pause className="w-4 h-4 mr-2" />
-                                {language === 'hu' ? 'Szüneteltetés' : 'Pause'}
+                                {t("sponsor.pause")}
                               </>
                             ) : (
                               <>
                                 <Play className="w-4 h-4 mr-2" />
-                                {language === 'hu' ? 'Aktiválás' : 'Activate'}
+                                {t("sponsor.activate")}
                               </>
                             )}
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
                             <Link to={`/sponsor-dashboard`} className="flex items-center">
                               <FileBarChart className="w-4 h-4 mr-2" />
-                              {language === 'hu' ? 'Riport' : 'View Report'}
+                              {t("sponsor.report")}
                             </Link>
                           </DropdownMenuItem>
                         </DropdownMenuContent>

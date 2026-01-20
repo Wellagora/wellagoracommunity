@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +29,7 @@ export function UserDetailModal(props: {
   onOpenChange: (open: boolean) => void;
 }) {
   const { userId, open, onOpenChange } = props;
+  const { t, language } = useLanguage();
 
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -53,7 +55,7 @@ export function UserDetailModal(props: {
       setProfile((data as UserProfile) || null);
     } catch (e: any) {
       console.error("[UserDetailModal] load error", e);
-      toast.error("Nem sikerült betölteni a felhasználót");
+      toast.error(t("admin.modal.load_error"));
     } finally {
       setLoading(false);
     }
@@ -76,34 +78,42 @@ export function UserDetailModal(props: {
         })
         .eq("id", profile.id);
       if (error) throw error;
-      toast.success("Mentve!");
+      toast.success(t("admin.modal.save_success"));
       setIsEditing(false);
       await load();
     } catch (e: any) {
-      toast.error("Hiba: " + (e?.message || "Mentés sikertelen"));
+      toast.error(t("admin.modal.save_error") + ": " + (e?.message || ""));
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!profile || !confirm("Biztosan törölni szeretnéd ezt a felhasználót?")) return;
-    toast.error("Felhasználó törlése nem engedélyezett biztonsági okokból.");
+    if (!profile || !confirm(t("common.confirm_delete"))) return;
+    toast.error(t("admin.modal.delete_not_allowed"));
+  };
+
+  const getDateLocale = () => {
+    switch (language) {
+      case 'hu': return 'hu-HU';
+      case 'de': return 'de-DE';
+      default: return 'en-US';
+    }
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Felhasználó részletek</DialogTitle>
+          <DialogTitle>{t("admin.modal.user_details")}</DialogTitle>
         </DialogHeader>
 
         {!userId ? (
-          <div>Hiányzó azonosító</div>
+          <div>{t("admin.modal.missing_id")}</div>
         ) : loading ? (
-          <div>Betöltés...</div>
+          <div>{t("common.loading")}</div>
         ) : !profile ? (
-          <div>Nincs találat</div>
+          <div>{t("admin.modal.not_found")}</div>
         ) : (
           <div className="space-y-4">
             <div className="flex items-center justify-between gap-4">
@@ -119,29 +129,29 @@ export function UserDetailModal(props: {
             {isEditing ? (
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label>Keresztnév</Label>
+                  <Label>{t("admin.modal.first_name")}</Label>
                   <Input value={profile.first_name || ""} onChange={(e) => setProfile({ ...profile, first_name: e.target.value })} />
                 </div>
                 <div className="space-y-2">
-                  <Label>Vezetéknév</Label>
+                  <Label>{t("admin.modal.last_name")}</Label>
                   <Input value={profile.last_name || ""} onChange={(e) => setProfile({ ...profile, last_name: e.target.value })} />
                 </div>
                 <div className="space-y-2 sm:col-span-2">
-                  <Label>Szerepkör</Label>
+                  <Label>{t("admin.modal.role")}</Label>
                   <Select value={profile.user_role} onValueChange={(v) => setProfile({ ...profile, user_role: v as UserRoleType })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="member">Tag</SelectItem>
-                      <SelectItem value="expert">Szakértő</SelectItem>
-                      <SelectItem value="sponsor">Szponzor</SelectItem>
+                      <SelectItem value="member">{t("roles.member") || "Member"}</SelectItem>
+                      <SelectItem value="expert">{t("roles.expert") || "Expert"}</SelectItem>
+                      <SelectItem value="sponsor">{t("roles.sponsor") || "Sponsor"}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
             ) : (
               <div className="grid gap-2">
-                <div className="flex justify-between"><span className="text-muted-foreground">Szervezet</span><span className="font-medium">{profile.organization_name || "-"}</span></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">Regisztráció</span><span className="font-medium">{new Date(profile.created_at).toLocaleDateString("hu-HU")}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">{t("admin.modal.organization")}</span><span className="font-medium">{profile.organization_name || "-"}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">{t("admin.modal.registered")}</span><span className="font-medium">{new Date(profile.created_at).toLocaleDateString(getDateLocale())}</span></div>
               </div>
             )}
           </div>
@@ -150,14 +160,14 @@ export function UserDetailModal(props: {
         <DialogFooter className="gap-2">
           {isEditing ? (
             <>
-              <Button variant="outline" onClick={() => { setIsEditing(false); load(); }}>Mégse</Button>
-              <Button onClick={save} disabled={saving}>{saving ? "Mentés..." : "Mentés"}</Button>
+              <Button variant="outline" onClick={() => { setIsEditing(false); load(); }}>{t("common.cancel")}</Button>
+              <Button onClick={save} disabled={saving}>{saving ? t("common.saving") : t("common.save")}</Button>
             </>
           ) : (
             <>
-              <Button variant="outline" onClick={() => onOpenChange(false)}>Bezárás</Button>
-              <Button onClick={() => setIsEditing(true)}>Szerkesztés</Button>
-              <Button variant="destructive" onClick={handleDelete}>Törlés</Button>
+              <Button variant="outline" onClick={() => onOpenChange(false)}>{t("common.close")}</Button>
+              <Button onClick={() => setIsEditing(true)}>{t("common.edit")}</Button>
+              <Button variant="destructive" onClick={handleDelete}>{t("common.delete")}</Button>
             </>
           )}
         </DialogFooter>
