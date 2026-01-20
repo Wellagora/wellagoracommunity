@@ -2781,6 +2781,8 @@
   "challenges.impact": "Wirkung",
   "sponsor.dashboard_title": "Sponsor Dashboard",
   "sponsor.dashboard_subtitle": "Verwalte deine Credits und Sponsorings",
+  "sponsor.campaigns_subtitle": "Verwalte deine aktiven Sponsorings",
+  "sponsor.finances_subtitle": "Verfolge deine Credits und Transaktionen",
   "sponsor.total_credits": "Gesamtcredits",
   "sponsor.purchased_total": "Insgesamt gekauft",
   "sponsor.available_credits": "Verfügbare Credits",
