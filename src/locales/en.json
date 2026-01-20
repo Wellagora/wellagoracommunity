@@ -3219,6 +3219,8 @@
   "handprint.category.water": "Water",
   "sponsor.dashboard_title": "Sponsor Dashboard",
   "sponsor.dashboard_subtitle": "Manage your credits and sponsorships",
+  "sponsor.campaigns_subtitle": "Manage your active sponsorships",
+  "sponsor.finances_subtitle": "Track your credits and transactions",
   "sponsor.total_credits": "Total Credits",
   "sponsor.purchased_total": "Purchased total",
   "sponsor.available_credits": "Available Credits",

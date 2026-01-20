@@ -3226,6 +3226,8 @@
   "challenges.impact": "hatás",
   "sponsor.dashboard_title": "Szponzor Dashboard",
   "sponsor.dashboard_subtitle": "Kezeld a creditjeidet és szponzorálásaidat",
+  "sponsor.campaigns_subtitle": "Aktív szponzorációk kezelése",
+  "sponsor.finances_subtitle": "Kreditek és tranzakciók követése",
   "sponsor.total_credits": "Összes Credit",
   "sponsor.purchased_total": "Összesen vásárolt",
   "sponsor.available_credits": "Elérhető Creditek",
