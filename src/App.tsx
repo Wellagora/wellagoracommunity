@@ -38,6 +38,8 @@ const HandprintCalculatorPage = lazy(() => import("@/pages/HandprintCalculatorPa
 const SponsorDashboardPage = lazy(() => import("@/pages/SponsorDashboardPage"));
 const MemberDashboard = lazy(() => import("@/pages/MemberDashboard"));
 const ExpertStudio = lazy(() => import("@/pages/ExpertStudio"));
+const ExpertPrograms = lazy(() => import("@/pages/ExpertPrograms"));
+const ExpertAnalytics = lazy(() => import("@/pages/ExpertAnalytics"));
 const ProjectAdminPage = lazy(() => import("@/pages/ProjectAdminPage"));
 const JoinProjectPage = lazy(() => import("@/pages/JoinProjectPage"));
 const ProjectsListPage = lazy(() => import("@/pages/ProjectsListPage"));
@@ -260,6 +262,22 @@ function App() {
                             element={
                               <ProtectedRoute allowedRoles={["expert"]}>
                                 <ProgramCreatorWizard />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/expert-studio/programs"
+                            element={
+                              <ProtectedRoute allowedRoles={["expert"]}>
+                                <ExpertPrograms />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/expert-studio/analytics"
+                            element={
+                              <ProtectedRoute allowedRoles={["expert"]}>
+                                <ExpertAnalytics />
                               </ProtectedRoute>
                             }
                           />
