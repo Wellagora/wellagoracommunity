@@ -12,15 +12,17 @@ import { format } from "date-fns";
 import { hu, de, enUS } from "date-fns/locale";
 import { 
   ArrowLeft, 
-  Calendar, 
   Clock, 
   MapPin, 
-  Users, 
-  Check, 
   Share2,
   CalendarPlus,
-  Building2
+  Navigation
 } from "lucide-react";
+import EventParticipants from "@/components/events/detail/EventParticipants";
+import RelatedEvents from "@/components/events/detail/RelatedEvents";
+import EventMeetingLink from "@/components/events/detail/EventMeetingLink";
+import EventOrganizerCard from "@/components/events/detail/EventOrganizerCard";
+import EventRSVPCard from "@/components/events/detail/EventRSVPCard";
 
 const villageColors: Record<string, string> = {
   "Kővágóörs": "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-500/30",
@@ -50,6 +52,9 @@ interface Event {
   is_public: boolean | null;
   organization_id: string | null;
   created_by: string | null;
+  project_id: string | null;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 const EventDetailPage = () => {
@@ -94,23 +99,6 @@ const EventDetailPage = () => {
     enabled: !!id && !!user?.id,
   });
 
-  // Fetch organizer info
-  const { data: organizer } = useQuery({
-    queryKey: ["eventOrganizer", event?.organization_id],
-    queryFn: async () => {
-      if (!event?.organization_id) return null;
-      const { data, error } = await supabase
-        .from("organizations")
-        .select("name, logo_url")
-        .eq("id", event.organization_id)
-        .single();
-      
-      if (error) return null;
-      return data;
-    },
-    enabled: !!event?.organization_id,
-  });
-
   // RSVP mutation
   const rsvpMutation = useMutation({
     mutationFn: async (status: "going" | "maybe" | "not_going") => {
@@ -139,6 +127,7 @@ const EventDetailPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["eventRsvp", id] });
       queryClient.invalidateQueries({ queryKey: ["event", id] });
+      queryClient.invalidateQueries({ queryKey: ["eventParticipants", id] });
       toast.success(t("events.rsvpSuccess") || "RSVP updated!");
     },
     onError: () => {
@@ -189,6 +178,16 @@ const EventDetailPage = () => {
     window.open(calendarUrl, "_blank");
   };
 
+  const openDirections = () => {
+    if (!event) return;
+    if (event.latitude && event.longitude) {
+      window.open(`https://www.google.com/maps/dir/?api=1&destination=${event.latitude},${event.longitude}`, "_blank");
+    } else {
+      const query = event.location_address || event.location_name;
+      window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(query || "")}`, "_blank");
+    }
+  };
+
   const getFallbackImage = () => {
     if (!event) return EVENT_FALLBACK_IMAGES[0];
     const index = event.id.charCodeAt(0) % EVENT_FALLBACK_IMAGES.length;
@@ -198,7 +197,7 @@ const EventDetailPage = () => {
   if (eventLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="container max-w-4xl mx-auto px-4 py-8">
+        <div className="container max-w-5xl mx-auto px-4 py-8">
           <Skeleton className="h-8 w-32 mb-6" />
           <Skeleton className="h-64 md:h-96 w-full rounded-xl mb-6" />
           <Skeleton className="h-10 w-3/4 mb-4" />
@@ -228,14 +227,17 @@ const EventDetailPage = () => {
 
   const dateInfo = formatEventDate(event.start_date);
   const villageColor = event.village ? villageColors[event.village] : "bg-muted text-muted-foreground";
-  const spotsLeft = event.max_participants ? event.max_participants - (event.current_participants || 0) : null;
+  const currentParticipants = event.current_participants || 0;
+  const spotsLeft = event.max_participants ? event.max_participants - currentParticipants : null;
   const isFull = spotsLeft !== null && spotsLeft <= 0;
   const rsvpStatus = userRsvp?.status as "going" | "maybe" | "not_going" | undefined;
+  const isOnline = event.location_name?.toLowerCase().includes("online") || false;
+  const isRegistered = rsvpStatus === "going";
 
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Image */}
-      <div className="relative h-64 md:h-96 w-full overflow-hidden">
+      <div className="relative h-72 md:h-[28rem] w-full overflow-hidden">
         <img
           src={event.image_url || getFallbackImage()}
           alt={event.title}
@@ -244,7 +246,7 @@ const EventDetailPage = () => {
             e.currentTarget.src = getFallbackImage();
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
         
         {/* Back button */}
         <Button
@@ -269,21 +271,34 @@ const EventDetailPage = () => {
 
         {/* Event title overlay */}
         <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-          <div className="container max-w-4xl mx-auto">
-            {event.village && (
-              <Badge variant="outline" className={`mb-3 ${villageColor} bg-white/90`}>
-                {event.village}
-              </Badge>
-            )}
+          <div className="container max-w-5xl mx-auto">
+            <div className="flex flex-wrap gap-2 mb-3">
+              {event.village && (
+                <Badge variant="outline" className={`${villageColor} bg-white/90`}>
+                  {event.village}
+                </Badge>
+              )}
+              {isOnline && (
+                <Badge variant="secondary" className="bg-white/90">
+                  Online
+                </Badge>
+              )}
+            </div>
             <h1 className="text-2xl md:text-4xl font-bold text-white drop-shadow-lg">
               {event.title}
             </h1>
+            <div className="flex items-center gap-4 mt-3 text-white/90">
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4" />
+                <span>{dateInfo.full}, {dateInfo.time}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="container max-w-4xl mx-auto px-4 py-8">
+      <div className="container max-w-5xl mx-auto px-4 py-8">
         <div className="grid md:grid-cols-3 gap-8">
           {/* Main content */}
           <div className="md:col-span-2 space-y-6">
@@ -319,33 +334,51 @@ const EventDetailPage = () => {
             </Card>
 
             {/* Location Card */}
-            {(event.location_name || event.location_address) && (
+            {(event.location_name || event.location_address) && !isOnline && (
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
                     <div className="bg-secondary/50 rounded-xl p-4">
                       <MapPin className="w-6 h-6 text-muted-foreground" />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <h3 className="font-semibold text-lg">{event.location_name}</h3>
                       {event.location_address && (
                         <p className="text-muted-foreground mt-1">{event.location_address}</p>
                       )}
-                      <Button
-                        variant="link"
-                        size="sm"
-                        className="p-0 h-auto mt-2 text-primary"
-                        onClick={() => {
-                          const query = event.location_address || event.location_name;
-                          window.open(`https://maps.google.com/?q=${encodeURIComponent(query || "")}`, "_blank");
-                        }}
-                      >
-                        {t("events.openInMaps") || "Open in Maps"}
-                      </Button>
+                      <div className="flex gap-2 mt-3">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const query = event.location_address || event.location_name;
+                            window.open(`https://maps.google.com/?q=${encodeURIComponent(query || "")}`, "_blank");
+                          }}
+                        >
+                          <MapPin className="w-4 h-4 mr-1" />
+                          {t("events.openInMaps") || "Open in Maps"}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={openDirections}
+                        >
+                          <Navigation className="w-4 h-4 mr-1" />
+                          {t("events.getDirections") || "Get Directions"}
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
               </Card>
+            )}
+
+            {/* Meeting Link - only for registered participants */}
+            {isOnline && (
+              <EventMeetingLink 
+                meetingUrl="https://meet.google.com/example" 
+                isRegistered={isRegistered} 
+              />
             )}
 
             {/* Description */}
@@ -360,122 +393,41 @@ const EventDetailPage = () => {
               </Card>
             )}
 
+            {/* Participants */}
+            <EventParticipants eventId={event.id} />
+
             {/* Organizer */}
-            {organizer && (
-              <Card>
-                <CardContent className="p-6">
-                  <h2 className="font-semibold text-lg mb-4">{t("events.organizer") || "Organizer"}</h2>
-                  <div className="flex items-center gap-4">
-                    {organizer.logo_url ? (
-                      <img
-                        src={organizer.logo_url}
-                        alt={organizer.name}
-                        className="w-12 h-12 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
-                        <Building2 className="w-6 h-6 text-muted-foreground" />
-                      </div>
-                    )}
-                    <div>
-                      <p className="font-medium">{organizer.name}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+            <EventOrganizerCard 
+              organizationId={event.organization_id}
+              createdById={event.created_by}
+            />
           </div>
 
           {/* Sidebar - RSVP */}
           <div className="md:col-span-1">
-            <div className="sticky top-24">
-              <Card className="overflow-hidden">
-                <CardContent className="p-6 space-y-4">
-                  {/* Participants info */}
-                  {event.max_participants && (
-                    <div className="flex items-center justify-between pb-4 border-b">
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Users className="w-5 h-5" />
-                        <span>{t("events.participants") || "Participants"}</span>
-                      </div>
-                      <div className="text-right">
-                        <span className="font-semibold">{event.current_participants || 0}</span>
-                        <span className="text-muted-foreground">/{event.max_participants}</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {spotsLeft !== null && spotsLeft > 0 && spotsLeft <= 5 && (
-                    <div className="bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-3 py-2 rounded-lg text-sm text-center">
-                      {t("events.spotsLeft") || `Only ${spotsLeft} spots left!`}
-                    </div>
-                  )}
-
-                  {/* RSVP status indicator */}
-                  {rsvpStatus === "going" && (
-                    <div className="bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 px-4 py-3 rounded-lg flex items-center gap-2">
-                      <Check className="w-5 h-5" />
-                      <span className="font-medium">{t("events.youreGoing") || "You're going!"}</span>
-                    </div>
-                  )}
-
-                  {/* RSVP Buttons */}
-                  {user ? (
-                    <div className="space-y-2">
-                      <Button
-                        variant={rsvpStatus === "going" ? "default" : "outline"}
-                        className="w-full"
-                        disabled={isFull && rsvpStatus !== "going"}
-                        onClick={() => rsvpMutation.mutate("going")}
-                      >
-                        {rsvpStatus === "going" ? (
-                          <>
-                            <Check className="w-4 h-4 mr-2" />
-                            {t("events.going") || "Going"}
-                          </>
-                        ) : isFull ? (
-                          t("events.eventFull") || "Event is full"
-                        ) : (
-                          t("events.join") || "Join Event"
-                        )}
-                      </Button>
-                      {!isFull && (
-                        <Button
-                          variant={rsvpStatus === "maybe" ? "secondary" : "ghost"}
-                          className="w-full"
-                          onClick={() => rsvpMutation.mutate("maybe")}
-                        >
-                          {t("events.maybe") || "Maybe"}
-                        </Button>
-                      )}
-                      {rsvpStatus && rsvpStatus !== "not_going" && (
-                        <Button
-                          variant="ghost"
-                          className="w-full text-muted-foreground"
-                          onClick={() => rsvpMutation.mutate("not_going")}
-                        >
-                          {t("events.cantGo") || "Can't go"}
-                        </Button>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <p className="text-sm text-muted-foreground text-center">
-                        {t("events.loginToRsvp") || "Log in to RSVP to this event"}
-                      </p>
-                      <Button
-                        className="w-full"
-                        onClick={() => navigate("/auth", { state: { returnTo: `/esemenyek/${id}` } })}
-                      >
-                        {t("common.login") || "Log in"}
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+            <div className="sticky top-24 space-y-4">
+              <EventRSVPCard
+                user={user}
+                rsvpStatus={rsvpStatus}
+                currentParticipants={currentParticipants}
+                maxParticipants={event.max_participants}
+                isFull={isFull}
+                spotsLeft={spotsLeft}
+                isOnline={isOnline}
+                onRsvp={(status) => rsvpMutation.mutate(status)}
+                onLogin={() => navigate("/auth", { state: { returnTo: `/esemenyek/${id}` } })}
+                isLoading={rsvpMutation.isPending}
+              />
             </div>
           </div>
         </div>
+
+        {/* Related Events */}
+        <RelatedEvents 
+          currentEventId={event.id}
+          village={event.village}
+          projectId={event.project_id}
+        />
       </div>
     </div>
   );
