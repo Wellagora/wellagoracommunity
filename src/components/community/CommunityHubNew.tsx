@@ -45,6 +45,9 @@ import {
 import { toast } from "sonner";
 import ExpertProfileModal from "@/components/creator/ExpertProfileModal";
 import SocialFeed from "./SocialFeed";
+import CommunityStatsSection from "./CommunityStatsSection";
+import FeaturedExpertSection from "./FeaturedExpertSection";
+import CommunityCalendarPreview from "./CommunityCalendarPreview";
 
 interface Creation {
   id: string;
@@ -123,6 +126,16 @@ const CommunityHubNew = () => {
         </div>
       </div>
 
+      {/* Stats Section */}
+      <div className="container mx-auto px-4">
+        <CommunityStatsSection />
+      </div>
+
+      {/* Featured Expert */}
+      <div className="container mx-auto px-4">
+        <FeaturedExpertSection />
+      </div>
+
       {/* Tabs Navigation */}
       <div className="container mx-auto px-4 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -152,6 +165,11 @@ const CommunityHubNew = () => {
             <LocalPartnersSection />
           </TabsContent>
         </Tabs>
+      </div>
+
+      {/* Upcoming Events Preview */}
+      <div className="container mx-auto px-4">
+        <CommunityCalendarPreview />
       </div>
 
       {/* Join CTA (non-overlapping; stays in flow) */}
