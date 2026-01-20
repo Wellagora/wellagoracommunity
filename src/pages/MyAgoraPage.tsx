@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MyEventsWidget } from "@/components/dashboard/MyEventsWidget";
 import { BookOpen, Ticket, Star, ArrowRight, Calendar, Heart } from "lucide-react";
 import { format } from "date-fns";
 import { hu, de, enUS } from "date-fns/locale";
@@ -45,6 +47,24 @@ const MyAgoraPage = () => {
   const [loading, setLoading] = useState(true);
   const [programs, setPrograms] = useState<JoinedProgram[]>([]);
   const [vouchers, setVouchers] = useState<UserVoucher[]>([]);
+
+  // Fetch user's upcoming event RSVPs count
+  const { data: eventsCount = 0 } = useQuery({
+    queryKey: ["myEventsCount", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return 0;
+      const now = new Date().toISOString();
+      const { count, error } = await supabase
+        .from("event_rsvps")
+        .select("id, events!inner(start_date)", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .in("status", ["going", "maybe"])
+        .gte("events.start_date", now);
+      if (error) return 0;
+      return count || 0;
+    },
+    enabled: !!user?.id,
+  });
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -180,13 +200,16 @@ const MyAgoraPage = () => {
                   <Calendar className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">0</p>
+                  <p className="text-2xl font-bold">{eventsCount}</p>
                   <p className="text-xs text-muted-foreground">{t("my_agora.events")}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
+
+        {/* My Upcoming Events */}
+        <MyEventsWidget />
 
         {/* Joined Programs */}
         <Card>
