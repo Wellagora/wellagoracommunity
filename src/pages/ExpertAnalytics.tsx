@@ -2,8 +2,7 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import DashboardLayout from "@/layouts/DashboardLayout";
-import ExpertImpactReport from "@/components/expert-studio/ExpertImpactReport";
-import ExpertDashboardStats from "@/components/expert-studio/ExpertDashboardStats";
+import ExpertAnalyticsDashboard from "@/components/expert-studio/ExpertAnalyticsDashboard";
 import { ExpertStudioSkeleton } from "@/components/ui/loading-skeleton";
 import { BarChart3 } from "lucide-react";
 
@@ -26,10 +25,7 @@ const ExpertAnalytics = () => {
       icon={BarChart3}
       iconColor="text-amber-500"
     >
-      <div className="space-y-6">
-        <ExpertDashboardStats userId={user.id} />
-        <ExpertImpactReport userId={user.id} />
-      </div>
+      <ExpertAnalyticsDashboard userId={user.id} />
     </DashboardLayout>
   );
 };
