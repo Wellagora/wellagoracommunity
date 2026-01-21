@@ -294,7 +294,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
             )}
           </div>
 
-          {/* Terms of Service Checkbox */}
+          {/* Terms of Service & Privacy Policy Checkbox - GDPR Required */}
           <div className="flex items-start gap-3 pt-2">
             <Checkbox
               id="terms-accept-register"
@@ -304,17 +304,29 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
             />
             <div className="text-sm leading-relaxed">
               <label htmlFor="terms-accept-register" className="cursor-pointer text-foreground">
-                {t('auth.accept_terms_prefix') || "Elolvastam és elfogadom az "}
+                {t('auth.accept_terms_prefix') || "Elfogadom az "}
               </label>
-              <button
-                type="button"
-                onClick={() => setShowTermsPreview(true)}
+              <a
+                href="/aszf"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-primary hover:underline font-medium"
               >
                 {t('auth.terms_link') || "Általános Szerződési Feltételeket"}
-              </button>
+              </a>
               <span className="text-foreground">
-                {t('auth.accept_terms_suffix') || ""}
+                {t('auth.and') || " és az "}
+              </span>
+              <a
+                href="/adatvedelem"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline font-medium"
+              >
+                {t('auth.privacy_link') || "Adatvédelmi tájékoztatót"}
+              </a>
+              <span className="text-foreground">
+                {t('auth.accept_terms_suffix') || "."}
               </span>
             </div>
           </div>

@@ -104,7 +104,7 @@ const AdminLayout = () => {
     { 
       path: '/admin-panel/financials', 
       icon: Wallet, 
-      label: 'Pénzügyek'
+      label: t('admin.nav.financials') || 'Finances'
     },
     { 
       path: '/admin-panel/users', 
@@ -124,7 +124,7 @@ const AdminLayout = () => {
     { 
       path: '/admin-panel/audit', 
       icon: History, 
-      label: 'Rendszernapló'
+      label: t('admin.nav.audit') || 'System Log'
     },
     { 
       path: '/admin-panel/settings', 

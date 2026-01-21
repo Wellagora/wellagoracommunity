@@ -158,11 +158,11 @@ const ExpertStudio = () => {
         <TabsList className="grid w-full grid-cols-2 mb-6">
           <TabsTrigger value="studio" className="flex items-center gap-2">
             <Wrench className="w-4 h-4" />
-            Műhely
+            {t('expert_studio.tab_studio') || 'Workshop'}
           </TabsTrigger>
           <TabsTrigger value="impact" className="flex items-center gap-2">
             <BarChart3 className="w-4 h-4" />
-            Hatásjelentés
+            {t('expert_studio.tab_impact') || 'Impact Report'}
           </TabsTrigger>
         </TabsList>
 

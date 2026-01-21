@@ -160,9 +160,11 @@ function App() {
                           <Route path="/partners" element={<PartnersPage />} />
                           <Route path="/partners/:slug" element={<PartnerProfilePage />} />
                           
-                          {/* Redirect challenges to marketplace */}
-                          <Route path="/challenges" element={<Navigate to="/piacer" replace />} />
-                          <Route path="/challenges/:challengeId" element={<Navigate to="/piacer" replace />} />
+                          {/* Redirect challenges and alternate paths to marketplace */}
+                          <Route path="/challenges" element={<Navigate to="/programs" replace />} />
+                          <Route path="/challenges/:challengeId" element={<Navigate to="/programs" replace />} />
+                          <Route path="/marketplace" element={<Navigate to="/programs" replace />} />
+                          <Route path="/kozosseg" element={<Navigate to="/community" replace />} />
                           
                           <Route
                             path="/profile"
