@@ -3,6 +3,7 @@ import Navigation from "@/components/Navigation";
 import MobileBottomNav from "@/components/navigation/MobileBottomNav";
 import { useAuth } from "@/contexts/AuthContext";
 import FeedbackButton from "@/components/feedback/FeedbackButton";
+import PWAInstallBanner from "@/components/pwa/PWAInstallBanner";
 
 export default function AppLayout() {
   const { isDemoMode } = useAuth();
@@ -20,6 +21,9 @@ export default function AppLayout() {
       
       {/* Mobile Bottom Navigation */}
       <MobileBottomNav />
+      
+      {/* PWA Install Banner - mobile only */}
+      <PWAInstallBanner />
       
       {/* Feedback Button - appears on all pages for pilot testing */}
       <FeedbackButton />
