@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Textarea } from "@/components/ui/textarea";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Loader2, Users, Sparkles, Building2, ArrowLeft, Check, ChevronDown, Eye, EyeOff } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { DEMO_ACCOUNTS } from "@/data/mockData";
@@ -108,6 +109,9 @@ const AuthPage = () => {
     bio: "",
     industry: "",
   });
+
+  // Terms acceptance state
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const handleRoleSelect = (roleId: string) => {
     setSelectedRole(roleId);
@@ -744,10 +748,46 @@ const AuthPage = () => {
                           </div>
                         </div>
 
+                        {/* Terms & Privacy Checkbox - GDPR Required */}
+                        <div className="flex items-start gap-3 py-2">
+                          <Checkbox
+                            id="terms-accept-signup"
+                            checked={acceptedTerms}
+                            onCheckedChange={(checked) => setAcceptedTerms(checked === true)}
+                            className="mt-1"
+                          />
+                          <label 
+                            htmlFor="terms-accept-signup" 
+                            className="text-sm text-black/60 leading-relaxed cursor-pointer"
+                          >
+                            {t('auth.accept_terms_prefix') || 'Elfogadom az '}
+                            <Link 
+                              to="/aszf" 
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline font-medium"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {t('auth.terms_link') || 'Általános Szerződési Feltételeket'}
+                            </Link>
+                            {t('auth.and') || ' és az '}
+                            <Link 
+                              to="/adatvedelem" 
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline font-medium"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {t('auth.privacy_link') || 'Adatvédelmi tájékoztatót'}
+                            </Link>
+                            {t('auth.accept_terms_suffix') || '.'}
+                          </label>
+                        </div>
+
                         <Button
                           type="submit"
                           className="w-full h-12 bg-black hover:bg-black/90 text-white font-semibold rounded-xl text-base transition-opacity"
-                          disabled={isLoading}
+                          disabled={isLoading || !acceptedTerms}
                         >
                           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                           {t('auth.create_account') || 'Fiók létrehozása'}
