@@ -545,7 +545,7 @@
   "marketplace.free_via_sponsor": "Kostenlos durch Sponsor",
   "marketplace.value_label": "Wert",
   "marketplace.featured_offers": "Top-Angebote",
-"marketplace.open_content": "Offener Inhalt",
+  "marketplace.open_content": "Offener Inhalt",
   "marketplace.sponsored_by_label": "Gesponsert von",
   "marketplace.showing_results": "Ergebnisse angezeigt",
   "content_type.in_person": "Live-Event",
