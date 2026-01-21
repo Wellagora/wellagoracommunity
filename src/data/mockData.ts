@@ -1142,10 +1142,10 @@ export interface DemoAccount {
 }
 
 export const DEMO_ACCOUNTS: DemoAccount[] = [
-  { email: "user1@wellagora.org", password: "WellAgora2026", role: "member", name: "Tag (Tóth Eszter)" },
-  { email: "user2@wellagora.org", password: "WellAgora2026", role: "expert", name: "Szakértő (Dr. Kovács)" },
-  { email: "user3@wellagora.org", password: "WellAgora2026", role: "sponsor", name: "Szponzor (Success Inc.)" },
-  { email: "user4@wellagora.org", password: "WellAgora2026", role: "admin", name: "Admin" }
+  { email: "user1@wellagora.org", password: "Wellagora2026", role: "member", name: "Tag (Tóth Eszter)" },
+  { email: "user2@wellagora.org", password: "Wellagora2026", role: "expert", name: "Szakértő (Dr. Kovács)" },
+  { email: "user3@wellagora.org", password: "Wellagora2026", role: "sponsor", name: "Szponzor (Success Inc.)" },
+  { email: "user4@wellagora.org", password: "Wellagora2026", role: "admin", name: "Admin" }
 ];
 
 // Helper function to get programs by expert

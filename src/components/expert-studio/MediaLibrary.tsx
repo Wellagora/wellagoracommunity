@@ -53,7 +53,7 @@ const MediaLibrary = ({
       case 'raw':
         return (
           <Badge className="bg-amber-100 text-amber-700 border-amber-200 text-xs">
-            Nyersanyag
+            {t('expert_studio.status_raw') || 'Raw Material'}
           </Badge>
         );
       case 'in_draft':
@@ -116,14 +116,14 @@ const MediaLibrary = ({
       >
         <div className="flex items-center gap-3">
           <FolderOpen className="w-5 h-5 text-muted-foreground" />
-          <h3 className="text-lg font-semibold text-foreground">Médiatár</h3>
+          <h3 className="text-lg font-semibold text-foreground">{t('expert_studio.media_library') || 'Media Gallery'}</h3>
           <Badge variant="secondary" className="text-xs">
             {media.length}
           </Badge>
           {rawMediaWithSuggestions.length > 0 && (
             <Badge className="bg-purple-100 text-purple-700 border-purple-200 text-xs flex items-center gap-1">
               <Bot className="w-3 h-3" />
-              {rawMediaWithSuggestions.length} javaslat
+              {rawMediaWithSuggestions.length} {t('expert_studio.suggestions') || 'suggestions'}
             </Badge>
           )}
         </div>
