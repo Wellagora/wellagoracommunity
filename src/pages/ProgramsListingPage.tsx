@@ -636,9 +636,9 @@ const ProgramsListingPage = () => {
                             {/* Event Format Tag + Category */}
                             <div className="flex items-center gap-2 mb-3">
                               <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-black/5 border border-black/10 text-black/70">
-                                {program.content_type === 'recorded' && '🎥 Videókurzus'}
-                                {program.content_type === 'online_live' && '💻 Online élő'}
-                                {(program.content_type === 'in_person' || !program.content_type) && '📍 Élő esemény'}
+                                {program.content_type === 'recorded' && `🎥 ${t('content_type.recorded')}`}
+                                {program.content_type === 'online_live' && `💻 ${t('content_type.online_live')}`}
+                                {(program.content_type === 'in_person' || !program.content_type) && `📍 ${t('content_type.in_person')}`}
                               </span>
                               <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-black/40">
                                 {getCategoryLabel(program.category)}
