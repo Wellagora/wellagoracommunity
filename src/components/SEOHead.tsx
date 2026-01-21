@@ -10,7 +10,7 @@ interface SEOHeadProps {
 }
 
 const SEOHead = ({
-  title = 'WellAgora - Helyi Szaktudás. Vállalati Támogatás. Közösségi Érték.',
+  title = 'WellAgora',
   description = 'Csatlakozz a regionális tudásmegosztó ökoszisztémához. Fedezd fel a programokat és a helyi szakértők tudását.',
   image = '/lovable-uploads/89cff010-b0aa-4aa1-b97e-999c469cae09.png',
   url,
