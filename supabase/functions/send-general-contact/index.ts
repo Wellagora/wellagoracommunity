@@ -143,7 +143,7 @@ const handler = async (req: Request): Promise<Response> => {
     const safeMessage = htmlEncode(message);
 
     const emailResponse = await resend.emails.send({
-      from: "WellAgora <noreply@wellagora.org>",
+      from: "WellAgora <info@wellagora.org>",
       to: [adminEmail],
       replyTo: senderEmail,
       subject: `[Kapcsolatfelvétel] ${subject}`,
