@@ -113,8 +113,8 @@ const handler = async (req: Request): Promise<Response> => {
     
     const { senderName, senderEmail, subject, message } = validation.data!;
 
-    // Admin email - ezt módosítsd a valódi admin email címre
-    const adminEmail = "info@kalimedence.hu";
+    // Admin email
+    const adminEmail = "info@wellagora.org";
 
     console.log(`Sending general contact email from ${senderName} to admin`);
 
@@ -155,7 +155,7 @@ const handler = async (req: Request): Promise<Response> => {
         <p><strong>Üzenet:</strong></p>
         <p>${safeMessage.replace(/\n/g, '<br>')}</p>
         <hr>
-        <p><small>Ez az üzenet a Káli medence fenntarthatósági platform kapcsolatfelvételi űrlapján keresztül érkezett.</small></p>
+        <p><small>Ez az üzenet a WellAgora platform kapcsolatfelvételi űrlapján keresztül érkezett.</small></p>
       `,
     });
 
