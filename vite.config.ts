@@ -21,4 +21,21 @@ export default defineConfig(({ mode }) => ({
     // Make sure these are pre-bundled consistently in dev
     include: ["react", "react-dom", "react-router-dom", "framer-motion"],
   },
+  // Strip console.log and console.warn from production builds
+  esbuild: {
+    drop: mode === "production" ? ["console", "debugger"] : [],
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "react-router-dom"],
+          ui: ["framer-motion", "@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-tabs", "@radix-ui/react-tooltip", "@radix-ui/react-popover"],
+          charts: ["recharts"],
+          supabase: ["@supabase/supabase-js"],
+          query: ["@tanstack/react-query"],
+        },
+      },
+    },
+  },
 }));

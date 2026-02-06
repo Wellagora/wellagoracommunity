@@ -27,8 +27,6 @@ const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
 const MyHubPage = lazy(() => import("@/pages/MyHubPage"));
 const CommunityPage = lazy(() => import("@/pages/CommunityPage"));
 const AIAssistantPage = lazy(() => import("@/pages/AIAssistantPage"));
-const ChallengesPage = lazy(() => import("@/pages/ChallengesPage"));
-const ChallengeDetailPage = lazy(() => import("@/pages/ChallengeDetailPage"));
 const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
 const OrganizationDashboard = lazy(() => import("@/pages/OrganizationDashboard"));
 const HandprintPage = lazy(() => import("@/pages/HandprintPage"));
@@ -45,6 +43,7 @@ const ExpertSettings = lazy(() => import("@/pages/ExpertSettings"));
 const ExpertPayouts = lazy(() => import("@/pages/ExpertPayouts"));
 const SponsorCampaigns = lazy(() => import("@/pages/SponsorCampaigns"));
 const SponsorFinances = lazy(() => import("@/pages/SponsorFinances"));
+const SponsorSupport = lazy(() => import("@/pages/SponsorSupport"));
 const ProjectAdminPage = lazy(() => import("@/pages/ProjectAdminPage"));
 const JoinProjectPage = lazy(() => import("@/pages/JoinProjectPage"));
 const ProjectsListPage = lazy(() => import("@/pages/ProjectsListPage"));
@@ -63,7 +62,7 @@ const AdminExperts = lazy(() => import("@/pages/admin/AdminExperts"));
 const AdminProjects = lazy(() => import("@/pages/admin/AdminProjects"));
 const AdminSponsors = lazy(() => import("@/pages/admin/AdminSponsors"));
 const AdminPrograms = lazy(() => import("@/pages/admin/AdminPrograms"));
-const AdminEvents = lazy(() => import("@/pages/admin/AdminEvents"));
+const AdminEvents = lazy(() => import("@/pages/admin/AdminEventsPage"));
 const AdminSettings = lazy(() => import("@/pages/admin/AdminSettings"));
 const AdminFeedback = lazy(() => import("@/pages/admin/AdminFeedback"));
 const AdminAnalytics = lazy(() => import("@/pages/admin/AdminAnalytics"));
@@ -75,17 +74,14 @@ const SponsorOnboardingPage = lazy(() => import("@/pages/SponsorOnboardingPage")
 const SponsorPublicProfilePage = lazy(() => import("@/pages/SponsorPublicProfilePage"));
 const OrganizationRegisterPage = lazy(() => import("@/pages/OrganizationRegisterPage"));
 const JoinOrganizationPage = lazy(() => import("@/pages/JoinOrganizationPage"));
-const EventsPage = lazy(() => import("@/pages/EventsPage"));
-const EventDetailPage = lazy(() => import("@/pages/EventDetailPage"));
-const CreatorDashboardPage = lazy(() => import("@/pages/CreatorDashboardPage"));
-const CreatorProgramNewPage = lazy(() => import("@/pages/CreatorProgramNewPage"));
-const CreatorProgramEditPage = lazy(() => import("@/pages/CreatorProgramEditPage"));
+const EventsPage = lazy(() => import("@/pages/EventsPageNew"));
+const EventDetailPage = lazy(() => import("@/pages/EventDetailPageNew"));
 const WorkshopSecretWizard = lazy(() => import("@/components/wizard/WorkshopSecretWizard"));
 const ProgramCreatorWizard = lazy(() => import("@/components/expert-studio/ProgramCreatorWizard"));
 const WorkshopSecretViewPage = lazy(() => import("@/pages/WorkshopSecretViewPage"));
 const ControlPanelPage = lazy(() => import("@/pages/ControlPanelPage"));
 const ProgramDetailPage = lazy(() => import("@/pages/ProgramDetailPage"));
-const ProgramLearnPage = lazy(() => import("@/pages/ProgramLearnPage"));
+const ProgramLearnPage = lazy(() => import("@/pages/ProgramLearnPageNew"));
 const MyLearningPage = lazy(() => import("@/pages/MyLearningPage"));
 const CreatorPublicProfilePage = lazy(() => import("@/pages/CreatorPublicProfilePage"));
 const ProgramsListingPage = lazy(() => import("@/pages/ProgramsListingPage"));
@@ -95,17 +91,18 @@ const PartnersPage = lazy(() => import("@/pages/PartnersPage"));
 const PartnerProfilePage = lazy(() => import("@/pages/PartnerProfilePage"));
 const FavoritesPage = lazy(() => import("@/pages/FavoritesPage"));
 const MyAgoraPage = lazy(() => import("@/pages/MyAgoraPage"));
+const PointsHistoryPage = lazy(() => import("@/pages/PointsHistoryPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
-function App() {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 1000 * 60 * 5, // 5 minutes
-      },
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
     },
-  });
+  },
+});
 
+function App() {
   // Initialize Sentry after React is ready
   useEffect(() => {
     initSentry();
@@ -140,9 +137,7 @@ function App() {
                           <Route path="/member-dashboard" element={<Navigate to="/my-agora" replace />} />
                           <Route path="/iranyitopult" element={<Navigate to="/my-agora" replace />} />
                           <Route path="/sajat-kozpont" element={<Navigate to="/my-agora" replace />} />
-                          {/* Admin routes redirect to admin-panel for super admins */}
-                          <Route path="/admin" element={<Navigate to="/admin-panel" replace />} />
-                          <Route path="/admin-dashboard" element={<Navigate to="/admin-panel" replace />} />
+                          <Route path="/admin-dashboard" element={<Navigate to="/admin" replace />} />
                           <Route path="/regional-hub" element={<Navigate to="/community" replace />} />
                           <Route path="/explore-region" element={<ExploreRegionPage />} />
                           <Route path="/interactive-map" element={<Navigate to="/community" replace />} />
@@ -177,11 +172,7 @@ function App() {
                           <Route path="/profile/:userId" element={<ProfilePage />} />
                           <Route
                             path="/organization"
-                            element={
-                              <ProtectedRoute allowedRoles={["sponsor"]}>
-                                <OrganizationDashboard />
-                              </ProtectedRoute>
-                            }
+                            element={<Navigate to="/sponsor-dashboard" replace />}
                           />
                           <Route path="/organization/:organizationId" element={<PublicOrganizationPage />} />
                           {/* Sponsor Dashboard - English canonical path */}
@@ -229,11 +220,7 @@ function App() {
                           <Route path="/impressum" element={<ImpressumPage />} />
                           <Route
                             path="/super-admin"
-                            element={
-                            <ProtectedRoute requireSuperAdmin>
-                                <SuperAdminPage />
-                              </ProtectedRoute>
-                            }
+                            element={<Navigate to="/admin" replace />}
                           />
                           
                           {/* Sponsor routes */}
@@ -333,6 +320,14 @@ function App() {
                               </ProtectedRoute>
                             }
                           />
+                          <Route
+                            path="/sponsor-dashboard/support"
+                            element={
+                              <ProtectedRoute allowedRoles={["sponsor"]}>
+                                <SponsorSupport />
+                              </ProtectedRoute>
+                            }
+                          />
                           
                           {/* Expert Studio - Hungarian legacy routes (redirect to English) */}
                           <Route path="/szakertoi-studio" element={<Navigate to="/expert-studio" replace />} />
@@ -396,6 +391,14 @@ function App() {
                               </ProtectedRoute>
                             }
                           />
+                          <Route
+                            path="/wallet/history"
+                            element={
+                              <ProtectedRoute>
+                                <PointsHistoryPage />
+                              </ProtectedRoute>
+                            }
+                          />
                           
                           {/* Workshop Secret View (Műhelytitok nézet) */}
                           <Route
@@ -441,9 +444,12 @@ function App() {
                           </Route>
                         </Route>
                         
-                        {/* New Admin Dashboard with separate layout */}
+                        {/* Admin alias route: keep working for backward compatibility, but canonical is /admin */}
+                        <Route path="/admin-panel" element={<Navigate to="/admin" replace />} />
+
+                        {/* Admin alias routes (keep /admin-panel working) */}
                         <Route
-                          path="/admin-panel"
+                          path="/admin"
                           element={
                             <ProtectedRoute requireSuperAdmin>
                               <AdminLayout />
