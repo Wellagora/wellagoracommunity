@@ -1,3 +1,5 @@
+// DEPRECATED: This edge function is no longer used. Scheduled for removal.
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 // Allowed origins for CORS
