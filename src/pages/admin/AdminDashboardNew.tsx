@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Select,
@@ -15,41 +14,37 @@ import {
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { 
-  Users, 
-  UserCheck, 
-  Building2, 
-  Calendar, 
-  MessageSquare,
   Activity,
   RefreshCw,
-  Shield,
   BarChart3,
   AlertCircle,
-  ClipboardList,
-  CheckCircle2,
-  Clock,
-  ArrowRight,
   Briefcase,
   FolderOpen,
-  Sparkles
+  Sparkles,
+  UserCheck,
+  ClipboardList
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-interface TaskQueueItem {
-  task_type: string;
-  count: number;
-  label_hu: string;
-  label_en: string;
-}
+type KpiTileState = {
+  loading: boolean;
+  value: number | null;
+  unavailable: boolean;
+};
 
-interface DashboardStats {
-  totalUsers: number;
-  experts: number;
-  sponsors: number;
-  members: number;
-  activePrograms: number;
-  pendingFeedback: number;
-}
+type CreditOverviewState = {
+  loading: boolean;
+  purchases: number | null;
+  spend: number | null;
+  balance: number | null;
+  unavailable: boolean;
+};
+
+type CreditTx30dState = {
+  loading: boolean;
+  value: number | null;
+  unavailable: boolean;
+};
 
 interface Project {
   id: string;
@@ -57,14 +52,6 @@ interface Project {
   slug: string;
   is_active: boolean;
 }
-
-// Mock task queue for demo mode
-const MOCK_TASK_QUEUE: TaskQueueItem[] = [
-  { task_type: 'expert_verification', count: 5, label_hu: 'Szakértők hitelesítése', label_en: 'Expert Verification' },
-  { task_type: 'program_review', count: 3, label_hu: 'Programok jóváhagyása', label_en: 'Program Review' },
-  { task_type: 'sponsor_activation', count: 2, label_hu: 'Szponzor aktiválás', label_en: 'Sponsor Activation' },
-  { task_type: 'pending_feedback', count: 7, label_hu: 'Visszajelzések', label_en: 'Pending Feedback' },
-];
 
 const MOCK_PROJECTS: Project[] = [
   { id: 'proj-1', name: 'Káli-medence Közösség', slug: 'kali-medence', is_active: true },
@@ -76,29 +63,84 @@ const AdminDashboardNew = () => {
   const { t, language } = useLanguage();
   const { isDemoMode } = useAuth();
   const navigate = useNavigate();
+  const adminBasePath = '/admin';
   
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [taskQueue, setTaskQueue] = useState<TaskQueueItem[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedProject, setSelectedProject] = useState<string>('all');
   const [loading, setLoading] = useState(true);
 
+  const [platformOverview, setPlatformOverview] = useState<Record<string, KpiTileState>>({
+    totalUsers: { loading: true, value: null, unavailable: false },
+    creators: { loading: true, value: null, unavailable: false },
+    sponsors: { loading: true, value: null, unavailable: false },
+    activeProjects: { loading: true, value: null, unavailable: false },
+    activePrograms: { loading: true, value: null, unavailable: false },
+    activeSponsoredPrograms: { loading: true, value: null, unavailable: false },
+  });
+
+  const [creditOverview, setCreditOverview] = useState<CreditOverviewState>({
+    loading: true,
+    purchases: null,
+    spend: null,
+    balance: null,
+    unavailable: false,
+  });
+
+  const [creditTx30d, setCreditTx30d] = useState<CreditTx30dState>({
+    loading: true,
+    value: null,
+    unavailable: false,
+  });
+
+  const purchasedTypes = useMemo(() => ['purchase', 'subscription', 'initial', 'rollover', 'bonus'], []);
+  const spentTypes = useMemo(() => ['deduction', 'sponsorship', 'usage', 'spend'], []);
+
+  const setKpiLoading = () => {
+    setPlatformOverview({
+      totalUsers: { loading: true, value: null, unavailable: false },
+      creators: { loading: true, value: null, unavailable: false },
+      sponsors: { loading: true, value: null, unavailable: false },
+      activeProjects: { loading: true, value: null, unavailable: false },
+      activePrograms: { loading: true, value: null, unavailable: false },
+      activeSponsoredPrograms: { loading: true, value: null, unavailable: false },
+    });
+    setCreditOverview({
+      loading: true,
+      purchases: null,
+      spend: null,
+      balance: null,
+      unavailable: false,
+    });
+    setCreditTx30d({
+      loading: true,
+      value: null,
+      unavailable: false,
+    });
+  };
+
   const fetchData = async () => {
     setLoading(true);
+    setKpiLoading();
     
     try {
       if (isDemoMode) {
-        // Demo mode: use mock data
-        setStats({
-          totalUsers: 156,
-          experts: 24,
-          sponsors: 8,
-          members: 124,
-          activePrograms: 45,
-          pendingFeedback: 7
-        });
-        setTaskQueue(MOCK_TASK_QUEUE);
         setProjects(MOCK_PROJECTS);
+        setPlatformOverview({
+          totalUsers: { loading: false, value: 156, unavailable: false },
+          creators: { loading: false, value: 24, unavailable: false },
+          sponsors: { loading: false, value: 8, unavailable: false },
+          activeProjects: { loading: false, value: 2, unavailable: false },
+          activePrograms: { loading: false, value: 45, unavailable: false },
+          activeSponsoredPrograms: { loading: false, value: 12, unavailable: false },
+        });
+        setCreditOverview({
+          loading: false,
+          purchases: 1500000,
+          spend: 750000,
+          balance: 750000,
+          unavailable: false,
+        });
+        setCreditTx30d({ loading: false, value: 38, unavailable: false });
         setLoading(false);
         return;
       }
@@ -111,48 +153,75 @@ const AdminDashboardNew = () => {
       
       setProjects(projectsData || []);
 
-      // Fetch task queue from view
-      const { data: taskData } = await supabase
-        .from('admin_task_queue')
-        .select('*');
-      
-      setTaskQueue(taskData || []);
+      // Read-only KPI tiles (isolated queries, must never crash)
+      const safeCount = async (table: string, build: (q: any) => any) => {
+        const q = supabase.from(table).select('*', { count: 'exact', head: true });
+        const res = await build(q);
+        if (res.error) throw res.error;
+        return res.count || 0;
+      };
 
-      // Fetch stats in parallel
-      const [
-        profilesResult,
-        expertsResult,
-        sponsorsResult,
-        membersResult,
-        feedbackResult,
-        programsResult
-      ] = await Promise.all([
-        supabase.from('profiles').select('*', { count: 'exact', head: true }),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).in('user_role', ['expert', 'creator']),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).in('user_role', ['sponsor', 'business', 'government', 'ngo']),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('user_role', 'member'),
-        supabase.from('feedback').select('*', { count: 'exact', head: true }).eq('status', 'new'),
-        supabase.from('challenge_definitions').select('*', { count: 'exact', head: true }).eq('is_active', true)
+      const loadCreditTx30d = async () => {
+        try {
+          const value = await safeCount('credit_transactions', (q) =>
+            q.gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
+          );
+          setCreditTx30d({ loading: false, value, unavailable: false });
+        } catch (e: any) {
+          // KPI fetch failed
+          setCreditTx30d({ loading: false, value: null, unavailable: true });
+        }
+      };
+
+      const loadKpiTile = async (key: keyof typeof platformOverview, fn: () => Promise<number>) => {
+        try {
+          const value = await fn();
+          setPlatformOverview((prev) => ({
+            ...prev,
+            [key]: { loading: false, value, unavailable: false },
+          }));
+        } catch (e) {
+          // KPI fetch failed
+          setPlatformOverview((prev) => ({
+            ...prev,
+            [key]: { loading: false, value: null, unavailable: true },
+          }));
+        }
+      };
+
+      const loadCreditOverview = async () => {
+        try {
+          const { data, error } = await supabase.from('credit_transactions').select('credits, transaction_type');
+          if (error) throw error;
+          const rows = (data || []) as { credits: number; transaction_type: string }[];
+          const purchases = rows
+            .filter((r) => purchasedTypes.includes(r.transaction_type))
+            .reduce((sum, r) => sum + (r.credits || 0), 0);
+          const spend = Math.abs(
+            rows
+              .filter((r) => spentTypes.includes(r.transaction_type))
+              .reduce((sum, r) => sum + (r.credits || 0), 0)
+          );
+          const balance = Math.max(0, purchases - spend);
+          setCreditOverview({ loading: false, purchases, spend, balance, unavailable: false });
+        } catch (e: any) {
+          // KPI fetch failed
+          setCreditOverview({ loading: false, purchases: null, spend: null, balance: null, unavailable: true });
+        }
+      };
+
+      await Promise.all([
+        loadKpiTile('totalUsers', () => safeCount('profiles', (q) => q)),
+        loadKpiTile('creators', () => safeCount('profiles', (q) => q.eq('user_role', 'creator'))),
+        loadKpiTile('sponsors', () => safeCount('sponsors', (q) => q)),
+        loadKpiTile('activeProjects', () => safeCount('projects', (q) => q.eq('is_active', true))),
+        loadKpiTile('activePrograms', () => safeCount('expert_contents', (q) => q.eq('is_published', true))),
+        loadKpiTile('activeSponsoredPrograms', () => safeCount('content_sponsorships', (q) => q.eq('is_active', true))),
+        loadCreditOverview(),
+        loadCreditTx30d(),
       ]);
-
-      setStats({
-        totalUsers: profilesResult.count || 0,
-        experts: expertsResult.count || 0,
-        sponsors: sponsorsResult.count || 0,
-        members: membersResult.count || 0,
-        activePrograms: programsResult.count || 0,
-        pendingFeedback: feedbackResult.count || 0
-      });
     } catch (error) {
       console.error('Error fetching data:', error);
-      setStats({
-        totalUsers: 0,
-        experts: 0,
-        sponsors: 0,
-        members: 0,
-        activePrograms: 0,
-        pendingFeedback: 0
-      });
     } finally {
       setLoading(false);
     }
@@ -162,83 +231,53 @@ const AdminDashboardNew = () => {
     fetchData();
   }, [isDemoMode]);
 
-  // Task queue item config
-  const getTaskConfig = (taskType: string) => {
-    switch (taskType) {
-      case 'expert_verification':
-        return { 
-          icon: UserCheck, 
-          color: 'text-indigo-600', 
-          bgColor: 'bg-indigo-50 dark:bg-indigo-950',
-          route: '/admin-panel/users?role=creator&status=pending'
-        };
-      case 'program_review':
-        return { 
-          icon: ClipboardList, 
-          color: 'text-purple-600', 
-          bgColor: 'bg-purple-50 dark:bg-purple-950',
-          route: '/admin-panel/programs?status=pending'
-        };
-      case 'sponsor_activation':
-        return { 
-          icon: Building2, 
-          color: 'text-amber-600', 
-          bgColor: 'bg-amber-50 dark:bg-amber-950',
-          route: '/admin-panel/sponsors?status=pending'
-        };
-      case 'pending_feedback':
-        return { 
-          icon: MessageSquare, 
-          color: 'text-red-600', 
-          bgColor: 'bg-red-50 dark:bg-red-950',
-          route: '/admin-panel/feedback'
-        };
-      default:
-        return { 
-          icon: Clock, 
-          color: 'text-slate-600', 
-          bgColor: 'bg-slate-50 dark:bg-slate-950',
-          route: '/admin-panel'
-        };
-    }
+  const KpiTile = ({
+    label,
+    state,
+  }: {
+    label: string;
+    state: KpiTileState;
+  }) => {
+    return (
+      <div className="rounded-lg border bg-card p-4">
+        <div className="text-xs text-muted-foreground">{label}</div>
+        <div className="mt-1 text-2xl font-semibold">
+          {state.loading ? (
+            <Skeleton className="h-7 w-16" />
+          ) : state.unavailable ? (
+            <span className="text-sm text-muted-foreground">{t('common.no_data')}</span>
+          ) : (
+            state.value ?? 0
+          )}
+        </div>
+      </div>
+    );
   };
 
-  const totalPendingTasks = taskQueue.reduce((sum, t) => sum + t.count, 0);
-
-  const statCards = [
-    { 
-      label: t('admin.stats.total_users'), 
-      value: stats?.totalUsers || 0,
-      icon: Users,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50 dark:bg-blue-950',
-      onClick: () => navigate('/admin-panel/users')
-    },
-    { 
-      label: t('admin.stats.experts'), 
-      value: stats?.experts || 0,
-      icon: UserCheck,
-      color: 'text-indigo-600',
-      bgColor: 'bg-indigo-50 dark:bg-indigo-950',
-      onClick: () => navigate('/admin-panel/users?role=creator')
-    },
-    { 
-      label: t('admin.stats.sponsors'), 
-      value: stats?.sponsors || 0,
-      icon: Building2,
-      color: 'text-amber-600',
-      bgColor: 'bg-amber-50 dark:bg-amber-950',
-      onClick: () => navigate('/admin-panel/sponsors')
-    },
-    { 
-      label: t('admin.stats.active_programs'), 
-      value: stats?.activePrograms || 0,
-      icon: Calendar,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50 dark:bg-purple-950',
-      onClick: () => navigate('/admin-panel/programs')
-    },
-  ];
+  const CreditTile = ({
+    label,
+    value,
+    loading: isLoading,
+    unavailable,
+  }: {
+    label: string;
+    value: number | null;
+    loading: boolean;
+    unavailable: boolean;
+  }) => (
+    <div className="rounded-lg border bg-card p-4">
+      <div className="text-xs text-muted-foreground">{label}</div>
+      <div className="mt-1 text-2xl font-semibold">
+        {isLoading ? (
+          <Skeleton className="h-7 w-24" />
+        ) : unavailable ? (
+          <span className="text-sm text-muted-foreground">{t('common.no_data')}</span>
+        ) : (
+          value ?? 0
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
@@ -289,124 +328,53 @@ const AdminDashboardNew = () => {
         </div>
       )}
 
-      {/* Task Queue Section - CRITICAL */}
-      <Card className={cn(
-        "border-2",
-        totalPendingTasks > 0 ? "border-amber-300 dark:border-amber-700" : "border-emerald-300 dark:border-emerald-700"
-      )}>
+      {/* Platform áttekintés (read-only) */}
+      <Card>
         <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className={cn(
-                "p-2 rounded-lg",
-                totalPendingTasks > 0 ? "bg-amber-100 dark:bg-amber-900" : "bg-emerald-100 dark:bg-emerald-900"
-              )}>
-                {totalPendingTasks > 0 ? (
-                  <Clock className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-                ) : (
-                  <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-                )}
-              </div>
-              <div>
-                <CardTitle className="text-lg">{t('admin.dashboard.task_queue')}</CardTitle>
-                <CardDescription>
-                  {totalPendingTasks > 0 
-                    ? `${totalPendingTasks} ${t('admin.dashboard.tasks_pending')}`
-                    : t('admin.dashboard.all_tasks_complete')
-                  }
-                </CardDescription>
-              </div>
-            </div>
-            {totalPendingTasks > 0 && (
-              <Badge variant="destructive" className="text-lg px-3 py-1">
-                {totalPendingTasks}
-              </Badge>
-            )}
-          </div>
+          <CardTitle className="text-base">{t('admin.dashboard.platform_overview.title')}</CardTitle>
+          <CardDescription>{t('admin.dashboard.platform_overview.subtitle')}</CardDescription>
         </CardHeader>
         <CardContent>
-          {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {[1, 2, 3, 4].map(i => (
-                <Skeleton key={i} className="h-24" />
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {taskQueue.map((task) => {
-                const config = getTaskConfig(task.task_type);
-                const Icon = config.icon;
-                const label = language === 'hu' ? task.label_hu : task.label_en;
-                
-                return (
-                  <Card 
-                    key={task.task_type}
-                    className={cn(
-                      "cursor-pointer hover:shadow-md transition-all hover:scale-[1.02]",
-                      task.count > 0 && "ring-2 ring-amber-400 dark:ring-amber-600"
-                    )}
-                    onClick={() => navigate(config.route)}
-                  >
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className={cn("p-2 rounded-lg", config.bgColor)}>
-                          <Icon className={cn("h-5 w-5", config.color)} />
-                        </div>
-                        <Badge 
-                          variant={task.count > 0 ? "destructive" : "secondary"}
-                          className="text-lg"
-                        >
-                          {task.count}
-                        </Badge>
-                      </div>
-                      <p className="mt-3 font-medium text-sm">{label}</p>
-                      {task.count > 0 && (
-                        <div className="flex items-center text-xs text-muted-foreground mt-1">
-                          {t('admin.dashboard.review_now')}
-                          <ArrowRight className="h-3 w-3 ml-1" />
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          )}
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <KpiTile label={t('admin.dashboard.platform_overview.kpis.users')} state={platformOverview.totalUsers} />
+            <KpiTile label={t('admin.dashboard.platform_overview.kpis.creators')} state={platformOverview.creators} />
+            <KpiTile label={t('admin.dashboard.platform_overview.kpis.sponsors')} state={platformOverview.sponsors} />
+            <KpiTile label={t('admin.dashboard.platform_overview.kpis.active_projects')} state={platformOverview.activeProjects} />
+            <KpiTile label={t('admin.dashboard.platform_overview.kpis.published_programs')} state={platformOverview.activePrograms} />
+            <KpiTile label={t('admin.dashboard.platform_overview.kpis.sponsored_programs')} state={platformOverview.activeSponsoredPrograms} />
+            <KpiTile label={t('admin.dashboard.platform_overview.kpis.credit_transactions_30d')} state={creditTx30d} />
+            <CreditTile
+              label={t('admin.dashboard.platform_overview.kpis.credit_purchases_total')}
+              value={creditOverview.purchases}
+              loading={creditOverview.loading}
+              unavailable={creditOverview.unavailable}
+            />
+            <CreditTile
+              label={t('admin.dashboard.platform_overview.kpis.credit_spend_total')}
+              value={creditOverview.spend}
+              loading={creditOverview.loading}
+              unavailable={creditOverview.unavailable}
+            />
+            <CreditTile
+              label={t('admin.dashboard.platform_overview.kpis.credit_balance_platform')}
+              value={creditOverview.balance}
+              loading={creditOverview.loading}
+              unavailable={creditOverview.unavailable}
+            />
+          </div>
         </CardContent>
       </Card>
 
-      {/* Stats Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {statCards.map((stat) => {
-          const Icon = stat.icon;
-          return (
-            <Card 
-              key={stat.label}
-              className="cursor-pointer hover:shadow-md transition-shadow"
-              onClick={stat.onClick}
-            >
-              <CardContent className="p-6">
-                {loading ? (
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-24" />
-                    <Skeleton className="h-8 w-16" />
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">{stat.label}</p>
-                      <p className="text-3xl font-bold">{stat.value.toLocaleString()}</p>
-                    </div>
-                    <div className={cn("p-3 rounded-full", stat.bgColor)}>
-                      <Icon className={cn("h-6 w-6", stat.color)} />
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+      {/* Riasztások / kockázatok (MVP: empty state) */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">{t('admin.dashboard.alerts.title')}</CardTitle>
+          <CardDescription>{t('admin.dashboard.alerts.subtitle')}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-sm text-muted-foreground">{t('admin.dashboard.alerts.empty')}</div>
+        </CardContent>
+      </Card>
 
       {/* Quick Management Links */}
       <Card>
@@ -421,7 +389,7 @@ const AdminDashboardNew = () => {
             <Button 
               variant="outline" 
               className="justify-start gap-2 h-auto py-4"
-              onClick={() => navigate('/admin-panel/projects')}
+              onClick={() => navigate(`${adminBasePath}/projects`)}
             >
               <FolderOpen className="h-5 w-5 text-emerald-600" />
               <span>{t('admin.actions.manage_projects')}</span>
@@ -429,7 +397,7 @@ const AdminDashboardNew = () => {
             <Button 
               variant="outline" 
               className="justify-start gap-2 h-auto py-4"
-              onClick={() => navigate('/admin-panel/users?role=creator')}
+              onClick={() => navigate(`${adminBasePath}/users?role=creator`)}
             >
               <UserCheck className="h-5 w-5 text-indigo-600" />
               <span>{t('admin.actions.verify_experts')}</span>
@@ -437,7 +405,7 @@ const AdminDashboardNew = () => {
             <Button 
               variant="outline" 
               className="justify-start gap-2 h-auto py-4"
-              onClick={() => navigate('/admin-panel/programs')}
+              onClick={() => navigate(`${adminBasePath}/programs`)}
             >
               <ClipboardList className="h-5 w-5 text-purple-600" />
               <span>{t('admin.actions.review_programs')}</span>
@@ -445,7 +413,7 @@ const AdminDashboardNew = () => {
             <Button 
               variant="outline" 
               className="justify-start gap-2 h-auto py-4"
-              onClick={() => navigate('/admin-panel/sponsors')}
+              onClick={() => navigate(`${adminBasePath}/sponsors`)}
             >
               <Briefcase className="h-5 w-5 text-amber-600" />
               <span>{t('admin.actions.manage_sponsors')}</span>
@@ -453,7 +421,7 @@ const AdminDashboardNew = () => {
             <Button 
               variant="outline" 
               className="justify-start gap-2 h-auto py-4"
-              onClick={() => navigate('/admin-panel/analytics')}
+              onClick={() => navigate(`${adminBasePath}/analytics`)}
             >
               <BarChart3 className="h-5 w-5 text-blue-600" />
               <span>{t('admin.actions.analytics')}</span>

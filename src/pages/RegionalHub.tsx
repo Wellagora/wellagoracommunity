@@ -6,11 +6,9 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useRegionalHub } from '@/hooks/useRegionalHub';
 import { RegionalHubHeader } from '@/components/regional/RegionalHubHeader';
 import { RegionalStakeholderList } from '@/components/regional/RegionalStakeholderList';
-import { RegionalChallengesTab } from '@/components/regional/RegionalChallengesTab';
 import { RegionalSponsorshipTab } from '@/components/regional/RegionalSponsorshipTab';
-import ChallengeSponsorshipModal from '@/components/challenges/ChallengeSponsorshipModal';
 import ContactModal from '@/components/regional/ContactModal';
-import { Map, Users, Target, TrendingUp } from 'lucide-react';
+import { Map, Users, TrendingUp } from 'lucide-react';
 
 const RegionalHub = () => {
   const { t } = useLanguage();
@@ -19,17 +17,14 @@ const RegionalHub = () => {
     selectedTypes,
     searchQuery,
     loadingStakeholders,
-    selectedChallengeForSponsorship,
     contactModalOpen,
     selectedContact,
     currentProject,
     projectLoading,
     user,
     filteredProfiles,
-    regionalChallenges,
     setViewMode,
     setSearchQuery,
-    setSelectedChallengeForSponsorship,
     setContactModalOpen,
     setSelectedContact,
     handleTypeToggle,
@@ -87,16 +82,11 @@ const RegionalHub = () => {
           transition={{ duration: 0.8 }}
         >
           <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as any)} className="space-y-4 sm:space-y-6">
-            <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3 h-auto">
+            <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-2 h-auto">
               <TabsTrigger value="stakeholders" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
                 <Users className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline">{t('regional.partners')}</span>
                 <span className="sm:hidden">{t('regional.partners_short')}</span>
-              </TabsTrigger>
-              <TabsTrigger value="challenges" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
-                <Target className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="hidden sm:inline">{t('regional.challenges')}</span>
-                <span className="sm:hidden">{t('regional.challenges_short')}</span>
               </TabsTrigger>
               <TabsTrigger value="sponsorship" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
                 <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -127,38 +117,12 @@ const RegionalHub = () => {
               />
             </TabsContent>
 
-            <TabsContent value="challenges">
-              <RegionalChallengesTab
-                challenges={regionalChallenges}
-                regionName={currentProject.region_name}
-                userId={user?.id}
-                onSponsorClick={(id, title) => setSelectedChallengeForSponsorship({ id, title })}
-                onSponsorProfileClick={(organizationId, userId) => {
-                  if (organizationId) {
-                    navigate(`/organization/${organizationId}`);
-                  } else if (userId) {
-                    navigate(`/profile?userId=${userId}`);
-                  }
-                }}
-              />
-            </TabsContent>
-
             <TabsContent value="sponsorship">
               <RegionalSponsorshipTab />
             </TabsContent>
           </Tabs>
         </motion.div>
       </div>
-
-      {selectedChallengeForSponsorship && (
-        <ChallengeSponsorshipModal
-          open={!!selectedChallengeForSponsorship}
-          onOpenChange={(open) => !open && setSelectedChallengeForSponsorship(null)}
-          challengeId={selectedChallengeForSponsorship.id}
-          challengeTitle={selectedChallengeForSponsorship.title}
-          region={currentProject.region_name}
-        />
-      )}
 
       {selectedContact && (
         <ContactModal

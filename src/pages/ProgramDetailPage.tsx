@@ -4,11 +4,16 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useLocalizedContent } from "@/hooks/useLocalizedContent";
 import { useVouchers } from "@/hooks/useVouchers";
 import { useFavorites } from "@/hooks/useFavorites";
+import { useProgramSupport } from "@/hooks/useSponsorSupport";
+import { calculateSupportBreakdown } from "@/lib/sponsorSupport";
+import { calculatePricing } from '@/lib/pricing';
+import { PricingDisplay } from '@/components/PricingDisplay';
+import { SupportBreakdownCard, SponsoredBadge } from "@/components/sponsor/SupportBreakdownCard";
 import { MOCK_PROGRAMS, getMockExpertById } from "@/data/mockData";
-import { toast } from "@/hooks/use-toast";
+import type { Currency } from "@/types/sponsorSupport";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -46,8 +51,7 @@ const ProgramDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { t } = useLanguage();
-  const { getLocalizedField } = useLocalizedContent();
+  const { t, language } = useLanguage();
   const { claimVoucher, hasVoucherForContent, getVoucherByContentId } = useVouchers();
   const { isFavorite, toggleFavorite } = useFavorites();
 
@@ -115,6 +119,35 @@ const ProgramDetailPage = () => {
     enabled: !!id,
   });
 
+  // Detect sponsor support for this program
+  const programCurrency: Currency = ((program as any)?.currency as Currency) || "HUF";
+  const { data: supportData } = useProgramSupport(id, programCurrency);
+  
+  // Fetch sponsor logo if support exists
+  const { data: sponsorProfile } = useQuery({
+    queryKey: ['sponsorProfile', supportData?.rule?.sponsor_id],
+    queryFn: async () => {
+      if (!supportData?.rule?.sponsor_id) return null;
+      const { data } = await supabase
+        .from('profiles')
+        .select('avatar_url')
+        .eq('id', supportData.rule.sponsor_id)
+        .single();
+      return data;
+    },
+    enabled: !!supportData?.rule?.sponsor_id,
+  });
+  
+  // Calculate support breakdown if available
+  const supportBreakdown = supportData
+    ? calculateSupportBreakdown(
+        program.price_huf,
+        supportData.rule.amount_per_participant,
+        programCurrency,
+        supportData.sponsorName
+      )
+    : null;
+
   // Fetch active sponsorship for this program with quota info
   const { data: sponsorship } = useQuery({
     queryKey: ['programSponsorship', id],
@@ -152,12 +185,29 @@ const ProgramDetailPage = () => {
       }
       const { data } = await supabase
         .from('expert_contents')
-        .select('id, title, title_en, title_de, thumbnail_url, access_level, price_huf')
+        .select('id, thumbnail_url, access_level, price_huf')
         .eq('creator_id', program?.creator_id)
         .eq('is_published', true)
         .neq('id', id)
         .limit(3);
-      return data;
+      const relIds = (data || []).map((r) => r.id);
+      if (relIds.length === 0) return [];
+
+      const { data: relLocs } = await supabase
+        .from('content_localizations')
+        .select('content_id, title')
+        .in('content_id', relIds)
+        .eq('locale', language)
+        .eq('is_approved', true);
+
+      const titleById: Record<string, string> = {};
+      for (const row of (relLocs || []) as any[]) {
+        if (row?.content_id && row?.title) titleById[row.content_id] = row.title;
+      }
+
+      return (data || [])
+        .filter((r) => !!titleById[r.id])
+        .map((r) => ({ ...r, title: titleById[r.id] }));
     },
     enabled: !!program?.creator_id,
   });
@@ -250,8 +300,11 @@ const ProgramDetailPage = () => {
       );
     }
 
-    // For real programs (not mock), show claim button with quota check
-    if (!isMockProgram && id) {
+    // Check if this is a SPONSORED program (is_sponsored=true)
+    const isSponsored = (program as any)?.is_sponsored === true;
+
+    // For SPONSORED programs (real or mock), show voucher claim button
+    if (isSponsored && !isMockProgram && id) {
       // If quota is exhausted, show impact message instead
       if (quotaInfo?.isExhausted) {
         return (
@@ -293,8 +346,8 @@ const ProgramDetailPage = () => {
       );
     }
     
-    // For mock programs, show a special test button
-    if (isMockProgram) {
+    // For mock SPONSORED programs, show a special test button
+    if (isSponsored && isMockProgram) {
       return (
         <Button 
           size="lg"
@@ -321,14 +374,38 @@ const ProgramDetailPage = () => {
       case 'registered':
       case 'purchased':
       case 'premium_subscriber':
+        // Determine button text and icon based on pricing for already-accessed content
+        const isFreeAccess = !program.price_huf || program.price_huf === 0;
+        const isSponsoredAccess = (program as any).is_sponsored && ((program as any).fixed_sponsor_amount || sponsorship?.sponsor_contribution_huf);
+        
+        let accessButtonText = '';
+        let AccessIcon = PlayCircle;
+        
+        if (isFreeAccess) {
+          accessButtonText = 'Csatlakozás';
+          AccessIcon = CheckCircle2;
+        } else if (isSponsoredAccess) {
+          const sponsorAmountAccess = (program as any).fixed_sponsor_amount || sponsorship?.sponsor_contribution_huf || 0;
+          const discountedPriceAccess = Math.max(0, (program.price_huf || 0) - sponsorAmountAccess);
+          accessButtonText = `Csatlakozom — ${discountedPriceAccess.toLocaleString()} Ft`;
+          AccessIcon = Heart;
+        } else {
+          accessButtonText = `Megvásárlom — ${(program.price_huf || 0).toLocaleString()} Ft`;
+          AccessIcon = ShoppingCart;
+        }
+        
         return (
           <Button 
             size="lg"
-            className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg"
-            onClick={() => navigate(`/piacer/${id}/learn`)}
+            className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg w-full"
+            onClick={() => {
+              toast.info('Hamarosan elérhető!', {
+                description: 'A program tartalma előkészítés alatt áll.'
+              });
+            }}
           >
-            <PlayCircle className="w-5 h-5 mr-2" />
-            {t('program.view_content')}
+            <AccessIcon className="w-5 h-5 mr-2" />
+            {accessButtonText}
           </Button>
         );
       case 'login_required':
@@ -356,14 +433,38 @@ const ProgramDetailPage = () => {
           </Button>
         );
       case 'purchase_required':
+        // Determine button text and icon based on pricing
+        const isFree = !program.price_huf || program.price_huf === 0;
+        const isSponsored = (program as any).is_sponsored && ((program as any).fixed_sponsor_amount || sponsorship?.sponsor_contribution_huf);
+        const sponsorAmount = (program as any).fixed_sponsor_amount || sponsorship?.sponsor_contribution_huf || 0;
+        const discountedPrice = Math.max(0, (program.price_huf || 0) - sponsorAmount);
+        
+        let buttonText = '';
+        let ButtonIcon = ShoppingCart;
+        
+        if (isFree) {
+          buttonText = 'Csatlakozás';
+          ButtonIcon = CheckCircle2;
+        } else if (isSponsored) {
+          buttonText = `Csatlakozom — ${discountedPrice.toLocaleString()} Ft`;
+          ButtonIcon = Heart;
+        } else {
+          buttonText = `Megvásárlom — ${(program.price_huf || 0).toLocaleString()} Ft`;
+          ButtonIcon = ShoppingCart;
+        }
+        
         return (
           <Button 
             size="lg"
-            className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg"
-            onClick={() => setIsPurchaseModalOpen(true)}
+            className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg w-full"
+            onClick={() => {
+              toast.info('Hamarosan elérhető!', {
+                description: 'A fizetési rendszer integrációja folyamatban van.'
+              });
+            }}
           >
-            <ShoppingCart className="w-5 h-5 mr-2" />
-            {t('program.purchase')}: {price?.toLocaleString()} Ft
+            <ButtonIcon className="w-5 h-5 mr-2" />
+            {buttonText}
           </Button>
         );
       default:
@@ -403,9 +504,43 @@ const ProgramDetailPage = () => {
 
   const creator = program.creator as { id: string; first_name: string; last_name: string; avatar_url: string | null; is_verified_expert: boolean } | null;
   
-  // Get localized title and description
-  const localizedTitle = getLocalizedField(program, 'title');
-  const localizedDescription = getLocalizedField(program, 'description') || program.description || t('program.no_description');
+  // Helper to clean program title - ONLY strip [DEV] prefix
+  const cleanProgramTitle = (title: string): string => {
+    if (!title) return '';
+    return title.replace(/^\[DEV\]\s*/i, '').trim();
+  };
+  
+  // Get localized title and description from embedded language fields
+  const programData = program as any;
+  let localizedTitle = '';
+  let localizedDescription = '';
+  
+  if (isMockProgram) {
+    localizedTitle = cleanProgramTitle(programData?.title || '');
+    localizedDescription = programData?.description || t('program.no_description');
+  } else {
+    // Use embedded language fields based on current language
+    if (language === 'hu') {
+      localizedTitle = cleanProgramTitle(programData?.title || '');
+      localizedDescription = programData?.description || '';
+    } else if (language === 'en') {
+      localizedTitle = cleanProgramTitle(programData?.title_en || '');
+      localizedDescription = programData?.description_en || '';
+    } else if (language === 'de') {
+      localizedTitle = cleanProgramTitle(programData?.title_de || '');
+      localizedDescription = programData?.description_de || '';
+    }
+    
+    // If no localized content exists, show placeholder
+    if (!localizedTitle || !localizedDescription) {
+      return (
+        <GracefulPlaceholder
+          title={t('creator.translation.not_available_public')}
+          description=""
+        />
+      );
+    }
+  }
 
   // Calculate sponsor contribution for JSON-LD
   const sponsorContributionForSeo = sponsorship?.sponsor_contribution_huf || (program as any)?.fixed_sponsor_amount || 0;
@@ -492,6 +627,12 @@ const ProgramDetailPage = () => {
                 )}
                 
                 {getAccessBadge(program.access_level)}
+                {program.is_sponsored && (
+                  <Badge className="bg-primary/20 text-primary border-primary/30">
+                    <Sparkles className="w-3 h-3 mr-1" />
+                    {t('program.sponsored_badge')}
+                  </Badge>
+                )}
                 {program.is_featured && (
                   <Badge className="bg-amber-500/20 text-amber-600 border-amber-500/30">
                     <Star className="w-3 h-3 mr-1 fill-amber-500" />
@@ -499,6 +640,12 @@ const ProgramDetailPage = () => {
                   </Badge>
                 )}
               </div>
+
+              {program.is_sponsored && (
+                <p className="text-sm text-muted-foreground mb-4">
+                  {t('program.sponsored_explainer')}
+                </p>
+              )}
 
               {/* Title */}
               <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
@@ -537,6 +684,9 @@ const ProgramDetailPage = () => {
                         <CheckCircle2 className="w-4 h-4 text-primary fill-primary/20" />
                       )}
                     </div>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {t('program.pilot_creator_framing')}
+                    </p>
                   </div>
                 </Link>
               )}
@@ -570,135 +720,85 @@ const ProgramDetailPage = () => {
               <div className="sticky top-24">
                 <Card className="bg-white/80 backdrop-blur-md border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                   <CardContent className="p-6">
-                    {/* Sponsor Info - CONSISTENT with marketplace cards */}
-                    {program.is_sponsored && program.sponsor_name && (() => {
-                      const contributionAmount = sponsorship?.sponsor_contribution_huf || (program as any).fixed_sponsor_amount || (program.price_huf ? Math.round(program.price_huf * 0.8) : 5000);
-                      const memberPayment = Math.max(0, (program.price_huf || 0) - contributionAmount);
-                      const formatPrice = (price: number) => `${price.toLocaleString('hu-HU')} Ft`;
-                      const isQuotaExhausted = quotaInfo?.isExhausted || false;
-                      const remainingSeats = quotaInfo?.remainingSeats || 0;
+                    {/* Centralized Pricing Display */}
+                    {program.access_level === 'one_time_purchase' && program.price_huf && (() => {
+                      // Determine sponsor amount from multiple sources
+                      const sponsorAmount = sponsorship?.sponsor_contribution_huf 
+                        || (program as any).fixed_sponsor_amount 
+                        || 0;
                       
-                      // QUOTA EXHAUSTED: Show impact mode with original price
-                      if (isQuotaExhausted) {
-                        return (
-                          <div className="mb-4 p-4 rounded-xl bg-gradient-to-br from-emerald-500/10 via-emerald-500/15 to-emerald-500/10 border border-emerald-500/30">
-                            {/* Original price - no longer sponsored */}
-                            <div className="flex flex-col gap-1 mb-3">
-                              <span className="text-2xl font-bold text-foreground">
-                                {formatPrice(program.price_huf || 0)}
-                              </span>
-                            </div>
-                            
-                            {/* Impact message */}
-                            <div className="flex items-center gap-2 mb-3 text-emerald-700">
-                              <Heart className="w-4 h-4 fill-emerald-600" />
-                              <span className="text-sm font-medium">
-                                {quotaInfo?.usedSeats || 0} Tag már igénybe vette a támogatott helyet
-                              </span>
-                            </div>
-                            
-                            {/* Sponsor Logo & Name - Still visible for brand awareness */}
-                            <Link 
-                              to={`/partners/${program.sponsor_name?.toLowerCase().replace(/\s+/g, '-')}`}
-                              className="flex items-center gap-3 p-2 rounded-lg bg-white/60 hover:bg-white/80 transition-colors group"
-                            >
-                              <div className="w-10 h-10 rounded-lg bg-white border border-border/20 flex items-center justify-center overflow-hidden">
-                                <img 
-                                  src={`/partner-logos/${program.sponsor_name?.toLowerCase()}.png`}
-                                  alt={program.sponsor_name}
-                                  className="w-8 h-8 object-contain"
-                                  onError={(e) => {
-                                    const target = e.target as HTMLImageElement;
-                                    target.src = `https://logo.clearbit.com/${program.sponsor_name?.toLowerCase()}.hu?size=80`;
-                                  }}
-                                />
-                              </div>
-                              <p className="text-sm text-muted-foreground">
-                                Támogatásával valósult meg
-                              </p>
-                            </Link>
-                          </div>
-                        );
-                      }
+                      const sponsorName = (program as any).sponsor_name || null;
                       
-                      // ACTIVE SPONSORSHIP
+                      // Pricing calculation
+                      
                       return (
-                        <div className="mb-4 p-4 rounded-xl bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 border border-primary/20">
-                          {/* URGENCY BADGE: Show when <= 3 seats left */}
-                          {remainingSeats > 0 && remainingSeats <= 3 && (
-                            <div className="flex items-center gap-1.5 mb-3 px-3 py-2 rounded-full bg-red-500/15 border border-red-500/30 w-fit animate-pulse">
-                              <Clock className="w-4 h-4 text-red-600" />
-                              <span className="text-sm font-semibold text-red-600">
-                                Már csak {remainingSeats} támogatott hely!
-                              </span>
-                            </div>
-                          )}
-                          
-                          {/* Price hierarchy: strikethrough original, then discounted or FREE badge */}
-                          <div className="flex flex-col gap-1 mb-3">
-                            {/* Original price strikethrough */}
-                            {program.price_huf && (
-                              <span className="text-sm text-muted-foreground line-through">
-                                {formatPrice(program.price_huf)}
-                              </span>
-                            )}
-                            {/* Show FREE badge or discounted price */}
-                            {memberPayment === 0 ? (
-                              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 font-semibold text-base w-fit">
-                                <Sparkles className="w-4 h-4" />
-                                INGYENES
-                              </span>
-                            ) : (
-                              <span className="text-2xl font-bold text-primary">
-                                {formatPrice(memberPayment)}
-                              </span>
-                            )}
-                          </div>
-                          
-                          {/* Sponsor support message */}
-                          <p className="text-sm text-foreground/80 mb-3">
-                            A <span className="font-semibold">{program.sponsor_name}</span> {formatPrice(contributionAmount)}-tal támogatja a részvételedet!
-                          </p>
-                          
-                          {/* Sponsor Logo & Name - Clickable */}
-                          <Link 
-                            to={`/partners/${program.sponsor_name?.toLowerCase().replace(/\s+/g, '-')}`}
-                            className="flex items-center gap-3 p-2 rounded-lg bg-white/60 hover:bg-white/80 transition-colors group"
-                          >
-                            <div className="w-12 h-12 rounded-lg bg-white border border-border/20 flex items-center justify-center overflow-hidden shadow-sm group-hover:scale-105 transition-transform">
-                              <img 
-                                src={`/partner-logos/${program.sponsor_name?.toLowerCase()}.png`}
-                                alt={program.sponsor_name}
-                                className="w-10 h-10 object-contain"
-                                onError={(e) => {
-                                  const target = e.target as HTMLImageElement;
-                                  target.src = `https://logo.clearbit.com/${program.sponsor_name?.toLowerCase()}.hu?size=80`;
-                                }}
-                              />
-                            </div>
-                            <div>
-                              <p className="text-xs text-muted-foreground">{t('marketplace.sponsored_by_label')}</p>
-                              <p className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                                {program.sponsor_name}
-                              </p>
-                            </div>
-                          </Link>
+                        <div className="mb-4">
+                          <PricingDisplay 
+                            pricing={calculatePricing({
+                              basePrice: program.price_huf || 0,
+                              sponsorAmount: sponsorAmount,
+                              platformFeePercent: (program as any).platform_fee_percent || 20
+                            })}
+                            sponsorName={sponsorName}
+                            sponsorLogoUrl={sponsorProfile?.avatar_url || undefined}
+                            variant="detail"
+                          />
                         </div>
                       );
                     })()}
 
-                    {/* Price Display - Non-sponsored programs */}
-                    {program.access_level === 'one_time_purchase' && program.price_huf && !program.is_sponsored && (
-                      <div className="mb-4">
-                        <p className="text-3xl font-bold text-foreground">
-                          {program.price_huf.toLocaleString()} Ft
-                        </p>
-                      </div>
-                    )}
-
                     {/* CTA Button */}
                     <div className="mb-6">
                       {renderCTAButton()}
+                      {/* Dynamic subtitle based on pricing */}
+                      <p className="mt-3 text-sm text-muted-foreground">
+                        {(() => {
+                          const isFree = !program.price_huf || program.price_huf === 0;
+                          const isSponsored = (program as any).is_sponsored && ((program as any).fixed_sponsor_amount || sponsorship?.sponsor_contribution_huf);
+                          
+                          if (isFree) {
+                            return 'Azonnal hozzáférsz a program tartalmához.';
+                          } else if (isSponsored) {
+                            const originalPrice = program.price_huf || 0;
+                            return `Kedvezményes ár szponzori támogatással. Eredeti ár: ${originalPrice.toLocaleString()} Ft`;
+                          } else {
+                            return 'Egyszeri díj, korlátlan hozzáférés.';
+                          }
+                        })()}
+                      </p>
+                    </div>
+
+                    {/* Program Metadata */}
+                    <div className="space-y-3 pt-4 border-t border-border">
+                      {/* Category Badge */}
+                      {program.category && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-muted-foreground">Kategória:</span>
+                          <Badge variant="outline">
+                            {t(`categories.${program.category}`)}
+                          </Badge>
+                        </div>
+                      )}
+                      
+                      {/* Format Badge */}
+                      {program.content_type && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-muted-foreground">Formátum:</span>
+                          <Badge variant="outline">
+                            {program.content_type === 'in_person' && '📍 Élő esemény'}
+                            {program.content_type === 'online_live' && '💻 Online élő'}
+                            {program.content_type === 'recorded' && '🎥 Videókurzus'}
+                          </Badge>
+                        </div>
+                      )}
+                      
+                      {/* Participants count if available */}
+                      {(program as any).participant_count && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-muted-foreground">Résztvevők:</span>
+                          <span className="text-sm font-medium">{(program as any).participant_count}</span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Tools Needed */}
@@ -729,7 +829,7 @@ const ProgramDetailPage = () => {
                           {relProgram.thumbnail_url ? (
                             <img 
                               src={relProgram.thumbnail_url} 
-                              alt={getLocalizedField(relProgram, 'title')}
+                              alt={(relProgram as any)?.title || ''}
                               className="w-full h-full object-cover"
                             />
                           ) : (
@@ -740,7 +840,7 @@ const ProgramDetailPage = () => {
                         </div>
                         <div className="p-4">
                           <h3 className="font-semibold text-foreground mb-2 line-clamp-2">
-                            {getLocalizedField(relProgram, 'title')}
+                            {(relProgram as any)?.title || ''}
                           </h3>
                           <div className="flex items-center gap-2">
                             {getAccessBadge(relProgram.access_level)}
@@ -761,22 +861,26 @@ const ProgramDetailPage = () => {
         </motion.div>
 
         {/* Purchase Modal */}
-        {program && (
-          <PurchaseModal
-            isOpen={isPurchaseModalOpen}
-            onClose={() => setIsPurchaseModalOpen(false)}
-            content={{
-              id: program.id,
-              title: localizedTitle,
-              price_huf: program.price_huf || 0,
-              creator_id: program.creator_id || '',
-              is_sponsored: (program as any).is_sponsored || false,
-              sponsor_name: (program as any).sponsor_name || undefined,
-              sponsor_contribution: sponsorship?.sponsor_contribution_huf || (program as any).fixed_sponsor_amount || undefined,
-              sponsorship_id: sponsorship?.id || undefined,
-            }}
-          />
-        )}
+        {program && (() => {
+          const creatorId = (program as any).creator?.id || program.creator_id || '';
+          
+          return (
+            <PurchaseModal
+              isOpen={isPurchaseModalOpen}
+              onClose={() => setIsPurchaseModalOpen(false)}
+              content={{
+                id: program.id,
+                title: localizedTitle,
+                price_huf: program.price_huf || 0,
+                creator_id: creatorId,
+                is_sponsored: (program as any).is_sponsored || false,
+                sponsor_name: (program as any).sponsor_name || undefined,
+                sponsor_contribution: sponsorship?.sponsor_contribution_huf || (program as any).fixed_sponsor_amount || undefined,
+                sponsorship_id: sponsorship?.id || undefined,
+              }}
+            />
+          );
+        })()}
 
         {/* Mobile Sticky Purchase Bar */}
         {program && (

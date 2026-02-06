@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -38,53 +38,17 @@ interface UserProfile {
   user_role: UserRoleType;
   is_super_admin?: boolean;
   created_at: string;
-  is_mock?: boolean;
+  expert_title?: string | null;
+  location_city?: string | null;
 }
 
-// Mock users for demo mode
-const MOCK_USERS: UserProfile[] = [
-  {
-    id: 'mock-1',
-    email: 'toth.eszter@example.com',
-    first_name: 'Eszter',
-    last_name: 'Tóth',
-    avatar_url: null,
-    user_role: 'member',
-    created_at: '2025-12-15T10:00:00Z',
-    is_mock: true
-  },
-  {
-    id: 'mock-2',
-    email: 'kovacs.janos@example.com',
-    first_name: 'János',
-    last_name: 'Kovács',
-    avatar_url: null,
-    user_role: 'expert',
-    created_at: '2025-11-20T14:30:00Z',
-    is_mock: true
-  },
-  {
-    id: 'mock-3',
-    email: 'info@kalipanzio.hu',
-    first_name: 'Káli',
-    last_name: 'Panzió',
-    avatar_url: null,
-    user_role: 'sponsor',
-    created_at: '2025-10-05T09:15:00Z',
-    is_mock: true
-  },
-  {
-    id: 'mock-4',
-    email: 'admin@wellagora.hu',
-    first_name: 'Admin',
-    last_name: 'User',
-    avatar_url: null,
-    user_role: 'member',
-    is_super_admin: true,
-    created_at: '2025-08-01T00:00:00Z',
-    is_mock: true
-  },
-];
+interface RoleStats {
+  all: number;
+  member: number;
+  expert: number;
+  sponsor: number;
+  superAdmin: number;
+}
 
 const AdminUsers = () => {
   const { isDemoMode } = useAuth();
@@ -93,11 +57,32 @@ const AdminUsers = () => {
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [activeTab, setActiveTab] = useState(searchParams.get('role') || 'all');
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const [roleStats, setRoleStats] = useState<RoleStats>({
+    all: 0,
+    member: 0,
+    expert: 0,
+    sponsor: 0,
+    superAdmin: 0
+  });
   
   // Modal state
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+
+  const LIMIT = 50;
+
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+      setOffset(0); // Reset pagination on search
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   // Get full name from profile
   const getFullName = (user: UserProfile): string => {
@@ -109,21 +94,81 @@ const AdminUsers = () => {
     return '-';
   };
 
-  // Fetch users
-  const fetchUsers = async () => {
+  // Fetch role statistics
+  const fetchRoleStats = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('user_role, is_super_admin');
+
+      if (error) throw error;
+
+      const stats: RoleStats = {
+        all: data?.length || 0,
+        member: data?.filter(u => u.user_role === 'member').length || 0,
+        expert: data?.filter(u => ['expert', 'creator'].includes(u.user_role)).length || 0,
+        sponsor: data?.filter(u => ['sponsor', 'business', 'government', 'ngo'].includes(u.user_role)).length || 0,
+        superAdmin: data?.filter(u => u.is_super_admin).length || 0
+      };
+
+      setRoleStats(stats);
+    } catch (error) {
+      console.error('Error fetching role stats:', error);
+    }
+  };
+
+  // Fetch users with filters and pagination
+  const fetchUsers = async (loadMore = false) => {
     setLoading(true);
     
     try {
-      if (isDemoMode) {
-        setUsers(MOCK_USERS);
-      } else {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('id, email, first_name, last_name, avatar_url, user_role, is_super_admin, created_at')
-          .order('created_at', { ascending: false });
+      let query = supabase
+        .from('profiles')
+        .select('id, email, first_name, last_name, avatar_url, user_role, is_super_admin, created_at, expert_title, location_city')
+        .order('created_at', { ascending: false });
 
-        if (error) throw error;
-        setUsers((data || []) as UserProfile[]);
+      // Apply role filter
+      if (activeTab !== 'all') {
+        if (activeTab === 'superAdmin') {
+          query = query.eq('is_super_admin', true);
+        } else if (activeTab === 'expert') {
+          query = query.in('user_role', ['expert', 'creator']);
+        } else if (activeTab === 'sponsor') {
+          query = query.in('user_role', ['sponsor', 'business', 'government', 'ngo']);
+        } else {
+          query = query.eq('user_role', activeTab);
+        }
+      }
+
+      // Apply search filter
+      if (debouncedSearch.trim()) {
+        query = query.or(`first_name.ilike.%${debouncedSearch}%,last_name.ilike.%${debouncedSearch}%,email.ilike.%${debouncedSearch}%`);
+      }
+
+      // Apply pagination
+      const currentOffset = loadMore ? offset : 0;
+      query = query.range(currentOffset, currentOffset + LIMIT);
+
+      const { data, error } = await query;
+
+      if (error) throw error;
+
+      const newUsers = (data || []) as UserProfile[];
+      
+      if (loadMore) {
+        setUsers(prev => [...prev, ...newUsers]);
+        setOffset(currentOffset + LIMIT + 1);
+      } else {
+        setUsers(newUsers);
+        setOffset(LIMIT + 1);
+      }
+
+      // Check if there are more users
+      setHasMore(newUsers.length === LIMIT + 1);
+      
+      // Remove extra item if we got LIMIT + 1
+      if (newUsers.length === LIMIT + 1) {
+        setUsers(prev => prev.slice(0, -1));
       }
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -133,13 +178,23 @@ const AdminUsers = () => {
     }
   };
 
+  // Fetch users when filters change
   useEffect(() => {
     fetchUsers();
-  }, [isDemoMode]);
+  }, [activeTab, debouncedSearch]);
+
+  // Fetch stats on mount
+  useEffect(() => {
+    fetchRoleStats();
+  }, []);
+
+  // Load more handler
+  const handleLoadMore = () => {
+    fetchUsers(true);
+  };
 
   // Handle row click - open modal
   const handleRowClick = (userId: string) => {
-    console.log('[AdminUsers] Row clicked:', userId);
     setSelectedUserId(userId);
     setModalOpen(true);
   };
@@ -151,42 +206,6 @@ const AdminUsers = () => {
       setActiveTab(roleParam);
     }
   }, [searchParams]);
-
-  // Filter users based on search and tab
-  const filteredUsers = useMemo(() => {
-    let result = users;
-
-    if (activeTab !== 'all') {
-      if (activeTab === 'superAdmin') {
-        result = result.filter(user => user.is_super_admin);
-      } else if (activeTab === 'expert') {
-        result = result.filter(user => ['expert', 'creator'].includes(user.user_role));
-      } else if (activeTab === 'sponsor') {
-        result = result.filter(user => ['sponsor', 'business', 'government', 'ngo'].includes(user.user_role));
-      } else {
-        result = result.filter(user => user.user_role === activeTab);
-      }
-    }
-
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      result = result.filter(user => {
-        const fullName = getFullName(user).toLowerCase();
-        return fullName.includes(query) || user.email.toLowerCase().includes(query);
-      });
-    }
-
-    return result;
-  }, [users, activeTab, searchQuery]);
-
-  // Role counts
-  const roleCounts = useMemo(() => ({
-    all: users.length,
-    member: users.filter(u => u.user_role === 'member').length,
-    expert: users.filter(u => ['expert', 'creator'].includes(u.user_role)).length,
-    sponsor: users.filter(u => ['sponsor', 'business', 'government', 'ngo'].includes(u.user_role)).length,
-    superAdmin: users.filter(u => u.is_super_admin).length,
-  }), [users]);
 
   // Get initials for avatar
   const getInitials = (user: UserProfile): string => {
@@ -236,10 +255,10 @@ const AdminUsers = () => {
             Felhasználók
           </h1>
           <p className="text-muted-foreground">
-            {users.length} regisztrált felhasználó kezelése
+            {roleStats.all} regisztrált felhasználó kezelése
           </p>
         </div>
-        <Button onClick={fetchUsers} variant="outline" className="gap-2">
+        <Button onClick={() => { fetchUsers(); fetchRoleStats(); }} variant="outline" className="gap-2">
           <RefreshCw className="w-4 h-4" />
           Frissítés
         </Button>
@@ -267,31 +286,31 @@ const AdminUsers = () => {
                 <TabsTrigger value="all" className="gap-1.5">
                   Összes
                   <Badge variant="secondary" className="ml-1 text-xs">
-                    {roleCounts.all}
+                    {roleStats.all}
                   </Badge>
                 </TabsTrigger>
                 <TabsTrigger value="member" className="gap-1.5">
                   Tagok
                   <Badge variant="secondary" className="ml-1 text-xs">
-                    {roleCounts.member}
+                    {roleStats.member}
                   </Badge>
                 </TabsTrigger>
                 <TabsTrigger value="expert" className="gap-1.5">
                   Szakértők
                   <Badge variant="secondary" className="ml-1 text-xs">
-                    {roleCounts.expert}
+                    {roleStats.expert}
                   </Badge>
                 </TabsTrigger>
                 <TabsTrigger value="sponsor" className="gap-1.5">
                   Szponzorok
                   <Badge variant="secondary" className="ml-1 text-xs">
-                    {roleCounts.sponsor}
+                    {roleStats.sponsor}
                   </Badge>
                 </TabsTrigger>
                 <TabsTrigger value="superAdmin" className="gap-1.5">
                   Adminok
                   <Badge variant="secondary" className="ml-1 text-xs">
-                    {roleCounts.superAdmin}
+                    {roleStats.superAdmin}
                   </Badge>
                 </TabsTrigger>
               </TabsList>
@@ -308,7 +327,7 @@ const AdminUsers = () => {
               <TableHead>Felhasználó</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Szerepkör</TableHead>
-              <TableHead>Státusz</TableHead>
+              <TableHead>Szakmai cím / Helyszín</TableHead>
               <TableHead>Regisztráció</TableHead>
             </TableRow>
           </TableHeader>
@@ -324,11 +343,11 @@ const AdminUsers = () => {
                   </TableCell>
                   <TableCell><Skeleton className="h-4 w-40" /></TableCell>
                   <TableCell><Skeleton className="h-6 w-20" /></TableCell>
-                  <TableCell><Skeleton className="h-6 w-16" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-32" /></TableCell>
                   <TableCell><Skeleton className="h-4 w-24" /></TableCell>
                 </TableRow>
               ))
-            ) : filteredUsers.length === 0 ? (
+            ) : users.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="text-center py-12">
                   <Users className="w-12 h-12 mx-auto text-muted-foreground/50 mb-3" />
@@ -336,7 +355,7 @@ const AdminUsers = () => {
                 </TableCell>
               </TableRow>
             ) : (
-              filteredUsers.slice(0, 50).map((user) => (
+              users.map((user) => (
                 <TableRow 
                   key={user.id}
                   className="cursor-pointer hover:bg-muted transition-colors"
@@ -351,12 +370,7 @@ const AdminUsers = () => {
                           {getInitials(user)}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{getFullName(user)}</span>
-                        {user.is_mock && (
-                          <Badge variant="outline" className="text-xs">Demo</Badge>
-                        )}
-                      </div>
+                      <span className="font-medium">{getFullName(user)}</span>
                     </div>
                   </TableCell>
 
@@ -370,11 +384,9 @@ const AdminUsers = () => {
                     {getRoleBadge(user.user_role, user.is_super_admin)}
                   </TableCell>
 
-                  {/* Status */}
-                  <TableCell>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                      Aktív
-                    </Badge>
+                  {/* Expert Title / Location */}
+                  <TableCell className="text-sm text-muted-foreground">
+                    {user.expert_title || user.location_city || '-'}
                   </TableCell>
 
                   {/* Joined Date */}
@@ -387,10 +399,20 @@ const AdminUsers = () => {
           </TableBody>
         </Table>
 
-        {/* Show count if more than 50 */}
-        {filteredUsers.length > 50 && (
-          <div className="px-6 py-4 border-t text-sm text-muted-foreground text-center">
-            {50} / {filteredUsers.length} megjelenítve
+        {/* Load More Button */}
+        {hasMore && !loading && (
+          <div className="px-6 py-4 border-t flex justify-center">
+            <Button onClick={handleLoadMore} variant="outline" className="gap-2">
+              <RefreshCw className="w-4 h-4" />
+              További felhasználók betöltése
+            </Button>
+          </div>
+        )}
+
+        {/* Show count */}
+        {users.length > 0 && (
+          <div className="px-6 py-2 border-t text-sm text-muted-foreground text-center">
+            {users.length} felhasználó megjelenítve
           </div>
         )}
       </Card>

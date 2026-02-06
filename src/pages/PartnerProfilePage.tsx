@@ -132,36 +132,46 @@ const PartnerProfilePage = () => {
   const { language, t } = useLanguage();
   const [isFavorite, setIsFavorite] = useState(false);
 
-  // Use static data for now, but also fetch sponsored programs from DB
-  const partner = slug ? PARTNERS_DATA[slug] : null;
-  
-  // Fetch sponsored programs by this partner from database
-  const { data: sponsoredPrograms, isLoading: programsLoading } = useQuery({
-    queryKey: ['partnerSponsoredPrograms', slug],
+  const staticPartner = slug ? PARTNERS_DATA[slug] : null;
+
+  const { data: sponsorProfile, isLoading: sponsorLoading } = useQuery({
+    queryKey: ["sponsorProfileBySlug", slug],
     queryFn: async () => {
-      if (!slug) return [];
-      
-      // First try to find sponsor in sponsors table by name (case-insensitive match)
-      const partnerName = PARTNERS_DATA[slug]?.name;
-      if (!partnerName) return [];
-      
-      try {
-        // Find content sponsorships where expert_contents.sponsor_name matches
-        const { data: sponsorships, error } = await supabase
-          .from('content_sponsorships')
-          .select(`
+      if (!slug) return null;
+      const { data, error } = await supabase
+        .from("sponsors")
+        .select("id, name, slug, description, logo_url, website_url, location_city, is_active")
+        .eq("slug", slug)
+        .eq("is_active", true)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!slug,
+  });
+  
+  // Fetch sponsored programs by this sponsor (platform sponsors table)
+  const { data: sponsoredPrograms, isLoading: programsLoading } = useQuery({
+    queryKey: ["partnerSponsoredPrograms", sponsorProfile?.id, slug],
+    queryFn: async () => {
+      if (!sponsorProfile?.id) return [];
+
+      const { data: sponsorships, error } = await supabase
+        .from("content_sponsorships")
+        .select(
+          `
             id,
             content_id,
             max_sponsored_seats,
             sponsored_seats_used,
             sponsor_contribution_huf,
-            expert_contents!inner (
+            is_active,
+            expert_contents:content_id (
               id,
               title,
               description,
               image_url,
               price_huf,
-              sponsor_name,
               category,
               is_published,
               creator:profiles!expert_contents_creator_id_fkey (
@@ -169,42 +179,35 @@ const PartnerProfilePage = () => {
                 last_name
               )
             )
-          `)
-          .eq('is_active', true);
+          `
+        )
+        .eq("sponsor_id", sponsorProfile.id)
+        .eq("is_active", true);
 
-        if (error) {
-          console.error('Error fetching sponsorships:', error);
-          return [];
-        }
+      if (error) throw error;
 
-        // Filter to match sponsor name - safely handle null/undefined
-        const matchingPrograms = (sponsorships || []).filter(s => {
-          const content = s.expert_contents as any;
-          return content?.sponsor_name?.toLowerCase() === partnerName.toLowerCase() && content?.is_published;
-        });
-
-        return matchingPrograms.map(s => {
-          const content = s.expert_contents as any;
+      return (sponsorships || [])
+        .filter((s: any) => s?.expert_contents?.is_published)
+        .map((s: any) => {
+          const content = s.expert_contents;
           const creator = content?.creator;
           return {
-            id: content?.id || '',
-            title: content?.title || '',
-            description: content?.description || '',
+            id: content?.id || "",
+            title: content?.title || "",
+            description: content?.description || "",
             image_url: content?.image_url || null,
             price_huf: content?.price_huf || 0,
-            category: content?.category || '',
-            expert_name: creator ? `${creator.first_name || ''} ${creator.last_name || ''}`.trim() : 'Szakértő',
+            category: content?.category || "",
+            expert_name: creator
+              ? `${creator.first_name || ""} ${creator.last_name || ""}`.trim()
+              : t("common.expert"),
             max_seats: s.max_sponsored_seats || 0,
             used_seats: s.sponsored_seats_used || 0,
-            contribution: s.sponsor_contribution_huf || 0
+            contribution: s.sponsor_contribution_huf || 0,
           };
         });
-      } catch (error) {
-        console.error('Error in sponsorship query:', error);
-        return [];
-      }
     },
-    enabled: !!slug
+    enabled: !!sponsorProfile?.id,
   });
 
   // Calculate impact stats - safely handle empty arrays
@@ -226,7 +229,7 @@ const PartnerProfilePage = () => {
   };
 
   // Loading state
-  if (programsLoading && !partner) {
+  if ((sponsorLoading || programsLoading) && !staticPartner) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <Navigation />
@@ -240,7 +243,7 @@ const PartnerProfilePage = () => {
     );
   }
 
-  if (!partner) {
+  if (!staticPartner && !sponsorProfile) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <Navigation />
@@ -263,7 +266,16 @@ const PartnerProfilePage = () => {
     );
   }
 
-  const description = partner.description[language as keyof typeof partner.description] || partner.description.en;
+  const title = sponsorProfile?.name || staticPartner?.name || "";
+  const logoUrl = sponsorProfile?.logo_url || staticPartner?.logo || "";
+  const websiteUrl = sponsorProfile?.website_url || staticPartner?.website || "";
+  const description =
+    sponsorProfile?.description ||
+    staticPartner?.description[language as keyof typeof staticPartner.description] ||
+    staticPartner?.description.en ||
+    "";
+  const categoryLabel = staticPartner?.category;
+  const locations = staticPartner?.locations || (sponsorProfile?.location_city ? [sponsorProfile.location_city] : []);
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -271,12 +283,12 @@ const PartnerProfilePage = () => {
       {slug && (
         <PartnerJsonLd 
           partner={{
-            name: partner.name,
+            name: title,
             description: description,
-            logo_url: partner.logo,
-            website_url: partner.website,
-            category: partner.category,
-            locations: partner.locations
+            logo_url: logoUrl,
+            website_url: websiteUrl,
+            category: categoryLabel || "",
+            locations
           }}
           slug={slug}
           programsSupported={impactStats.programsSupported}
@@ -302,12 +314,12 @@ const PartnerProfilePage = () => {
                 className="w-44 h-44 rounded-3xl bg-white border-[0.5px] border-black/10 p-5 shadow-xl flex-shrink-0 flex items-center justify-center"
               >
                 <img 
-                  src={partner.logo} 
-                  alt={partner.name} 
+                  src={logoUrl} 
+                  alt={title} 
                   className="w-full h-full object-contain"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.src = `https://logo.clearbit.com/${partner.website.replace('https://', '').replace('www.', '')}?size=256`;
+                    target.src = `https://logo.clearbit.com/${websiteUrl.replace('https://', '').replace('www.', '')}?size=256`;
                   }}
                 />
               </motion.div>
@@ -320,20 +332,22 @@ const PartnerProfilePage = () => {
                   transition={{ delay: 0.1 }}
                 >
                   <div className="flex items-center gap-3 mb-3">
-                    <h1 className="text-3xl font-bold text-foreground">{partner.name}</h1>
-                    <Badge variant="secondary" className="text-sm bg-black/5 text-foreground border-0">{partner.category}</Badge>
+                    <h1 className="text-3xl font-bold text-foreground">{title}</h1>
+                    {categoryLabel && (
+                      <Badge variant="secondary" className="text-sm bg-black/5 text-foreground border-0">{categoryLabel}</Badge>
+                    )}
                   </div>
                   <p className="text-muted-foreground mb-5 max-w-2xl leading-relaxed">{description}</p>
                   
                   <div className="flex flex-wrap gap-3">
                     <Button size="lg" asChild className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-xl text-base px-8">
-                      <a href={partner.website} target="_blank" rel="noopener noreferrer">
+                      <a href={websiteUrl} target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="w-5 h-5 mr-2" />
                         {language === "hu" ? "Irány a webshop" : language === "de" ? "Zum Webshop" : "Visit Webshop"}
                       </a>
                     </Button>
                     <Button variant="outline" size="default" asChild className="border-black/10 hover:bg-black/5">
-                      <a href={partner.website} target="_blank" rel="noopener noreferrer">
+                      <a href={websiteUrl} target="_blank" rel="noopener noreferrer">
                         <Store className="w-4 h-4 mr-2" />
                         {language === "hu" ? "Weboldal" : "Website"}
                       </a>
@@ -354,55 +368,103 @@ const PartnerProfilePage = () => {
           </div>
         </section>
 
-        {/* Offers Section - Marketplace-consistent card styling */}
-        <section className="py-12 bg-white">
-          <div className="container mx-auto px-4 lg:px-10">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              <Gift className="w-6 h-6 text-primary" />
-              {language === "hu" ? "Elérhető kedvezmények" : "Available Offers"}
-            </h2>
+        {sponsorProfile ? (
+          <section className="py-12 bg-white">
+            <div className="container mx-auto px-4 lg:px-10">
+              <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                <Gift className="w-6 h-6 text-primary" />
+                {t("sponsor.public.supported_programs_title")}
+              </h2>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {partner.offers.map((offer, index) => (
-                <motion.div
-                  key={offer.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <Card className="bg-white/80 backdrop-blur-md border-[0.5px] border-black/5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.02]">
-                    <CardContent className="p-6">
-                      <PartnerOfferCard offer={offer} />
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+              {programsLoading ? (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[1, 2, 3].map((i) => (
+                    <Skeleton key={i} className="h-36 w-full rounded-2xl" />
+                  ))}
+                </div>
+              ) : sponsoredPrograms && sponsoredPrograms.length > 0 ? (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {sponsoredPrograms.map((p, index) => (
+                    <motion.div
+                      key={p.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                    >
+                      <Link to={`/piacer/${p.id}`}>
+                        <Card className="bg-white/80 backdrop-blur-md border-[0.5px] border-black/5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.02]">
+                          <CardContent className="p-6">
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="min-w-0">
+                                <p className="font-semibold text-foreground line-clamp-2">{p.title}</p>
+                                <p className="text-sm text-muted-foreground mt-1">{p.expert_name}</p>
+                              </div>
+                              <Badge variant="secondary" className="bg-black/5 border-0 flex-shrink-0">
+                                {t("sponsor.public.sponsored_badge")}
+                              </Badge>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-muted-foreground">{t("sponsor.public.no_supported_programs")}</p>
+              )}
             </div>
-          </div>
-        </section>
+          </section>
+        ) : (
+          <section className="py-12 bg-white">
+            <div className="container mx-auto px-4 lg:px-10">
+              <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                <Gift className="w-6 h-6 text-primary" />
+                {language === "hu" ? "Elérhető kedvezmények" : "Available Offers"}
+              </h2>
 
-        {/* Locations Section - Consistent styling */}
-        <section className="py-12 bg-slate-50/30">
-          <div className="container mx-auto px-4 lg:px-10">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              <MapPin className="w-6 h-6 text-primary" />
-              {language === "hu" ? "Üzletek" : "Locations"}
-            </h2>
-
-            <div className="flex flex-wrap gap-3">
-              {partner.locations.map((location) => (
-                <Badge 
-                  key={location} 
-                  variant="outline" 
-                  className="text-sm py-2 px-4 bg-white/80 backdrop-blur-sm border-black/10 shadow-sm"
-                >
-                  <MapPin className="w-3 h-3 mr-1.5" />
-                  {location}
-                </Badge>
-              ))}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {(staticPartner?.offers || []).map((offer, index) => (
+                  <motion.div
+                    key={offer.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Card className="bg-white/80 backdrop-blur-md border-[0.5px] border-black/5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.02]">
+                      <CardContent className="p-6">
+                        <PartnerOfferCard offer={offer} />
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
+
+        {locations.length > 0 && (
+          <section className="py-12 bg-slate-50/30">
+            <div className="container mx-auto px-4 lg:px-10">
+              <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                <MapPin className="w-6 h-6 text-primary" />
+                {language === "hu" ? "Üzletek" : "Locations"}
+              </h2>
+
+              <div className="flex flex-wrap gap-3">
+                {locations.map((location) => (
+                  <Badge 
+                    key={location} 
+                    variant="outline" 
+                    className="text-sm py-2 px-4 bg-white/80 backdrop-blur-sm border-black/10 shadow-sm"
+                  >
+                    <MapPin className="w-3 h-3 mr-1.5" />
+                    {location}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
       </main>
 
       <Footer />

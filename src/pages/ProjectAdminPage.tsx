@@ -483,7 +483,7 @@ export default function ProjectAdminPage() {
     }
     
     toast({ title: t('project_admin.success'), description: "Projekt deaktiválva" });
-    navigate("/super-admin");
+    navigate("/admin");
   };
 
   const sendMessage = async () => {

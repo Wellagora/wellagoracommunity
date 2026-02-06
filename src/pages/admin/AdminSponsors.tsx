@@ -9,6 +9,16 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import { 
   Building2,
   Search,
@@ -43,6 +53,17 @@ const AdminSponsors = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || 'all');
+  const [createEditOpen, setCreateEditOpen] = useState(false);
+  const [editingSponsor, setEditingSponsor] = useState<Sponsor | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    slug: '',
+    logo_url: '',
+    website_url: '',
+    description: '',
+    is_active: true,
+  });
   
   // Modal state
   const [selectedSponsorId, setSelectedSponsorId] = useState<string | null>(null);
@@ -95,6 +116,88 @@ const AdminSponsors = () => {
   useEffect(() => {
     fetchSponsors();
   }, [isDemoMode]);
+
+  const generateSlug = (name: string) => {
+    return name
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+  };
+
+  const openCreate = () => {
+    setEditingSponsor(null);
+    setFormData({
+      name: '',
+      slug: '',
+      logo_url: '',
+      website_url: '',
+      description: '',
+      is_active: true,
+    });
+    setCreateEditOpen(true);
+  };
+
+  const openEdit = (sponsor: Sponsor) => {
+    setEditingSponsor(sponsor);
+    setFormData({
+      name: sponsor.name || '',
+      slug: sponsor.id && sponsor.source === 'sponsors_table' ? (sponsor as any).slug || '' : '',
+      logo_url: sponsor.logo_url || sponsor.avatar_url || '',
+      website_url: (sponsor as any).website_url || '',
+      description: sponsor.description || '',
+      is_active: sponsor.is_active,
+    });
+    setCreateEditOpen(true);
+  };
+
+  const saveSponsor = async () => {
+    if (!formData.name.trim()) {
+      toast.error('A név kötelező');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      if (editingSponsor) {
+        const { error } = await supabase
+          .from('sponsors')
+          .update({
+            name: formData.name.trim(),
+            slug: formData.slug.trim() || null,
+            logo_url: formData.logo_url.trim() || null,
+            website_url: formData.website_url.trim() || null,
+            description: formData.description.trim() || null,
+            is_active: formData.is_active,
+          })
+          .eq('id', editingSponsor.id);
+        if (error) throw error;
+        toast.success('Szponzor frissítve');
+      } else {
+        const { error } = await supabase
+          .from('sponsors')
+          .insert({
+            name: formData.name.trim(),
+            slug: formData.slug.trim() || null,
+            logo_url: formData.logo_url.trim() || null,
+            website_url: formData.website_url.trim() || null,
+            description: formData.description.trim() || null,
+            is_active: formData.is_active,
+          });
+        if (error) throw error;
+        toast.success('Szponzor létrehozva');
+      }
+
+      setCreateEditOpen(false);
+      await fetchSponsors();
+    } catch (e: any) {
+      console.error('[AdminSponsors] save error', e);
+      toast.error(e?.message || 'Hiba a mentés során');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   // Handle card click - open modal
   const handleCardClick = (sponsorId: string) => {
@@ -155,7 +258,7 @@ const AdminSponsors = () => {
           <Button onClick={fetchSponsors} variant="outline" size="icon" title="Frissítés">
             <RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />
           </Button>
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={openCreate}>
             <Plus className="h-4 w-4" />
             Új szponzor
           </Button>
@@ -226,6 +329,17 @@ const AdminSponsors = () => {
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-semibold">{sponsor.name}</h3>
                       {getStatusBadge(sponsor.is_active)}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="ml-auto"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openEdit(sponsor);
+                        }}
+                      >
+                        Szerkesztés
+                      </Button>
                     </div>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
                       {sponsor.email && (
@@ -261,6 +375,75 @@ const AdminSponsors = () => {
         onOpenChange={setModalOpen}
         onSaved={fetchSponsors}
       />
+
+      {/* Create/Edit Sponsor Modal */}
+      <Dialog open={createEditOpen} onOpenChange={setCreateEditOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>{editingSponsor ? 'Szponzor szerkesztése' : 'Új szponzor'}</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Név</Label>
+                <Input
+                  value={formData.name}
+                  onChange={(e) => {
+                    const name = e.target.value;
+                    setFormData((prev) => ({
+                      ...prev,
+                      name,
+                      slug: editingSponsor ? prev.slug : generateSlug(name),
+                    }));
+                  }}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Slug</Label>
+                <Input value={formData.slug} onChange={(e) => setFormData((p) => ({ ...p, slug: e.target.value }))} />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Logo URL</Label>
+                <Input value={formData.logo_url} onChange={(e) => setFormData((p) => ({ ...p, logo_url: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Website URL</Label>
+                <Input value={formData.website_url} onChange={(e) => setFormData((p) => ({ ...p, website_url: e.target.value }))} />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Leírás</Label>
+              <Textarea
+                rows={4}
+                value={formData.description}
+                onChange={(e) => setFormData((p) => ({ ...p, description: e.target.value }))}
+              />
+            </div>
+
+            <div className="flex items-center justify-between rounded-lg border p-3">
+              <div>
+                <div className="font-medium">Aktív</div>
+                <div className="text-sm text-muted-foreground">Inaktív szponzor nem jelenik meg nyilvánosan</div>
+              </div>
+              <Switch checked={formData.is_active} onCheckedChange={(v) => setFormData((p) => ({ ...p, is_active: v }))} />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCreateEditOpen(false)}>
+              Mégse
+            </Button>
+            <Button onClick={saveSponsor} disabled={saving}>
+              {saving ? '...' : 'Mentés'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

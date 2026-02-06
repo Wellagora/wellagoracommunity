@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -9,36 +8,22 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { cn } from '@/lib/utils';
-import { WorldMap } from '@/components/admin/WorldMap';
-import { COUNTRIES, getCountryFlag, getCountryByCode } from '@/lib/countries';
-import { COMMON_CURRENCIES, CURRENCY_SYMBOLS } from '@/lib/currency';
+import { getCountryFlag, getCountryByCode } from '@/lib/countries';
 import {
   FolderOpen,
   Plus,
   Search,
-  MapPin,
-  Users,
-  Calendar,
-  MoreHorizontal,
-  Settings,
-  Eye,
-  Pause,
-  Play,
   RefreshCw,
-  Edit,
-  Trash2,
-  Map,
-  List,
-  Globe
 } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import {
   Dialog,
   DialogContent,
@@ -65,7 +50,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { ProjectDetailModal } from '@/components/admin/modals/ProjectDetailModal';
 
 interface Project {
   id: string;
@@ -75,6 +59,7 @@ interface Project {
   region_name: string | null;
   is_active: boolean;
   created_at: string;
+  updated_at?: string | null;
   user_count?: number;
   country_code?: string | null;
   currency_code?: string | null;
@@ -86,13 +71,14 @@ interface Project {
 
 type ProjectStatus = 'active' | 'suspended' | 'archived';
 
+type ProjectStatusFilter = 'active' | 'draft' | 'archived';
+
 const AdminProjects = () => {
   const { t } = useLanguage();
-  const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
+  const [statusFilter, setStatusFilter] = useState<ProjectStatusFilter>('active');
 
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -100,12 +86,8 @@ const AdminProjects = () => {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
-  const handleProjectClick = (projectId: string) => {
-    navigate(`/admin-panel/projects/${projectId}`);
-  };
+  const [modalStatus, setModalStatus] = useState<'active' | 'draft' | 'archived'>('active');
 
   // Form state
   const [formData, setFormData] = useState({
@@ -204,6 +186,7 @@ const AdminProjects = () => {
         city: project.city || '',
         timezone: project.timezone || 'Europe/Budapest',
       });
+      setModalStatus(project.is_active ? 'active' : (isDraftProject(project) ? 'draft' : 'archived'));
     } else {
       setEditingProject(null);
       setFormData({
@@ -217,8 +200,25 @@ const AdminProjects = () => {
         city: '',
         timezone: 'Europe/Budapest',
       });
+      setModalStatus('active');
     }
     setIsModalOpen(true);
+  };
+
+  const isDraftProject = (project: Project) => {
+    return !project.is_active && (project.region_name || '').startsWith('__draft__:');
+  };
+
+  const getProjectStatusLabel = (project: Project) => {
+    if (project.is_active) return { label: languageLabel('active'), variant: 'default' as const };
+    if (isDraftProject(project)) return { label: languageLabel('draft'), variant: 'outline' as const };
+    return { label: languageLabel('archived'), variant: 'secondary' as const };
+  };
+
+  const languageLabel = (kind: 'active' | 'archived' | 'draft') => {
+    if (kind === 'active') return t('admin.projects.active') || 'Aktív';
+    if (kind === 'draft') return t('admin.projects.draft') || 'Piszkozat';
+    return t('admin.projects.archived') || 'Archivált';
   };
 
   // Handle form submit
@@ -227,6 +227,10 @@ const AdminProjects = () => {
       toast.error('Név és URL azonosító kötelező!');
       return;
     }
+
+    const statusIsActive = modalStatus === 'active';
+    const baseRegionNameToSave = (formData.region_name || formData.name || '').trim();
+    const regionNameToSave = modalStatus === 'draft' ? `__draft__:${baseRegionNameToSave}` : baseRegionNameToSave;
 
     setIsSaving(true);
     try {
@@ -237,8 +241,8 @@ const AdminProjects = () => {
             name: formData.name,
             slug: formData.slug,
             description: formData.description,
-            region_name: formData.region_name,
-            is_active: formData.is_active,
+            region_name: regionNameToSave,
+            is_active: statusIsActive,
             country_code: formData.country_code,
             currency_code: formData.currency_code,
             city: formData.city,
@@ -254,8 +258,8 @@ const AdminProjects = () => {
             name: formData.name,
             slug: formData.slug,
             description: formData.description,
-            region_name: formData.region_name,
-            is_active: formData.is_active,
+            region_name: regionNameToSave,
+            is_active: statusIsActive,
             country_code: formData.country_code,
             currency_code: formData.currency_code,
             city: formData.city,
@@ -315,11 +319,16 @@ const AdminProjects = () => {
     }
   };
 
-  const filteredProjects = projects.filter(p =>
-    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.slug.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.region_name?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProjects = projects.filter(p => {
+    const matchesQuery = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesStatus =
+      (statusFilter === 'active' && p.is_active) ||
+      (statusFilter === 'draft' && isDraftProject(p)) ||
+      (statusFilter === 'archived' && !p.is_active && !isDraftProject(p));
+
+    return matchesQuery && matchesStatus;
+  });
 
   return (
     <div className="space-y-6">
@@ -345,28 +354,18 @@ const AdminProjects = () => {
         </div>
       </div>
 
-      {/* View Toggle + Search */}
+      {/* Search + Status */}
       <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex items-center gap-2 bg-muted rounded-lg p-1">
-          <Button
-            variant={viewMode === 'list' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => setViewMode('list')}
-            className="gap-2"
-          >
-            <List className="h-4 w-4" />
-            Lista
-          </Button>
-          <Button
-            variant={viewMode === 'map' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => setViewMode('map')}
-            className="gap-2"
-          >
-            <Map className="h-4 w-4" />
-            Térkép
-          </Button>
-        </div>
+        <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as ProjectStatusFilter)}>
+          <SelectTrigger className="w-full sm:w-[220px]">
+            <SelectValue placeholder="Státusz" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="active">{languageLabel('active')}</SelectItem>
+            <SelectItem value="draft">{languageLabel('draft')}</SelectItem>
+            <SelectItem value="archived">{languageLabel('archived')}</SelectItem>
+          </SelectContent>
+        </Select>
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -378,16 +377,11 @@ const AdminProjects = () => {
         </div>
       </div>
 
-      {/* Map View */}
-      {viewMode === 'map' && (
-        <WorldMap projects={filteredProjects} onProjectClick={handleProjectClick} />
-      )}
-
-      {/* Projects Grid */}
-      {viewMode === 'list' && (loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[1, 2, 3].map(i => (
-            <Skeleton key={i} className="h-48" />
+      {/* Projects Table */}
+      {loading ? (
+        <div className="space-y-3">
+          {[1, 2, 3, 4, 5].map(i => (
+            <Skeleton key={i} className="h-14" />
           ))}
         </div>
       ) : filteredProjects.length === 0 ? (
@@ -402,124 +396,55 @@ const AdminProjects = () => {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredProjects.map((project) => (
-            <Card 
-              key={project.id}
-              className={cn(
-                "hover:shadow-md transition-shadow cursor-pointer",
-                !project.is_active && "opacity-60"
-              )}
-              onClick={() => handleProjectClick(project.id)}
-            >
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      {project.name}
-                      <Badge variant={project.is_active ? "default" : "secondary"}>
-                        {project.is_active ? t('admin.projects.active') : t('admin.projects.inactive')}
-                      </Badge>
-                    </CardTitle>
-                    <CardDescription className="mt-1 line-clamp-2">
-                      {project.description || t('admin.projects.no_description')}
-                    </CardDescription>
-                  </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openModal(project);
-                        }}
-                      >
-                        <Edit className="h-4 w-4 mr-2" />
-                        {t('admin.projects.edit')}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedProjectId(project.id);
-                          setIsDetailModalOpen(true);
-                        }}
-                      >
-                        <Eye className="h-4 w-4 mr-2" />
-                        {t('admin.projects.view')}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleProjectClick(project.id);
-                        }}
-                      >
-                        <Settings className="h-4 w-4 mr-2" />
-                        {t('admin.projects.settings')}
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleProjectStatus(project);
-                        }}
-                      >
-                        {project.is_active ? (
-                          <>
-                            <Pause className="h-4 w-4 mr-2" />
-                            {t('admin.projects.suspend')}
-                          </>
+        <Card>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Név</TableHead>
+                  <TableHead>Státusz</TableHead>
+                  <TableHead>Ország</TableHead>
+                  <TableHead>Frissítve</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredProjects.map((project) => {
+                  const status = getProjectStatusLabel(project);
+                  const countryName = project.country_code ? getCountryByCode(project.country_code)?.name : null;
+                  const updated = project.updated_at || project.created_at;
+
+                  return (
+                    <TableRow
+                      key={project.id}
+                      className="cursor-pointer"
+                      onClick={() => openModal(project)}
+                    >
+                      <TableCell className="font-medium">
+                        <div className="truncate">{project.name || '—'}</div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={status.variant}>{status.label}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        {project.country_code ? (
+                          <span>
+                            {getCountryFlag(project.country_code)} {countryName || project.country_code}
+                          </span>
                         ) : (
-                          <>
-                            <Play className="h-4 w-4 mr-2" />
-                            {t('admin.projects.activate')}
-                          </>
+                          <span className="text-muted-foreground">—</span>
                         )}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setProjectToDelete(project);
-                          setIsDeleteDialogOpen(true);
-                        }}
-                        className="text-destructive focus:text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        {t('admin.projects.delete')}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                  {project.region_name && (
-                    <div className="flex items-center gap-1">
-                      <MapPin className="h-4 w-4" />
-                      {project.region_name}
-                    </div>
-                  )}
-                  <div className="flex items-center gap-1">
-                    <Users className="h-4 w-4" />
-                    {project.user_count || 0} {t('admin.projects.users')}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Calendar className="h-4 w-4" />
-                    {new Date(project.created_at).toLocaleDateString()}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      ))}
+                      </TableCell>
+                      <TableCell>
+                        {updated ? new Date(updated).toLocaleDateString() : '—'}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Create/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -563,71 +488,6 @@ const AdminProjects = () => {
               </div>
             </div>
 
-            {/* Country & City */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>
-                  <Globe className="inline h-4 w-4 mr-1" />
-                  Ország
-                </Label>
-                <Select
-                  value={formData.country_code}
-                  onValueChange={handleCountryChange}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Válassz országot" />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-[300px]">
-                    {COUNTRIES.map((country) => (
-                      <SelectItem key={country.code} value={country.code}>
-                        {getCountryFlag(country.code)} {country.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="city">Város</Label>
-                <Input
-                  id="city"
-                  value={formData.city}
-                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  placeholder="Budapest, Berlin, Vienna..."
-                />
-              </div>
-            </div>
-
-            {/* Currency & Timezone */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Pénznem</Label>
-                <Select
-                  value={formData.currency_code}
-                  onValueChange={(v) => setFormData({ ...formData, currency_code: v })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {COMMON_CURRENCIES.map((code) => (
-                      <SelectItem key={code} value={code}>
-                        {CURRENCY_SYMBOLS[code]} {code}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="region">{t('admin.projects.region')}</Label>
-                <Input
-                  id="region"
-                  value={formData.region_name}
-                  onChange={(e) => setFormData({ ...formData, region_name: e.target.value })}
-                  placeholder="Régió neve"
-                />
-              </div>
-            </div>
-
             <div className="space-y-2">
               <Label htmlFor="description">{t('admin.projects.description')}</Label>
               <Textarea
@@ -642,15 +502,16 @@ const AdminProjects = () => {
             <div className="space-y-2">
               <Label>{t('admin.projects.status')}</Label>
               <Select
-                value={formData.is_active ? 'active' : 'inactive'}
-                onValueChange={(v) => setFormData({ ...formData, is_active: v === 'active' })}
+                value={modalStatus}
+                onValueChange={(v) => setModalStatus(v as 'active' | 'draft' | 'archived')}
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="active">{t('admin.projects.status_active')}</SelectItem>
-                  <SelectItem value="inactive">{t('admin.projects.status_suspended')}</SelectItem>
+                  <SelectItem value="draft">{languageLabel('draft')}</SelectItem>
+                  <SelectItem value="active">{languageLabel('active')}</SelectItem>
+                  <SelectItem value="archived">{languageLabel('archived')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -685,14 +546,6 @@ const AdminProjects = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {/* Project Detail Modal */}
-      <ProjectDetailModal
-        projectId={selectedProjectId}
-        open={isDetailModalOpen}
-        onOpenChange={setIsDetailModalOpen}
-        onSaved={fetchProjects}
-      />
     </div>
   );
 };

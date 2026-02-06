@@ -288,7 +288,7 @@ const JoinOrganizationPage = () => {
             <p className="text-muted-foreground mb-6">
               Már a {organization?.name} szervezet tagja vagy.
             </p>
-            <Link to="/organization">
+            <Link to="/sponsor-dashboard">
               <Button>Ugrás az irányítópultra</Button>
             </Link>
           </CardContent>
@@ -308,7 +308,7 @@ const JoinOrganizationPage = () => {
             <p className="text-muted-foreground mb-6">
               Már egy másik szervezet tagja vagy. Előbb ki kell lépned a jelenlegi szervezetből.
             </p>
-            <Link to="/organization">
+            <Link to="/sponsor-dashboard">
               <Button>Ugrás az irányítópultra</Button>
             </Link>
           </CardContent>

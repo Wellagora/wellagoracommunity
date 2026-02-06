@@ -85,10 +85,11 @@ const MyHubPage = () => {
   }, [user, loading, navigate]);
 
   useEffect(() => {
+    // Skip redirect if super admin is testing citizen view
     if (profile?.user_role && ["business", "government", "ngo"].includes(profile.user_role)) {
       const savedViewMode = localStorage.getItem("wellagora_view_mode");
       if (savedViewMode !== "citizen") {
-        navigate("/organization");
+        navigate("/sponsor-dashboard");
       }
     }
   }, [profile?.user_role, navigate]);

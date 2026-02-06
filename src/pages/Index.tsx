@@ -10,7 +10,6 @@ import ExpertGallery from "@/components/ExpertGallery";
 import FeaturedEventsGrid from "@/components/FeaturedEventsGrid";
 import RecommendedProgramsSlider from "@/components/RecommendedProgramsSlider";
 import CTABanner from "@/components/CTABanner";
-import { UpcomingEventsSection } from "@/components/events/UpcomingEventsSection";
 import { CommunityImpactCounter } from "@/components/CommunityImpactCounter";
 import Footer from "@/components/Footer";
 
@@ -50,20 +49,33 @@ const Index = () => {
                     {t("index.welcome_back")}, {profile.first_name}! 👋
                   </h1>
                   <p className="text-base sm:text-lg text-black/50 mb-6 max-w-2xl mx-auto">
-                    {t("index.ready_to_make_impact")}
+                    {t("index.post_login_headline")}
                   </p>
-                  <Link to="/piacer">
+                  <Link to="/community">
                     <motion.div
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.95 }}
                       transition={{ type: "spring", stiffness: 400, damping: 17 }}
                     >
                       <Button size="lg" className="min-w-[200px] gap-2 bg-black hover:bg-black/90 text-white">
-                        {t("index.go_to_marketplace")}
+                        {t("index.post_login_primary_cta")}
                         <ChevronRight className="w-5 h-5" />
                       </Button>
                     </motion.div>
                   </Link>
+
+                  <div className="mt-4 flex flex-col sm:flex-row gap-2 justify-center">
+                    <Link to="/community">
+                      <Button variant="outline" size="sm" className="min-w-[200px]">
+                        {t("index.post_login_secondary_ask")}
+                      </Button>
+                    </Link>
+                    <Link to="/piacer">
+                      <Button variant="outline" size="sm" className="min-w-[200px]">
+                        {t("index.post_login_secondary_browse")}
+                      </Button>
+                    </Link>
+                  </div>
                 </motion.div>
               </div>
             </section>
@@ -80,10 +92,7 @@ const Index = () => {
             {/* 4. CTA BANNER */}
             <CTABanner />
 
-            {/* 5. KÖZELGŐ ESEMÉNYEK - Timeline list */}
-            <UpcomingEventsSection />
-
-            {/* 6. COMMUNITY IMPACT - Avatar Stack + Notification Stream */}
+            {/* 5. COMMUNITY IMPACT - Avatar Stack + Notification Stream */}
             <CommunityImpactCounter />
           </main>
         </div>

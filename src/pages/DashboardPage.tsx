@@ -86,7 +86,7 @@ const DashboardPage = () => {
       // Only redirect if not in citizen test mode
       const savedViewMode = localStorage.getItem("wellagora_view_mode");
       if (savedViewMode !== "citizen") {
-        navigate("/organization");
+        navigate("/sponsor-dashboard");
       }
     }
   }, [profile?.user_role, navigate]);

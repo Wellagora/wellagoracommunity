@@ -1,414 +1,326 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { SubscriptionPlanSelector } from '@/components/subscription/SubscriptionPlanSelector';
-import { useSubscription } from '@/contexts/SubscriptionContext';
+import SponsorPackageSelector from '@/components/sponsor/SponsorPackageSelector';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import { SponsorDashboardSkeleton } from '@/components/ui/loading-skeleton';
 import {
   Users,
-  Calendar,
-  Ticket,
-  TrendingUp,
   Wallet,
-  Search,
-  Plus,
   Gift,
   Building2,
-  CreditCard
+  CreditCard,
+  Plus
 } from 'lucide-react';
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend
-} from 'recharts';
 
 // ============= TYPE DEFINITIONS =============
-interface SponsorStats {
-  peopleReached: number;
-  monthlyGrowth: number;
-  programsSupported: number;
-  vouchersRedeemed: number;
-  conversionRate: number;
-  totalImpactCO2: number;
+interface CreditTotals {
+  currentBalance: number;
+  totalPurchased: number;
+  totalSpent: number;
 }
 
-interface SponsoredProgram {
+interface SponsorSpendItem {
   id: string;
-  programName: string;
-  expertName: string;
-  vouchersRedeemed: number;
-  vouchersTotal: number;
-  status: 'active' | 'completed';
+  created_at: string | null;
+  description: string | null;
+  credits: number;
+  transaction_type: string;
 }
 
-interface ChartDataPoint {
-  month: string;
-  reached: number;
-  credits: number;
+interface SponsoredItem {
+  id: string;
+  name: string;
+  type: 'program' | 'event';
+  status: 'active' | 'ended';
+  href?: string;
+}
+
+interface SponsorTargetOption {
+  id: string;
+  name: string;
 }
 
 // ============= MAIN COMPONENT =============
 const SponsorDashboardPage = () => {
   const navigate = useNavigate();
-  const { user, profile, isDemoMode } = useAuth();
+  const { user, profile } = useAuth();
   const { t, language } = useLanguage();
-  const { currentSubscription } = useSubscription();
-  const [showPackages, setShowPackages] = useState(false);
-  const [showStripeModal, setShowStripeModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [stats, setStats] = useState<SponsorStats>({
-    peopleReached: 0,
-    monthlyGrowth: 0,
-    programsSupported: 0,
-    vouchersRedeemed: 0,
-    conversionRate: 0,
-    totalImpactCO2: 0
-  });
-  const [sponsoredPrograms, setSponsoredPrograms] = useState<SponsoredProgram[]>([]);
-  const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
-  const [creditInfo, setCreditInfo] = useState({
-    usedCredits: 0,
-    totalCredits: 0,
-    availableCredits: 0
-  });
+  const queryClient = useQueryClient();
+  const [showBuyCreditsModal, setShowBuyCreditsModal] = useState(false);
+  const [showSponsorModal, setShowSponsorModal] = useState(false);
+  const [isSponsoring, setIsSponsoring] = useState(false);
 
-  // Fetch REAL data from Supabase with accurate credit calculations
-  useEffect(() => {
-    const fetchSponsorData = async () => {
-      if (!user) return;
-      
-      setIsLoading(true);
-      try {
-        // ============================================
-        // 1. CREDIT CALCULATIONS (Source of Truth)
-        // ============================================
-        
-        // Get total credits from credit_transactions (purchases/subscriptions)
-        const { data: creditPurchases } = await supabase
+  const [sponsorTargetType, setSponsorTargetType] = useState<'program' | 'event'>('program');
+  const [availablePrograms, setAvailablePrograms] = useState<SponsorTargetOption[]>([]);
+  const [availableEvents, setAvailableEvents] = useState<SponsorTargetOption[]>([]);
+  const [selectedTargetId, setSelectedTargetId] = useState<string>('');
+  const [spendCreditsAmount, setSpendCreditsAmount] = useState<number>(50000);
+
+  const purchaseTypes = useMemo(() => ['purchase', 'subscription', 'initial', 'rollover', 'bonus'], []);
+  const spendTypes = useMemo(() => ['deduction', 'sponsorship', 'usage', 'spend'], []);
+
+  const getTransactionLabel = (type: string) => {
+    const labels: Record<string, { hu: string; en: string; de: string }> = {
+      purchase: { hu: 'Kredit vásárlás', en: 'Credit Purchase', de: 'Kreditkauf' },
+      subscription: { hu: 'Előfizetés', en: 'Subscription', de: 'Abonnement' },
+      initial: { hu: 'Kezdő egyenleg', en: 'Initial Balance', de: 'Anfangssaldo' },
+      bonus: { hu: 'Bónusz kredit', en: 'Bonus Credit', de: 'Bonus-Kredit' },
+      rollover: { hu: 'Átvitt egyenleg', en: 'Rollover Balance', de: 'Übertragenes Guthaben' },
+      deduction: { hu: 'Levonás', en: 'Deduction', de: 'Abzug' },
+      sponsorship: { hu: 'Szponzoráció', en: 'Sponsorship', de: 'Sponsoring' },
+      usage: { hu: 'Felhasználás', en: 'Usage', de: 'Nutzung' },
+      spend: { hu: 'Szponzorálás', en: 'Sponsorship', de: 'Sponsoring' },
+    };
+    return labels[type]?.[language as keyof (typeof labels)[string]] || type;
+  };
+
+  const balanceQuery = useQuery({
+    queryKey: ['sponsorDashboard', 'balance', user?.id],
+    enabled: !!user?.id,
+    queryFn: async (): Promise<CreditTotals> => {
+      if (!user?.id) return { currentBalance: 0, totalPurchased: 0, totalSpent: 0 };
+      const [creditPurchasesRes, creditSpendsRes] = await Promise.all([
+        supabase
           .from('credit_transactions')
           .select('credits, transaction_type')
           .eq('sponsor_user_id', user.id)
-          .in('transaction_type', ['purchase', 'subscription', 'initial', 'rollover', 'bonus']);
-        
-        const totalCreditsFromPurchases = creditPurchases?.reduce((sum, ct) => sum + (ct.credits || 0), 0) || 0;
-
-        // Get used credits from:
-        // Option A: credit_transactions with type 'deduction' or 'sponsorship'
-        const { data: creditDeductions } = await supabase
+          .in('transaction_type', purchaseTypes),
+        supabase
           .from('credit_transactions')
-          .select('credits')
+          .select('credits, transaction_type')
           .eq('sponsor_user_id', user.id)
-          .in('transaction_type', ['deduction', 'sponsorship', 'usage']);
-        
-        const usedCreditsFromDeductions = Math.abs(creditDeductions?.reduce((sum, ct) => sum + (ct.credits || 0), 0) || 0);
-        
-        // Option B: Sum from vouchers where sponsor_credit_deducted is tracked
-        const { data: voucherDeductions } = await supabase
-          .from('vouchers')
-          .select('sponsor_credit_deducted, content_id, status')
-          .not('sponsor_credit_deducted', 'is', null)
-          .eq('status', 'redeemed');
-        
-        // Filter vouchers to only those from this sponsor's content
-        const { data: sponsorContents } = await supabase
+          .in('transaction_type', spendTypes),
+      ]);
+      if (creditPurchasesRes.error) throw creditPurchasesRes.error;
+      if (creditSpendsRes.error) throw creditSpendsRes.error;
+
+      const totalPurchased = (creditPurchasesRes.data || []).reduce((sum, row) => sum + (row.credits || 0), 0);
+      const totalSpent = Math.abs((creditSpendsRes.data || []).reduce((sum, row) => sum + (row.credits || 0), 0));
+      const currentBalance = Math.max(0, totalPurchased - totalSpent);
+      return { currentBalance, totalPurchased, totalSpent };
+    },
+    retry: false,
+  });
+
+  // Removed spendingQuery - not needed for MVP
+
+  const sponsoredItemsQuery = useQuery({
+    queryKey: ['sponsorDashboard', 'sponsoredItems', user?.id],
+    enabled: !!user?.id,
+    queryFn: async (): Promise<SponsoredItem[]> => {
+      if (!user?.id) return [];
+      const sponsorId = user.id;
+      const [sponsorProgramsRes, sponsorEventsRes] = await Promise.all([
+        supabase
           .from('content_sponsorships')
-          .select('content_id, sponsor_contribution_huf, max_sponsored_seats, sponsored_seats_used, is_active, expert_contents(id, title, creator_id)')
-          .eq('sponsor_id', user.id);
-        
-        const sponsorContentIds = sponsorContents?.map(c => c.content_id) || [];
-        
-        const usedCreditsFromVouchers = voucherDeductions
-          ?.filter(v => sponsorContentIds.includes(v.content_id))
-          ?.reduce((sum, v) => sum + (v.sponsor_credit_deducted || 0), 0) || 0;
-        
-        // Alternative: Calculate used credits from sponsored_seats_used * sponsor_contribution_huf
-        const usedCreditsFromSeats = sponsorContents?.reduce((sum, cs) => {
-          return sum + ((cs.sponsored_seats_used || 0) * (cs.sponsor_contribution_huf || 0));
-        }, 0) || 0;
-        
-        // Use the maximum of all calculation methods (they should align, but this ensures accuracy)
-        const calculatedUsedCredits = Math.max(usedCreditsFromDeductions, usedCreditsFromVouchers, usedCreditsFromSeats);
-        
-        // Final credit values
-        const finalTotalCredits = totalCreditsFromPurchases;
-        const finalUsedCredits = calculatedUsedCredits;
-        const finalAvailableCredits = Math.max(0, finalTotalCredits - finalUsedCredits);
-        
-        console.log('[SponsorDashboard] Credit calculation:', {
-          totalCreditsFromPurchases,
-          usedCreditsFromDeductions,
-          usedCreditsFromVouchers,
-          usedCreditsFromSeats,
-          finalTotalCredits,
-          finalUsedCredits,
-          finalAvailableCredits
-        });
+          .select(
+            `
+              id,
+              content_id,
+              is_active,
+              expert_contents:content_id (
+                id,
+                title
+              )
+            `
+          )
+          .eq('sponsor_id', sponsorId)
+          .order('created_at', { ascending: false })
+          .limit(20),
+        supabase
+          .from('event_sponsors')
+          .select(
+            `
+              id,
+              event_id,
+              is_active,
+              events:event_id (
+                id,
+                title,
+                end_date
+              )
+            `
+          )
+          .eq('sponsor_id', sponsorId)
+          .order('created_at', { ascending: false })
+          .limit(20),
+      ]);
 
-        // ============================================
-        // 2. SPONSORED PROGRAMS (Only ACTIVE sponsorships)
-        // ============================================
-        
-        // Only include programs where this sponsor has an ACTIVE sponsorship
-        const activeSponsorships = sponsorContents?.filter(cs => cs.is_active !== false) || [];
-        
-        let totalVouchersRedeemed = 0;
-        let totalLicenses = 0;
-        let peopleReached = 0;
-        
-        if (activeSponsorships.length > 0) {
-          const activeContentIds = activeSponsorships.map(c => c.content_id);
-          
-          // Get voucher counts for active sponsorships only
-          const { count: redeemedCount } = await supabase
-            .from('vouchers')
-            .select('*', { count: 'exact', head: true })
-            .in('content_id', activeContentIds)
-            .eq('status', 'redeemed');
-          
-          totalVouchersRedeemed = redeemedCount || 0;
-          totalLicenses = activeSponsorships.reduce((sum, cs) => sum + (cs.max_sponsored_seats || cs.sponsored_seats_used || 0), 0);
-          
-          // Get unique users reached
-          const { data: userIds } = await supabase
-            .from('vouchers')
-            .select('user_id')
-            .in('content_id', activeContentIds);
-          
-          peopleReached = new Set(userIds?.map(v => v.user_id) || []).size;
-        }
-        
-        // Build programs list from ACTIVE sponsorships only
-        const programs: SponsoredProgram[] = [];
-        
-        if (activeSponsorships.length > 0) {
-          // Batch fetch all creators
-          const creatorIds = activeSponsorships
-            .map(cs => cs.expert_contents?.creator_id)
-            .filter(Boolean) as string[];
-          
-          const { data: creators } = creatorIds.length > 0 
-            ? await supabase
-                .from('profiles')
-                .select('id, first_name, last_name')
-                .in('id', creatorIds)
-            : { data: [] };
-          
-          const creatorMap = new Map(
-            (creators || []).map((c: any) => [c.id, c])
-          );
-          
-          // Get per-content voucher counts
-          for (const cs of activeSponsorships) {
-            const { count } = await supabase
-              .from('vouchers')
-              .select('*', { count: 'exact', head: true })
-              .eq('content_id', cs.content_id)
-              .eq('status', 'redeemed');
+      if (sponsorProgramsRes.error) throw sponsorProgramsRes.error;
+      if (sponsorEventsRes.error) throw sponsorEventsRes.error;
 
-            const creator = creatorMap.get(cs.expert_contents?.creator_id || '');
-            const totalSeats = cs.max_sponsored_seats || 50;
-            const redeemedSeats = count || cs.sponsored_seats_used || 0;
-            
-            programs.push({
-              id: cs.content_id,
-              programName: cs.expert_contents?.title || t('common.program'),
-              expertName: creator ? `${creator.first_name} ${creator.last_name}` : t('common.expert'),
-              vouchersRedeemed: redeemedSeats,
-              vouchersTotal: totalSeats,
-              status: redeemedSeats >= totalSeats ? 'completed' : 'active'
-            });
-          }
-        }
-        
-        setSponsoredPrograms(programs);
+      const programItems: SponsoredItem[] = (sponsorProgramsRes.data || []).map((row: any) => {
+        const isActive = row.is_active !== false;
+        return {
+          id: row.id,
+          name: row.expert_contents?.title || t('common.program'),
+          type: 'program',
+          status: isActive ? 'active' : 'ended',
+          href: row.content_id ? `/piacer/${row.content_id}` : undefined,
+        };
+      });
 
-        // ============================================
-        // 3. ADDITIONAL STATS
-        // ============================================
-        
-        // Challenge sponsorships count
-        const { count: challengeSponsorshipCount } = await supabase
-          .from('challenge_sponsorships')
-          .select('*', { count: 'exact', head: true })
-          .eq('sponsor_user_id', user.id);
-        
-        const totalPrograms = (challengeSponsorshipCount || 0) + activeSponsorships.length;
+      const now = new Date();
+      const eventItems: SponsoredItem[] = (sponsorEventsRes.data || []).map((row: any) => {
+        const end = row.events?.end_date ? new Date(row.events.end_date) : null;
+        const isActive = row.is_active !== false && (!end || end >= now);
+        return {
+          id: row.id,
+          name: row.events?.title || t('common.event'),
+          type: 'event',
+          status: isActive ? 'active' : 'ended',
+        };
+      });
 
-        // Monthly growth - compare with last month
-        const comparisonDate = new Date();
-        comparisonDate.setMonth(comparisonDate.getMonth() - 1);
-        
-        let monthlyGrowth = 0;
-        if (sponsorContentIds.length > 0) {
-          const { count: lastMonthCount } = await supabase
-            .from('vouchers')
-            .select('*', { count: 'exact', head: true })
-            .in('content_id', sponsorContentIds)
-            .lt('created_at', comparisonDate.toISOString());
+      return [...programItems, ...eventItems];
+    },
+    retry: false,
+  });
 
-          monthlyGrowth = lastMonthCount && lastMonthCount > 0
-            ? Math.round(((totalVouchersRedeemed - lastMonthCount) / lastMonthCount) * 100)
-            : totalVouchersRedeemed > 0 ? 100 : 0;
-        }
+  // Removed impactQuery - not needed for MVP
 
-        // Conversion rate - based on actual data
-        const conversionRate = totalLicenses > 0 
-          ? Math.round((totalVouchersRedeemed / totalLicenses) * 100) 
-          : 0;
+  const loadSponsorTargets = async () => {
+    try {
+      const [{ data: programsData }, { data: eventsData }] = await Promise.all([
+        supabase
+          .from('expert_contents')
+          .select('id, title')
+          .eq('is_published', true)
+          .order('title', { ascending: true })
+          .limit(50),
+        supabase
+          .from('events')
+          .select('id, title')
+          .eq('is_public', true)
+          .order('start_date', { ascending: true })
+          .limit(50),
+      ]);
 
-        // CO2 impact (estimate: 2kg per voucher redeemed)
-        const totalImpactCO2 = totalVouchersRedeemed * 2;
+      setAvailablePrograms((programsData || []).map((p: any) => ({ id: p.id, name: p.title })));
+      setAvailableEvents((eventsData || []).map((e: any) => ({ id: e.id, name: e.title })));
+    } catch (e) {
+      // If permissions are missing, keep lists empty but don't crash.
+      console.error('[SponsorDashboard] Failed to load sponsor targets', e);
+      setAvailablePrograms([]);
+      setAvailableEvents([]);
+    }
+  };
 
-        setStats({
-          peopleReached,
-          monthlyGrowth,
-          programsSupported: totalPrograms,
-          vouchersRedeemed: totalVouchersRedeemed,
-          conversionRate,
-          totalImpactCO2
-        });
 
-        setCreditInfo({
-          usedCredits: finalUsedCredits,
-          totalCredits: finalTotalCredits,
-          availableCredits: finalAvailableCredits
-        });
+  const handleOpenSponsorModal = async () => {
+    setSelectedTargetId('');
+    setSponsorTargetType('program');
+    setSpendCreditsAmount(50000);
+    await loadSponsorTargets();
+    setShowSponsorModal(true);
+  };
 
-        // ============================================
-        // 4. CHART DATA (REAL DATA ONLY - NO ESTIMATES)
-        // ============================================
-        const chartPoints: ChartDataPoint[] = [];
-        const months = ['Jan', 'Feb', 'Már', 'Ápr', 'Máj', 'Jún', 'Júl', 'Aug', 'Szept', 'Okt', 'Nov', 'Dec'];
-        const currentMonth = new Date().getMonth();
-        
-        // Get actual monthly data from credit_transactions
-        const sixMonthsAgo = new Date();
-        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
-        
-        const { data: monthlyTransactions } = await supabase
-          .from('credit_transactions')
-          .select('credits, transaction_type, created_at')
-          .eq('sponsor_user_id', user.id)
-          .gte('created_at', sixMonthsAgo.toISOString())
-          .order('created_at', { ascending: true });
-        
-        // Group transactions by month - REAL DATA ONLY
-        const monthlyCreditsUsed: Record<number, number> = {};
-        const monthlyVouchersClaimed: Record<number, number> = {};
-        
-        // Initialize all months to 0
-        for (let i = 5; i >= 0; i--) {
-          const monthIndex = (currentMonth - i + 12) % 12;
-          monthlyCreditsUsed[monthIndex] = 0;
-          monthlyVouchersClaimed[monthIndex] = 0;
-        }
-        
-        // Sum credits used per month from REAL transactions
-        if (monthlyTransactions && monthlyTransactions.length > 0) {
-          monthlyTransactions.forEach(tx => {
-            const txDate = new Date(tx.created_at);
-            const txMonth = txDate.getMonth();
-            if (['deduction', 'sponsorship', 'usage', 'spend'].includes(tx.transaction_type)) {
-              if (monthlyCreditsUsed[txMonth] !== undefined) {
-                monthlyCreditsUsed[txMonth] += Math.abs(tx.credits || 0);
-              }
-            }
-          });
-        }
-        
-        // Get REAL monthly voucher claims for this sponsor's content
-        if (sponsorContentIds.length > 0) {
-          const { data: monthlyVouchers } = await supabase
-            .from('vouchers')
-            .select('created_at')
-            .in('content_id', sponsorContentIds)
-            .eq('status', 'redeemed')
-            .gte('created_at', sixMonthsAgo.toISOString());
-          
-          if (monthlyVouchers) {
-            monthlyVouchers.forEach(v => {
-              const vDate = new Date(v.created_at);
-              const vMonth = vDate.getMonth();
-              if (monthlyVouchersClaimed[vMonth] !== undefined) {
-                monthlyVouchersClaimed[vMonth] += 1;
-              }
-            });
-          }
-        }
-        
-        // Build chart data with CUMULATIVE values (0 if no data)
-        let cumulativeReached = 0;
-        let cumulativeCredits = 0;
-        
-        for (let i = 5; i >= 0; i--) {
-          const monthIndex = (currentMonth - i + 12) % 12;
-          
-          // Add this month's values to cumulative totals
-          cumulativeReached += monthlyVouchersClaimed[monthIndex] || 0;
-          cumulativeCredits += monthlyCreditsUsed[monthIndex] || 0;
-          
-          chartPoints.push({
-            month: months[monthIndex],
-            reached: cumulativeReached,
-            credits: cumulativeCredits
-          });
-        }
-        
-        setChartData(chartPoints);
+  const handleSponsorSpend = async () => {
+    if (!user) return;
 
-      } catch (error) {
-        console.error('Error fetching sponsor data:', error);
-        toast.error(t('common.error'));
-      } finally {
-        setIsLoading(false);
+    if (!selectedTargetId) {
+      toast.error(t('sponsor_hub.errors.select_item'));
+      return;
+    }
+
+    if (!spendCreditsAmount || spendCreditsAmount <= 0) {
+      toast.error(t('sponsor_hub.errors.enter_amount'));
+      return;
+    }
+
+    const currentBalance = balanceQuery.data?.currentBalance ?? 0;
+    if (spendCreditsAmount > currentBalance) {
+      toast.error(t('sponsor_hub.errors.insufficient_credits'));
+      return;
+    }
+
+    setIsSponsoring(true);
+    try {
+      const sponsorId = user.id;
+      const targetName = sponsorTargetType === 'program'
+        ? (availablePrograms.find(p => p.id === selectedTargetId)?.name || selectedTargetId)
+        : (availableEvents.find(e => e.id === selectedTargetId)?.name || selectedTargetId);
+
+      if (sponsorTargetType === 'program') {
+        const seats = 10;
+        const perSeat = Math.max(1, Math.floor(spendCreditsAmount / seats));
+
+        const { error: sponsorshipError } = await supabase
+          .from('content_sponsorships')
+          .insert({
+            content_id: selectedTargetId,
+            sponsor_id: sponsorId,
+            total_licenses: seats,
+            used_licenses: 0,
+            is_active: true,
+            max_sponsored_seats: seats,
+            sponsored_seats_used: 0,
+            sponsor_contribution_huf: perSeat,
+          } as any);
+
+        if (sponsorshipError) throw sponsorshipError;
+      } else {
+        const { error: eventSponsorError } = await supabase
+          .from('event_sponsors')
+          .insert({
+            event_id: selectedTargetId,
+            sponsor_id: sponsorId,
+            is_active: true,
+            contribution_amount: spendCreditsAmount,
+          } as any);
+
+        if (eventSponsorError) throw eventSponsorError;
       }
-    };
 
-    fetchSponsorData();
-  }, [user, t]);
+      const { error: txError } = await supabase
+        .from('credit_transactions')
+        .insert({
+          sponsor_user_id: user.id,
+          credits: spendCreditsAmount,
+          transaction_type: 'spend',
+          description: sponsorTargetType === 'program'
+            ? `${t('sponsor_hub.tx_description.program')} ${targetName}`
+            : `${t('sponsor_hub.tx_description.event')} ${targetName}`,
+        });
+
+      if (txError) throw txError;
+
+      toast.success(t('sponsor_hub.success.sponsorship_recorded'));
+      setShowSponsorModal(false);
+      await queryClient.invalidateQueries({ queryKey: ['sponsorDashboard'] });
+    } catch (e: any) {
+      console.error('[SponsorDashboard] sponsor spend failed', e);
+      toast.error(e?.message || t('common.error'));
+      await queryClient.invalidateQueries({ queryKey: ['sponsorDashboard'] });
+    } finally {
+      setIsSponsoring(false);
+    }
+  };
 
   // Organization name
   const orgName = profile?.organization_name || profile?.first_name || t('sponsor_hub.your_company');
 
   // Currency formatter
   const formatCurrency = (amount: number) => {
-    if (language === 'hu') {
-      return `${amount.toLocaleString('hu-HU')} Ft`;
-    }
+    const isHu = language === 'hu';
+    const locale = isHu ? 'hu-HU' : language === 'de' ? 'de-DE' : 'en-US';
     const eurAmount = Math.round(amount / 400);
-    return `€${eurAmount.toLocaleString()}`;
-  };
-
-  // Custom tooltip for chart
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white p-3 rounded-lg shadow-lg border border-slate-200">
-          <p className="font-semibold text-slate-900 mb-1">{label}</p>
-          <p className="text-emerald-600 text-sm">
-            {payload[0]?.value} {t('sponsor_hub.people')}
-          </p>
-          <p className="text-indigo-600 text-sm">
-            {payload[1]?.value} kredit
-          </p>
-        </div>
-      );
-    }
-    return null;
+    const displayAmount = isHu ? amount : eurAmount;
+    const currency = isHu ? 'HUF' : 'EUR';
+    return new Intl.NumberFormat(locale, { style: 'currency', currency, maximumFractionDigits: 0 }).format(displayAmount);
   };
 
   // Check if user is a business/sponsor type OR is Super Admin
@@ -449,11 +361,10 @@ const SponsorDashboardPage = () => {
     );
   }
 
-  const creditUsagePercent = creditInfo.totalCredits > 0 
-    ? Math.round((creditInfo.usedCredits / creditInfo.totalCredits) * 100)
-    : 0;
+  const isInitialLoading =
+    balanceQuery.isLoading || sponsoredItemsQuery.isLoading;
 
-  if (isLoading) {
+  if (isInitialLoading) {
     return (
       <DashboardLayout
         title={t('sponsor_hub.title')}
@@ -467,6 +378,13 @@ const SponsorDashboardPage = () => {
     );
   }
 
+  const creditTotals: CreditTotals | null = balanceQuery.isError ? null : (balanceQuery.data || null);
+  const creditUsagePercent = creditTotals && creditTotals.totalPurchased > 0
+    ? Math.round((creditTotals.totalSpent / creditTotals.totalPurchased) * 100)
+    : 0;
+
+  const sponsoredItems: SponsoredItem[] = sponsoredItemsQuery.isError ? [] : (sponsoredItemsQuery.data || []);
+
   return (
     <DashboardLayout
       title={t('sponsor_hub.title')}
@@ -475,349 +393,246 @@ const SponsorDashboardPage = () => {
       iconColor="text-emerald-600"
       backUrl="/"
     >
-      {/* Action Buttons */}
-      <div className="flex flex-wrap gap-3 mb-6">
-        <Button
-          variant="outline"
-          onClick={() => navigate('/piacer')}
-          className="border-black/10 text-black hover:bg-black/5"
-        >
-          <Search className="w-4 h-4 mr-2" />
-          {t('sponsor_hub.explore_programs')}
-        </Button>
-        <Button
-          onClick={() => setShowStripeModal(true)}
-          className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
-        >
-          <CreditCard className="w-4 h-4 mr-2" />
-          {t('sponsor_hub.buy_credits')}
-        </Button>
-      </div>
-
-      {/* Impact Cards - Top Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6">
-        {/* Card 1: People Reached */}
-        <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-black/60 mb-1">
-                  {t('sponsor_hub.people_reached')}
-                </p>
-                <p className="text-3xl sm:text-4xl font-bold text-black">{stats.peopleReached}</p>
-                {stats.monthlyGrowth > 0 && (
-                  <Badge className="mt-2 bg-emerald-600 text-white text-xs">
-                    <TrendingUp className="w-3 h-3 mr-1" />
-                    +{stats.monthlyGrowth}% {t('sponsor_hub.this_month')}
-                  </Badge>
-                )}
-              </div>
-              <div className="p-3 sm:p-4 rounded-full bg-emerald-100">
-                <Users className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Card 2: Conversion Rate */}
-        <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-black/60 mb-1">
-                  {t('sponsor_hub.conversion_rate') || 'Konverzió'}
-                </p>
-                <p className="text-3xl sm:text-4xl font-bold text-black">{stats.conversionRate}%</p>
-                <p className="text-sm text-black/50 mt-2">
-                  {stats.vouchersRedeemed} {t('sponsor_hub.vouchers_redeemed')}
-                </p>
-              </div>
-              <div className="p-3 sm:p-4 rounded-full bg-indigo-100">
-                <Ticket className="w-6 h-6 sm:w-8 sm:h-8 text-indigo-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Card 3: Total Impact */}
-        <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm hover:shadow-md transition-shadow sm:col-span-2 lg:col-span-1">
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-black/60 mb-1">
-                  {t('sponsor_hub.total_impact') || 'CO₂ Hatás'}
-                </p>
-                <p className="text-3xl sm:text-4xl font-bold text-black">{stats.totalImpactCO2} kg</p>
-                <p className="text-sm text-black/50 mt-2">
-                  {stats.programsSupported} {t('sponsor_hub.programs_supported')}
-                </p>
-              </div>
-              <div className="p-3 sm:p-4 rounded-full bg-amber-100">
-                <Calendar className="w-6 h-6 sm:w-8 sm:h-8 text-amber-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6">
-        {/* Chart Section - Takes 2 columns */}
-        <Card className="lg:col-span-2 bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg sm:text-xl text-black">
-              {t('sponsor_hub.roi_title')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[250px] sm:h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorReached" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0.1} />
-                    </linearGradient>
-                    <linearGradient id="colorCredits" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#6366f1" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#6366f1" stopOpacity={0.1} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis dataKey="month" stroke="#64748b" fontSize={12} />
-                  <YAxis yAxisId="left" stroke="#10b981" fontSize={12} />
-                  <YAxis yAxisId="right" orientation="right" stroke="#6366f1" fontSize={12} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend />
-                  <Area
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="reached"
-                    stroke="#10b981"
-                    strokeWidth={2}
-                    fillOpacity={1}
-                    fill="url(#colorReached)"
-                    name={t('sponsor_hub.people_reached')}
-                  />
-                  <Area
-                    yAxisId="right"
-                    type="monotone"
-                    dataKey="credits"
-                    stroke="#6366f1"
-                    strokeWidth={2}
-                    fillOpacity={1}
-                    fill="url(#colorCredits)"
-                    name={t('sponsor_hub.used_credits')}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Credit Monitor - Takes 1 column */}
+      <div className="space-y-4 sm:space-y-6">
+        {/* BALANCE */}
         <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg sm:text-xl text-black flex items-center gap-2">
               <Wallet className="w-5 h-5 text-emerald-600" />
-              {t('sponsor_dashboard.credit_usage')}
+              {t('sponsor_hub.cards.balance.title')}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {creditInfo.totalCredits === 0 ? (
-              /* Empty state when no credits */
+            {balanceQuery.isError ? (
+              <div className="text-sm text-muted-foreground">{t('common.no_data')}</div>
+            ) : !creditTotals || creditTotals.totalPurchased === 0 ? (
               <div className="text-center py-6">
                 <Wallet className="w-10 h-10 text-black/20 mx-auto mb-3" />
-                <p className="text-black/60 text-sm mb-4">
-                  {t('sponsor_hub.no_credits_yet') || 'Még nincs kredit feltöltve'}
-                </p>
-                <Button
-                  onClick={() => setShowStripeModal(true)}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  {t('sponsor_hub.buy_credits')}
-                </Button>
+                <p className="text-black/60 text-sm mb-4">{t('sponsor_hub.cards.balance.empty')}</p>
+                <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                  <Button
+                    onClick={() => setShowBuyCreditsModal(true)}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    {t('sponsor_hub.buy_credits')}
+                  </Button>
+                  <Button
+                    onClick={handleOpenSponsorModal}
+                    variant="outline"
+                    className="border-black/10 text-black hover:bg-black/5"
+                  >
+                    <Gift className="w-4 h-4 mr-2" />
+                    {t('sponsor_hub.primary_cta')}
+                  </Button>
+                </div>
               </div>
             ) : (
-              <div className="space-y-6">
-                {/* Progress Bar */}
-                <div>
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-emerald-50 rounded-xl p-4">
+                    <p className="text-sm text-emerald-700 mb-1">{t('sponsor_hub.cards.balance.available')}</p>
+                    <p className="text-2xl font-bold text-emerald-900">
+                      {creditTotals.currentBalance.toLocaleString()} {t('common.credit')}
+                    </p>
+                  </div>
+
+                  <div className="bg-white rounded-xl p-4 border border-black/5">
+                    <p className="text-sm text-black/60 mb-1">{t('sponsor_hub.cards.balance.purchased')}</p>
+                    <p className="text-2xl font-bold text-black">{creditTotals.totalPurchased.toLocaleString()}</p>
+                  </div>
+
+                  <div className="bg-white rounded-xl p-4 border border-black/5">
+                    <p className="text-sm text-black/60 mb-1">{t('sponsor_hub.cards.balance.spent')}</p>
+                    <p className="text-2xl font-bold text-black">{creditTotals.totalSpent.toLocaleString()}</p>
+                  </div>
+                </div>
+
+                <div className="mt-6">
                   <div className="flex justify-between text-sm mb-2">
-                    <span className="text-black/60">{t('sponsor_hub.used_credits')}</span>
+                    <span className="text-black/60">{t('sponsor_hub.cards.balance.usage')}</span>
                     <span className="font-medium text-black">{creditUsagePercent}%</span>
                   </div>
                   <Progress value={creditUsagePercent} className="h-3 bg-black/5" />
-                  <p className="text-xs text-black/50 mt-1">
-                    {creditInfo.usedCredits.toLocaleString()} / {creditInfo.totalCredits.toLocaleString()} {t('common.credit') || 'kredit'}
-                  </p>
                 </div>
 
-                {/* Available Balance */}
-                <div className="bg-emerald-50 rounded-xl p-4 text-center">
-                  <p className="text-sm text-emerald-700 mb-1">{t('sponsor_hub.available_balance')}</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-emerald-900">
-                    {creditInfo.availableCredits.toLocaleString()} {t('common.credit') || 'kredit'}
-                  </p>
-                  {/* Show as HUF equivalent (1 credit = 1 HUF) */}
-                  <p className="text-xs text-emerald-600 mt-1">
-                    = {creditInfo.availableCredits.toLocaleString()} Ft
-                  </p>
+                <div className="mt-4 flex flex-col sm:flex-row gap-2">
+                  <Button
+                    onClick={() => setShowBuyCreditsModal(true)}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    {t('sponsor_hub.buy_credits')}
+                  </Button>
+                  <Button
+                    onClick={handleOpenSponsorModal}
+                    variant="outline"
+                    className="border-black/10 text-black hover:bg-black/5"
+                  >
+                    <Gift className="w-4 h-4 mr-2" />
+                    {t('sponsor_hub.primary_cta')}
+                  </Button>
                 </div>
+              </>
+            )}
+          </CardContent>
+        </Card>
 
-                {/* Buy Credits Button */}
-                <Button
-                  onClick={() => setShowStripeModal(true)}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  {t('sponsor_hub.buy_credits')}
-                </Button>
+        {/* SPONSORED ITEMS */}
+        <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg sm:text-xl text-black flex items-center gap-2">
+              <Gift className="w-5 h-5 text-indigo-600" />
+              {t('sponsor_hub.cards.sponsored.title')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {sponsoredItemsQuery.isError ? (
+              <div className="text-sm text-muted-foreground">{t('common.no_data')}</div>
+            ) : sponsoredItems.length === 0 ? (
+              <div className="text-sm text-muted-foreground">{t('sponsor_hub.cards.sponsored.empty')}</div>
+            ) : (
+              <div className="space-y-3">
+                {sponsoredItems.slice(0, 5).map((item) => (
+                  <div
+                    key={item.id}
+                    className={`flex items-center justify-between rounded-xl border border-black/5 p-4 ${item.href ? 'cursor-pointer hover:bg-black/[0.02]' : ''}`}
+                    onClick={() => {
+                      if (item.href) navigate(item.href);
+                    }}
+                  >
+                    <div className="min-w-0">
+                      <p className="font-medium text-black truncate">{item.name}</p>
+                      <p className="text-sm text-black/50">
+                        {item.type === 'program' ? t('common.program') : t('common.event')}
+                      </p>
+                    </div>
+                    <Badge
+                      variant={item.status === 'active' ? 'default' : 'secondary'}
+                      className={
+                        item.status === 'active'
+                          ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-100'
+                          : 'bg-black/10 text-black/70'
+                      }
+                    >
+                      {item.status === 'active' ? t('sponsor_hub.item_status.active') : t('sponsor_hub.item_status.ended')}
+                    </Badge>
+                  </div>
+                ))}
               </div>
             )}
           </CardContent>
         </Card>
       </div>
 
-      {/* Sponsored Programs List */}
-      <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-lg sm:text-xl text-black flex items-center gap-2">
-            <Gift className="w-5 h-5 text-indigo-600" />
-            {t('sponsor_hub.sponsored_programs')}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {sponsoredPrograms.length === 0 ? (
-            <div className="text-center py-12">
-              <Gift className="w-12 h-12 text-black/30 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-black mb-2">
-                {t('sponsor_hub.no_programs_title')}
-              </h3>
-              <p className="text-black/50 mb-6">
-                {t('sponsor_hub.no_programs_desc')}
-              </p>
-              <Button onClick={() => navigate('/piacer')} className="bg-black hover:bg-black/90 text-white">
-                {t('sponsor_hub.explore_programs')}
-              </Button>
-            </div>
-          ) : (
-            <div className="overflow-x-auto -mx-4 sm:mx-0">
-              <table className="w-full min-w-[500px]">
-                <thead>
-                  <tr className="border-b border-black/10">
-                    <th className="text-left py-3 px-4 text-sm font-medium text-black/60">
-                      {t('sponsor_hub.program')}
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-black/60">
-                      {t('sponsor_hub.expert')}
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-black/60">
-                      {t('sponsor_hub.redeemed')}
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-black/60">
-                      {t('sponsor_hub.status')}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sponsoredPrograms.map((program) => (
-                    <tr
-                      key={program.id}
-                      className="border-b border-black/5 hover:bg-black/[0.02] transition-colors cursor-pointer"
-                      onClick={() => navigate(`/piacer/${program.id}`)}
-                    >
-                      <td className="py-4 px-4">
-                        <p className="font-medium text-black text-sm sm:text-base">{program.programName}</p>
-                      </td>
-                      <td className="py-4 px-4 text-black/60 text-sm">
-                        {program.expertName}
-                      </td>
-                      <td className="py-4 px-4">
-                        <div className="flex items-center gap-2">
-                          <Progress
-                            value={(program.vouchersRedeemed / program.vouchersTotal) * 100}
-                            className="w-16 sm:w-20 h-2"
-                          />
-                          <span className="text-xs sm:text-sm text-black/60">
-                            {program.vouchersRedeemed}/{program.vouchersTotal}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="py-4 px-4">
-                        <Badge
-                          variant={program.status === 'active' ? 'default' : 'secondary'}
-                          className={
-                            program.status === 'active'
-                              ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-100'
-                              : 'bg-black/10 text-black/70'
-                          }
-                        >
-                          {t(`sponsor_hub.${program.status}`)}
-                        </Badge>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Stripe Payment Modal */}
-      <Dialog open={showStripeModal} onOpenChange={setShowStripeModal}>
-        <DialogContent className="max-w-md p-6 bg-white">
+      {/* Buy Credits (Simulated) */}
+      <Dialog open={showBuyCreditsModal} onOpenChange={setShowBuyCreditsModal}>
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto p-6 bg-white">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-black flex items-center gap-2">
               <CreditCard className="w-5 h-5 text-emerald-600" />
               {t('sponsor_hub.buy_credits')}
             </DialogTitle>
           </DialogHeader>
-          <div className="mt-4 text-center py-8">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-amber-100 flex items-center justify-center">
-              <CreditCard className="w-8 h-8 text-amber-600" />
-            </div>
-            <p className="text-black font-medium mb-2">
-              {language === 'hu' 
-                ? 'Stripe fizetési kapu integráció alatt.' 
-                : language === 'de'
-                ? 'Stripe-Zahlungsintegration wird entwickelt.'
-                : 'Stripe payment gateway integration in progress.'}
-            </p>
-            <p className="text-black/60 text-sm">
-              {language === 'hu' 
-                ? 'Hamarosan elérhető!' 
-                : language === 'de'
-                ? 'Bald verfügbar!'
-                : 'Coming soon!'}
-            </p>
-          </div>
-          <Button
-            onClick={() => setShowStripeModal(false)}
-            className="w-full bg-black hover:bg-black/90 text-white"
-          >
-            {t('common.close') || 'Bezárás'}
-          </Button>
+          <SponsorPackageSelector
+            onPurchaseComplete={async () => {
+              await queryClient.invalidateQueries({ queryKey: ['sponsorDashboard'] });
+            }}
+            onClose={() => setShowBuyCreditsModal(false)}
+          />
         </DialogContent>
       </Dialog>
 
-      {/* Package Selection Dialog */}
-      <Dialog open={showPackages} onOpenChange={setShowPackages}>
-        <DialogContent className="w-[95vw] max-w-6xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 bg-white">
+      {/* Sponsor Program/Event */}
+      <Dialog open={showSponsorModal} onOpenChange={setShowSponsorModal}>
+        <DialogContent className="max-w-lg p-6 bg-white">
           <DialogHeader>
-            <DialogTitle className="text-xl sm:text-2xl font-bold text-black">
-              {t('sponsor_dashboard.select_package')}
+            <DialogTitle className="text-xl font-bold text-black flex items-center gap-2">
+              <Gift className="w-5 h-5 text-indigo-600" />
+              {t('sponsor_hub.sponsor_modal.title')}
             </DialogTitle>
           </DialogHeader>
-          <div className="mt-4">
-            <SubscriptionPlanSelector
-              onSelectPlan={(planId) => {
-                toast.success(t('sponsor_dashboard.package_selected'));
-                setShowPackages(false);
-              }}
-              currentPlanKey={currentSubscription?.plan?.plan_key}
-            />
+
+          <div className="space-y-5">
+            <div className="rounded-xl border border-black/10 p-3">
+              <p className="text-sm text-black/60">
+                {creditTotals
+                  ? `${t('sponsor_hub.sponsor_modal.balance_available')}: ${creditTotals.currentBalance.toLocaleString()} ${t('common.credit')}`
+                  : t('common.no_data')}
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label>{t('sponsor_hub.sponsor_modal.type_label')}</Label>
+              <Select
+                value={sponsorTargetType}
+                onValueChange={(v) => {
+                  setSponsorTargetType(v as 'program' | 'event');
+                  setSelectedTargetId('');
+                }}
+              >
+                <SelectTrigger className="border-black/10">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="program">{t('common.program')}</SelectItem>
+                  <SelectItem value="event">{t('common.event')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>{t('sponsor_hub.sponsor_modal.target_label')}</Label>
+              <Select value={selectedTargetId} onValueChange={setSelectedTargetId}>
+                <SelectTrigger className="border-black/10">
+                  <SelectValue placeholder={t('sponsor_hub.sponsor_modal.target_placeholder')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {(sponsorTargetType === 'program' ? availablePrograms : availableEvents).map((opt) => (
+                    <SelectItem key={opt.id} value={opt.id}>
+                      {opt.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {(sponsorTargetType === 'program' ? availablePrograms : availableEvents).length === 0 && (
+                <p className="text-xs text-black/50">
+                  {t('sponsor_hub.sponsor_modal.no_list_help')}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label>{t('sponsor_hub.sponsor_modal.spend_label')}</Label>
+              <Input
+                type="number"
+                min={1}
+                value={spendCreditsAmount}
+                onChange={(e) => setSpendCreditsAmount(parseInt(e.target.value) || 0)}
+                className="border-black/10"
+              />
+              <p className="text-xs text-black/50">
+                {t('sponsor_hub.sponsor_modal.spend_help')}
+              </p>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <Button
+                variant="outline"
+                className="flex-1 border-black/10"
+                onClick={() => setShowSponsorModal(false)}
+                disabled={isSponsoring}
+              >
+                {t('common.cancel')}
+              </Button>
+              <Button
+                className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white"
+                onClick={handleSponsorSpend}
+                disabled={isSponsoring}
+              >
+                {t('sponsor_hub.sponsor_modal.submit')}
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

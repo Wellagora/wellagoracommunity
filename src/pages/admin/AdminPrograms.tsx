@@ -197,7 +197,6 @@ const AdminPrograms = () => {
 
   // Handle card click - open modal
   const handleCardClick = (programId: string) => {
-    console.log('[AdminPrograms] Card clicked:', programId);
     setSelectedProgramId(programId);
     setModalOpen(true);
   };

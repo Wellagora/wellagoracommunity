@@ -48,115 +48,24 @@ import { hu, enUS, de } from 'date-fns/locale';
 interface Feedback {
   id: string;
   user_id: string | null;
-  user_email: string | null;
-  feedback_type: 'bug' | 'feature' | 'question' | 'other';
+  type: 'bug' | 'feature' | 'general' | 'complaint' | 'praise';
+  subject: string;
   message: string;
-  page_url: string | null;
-  status: 'new' | 'in_progress' | 'resolved' | 'closed';
+  status: 'new' | 'reviewed' | 'resolved' | 'archived';
   admin_notes: string | null;
   created_at: string;
-  updated_at: string | null;
-  is_mock?: boolean;
+  updated_at: string;
+  user?: {
+    id: string;
+    first_name: string | null;
+    last_name: string | null;
+    email: string;
+    avatar_url: string | null;
+  } | null;
 }
-
-// Mock feedback for demo mode
-const MOCK_FEEDBACK: Feedback[] = [
-  {
-    id: 'mock-fb-1',
-    user_id: 'mock-user-1',
-    user_email: 'toth.eszter@example.com',
-    feedback_type: 'bug',
-    message: 'A program részletek oldal nem tölt be mobilon. Fehér képernyőt kapok.',
-    page_url: '/piacer/program/123',
-    status: 'new',
-    admin_notes: null,
-    created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    updated_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    is_mock: true
-  },
-  {
-    id: 'mock-fb-2',
-    user_id: 'mock-user-2',
-    user_email: 'kovacs.janos@example.com',
-    feedback_type: 'feature',
-    message: 'Jó lenne, ha a szakértők tudnának csoportos üzenetet küldeni a résztvevőknek.',
-    page_url: '/szakertoi-studio',
-    status: 'in_progress',
-    admin_notes: 'Roadmap-ra került, Q2-ben tervezzük.',
-    created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-    updated_at: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-    is_mock: true
-  },
-  {
-    id: 'mock-fb-3',
-    user_id: null,
-    user_email: 'anonymous',
-    feedback_type: 'question',
-    message: 'Hogyan tudom megváltoztatni a profilképemet?',
-    page_url: '/profil',
-    status: 'resolved',
-    admin_notes: 'Válaszoltunk emailben.',
-    created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    updated_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    is_mock: true
-  },
-  {
-    id: 'mock-fb-4',
-    user_id: 'mock-user-3',
-    user_email: 'nagy.peter@example.com',
-    feedback_type: 'bug',
-    message: 'A voucher QR kód nem jelenik meg iOS-en Safari böngészőben.',
-    page_url: '/iranyitopult',
-    status: 'new',
-    admin_notes: null,
-    created_at: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-    updated_at: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-    is_mock: true
-  },
-  {
-    id: 'mock-fb-5',
-    user_id: 'mock-user-4',
-    user_email: 'szabo.anna@example.com',
-    feedback_type: 'other',
-    message: 'Nagyon szép a design! Gratulálok a csapatnak! 🎉',
-    page_url: '/',
-    status: 'closed',
-    admin_notes: 'Köszönjük! 😊',
-    created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    updated_at: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
-    is_mock: true
-  },
-  {
-    id: 'mock-fb-6',
-    user_id: 'mock-user-5',
-    user_email: 'molnar.gabor@example.com',
-    feedback_type: 'feature',
-    message: 'Lehetne push notification amikor új program jelenik meg a közelemben?',
-    page_url: '/piacer',
-    status: 'new',
-    admin_notes: null,
-    created_at: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-    updated_at: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-    is_mock: true
-  },
-  {
-    id: 'mock-fb-7',
-    user_id: 'mock-user-6',
-    user_email: 'info@kalipanzio.hu',
-    feedback_type: 'question',
-    message: 'Hogyan tudok több kreditet vásárolni szponzorként?',
-    page_url: '/tamogatoi-kozpont',
-    status: 'new',
-    admin_notes: null,
-    created_at: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-    updated_at: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-    is_mock: true
-  },
-];
 
 const AdminFeedback = () => {
   const { t, language } = useLanguage();
-  const { isDemoMode } = useAuth();
   
   const [feedback, setFeedback] = useState<Feedback[]>([]);
   const [loading, setLoading] = useState(true);
@@ -188,21 +97,29 @@ const AdminFeedback = () => {
     setLoading(true);
     
     try {
-      if (isDemoMode) {
-        setFeedback(MOCK_FEEDBACK);
-      } else {
-        const { data, error } = await supabase
-          .from('feedback')
-          .select('*')
-          .order('created_at', { ascending: false });
+      let query = supabase
+        .from('feedback')
+        .select(`
+          *,
+          user:profiles!user_id(id, first_name, last_name, email, avatar_url)
+        `)
+        .order('created_at', { ascending: false });
 
-        if (error) throw error;
-        // Cast the data to our Feedback type
-        setFeedback((data || []) as Feedback[]);
+      if (activeStatusFilter !== 'all') {
+        query = query.eq('status', activeStatusFilter);
       }
+
+      if (activeTypeFilter !== 'all') {
+        query = query.eq('type', activeTypeFilter);
+      }
+
+      const { data, error } = await query.limit(50);
+
+      if (error) throw error;
+      setFeedback((data || []) as Feedback[]);
     } catch (error) {
       console.error('Error fetching feedback:', error);
-      toast.error(t('admin.feedback_mgmt.fetch_error'));
+      toast.error('Hiba a visszajelzések betöltésekor');
     } finally {
       setLoading(false);
     }
@@ -210,35 +127,59 @@ const AdminFeedback = () => {
 
   useEffect(() => {
     fetchFeedback();
-  }, [isDemoMode]);
+  }, [activeStatusFilter, activeTypeFilter]);
 
-  // Filter feedback
-  const filteredFeedback = useMemo(() => {
-    let result = feedback;
-
-    if (activeTypeFilter !== 'all') {
-      result = result.filter(f => f.feedback_type === activeTypeFilter);
+  // Get user display name
+  const getUserName = (item: Feedback) => {
+    if (!item.user) return 'Anonim';
+    if (item.user.first_name && item.user.last_name) {
+      return `${item.user.last_name} ${item.user.first_name}`;
     }
+    return item.user.email;
+  };
 
-    if (activeStatusFilter !== 'all') {
-      result = result.filter(f => f.status === activeStatusFilter);
+  // Counts (fetch separately for accurate totals)
+  const [counts, setCounts] = useState({
+    all: 0,
+    new: 0,
+    reviewed: 0,
+    resolved: 0,
+    archived: 0,
+    bug: 0,
+    feature: 0,
+    general: 0,
+    complaint: 0,
+    praise: 0,
+  });
+
+  const fetchCounts = async () => {
+    try {
+      const { data } = await supabase
+        .from('feedback')
+        .select('status, type');
+
+      if (data) {
+        setCounts({
+          all: data.length,
+          new: data.filter(f => f.status === 'new').length,
+          reviewed: data.filter(f => f.status === 'reviewed').length,
+          resolved: data.filter(f => f.status === 'resolved').length,
+          archived: data.filter(f => f.status === 'archived').length,
+          bug: data.filter(f => f.type === 'bug').length,
+          feature: data.filter(f => f.type === 'feature').length,
+          general: data.filter(f => f.type === 'general').length,
+          complaint: data.filter(f => f.type === 'complaint').length,
+          praise: data.filter(f => f.type === 'praise').length,
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching counts:', error);
     }
+  };
 
-    return result;
-  }, [feedback, activeTypeFilter, activeStatusFilter]);
-
-  // Counts
-  const counts = useMemo(() => ({
-    all: feedback.length,
-    new: feedback.filter(f => f.status === 'new').length,
-    in_progress: feedback.filter(f => f.status === 'in_progress').length,
-    resolved: feedback.filter(f => f.status === 'resolved').length,
-    closed: feedback.filter(f => f.status === 'closed').length,
-    bug: feedback.filter(f => f.feedback_type === 'bug').length,
-    feature: feedback.filter(f => f.feedback_type === 'feature').length,
-    question: feedback.filter(f => f.feedback_type === 'question').length,
-    other: feedback.filter(f => f.feedback_type === 'other').length,
-  }), [feedback]);
+  useEffect(() => {
+    fetchCounts();
+  }, []);
 
   // Open detail modal
   const handleOpenDetail = (item: Feedback) => {
@@ -254,38 +195,23 @@ const AdminFeedback = () => {
     setIsSaving(true);
 
     try {
-      if (isDemoMode || selectedFeedback.is_mock) {
-        // Demo mode: update local state
-        setFeedback(prev => prev.map(f => 
-          f.id === selectedFeedback.id 
-            ? { ...f, status: newStatus, admin_notes: adminNotes, updated_at: new Date().toISOString() }
-            : f
-        ));
-      } else {
-        // Real mode: update Supabase
-        const { error } = await supabase
-          .from('feedback')
-          .update({ 
-            status: newStatus, 
-            admin_notes: adminNotes,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', selectedFeedback.id);
+      const { error } = await supabase
+        .from('feedback')
+        .update({ 
+          status: newStatus, 
+          admin_notes: adminNotes
+        })
+        .eq('id', selectedFeedback.id);
 
-        if (error) throw error;
+      if (error) throw error;
 
-        setFeedback(prev => prev.map(f => 
-          f.id === selectedFeedback.id 
-            ? { ...f, status: newStatus, admin_notes: adminNotes, updated_at: new Date().toISOString() }
-            : f
-        ));
-      }
-
-      toast.success(t('admin.feedback_mgmt.updated'));
+      toast.success('Visszajelzés frissítve');
       setSelectedFeedback(null);
+      fetchFeedback();
+      fetchCounts();
     } catch (error) {
       console.error('Error updating feedback:', error);
-      toast.error(t('admin.feedback_mgmt.update_error'));
+      toast.error('Hiba a frissítés során');
     } finally {
       setIsSaving(false);
     }
@@ -295,13 +221,17 @@ const AdminFeedback = () => {
   const getTypeInfo = (type: string) => {
     switch (type) {
       case 'bug':
-        return { icon: Bug, color: 'text-red-500', bg: 'bg-red-50 dark:bg-red-950', label: t('admin.feedback_mgmt.type_bug') };
+        return { icon: Bug, color: 'text-red-500', bg: 'bg-red-50 dark:bg-red-950', label: 'Hiba' };
       case 'feature':
-        return { icon: Lightbulb, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-950', label: t('admin.feedback_mgmt.type_feature') };
-      case 'question':
-        return { icon: HelpCircle, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-950', label: t('admin.feedback_mgmt.type_question') };
+        return { icon: Lightbulb, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-950', label: 'Funkció kérés' };
+      case 'general':
+        return { icon: MessageSquare, color: 'text-gray-500', bg: 'bg-gray-50 dark:bg-gray-800', label: 'Általános' };
+      case 'complaint':
+        return { icon: AlertCircle, color: 'text-orange-500', bg: 'bg-orange-50 dark:bg-orange-950', label: 'Panasz' };
+      case 'praise':
+        return { icon: CheckCircle2, color: 'text-green-500', bg: 'bg-green-50 dark:bg-green-950', label: 'Dicséret' };
       default:
-        return { icon: MessageSquare, color: 'text-slate-500', bg: 'bg-slate-50 dark:bg-slate-800', label: t('admin.feedback_mgmt.type_other') };
+        return { icon: MessageSquare, color: 'text-slate-500', bg: 'bg-slate-50 dark:bg-slate-800', label: 'Általános' };
     }
   };
 
@@ -309,13 +239,13 @@ const AdminFeedback = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'new':
-        return <Badge variant="destructive" className="gap-1"><AlertCircle className="h-3 w-3" />{t('admin.feedback_mgmt.status_new')}</Badge>;
-      case 'in_progress':
-        return <Badge variant="secondary" className="gap-1 bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300"><Clock className="h-3 w-3" />{t('admin.feedback_mgmt.status_in_progress')}</Badge>;
+        return <Badge variant="destructive" className="gap-1"><AlertCircle className="h-3 w-3" />Új</Badge>;
+      case 'reviewed':
+        return <Badge variant="secondary" className="gap-1 bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"><Clock className="h-3 w-3" />Átnézett</Badge>;
       case 'resolved':
-        return <Badge variant="secondary" className="gap-1 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"><CheckCircle2 className="h-3 w-3" />{t('admin.feedback_mgmt.status_resolved')}</Badge>;
-      case 'closed':
-        return <Badge variant="outline" className="gap-1"><XCircle className="h-3 w-3" />{t('admin.feedback_mgmt.status_closed')}</Badge>;
+        return <Badge variant="secondary" className="gap-1 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"><CheckCircle2 className="h-3 w-3" />Megoldott</Badge>;
+      case 'archived':
+        return <Badge variant="outline" className="gap-1"><XCircle className="h-3 w-3" />Archivált</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -327,15 +257,15 @@ const AdminFeedback = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground">
-            {t('admin.feedback_mgmt.title')}
+            Visszajelzések
           </h1>
           <p className="text-muted-foreground">
-            {tWithParams('admin.feedback_mgmt.subtitle', { count: feedback.length })}
+            {counts.all} visszajelzés kezelése
           </p>
         </div>
-        <Button variant="outline" onClick={fetchFeedback} disabled={loading}>
+        <Button variant="outline" onClick={() => { fetchFeedback(); fetchCounts(); }} disabled={loading}>
           <RefreshCw className={cn("h-4 w-4 mr-2", loading && "animate-spin")} />
-          {t('admin.feedback_mgmt.refresh')}
+          Frissítés
         </Button>
       </div>
 
@@ -345,21 +275,21 @@ const AdminFeedback = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">{t('admin.feedback_mgmt.status_new')}</p>
+                <p className="text-sm text-muted-foreground">Új</p>
                 <p className="text-2xl font-bold text-red-600">{counts.new}</p>
               </div>
               <AlertCircle className="h-8 w-8 text-red-500" />
             </div>
           </CardContent>
         </Card>
-        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setActiveStatusFilter('in_progress')}>
+        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setActiveStatusFilter('reviewed')}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">{t('admin.feedback_mgmt.status_in_progress')}</p>
-                <p className="text-2xl font-bold text-amber-600">{counts.in_progress}</p>
+                <p className="text-sm text-muted-foreground">Átnézett</p>
+                <p className="text-2xl font-bold text-blue-600">{counts.reviewed}</p>
               </div>
-              <Clock className="h-8 w-8 text-amber-500" />
+              <Clock className="h-8 w-8 text-blue-500" />
             </div>
           </CardContent>
         </Card>
@@ -367,19 +297,19 @@ const AdminFeedback = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">{t('admin.feedback_mgmt.status_resolved')}</p>
+                <p className="text-sm text-muted-foreground">Megoldott</p>
                 <p className="text-2xl font-bold text-green-600">{counts.resolved}</p>
               </div>
               <CheckCircle2 className="h-8 w-8 text-green-500" />
             </div>
           </CardContent>
         </Card>
-        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setActiveStatusFilter('closed')}>
+        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setActiveStatusFilter('archived')}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">{t('admin.feedback_mgmt.status_closed')}</p>
-                <p className="text-2xl font-bold text-slate-600">{counts.closed}</p>
+                <p className="text-sm text-muted-foreground">Archivált</p>
+                <p className="text-2xl font-bold text-slate-600">{counts.archived}</p>
               </div>
               <XCircle className="h-8 w-8 text-slate-500" />
             </div>
@@ -394,19 +324,25 @@ const AdminFeedback = () => {
             {/* Type Filter */}
             <div className="flex-1">
               <Label className="text-sm text-muted-foreground mb-2 block">
-                {t('admin.feedback_mgmt.filter_type')}
+                Típus
               </Label>
               <Tabs value={activeTypeFilter} onValueChange={setActiveTypeFilter}>
-                <TabsList className="w-full sm:w-auto">
-                  <TabsTrigger value="all">{t('admin.feedback_mgmt.filter_all')}</TabsTrigger>
+                <TabsList className="w-full sm:w-auto grid grid-cols-3 sm:grid-cols-6">
+                  <TabsTrigger value="all">Összes</TabsTrigger>
                   <TabsTrigger value="bug" className="gap-1">
                     <Bug className="h-3 w-3" /> {counts.bug}
                   </TabsTrigger>
                   <TabsTrigger value="feature" className="gap-1">
                     <Lightbulb className="h-3 w-3" /> {counts.feature}
                   </TabsTrigger>
-                  <TabsTrigger value="question" className="gap-1">
-                    <HelpCircle className="h-3 w-3" /> {counts.question}
+                  <TabsTrigger value="general" className="gap-1">
+                    <MessageSquare className="h-3 w-3" /> {counts.general}
+                  </TabsTrigger>
+                  <TabsTrigger value="complaint" className="gap-1">
+                    <AlertCircle className="h-3 w-3" /> {counts.complaint}
+                  </TabsTrigger>
+                  <TabsTrigger value="praise" className="gap-1">
+                    <CheckCircle2 className="h-3 w-3" /> {counts.praise}
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
@@ -415,18 +351,18 @@ const AdminFeedback = () => {
             {/* Status Filter */}
             <div className="w-full sm:w-48">
               <Label className="text-sm text-muted-foreground mb-2 block">
-                {t('admin.feedback_mgmt.filter_status')}
+                Státusz
               </Label>
               <Select value={activeStatusFilter} onValueChange={setActiveStatusFilter}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{t('admin.feedback_mgmt.filter_all')}</SelectItem>
-                  <SelectItem value="new">{t('admin.feedback_mgmt.status_new')}</SelectItem>
-                  <SelectItem value="in_progress">{t('admin.feedback_mgmt.status_in_progress')}</SelectItem>
-                  <SelectItem value="resolved">{t('admin.feedback_mgmt.status_resolved')}</SelectItem>
-                  <SelectItem value="closed">{t('admin.feedback_mgmt.status_closed')}</SelectItem>
+                  <SelectItem value="all">Összes</SelectItem>
+                  <SelectItem value="new">Új</SelectItem>
+                  <SelectItem value="reviewed">Átnézett</SelectItem>
+                  <SelectItem value="resolved">Megoldott</SelectItem>
+                  <SelectItem value="archived">Archivált</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -449,18 +385,18 @@ const AdminFeedback = () => {
               </CardContent>
             </Card>
           ))
-        ) : filteredFeedback.length === 0 ? (
+        ) : feedback.length === 0 ? (
           <Card>
             <CardContent className="p-8">
               <div className="text-center text-muted-foreground">
                 <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>{t('admin.feedback_mgmt.no_feedback')}</p>
+                <p>Még nem érkezett visszajelzés</p>
               </div>
             </CardContent>
           </Card>
         ) : (
-          filteredFeedback.map((item) => {
-            const typeInfo = getTypeInfo(item.feedback_type);
+          feedback.map((item) => {
+            const typeInfo = getTypeInfo(item.type);
             const TypeIcon = typeInfo.icon;
 
             return (
@@ -487,13 +423,15 @@ const AdminFeedback = () => {
                           {typeInfo.label}
                         </span>
                         {getStatusBadge(item.status)}
-                        {item.is_mock && (
-                          <Badge variant="outline" className="text-xs">Demo</Badge>
-                        )}
                       </div>
 
+                      {/* Subject */}
+                      <p className="text-foreground font-semibold mb-1">
+                        {item.subject}
+                      </p>
+
                       {/* Message */}
-                      <p className="text-foreground line-clamp-2 mb-2">
+                      <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
                         {item.message}
                       </p>
 
@@ -501,18 +439,12 @@ const AdminFeedback = () => {
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1">
                           <User className="h-3 w-3" />
-                          {item.user_email || 'anonymous'}
+                          {getUserName(item)}
                         </span>
-                        {item.page_url && (
-                          <span className="flex items-center gap-1">
-                            <Globe className="h-3 w-3" />
-                            {item.page_url}
-                          </span>
-                        )}
                         {item.admin_notes && (
                           <span className="flex items-center gap-1 text-emerald-600">
                             <StickyNote className="h-3 w-3" />
-                            {t('admin.feedback_mgmt.has_notes')}
+                            Jegyzet
                           </span>
                         )}
                         <span className="flex items-center gap-1 ml-auto">
@@ -537,11 +469,11 @@ const AdminFeedback = () => {
               {selectedFeedback && (
                 <>
                   {(() => {
-                    const info = getTypeInfo(selectedFeedback.feedback_type);
+                    const info = getTypeInfo(selectedFeedback.type);
                     const Icon = info.icon;
                     return <Icon className={cn("h-5 w-5", info.color)} />;
                   })()}
-                  {t('admin.feedback_mgmt.detail_title')}
+                  Visszajelzés Részletek
                 </>
               )}
             </DialogTitle>
@@ -551,62 +483,60 @@ const AdminFeedback = () => {
             <div className="space-y-4">
               {/* Status & Type */}
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className={getTypeInfo(selectedFeedback.feedback_type).color}>
-                  {getTypeInfo(selectedFeedback.feedback_type).label}
+                <Badge variant="outline" className={getTypeInfo(selectedFeedback.type).color}>
+                  {getTypeInfo(selectedFeedback.type).label}
                 </Badge>
                 {getStatusBadge(selectedFeedback.status)}
               </div>
 
+              {/* Subject */}
+              <div>
+                <Label className="text-sm font-medium mb-1 block">Tárgy</Label>
+                <p className="text-foreground font-semibold">{selectedFeedback.subject}</p>
+              </div>
+
               {/* Message */}
-              <div className="bg-muted p-4 rounded-lg">
-                <p className="text-foreground whitespace-pre-wrap">
-                  {selectedFeedback.message}
-                </p>
+              <div>
+                <Label className="text-sm font-medium mb-1 block">Üzenet</Label>
+                <div className="bg-muted p-4 rounded-lg">
+                  <p className="text-foreground whitespace-pre-wrap">
+                    {selectedFeedback.message}
+                  </p>
+                </div>
               </div>
 
               {/* Meta Info */}
               <div className="grid gap-2 text-sm">
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground flex items-center gap-1">
-                    <User className="h-4 w-4" /> {t('admin.feedback_mgmt.from')}:
+                    <User className="h-4 w-4" /> Feladó:
                   </span>
-                  <span className="font-medium">{selectedFeedback.user_email || 'anonymous'}</span>
+                  <span className="font-medium">{getUserName(selectedFeedback)}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground flex items-center gap-1">
-                    <Calendar className="h-4 w-4" /> {t('admin.feedback_mgmt.submitted')}:
+                    <Calendar className="h-4 w-4" /> Beküldve:
                   </span>
                   <span className="font-medium">
-                    {new Date(selectedFeedback.created_at).toLocaleString()}
+                    {new Date(selectedFeedback.created_at).toLocaleString('hu-HU')}
                   </span>
                 </div>
-                {selectedFeedback.page_url && (
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground flex items-center gap-1">
-                      <Globe className="h-4 w-4" /> {t('admin.feedback_mgmt.page')}:
-                    </span>
-                    <span className="font-medium flex items-center gap-1">
-                      {selectedFeedback.page_url}
-                      <ExternalLink className="h-3 w-3" />
-                    </span>
-                  </div>
-                )}
               </div>
 
               {/* Status Change */}
               <div className="space-y-2">
                 <Label className="text-sm font-medium">
-                  {t('admin.feedback_mgmt.change_status')}
+                  Státusz módosítása
                 </Label>
                 <Select value={newStatus} onValueChange={(v) => setNewStatus(v as Feedback['status'])}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="new">{t('admin.feedback_mgmt.status_new')}</SelectItem>
-                    <SelectItem value="in_progress">{t('admin.feedback_mgmt.status_in_progress')}</SelectItem>
-                    <SelectItem value="resolved">{t('admin.feedback_mgmt.status_resolved')}</SelectItem>
-                    <SelectItem value="closed">{t('admin.feedback_mgmt.status_closed')}</SelectItem>
+                    <SelectItem value="new">Új</SelectItem>
+                    <SelectItem value="reviewed">Átnézett</SelectItem>
+                    <SelectItem value="resolved">Megoldott</SelectItem>
+                    <SelectItem value="archived">Archivált</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -614,12 +544,12 @@ const AdminFeedback = () => {
               {/* Admin Notes */}
               <div className="space-y-2">
                 <Label className="text-sm font-medium">
-                  {t('admin.feedback_mgmt.admin_notes')}
+                  Admin jegyzet
                 </Label>
                 <Textarea
                   value={adminNotes}
                   onChange={(e) => setAdminNotes(e.target.value)}
-                  placeholder={t('admin.feedback_mgmt.notes_placeholder')}
+                  placeholder="Belső megjegyzések..."
                   rows={3}
                 />
               </div>
@@ -628,10 +558,10 @@ const AdminFeedback = () => {
 
           <DialogFooter className="gap-2">
             <Button variant="outline" onClick={() => setSelectedFeedback(null)}>
-              {t('admin.feedback_mgmt.cancel')}
+              Mégse
             </Button>
             <Button onClick={handleSaveChanges} disabled={isSaving}>
-              {isSaving ? t('admin.feedback_mgmt.saving') : t('admin.feedback_mgmt.save')}
+              {isSaving ? 'Mentés...' : 'Mentés'}
             </Button>
           </DialogFooter>
         </DialogContent>
