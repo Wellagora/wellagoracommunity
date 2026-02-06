@@ -59,18 +59,49 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
     // Helper function to find value in a translation object
     const findValue = (obj: any, searchKey: string): string | undefined => {
-      // Try flat key lookup first (e.g., "nav.home")
-      if (obj && searchKey in obj) {
+      if (!obj) return undefined;
+
+      // Try exact flat key match first (e.g., "nav.home" as a single key)
+      if (searchKey in obj) {
         const val = obj[searchKey];
         if (typeof val === 'string') {
           return val;
         }
       }
 
-      // Fallback: try nested object lookup (e.g., { nav: { home: "..." } })
+      // Try progressively longer flat key prefixes with nested navigation
+      // e.g., for "expert_studio.cards.programs.title":
+      // - Try "expert_studio.cards.programs.title" (done above)
+      // - Try "expert_studio.cards.programs" then navigate ["title"]
+      // - Try "expert_studio.cards" then navigate ["programs", "title"]
+      // - Try "expert_studio" then navigate ["cards", "programs", "title"]
       const segments = searchKey.split('.');
-      let val: any = obj;
+      
+      for (let i = segments.length - 1; i > 0; i--) {
+        const flatKey = segments.slice(0, i).join('.');
+        const remainingSegments = segments.slice(i);
+        
+        if (flatKey in obj) {
+          let val = obj[flatKey];
+          
+          // Navigate remaining segments
+          for (const segment of remainingSegments) {
+            if (val && typeof val === 'object' && segment in val) {
+              val = val[segment];
+            } else {
+              val = undefined;
+              break;
+            }
+          }
+          
+          if (typeof val === 'string') {
+            return val;
+          }
+        }
+      }
 
+      // Finally, try pure nested object lookup (e.g., { expert: { studio: { ... } } })
+      let val: any = obj;
       for (const segment of segments) {
         if (val && typeof val === 'object' && segment in val) {
           val = val[segment];
@@ -110,7 +141,7 @@ export const useLanguage = () => {
   
   // Return fallback if context is not available (outside provider or during HMR)
   if (!context) {
-    console.warn('useLanguage called outside of LanguageProvider, using fallback');
+    // useLanguage called outside of LanguageProvider, using fallback
     return {
       language: 'de' as Language, // Default to German for urban region
       setLanguage: () => {},
