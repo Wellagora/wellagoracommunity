@@ -24,19 +24,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-
-const VILLAGES = [
-  'Kővágóörs',
-  'Mindszentkálla', 
-  'Kékkút',
-  'Szentbékkálla',
-  'Balatonhenye',
-  'Köveskál',
-  'Salföld',
-  'Ábrahámhegy',
-];
+import { useProjectVillages } from '@/hooks/useProjectVillages';
 
 const EventsManager = () => {
+  const { villages: VILLAGES } = useProjectVillages();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
   const [villageFilter, setVillageFilter] = useState<string>('all');

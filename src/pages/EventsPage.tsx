@@ -15,24 +15,7 @@ import { format } from "date-fns";
 import { hu, de, enUS } from "date-fns/locale";
 import { toast } from "sonner";
 import EventCard from "@/components/events/EventCard";
-
-const VILLAGES = [
-  "Kővágóörs",
-  "Mindszentkálla",
-  "Kékkút",
-  "Szentbékkálla",
-  "Balatonhenye",
-  "Köveskál",
-  "Salföld",
-  "Ábrahámhegy",
-];
-
-const villageColors: Record<string, string> = {
-  "Kővágóörs": "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-500/30",
-  "Mindszentkálla": "bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30",
-  "Kékkút": "bg-purple-500/20 text-purple-700 dark:text-purple-400 border-purple-500/30",
-  "Szentbékkálla": "bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30",
-};
+import { useProjectVillages } from "@/hooks/useProjectVillages";
 
 interface Event {
   id: string;
@@ -57,6 +40,7 @@ interface EventRsvp {
 const EventsPage = () => {
   const { t, language } = useLanguage();
   const { user } = useAuth();
+  const { villages: VILLAGES } = useProjectVillages();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVillage, setSelectedVillage] = useState<string>("all");
 

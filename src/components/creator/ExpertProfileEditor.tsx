@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useProjectVillages } from "@/hooks/useProjectVillages";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -214,21 +215,11 @@ export const ExpertProfilePreview = ({
   );
 };
 
-const KALI_VILLAGES = [
-  "Kővágóörs",
-  "Mindszentkálla",
-  "Kékkút",
-  "Salföld",
-  "Szentbékkálla",
-  "Balatonhenye",
-  "Monoszló",
-  "Hegyesd",
-  "Egyéb (Káli-medence környéke)"
-];
-
 const ExpertProfileEditor = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const { villages } = useProjectVillages();
+  const KALI_VILLAGES = [...villages, "Egyéb"];
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   

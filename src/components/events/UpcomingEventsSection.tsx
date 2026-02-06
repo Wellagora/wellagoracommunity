@@ -10,13 +10,7 @@ import { format } from "date-fns";
 import { hu, de, enUS } from "date-fns/locale";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-
-const villageColors: Record<string, string> = {
-  "Kővágóörs": "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-500/30",
-  "Mindszentkálla": "bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30",
-  "Kékkút": "bg-purple-500/20 text-purple-700 dark:text-purple-400 border-purple-500/30",
-  "Szentbékkálla": "bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30",
-};
+import { useProjectVillages } from "@/hooks/useProjectVillages";
 
 interface Event {
   id: string;
@@ -31,6 +25,7 @@ interface Event {
 export function UpcomingEventsSection() {
   const { t, language } = useLanguage();
   const { getLocalizedTitle } = useLocalizedEvent();
+  const { getVillageColor } = useProjectVillages();
   const dateLocale = language === "hu" ? hu : language === "de" ? de : enUS;
 
   const { data: events, isLoading } = useQuery({
@@ -110,9 +105,7 @@ export function UpcomingEventsSection() {
           <div className="grid md:grid-cols-3 gap-4">
             {events.map((event, index) => {
               const dateInfo = formatEventDate(event.start_date);
-              const villageColor = event.village
-                ? villageColors[event.village]
-                : "bg-muted text-muted-foreground";
+              const villageColor = getVillageColor(event.village);
 
               return (
                 <motion.div

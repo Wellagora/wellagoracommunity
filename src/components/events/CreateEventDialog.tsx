@@ -11,17 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { CalendarPlus, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-
-const VILLAGES = [
-  'Kővágóörs',
-  'Mindszentkálla', 
-  'Kékkút',
-  'Szentbékkálla',
-  'Balatonhenye',
-  'Köveskál',
-  'Salföld',
-  'Ábrahámhegy',
-];
+import { useProjectVillages } from '@/hooks/useProjectVillages';
 
 interface CreateEventDialogProps {
   trigger?: React.ReactNode;
@@ -30,6 +20,7 @@ interface CreateEventDialogProps {
 export function CreateEventDialog({ trigger }: CreateEventDialogProps) {
   const { t } = useLanguage();
   const { user, profile } = useAuth();
+  const { villages: VILLAGES } = useProjectVillages();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
 

@@ -25,13 +25,7 @@ import EventMeetingLink from "@/components/events/detail/EventMeetingLink";
 import EventOrganizerCard from "@/components/events/detail/EventOrganizerCard";
 import EventRSVPCard from "@/components/events/detail/EventRSVPCard";
 import EventSponsorsSection from "@/components/events/detail/EventSponsorsSection";
-
-const villageColors: Record<string, string> = {
-  "Kővágóörs": "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-500/30",
-  "Mindszentkálla": "bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30",
-  "Kékkút": "bg-purple-500/20 text-purple-700 dark:text-purple-400 border-purple-500/30",
-  "Szentbékkálla": "bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30",
-};
+import { useProjectVillages } from "@/hooks/useProjectVillages";
 
 const EVENT_FALLBACK_IMAGES = [
   "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80",
@@ -69,6 +63,7 @@ const EventDetailPage = () => {
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const { getLocalizedTitle, getLocalizedDescription } = useLocalizedEvent();
+  const { getVillageColor } = useProjectVillages();
   const queryClient = useQueryClient();
   const dateLocale = language === "hu" ? hu : language === "de" ? de : enUS;
 
@@ -159,7 +154,7 @@ const EventDetailPage = () => {
               language: (profile?.preferred_language as "hu" | "en" | "de") || language,
             },
           });
-          console.log("RSVP confirmation email sent");
+          // RSVP confirmation email sent
         } catch (emailError) {
           console.error("Failed to send confirmation email:", emailError);
           // Don't fail the RSVP if email fails
@@ -270,7 +265,7 @@ const EventDetailPage = () => {
   }
 
   const dateInfo = formatEventDate(event.start_date);
-  const villageColor = event.village ? villageColors[event.village] : "bg-muted text-muted-foreground";
+  const villageColor = getVillageColor(event.village);
   const currentParticipants = event.current_participants || 0;
   const spotsLeft = event.max_participants ? event.max_participants - currentParticipants : null;
   const isFull = spotsLeft !== null && spotsLeft <= 0;
