@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCommunityStats } from "@/hooks/useCommunityStats";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -36,7 +37,6 @@ import {
   FeedPost,
   MOCK_PROGRAMS,
   getLocalizedProgramTitle,
-  DEMO_STATS,
 } from "@/data/mockData";
 
 // Animation variants
@@ -62,6 +62,7 @@ const postVariants = {
 const SocialFeed = () => {
   const { isDemoMode, user } = useAuth();
   const { t, language } = useLanguage();
+  const { stats } = useCommunityStats();
   const navigate = useNavigate();
   const [posts, setPosts] = useState<FeedPost[]>([]);
   const [filter, setFilter] = useState<string>("all");
@@ -145,8 +146,8 @@ const SocialFeed = () => {
         </h2>
         <p className="text-muted-foreground text-sm">
           {t("feed.subtitle")
-            .replace("{{members}}", String(DEMO_STATS.members))
-            .replace("{{experts}}", String(DEMO_STATS.experts))}
+            .replace("{{members}}", String(stats.members))
+            .replace("{{experts}}", String(stats.experts))}
         </p>
       </div>
 
