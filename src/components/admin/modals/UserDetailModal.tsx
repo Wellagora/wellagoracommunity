@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 
 type UserRoleType = "business" | "citizen" | "creator" | "expert" | "government" | "member" | "ngo" | "sponsor";
@@ -75,6 +76,7 @@ export function UserDetailModal(props: {
           first_name: profile.first_name,
           last_name: profile.last_name,
           user_role: profile.user_role,
+          is_super_admin: profile.is_super_admin,
         })
         .eq("id", profile.id);
       if (error) throw error;
@@ -142,10 +144,30 @@ export function UserDetailModal(props: {
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="member">{t("roles.member") || "Member"}</SelectItem>
+                      <SelectItem value="citizen">{t("roles.citizen") || "Citizen"}</SelectItem>
                       <SelectItem value="expert">{t("roles.expert") || "Expert"}</SelectItem>
+                      <SelectItem value="creator">{t("roles.creator") || "Creator"}</SelectItem>
                       <SelectItem value="sponsor">{t("roles.sponsor") || "Sponsor"}</SelectItem>
+                      <SelectItem value="business">{t("roles.business") || "Business"}</SelectItem>
+                      <SelectItem value="ngo">{t("roles.ngo") || "NGO"}</SelectItem>
+                      <SelectItem value="government">{t("roles.government") || "Government"}</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+
+                <div className="space-y-2 sm:col-span-2">
+                  <div className="flex items-center justify-between rounded-lg border p-3">
+                    <div className="min-w-0">
+                      <div className="font-medium">Super Admin</div>
+                      <div className="text-sm text-muted-foreground">
+                        {t("admin.modal.super_admin_hint") || "Full access to /admin"}
+                      </div>
+                    </div>
+                    <Switch
+                      checked={profile.is_super_admin === true}
+                      onCheckedChange={(v) => setProfile({ ...profile, is_super_admin: v })}
+                    />
+                  </div>
                 </div>
               </div>
             ) : (

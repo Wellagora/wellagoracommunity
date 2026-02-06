@@ -26,10 +26,9 @@ interface ProjectRow {
 }
 
 interface ProjectStats {
-  user_count: number;
-  expert_count: number;
   program_count: number;
   event_count: number;
+  sponsor_count: number;
 }
 
 export function ProjectDetailModal(props: {
@@ -45,15 +44,28 @@ export function ProjectDetailModal(props: {
   const [saving, setSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [project, setProject] = useState<ProjectRow | null>(null);
-  const [stats, setStats] = useState<ProjectStats>({ user_count: 0, expert_count: 0, program_count: 0, event_count: 0 });
+  const [stats, setStats] = useState<ProjectStats>({ program_count: 0, event_count: 0, sponsor_count: 0 });
+  const [statsUnavailable, setStatsUnavailable] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const safeCount = async (table: string, column: string, value: string) => {
+    const res = await supabase.from(table).select("*", { count: "exact", head: true }).eq(column, value);
+    if (res.error) throw res.error;
+    return res.count || 0;
+  };
+
+  const safeSelect = async <T,>(table: string, columns: string, filters: (q: any) => any) => {
+    const q = supabase.from(table).select(columns);
+    const res = await filters(q);
+    if (res.error) throw res.error;
+    return (res.data as T[]) || [];
+  };
 
   const load = async () => {
     if (!projectId) return;
     setLoading(true);
     setIsEditing(false);
     try {
-      console.log("[ProjectDetailModal] loading", projectId);
       const { data, error } = await supabase
         .from("projects")
         .select("*")
@@ -62,22 +74,48 @@ export function ProjectDetailModal(props: {
       if (error) throw error;
       setProject((data as ProjectRow) || null);
 
-      // Load stats
-      const [usersRes, expertsRes, programsRes, eventsRes] = await Promise.all([
-        supabase.from("profiles").select("*", { count: 'exact', head: true }).eq("project_id", projectId),
-        supabase.from("profiles").select("*", { count: 'exact', head: true }).eq("project_id", projectId).eq("user_role", "expert"),
-        supabase.from("expert_contents").select("*", { count: 'exact', head: true }).eq("region_id", projectId),
-        supabase.from("events").select("*", { count: 'exact', head: true }).eq("project_id", projectId),
-      ]);
+      // Load overview stats (read-only)
+      setStatsUnavailable(false);
+      try {
+        // Programs: expert_contents.region_id is the project link in this schema
+        let programCount = 0;
+        let programIds: string[] = [];
+        try {
+          programCount = await safeCount("expert_contents", "region_id", projectId);
+          const programRows = await safeSelect<{ id: string }>("expert_contents", "id", (q) => q.eq("region_id", projectId).limit(500));
+          programIds = programRows.map((r) => r.id).filter(Boolean);
+        } catch (e: any) {
+          throw e;
+        }
 
-      setStats({
-        user_count: usersRes.count || 0,
-        expert_count: expertsRes.count || 0,
-        program_count: programsRes.count || 0,
-        event_count: eventsRes.count || 0,
-      });
+        // Events: use events.project_id (confirmed in schema)
+        let eventCount = 0;
+        try {
+          eventCount = await safeCount("events", "project_id", projectId);
+        } catch (e: any) {
+          throw e;
+        }
 
-      console.log("[ProjectDetailModal] loaded", data);
+        // Sponsors: content_sponsorships where content_id in project programs -> unique sponsor_id
+        let sponsorCount = 0;
+        try {
+          if (programIds.length > 0) {
+            const sponsorshipRows = await safeSelect<{ sponsor_id: string }>(
+              "content_sponsorships",
+              "sponsor_id",
+              (q) => q.in("content_id", programIds).not("sponsor_id", "is", null)
+            );
+            sponsorCount = new Set(sponsorshipRows.map((r) => r.sponsor_id).filter(Boolean)).size;
+          }
+        } catch {
+          sponsorCount = 0;
+        }
+
+        setStats({ program_count: programCount, event_count: eventCount, sponsor_count: sponsorCount });
+      } catch {
+        setStatsUnavailable(true);
+        setStats({ program_count: 0, event_count: 0, sponsor_count: 0 });
+      }
     } catch (e: any) {
       console.error("[ProjectDetailModal] load error", e);
       toast.error(e?.message || "Nem sikerült betölteni a projektet");
@@ -108,7 +146,6 @@ export function ProjectDetailModal(props: {
         .select("*")
         .single();
       if (error) throw error;
-      console.log('DB SUCCESS:', data);
       toast.success("Mentve!");
       setIsEditing(false);
       onSaved?.();
@@ -133,8 +170,6 @@ export function ProjectDetailModal(props: {
         .maybeSingle();
       if (error) throw error;
 
-      console.log('DB SUCCESS:', data);
-
       toast.success("Projekt törölve!");
       onSaved?.();
       onOpenChange(false);
@@ -149,7 +184,7 @@ export function ProjectDetailModal(props: {
 
   const goToProjectHub = () => {
     onOpenChange(false);
-    navigate(`/admin-panel/projects/${projectId}`);
+    navigate(`/admin/projects/${projectId}`);
   };
 
   return (
@@ -232,27 +267,29 @@ export function ProjectDetailModal(props: {
               ) : (
                 <>
                   {/* Stats cards */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <div className="bg-muted/50 rounded-lg p-3 text-center">
-                      <Users className="h-5 w-5 mx-auto mb-1 text-blue-600" />
-                      <div className="text-2xl font-bold">{stats.user_count}</div>
-                      <div className="text-xs text-muted-foreground">Résztvevő</div>
-                    </div>
-                    <div className="bg-muted/50 rounded-lg p-3 text-center">
-                      <Users className="h-5 w-5 mx-auto mb-1 text-emerald-600" />
-                      <div className="text-2xl font-bold">{stats.expert_count}</div>
-                      <div className="text-xs text-muted-foreground">Szakértő</div>
-                    </div>
-                    <div className="bg-muted/50 rounded-lg p-3 text-center">
-                      <FolderOpen className="h-5 w-5 mx-auto mb-1 text-purple-600" />
-                      <div className="text-2xl font-bold">{stats.program_count}</div>
-                      <div className="text-xs text-muted-foreground">Program</div>
-                    </div>
-                    <div className="bg-muted/50 rounded-lg p-3 text-center">
-                      <Calendar className="h-5 w-5 mx-auto mb-1 text-amber-600" />
-                      <div className="text-2xl font-bold">{stats.event_count}</div>
-                      <div className="text-xs text-muted-foreground">Esemény</div>
-                    </div>
+                  <div>
+                    <div className="font-medium mb-2">Project overview</div>
+                    {statsUnavailable ? (
+                      <div className="text-sm text-muted-foreground">No data available</div>
+                    ) : (
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="bg-muted/50 rounded-lg p-3 text-center">
+                          <FolderOpen className="h-5 w-5 mx-auto mb-1 text-purple-600" />
+                          <div className="text-2xl font-bold">{stats.program_count}</div>
+                          <div className="text-xs text-muted-foreground">Programs</div>
+                        </div>
+                        <div className="bg-muted/50 rounded-lg p-3 text-center">
+                          <Calendar className="h-5 w-5 mx-auto mb-1 text-amber-600" />
+                          <div className="text-2xl font-bold">{stats.event_count}</div>
+                          <div className="text-xs text-muted-foreground">Events</div>
+                        </div>
+                        <div className="bg-muted/50 rounded-lg p-3 text-center">
+                          <Users className="h-5 w-5 mx-auto mb-1 text-blue-600" />
+                          <div className="text-2xl font-bold">{stats.sponsor_count}</div>
+                          <div className="text-xs text-muted-foreground">Sponsors</div>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Info display */}

@@ -63,7 +63,6 @@ export function EventDetailModal(props: {
     setLoading(true);
     setIsEditing(false);
     try {
-      console.log("[EventDetailModal] loading", eventId);
       const { data, error } = await supabase
         .from("events")
         .select("*")
@@ -83,7 +82,6 @@ export function EventDetailModal(props: {
         setCreatorName("-");
       }
 
-      console.log("[EventDetailModal] loaded", data);
     } catch (e: any) {
       console.error("[EventDetailModal] load error", e);
       toast.error(e?.message || "Nem sikerült betölteni az eseményt");
@@ -101,7 +99,6 @@ export function EventDetailModal(props: {
     if (!event) return;
     setSaving(true);
     try {
-      console.log("[EventDetailModal] save", event.id);
       const { data, error } = await supabase
         .from("events")
         .update({
@@ -120,7 +117,6 @@ export function EventDetailModal(props: {
         .select("*")
         .single();
       if (error) throw error;
-      console.log('DB SUCCESS:', data);
       toast.success("Mentve!");
       setIsEditing(false);
       onSaved?.();
@@ -144,8 +140,6 @@ export function EventDetailModal(props: {
         .select("*")
         .maybeSingle();
       if (error) throw error;
-
-      console.log('DB SUCCESS:', data);
 
       toast.success("Esemény törölve!");
       onSaved?.();
