@@ -15,46 +15,6 @@ export const StatCardSkeleton = () => (
 );
 
 /**
- * Skeleton for challenge/program cards
- */
-export const ChallengeCardSkeleton = () => (
-  <Card className="bg-card/50 backdrop-blur-sm border border-border/50 overflow-hidden">
-    {/* Image placeholder */}
-    <Skeleton className="h-48 sm:h-56 lg:h-64 w-full rounded-none" />
-    
-    <CardHeader className="pb-4">
-      <Skeleton className="h-6 w-3/4 mb-2" />
-      <Skeleton className="h-4 w-full mb-1" />
-      <Skeleton className="h-4 w-2/3" />
-    </CardHeader>
-
-    <CardContent className="space-y-4">
-      {/* Stats row */}
-      <div className="grid grid-cols-3 gap-3">
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-full" />
-      </div>
-
-      {/* Sponsor badge placeholder */}
-      <Skeleton className="h-16 w-full rounded-2xl" />
-
-      {/* Participants preview */}
-      <div className="flex items-center justify-between">
-        <div className="flex -space-x-2">
-          <Skeleton className="w-8 h-8 rounded-full" />
-          <Skeleton className="w-8 h-8 rounded-full" />
-          <Skeleton className="w-8 h-8 rounded-full" />
-        </div>
-      </div>
-
-      {/* Action button */}
-      <Skeleton className="h-10 w-full rounded-md" />
-    </CardContent>
-  </Card>
-);
-
-/**
  * Skeleton for profile/stakeholder cards
  */
 export const ProfileCardSkeleton = () => (
@@ -95,17 +55,6 @@ export const MapSkeleton = () => (
         <Skeleton className="h-4 w-24 mx-auto" />
       </div>
     </div>
-  </div>
-);
-
-/**
- * Grid of challenge card skeletons
- */
-export const ChallengeGridSkeleton = ({ count = 4 }: { count?: number }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
-    {Array.from({ length: count }).map((_, i) => (
-      <ChallengeCardSkeleton key={i} />
-    ))}
   </div>
 );
 

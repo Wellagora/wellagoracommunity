@@ -220,7 +220,7 @@ const CustomerJourney = () => {
                                      </div>
                                    ))}
                                  </div>
-                                 <Link to="/organization" className="block mt-2 sm:mt-3">
+                                 <Link to="/sponsor-dashboard" className="block mt-2 sm:mt-3">
                                    <Button variant="outline" size="sm" className="w-full sm:w-auto border-warning/30 hover:bg-warning/10 text-xs sm:text-sm">
                                      {t('journey.organization_dashboard')}
                                    </Button>

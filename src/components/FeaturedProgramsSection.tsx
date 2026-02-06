@@ -10,6 +10,8 @@ import { MOCK_PROGRAMS, getMockExpertById, getLocalizedExpertName, getLocalizedS
 import { SocialProofBadge } from "@/components/marketplace/SocialProofBadge";
 import { VerifiedExpertBadge } from "@/components/marketplace/VerifiedExpertBadge";
 import { SponsorContributionBadge } from "@/components/marketplace/SponsorContributionBadge";
+import { calculatePricing } from '@/lib/pricing';
+import { PricingDisplay } from '@/components/PricingDisplay';
 
 // Category translations for Hungarian
 const CATEGORY_LABELS: Record<string, { hu: string; en: string; de: string }> = {

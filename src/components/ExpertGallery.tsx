@@ -27,6 +27,34 @@ interface ExpertProfile {
 const ExpertGallery = () => {
   const { t, language } = useLanguage();
 
+  // Translate location names to Hungarian
+  const translateLocation = (location: string | null): string => {
+    if (!location) return '';
+    
+    const locationMap: Record<string, string> = {
+      'WIEN, ÖSTERREICH': 'Bécs, Ausztria',
+      'WIEN, AUSTRIA': 'Bécs, Ausztria',
+      'BUDAPEST, HUNGARY': 'Budapest, Magyarország',
+      'BUDAPEST, MAGYARORSZÁG': 'Budapest, Magyarország',
+      'EISENSTADT, ÖSTERREICH': 'Eisenstadt, Ausztria',
+      'EISENSTADT, AUSTRIA': 'Eisenstadt, Ausztria',
+      'SOPRON, HUNGARY': 'Sopron, Magyarország',
+      'SOPRON, MAGYARORSZÁG': 'Sopron, Magyarország',
+      'VIENNA, AUSTRIA': 'Bécs, Ausztria',
+    };
+    
+    // Try exact match first (case-insensitive)
+    const upperLocation = location.toUpperCase();
+    for (const [key, value] of Object.entries(locationMap)) {
+      if (key === upperLocation) {
+        return value;
+      }
+    }
+    
+    // Return original if no match found
+    return location;
+  };
+
   // Fetch verified experts from Supabase
   const { data: experts = [], isLoading } = useQuery({
     queryKey: ['experts-gallery'],
@@ -130,7 +158,7 @@ const ExpertGallery = () => {
                         {/* Content Overlay at Bottom */}
                         <div className="absolute bottom-0 left-0 right-0 p-5">
                           <p className="text-xs uppercase tracking-[0.2em] text-white/60 font-medium mb-1">
-                            {expert.location || t('roles.expert')}
+                            {translateLocation(expert.location) || t('roles.expert')}
                           </p>
                           <h3 className="text-xl font-serif font-semibold text-white leading-tight">
                             {expert.first_name} {expert.last_name}
