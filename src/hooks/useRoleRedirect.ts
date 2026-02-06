@@ -33,7 +33,7 @@ export const ROLE_DASHBOARDS: Record<EffectiveRole, string> = {
   member: "/my-agora",           // Agórám (Member Dashboard)
   expert: "/expert-studio",      // Szakértői Stúdió
   sponsor: "/sponsor-dashboard", // Támogatói Központ
-  admin: "/admin-panel",         // Admin Panel
+  admin: "/admin",               // Admin Panel
 };
 
 /**
@@ -65,7 +65,7 @@ export function useRoleRedirect() {
     const targetPath = ROLE_DASHBOARDS[effectiveRole];
     
     // Navigate to role-specific dashboard with toast
-    console.log(`[useRoleRedirect] Redirecting ${effectiveRole} to ${targetPath}`);
+    // Redirecting user based on role
     navigate(targetPath, { replace: true });
   }, [user, profile, loading, navigate, location.pathname]);
 }

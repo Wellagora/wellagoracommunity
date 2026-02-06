@@ -97,8 +97,6 @@ export const useExpertMedia = () => {
     setAnalyzing(mediaItem.id);
     
     try {
-      console.log('[useExpertMedia] Starting AI analysis for:', mediaItem.id);
-      
       const { data, error } = await supabase.functions.invoke('analyze-media', {
         body: {
           media_id: mediaItem.id,
@@ -109,8 +107,6 @@ export const useExpertMedia = () => {
       });
       
       if (error) throw error;
-      
-      console.log('[useExpertMedia] Analysis result:', data);
       
       if (data?.analysis) {
         // Update local state with analysis result

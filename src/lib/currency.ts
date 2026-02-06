@@ -100,7 +100,7 @@ export async function convertCurrency(
     }
     
     // Fallback: return original amount
-    console.warn(`No exchange rate found for ${fromCurrency} -> ${toCurrency}`);
+    // No exchange rate found
     return amount;
   } catch (error) {
     console.error('Currency conversion error:', error);
