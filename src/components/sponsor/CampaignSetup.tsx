@@ -120,11 +120,6 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
       }
 
       const availableCredits = sponsorCredits?.available_credits || 0;
-      
-      console.log('[CampaignSetup] Checking credits:', { 
-        available: availableCredits, 
-        required: totalCreditCost 
-      });
 
       if (availableCredits < totalCreditCost) {
         toast.error(
@@ -174,8 +169,6 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
 
         if (creditDeductError) {
           console.error('Error deducting credits:', creditDeductError);
-        } else {
-          console.log('[CampaignSetup] Credits deducted:', totalCreditCost);
         }
       }
 

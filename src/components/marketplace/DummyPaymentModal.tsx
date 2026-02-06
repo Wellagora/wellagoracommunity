@@ -46,6 +46,16 @@ const DummyPaymentModal = ({ content, open, onOpenChange, onSuccess }: DummyPaym
     setIsProcessing(true);
 
     try {
+      const { data: creatorProfile, error: creatorProfileError } = await supabase
+        .from('profiles')
+        .select('creator_legal_status')
+        .eq('id', content.creator_id)
+        .maybeSingle();
+
+      if (creatorProfileError) throw creatorProfileError;
+
+      const invoiceIssuedBy = creatorProfile?.creator_legal_status === 'entrepreneur' ? 'creator' : 'platform';
+
       // Simulated payment (2 second wait)
       await new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -59,9 +69,9 @@ const DummyPaymentModal = ({ content, open, onOpenChange, onSuccess }: DummyPaym
 
       if (accessError) throw accessError;
 
-      // Record transaction (85/15 split)
-      const creatorAmount = Math.floor(content.price_huf * 0.85);
-      const platformAmount = content.price_huf - creatorAmount;
+      // Record transaction (80/20 split)
+      const platformAmount = Math.round(content.price_huf * 0.20);
+      const creatorAmount = content.price_huf - platformAmount;
 
       const { error: transactionError } = await supabase.from('transactions').insert({
         buyer_id: user.id,
@@ -71,6 +81,8 @@ const DummyPaymentModal = ({ content, open, onOpenChange, onSuccess }: DummyPaym
         creator_revenue: creatorAmount,
         platform_fee: platformAmount,
         status: 'completed',
+        transaction_type: 'content_purchase',
+        invoice_issued_by: invoiceIssuedBy,
       });
 
       if (transactionError) throw transactionError;
