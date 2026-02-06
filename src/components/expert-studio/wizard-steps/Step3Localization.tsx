@@ -21,6 +21,14 @@ const Step3Localization = ({ formData, setFormData }: Step3LocalizationProps) =>
   const [isTranslating, setIsTranslating] = useState(false);
   const [activeTab, setActiveTab] = useState("hu");
 
+  const approveLocale = (lang: 'hu' | 'en' | 'de') => {
+    setFormData(prev => ({
+      ...prev,
+      isApproved: { ...prev.isApproved, [lang]: true },
+    }));
+    toast.success(t('creator.translation.approve'));
+  };
+
   const handleAutoTranslate = async () => {
     if (!formData.title_hu.trim() || !formData.description_hu.trim()) {
       toast.error(t("program_creator.fill_hungarian_first"));
@@ -42,9 +50,10 @@ const Step3Localization = ({ formData, setFormData }: Step3LocalizationProps) =>
       if (error) throw error;
 
       // Parse translations
-      if (data?.translations) {
-        const enParts = data.translations.en?.split("\n---SEPARATOR---\n") || [];
-        const deParts = data.translations.de?.split("\n---SEPARATOR---\n") || [];
+      const translations = data?.translations ?? data;
+      if (translations) {
+        const enParts = translations.en?.split("\n---SEPARATOR---\n") || [];
+        const deParts = translations.de?.split("\n---SEPARATOR---\n") || [];
 
         setFormData(prev => ({
           ...prev,
@@ -53,6 +62,7 @@ const Step3Localization = ({ formData, setFormData }: Step3LocalizationProps) =>
           title_de: deParts[0]?.trim() || "",
           description_de: deParts[1]?.trim() || "",
           isAITranslated: { en: true, de: true },
+          isApproved: { ...prev.isApproved, en: false, de: false },
         }));
 
         toast.success(t("program_creator.translation_complete"));
@@ -70,9 +80,24 @@ const Step3Localization = ({ formData, setFormData }: Step3LocalizationProps) =>
     const titleKey = `title_${lang}` as keyof ProgramFormData;
     const descKey = `description_${lang}` as keyof ProgramFormData;
     const isAI = !isHungarian && formData.isAITranslated[lang as "en" | "de"];
+    const isApproved = formData.isApproved[lang];
 
     return (
       <div className="space-y-4">
+        <div className="flex items-center justify-between gap-3">
+          <div className="text-sm text-muted-foreground">
+            {isAI ? t('creator.translation.badge_ai') : null}
+          </div>
+          <Button
+            type="button"
+            variant={isApproved ? 'default' : 'outline'}
+            onClick={() => approveLocale(lang)}
+            className="whitespace-nowrap"
+          >
+            {t('creator.translation.approve')}
+          </Button>
+        </div>
+
         {/* Title */}
         <div className="space-y-2 relative">
           <Label htmlFor={`title-${lang}`} className="text-base font-medium">
@@ -88,6 +113,8 @@ const Step3Localization = ({ formData, setFormData }: Step3LocalizationProps) =>
                 isAITranslated: isHungarian 
                   ? prev.isAITranslated 
                   : { ...prev.isAITranslated, [lang]: false }
+                ,
+                isApproved: { ...prev.isApproved, [lang]: false }
               }))}
               placeholder={t(`program_creator.title_placeholder_${lang}`)}
               className={`h-12 ${isAI ? "pr-16" : ""}`}
@@ -117,6 +144,8 @@ const Step3Localization = ({ formData, setFormData }: Step3LocalizationProps) =>
                 isAITranslated: isHungarian 
                   ? prev.isAITranslated 
                   : { ...prev.isAITranslated, [lang]: false }
+                ,
+                isApproved: { ...prev.isApproved, [lang]: false }
               }))}
               placeholder={t(`program_creator.description_placeholder_${lang}`)}
               className="min-h-[200px] resize-none"

@@ -71,6 +71,19 @@ const QuickActionBar = ({ onVideoCapture, onPhotoCapture, uploading = false }: Q
         disabled={uploading}
       />
 
+      {/* New Program Button */}
+      <Link to="/szakertoi-studio/uj">
+        <Button
+          variant="outline"
+          className="w-full h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-emerald-500/10 to-green-500/10 border-emerald-500/20 hover:border-emerald-500/40 hover:bg-emerald-500/15 transition-all duration-300"
+        >
+          <Plus className="w-6 h-6 text-emerald-500" />
+          <span className="text-sm font-medium text-foreground">
+            {t("expert_studio.new_program")}
+          </span>
+        </Button>
+      </Link>
+
       {/* Record Video Button */}
       <Button
         variant="outline"
@@ -104,19 +117,6 @@ const QuickActionBar = ({ onVideoCapture, onPhotoCapture, uploading = false }: Q
           {t("expert_studio.upload_photo")}
         </span>
       </Button>
-
-      {/* New Program Button */}
-      <Link to="/szakertoi-studio/uj">
-        <Button
-          variant="outline"
-          className="w-full h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-emerald-500/10 to-green-500/10 border-emerald-500/20 hover:border-emerald-500/40 hover:bg-emerald-500/15 transition-all duration-300"
-        >
-          <Plus className="w-6 h-6 text-emerald-500" />
-          <span className="text-sm font-medium text-foreground">
-            {t("expert_studio.new_program")}
-          </span>
-        </Button>
-      </Link>
     </motion.div>
   );
 };
