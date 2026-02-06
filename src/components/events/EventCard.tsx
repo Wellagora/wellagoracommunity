@@ -7,6 +7,7 @@ import { useLocalizedEvent } from "@/hooks/useLocalizedEvent";
 import { Calendar, MapPin, Users, Clock, Check } from "lucide-react";
 import { format } from "date-fns";
 import { hu, de, enUS } from "date-fns/locale";
+import { useProjectVillages } from "@/hooks/useProjectVillages";
 
 interface EventCardProps {
   event: {
@@ -31,13 +32,6 @@ interface EventCardProps {
   variant?: "default" | "featured" | "compact";
 }
 
-const villageColors: Record<string, string> = {
-  "Kővágóörs": "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-500/30",
-  "Mindszentkálla": "bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30",
-  "Kékkút": "bg-purple-500/20 text-purple-700 dark:text-purple-400 border-purple-500/30",
-  "Szentbékkálla": "bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30",
-};
-
 // High-quality fallback images for events
 const EVENT_FALLBACK_IMAGES = [
   "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80", // Conference/gathering
@@ -55,6 +49,7 @@ const EventCard = ({
   const navigate = useNavigate();
   const { t, language } = useLanguage();
   const { getLocalizedTitle, getLocalizedDescription } = useLocalizedEvent();
+  const { getVillageColor } = useProjectVillages();
   const dateLocale = language === "hu" ? hu : language === "de" ? de : enUS;
 
   const formatEventDate = (dateStr: string) => {
@@ -69,7 +64,7 @@ const EventCard = ({
   };
 
   const dateInfo = formatEventDate(event.start_date);
-  const villageColor = event.village ? villageColors[event.village] : "bg-muted text-muted-foreground";
+  const villageColor = getVillageColor(event.village);
   
   // Get consistent fallback based on event id
   const getFallbackImage = () => {

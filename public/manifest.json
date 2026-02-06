@@ -1,7 +1,7 @@
 {
-  "name": "WellAgora",
+  "name": "WellAgora Impact Marketplace",
   "short_name": "WellAgora",
-  "description": "Impact Marketplace - Regional knowledge-sharing ecosystem",
+  "description": "Regionális tudásmegosztó ökoszisztéma",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f8fafc",

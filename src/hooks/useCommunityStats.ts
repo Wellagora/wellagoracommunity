@@ -74,8 +74,8 @@ export const useCommunityStats = (projectId?: string): UseCommunityStatsResult =
       const [profilesResult, expertsResult, sponsorsResult, programsResult, vouchersResult, eventsResult] = await Promise.all([
         // Total members count from profiles
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
-        // Experts count
-        supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('user_role', 'expert'),
+        // Experts count (stored as 'creator' in database)
+        supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('user_role', 'creator'),
         // Sponsors count (business, government, ngo, sponsor roles)
         supabase.from('profiles').select('id', { count: 'exact', head: true }).in('user_role', ['sponsor', 'business', 'government', 'ngo']),
         // Programs from expert_contents

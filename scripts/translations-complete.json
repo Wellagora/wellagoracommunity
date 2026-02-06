@@ -1,0 +1,658 @@
+{
+  "notifications.empty": {
+    "en": "No notifications",
+    "de": "Keine Benachrichtigungen"
+  },
+  "notifications.empty_desc": {
+    "en": "You will see the latest news and updates here.",
+    "de": "Hier sehen Sie die neuesten Nachrichten und Updates."
+  },
+  "notifications.all_marked_read": {
+    "en": "All marked as read",
+    "de": "Alle als gelesen markiert"
+  },
+  "notifications.all_marked_read_desc": {
+    "en": "All your notifications have been marked as read.",
+    "de": "Alle Ihre Benachrichtigungen wurden als gelesen markiert."
+  },
+  "my_courses.title": {
+    "en": "My Programs",
+    "de": "Meine Programme"
+  },
+  "my_courses.total_courses": {
+    "en": "Program",
+    "de": "Programm"
+  },
+  "my_courses.completed": {
+    "en": "Completed",
+    "de": "Abgeschlossen"
+  },
+  "my_courses.in_progress": {
+    "en": "In Progress",
+    "de": "In Bearbeitung"
+  },
+  "my_courses.not_started": {
+    "en": "Not Started",
+    "de": "Nicht begonnen"
+  },
+  "my_courses.empty": {
+    "en": "You don't have any programs yet",
+    "de": "Sie haben noch keine Programme"
+  },
+  "my_courses.empty_desc": {
+    "en": "Explore the Marketplace and join a program!",
+    "de": "Erkunden Sie den Marktplatz und melden Sie sich für ein Programm an!"
+  },
+  "my_courses.browse_marketplace": {
+    "en": "Browse Marketplace",
+    "de": "Marktplatz durchsuchen"
+  },
+  "my_courses.sponsored": {
+    "en": "Sponsored",
+    "de": "Gesponsert"
+  },
+  "my_courses.purchased": {
+    "en": "Purchased",
+    "de": "Gekauft"
+  },
+  "voucher.at_expert": {
+    "en": "At Expert's",
+    "de": "Beim Expert:In"
+  },
+  "voucher.claim_spot": {
+    "en": "Claim sponsored spot",
+    "de": "Gesponserten Platz beanspruchen"
+  },
+  "voucher.active_count": {
+    "en": "Active bookings",
+    "de": "Aktive Buchungen"
+  },
+  "voucher.used_count": {
+    "en": "Redeemed",
+    "de": "Eingelöst"
+  },
+  "voucher.redeem_title": {
+    "en": "Redeem spot",
+    "de": "Platz einlösen"
+  },
+  "voucher.redeem_btn": {
+    "en": "Redeem",
+    "de": "Einlösen"
+  },
+  "voucher.redeem_hint": {
+    "en": "Enter the code shown by the Member",
+    "de": "Geben Sie den vom Mitglied gezeigten Code ein"
+  },
+  "voucher.redeem_success": {
+    "en": "Sponsored spot successfully redeemed! 🎉",
+    "de": "Gesponserter Platz erfolgreich eingelöst! 🎉"
+  },
+  "voucher.redeem_error": {
+    "en": "Error during redemption",
+    "de": "Fehler beim Einlösen"
+  },
+  "voucher.not_found": {
+    "en": "Booking not found",
+    "de": "Buchung nicht gefunden"
+  },
+  "voucher.not_yours": {
+    "en": "This booking does not belong to your content",
+    "de": "Diese Buchung gehört nicht zu Ihrem Inhalt"
+  },
+  "voucher.already_used": {
+    "en": "This spot has already been redeemed",
+    "de": "Dieser Platz wurde bereits eingelöst"
+  },
+  "voucher.recent": {
+    "en": "Recent redemptions",
+    "de": "Letzte Einlösungen"
+  },
+  "voucher.no_vouchers_yet": {
+    "en": "No bookings yet",
+    "de": "Noch keine Buchungen"
+  },
+  "voucher.no_vouchers_hint": {
+    "en": "When someone books a spot for your content, you'll see it here",
+    "de": "Wenn jemand einen Platz für Ihren Inhalt bucht, sehen Sie es hier"
+  },
+  "voucher.already_claimed": {
+    "en": "You already booked a spot",
+    "de": "Sie haben bereits einen Platz gebucht"
+  },
+  "program.voucher_claimed": {
+    "en": "Voucher claimed!",
+    "de": "Gutschein beansprucht!"
+  },
+  "program.claim_voucher": {
+    "en": "Claim voucher",
+    "de": "Gutschein beanspruchen"
+  },
+  "program.purchase_button": {
+    "en": "Join",
+    "de": "Anmelden"
+  },
+  "purchase.sponsor_contribution_label": {
+    "en": "with support from",
+    "de": "mit Unterstützung von"
+  },
+  "expert_studio.impact_report.top_sponsor_msg": {
+    "en": "Thanks to {{sponsor}}'s support, you reached {{percentage}}% more Members.",
+    "de": "Dank der Unterstützung von {{sponsor}} haben Sie {{percentage}}% mehr Mitglieder erreicht."
+  },
+  "expert_studio.impact_report.distribution": {
+    "en": "Sales distribution",
+    "de": "Verkaufsverteilung"
+  },
+  "expert_studio.impact_report.new_tag": {
+    "en": "New Member",
+    "de": "Neues Mitglied"
+  },
+  "expert_studio.impact_report.empty": {
+    "en": "No sales data yet",
+    "de": "Noch keine Verkaufsdaten"
+  },
+  "expert_studio.impact_report.load_error": {
+    "en": "Failed to load data.",
+    "de": "Daten konnten nicht geladen werden."
+  },
+  "marketplace.value_from_sponsor": {
+    "en": "Value: {{price}} Ft — Available from {{sponsor}}'s sponsorship budget",
+    "de": "Wert: {{price}} Ft — Verfügbar aus dem Sponsoring-Budget von {{sponsor}}"
+  },
+  "wizard.new_workshop_secret": {
+    "en": "New Program",
+    "de": "Neues Programm"
+  },
+  "wizard.step": {
+    "en": "Step",
+    "de": "Schritt"
+  },
+  "wizard.back": {
+    "en": "Back",
+    "de": "Zurück"
+  },
+  "wizard.next": {
+    "en": "Next",
+    "de": "Weiter"
+  },
+  "wizard.or": {
+    "en": "or",
+    "de": "oder"
+  },
+  "wizard.save_draft": {
+    "en": "Save as draft",
+    "de": "Als Entwurf speichern"
+  },
+  "wizard.publish_now": {
+    "en": "Publish now",
+    "de": "Jetzt veröffentlichen"
+  },
+  "wizard.published_success": {
+    "en": "Program published successfully! 🎉",
+    "de": "Programm erfolgreich veröffentlicht! 🎉"
+  },
+  "wizard.publish_error": {
+    "en": "Error occurred during publishing",
+    "de": "Fehler beim Veröffentlichen"
+  },
+  "wizard.draft_saved": {
+    "en": "Draft saved",
+    "de": "Entwurf gespeichert"
+  },
+  "wizard.saving": {
+    "en": "Saving...",
+    "de": "Speichern..."
+  },
+  "wizard.continue_draft": {
+    "en": "You have an unfinished draft: \"{{title}}\". Continue?",
+    "de": "Sie haben einen unfertigen Entwurf: \"{{title}}\". Fortfahren?"
+  },
+  "wizard.untitled": {
+    "en": "Untitled",
+    "de": "Ohne Titel"
+  },
+  "wizard.no_description": {
+    "en": "No description",
+    "de": "Keine Beschreibung"
+  },
+  "wizard.milestones": {
+    "en": "milestone",
+    "de": "Meilenstein"
+  },
+  "wizard.milestones_added": {
+    "en": "milestone added",
+    "de": "Meilenstein hinzugefügt"
+  },
+  "wizard.fill_required": {
+    "en": "Fill in the required fields",
+    "de": "Füllen Sie die Pflichtfelder aus"
+  },
+  "wizard.content_not_found": {
+    "en": "Content not found",
+    "de": "Inhalt nicht gefunden"
+  },
+  "wizard.load_error": {
+    "en": "Error loading",
+    "de": "Fehler beim Laden"
+  },
+  "wizard.step1_title": {
+    "en": "What will be the Program title?",
+    "de": "Wie lautet der Programmtitel?"
+  },
+  "wizard.step1_subtitle": {
+    "en": "Give it an attention-grabbing title",
+    "de": "Geben Sie ihm einen aufmerksamkeitsstarken Titel"
+  },
+  "wizard.title_label": {
+    "en": "Title",
+    "de": "Titel"
+  },
+  "wizard.title_placeholder": {
+    "en": "e.g. Sourdough Bread Baking Basics",
+    "de": "z.B. Sauerteigbrot Backen Grundlagen"
+  },
+  "wizard.category_label": {
+    "en": "Category",
+    "de": "Kategorie"
+  },
+  "wizard.description_label": {
+    "en": "Short description",
+    "de": "Kurzbeschreibung"
+  },
+  "wizard.description_placeholder": {
+    "en": "Summarize in 2-3 sentences...",
+    "de": "Fassen Sie in 2-3 Sätzen zusammen..."
+  },
+  "wizard.step1_tip": {
+    "en": "A good title is specific and promises something",
+    "de": "Ein guter Titel ist konkret und verspricht etwas"
+  },
+  "wizard.min_5_chars": {
+    "en": "Minimum 5 characters",
+    "de": "Mindestens 5 Zeichen"
+  },
+  "wizard.min_20_chars": {
+    "en": "Minimum 20 characters",
+    "de": "Mindestens 20 Zeichen"
+  },
+  "wizard.step2_title": {
+    "en": "Choose a cover image",
+    "de": "Wählen Sie ein Titelbild"
+  },
+  "wizard.step2_subtitle": {
+    "en": "This will be the first thing they see",
+    "de": "Dies ist das Erste, was sie sehen werden"
+  },
+  "wizard.upload_image": {
+    "en": "Upload image",
+    "de": "Bild hochladen"
+  },
+  "wizard.or_choose_stock": {
+    "en": "Or choose from stock:",
+    "de": "Oder aus Vorrat wählen:"
+  },
+  "wizard.image_uploaded": {
+    "en": "Image uploaded!",
+    "de": "Bild hochgeladen!"
+  },
+  "wizard.image_upload_error": {
+    "en": "Error uploading",
+    "de": "Fehler beim Hochladen"
+  },
+  "wizard.step2_tip": {
+    "en": "The best images are bright and interesting",
+    "de": "Die besten Bilder sind hell und interessant"
+  },
+  "wizard.step3_title": {
+    "en": "Build the content",
+    "de": "Erstellen Sie den Inhalt"
+  },
+  "wizard.step3_subtitle": {
+    "en": "Divide the knowledge into milestones",
+    "de": "Teilen Sie das Wissen in Meilensteine auf"
+  },
+  "wizard.add_milestone": {
+    "en": "Add new milestone",
+    "de": "Neuen Meilenstein hinzufügen"
+  },
+  "wizard.milestone_title_placeholder": {
+    "en": "e.g. Step 1: The Basics",
+    "de": "z.B. Schritt 1: Die Grundlagen"
+  },
+  "wizard.milestone_content_placeholder": {
+    "en": "Describe in detail...",
+    "de": "Beschreiben Sie ausführlich..."
+  },
+  "wizard.media_optional": {
+    "en": "Media (optional)",
+    "de": "Medien (optional)"
+  },
+  "wizard.milestone_image": {
+    "en": "Add image",
+    "de": "Bild hinzufügen"
+  },
+  "wizard.milestone_video": {
+    "en": "Video link",
+    "de": "Video-Link"
+  },
+  "wizard.video_tip": {
+    "en": "YouTube/Vimeo recommended",
+    "de": "YouTube/Vimeo empfohlen"
+  },
+  "wizard.video_warning": {
+    "en": "We recommend using YouTube or Vimeo",
+    "de": "Wir empfehlen die Verwendung von YouTube oder Vimeo"
+  },
+  "wizard.cover_max": {
+    "en": "Cover image max",
+    "de": "Titelbild max"
+  },
+  "wizard.milestone_max": {
+    "en": "Milestone images max",
+    "de": "Meilenstein-Bilder max"
+  },
+  "wizard.video_external": {
+    "en": "Videos: YouTube/Vimeo link",
+    "de": "Videos: YouTube/Vimeo-Link"
+  },
+  "wizard.step3_tip": {
+    "en": "3-7 milestones is ideal",
+    "de": "3-7 Meilensteine sind ideal"
+  },
+  "wizard.step4_title": {
+    "en": "How will you sell it?",
+    "de": "Wie werden Sie es verkaufen?"
+  },
+  "wizard.step4_subtitle": {
+    "en": "You decide how much your knowledge is worth",
+    "de": "Sie entscheiden, wie viel Ihr Wissen wert ist"
+  },
+  "wizard.free": {
+    "en": "Free",
+    "de": "Kostenlos"
+  },
+  "wizard.free_description": {
+    "en": "Available to everyone",
+    "de": "Für alle verfügbar"
+  },
+  "wizard.paid": {
+    "en": "Paid",
+    "de": "Kostenpflichtig"
+  },
+  "wizard.paid_description": {
+    "en": "You get 85% of the revenue",
+    "de": "Sie erhalten 85% des Umsatzes"
+  },
+  "wizard.choose_price": {
+    "en": "Choose price",
+    "de": "Preis wählen"
+  },
+  "wizard.your_revenue": {
+    "en": "Your revenue",
+    "de": "Ihr Umsatz"
+  },
+  "wizard.platform_fee": {
+    "en": "Platform fee",
+    "de": "Plattformgebühr"
+  },
+  "wizard.step4_tip": {
+    "en": "Sponsors can sponsor it later!",
+    "de": "Sponsoren können es später sponsern!"
+  },
+  "wizard.step5_title": {
+    "en": "Ready to go?",
+    "de": "Bereit loszulegen?"
+  },
+  "wizard.step5_subtitle": {
+    "en": "Review and make it live!",
+    "de": "Überprüfen und live schalten!"
+  },
+  "wizard.checklist_basics": {
+    "en": "Title and description filled",
+    "de": "Titel und Beschreibung ausgefüllt"
+  },
+  "wizard.checklist_cover": {
+    "en": "Cover image uploaded",
+    "de": "Titelbild hochgeladen"
+  },
+  "wizard.checklist_price": {
+    "en": "Price set",
+    "de": "Preis festgelegt"
+  },
+  "creator.expert_since": {
+    "en": "Expert since",
+    "de": "Expert:In seit"
+  },
+  "creator.programs_created": {
+    "en": "programs created",
+    "de": "Programme erstellt"
+  },
+  "marketplace.category_craft": {
+    "en": "Craft",
+    "de": "Handwerk"
+  },
+  "marketplace.category_hiking": {
+    "en": "Hiking",
+    "de": "Wandern"
+  },
+  "marketplace.category_heritage": {
+    "en": "Heritage",
+    "de": "Kulturerbe"
+  },
+  "marketplace.category_volunteering": {
+    "en": "Volunteering",
+    "de": "Freiwilligenarbeit"
+  },
+  "marketplace.all_results": {
+    "en": "All results",
+    "de": "Alle Ergebnisse"
+  },
+  "program.description": {
+    "en": "Description",
+    "de": "Beschreibung"
+  },
+  "purchase.original_price": {
+    "en": "Original price",
+    "de": "Originalpreis"
+  },
+  "purchase.you_pay": {
+    "en": "You pay",
+    "de": "Sie zahlen"
+  },
+  "my_agora.saved_guides": {
+    "en": "Saved Programs",
+    "de": "Gespeicherte Programme"
+  },
+  "my_agora.my_tickets": {
+    "en": "My Tickets",
+    "de": "Meine Tickets"
+  },
+  "my_agora.empty": {
+    "en": "No Programs yet",
+    "de": "Noch keine Programme"
+  },
+  "my_agora.browse": {
+    "en": "Browse the Marketplace",
+    "de": "Marktplatz durchsuchen"
+  },
+  "my_agora.continue": {
+    "en": "Continue",
+    "de": "Fortfahren"
+  },
+  "sponsor_support.payable": {
+    "en": "Payable",
+    "de": "Zahlbar"
+  },
+  "sponsor_support.price": {
+    "en": "Price",
+    "de": "Preis"
+  },
+  "member.sponsored_access": {
+    "en": "Sponsored Access",
+    "de": "Gesponserte Zugänge"
+  },
+  "member.no_sponsored_participations": {
+    "en": "No sponsored participations yet",
+    "de": "Noch keine gesponserten Teilnahmen"
+  },
+  "member.explore_sponsored_programs": {
+    "en": "Explore sponsored programs in the marketplace",
+    "de": "Erkunden Sie gesponserte Programme im Marktplatz"
+  },
+  "member.sponsored_by": {
+    "en": "Sponsor",
+    "de": "Sponsor"
+  },
+  "nav.sponsor_center": {
+    "en": "Sponsor Center",
+    "de": "Sponsor-Zentrum"
+  },
+  "expert_studio.tab_muhely": {
+    "en": "Studio",
+    "de": "Studio"
+  },
+  "expert_studio.tab_programs": {
+    "en": "My Programs",
+    "de": "Meine Programme"
+  },
+  "expert_studio.tab_business": {
+    "en": "Business",
+    "de": "Geschäft"
+  },
+  "expert_studio.from": {
+    "en": "from",
+    "de": "von"
+  },
+  "expert_studio.recent_transactions": {
+    "en": "Recent transactions",
+    "de": "Letzte Transaktionen"
+  },
+  "expert_studio.recent_transactions_desc": {
+    "en": "Details of the last 5 sales",
+    "de": "Details der letzten 5 Verkäufe"
+  },
+  "expert_studio.view_all_transactions": {
+    "en": "View all transactions",
+    "de": "Alle Transaktionen anzeigen"
+  },
+  "expert_studio.cards.community.participants": {
+    "en": "Participant",
+    "de": "Teilnehmer"
+  },
+  "events.cancel_success": {
+    "en": "Registration cancelled",
+    "de": "Anmeldung storniert"
+  },
+  "events.full": {
+    "en": "Full",
+    "de": "Ausgebucht"
+  },
+  "events.spots_available": {
+    "en": "spots left",
+    "de": "Plätze frei"
+  },
+  "events.sponsored": {
+    "en": "SPONSORED",
+    "de": "GESPONSERT"
+  },
+  "events.sponsored_by": {
+    "en": "Sponsor:",
+    "de": "Sponsor:"
+  },
+  "events.back_to_list": {
+    "en": "Back to events",
+    "de": "Zurück zu Veranstaltungen"
+  },
+  "events.search_placeholder": {
+    "en": "Search by title...",
+    "de": "Nach Titel suchen..."
+  },
+  "events.all_categories": {
+    "en": "All categories",
+    "de": "Alle Kategorien"
+  },
+  "events.empty_state": {
+    "en": "First community events coming soon!",
+    "de": "Erste Gemeinschaftsveranstaltungen kommen bald!"
+  },
+  "events.empty_state_desc": {
+    "en": "Check back later or subscribe to notifications.",
+    "de": "Schauen Sie später vorbei oder abonnieren Sie Benachrichtigungen."
+  },
+  "events.category_market": {
+    "en": "Market",
+    "de": "Markt"
+  },
+  "events.category_workshop": {
+    "en": "Workshop",
+    "de": "Workshop"
+  },
+  "events.category_social": {
+    "en": "Community",
+    "de": "Gemeinschaft"
+  },
+  "events.category_sport": {
+    "en": "Sport",
+    "de": "Sport"
+  },
+  "events.category_culture": {
+    "en": "Culture",
+    "de": "Kultur"
+  },
+  "events.category_nature": {
+    "en": "Nature",
+    "de": "Natur"
+  },
+  "events.login_to_rsvp": {
+    "en": "Log in to RSVP",
+    "de": "Anmelden um teilzunehmen"
+  },
+  "events.max_participants_reached": {
+    "en": "Event is full",
+    "de": "Veranstaltung ist ausgebucht"
+  },
+  "categories.lifestyle": {
+    "en": "Lifestyle",
+    "de": "Lebensstil"
+  },
+  "categories.craft": {
+    "en": "Craft",
+    "de": "Handwerk"
+  },
+  "categories.wellness": {
+    "en": "Wellness",
+    "de": "Wellness"
+  },
+  "categories.hiking": {
+    "en": "Hiking",
+    "de": "Wandern"
+  },
+  "categories.heritage": {
+    "en": "Heritage",
+    "de": "Kulturerbe"
+  },
+  "categories.volunteering": {
+    "en": "Volunteering",
+    "de": "Freiwilligenarbeit"
+  },
+  "categories.market": {
+    "en": "Market",
+    "de": "Markt"
+  },
+  "categories.community": {
+    "en": "Community",
+    "de": "Gemeinschaft"
+  },
+  "categories.sport": {
+    "en": "Sport",
+    "de": "Sport"
+  },
+  "categories.culture": {
+    "en": "Culture",
+    "de": "Kultur"
+  },
+  "categories.family": {
+    "en": "Family",
+    "de": "Familie"
+  }
+}

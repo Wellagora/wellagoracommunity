@@ -46,7 +46,7 @@ export const NearbyWidget = () => {
           });
         },
         (error) => {
-          console.log('Geolocation error:', error);
+          // Geolocation error
           setLocationError(t('nearby.location_denied') || 'Helymeghatározás nem engedélyezett');
           setLoading(false);
         },

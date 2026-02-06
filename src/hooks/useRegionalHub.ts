@@ -6,7 +6,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
-import { Challenge } from '@/data/challenges';
 import { useUserLocation, useNearbyStakeholders, NearbyStakeholder } from './useNearbyStakeholders';
 
 export interface StakeholderProfile {
@@ -37,11 +36,6 @@ export interface SponsorInfo {
   organizationId?: string;
 }
 
-export interface RegionalChallenge extends Omit<Challenge, 'sponsor'> {
-  region: string;
-  sponsor?: SponsorInfo;
-}
-
 export const useRegionalHub = (options?: { usePostGIS?: boolean; radiusMeters?: number }) => {
   const { usePostGIS = false, radiusMeters = 25000 } = options || {};
   const { t } = useLanguage();
@@ -66,17 +60,12 @@ export const useRegionalHub = (options?: { usePostGIS?: boolean; radiusMeters?: 
     enabled: usePostGIS && !!userLocation
   });
 
-  const [viewMode, setViewMode] = useState<'stakeholders' | 'challenges' | 'sponsorship'>('stakeholders');
+  const [viewMode, setViewMode] = useState<'stakeholders' | 'sponsorship'>('stakeholders');
   const [selectedTypes, setSelectedTypes] = useState<string[]>(['citizen', 'business', 'government', 'ngo']);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sponsorships, setSponsorships] = useState<any[]>([]);
   const [stakeholders, setStakeholders] = useState<StakeholderProfile[]>([]);
   const [loadingStakeholders, setLoadingStakeholders] = useState(true);
-  const [challenges, setChallenges] = useState<Challenge[]>([]);
-  const [selectedChallengeForSponsorship, setSelectedChallengeForSponsorship] = useState<{
-    id: string;
-    title: string;
-  } | null>(null);
   const [contactModalOpen, setContactModalOpen] = useState(false);
   const [selectedContact, setSelectedContact] = useState<{
     name: string;
@@ -185,60 +174,16 @@ export const useRegionalHub = (options?: { usePostGIS?: boolean; radiusMeters?: 
     fetchStakeholders();
   }, [currentProject, t, toast]);
 
-  // Fetch challenges
-  useEffect(() => {
-    if (!currentProject) {
-      setChallenges([]);
-      return;
-    }
-
-    const fetchChallenges = async () => {
-      const { data, error } = await supabase
-        .from('challenge_definitions')
-        .select('*')
-        .eq('project_id', currentProject.id)
-        .eq('is_active', true)
-        .order('created_at', { ascending: false })
-        .limit(6);
-
-      if (!error && data) {
-        const transformedChallenges: Challenge[] = data.map(ch => ({
-          id: ch.id,
-          titleKey: ch.title,
-          descriptionKey: ch.description,
-          longDescriptionKey: ch.description,
-          category: (ch.category || 'community') as Challenge['category'],
-          difficulty: (ch.difficulty || 'beginner') as Challenge['difficulty'],
-          durationKey: ch.duration_days ? `${ch.duration_days} days` : 'ongoing',
-          pointsReward: ch.points_base || 0,
-          participants: 0,
-          completionRate: 0,
-          stepsKeys: [],
-          tipsKeys: [],
-          participants_preview: [],
-          isContinuous: ch.is_continuous,
-          startDate: ch.start_date || undefined,
-          endDate: ch.end_date || undefined,
-          location: ch.location || undefined,
-          imageUrl: ch.image_url || undefined,
-        }));
-        setChallenges(transformedChallenges);
-      }
-    };
-
-    fetchChallenges();
-  }, [currentProject]);
-
   // Fetch sponsorships
   useEffect(() => {
     if (!currentProject) return;
 
     const fetchSponsorships = async () => {
       const { data, error } = await supabase
-        .from('challenge_sponsorships')
+        .from('content_sponsorships')
         .select(`
           *,
-          profiles!challenge_sponsorships_sponsor_user_id_fkey(
+          profiles!content_sponsorships_sponsor_user_id_fkey(
             first_name,
             last_name,
             public_display_name,
@@ -262,39 +207,7 @@ export const useRegionalHub = (options?: { usePostGIS?: boolean; radiusMeters?: 
     fetchSponsorships();
   }, [currentProject]);
 
-  // Generate regional challenges with sponsorship data
-  const getRegionalChallenges = (): RegionalChallenge[] => {
-    if (!currentProject) return [];
-    
-    return challenges.slice(0, 6).map(challenge => {
-      const sponsorship = sponsorships.find(s => s.challenge_id === challenge.id);
-
-      let sponsor: SponsorInfo | undefined;
-      
-      if (sponsorship) {
-        const profile = sponsorship.profiles;
-        const org = sponsorship.organizations;
-        
-        sponsor = {
-          id: sponsorship.id,
-          userId: sponsorship.sponsor_user_id,
-          name: org?.name || profile?.organization || profile?.public_display_name || 
-                `${profile?.first_name} ${profile?.last_name}`,
-          logo: org?.logo_url || profile?.avatar_url || "🏢",
-          package: sponsorship.package_type,
-          organizationId: sponsorship.sponsor_organization_id
-        };
-      }
-
-      return {
-        ...challenge,
-        sponsor,
-        region: currentProject.region_name,
-      };
-    });
-  };
-
-  // Convert PostGIS nearby results to StakeholderProfile format
+  // Convert nearby stakeholders (PostGIS results) to StakeholderProfile format
   const convertNearbyToProfiles = useCallback((nearby: NearbyStakeholder[]): StakeholderProfile[] => {
     return nearby.map((s, index) => ({
       id: s.id,
@@ -339,16 +252,13 @@ export const useRegionalHub = (options?: { usePostGIS?: boolean; radiusMeters?: 
     searchQuery,
     stakeholders: effectiveStakeholders,
     loadingStakeholders: usePostGIS ? (locationLoading || nearbyLoading) : loadingStakeholders,
-    challenges,
     sponsorships,
-    selectedChallengeForSponsorship,
     contactModalOpen,
     selectedContact,
     currentProject,
     projectLoading,
     user,
     filteredProfiles,
-    regionalChallenges: getRegionalChallenges(),
 
     // PostGIS specific
     userLocation,
@@ -358,7 +268,6 @@ export const useRegionalHub = (options?: { usePostGIS?: boolean; radiusMeters?: 
     // Setters
     setViewMode,
     setSearchQuery,
-    setSelectedChallengeForSponsorship,
     setContactModalOpen,
     setSelectedContact,
 

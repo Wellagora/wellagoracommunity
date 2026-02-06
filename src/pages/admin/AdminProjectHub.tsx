@@ -819,7 +819,7 @@ const AdminProjectHub = () => {
         .single();
 
       if (error) throw error;
-      console.log('DB SUCCESS:', data);
+      // DB operation successful
       toast.success('Szponzor csatolva a projekthez!');
       setIsSponsorModalOpen(false);
       setSelectedSponsorId('');
@@ -866,7 +866,7 @@ const AdminProjectHub = () => {
     return (
       <div className="text-center py-12">
         <p className="text-muted-foreground">Projekt nem található</p>
-        <Button onClick={() => navigate('/admin-panel/projects')} className="mt-4">
+        <Button onClick={() => navigate('/admin/projects')} className="mt-4">
           Vissza a projektekhez
         </Button>
       </div>
@@ -881,11 +881,11 @@ const AdminProjectHub = () => {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => navigate('/admin-panel/projects')}
+          onClick={() => navigate('/admin/projects')}
           className="gap-1 -ml-2"
         >
           <ChevronLeft className="h-4 w-4" />
-          Admin
+          Vissza
         </Button>
         <span>/</span>
         <span>Projektek</span>

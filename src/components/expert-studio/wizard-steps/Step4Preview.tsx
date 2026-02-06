@@ -73,7 +73,7 @@ const Step4Preview = ({ formData, onPublish, onSaveDraft, isPublishing, hasPayou
   const allDone = checklist.filter(c => c.key !== "translations").every(c => c.done);
   const canPublish = allDone && hasPayoutMethod;
 
-  console.log('[Step4Preview] Publish check:', { allDone, hasPayoutMethod, canPublish });
+  // Publish check validation
 
   return (
     <div className="space-y-6">

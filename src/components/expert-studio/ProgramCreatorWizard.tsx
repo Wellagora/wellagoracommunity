@@ -49,6 +49,8 @@ export interface ProgramFormData {
   title_de: string;
   description_de: string;
   isAITranslated: { en: boolean; de: boolean };
+  isApproved: { hu: boolean; en: boolean; de: boolean };
+  masterLocale: 'hu' | 'en' | 'de';
 }
 
 const initialFormData: ProgramFormData = {
@@ -76,6 +78,8 @@ const initialFormData: ProgramFormData = {
   title_de: "",
   description_de: "",
   isAITranslated: { en: false, de: false },
+  isApproved: { hu: false, en: false, de: false },
+  masterLocale: 'hu',
 };
 
 const STEPS = ["media", "details", "localization", "preview"] as const;
@@ -137,6 +141,25 @@ const ProgramCreatorWizard = () => {
 
       // Parse problem_solution JSON if exists
       const problemSolution = data.problem_solution as { problem?: string; solution?: string } | null;
+
+      const { data: locs } = await supabase
+        .from('content_localizations')
+        .select('locale, is_approved, is_ai_generated')
+        .eq('content_id', id);
+
+      const approved: { hu: boolean; en: boolean; de: boolean } = { hu: false, en: false, de: false };
+      const ai: { en: boolean; de: boolean } = { en: false, de: false };
+      for (const row of (locs || []) as any[]) {
+        if (row.locale === 'hu') approved.hu = !!row.is_approved;
+        if (row.locale === 'en') {
+          approved.en = !!row.is_approved;
+          ai.en = !!row.is_ai_generated;
+        }
+        if (row.locale === 'de') {
+          approved.de = !!row.is_approved;
+          ai.de = !!row.is_ai_generated;
+        }
+      }
       
       setFormData({
         mediaFile: null,
@@ -161,7 +184,9 @@ const ProgramCreatorWizard = () => {
         description_en: data.description_en || "",
         title_de: data.title_de || "",
         description_de: data.description_de || "",
-        isAITranslated: { en: false, de: false },
+        isAITranslated: ai,
+        isApproved: approved,
+        masterLocale: (data.master_locale as 'hu' | 'en' | 'de') || 'hu',
       });
 
       setContentId(id);
@@ -275,6 +300,61 @@ const ProgramCreatorWizard = () => {
         }
       }
 
+      if (savedContentId) {
+        const now = new Date().toISOString();
+
+        const rows = [
+          {
+            content_id: savedContentId,
+            locale: 'hu',
+            title: formData.title_hu,
+            description: formData.description_hu,
+            is_ai_generated: false,
+            is_approved: formData.isApproved.hu,
+            source_locale: null,
+            edited_at: now,
+            approved_at: formData.isApproved.hu ? now : null,
+          },
+          {
+            content_id: savedContentId,
+            locale: 'en',
+            title: formData.title_en || null,
+            description: formData.description_en || null,
+            is_ai_generated: formData.isAITranslated.en,
+            is_approved: formData.isApproved.en,
+            source_locale: 'hu',
+            translated_at: formData.isAITranslated.en ? now : null,
+            edited_at: now,
+            approved_at: formData.isApproved.en ? now : null,
+          },
+          {
+            content_id: savedContentId,
+            locale: 'de',
+            title: formData.title_de || null,
+            description: formData.description_de || null,
+            is_ai_generated: formData.isAITranslated.de,
+            is_approved: formData.isApproved.de,
+            source_locale: 'hu',
+            translated_at: formData.isAITranslated.de ? now : null,
+            edited_at: now,
+            approved_at: formData.isApproved.de ? now : null,
+          },
+        ];
+
+        await supabase
+          .from('content_localizations')
+          .upsert(rows as any, { onConflict: 'content_id,locale' });
+
+        const allApproved = formData.isApproved.hu && formData.isApproved.en && formData.isApproved.de;
+        await supabase
+          .from('expert_contents')
+          .update({
+            master_locale: formData.masterLocale,
+            translation_status: allApproved ? 'approved' : 'needs_review',
+          })
+          .eq('id', savedContentId);
+      }
+
       // Update media library item status if from media library
       if (formData.mediaLibraryId && savedContentId) {
         await supabase
@@ -302,6 +382,21 @@ const ProgramCreatorWizard = () => {
     setIsPublishing(true);
 
     try {
+      const { data: locs, error: locError } = await supabase
+        .from('content_localizations')
+        .select('locale, is_approved')
+        .eq('content_id', contentId);
+      if (locError) throw locError;
+      const approvedByLocale = (locs || []).reduce((acc: any, row: any) => {
+        acc[row.locale] = !!row.is_approved;
+        return acc;
+      }, {} as Record<string, boolean>);
+      const allApproved = approvedByLocale.hu && approvedByLocale.en && approvedByLocale.de;
+      if (!allApproved) {
+        toast.error(t('creator.translation.needs_review'));
+        return;
+      }
+
       await supabase
         .from("expert_contents")
         .update({
@@ -410,22 +505,37 @@ const ProgramCreatorWizard = () => {
             transition={{ duration: 0.2 }}
           >
             {currentStep === 0 && (
-              <Step1Media formData={formData} setFormData={setFormData} />
+              <>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {t("program_creator.start_simple_hint")}
+                </p>
+                <Step1Media formData={formData} setFormData={setFormData} />
+              </>
             )}
             {currentStep === 1 && (
-              <Step2Details formData={formData} setFormData={setFormData} />
+              <>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {t("program_creator.formats_hint")}
+                </p>
+                <Step2Details formData={formData} setFormData={setFormData} />
+              </>
             )}
             {currentStep === 2 && (
               <Step3Localization formData={formData} setFormData={setFormData} />
             )}
             {currentStep === 3 && (
-              <Step4Preview 
-                formData={formData} 
-                onPublish={handlePublish}
-                onSaveDraft={handleSaveDraft}
-                isPublishing={isPublishing}
-                hasPayoutMethod={!!profile?.payout_preference}
-              />
+              <>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {t("program_creator.marketplace_visibility_hint")}
+                </p>
+                <Step4Preview 
+                  formData={formData} 
+                  onPublish={handlePublish}
+                  onSaveDraft={handleSaveDraft}
+                  isPublishing={isPublishing}
+                  hasPayoutMethod={!!profile?.payout_preference}
+                />
+              </>
             )}
           </motion.div>
         </AnimatePresence>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useQuery } from '@tanstack/react-query';
 import {
   Menu,
   User,
@@ -17,6 +18,8 @@ import {
   Heart,
   Wallet,
   BarChart3,
+  Coins,
+  Star,
 } from "lucide-react";
 import { WellBotAvatar } from "@/components/ai/WellBotAvatar";
 import { MagneticButton } from "@/components/ui/MagneticButton";
@@ -33,8 +36,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
+import { getUserBalance, WELLPOINTS_QUERY_KEY } from "@/lib/wellpoints";
+import { getExpertMetrics, getSponsorMetrics, type RoleMetrics } from "@/lib/roleMetrics";
 import wellagoraLogo from "@/assets/wellagora-logo.png";
 import LanguageSelector from "./LanguageSelector";
 import { RoleSwitcher } from "./admin/RoleSwitcher";
@@ -54,11 +60,34 @@ const Navigation = () => {
   const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
-
+  
   // Determine user's role from profile
   const effectiveRole = getEffectiveRole(profile?.user_role);
   const isSuperAdmin = profile?.is_super_admin === true || 
     profile?.email === 'attila.kelemen@proself.org';
+  
+  // The role to use for routing/navigation (viewAsRole takes precedence for super admins)
+  const displayRole = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
+  
+  // Fetch role-specific metrics with React Query using displayRole
+  const { data: roleMetrics } = useQuery({
+    queryKey: ['roleMetrics', user?.id, displayRole],
+    queryFn: async (): Promise<RoleMetrics> => {
+      if (!user) return { type: 'member', wellpoints: 0 };
+      
+      if (displayRole === 'expert') {
+        const metrics = await getExpertMetrics(user.id);
+        return { type: 'expert', ...metrics };
+      } else if (displayRole === 'sponsor') {
+        const metrics = await getSponsorMetrics(user.id);
+        return { type: 'sponsor', ...metrics };
+      } else {
+        const balance = await getUserBalance(user.id);
+        return { type: 'member', wellpoints: balance };
+      }
+    },
+    enabled: !!user,
+  });
 
   // Handle view change for super admins and redirect to corresponding dashboard
   const handleViewChange = (view: 'member' | 'expert' | 'sponsor') => {
@@ -90,8 +119,6 @@ const Navigation = () => {
     }
   };
 
-  // The role to use for routing/navigation (viewAsRole takes precedence for super admins)
-  const displayRole = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
 
   // Load unread message count
   useEffect(() => {
@@ -160,12 +187,12 @@ const Navigation = () => {
         case 'expert': return '/expert-studio';
         case 'sponsor': return '/sponsor-dashboard';
         case 'member': return '/my-agora';
-        default: return '/admin-panel';
+        default: return '/admin';
       }
     }
     
     // Super admin without viewAsRole goes to admin panel
-    if (isSuperAdmin) return '/admin-panel';
+    if (isSuperAdmin) return '/admin';
     
     // Regular users based on their actual role
     switch (effectiveRole) {
@@ -186,12 +213,12 @@ const Navigation = () => {
         case 'expert': return t('nav.expert_studio');
         case 'sponsor': return t('nav.sponsor_center');
         case 'member': return t('nav.control_panel');
-        default: return 'Admin Panel';
+        default: return 'Admin';
       }
     }
     
     // Super admin without viewAsRole
-    if (isSuperAdmin) return 'Admin Panel';
+    if (isSuperAdmin) return 'Admin';
     
     // Regular users
     switch (effectiveRole) {
@@ -221,13 +248,12 @@ const Navigation = () => {
 
   // STRICT Role-based navigation - each role sees ONLY their items
   const navItems = useMemo(() => {
-    // Logged-out users: Home, Marketplace, Events, Partners, Community
+    // Logged-out users: Home, Marketplace, Events, Community
     if (!user || !profile) {
       return [
         { path: "/", label: t("nav.home"), icon: Home },
         { path: "/programs", label: t("nav.marketplace"), icon: Store },
         { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
-        { path: "/partners", label: t("nav.partners") || "Partnerek", icon: Building2 },
         { path: "/community", label: t("nav.community"), icon: UsersIcon },
       ];
     }
@@ -235,31 +261,29 @@ const Navigation = () => {
     // Role-specific navigation
     const roleToUse = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
 
-    // MEMBER: Piactér, Események, Partnerek, Közösség, Agórám
+    // MEMBER: Piactér, Események, Közösség, Agórám
     if (roleToUse === 'member') {
       return [
         { path: "/programs", label: t("nav.marketplace"), icon: Store },
         { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
-        { path: "/partners", label: t("nav.partners"), icon: Building2 },
         { path: "/community", label: t("nav.community"), icon: UsersIcon },
         { path: "/my-agora", label: t("nav.my_agora"), icon: LayoutDashboard },
       ];
     }
 
-    // EXPERT: Stúdió, Programjaim, Analitika
+    // EXPERT: Szakértői Stúdió, Események
     if (roleToUse === 'expert') {
       return [
         { path: "/expert-studio", label: t("nav.expert_studio"), icon: Sparkles, iconColor: "text-amber-500" },
-        { path: "/expert-studio/programs", label: t("nav.my_programs"), icon: Store },
-        { path: "/expert-studio/analytics", label: t("nav.analytics"), icon: BarChart3 },
+        { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
       ];
     }
 
-    // SPONSOR: Központ, Kampányaim, Pénzügyeim
+    // SPONSOR: Támogatói Központ, Események, Pénzügyek
     if (roleToUse === 'sponsor') {
       return [
-        { path: "/sponsor-dashboard", label: t("nav.sponsor_center"), icon: Building2, iconColor: "text-blue-500" },
-        { path: "/sponsor-dashboard/campaigns", label: t("nav.my_campaigns"), icon: Wallet },
+        { path: "/sponsor-dashboard", label: t("nav.sponsor_hub"), icon: Building2, iconColor: "text-blue-500" },
+        { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
         { path: "/sponsor-dashboard/finances", label: t("nav.finances"), icon: BarChart3 },
       ];
     }
@@ -310,8 +334,9 @@ const Navigation = () => {
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="flex items-center justify-between h-16">
             {/* Logo - Left */}
-            <Link to="/" className="flex items-center shrink-0 z-10">
+            <Link to="/" className="flex items-center gap-2 shrink-0 z-10">
               <img src={wellagoraLogo} alt="WellAgora" className="h-9 sm:h-10 w-auto object-contain" />
+              <span className="text-sm font-medium text-gray-500 hidden sm:inline">WellAgora</span>
             </Link>
 
             {/* Desktop Navigation - Center */}
@@ -365,6 +390,60 @@ const Navigation = () => {
 
             {user ? (
               <>
+                {/* Role-specific Metrics */}
+                <TooltipProvider>
+                  {roleMetrics?.type === 'member' && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link 
+                          to="/my-agora" 
+                          className="flex items-center gap-1.5 px-2 py-1 bg-amber-50 hover:bg-amber-100 rounded-full transition-colors"
+                        >
+                          <Coins className="h-4 w-4 text-amber-500" />
+                          <span className="text-sm font-semibold text-amber-700">{roleMetrics.wellpoints}</span>
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{t('wallet.your_balance')}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                  {roleMetrics?.type === 'expert' && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link 
+                          to="/expert-studio" 
+                          className="flex items-center gap-2 px-3 py-1 bg-purple-50 hover:bg-purple-100 rounded-full transition-colors"
+                        >
+                          <Star className="h-4 w-4 text-purple-500 fill-purple-500" />
+                          <span className="text-sm font-semibold text-purple-700">{roleMetrics.avgRating} ({roleMetrics.reviewCount})</span>
+                          <span className="text-purple-300">|</span>
+                          <span className="text-sm font-semibold text-emerald-600">{roleMetrics.monthlyRevenue.toLocaleString('hu-HU')} Ft</span>
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Szakértői metrikák</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                  {roleMetrics?.type === 'sponsor' && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link 
+                          to="/sponsor-hub" 
+                          className="flex items-center gap-1.5 px-3 py-1 bg-blue-50 hover:bg-blue-100 rounded-full transition-colors"
+                        >
+                          <BarChart3 className="h-4 w-4 text-blue-500" />
+                          <span className="text-sm font-semibold text-blue-700">{roleMetrics.supportedMembers} fő elérve</span>
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Elért emberek</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                </TooltipProvider>
+
                 {/* Inbox with Badge */}
                 <Link to="/inbox" className="relative p-2 text-foreground/80 hover:text-foreground transition-colors">
                   <Inbox className="h-5 w-5" />
@@ -433,22 +512,6 @@ const Navigation = () => {
                         {getDashboardLabel()}
                       </Link>
                     </DropdownMenuItem>
-                    
-                    {/* Super Admin link - clearly visible */}
-                    {isSuperAdmin && (
-                      <>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <Link
-                            to="/admin-panel"
-                            className="flex items-center gap-2 cursor-pointer text-purple-600 dark:text-purple-400 font-semibold bg-purple-50 dark:bg-purple-900/20"
-                          >
-                            <ShieldCheck className="h-4 w-4" />
-                            Adminisztrációs Központ
-                          </Link>
-                        </DropdownMenuItem>
-                      </>
-                    )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={handleSignOut}
@@ -493,6 +556,39 @@ const Navigation = () => {
               <LanguageSelector />
             </div>
 
+            {/* Role-specific Metrics - Mobile (compact version) */}
+            {user && roleMetrics && (
+              <>
+                {roleMetrics.type === 'member' && (
+                  <Link 
+                    to="/my-agora" 
+                    className="flex items-center gap-1"
+                  >
+                    <Coins className="h-4 w-4 text-amber-500" />
+                    <span className="text-xs font-semibold text-amber-700">{roleMetrics.wellpoints}</span>
+                  </Link>
+                )}
+                {roleMetrics.type === 'expert' && (
+                  <Link 
+                    to="/expert-studio" 
+                    className="flex items-center gap-1"
+                  >
+                    <Star className="h-3 w-3 text-purple-500 fill-purple-500" />
+                    <span className="text-xs font-semibold text-purple-700">{roleMetrics.avgRating}</span>
+                  </Link>
+                )}
+                {roleMetrics.type === 'sponsor' && (
+                  <Link 
+                    to="/sponsor-hub" 
+                    className="flex items-center gap-1"
+                  >
+                    <BarChart3 className="h-3 w-3 text-blue-500" />
+                    <span className="text-xs font-semibold text-blue-700">{roleMetrics.supportedMembers}</span>
+                  </Link>
+                )}
+              </>
+            )}
+
             {/* Profile Avatar (logged in) or nothing (logged out) */}
             {user && profile && (
               <Link
@@ -520,6 +616,7 @@ const Navigation = () => {
                 <SheetHeader>
                   <SheetTitle className="flex items-center gap-2">
                     <img src={wellagoraLogo} alt="WellAgora" className="h-8 w-auto" />
+                    <span className="text-sm font-medium text-gray-500">WellAgora</span>
                   </SheetTitle>
                 </SheetHeader>
 
@@ -634,7 +731,7 @@ const Navigation = () => {
                   {/* Super Admin link - Mobile */}
                   {isSuperAdmin && (
                     <Link
-                      to="/super-admin"
+                      to="/admin"
                       onClick={() => setIsMobileMenuOpen(false)}
                       className="flex items-center gap-3 px-3 py-2 rounded-lg text-[#007AFF] hover:bg-blue-50 transition-colors"
                     >

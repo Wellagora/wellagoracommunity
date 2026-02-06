@@ -57,7 +57,7 @@ class AnalyticsService {
 
     // Demo mode: log to console instead of DB
     if (this.isDemoMode) {
-      console.log('[Analytics - Demo]', eventName, eventData);
+      // Analytics event (demo mode)
       return;
     }
 

@@ -132,7 +132,7 @@ const MobileBottomNav = () => {
   };
 
   // Don't show on auth pages, admin pages, or if not logged in
-  const hiddenPaths = ["/auth", "/admin-panel"];
+  const hiddenPaths = ["/auth", "/admin", "/admin-panel"];
   const shouldHide = hiddenPaths.some(p => location.pathname.startsWith(p));
   
   if (shouldHide || !user) {

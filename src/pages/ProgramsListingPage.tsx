@@ -1,9 +1,13 @@
 import { useMemo, useState, useEffect } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useLocalizedContent } from "@/hooks/useLocalizedContent";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFavorites } from "@/hooks/useFavorites";
+import { useBulkProgramSupport } from "@/hooks/useSponsorSupport";
+import { SponsoredBadge } from "@/components/sponsor/SupportBreakdownCard";
+import type { Currency } from "@/types/sponsorSupport";
+import { calculatePricing } from '@/lib/pricing';
+import { PricingDisplay } from '@/components/PricingDisplay';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,6 +29,14 @@ import {
   TrendingUp,
   Sparkles,
   Gift,
+  Hammer,
+  Mountain,
+  Sprout,
+  Landmark,
+  HandHeart,
+  Trophy,
+  Palette,
+  Baby,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -41,15 +53,34 @@ import {
   getLocalizedSponsorName, 
   MockProgram 
 } from "@/data/mockData";
+import { CATEGORIES as CATEGORY_LIST } from "@/constants/categories";
 
+// Icon mapping for categories
+const CATEGORY_ICONS: Record<string, any> = {
+  lifestyle: Leaf,
+  craft: Hammer,
+  gastronomy: Apple,
+  wellness: Heart,
+  hiking: Mountain,
+  gardening: Sprout,
+  heritage: Landmark,
+  volunteering: HandHeart,
+  market: Store,
+  community: Users,
+  sport: Trophy,
+  culture: Palette,
+  family: Baby,
+};
+
+// Community-focused categories with DB slug mapping
 const CATEGORIES = [
-  { id: "all", labelKey: "marketplace.all_categories", icon: Grid },
-  { id: "sustainability", labelKey: "marketplace.category_sustainability", icon: Leaf },
-  { id: "workshop", labelKey: "marketplace.category_workshop", icon: BookOpen },
-  { id: "gastronomy", labelKey: "marketplace.category_gastronomy", icon: Apple },
-  { id: "community", labelKey: "marketplace.category_community", icon: Users },
-  { id: "wellness", labelKey: "marketplace.category_wellness", icon: Heart },
-  { id: "business", labelKey: "marketplace.category_business", icon: Briefcase },
+  { id: "all", labelKey: "marketplace.all_categories", dbSlug: null, icon: Grid },
+  ...CATEGORY_LIST.map(cat => ({
+    id: cat,
+    labelKey: `categories.${cat}`,
+    dbSlug: cat,
+    icon: CATEGORY_ICONS[cat] || BookOpen,
+  })),
 ];
 
 interface Program {
@@ -59,11 +90,14 @@ interface Program {
   image_url: string | null;
   thumbnail_url: string | null;
   access_type: string | null;
+  access_level: string | null;
   price_huf: number | null;
   category: string | null;
   is_featured: boolean | null;
   is_sponsored: boolean | null;
   sponsor_name: string | null;
+  sponsor_logo_url: string | null;
+  fixed_sponsor_amount: number | null;
   sponsor_contribution?: number;
   max_seats?: number;
   used_seats?: number;
@@ -144,7 +178,6 @@ const FALLBACK_SPONSOR = {
 
 const ProgramsListingPage = () => {
   const { t, language } = useLanguage();
-  const { getLocalizedField } = useLocalizedContent();
   const { user } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
   const [searchParams] = useSearchParams();
@@ -160,6 +193,40 @@ const ProgramsListingPage = () => {
 
   const creatorFilter = searchParams.get("creator");
 
+  // CRITICAL: All hooks must be called BEFORE any conditional returns
+  // Bulk detect sponsor support for all filtered programs
+  const filteredPrograms = useMemo(() => {
+    return programs.filter((program) => {
+      const matchesSearch =
+        !searchQuery ||
+        String(program.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+        String(program.description || "").toLowerCase().includes(searchQuery.toLowerCase());
+
+      // Category filter using dbSlug mapping
+      const matchesCategory = selectedCategory === "all" || (() => {
+        const selectedCat = CATEGORIES.find(c => c.id === selectedCategory);
+        if (!selectedCat || !selectedCat.dbSlug) return true;
+        return program.category === selectedCat.dbSlug || program.category === selectedCategory;
+      })();
+
+      return matchesSearch && matchesCategory;
+    });
+  }, [programs, searchQuery, selectedCategory]);
+
+  const programsForSupport = useMemo(() => {
+    // Always return an array to ensure stable hook call
+    if (!filteredPrograms || filteredPrograms.length === 0) {
+      return [];
+    }
+    return filteredPrograms.map(p => ({
+      id: p.id,
+      currency: ((p as any).currency as Currency) || "HUF"
+    }));
+  }, [filteredPrograms]);
+
+  // Always call the hook, even with empty array - React Query will handle it
+  const { data: supportMap } = useBulkProgramSupport(programsForSupport);
+
   // Helper to get localized category label
   const getCategoryLabel = (category: string | null): string => {
     if (!category) return t('marketplace.program');
@@ -170,6 +237,12 @@ const ProgramsListingPage = () => {
     }
     // Fallback: capitalize first letter
     return category.charAt(0).toUpperCase() + category.slice(1);
+  };
+
+  // Helper to clean program title - ONLY strip [DEV] prefix
+  const cleanProgramTitle = (title: string): string => {
+    if (!title) return '';
+    return title.replace(/^\[DEV\]\s*/i, '').trim();
   };
 
   // Convert mock program to Program interface
@@ -185,16 +258,19 @@ const ProgramsListingPage = () => {
     
     return {
       id: mp.id,
-      title: getLocalizedField(mp as unknown as Record<string, unknown>, 'title'),
-      description: getLocalizedField(mp as unknown as Record<string, unknown>, 'description'),
+      title: mp.title,
+      description: mp.description,
       image_url: mp.image_url,
       thumbnail_url: mp.thumbnail_url,
       access_type: mp.access_type,
+      access_level: mp.access_level || 'one_time_purchase',
       price_huf: mp.price_huf,
       category: mp.category,
       is_featured: mp.is_featured,
       is_sponsored: mp.is_sponsored,
       sponsor_name: localizedSponsorName || (mp.is_sponsored ? FALLBACK_SPONSOR[language as keyof typeof FALLBACK_SPONSOR] : null),
+      sponsor_logo_url: mp.sponsor_logo_url || null,
+      fixed_sponsor_amount: (mp.fixed_sponsor_amount as number) || sponsorContribution || null,
       sponsor_contribution: sponsorContribution,
       max_seats: maxSeats,
       used_seats: usedSeats,
@@ -216,6 +292,18 @@ const ProgramsListingPage = () => {
     const fetchPrograms = async () => {
       setIsLoading(true);
       try {
+        // DEV DIAGNOSTICS: Log Supabase connection info and check schema
+        if (import.meta.env.DEV) {
+          const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+          if (supabaseUrl) {
+            try {
+              const host = new URL(supabaseUrl).host;
+            } catch (e) {
+              // Supabase URL check
+            }
+          }
+        }
+
         // Fetch expert_contents with creator profiles
         let query = supabase
           .from("expert_contents")
@@ -230,15 +318,17 @@ const ProgramsListingPage = () => {
             image_url,
             thumbnail_url,
             access_type,
+            access_level,
             price_huf,
             category,
             is_featured,
             is_sponsored,
             sponsor_name,
+            sponsor_logo_url,
+            fixed_sponsor_amount,
             creator_id,
             content_type,
             max_capacity,
-            fixed_sponsor_amount,
             total_licenses,
             used_licenses
           `)
@@ -252,9 +342,16 @@ const ProgramsListingPage = () => {
 
         const { data: contentsData, error: contentsError } = await query;
 
+        // DEV DIAGNOSTICS: Log query results and errors
+        if (import.meta.env.DEV) {
+          if (contentsError) {
+            console.error('  ❌ Query error:', contentsError.message);
+            console.error('  Error details:', contentsError);
+          }
+        }
+
         // FALLBACK: If DB is empty or error, use mock data
         if (contentsError || !contentsData || contentsData.length === 0) {
-          console.log("Using mock data fallback - DB returned empty or error:", contentsError);
           setUsingMockData(true);
           
           const mockPrograms = MOCK_PROGRAMS
@@ -268,12 +365,33 @@ const ProgramsListingPage = () => {
 
         setUsingMockData(false);
 
+        // BUSINESS POLICY: Only show programs with content in current language
+        // NO FALLBACK to other languages. Uses embedded language fields in expert_contents.
+        // HU: requires title + description
+        // EN: requires title_en + description_en
+        // DE: requires title_de + description_de
+        const localizedContents = (contentsData || []).filter(c => {
+          if (language === 'hu') {
+            return c.title && c.title.trim() !== '' && c.description && c.description.trim() !== '';
+          } else if (language === 'en') {
+            return c.title_en && c.title_en.trim() !== '' && c.description_en && c.description_en.trim() !== '';
+          } else if (language === 'de') {
+            return c.title_de && c.title_de.trim() !== '' && c.description_de && c.description_de.trim() !== '';
+          }
+          return false;
+        });
+
+        // DEV DIAGNOSTICS - Language filter results
+        if (import.meta.env.DEV) {
+          // Language filter diagnostics removed
+        }
+
         // Fetch all content_sponsorships for these programs
-        const contentIds = contentsData.map(c => c.id);
+        const sponsorshipContentIds = localizedContents.map(c => c.id);
         const { data: sponsorships } = await supabase
           .from('content_sponsorships')
           .select('content_id, total_licenses, used_licenses, max_sponsored_seats, sponsored_seats_used, sponsor_contribution_huf, is_active')
-          .in('content_id', contentIds)
+          .in('content_id', sponsorshipContentIds)
           .eq('is_active', true);
 
         // Build sponsorship lookup map
@@ -290,7 +408,7 @@ const ProgramsListingPage = () => {
         setSponsorshipData(sponsorshipMap);
 
         // Fetch all creator profiles
-        const creatorIds = [...new Set((contentsData || []).map(c => c.creator_id).filter(Boolean))];
+        const creatorIds = [...new Set((localizedContents || []).map(c => c.creator_id).filter(Boolean))];
         
         let profilesMap: Record<string, CreatorProfile> = {};
         if (creatorIds.length > 0) {
@@ -308,15 +426,20 @@ const ProgramsListingPage = () => {
         }
 
         // Map data with localized fields using the hook helper
-        const mappedPrograms: Program[] = (contentsData || []).map((content, idx) => {
+        const mappedPrograms: Program[] = (localizedContents || []).map((content, idx) => {
           const creator = content.creator_id ? profilesMap[content.creator_id] : null;
           
-          // Use the centralized localization helper for consistent behavior
-          // HU: uses base field (title, description) 
-          // EN: uses title_en, description_en with HU fallback
-          // DE: uses title_de, description_de with HU fallback
-          const localizedTitle = getLocalizedField(content as Record<string, unknown>, 'title');
-          const localizedDescription = getLocalizedField(content as Record<string, unknown>, 'description');
+          // Use language-specific fields based on current language
+          let localizedTitle = content.title || '';
+          let localizedDescription = content.description || '';
+          
+          if (language === 'en') {
+            localizedTitle = content.title_en || content.title || '';
+            localizedDescription = content.description_en || content.description || '';
+          } else if (language === 'de') {
+            localizedTitle = content.title_de || content.title || '';
+            localizedDescription = content.description_de || content.description || '';
+          }
 
           // Calculate sponsorship details - use DB values when available
           const contentData = content as Record<string, unknown>;
@@ -329,16 +452,19 @@ const ProgramsListingPage = () => {
 
           return {
             id: content.id,
-            title: localizedTitle || content.title,
-            description: localizedDescription || content.description,
+            title: localizedTitle,
+            description: localizedDescription,
             image_url: resolveImageUrl(content.image_url),
             thumbnail_url: resolveImageUrl(content.thumbnail_url),
             access_type: content.access_type,
+            access_level: (contentData.access_level as string) || content.access_type || 'one_time_purchase',
             price_huf: content.price_huf,
             category: content.category,
             is_featured: content.is_featured,
             is_sponsored: content.is_sponsored,
             sponsor_name: content.sponsor_name || (content.is_sponsored ? FALLBACK_SPONSOR[language as keyof typeof FALLBACK_SPONSOR] : null),
+            sponsor_logo_url: (contentData.sponsor_logo_url as string) || null,
+            fixed_sponsor_amount: (contentData.fixed_sponsor_amount as number) || sponsorContribution || null,
             sponsor_contribution: sponsorContribution,
             max_seats: maxSeats,
             used_seats: usedSeats,
@@ -376,60 +502,21 @@ const ProgramsListingPage = () => {
     fetchPrograms();
   }, [creatorFilter, language]);
 
-  const filteredPrograms = useMemo(() => {
-    return programs.filter((program) => {
-      const matchesSearch =
-        !searchQuery ||
-        String(program.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-        String(program.description || "").toLowerCase().includes(searchQuery.toLowerCase());
-
-      const matchesCategory = selectedCategory === "all" || program.category === selectedCategory;
-
-      return matchesSearch && matchesCategory;
+  const getPricingDisplay = (program: Program) => {
+    const pricing = calculatePricing({
+      basePrice: program.price_huf || 0,
+      sponsorAmount: program.fixed_sponsor_amount || 0,
+      platformFeePercent: 20
     });
-  }, [programs, searchQuery, selectedCategory]);
-
-  const formatPrice = (priceHuf: number | null): string => {
-    if (!priceHuf || priceHuf === 0) return language === 'hu' ? '0 Ft' : '0 €';
-    if (language === 'hu') return `${priceHuf.toLocaleString('hu-HU')} Ft`;
-    const euroPrice = Math.round(priceHuf / 400);
-    return `${euroPrice} €`;
-  };
-
-  const getAccessBadge = (program: Program, idx?: number) => {
-    // Enhanced sponsored badge with contribution badge component + content_type for quota labels
-    if (program.is_sponsored) {
-      const sponsorName = program.sponsor_name || FALLBACK_SPONSOR[language as keyof typeof FALLBACK_SPONSOR];
-      const contributionAmount = program.sponsor_contribution || (program.price_huf ? Math.round(program.price_huf * 0.8) : 5000);
-      const maxSeats = program.max_seats || 10;
-      const usedSeats = program.used_seats || Math.min(7, 2 + (idx || 0));
-      const seatsExhausted = usedSeats >= maxSeats;
-      
-      return (
-        <SponsorContributionBadge
-          sponsorName={sponsorName}
-          contributionAmount={contributionAmount}
-          originalPrice={program.price_huf || 0}
-          size="sm"
-          maxSeats={maxSeats}
-          usedSeats={usedSeats}
-          showImpactMode={seatsExhausted}
-          contentType={program.content_type || 'in_person'}
-          maxCapacity={program.max_capacity}
-        />
-      );
-    }
-
-    if (program.price_huf && program.price_huf > 0) {
-      return (
-        <Badge className="bg-accent text-accent-foreground border-0 text-xs">
-          <ShoppingCart className="w-3 h-3 mr-1" />
-          {formatPrice(program.price_huf)}
-        </Badge>
-      );
-    }
-
-    return <Badge className="bg-secondary text-secondary-foreground border-0 text-xs">{t("marketplace.open_content")}</Badge>;
+    
+    return (
+      <PricingDisplay 
+        pricing={pricing}
+        sponsorName={program.sponsor_name || undefined}
+        sponsorLogoUrl={program.sponsor_logo_url || undefined}
+        variant="card"
+      />
+    );
   };
 
   return (
@@ -546,6 +633,141 @@ const ProgramsListingPage = () => {
                 </div>
                 <h3 className="font-serif text-2xl font-semibold text-foreground mb-3">{t("marketplace.no_results")}</h3>
                 <p className="text-muted-foreground mb-8 max-w-md mx-auto">{t("marketplace.no_results_desc")}</p>
+                
+                {/* DEV ONLY: Comprehensive Empty State Diagnostics */}
+                {false && import.meta.env.DEV && (
+                  <div className="max-w-3xl mx-auto mb-8 p-6 bg-amber-50 border-2 border-amber-300 rounded-lg text-left shadow-lg">
+                    <h4 className="font-bold text-amber-900 mb-4 text-lg">🔧 DEV DIAGNOSTICS: Why 0 programs?</h4>
+                    
+                    {/* DIAGNOSIS SECTION */}
+                    <div className="space-y-3 text-sm">
+                      {/* Root cause analysis */}
+                      {programs.length === 0 ? (
+                        <div className="bg-red-50 border-2 border-red-300 rounded-lg p-4">
+                          <p className="font-bold text-red-900 text-base mb-2">❌ ROOT CAUSE: No published programs in database</p>
+                          <p className="text-red-800 mb-2">
+                            <strong>Fetched:</strong> {programs.length} published programs from DB
+                          </p>
+                          <p className="text-xs text-red-700 mt-2">
+                            Marketplace uses ONLY real DB data. No mock fallback in DEV or production.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="bg-orange-50 border-2 border-orange-300 rounded-lg p-4">
+                          <p className="font-bold text-orange-900 text-base mb-2">⚠️ ROOT CAUSE: No approved localization for language "{language}"</p>
+                          <p className="text-orange-800 mb-2">
+                            <strong>Fetched:</strong> {programs.length} published programs<br/>
+                            <strong>Approved {language.toUpperCase()}:</strong> {programs.filter(p => p.title).length} programs
+                          </p>
+                          <div className="bg-orange-100 border border-orange-200 rounded p-2 mt-2">
+                            <p className="text-xs font-semibold text-orange-900 mb-1">📋 BUSINESS POLICY:</p>
+                            <p className="text-xs text-orange-800">
+                              Marketplace shows ONLY programs with approved localizations in current language.
+                              <br/>❌ NO fallback to other languages
+                              <br/>❌ NO mixed-language content
+                              <br/>✅ Quality over availability
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Detailed counts */}
+                      <div className="bg-white border border-amber-300 rounded-lg p-4">
+                        <p className="font-semibold text-amber-900 mb-3">📊 Detailed Counts:</p>
+                        <div className="grid grid-cols-4 gap-3 text-xs">
+                          <div className="bg-gray-50 p-3 rounded border">
+                            <div className="text-gray-600 mb-1">Published</div>
+                            <div className={`text-2xl font-bold ${programs.length === 0 ? 'text-red-600' : 'text-green-600'}`}>
+                              {programs.length}
+                            </div>
+                            <div className="text-gray-500 mt-1">from DB</div>
+                          </div>
+                          <div className="bg-gray-50 p-3 rounded border">
+                            <div className="text-gray-600 mb-1">Approved {language.toUpperCase()}</div>
+                            <div className={`text-2xl font-bold ${programs.filter(p => p.title).length === 0 ? 'text-red-600' : 'text-green-600'}`}>
+                              {programs.filter(p => p.title).length}
+                            </div>
+                            <div className="text-gray-500 mt-1">with localization</div>
+                          </div>
+                          <div className="bg-gray-50 p-3 rounded border">
+                            <div className="text-gray-600 mb-1">After Filters</div>
+                            <div className="text-2xl font-bold text-blue-600">{filteredPrograms.length}</div>
+                            <div className="text-gray-500 mt-1">search + category</div>
+                          </div>
+                          <div className="bg-gray-50 p-3 rounded border">
+                            <div className="text-gray-600 mb-1">Sponsor Rules</div>
+                            <div className={`text-2xl font-bold ${supportMap && Object.keys(supportMap).length > 0 ? 'text-green-600' : 'text-gray-400'}`}>
+                              {supportMap ? Object.values(supportMap).filter(s => s?.hasSupport).length : 0}
+                            </div>
+                            <div className="text-gray-500 mt-1">active</div>
+                          </div>
+                        </div>
+                        
+                        {/* Sponsor support warning */}
+                        {supportMap && Object.keys(supportMap).length === 0 && programs.length > 0 && (
+                          <div className="mt-3 bg-yellow-50 border border-yellow-200 rounded p-2">
+                            <p className="text-xs text-yellow-800">
+                              ⚠️ No active sponsor support rules found. "Sponsored" badge will not appear.
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* SOLUTION SECTION */}
+                      <div className="bg-green-50 border-2 border-green-300 rounded-lg p-4">
+                        <p className="font-bold text-green-900 mb-3 text-base">✅ SOLUTION: Run seed script</p>
+                        
+                        <div className="space-y-2 text-xs text-green-800">
+                          <p className="font-semibold">📝 EXACT STEPS:</p>
+                          <ol className="list-decimal list-inside space-y-1 ml-2">
+                            <li>Open <strong>Supabase Dashboard</strong> → SQL Editor</li>
+                            <li>Open file <code className="bg-green-100 px-2 py-1 rounded font-mono">supabase/seed_marketplace_dev.sql</code> in your code editor</li>
+                            <li>Copy the <strong>ENTIRE FILE CONTENTS</strong> (not the file path!)</li>
+                            <li>Paste into SQL Editor</li>
+                            <li>Click <strong>"Run"</strong> or press Cmd+Enter</li>
+                            <li>Verify output: <code className="bg-green-100 px-2 py-1 rounded">"✅ MARKETPLACE SEED COMPLETE"</code></li>
+                            <li>Check verification queries show ✅ PASS for all checks</li>
+                            <li>Hard refresh this page: <strong>Cmd+Shift+R</strong> (Mac) or <strong>Ctrl+Shift+R</strong> (Windows)</li>
+                          </ol>
+                          
+                          <div className="bg-green-100 border border-green-200 rounded p-2 mt-3">
+                            <p className="font-semibold mb-1">📦 What seed creates:</p>
+                            <ul className="list-disc list-inside space-y-0.5 ml-2">
+                              <li>2 published programs (1 HUF, 1 EUR)</li>
+                              <li>Approved localizations in HU/DE/EN for both</li>
+                              <li>1 active sponsor support rule (HUF program)</li>
+                              <li>Test expert + sponsor profiles</li>
+                            </ul>
+                          </div>
+                          
+                          <div className="bg-green-100 border border-green-200 rounded p-2 mt-2">
+                            <p className="font-semibold mb-1">✅ Expected result after seed:</p>
+                            <ul className="list-disc list-inside space-y-0.5 ml-2">
+                              <li>2 programs visible in HU/DE/EN (language switching works)</li>
+                              <li>HUF program has "Támogatott/Sponsored" badge</li>
+                              <li>Program detail shows SupportBreakdownCard</li>
+                            </ul>
+                          </div>
+                          
+                          <p className="mt-3 text-xs text-green-700">
+                            <strong>Note:</strong> Seed is idempotent (safe to re-run). Uses fixed UUIDs and ON CONFLICT.
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {/* Additional checks */}
+                      <div className="bg-blue-50 border border-blue-200 rounded p-3">
+                        <p className="font-semibold text-blue-900 text-xs mb-2">🔍 Additional Checks:</p>
+                        <ul className="list-disc list-inside space-y-1 text-xs text-blue-800 ml-2">
+                          <li>localStorage language: <code className="bg-blue-100 px-1 rounded">{language}</code> (matches seed approvals?)</li>
+                          <li>Console errors: Check browser DevTools (F12) for RLS or query errors</li>
+                          <li>Auth users: Ensure user2@wellagora.dev and user3@wellagora.dev exist in Auth Dashboard</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
                 <Button
                   variant="outline"
                   onClick={() => {
@@ -593,19 +815,42 @@ const ProgramsListingPage = () => {
                               <ImagePlaceholder category={program.category} />
                             )}
 
-                            {/* Featured badge - Premium gradient */}
-                            {program.is_featured && (
-                              <div className="absolute top-4 left-4">
+                            {/* Badges - Sponsored and Free only */}
+                            <div className="absolute top-4 left-4 flex flex-col gap-2">
+                              {/* Sponsored badge - from is_sponsored field */}
+                              {program.is_sponsored && program.fixed_sponsor_amount && program.fixed_sponsor_amount > 0 && (
+                                <motion.div
+                                  initial={{ opacity: 0, scale: 0.9 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  className="flex flex-col gap-1"
+                                >
+                                  <SponsoredBadge />
+                                  {/* Sponsor branding */}
+                                  {program.sponsor_logo_url ? (
+                                    <img 
+                                      src={program.sponsor_logo_url} 
+                                      alt={program.sponsor_name || 'Sponsor'} 
+                                      className="h-4 w-auto object-contain bg-white/90 px-2 py-0.5 rounded"
+                                    />
+                                  ) : program.sponsor_name ? (
+                                    <span className="text-xs bg-white/90 px-2 py-0.5 rounded text-gray-700">
+                                      {program.sponsor_name}
+                                    </span>
+                                  ) : null}
+                                </motion.div>
+                              )}
+                              
+                              {/* Free badge - ONLY if truly free */}
+                              {(program.access_level === 'free' || program.price_huf === 0) && (
                                 <motion.span 
                                   initial={{ opacity: 0, scale: 0.9 }}
                                   animate={{ opacity: 1, scale: 1 }}
-                                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-semibold tracking-wide uppercase shadow-lg shadow-amber-500/25"
+                                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500 text-white text-xs font-semibold tracking-wide uppercase shadow-lg shadow-emerald-500/25"
                                 >
-                                  <TrendingUp className="w-3 h-3" />
-                                  {language === 'hu' ? 'NÉPSZERŰ' : language === 'de' ? 'BELIEBT' : 'POPULAR'}
+                                  {language === 'hu' ? 'INGYENES' : language === 'de' ? 'KOSTENLOS' : 'FREE'}
                                 </motion.span>
-                              </div>
-                            )}
+                              )}
+                            </div>
 
                             {/* Favorite Button */}
                             <button
@@ -647,7 +892,7 @@ const ProgramsListingPage = () => {
                             
                             {/* Title */}
                             <h3 className="text-xl font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-black transition-colors duration-300">
-                              {String(program.title)}
+                              {cleanProgramTitle(String(program.title))}
                             </h3>
 
                             {/* Creator info with verified badge */}
@@ -666,18 +911,9 @@ const ProgramsListingPage = () => {
                               </div>
                             )}
 
-                            {/* Social proof - Attendees + Scarcity */}
-                            <div className="mt-3">
-                              <SocialProofBadge 
-                                attendeeCount={5 + (index * 2) % 15} 
-                                seatsLeft={index % 4 === 0 ? 2 : index % 5 === 0 ? 4 : undefined}
-                                size="sm"
-                              />
-                            </div>
-
                             {/* Price/Access badge */}
                             <div className="mt-4">
-                              {getAccessBadge(program, index)}
+                              {getPricingDisplay(program)}
                             </div>
                           </div>
                         </CardContent>

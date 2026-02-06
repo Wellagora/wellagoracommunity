@@ -173,18 +173,8 @@ export const useVouchers = (): UseVouchersReturn => {
         console.error('[useVouchers] Error checking sponsorship:', sponsorError);
       }
 
-      console.log('[useVouchers] Sponsorship found:', {
-        contentId,
-        sponsorship: sponsorship ? {
-          id: sponsorship.id,
-          maxSeats: sponsorship.max_sponsored_seats || sponsorship.total_licenses,
-          usedSeats: sponsorship.sponsored_seats_used || sponsorship.used_licenses
-        } : null
-      });
-
       // Use atomic RPC function to check and reserve seat (prevents race conditions)
       if (sponsorship) {
-        console.log('[useVouchers] Calling atomic RPC: check_and_reserve_sponsored_seat');
         
         const { data: rpcResult, error: rpcError } = await supabase
           .rpc('check_and_reserve_sponsored_seat', {
@@ -203,7 +193,6 @@ export const useVouchers = (): UseVouchersReturn => {
           }
         } else if (rpcResult && rpcResult.length > 0) {
           const result = rpcResult[0];
-          console.log('[useVouchers] RPC result:', result);
           
           if (!result.success) {
             toast.error(t('voucher.quota_exhausted') || 'A támogatott helyek elfogytak');
@@ -211,7 +200,6 @@ export const useVouchers = (): UseVouchersReturn => {
           }
           
           // Seat was atomically reserved, continue with voucher creation
-          console.log('[useVouchers] Seat reserved atomically, remaining:', result.seats_remaining);
         }
       }
 

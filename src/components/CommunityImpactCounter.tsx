@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PressableButton } from "@/components/ui/PressableButton";
 import { Sparkles, Heart, Users, LucideIcon, TrendingUp, Zap } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { motion, useInView } from "framer-motion";
 import { Link } from "react-router-dom";
 import { StaggerContainer, StaggerItem } from "@/components/ui/StaggerAnimation";
@@ -55,6 +56,7 @@ const STORY_CARD_CONFIG: Array<{
 
 export const CommunityImpactCounter = () => {
   const { t, language } = useLanguage();
+  const { user } = useAuth();
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
@@ -171,43 +173,45 @@ export const CommunityImpactCounter = () => {
           </Card>
         </motion.div>
 
-        {/* CTA with Social Proof */}
-        <motion.div 
-          className="text-center mt-12"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-        >
-          {/* Social proof badge */}
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="flex -space-x-2">
-              {['photo-1494790108377-be9c29b29330', 'photo-1507003211169-0a1dd7228f2d', 'photo-1438761681033-6461ffad8d80', 'photo-1500648767791-00dcc994a43e'].map((photo, i) => (
-                <Avatar key={i} className="w-7 h-7 ring-2 ring-white">
-                  <AvatarImage src={`https://images.unsplash.com/${photo}?w=50&h=50&fit=crop&crop=face`} />
-                  <AvatarFallback className="bg-black/10 text-xs">U</AvatarFallback>
-                </Avatar>
-              ))}
+        {/* CTA with Social Proof - Only show for non-authenticated users */}
+        {!user && (
+          <motion.div 
+            className="text-center mt-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            {/* Social proof badge */}
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <div className="flex -space-x-2">
+                {['photo-1494790108377-be9c29b29330', 'photo-1507003211169-0a1dd7228f2d', 'photo-1438761681033-6461ffad8d80', 'photo-1500648767791-00dcc994a43e'].map((photo, i) => (
+                  <Avatar key={i} className="w-7 h-7 ring-2 ring-white">
+                    <AvatarImage src={`https://images.unsplash.com/${photo}?w=50&h=50&fit=crop&crop=face`} />
+                    <AvatarFallback className="bg-black/10 text-xs">U</AvatarFallback>
+                  </Avatar>
+                ))}
+              </div>
+              <span className="text-sm text-black/60 font-medium">{socialProofText}</span>
             </div>
-            <span className="text-sm text-black/60 font-medium">{socialProofText}</span>
-          </div>
-          
-          {/* CTA Button with glow effect */}
-          <div className="relative inline-block">
-            {/* Subtle glow behind button */}
-            <div className="absolute inset-0 bg-black/20 blur-xl rounded-full scale-75 opacity-50" />
             
-            <PressableButton 
-              asChild 
-              size="lg" 
-              className="relative bg-black hover:bg-black/90 text-white px-10 py-6 text-base font-semibold shadow-[0_4px_20px_rgba(0,0,0,0.25)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.35)] transition-all duration-300"
-            >
-              <Link to="/auth" className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5" />
-                {t('community_pulse.cta_button')}
-              </Link>
-            </PressableButton>
-          </div>
-        </motion.div>
+            {/* CTA Button with glow effect */}
+            <div className="relative inline-block">
+              {/* Subtle glow behind button */}
+              <div className="absolute inset-0 bg-black/20 blur-xl rounded-full scale-75 opacity-50" />
+              
+              <PressableButton 
+                asChild 
+                size="lg" 
+                className="relative bg-black hover:bg-black/90 text-white px-10 py-6 text-base font-semibold shadow-[0_4px_20px_rgba(0,0,0,0.25)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.35)] transition-all duration-300"
+              >
+                <Link to="/auth" className="flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5" />
+                  {t('community_pulse.cta_button')}
+                </Link>
+              </PressableButton>
+            </div>
+          </motion.div>
+        )}
       </div>
     </section>
   );

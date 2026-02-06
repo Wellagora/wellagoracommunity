@@ -61,7 +61,6 @@ export function ProgramDetailModal(props: {
     setLoading(true);
     setIsEditing(false);
     try {
-      console.log("[ProgramDetailModal] loading", programId);
       const { data, error } = await supabase
         .from("expert_contents")
         .select("id,title,description,category,is_published,is_featured,creator_id,created_at,price_huf,max_capacity,used_licenses,total_licenses")
@@ -94,8 +93,6 @@ export function ProgramDetailModal(props: {
         .select("*", { count: 'exact', head: true })
         .eq("content_id", programId);
       setBookingsCount(count || 0);
-
-      console.log("[ProgramDetailModal] loaded", { program: data?.id, expertName, sponsorName });
     } catch (e: any) {
       console.error("[ProgramDetailModal] load error", e);
       toast.error(e?.message || "Nem sikerült betölteni a programot");
@@ -130,8 +127,6 @@ export function ProgramDetailModal(props: {
 
       if (error) throw error;
 
-      console.log('DB SUCCESS:', data);
-
       toast.success("Mentve!");
       setIsEditing(false);
       onSaved?.();
@@ -156,8 +151,6 @@ export function ProgramDetailModal(props: {
         .single();
       if (error) throw error;
 
-      console.log('DB SUCCESS:', data);
-
       toast.success("Program jóváhagyva!");
       onSaved?.();
       await load();
@@ -180,8 +173,6 @@ export function ProgramDetailModal(props: {
         .select("*")
         .single();
       if (error) throw error;
-
-      console.log('DB SUCCESS:', data);
 
       toast.success("Program elutasítva!");
       onSaved?.();
@@ -206,8 +197,6 @@ export function ProgramDetailModal(props: {
         .maybeSingle();
       if (error) throw error;
 
-      console.log('DB SUCCESS:', data);
-
       toast.success("Program törölve!");
       onSaved?.();
       onOpenChange(false);
@@ -231,8 +220,6 @@ export function ProgramDetailModal(props: {
         .select("*")
         .single();
       if (error) throw error;
-
-      console.log('DB SUCCESS:', data);
 
       toast.success(program.is_featured ? "Kiemelt státusz eltávolítva" : "Kiemeltté téve!");
       await load();

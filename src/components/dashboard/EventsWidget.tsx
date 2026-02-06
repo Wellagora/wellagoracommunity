@@ -12,6 +12,7 @@ import { format } from 'date-fns';
 import { hu, de, enUS } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useProjectVillages } from '@/hooks/useProjectVillages';
 
 interface Event {
   id: string;
@@ -34,16 +35,10 @@ interface EventRsvp {
   status: 'going' | 'maybe' | 'not_going';
 }
 
-const villageColors: Record<string, string> = {
-  'Kővágóörs': 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-500/30',
-  'Mindszentkálla': 'bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30',
-  'Kékkút': 'bg-purple-500/20 text-purple-700 dark:text-purple-400 border-purple-500/30',
-  'Szentbékkálla': 'bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30',
-};
-
 export const EventsWidget = memo(() => {
   const { t, language } = useLanguage();
   const { user } = useAuth();
+  const { getVillageColor } = useProjectVillages();
   const queryClient = useQueryClient();
 
   const dateLocale = language === 'hu' ? hu : language === 'de' ? de : enUS;
@@ -189,7 +184,7 @@ export const EventsWidget = memo(() => {
         {events.map(event => {
           const dateInfo = formatEventDate(event.start_date);
           const rsvpStatus = getUserRsvpStatus(event.id);
-          const villageColor = event.village ? villageColors[event.village] : 'bg-muted text-muted-foreground';
+          const villageColor = getVillageColor(event.village);
 
           return (
             <div

@@ -9,7 +9,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
+import { toast as sonnerToast } from 'sonner';
 import { MessageSquare, Trash2, Edit2 } from "lucide-react";
+import { awardPoints, WELLPOINTS_QUERY_KEY } from '@/lib/wellpoints';
 import { motion, AnimatePresence } from "framer-motion";
 import StarRating from "./StarRating";
 import { formatDistanceToNow } from "date-fns";
@@ -111,21 +113,33 @@ const ReviewSection = ({ contentId }: ReviewSectionProps) => {
           .eq("id", editingReviewId);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("content_reviews").insert({
+        const { data, error } = await supabase.from("content_reviews").insert({
           user_id: user.id,
           content_id: contentId,
           rating,
           comment: comment || null,
-        });
+        }).select().single();
         if (error) throw error;
+        
+        // Award points for submitting review
+        if (data) {
+          await awardPoints(user.id, 'review_submitted', 'Értékelés beküldve', data.id, 'review');
+          queryClient.invalidateQueries({ queryKey: WELLPOINTS_QUERY_KEY(user.id) });
+        }
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["contentReviews", contentId] });
       queryClient.invalidateQueries({ queryKey: ["contentAvgRating", contentId] });
-      toast({
-        title: editingReviewId ? t("reviews.updated") : t("reviews.success"),
-      });
+      
+      if (editingReviewId) {
+        toast({
+          title: t("reviews.updated"),
+        });
+      } else {
+        sonnerToast.success('+20 WellPont! 🪙', { description: 'Köszönjük az értékelést!' });
+      }
+      
       setRating(0);
       setComment("");
       setIsEditing(false);

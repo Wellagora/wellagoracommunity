@@ -68,6 +68,59 @@ export type Database = {
           },
         ]
       }
+      content_localizations: {
+        Row: {
+          approved_at: string | null
+          content_id: string
+          description: string | null
+          edited_at: string | null
+          id: string
+          is_ai_generated: boolean
+          is_approved: boolean
+          locale: string
+          long_content: Json | null
+          source_locale: string | null
+          title: string | null
+          translated_at: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          content_id: string
+          description?: string | null
+          edited_at?: string | null
+          id?: string
+          is_ai_generated?: boolean
+          is_approved?: boolean
+          locale: string
+          long_content?: Json | null
+          source_locale?: string | null
+          title?: string | null
+          translated_at?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          content_id?: string
+          description?: string | null
+          edited_at?: string | null
+          id?: string
+          is_ai_generated?: boolean
+          is_approved?: boolean
+          locale?: string
+          long_content?: Json | null
+          source_locale?: string | null
+          title?: string | null
+          translated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_localizations_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       affiliate_links: {
         Row: {
           click_count: number | null
@@ -1332,6 +1385,7 @@ export type Database = {
           is_featured: boolean | null
           is_published: boolean | null
           is_sponsored: boolean | null
+          master_locale: string
           max_capacity: number | null
           og_image_url: string | null
           price_huf: number | null
@@ -1353,6 +1407,7 @@ export type Database = {
           title_en: string | null
           tools_needed: string | null
           total_licenses: number | null
+          translation_status: string
           updated_at: string | null
           used_licenses: number | null
         }
@@ -1373,6 +1428,7 @@ export type Database = {
           is_featured?: boolean | null
           is_published?: boolean | null
           is_sponsored?: boolean | null
+          master_locale?: string
           max_capacity?: number | null
           og_image_url?: string | null
           price_huf?: number | null
@@ -1394,6 +1450,7 @@ export type Database = {
           title_en?: string | null
           tools_needed?: string | null
           total_licenses?: number | null
+          translation_status?: string
           updated_at?: string | null
           used_licenses?: number | null
         }
@@ -1414,6 +1471,7 @@ export type Database = {
           is_featured?: boolean | null
           is_published?: boolean | null
           is_sponsored?: boolean | null
+          master_locale?: string
           max_capacity?: number | null
           og_image_url?: string | null
           price_huf?: number | null
@@ -1435,6 +1493,7 @@ export type Database = {
           title_en?: string | null
           tools_needed?: string | null
           total_licenses?: number | null
+          translation_status?: string
           updated_at?: string | null
           used_licenses?: number | null
         }
@@ -2214,6 +2273,7 @@ export type Database = {
           company_size: string | null
           country: string | null
           created_at: string
+          creator_legal_status: Database["public"]["Enums"]["creator_legal_status"]
           credit_balance: number | null
           district: string | null
           email: string
@@ -2287,6 +2347,7 @@ export type Database = {
           company_size?: string | null
           country?: string | null
           created_at?: string
+          creator_legal_status?: Database["public"]["Enums"]["creator_legal_status"]
           credit_balance?: number | null
           district?: string | null
           email: string
@@ -2360,6 +2421,7 @@ export type Database = {
           company_size?: string | null
           country?: string | null
           created_at?: string
+          creator_legal_status?: Database["public"]["Enums"]["creator_legal_status"]
           credit_balance?: number | null
           district?: string | null
           email?: string
@@ -2742,30 +2804,6 @@ export type Database = {
           table_name?: string | null
           user_agent?: string | null
           user_id?: string | null
-        }
-        Relationships: []
-      }
-      spatial_ref_sys: {
-        Row: {
-          auth_name: string | null
-          auth_srid: number | null
-          proj4text: string | null
-          srid: number
-          srtext: string | null
-        }
-        Insert: {
-          auth_name?: string | null
-          auth_srid?: number | null
-          proj4text?: string | null
-          srid: number
-          srtext?: string | null
-        }
-        Update: {
-          auth_name?: string | null
-          auth_srid?: number | null
-          proj4text?: string | null
-          srid?: number
-          srtext?: string | null
         }
         Relationships: []
       }
@@ -3306,6 +3344,7 @@ export type Database = {
           expert_share: number | null
           gross_amount: number | null
           id: string
+          invoice_issued_by: string | null
           license_count: number | null
           member_payment_amount: number | null
           platform_commission: number | null
@@ -3332,6 +3371,7 @@ export type Database = {
           expert_share?: number | null
           gross_amount?: number | null
           id?: string
+          invoice_issued_by?: string | null
           license_count?: number | null
           member_payment_amount?: number | null
           platform_commission?: number | null
@@ -3358,6 +3398,7 @@ export type Database = {
           expert_share?: number | null
           gross_amount?: number | null
           id?: string
+          invoice_issued_by?: string | null
           license_count?: number | null
           member_payment_amount?: number | null
           platform_commission?: number | null
@@ -3780,7 +3821,7 @@ export type Database = {
         Returns: number
       }
       _postgis_stats: {
-        Args: { ""?: string; att_name: string; tbl: unknown }
+        Args: { "": string; att_name: string; tbl: unknown }
         Returns: string
       }
       _st_3dintersects: {
@@ -3839,7 +3880,10 @@ export type Database = {
         Args: { geom1: unknown; geom2: unknown }
         Returns: boolean
       }
-      _st_sortablehash: { Args: { geom: unknown }; Returns: number }
+      _st_overlaps_3d: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
       _st_touches: {
         Args: { geom1: unknown; geom2: unknown }
         Returns: boolean
@@ -4891,6 +4935,7 @@ export type Database = {
         | "ngo"
         | "citizen"
         | "project_admin"
+      creator_legal_status: "individual" | "entrepreneur"
       content_access_level:
         | "free"
         | "registered"
@@ -4910,12 +4955,12 @@ export type Database = {
       geometry_dump: {
         path: number[] | null
         geom: unknown
-      }
+      },
       valid_detail: {
         valid: boolean | null
         reason: string | null
         location: unknown
-      }
+      },
     }
   }
 }

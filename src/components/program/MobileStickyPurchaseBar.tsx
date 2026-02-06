@@ -2,6 +2,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { ShoppingCart, Ticket, Check, Loader2, Clock, AlertTriangle } from "lucide-react";
+import { calculatePricing, formatPrice } from '@/lib/pricing';
 
 interface MobileStickyPurchaseBarProps {
   originalPrice: number | null;
@@ -35,10 +36,14 @@ const MobileStickyPurchaseBar = ({
 }: MobileStickyPurchaseBarProps) => {
   const { t, language } = useLanguage();
 
-  // Calculate final price - if quota exhausted, show original price
-  const finalPrice = isSponsored && !isQuotaExhausted
-    ? Math.max(0, (originalPrice || 0) - sponsorContribution)
-    : originalPrice || 0;
+  // Calculate pricing using centralized system
+  const pricing = calculatePricing({
+    basePrice: originalPrice || 0,
+    sponsorAmount: isSponsored && !isQuotaExhausted ? sponsorContribution : 0,
+    platformFeePercent: 20
+  });
+
+  const finalPrice = pricing.userPays;
 
   // Don't show for free content or if user has access
   if (accessLevel === 'free' || hasAccess) {
@@ -72,7 +77,7 @@ const MobileStickyPurchaseBar = ({
         <div className="flex items-center justify-between gap-4">
           <div className="flex flex-col">
             <span className="text-xl font-bold text-foreground">
-              {originalPrice?.toLocaleString() || 0} Ft
+              {formatPrice(originalPrice || 0)}
             </span>
             <span className="text-xs text-muted-foreground">
               {language === 'hu' ? 'Támogatott helyek elfogytak' : 'Sponsored seats sold out'}
@@ -118,12 +123,12 @@ const MobileStickyPurchaseBar = ({
                   {finalPrice === 0 ? (
                     <span className="text-emerald-600">INGYENES</span>
                   ) : (
-                    `${finalPrice.toLocaleString()} Ft`
+                    formatPrice(finalPrice)
                   )}
                 </span>
                 {originalPrice && originalPrice > 0 && finalPrice < originalPrice && (
                   <span className="text-sm text-muted-foreground line-through">
-                    {originalPrice.toLocaleString()} Ft
+                    {formatPrice(originalPrice)}
                   </span>
                 )}
               </div>
@@ -133,7 +138,7 @@ const MobileStickyPurchaseBar = ({
             </>
           ) : (
             <span className="text-xl font-bold text-foreground">
-              {originalPrice?.toLocaleString() || 0} Ft
+              {formatPrice(originalPrice || 0)}
             </span>
           )}
         </div>

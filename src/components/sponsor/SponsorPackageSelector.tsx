@@ -20,14 +20,17 @@ import { motion } from 'framer-motion';
 
 interface SponsorPackage {
   id: string;
-  package_key: string;
-  name_hu: string;
-  name_en: string;
-  total_price_huf: number;
-  platform_fee_huf: number;
-  credits_huf: number;
-  bonus_credits_huf: number;
-  billing_period: 'quarterly' | 'annual';
+  name: string;
+  emoji: string;
+  period: string;
+  periodMonths: number;
+  price: number;
+  baseCredits: number;
+  bonusCredits: number;
+  totalCredits: number;
+  bonusPercent: number;
+  badge: string | null;
+  highlighted: boolean;
 }
 
 interface SponsorPackageSelectorProps {
@@ -48,48 +51,52 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
   }, []);
 
   const loadPackages = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('sponsor_packages')
-        .select('*')
-        .eq('is_active', true)
-        .order('total_price_huf', { ascending: true });
-
-      if (error) throw error;
-      setPackages((data || []).map(pkg => ({
-        ...pkg,
-        billing_period: pkg.billing_period as 'quarterly' | 'annual'
-      })));
-    } catch (error) {
-      console.error('Error loading packages:', error);
-      // Fallback to hardcoded packages
-      setPackages([
-        {
-          id: 'quarterly',
-          package_key: 'quarterly',
-          name_hu: 'Negyedéves Csomag',
-          name_en: 'Quarterly Package',
-          total_price_huf: 150000,
-          platform_fee_huf: 50000,
-          credits_huf: 100000,
-          bonus_credits_huf: 0,
-          billing_period: 'quarterly'
-        },
-        {
-          id: 'annual',
-          package_key: 'annual',
-          name_hu: 'Éves Csomag',
-          name_en: 'Annual Package',
-          total_price_huf: 480000,
-          platform_fee_huf: 80000,
-          credits_huf: 400000,
-          bonus_credits_huf: 20000,
-          billing_period: 'annual'
-        }
-      ]);
-    } finally {
-      setLoading(false);
-    }
+    // Use hardcoded packages with new simplified structure
+    setPackages([
+      {
+        id: 'starter',
+        name: 'Kezdő',
+        emoji: '🌱',
+        period: '1 hónap',
+        periodMonths: 1,
+        price: 30000,
+        baseCredits: 30000,
+        bonusCredits: 0,
+        totalCredits: 30000,
+        bonusPercent: 0,
+        badge: null,
+        highlighted: false
+      },
+      {
+        id: 'supporter',
+        name: 'Támogató',
+        emoji: '⭐',
+        period: '3 hónap',
+        periodMonths: 3,
+        price: 100000,
+        baseCredits: 100000,
+        bonusCredits: 15000,
+        totalCredits: 115000,
+        bonusPercent: 15,
+        badge: 'NÉPSZERŰ',
+        highlighted: true
+      },
+      {
+        id: 'partner',
+        name: 'Partner',
+        emoji: '💎',
+        period: '12 hónap',
+        periodMonths: 12,
+        price: 400000,
+        baseCredits: 400000,
+        bonusCredits: 100000,
+        totalCredits: 500000,
+        bonusPercent: 25,
+        badge: 'LEGJOBB ÉRTÉK',
+        highlighted: false
+      }
+    ]);
+    setLoading(false);
   };
 
   const handlePurchase = async (pkg: SponsorPackage) => {
@@ -99,21 +106,17 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
     }
 
     setPurchasing(true);
-    setSelectedPackage(pkg.package_key);
+    setSelectedPackage(pkg.id);
 
     try {
-      const totalCredits = pkg.credits_huf + pkg.bonus_credits_huf;
-
       // Record credit transaction
       const { error: txError } = await supabase
         .from('credit_transactions')
         .insert({
           sponsor_user_id: user.id,
-          credits: totalCredits,
+          credits: pkg.totalCredits,
           transaction_type: 'purchase',
-          description: language === 'hu' 
-            ? `${pkg.name_hu} vásárlás`
-            : `${pkg.name_en} purchase`
+          description: `${pkg.name} csomag vásárlás`
         });
 
       if (txError) throw txError;
@@ -130,9 +133,9 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
         const { error: updateError } = await supabase
           .from('sponsor_credits')
           .update({
-            total_credits: existingCredits.total_credits + totalCredits,
-            available_credits: existingCredits.available_credits + totalCredits,
-            package_type: pkg.package_key,
+            total_credits: existingCredits.total_credits + pkg.totalCredits,
+            available_credits: existingCredits.available_credits + pkg.totalCredits,
+            package_type: pkg.id,
             updated_at: new Date().toISOString()
           })
           .eq('sponsor_user_id', user.id);
@@ -143,10 +146,10 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
           .from('sponsor_credits')
           .insert({
             sponsor_user_id: user.id,
-            total_credits: totalCredits,
-            available_credits: totalCredits,
+            total_credits: pkg.totalCredits,
+            available_credits: pkg.totalCredits,
             used_credits: 0,
-            package_type: pkg.package_key
+            package_type: pkg.id
           });
 
         if (insertError) throw insertError;
@@ -157,23 +160,21 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
         .from('credit_package_history')
         .insert({
           sponsor_user_id: user.id,
-          package_type: pkg.package_key,
-          initial_credits: totalCredits,
-          remaining_credits: totalCredits,
+          package_type: pkg.id,
+          initial_credits: pkg.totalCredits,
+          remaining_credits: pkg.totalCredits,
           action: 'purchase'
         });
 
       toast.success(
-        language === 'hu' 
-          ? `${pkg.name_hu} sikeresen aktiválva! ${totalCredits.toLocaleString()} kredit jóváírva.`
-          : `${pkg.name_en} activated! ${totalCredits.toLocaleString()} credits added.`
+        `${pkg.name} csomag sikeresen aktiválva! ${pkg.totalCredits.toLocaleString()} kredit jóváírva.`
       );
 
-      onPurchaseComplete?.(pkg.package_key, totalCredits);
+      onPurchaseComplete?.(pkg.id, pkg.totalCredits);
       onClose?.();
     } catch (error) {
       console.error('Purchase error:', error);
-      toast.error(language === 'hu' ? 'Hiba történt a vásárlás során' : 'Error processing purchase');
+      toast.error('Hiba történt a vásárlás során');
     } finally {
       setPurchasing(false);
       setSelectedPackage(null);
@@ -184,19 +185,10 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
     return `${amount.toLocaleString('hu-HU')} Ft`;
   };
 
-  const getPackageIcon = (period: 'quarterly' | 'annual') => {
-    return period === 'quarterly' ? Calendar : CalendarDays;
+  const formatCredits = (amount: number) => {
+    return amount.toLocaleString('hu-HU');
   };
 
-  const getSavingsPercent = (pkg: SponsorPackage) => {
-    if (pkg.billing_period === 'annual') {
-      // Compare to 4 quarterly packages
-      const quarterlyPrice = 150000 * 4; // 600k for 4 quarters
-      const savings = quarterlyPrice - pkg.total_price_huf;
-      return Math.round((savings / quarterlyPrice) * 100);
-    }
-    return 0;
-  };
 
   if (loading) {
     return (
@@ -211,23 +203,17 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
       {/* Header */}
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold text-black mb-2">
-          {language === 'hu' ? 'Válasszon Támogatói Csomagot' : 'Choose a Sponsor Package'}
+          Válassz Támogatói Csomagot
         </h2>
         <p className="text-black/60">
-          {language === 'hu' 
-            ? '1 Kredit = 1 Ft. A kreditekkel támogathatja közössége fejlődését.'
-            : '1 Credit = 1 HUF. Use credits to support your community\'s growth.'}
+          1 Kredit = 1 Ft értékű támogatás. A kreditekkel programokat és eseményeket szponzorálhatsz.
         </p>
       </div>
 
       {/* Package Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {packages.map((pkg, index) => {
-          const Icon = getPackageIcon(pkg.billing_period);
-          const isAnnual = pkg.billing_period === 'annual';
-          const savingsPercent = getSavingsPercent(pkg);
-          const isSelected = selectedPackage === pkg.package_key;
-          const totalCredits = pkg.credits_huf + pkg.bonus_credits_huf;
+          const isSelected = selectedPackage === pkg.id;
 
           return (
             <motion.div
@@ -235,119 +221,80 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
+              className={pkg.highlighted ? 'md:scale-105' : ''}
             >
               <Card 
-                className={`relative overflow-hidden transition-all duration-300 ${
-                  isAnnual 
-                    ? 'border-2 border-emerald-500 shadow-lg shadow-emerald-100' 
-                    : 'border border-black/10 hover:border-black/20'
+                className={`relative overflow-hidden transition-all duration-300 h-full flex flex-col ${
+                  pkg.highlighted
+                    ? 'border-2 border-emerald-500 shadow-xl shadow-emerald-100' 
+                    : 'border border-black/10 hover:border-black/20 shadow-md'
                 }`}
               >
-                {/* Popular Badge */}
-                {isAnnual && (
-                  <div className="absolute top-4 right-4">
-                    <Badge className="bg-emerald-600 text-white">
-                      <Sparkles className="w-3 h-3 mr-1" />
-                      {language === 'hu' ? 'Legnépszerűbb' : 'Most Popular'}
-                    </Badge>
+                {/* Badge */}
+                {pkg.badge && (
+                  <div className={`absolute top-3 right-3 px-3 py-1 text-xs font-bold rounded-full z-10 ${
+                    pkg.badge === 'NÉPSZERŰ' ? 'bg-emerald-500 text-white' : 'bg-purple-500 text-white'
+                  }`}>
+                    ✦ {pkg.badge}
                   </div>
                 )}
 
-                <CardHeader className="pb-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-3 rounded-xl ${isAnnual ? 'bg-emerald-100' : 'bg-black/5'}`}>
-                      <Icon className={`w-6 h-6 ${isAnnual ? 'text-emerald-600' : 'text-black/60'}`} />
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl text-black">
-                        {language === 'hu' ? pkg.name_hu : pkg.name_en}
-                      </CardTitle>
-                      <CardDescription>
-                        {pkg.billing_period === 'quarterly' 
-                          ? (language === 'hu' ? '3 hónapos időszak' : '3 month period')
-                          : (language === 'hu' ? '12 hónapos időszak' : '12 month period')}
-                      </CardDescription>
-                    </div>
+                <CardHeader className="pb-4 pt-2">
+                  {/* Header */}
+                  <div className="text-center">
+                    <div className="text-4xl mb-2">{pkg.emoji}</div>
+                    <CardTitle className="text-xl font-bold text-black mb-1">
+                      {pkg.name}
+                    </CardTitle>
+                    <CardDescription className="text-sm text-gray-500">
+                      {pkg.period}
+                    </CardDescription>
                   </div>
                 </CardHeader>
 
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-6 flex-1 flex flex-col">
                   {/* Price */}
-                  <div>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-4xl font-bold text-black">
-                        {formatCurrency(pkg.total_price_huf)}
-                      </span>
-                      {savingsPercent > 0 && (
-                        <Badge variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-700">
-                          -{savingsPercent}%
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-sm text-black/50 mt-1">
-                      {language === 'hu' ? 'bruttó ár' : 'total price'}
-                    </p>
+                  <div className="text-center mb-6">
+                    <span className="text-3xl font-bold text-black">
+                      {formatCurrency(pkg.price)}
+                    </span>
                   </div>
 
-                  {/* Breakdown */}
-                  <div className="space-y-3 p-4 rounded-xl bg-black/[0.02] border border-black/5">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-black/60">
-                        {language === 'hu' ? 'Platform díj' : 'Platform fee'}
-                      </span>
-                      <span className="font-medium text-black">
-                        {formatCurrency(pkg.platform_fee_huf)}
-                      </span>
+                  {/* Credits breakdown */}
+                  <div className="space-y-2 p-4 bg-gray-50 rounded-lg text-sm">
+                    {/* Base credit row */}
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Kredit</span>
+                      <span className="font-medium">{pkg.baseCredits.toLocaleString('hu-HU')}</span>
                     </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-black/60 flex items-center gap-1">
-                        <Wallet className="w-4 h-4" />
-                        {language === 'hu' ? 'Kredit' : 'Credits'}
-                      </span>
-                      <span className="font-bold text-emerald-600">
-                        {formatCurrency(pkg.credits_huf)}
-                      </span>
-                    </div>
-                    {pkg.bonus_credits_huf > 0 && (
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-black/60 flex items-center gap-1">
-                          <Gift className="w-4 h-4 text-amber-500" />
-                          {language === 'hu' ? 'Bónusz kredit' : 'Bonus credits'}
-                        </span>
-                        <span className="font-bold text-amber-600">
-                          +{formatCurrency(pkg.bonus_credits_huf)}
-                        </span>
+                    
+                    {/* Bonus credit row - only show if has bonus */}
+                    {pkg.bonusCredits > 0 && (
+                      <div className="flex justify-between items-center text-emerald-600">
+                        <span>🎁 Bónusz</span>
+                        <span className="font-medium">+{pkg.bonusCredits.toLocaleString('hu-HU')}</span>
                       </div>
                     )}
-                    <div className="border-t border-black/10 pt-3 flex items-center justify-between">
-                      <span className="font-semibold text-black">
-                        {language === 'hu' ? 'Összes kredit' : 'Total credits'}
-                      </span>
-                      <span className="text-xl font-bold text-emerald-600">
-                        {formatCurrency(totalCredits)}
-                      </span>
+                    
+                    {/* Total row with border */}
+                    <div className="flex justify-between items-center border-t border-gray-200 pt-2">
+                      <span className="font-semibold">Összesen</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-emerald-600">{pkg.totalCredits.toLocaleString('hu-HU')}</span>
+                        {pkg.bonusPercent > 0 && (
+                          <span className="text-xs bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">
+                            +{pkg.bonusPercent}%
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
 
-                  {/* Features */}
-                  <ul className="space-y-2">
-                    {[
-                      language === 'hu' ? 'Kategória vagy szakértő támogatás' : 'Category or expert sponsorship',
-                      language === 'hu' ? 'Valós idejű hatás riportok' : 'Real-time impact reports',
-                      language === 'hu' ? 'Megújításkor kredit átgörgetés' : 'Credit rollover on renewal',
-                      isAnnual && (language === 'hu' ? '+20k bónusz kredit' : '+20k bonus credits')
-                    ].filter(Boolean).map((feature, i) => (
-                      <li key={i} className="flex items-center gap-2 text-sm text-black/70">
-                        <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
 
                   {/* Purchase Button */}
                   <Button
                     className={`w-full ${
-                      isAnnual 
+                      pkg.highlighted
                         ? 'bg-emerald-600 hover:bg-emerald-700 text-white' 
                         : 'bg-black hover:bg-black/90 text-white'
                     }`}
@@ -358,12 +305,12 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
                     {isSelected && purchasing ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        {language === 'hu' ? 'Feldolgozás...' : 'Processing...'}
+                        Feldolgozás...
                       </>
                     ) : (
                       <>
                         <CreditCard className="w-4 h-4 mr-2" />
-                        {language === 'hu' ? 'Csomag Aktiválása' : 'Activate Package'}
+                        Csomag Aktiválása
                       </>
                     )}
                   </Button>
@@ -374,11 +321,25 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
         })}
       </div>
 
+      {/* Shared Features Section */}
+      <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+        <p className="text-center text-sm text-gray-500 mb-3">Minden csomaggal jár:</p>
+        <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-700">
+          <span className="flex items-center gap-1">
+            <span className="text-emerald-500">✓</span> Logód megjelenik a támogatott programokon
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="text-emerald-500">✓</span> Láthatóság a közösség számára
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="text-emerald-500">✓</span> Kredit átgörgetés megújításkor
+          </span>
+        </div>
+      </div>
+
       {/* Info Note */}
-      <p className="text-center text-sm text-black/50">
-        {language === 'hu' 
-          ? 'A vásárlással elfogadja az Általános Szerződési Feltételeket. A kreditek a lejárati időn belül felhasználhatók.'
-          : 'By purchasing, you agree to our Terms of Service. Credits can be used within the validity period.'}
+      <p className="text-center text-sm text-black/50 mt-4">
+        A vásárlással elfogadod az Általános Szerződési Feltételeket. A kreditek a lejárati időn belül felhasználhatók.
       </p>
     </div>
   );

@@ -59,6 +59,78 @@ serve(async (req) => {
     const activeProjectId = userContext.activeProjectId;
     const systemPrompt = getSystemPrompt(language, userContext);
 
+    // Define tools for Gemini function calling
+    const tools = [
+      {
+        functionDeclarations: [
+          {
+            name: "searchPrograms",
+            description: "Search for expert programs/workshops by keyword, category, or expert name. Use this when user asks about available programs, workshops, courses, or wants to find something specific.",
+            parameters: {
+              type: "object",
+              properties: {
+                query: {
+                  type: "string",
+                  description: "Search term (keyword, category, or topic)"
+                },
+                category: {
+                  type: "string",
+                  description: "Optional category filter (e.g., 'cooking', 'gardening', 'crafts', 'wellness')"
+                },
+                limit: {
+                  type: "number",
+                  description: "Maximum number of results (default: 5)"
+                }
+              },
+              required: ["query"]
+            }
+          },
+          {
+            name: "getProgramDetails",
+            description: "Get detailed information about a specific program by ID. Use when user wants more details about a program.",
+            parameters: {
+              type: "object",
+              properties: {
+                programId: {
+                  type: "string",
+                  description: "The UUID of the program"
+                }
+              },
+              required: ["programId"]
+            }
+          },
+          {
+            name: "getExpertInfo",
+            description: "Get information about experts by name. Use when user asks about a specific expert or wants to find experts.",
+            parameters: {
+              type: "object",
+              properties: {
+                expertName: {
+                  type: "string",
+                  description: "Name of the expert to search for"
+                }
+              },
+              required: []
+            }
+          },
+          {
+            name: "getUserVouchers",
+            description: "Get the current user's vouchers and bookings. Use when user asks about their vouchers, bookings, or upcoming programs. Only works for authenticated users.",
+            parameters: {
+              type: "object",
+              properties: {
+                status: {
+                  type: "string",
+                  enum: ["active", "used", "expired", "all"],
+                  description: "Filter vouchers by status (default: active)"
+                }
+              }
+            }
+          }
+        ]
+      }
+    ];
+
     // Initialize Gemini AI with fallback logic
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
     
@@ -79,12 +151,13 @@ serve(async (req) => {
         
         const model = genAI.getGenerativeModel({ 
           model: modelName,
+          tools: tools,
           systemInstruction: systemPrompt,
           generationConfig: {
-            temperature: 0.7,  // Balanced for creative association
-            topP: 0.95,
-            topK: 40,
-            maxOutputTokens: 2048,
+            temperature: 0.5,  // Balanced creativity for general AI assistant
+            topP: 0.8,         // Lower = more deterministic
+            topK: 20,          // Lower = fewer options considered
+            maxOutputTokens: 1024,  // Shorter, more concise responses
           }
         });
 
@@ -100,10 +173,78 @@ serve(async (req) => {
 
         const result = await chat.sendMessage(messages[messages.length - 1].content);
         response = result.response;
-        finalMessage = response.text();
         usedModel = modelName;
         
-        console.log(`✅ Gemini response received successfully using model: ${modelName}`);
+        // Check for function calls
+        const functionCalls = response.functionCalls();
+        
+        if (functionCalls && functionCalls.length > 0) {
+          console.log(`🔧 Function calls requested: ${functionCalls.map((c: any) => c.name).join(', ')}`);
+          
+          // Execute each function call
+          const functionResults = [];
+          
+          for (const call of functionCalls) {
+            let functionResult;
+            
+            try {
+              switch (call.name) {
+                case 'searchPrograms':
+                  functionResult = await searchProgramsForAI(supabase, call.args, activeProjectId, language);
+                  break;
+                case 'getProgramDetails':
+                  functionResult = await getProgramDetails(supabase, call.args.programId, language);
+                  break;
+                case 'getExpertInfo':
+                  functionResult = await getExpertInfo(supabase, call.args.expertName);
+                  break;
+                case 'getUserVouchers':
+                  functionResult = userId 
+                    ? await getUserVouchers(supabase, userId, call.args.status || 'active')
+                    : { error: 'User not authenticated. Please log in to view your vouchers.' };
+                  break;
+                default:
+                  functionResult = { error: `Unknown function: ${call.name}` };
+              }
+              
+              // Add grounding instruction for empty results
+              if (functionResult && Array.isArray(functionResult) && functionResult.length === 0) {
+                functionResult = {
+                  results: [],
+                  instruction: language === 'hu' 
+                    ? 'A keresés nem talált eredményt. Mondd el őszintén a felhasználónak, hogy jelenleg nincs ilyen a platformon, és kérdezd meg, miben segíthetsz még.'
+                    : language === 'de'
+                    ? 'Die Suche ergab keine Ergebnisse. Sage dem Benutzer ehrlich, dass es derzeit nichts davon auf der Plattform gibt, und frage, wobei du noch helfen kannst.'
+                    : 'The search returned no results. Tell the user honestly that there is currently nothing like that on the platform, and ask how else you can help.'
+                };
+              }
+              
+              console.log(`✅ Function ${call.name} executed successfully`);
+            } catch (funcError: any) {
+              console.error(`❌ Function ${call.name} failed:`, funcError);
+              functionResult = { error: funcError.message || 'Function execution failed' };
+            }
+            
+            functionResults.push({
+              functionResponse: {
+                name: call.name,
+                response: functionResult
+              }
+            });
+          }
+          
+          // Send function results back to Gemini for final response
+          console.log('📤 Sending function results back to Gemini...');
+          const finalResult = await chat.sendMessage(functionResults);
+          finalMessage = finalResult.response.text();
+          
+          console.log(`✅ Gemini final response received using model: ${modelName}`);
+        } else {
+          // No function calls, use direct response
+          finalMessage = response.text();
+          console.log(`✅ Gemini response received successfully using model: ${modelName}`);
+        }
+        
         break; // Success, exit loop
         
       } catch (modelError: any) {
@@ -179,7 +320,102 @@ serve(async (req) => {
   }
 });
 
-// Tool execution functions
+// Tool execution functions for AI function calling
+async function searchProgramsForAI(supabase: any, args: any, projectId: string | null, language: string) {
+  const query = args.query || '';
+  const category = args.category;
+  const limit = args.limit || 5;
+  
+  let queryBuilder = supabase
+    .from('expert_contents')
+    .select(`
+      id, title, description, price, category, format,
+      profiles!expert_contents_creator_id_fkey(full_name, avatar_url)
+    `)
+    .eq('status', 'published')
+    .limit(limit);
+  
+  if (query) {
+    queryBuilder = queryBuilder.or(`title.ilike.%${query}%,description.ilike.%${query}%`);
+  }
+  
+  if (category) {
+    queryBuilder = queryBuilder.eq('category', category);
+  }
+  
+  const { data, error } = await queryBuilder;
+  
+  if (error) return { error: error.message };
+  return { 
+    programs: data?.map((p: any) => ({
+      id: p.id,
+      title: p.title,
+      description: p.description,
+      price: p.price,
+      category: p.category,
+      format: p.format,
+      expert: p.profiles?.full_name || 'Unknown'
+    })) || [],
+    count: data?.length || 0 
+  };
+}
+
+async function getExpertInfo(supabase: any, expertName?: string) {
+  let queryBuilder = supabase
+    .from('profiles')
+    .select(`
+      id, full_name, avatar_url, bio, user_role,
+      expert_contents!expert_contents_creator_id_fkey(id, title, category, price)
+    `)
+    .eq('user_role', 'expert');
+  
+  if (expertName) {
+    queryBuilder = queryBuilder.ilike('full_name', `%${expertName}%`);
+  }
+  
+  const { data, error } = await queryBuilder.limit(5);
+  
+  if (error) return { error: error.message };
+  return { 
+    experts: data?.map((e: any) => ({
+      id: e.id,
+      name: e.full_name,
+      bio: e.bio,
+      programs: e.expert_contents?.length || 0
+    })) || [],
+    count: data?.length || 0 
+  };
+}
+
+async function getUserVouchers(supabase: any, userId: string, status?: string) {
+  let queryBuilder = supabase
+    .from('vouchers')
+    .select(`
+      id, code, status, created_at, expires_at,
+      expert_contents(title, price)
+    `)
+    .eq('user_id', userId);
+  
+  if (status && status !== 'all') {
+    queryBuilder = queryBuilder.eq('status', status);
+  }
+  
+  const { data, error } = await queryBuilder.order('created_at', { ascending: false });
+  
+  if (error) return { error: error.message };
+  return { 
+    vouchers: data?.map((v: any) => ({
+      id: v.id,
+      code: v.code,
+      status: v.status,
+      program: v.expert_contents?.title || 'Unknown',
+      expiresAt: v.expires_at
+    })) || [],
+    count: data?.length || 0 
+  };
+}
+
+// Legacy function for backward compatibility
 async function searchPrograms(supabase: any, args: any, projectId: string | null, language: string) {
   let query = supabase
     .from('challenge_definitions')
@@ -321,158 +557,123 @@ async function fetchUserContext(supabase: any, userId: string, projectId: string
 }
 
 function getSystemPrompt(language: string, context: any): string {
-  const { profile, programs, project } = context;
+  const { profile, project } = context;
   
-  const userName = profile?.first_name || 'there';
-  const userLocation = profile?.location || 'your area';
-  const projectName = project?.name || 'Wellagora';
-  const regionName = project?.region_name || 'your region';
-  
-  const programList = programs?.map((p: any) => {
-    const title = p.translations?.[language]?.title || p.title;
-    const desc = p.translations?.[language]?.description || p.description;
-    return `- ${title} (${p.category}, ${p.difficulty}): ${desc}`;
-  }).join('\n') || 'No programs available yet.';
+  const userName = profile?.first_name || '';
+  const projectName = project?.name || 'WellAgora';
+  const regionName = project?.region_name || '';
 
   const prompts: Record<string, string> = {
-    en: `You are WellBot, the community engagement assistant for ${projectName} in ${regionName}. 
+    en: `You are WellBot, an intelligent AI assistant on the ${projectName} platform.
 
-USER CONTEXT:
-- Name: ${userName}
-- Location: ${userLocation}
-- Role: ${profile?.user_role || 'citizen'}
-- Organization: ${profile?.organization || 'None'}
+WHO YOU ARE:
+- A full-featured AI assistant, like ChatGPT or Claude
+- You can answer ANY question (travel, accommodation, restaurants, general knowledge, etc.)
+- You ALSO have access to ${projectName} platform's real-time data
 
-YOUR MISSION:
-Help ${userName} engage with the community, discover programs, and take meaningful local action.
+YOUR CAPABILITIES:
+1. GENERAL KNOWLEDGE - Answer anything you know (history, science, travel tips, etc.)
+2. PLATFORM DATA - Function calling for real-time data:
+   - searchPrograms() - search platform programs
+   - getExpertInfo() - search platform experts
+   - getUserVouchers() - user vouchers
+   - getProgramDetails() - program details
 
-AVAILABLE PROGRAMS IN ${regionName}:
-${programList}
+WHEN TO USE FUNCTION CALLING:
+- If user asks about PLATFORM programs, experts, vouchers
+- If specifically asking about ${projectName} offerings
 
-YOUR CAPABILITIES & TOOLS:
-You have access to real-time database functions:
+WHEN NOT TO USE:
+- General questions (accommodation, restaurants, weather, etc.) - answer from your knowledge
+- If not platform-specific
 
-FOR PROGRAMS:
-- search_programs: Search programs by category, difficulty, or keywords
-- get_program_details: Get full details about any specific program including participants and requirements
-- get_user_programs: Check what programs ${userName} is participating in or has completed
+IMPORTANT:
+- DON'T limit yourself to platform only
+- DON'T say "This is not a platform feature" - instead HELP!
+- Be a friendly, helpful AI assistant
+- If asked about accommodation: give general tips (Booking.com, Airbnb, local hotels)
+- If asked about programs: THEN use searchPrograms() function
 
-FOR COMMUNITY:
-- search_organizations: Search for registered organizations (businesses, governments, NGOs) by type or keywords
-- get_organization_details: Get detailed information about an organization, including their members
-- get_user_profile: View user profile and sustainability goals
+STYLE:
+- Friendly, natural
+- 1-2 emojis maximum
+- Brief, to-the-point answers
 
-IMPORTANT GUIDELINES:
-- When users ask about programs generally, refer to the AVAILABLE PROGRAMS list above directly!
-- DON'T say "no programs available" if the list above contains programs!
-- Use tools when you need specific filtering or extra details
-- When users ask about organizations, companies, governments or NGOs, use the search_organizations tool
-- Always be positive and show concrete opportunities!
+${userName ? `User's name: ${userName}.` : ''}`,
 
-RESPONSE GUIDELINES:
-- Be warm, encouraging, and community-focused
-- Recommend specific programs from the list above when relevant
-- Reference the user's location and role when making suggestions
-- Focus on local action and community collaboration
-- Keep responses practical and actionable
-- Use emojis to make responses friendly and engaging
+    de: `Du bist WellBot, ein intelligenter KI-Assistent auf der ${projectName}-Plattform.
 
-Remember: You're here to build community, not just give advice. Help ${userName} feel connected and empowered!`,
+WER DU BIST:
+- Ein vollwertiger KI-Assistent, wie ChatGPT oder Claude
+- Du kannst JEDE Frage beantworten (Reisen, Unterkunft, Restaurants, Allgemeinwissen, usw.)
+- Du hast ZUSÄTZLICH Zugriff auf ${projectName}-Plattform-Echtzeitdaten
 
-    de: `Du bist WellBot, der Community-Engagement-Assistent für ${projectName} in ${regionName}.
+DEINE FÄHIGKEITEN:
+1. ALLGEMEINWISSEN - Beantworte alles, was du weißt (Geschichte, Wissenschaft, Reisetipps, usw.)
+2. PLATTFORMDATEN - Function Calling für Echtzeitdaten:
+   - searchPrograms() - Plattformprogramme suchen
+   - getExpertInfo() - Plattformexperten suchen
+   - getUserVouchers() - Benutzergutscheine
+   - getProgramDetails() - Programmdetails
 
-BENUTZERKONTEXT:
-- Name: ${userName}
-- Standort: ${userLocation}
-- Rolle: ${profile?.user_role || 'Bürger'}
-- Organisation: ${profile?.organization || 'Keine'}
+WANN FUNCTION CALLING VERWENDEN:
+- Wenn Benutzer nach PLATTFORM-Programmen, Experten, Gutscheinen fragt
+- Wenn speziell nach ${projectName}-Angeboten gefragt wird
 
-DEINE MISSION:
-Hilf ${userName}, sich mit der Community zu engagieren, Programme zu entdecken und bedeutungsvolle lokale Maßnahmen zu ergreifen.
+WANN NICHT VERWENDEN:
+- Allgemeine Fragen (Unterkunft, Restaurants, Wetter, usw.) - aus deinem Wissen antworten
+- Wenn nicht plattformspezifisch
 
-VERFÜGBARE PROGRAMME IN ${regionName}:
-${programList}
+WICHTIG:
+- Beschränke dich NICHT nur auf die Plattform
+- Sage NICHT "Das ist keine Plattformfunktion" - stattdessen HILF!
+- Sei ein freundlicher, hilfsbereiter KI-Assistent
+- Bei Unterkunftsfragen: Gib allgemeine Tipps (Booking.com, Airbnb, lokale Hotels)
+- Bei Programmfragen: DANN verwende searchPrograms()
 
-DEINE FÄHIGKEITEN & WERKZEUGE:
-Du hast Zugriff auf Echtzeit-Datenbankfunktionen:
+STIL:
+- Freundlich, natürlich
+- Maximal 1-2 Emojis
+- Kurze, prägnante Antworten
 
-FÜR PROGRAMME:
-- search_programs: Programme nach Kategorie, Schwierigkeit oder Stichwörtern filtern
-- get_program_details: Vollständige Details zu einem Programm (z.B. Teilnehmerzahl, Anforderungen)
-- get_user_programs: Prüfen, an welchen Programmen ${userName} teilnimmt
+${userName ? `Name des Benutzers: ${userName}.` : ''}`,
 
-FÜR DIE COMMUNITY:
-- search_organizations: Registrierte Organisationen (Unternehmen, Behörden, NGOs) nach Typ oder Stichwörtern suchen
-- get_organization_details: Detaillierte Informationen über eine Organisation, einschließlich ihrer Mitglieder
-- get_user_profile: Benutzerprofil und Nachhaltigkeitsziele anzeigen
+    hu: `Te WellBot vagy, egy intelligens AI asszisztens a ${projectName} platformon.
 
-WICHTIGE RICHTLINIEN:
-- Wenn Benutzer allgemein nach Programmen fragen, nutze die obige VERFÜGBARE PROGRAMME Liste direkt!
-- Sage NICHT "keine Programme verfügbar" wenn die obige Liste Programme enthält!
-- Nutze Tools nur für spezifische Filter oder zusätzliche Details
-- Wenn Benutzer nach Organisationen, Unternehmen, Behörden oder NGOs fragen, nutze das search_organizations Tool
-- Sei immer positiv und zeige konkrete Möglichkeiten!
+KI VAGY:
+- Egy teljes értékű AI asszisztens, mint a ChatGPT vagy Claude
+- Válaszolhatsz BÁRMILYEN kérdésre (utazás, szállás, éttermek, általános tudás, stb.)
+- EMELLETT hozzáférsz a ${projectName} platform valós idejű adataihoz
 
-ANTWORTRICHTLINIEN:
-- Sei herzlich, ermutigend und community-fokussiert
-- Empfehle spezifische Programme aus der obigen Liste, wenn relevant
-- Beziehe dich auf den Standort und die Rolle des Benutzers bei Vorschlägen
-- Fokussiere auf lokales Handeln und Community-Zusammenarbeit
-- Halte Antworten praktisch und umsetzbar
-- Verwende Emojis für freundliche, ansprechende Antworten
+KÉPESSÉGEID:
+1. ÁLTALÁNOS TUDÁS - Válaszolj bármire amit tudsz (történelem, tudomány, utazási tippek, stb.)
+2. PLATFORM ADATOK - Function calling-gal valós idejű adatok:
+   - searchPrograms() - platform programok keresése
+   - getExpertInfo() - platform szakértők keresése
+   - getUserVouchers() - felhasználó kuponjai
+   - getProgramDetails() - program részletek
 
-Denke daran: Du bist hier, um Community aufzubauen, nicht nur Ratschläge zu geben. Hilf ${userName}, sich verbunden und befähigt zu fühlen!`,
+MIKOR HASZNÁLJ FUNCTION CALLING-OT:
+- Ha a felhasználó PLATFORM programokat, szakértőket, kuponokat keres
+- Ha konkrétan a ${projectName} kínálatáról kérdez
 
-    hu: `Te WellBot vagy, a Káli-medence közösségi platform asszisztense.
+MIKOR NE HASZNÁLD:
+- Általános kérdéseknél (szállás, éttermek, időjárás, stb.) - válaszolj a tudásodból
+- Ha nem platform-specifikus a kérdés
 
-KÜLDETÉSED:
-A Káli-medence 4 településének (Kővágóörs, Kékkút, Mindszentkálla, Köveskál) közösségépítése, az emberek összekötése, programokba bevonása.
+FONTOS:
+- NE korlátozd magad csak a platformra
+- NE mondd: "Ez nem platform funkció" - helyette SEGÍTS!
+- Légy barátságos, segítőkész AI asszisztens
+- Ha szállásról kérdeznek: adj általános tippeket (Booking.com, Airbnb, helyi szálláshelyek keresése)
+- Ha programokról kérdeznek: AKKOR használd a searchPrograms() funkciót
 
-FELHASZNÁLÓI KONTEXTUS:
-- Név: ${userName}
-- Helyszín: ${userLocation}
-- Szerep: ${profile?.user_role || 'állampolgár'}
-- Szervezet: ${profile?.organization || 'Nincs'}
+STÍLUS:
+- Barátságos, természetes
+- 1-2 emoji maximum
+- Rövid, lényegre törő válaszok
 
-SZEMÉLYISÉGED:
-- Barátságos, közvetlen, segítőkész
-- Tegező stílus, de tiszteletteljes
-- Helyismerettel rendelkezel a Káli-medencéről (Kővágóörs, Kékkút, Mindszentkálla, Köveskál)
-- Használj emoji-kat mértékkel 👋 🏘️ 🤝 🎉
-
-ELÉRHETŐ PROGRAMOK A KÁLI-MEDENCÉBEN:
-${programList}
-
-A KÉPESSÉGEID ÉS ESZKÖZEID:
-Valós idejű adatbázis funkciókhoz férsz hozzá:
-
-PROGRAMOKHOZ:
-- search_programs: Szűrd programokat kategória, nehézség vagy kulcsszavak alapján
-- get_program_details: Részletes információk egy programról (résztvevők, követelmények)
-- get_user_programs: Ellenőrizd hogy ${userName} milyen programokban vesz részt
-
-KÖZÖSSÉGHEZ:
-- search_organizations: Keress helyi szervezeteket (cégek, önkormányzatok, NGO-k)
-- get_organization_details: Részletes információk egy szervezetről, beleértve a tagjaikat
-- get_user_profile: Felhasználói profil és fenntarthatósági célok megtekintése
-
-FONTOS HASZNÁLATI SZABÁLYOK:
-- Ha programokról kérdeznek általában, HASZNÁLD a fenti ELÉRHETŐ PROGRAMOK listát közvetlenül!
-- NE mondd hogy "nincsenek programok" ha a fenti lista tartalmaz programokat!
-- Tool-okat akkor használj, ha extra részletekre vagy szűrésre van szükség
-- Amikor szervezetekről, cégekről, önkormányzatokról kérdeznek, használd a search_organizations tool-t
-- Mindig légy pozitív és mutass konkrét lehetőségeket!
-
-VÁLASZIRÁNYELVEK:
-- Rövid, lényegre törő (max 3-4 bekezdés)
-- Konkrét, hasznos információk
-- Cselekvésre ösztönző zárlat
-- Ajánlj konkrét programokat a fenti listából amikor releváns
-- Hivatkozz a felhasználó helyszínére és szerepére
-- Összpontosíts a helyi cselekvésre és közösségi együttműködésre
-- Használj emojikat barátságos, vonzó válaszokhoz
-
-FONTOS: Minden válasz a KÖZÖSSÉGRŐL szóljon, az emberek összehozásáról! Segíts ${userName}-nek kapcsolódva és felhatalmazva érezni magát!`
+${userName ? `A felhasználó neve: ${userName}.` : ''}`
   };
 
   return prompts[language] || prompts.en;

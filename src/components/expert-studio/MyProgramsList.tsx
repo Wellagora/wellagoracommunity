@@ -50,6 +50,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { hu, de, enUS } from "date-fns/locale";
+import { formatPrice } from "@/lib/pricing";
 
 interface Program {
   id: string;
@@ -66,6 +67,9 @@ interface Program {
   region_id: string | null;
   average_rating?: number;
   review_count?: number;
+  vouchers_count?: number;
+  revenue?: number;
+  views_count?: number;
 }
 
 interface MyProgramsListProps {
@@ -123,23 +127,61 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
 
       if (error) throw error;
 
-      // Fetch ratings for each program
-      const programsWithRatings = await Promise.all(
+      // Fetch ratings and stats for each program
+      const programsWithStats = await Promise.all(
         (data || []).map(async (program) => {
+          // Fetch ratings
           const { data: ratingData } = await supabase
             .rpc('get_content_average_rating', { p_content_id: program.id });
           const { data: countData } = await supabase
             .rpc('get_content_review_count', { p_content_id: program.id });
           
+          // Fetch vouchers count (status = 'active')
+          const { data: vouchersData } = await supabase
+            .from('vouchers')
+            .select('id', { count: 'exact', head: true })
+            .eq('content_id', program.id)
+            .eq('status', 'active');
+          
+          // Fetch revenue from transactions (status = 'completed')
+          const { data: transactionsData } = await supabase
+            .from('transactions')
+            .select('creator_revenue')
+            .eq('content_id', program.id)
+            .eq('status', 'completed');
+          
+          const totalRevenue = transactionsData?.reduce((sum, t) => sum + (t.creator_revenue || 0), 0) || 0;
+          
+          // Fetch unique participants (vouchers + transactions)
+          const { data: voucherUsers } = await supabase
+            .from('vouchers')
+            .select('user_id')
+            .eq('content_id', program.id)
+            .eq('status', 'active');
+          
+          const { data: transactionBuyers } = await supabase
+            .from('transactions')
+            .select('buyer_id')
+            .eq('content_id', program.id)
+            .eq('status', 'completed');
+          
+          const uniqueParticipants = new Set([
+            ...(voucherUsers?.map(v => v.user_id) || []),
+            ...(transactionBuyers?.map(t => t.buyer_id) || [])
+          ]);
+          
           return {
             ...program,
             average_rating: ratingData || 0,
             review_count: countData || 0,
+            vouchers_count: vouchersData?.length || 0,
+            revenue: totalRevenue,
+            views_count: uniqueParticipants.size,
           };
         })
       );
 
-      setPrograms(programsWithRatings);
+      setPrograms(programsWithStats);
     } catch (error) {
       console.error("Error loading programs:", error);
     } finally {
@@ -319,6 +361,9 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
             <CardDescription>
               {t("expert_studio.my_programs_desc")}
             </CardDescription>
+            <p className="text-xs text-muted-foreground mt-2">
+              {t("expert_studio.my_programs_monetization_hint")}
+            </p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             {/* New Program Button */}
@@ -326,6 +371,16 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
               <Button className="bg-primary hover:bg-primary/90 gap-2">
                 <Plus className="w-4 h-4" />
                 {t("expert_studio.new_program")}
+              </Button>
+            </Link>
+            <Link to="/community">
+              <Button variant="outline" size="sm">
+                {t("expert_studio.view_community")}
+              </Button>
+            </Link>
+            <Link to="/programs">
+              <Button variant="outline" size="sm">
+                {t("expert_studio.see_example_programs")}
               </Button>
             </Link>
           </div>
@@ -414,12 +469,16 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
             </div>
             <h3 className="text-lg font-semibold mb-2">{t("expert_studio.no_programs_yet")}</h3>
             <p className="text-muted-foreground mb-4">{t("expert_studio.no_programs_hint")}</p>
+            <p className="text-xs text-muted-foreground mb-6">
+              {t("expert_studio.no_programs_helper")}
+            </p>
             <Link to="/szakertoi-studio/uj">
               <Button className="bg-primary hover:bg-primary/90 gap-2">
                 <Plus className="w-4 h-4" />
                 {t("expert_studio.create_first_program")}
               </Button>
             </Link>
+            <p className="text-xs text-muted-foreground mt-3">{t("expert_studio.create_first_program_hint")}</p>
           </div>
         ) : viewMode === "grid" ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -545,18 +604,18 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                           <div className="p-2 bg-muted/50 rounded-lg">
                             <Eye className="w-4 h-4 mx-auto text-muted-foreground mb-1" />
                             <p className="text-xs text-muted-foreground">{t("expert_studio.views")}</p>
-                            <p className="font-semibold text-sm">{used}</p>
+                            <p className="font-semibold text-sm">{program.views_count || 0}</p>
                           </div>
                           <div className="p-2 bg-muted/50 rounded-lg">
                             <Ticket className="w-4 h-4 mx-auto text-amber-500 mb-1" />
                             <p className="text-xs text-muted-foreground">{t("expert_studio.vouchers_short")}</p>
-                            <p className="font-semibold text-sm">{used}</p>
+                            <p className="font-semibold text-sm">{program.vouchers_count || 0}</p>
                           </div>
                           <div className="p-2 bg-muted/50 rounded-lg">
                             <Wallet className="w-4 h-4 mx-auto text-emerald-500 mb-1" />
                             <p className="text-xs text-muted-foreground">{t("expert_studio.revenue_short")}</p>
                             <p className="font-semibold text-sm text-emerald-600">
-                              {calculateRevenue(program).toLocaleString()}
+                              {formatPrice(program.revenue || 0, 'HUF')}
                             </p>
                           </div>
                         </div>
@@ -618,7 +677,7 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                     </div>
                     <div className="text-center">
                       <span className="font-medium text-emerald-600">
-                        {calculateRevenue(program).toLocaleString()} Ft
+                        {formatPrice(program.revenue || 0, 'HUF')}
                       </span>
                     </div>
                   </div>

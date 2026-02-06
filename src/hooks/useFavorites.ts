@@ -27,8 +27,6 @@ export const useFavorites = (): UseFavoritesReturn => {
 
     setIsLoading(true);
     try {
-      console.log('[useFavorites] Fetching favorites for user:', user.id);
-      
       const { data, error } = await supabase
         .from('favorites')
         .select('content_id')
@@ -36,7 +34,6 @@ export const useFavorites = (): UseFavoritesReturn => {
 
       if (error) throw error;
 
-      console.log('[useFavorites] Fetched favorites:', data?.length || 0, 'items');
       setFavorites(data?.map(f => f.content_id) || []);
     } catch (err) {
       console.error('[useFavorites] Error fetching favorites:', err);
@@ -64,8 +61,6 @@ export const useFavorites = (): UseFavoritesReturn => {
     try {
       if (isCurrentlyFavorite) {
         // Remove from favorites
-        console.log('[useFavorites] Removing favorite:', { userId: user.id, contentId });
-        
         const { error } = await supabase
           .from('favorites')
           .delete()
@@ -77,13 +72,10 @@ export const useFavorites = (): UseFavoritesReturn => {
           throw error;
         }
 
-        console.log('[useFavorites] DELETE successful');
         setFavorites(prev => prev.filter(id => id !== contentId));
         toast.success(t('favorites.removed') || 'Eltávolítva a kedvencekből');
       } else {
         // Add to favorites
-        console.log('[useFavorites] Adding favorite:', { userId: user.id, contentId });
-        
         const { data, error } = await supabase
           .from('favorites')
           .insert({
@@ -95,14 +87,12 @@ export const useFavorites = (): UseFavoritesReturn => {
 
         if (error) {
           if (error.code === '23505') {
-            console.log('[useFavorites] Already favorited (duplicate key)');
             return;
           }
           console.error('[useFavorites] INSERT error:', error);
           throw error;
         }
 
-        console.log('[useFavorites] INSERT successful:', data);
         setFavorites(prev => [...prev, contentId]);
         toast.success(t('favorites.added') || 'Hozzáadva a kedvencekhez ❤️');
       }

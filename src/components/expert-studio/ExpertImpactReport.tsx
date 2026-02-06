@@ -76,17 +76,35 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
       const contentIds = contents.map((c) => c.id);
 
       // Fetch transactions for this expert's programs
-      const { data: transactions } = await supabase
+      const { data: transactions, error: txError } = await supabase
         .from("transactions")
         .select("*")
         .eq("creator_id", userId)
         .eq("status", "completed");
 
-      // Fetch content access records to count unique members
-      const { data: accessRecords } = await supabase
-        .from("content_access")
-        .select("user_id, access_type, sponsorship_id")
-        .in("content_id", contentIds);
+      if (txError) {
+        console.error('❌ Error fetching transactions:', txError);
+      }
+
+      // Fetch vouchers for this expert's programs (sponsored access)
+      // Join with expert_contents to get fixed_sponsor_amount
+      const { data: vouchers, error: voucherError } = await supabase
+        .from("vouchers")
+        .select(`
+          user_id,
+          content_id,
+          status,
+          created_at,
+          expert_contents (
+            fixed_sponsor_amount
+          )
+        `)
+        .in("content_id", contentIds)
+        .eq("status", "active");
+
+      if (voucherError) {
+        console.error('❌ Error fetching vouchers:', voucherError);
+      }
 
       // Calculate metrics
       const sponsoredTransactions = transactions?.filter(
@@ -96,12 +114,27 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
         (t) => !t.sponsor_payment_amount || t.sponsor_payment_amount === 0
       ) || [];
 
-      const totalSponsorContribution = sponsoredTransactions.reduce(
+      // Calculate sponsor contribution from transactions
+      const transactionSponsorContribution = sponsoredTransactions.reduce(
         (sum, t) => sum + (t.sponsor_payment_amount || 0),
         0
       );
 
-      const sponsoredSales = sponsoredTransactions.length;
+      // Calculate sponsor contribution from vouchers (fixed_sponsor_amount)
+      const voucherSponsorContribution = vouchers?.reduce(
+        (sum, v) => {
+          const sponsorAmount = (v.expert_contents as any)?.fixed_sponsor_amount || 0;
+          return sum + sponsorAmount;
+        },
+        0
+      ) || 0;
+
+      // Total sponsor contribution from both sources
+      const totalSponsorContribution = transactionSponsorContribution + voucherSponsorContribution;
+
+      // Count vouchers as sponsored sales
+      const voucherSponsoredSales = vouchers?.length || 0;
+      const sponsoredSales = sponsoredTransactions.length + voucherSponsoredSales;
       const organicSales = organicTransactions.length;
       const totalSales = sponsoredSales + organicSales;
 
@@ -110,12 +143,21 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
         ? Math.round((sponsoredSales / totalSales) * 100) 
         : 0;
 
-      // Count unique sponsored members
-      const sponsoredMembers = new Set(
-        accessRecords
-          ?.filter((a) => a.access_type === "sponsored" || a.sponsorship_id)
-          .map((a) => a.user_id)
+      // Count unique buyers from transactions (New Community Members)
+      const uniqueBuyers = new Set(
+        transactions?.map((t) => t.buyer_id) || []
       );
+      
+      // Also count unique voucher users (sponsored members)
+      const uniqueVoucherUsers = new Set(
+        vouchers?.map((v) => v.user_id) || []
+      );
+      
+      // Combine both sets for total unique community members
+      const allUniqueMembers = new Set([
+        ...Array.from(uniqueBuyers),
+        ...Array.from(uniqueVoucherUsers)
+      ]);
 
       // Group by sponsor to find top sponsor
       const sponsorContributions: Record<string, number> = {};
@@ -159,10 +201,17 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
         const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
         const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
-        const monthSponsored = sponsoredTransactions.filter((t) => {
+        const monthSponsoredTx = sponsoredTransactions.filter((t) => {
           const txDate = new Date(t.created_at);
           return txDate >= startOfMonth && txDate <= endOfMonth;
         }).length;
+
+        const monthSponsoredVouchers = vouchers?.filter((v) => {
+          const vDate = new Date(v.created_at);
+          return vDate >= startOfMonth && vDate <= endOfMonth;
+        }).length || 0;
+
+        const monthSponsored = monthSponsoredTx + monthSponsoredVouchers;
 
         const monthOrganic = organicTransactions.filter((t) => {
           const txDate = new Date(t.created_at);
@@ -176,15 +225,17 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
         });
       }
 
-      setMetrics({
+      const finalMetrics = {
         extraReachPercentage,
         totalSponsorContribution,
-        newSponsoredMembers: sponsoredMembers.size,
+        newSponsoredMembers: allUniqueMembers.size,
         organicSales,
         sponsoredSales,
         topSponsor,
         monthlyTrend,
-      });
+      };
+
+      setMetrics(finalMetrics);
     } catch (error) {
       console.error("Error loading impact data:", error);
     } finally {
@@ -215,14 +266,14 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
   if (!metrics) {
     return (
       <div className="text-center py-12 text-muted-foreground">
-        Nem sikerült betölteni az adatokat.
+        {t('expert_studio.impact_report.no_data')}
       </div>
     );
   }
 
   const pieData = [
-    { name: "Organikus eladások", value: metrics.organicSales, color: "hsl(var(--primary))" },
-    { name: "Szponzorált eladások", value: metrics.sponsoredSales, color: "hsl(142 76% 36%)" },
+    { name: t('expert_studio.impact_report.organic_sales'), value: metrics.organicSales, color: "hsl(var(--primary))" },
+    { name: t('expert_studio.impact_report.sponsored_sales'), value: metrics.sponsoredSales, color: "hsl(142 76% 36%)" },
   ].filter((d) => d.value > 0);
 
   const COLORS = ["hsl(var(--primary))", "hsl(142 76% 36%)"];
@@ -235,9 +286,9 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
           <BarChart3 className="w-6 h-6 text-emerald-600" />
         </div>
         <div>
-          <h2 className="text-xl font-semibold text-foreground">Hatásjelentés</h2>
+          <h2 className="text-xl font-semibold text-foreground">{t('expert_studio.impact_report.title')}</h2>
           <p className="text-sm text-muted-foreground">
-            A szponzori támogatások hatása az elérésedre
+            {t('expert_studio.impact_report.subtitle')}
           </p>
         </div>
       </div>
@@ -252,8 +303,7 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
           <div className="flex items-center gap-3">
             <Sparkles className="w-5 h-5 text-emerald-600" />
             <p className="text-emerald-800 font-medium">
-              A <strong>{metrics.topSponsor.name}</strong> támogatása miatt{" "}
-              <strong>{metrics.extraReachPercentage}%</strong>-kal több Taghoz jutottál el.
+              {t('expert_studio.impact_report.top_sponsor_message_prefix')} <strong>{metrics.topSponsor.name}</strong> {t('expert_studio.impact_report.top_sponsor_message_middle')} <strong>{metrics.extraReachPercentage}%</strong> {t('expert_studio.impact_report.top_sponsor_message_suffix')}
             </p>
           </div>
         </motion.div>
@@ -271,12 +321,12 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
             <CardContent className="pt-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Extra Elérés</p>
+                  <p className="text-sm text-muted-foreground mb-1">{t('expert_studio.impact_report.extra_reach')}</p>
                   <p className="text-3xl font-bold text-foreground">
                     +{metrics.extraReachPercentage}%
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    szponzoráció által generált növekedés
+                    {t('expert_studio.impact_report.extra_reach_desc')}
                   </p>
                 </div>
                 <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500/10 to-indigo-500/10">
@@ -297,12 +347,12 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
             <CardContent className="pt-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Szponzori Hozzájárulás</p>
+                  <p className="text-sm text-muted-foreground mb-1">{t('expert_studio.impact_report.sponsor_contribution')}</p>
                   <p className="text-3xl font-bold text-foreground">
                     {formatCurrency(metrics.totalSponsorContribution)}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    összes szponzori támogatás
+                    {t('expert_studio.impact_report.sponsor_contribution_desc')}
                   </p>
                 </div>
                 <div className="p-3 rounded-xl bg-gradient-to-br from-emerald-500/10 to-green-500/10">
@@ -323,12 +373,12 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
             <CardContent className="pt-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Új Közösségi Tagok</p>
+                  <p className="text-sm text-muted-foreground mb-1">{t('expert_studio.impact_report.new_members')}</p>
                   <p className="text-3xl font-bold text-foreground">
                     {metrics.newSponsoredMembers}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    szponzorált programokon keresztül
+                    {t('expert_studio.impact_report.new_members_desc')}
                   </p>
                 </div>
                 <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10">
@@ -352,7 +402,7 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
             <CardHeader>
               <CardTitle className="text-base font-medium flex items-center gap-2">
                 <BarChart3 className="w-4 h-4 text-muted-foreground" />
-                Havi eladások trendje
+                {t('expert_studio.impact_report.monthly_trend')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -378,13 +428,13 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
                     />
                     <Bar 
                       dataKey="organic" 
-                      name="Organikus" 
+                      name={t('expert_studio.impact_report.organic')} 
                       fill="hsl(var(--primary))" 
                       radius={[4, 4, 0, 0]}
                     />
                     <Bar 
                       dataKey="sponsored" 
-                      name="Szponzorált" 
+                      name={t('expert_studio.impact_report.sponsored')} 
                       fill="hsl(142 76% 36%)" 
                       radius={[4, 4, 0, 0]}
                     />
@@ -394,7 +444,7 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
                 <div className="h-[220px] flex items-center justify-center text-muted-foreground">
                   <div className="text-center">
                     <Gift className="w-10 h-10 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">Még nincsenek eladási adatok</p>
+                    <p className="text-sm">{t('expert_studio.impact_report.no_sales_data')}</p>
                   </div>
                 </div>
               )}
@@ -412,7 +462,7 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
             <CardHeader>
               <CardTitle className="text-base font-medium flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-muted-foreground" />
-                Eladások megoszlása
+                {t('expert_studio.impact_report.sales_distribution')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -454,7 +504,7 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
                 <div className="h-[220px] flex items-center justify-center text-muted-foreground">
                   <div className="text-center">
                     <Gift className="w-10 h-10 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">Még nincsenek eladási adatok</p>
+                    <p className="text-sm">{t('expert_studio.impact_report.no_sales_data')}</p>
                   </div>
                 </div>
               )}
@@ -474,23 +524,23 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
               <div>
                 <p className="text-2xl font-bold text-foreground">{metrics.organicSales}</p>
-                <p className="text-xs text-muted-foreground">Organikus eladás</p>
+                <p className="text-xs text-muted-foreground">{t('expert_studio.impact_report.organic_sales_label')}</p>
               </div>
               <div>
                 <p className="text-2xl font-bold text-emerald-600">{metrics.sponsoredSales}</p>
-                <p className="text-xs text-muted-foreground">Szponzorált eladás</p>
+                <p className="text-xs text-muted-foreground">{t('expert_studio.impact_report.sponsored_sales_label')}</p>
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground">
                   {metrics.organicSales + metrics.sponsoredSales}
                 </p>
-                <p className="text-xs text-muted-foreground">Összes eladás</p>
+                <p className="text-xs text-muted-foreground">{t('expert_studio.impact_report.total_sales')}</p>
               </div>
               <div>
                 <p className="text-2xl font-bold text-purple-600">
                   {metrics.newSponsoredMembers}
                 </p>
-                <p className="text-xs text-muted-foreground">Új Tag</p>
+                <p className="text-xs text-muted-foreground">{t('expert_studio.impact_report.new_members_label')}</p>
               </div>
             </div>
           </CardContent>

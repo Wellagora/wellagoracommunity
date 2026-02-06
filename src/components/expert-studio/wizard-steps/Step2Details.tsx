@@ -62,6 +62,27 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
         </p>
       </div>
 
+      <Card>
+        <CardContent className="p-6">
+          <Label className="text-base font-medium mb-2 block">
+            {language === 'hu' ? 'Forrásnyelv (master)' : language === 'de' ? 'Quellsprache (Master)' : 'Master language'}
+          </Label>
+          <Select
+            value={formData.masterLocale}
+            onValueChange={(value) => setFormData(prev => ({ ...prev, masterLocale: value as 'hu' | 'en' | 'de' }))}
+          >
+            <SelectTrigger className="w-[240px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="hu">🇭🇺 Magyar</SelectItem>
+              <SelectItem value="en">🇬🇧 English</SelectItem>
+              <SelectItem value="de">🇩🇪 Deutsch</SelectItem>
+            </SelectContent>
+          </Select>
+        </CardContent>
+      </Card>
+
       {/* Title */}
       <div className="space-y-2">
         <Label htmlFor="title" className="text-base font-medium">
@@ -384,6 +405,10 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
           <Label className="text-base font-medium mb-4 block">
             {t("program_creator.pricing_mode")}
           </Label>
+
+          <p className="text-sm text-muted-foreground mb-4">
+            {t("program_creator.pricing_helper")}
+          </p>
           
           <RadioGroup
             value={formData.pricingMode}

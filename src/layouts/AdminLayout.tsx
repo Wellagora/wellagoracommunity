@@ -37,6 +37,8 @@ const AdminLayout = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [accessChecked, setAccessChecked] = useState(false);
 
+  const adminBasePath = '/admin';
+
   // Security Check: Verify super admin access
   useEffect(() => {
     const checkAccess = () => {
@@ -67,33 +69,33 @@ const AdminLayout = () => {
   // Main navigation items
   const mainNavItems = [
     { 
-      path: '/admin-panel', 
+      path: adminBasePath, 
       icon: LayoutDashboard, 
       label: t('admin.nav.dashboard'),
       exact: true 
     },
     { 
-      path: '/admin-panel/projects', 
+      path: `${adminBasePath}/projects`, 
       icon: FolderKanban, 
       label: t('admin.nav.projects') 
     },
     { 
-      path: '/admin-panel/experts', 
+      path: `${adminBasePath}/experts`, 
       icon: UserCheck, 
       label: t('admin.nav.experts') 
     },
     { 
-      path: '/admin-panel/sponsors', 
+      path: `${adminBasePath}/sponsors`, 
       icon: Building2, 
       label: t('admin.nav.sponsors') 
     },
     { 
-      path: '/admin-panel/programs', 
+      path: `${adminBasePath}/programs`, 
       icon: Shield, 
       label: t('admin.nav.programs') 
     },
     { 
-      path: '/admin-panel/events', 
+      path: `${adminBasePath}/events`, 
       icon: CalendarDays, 
       label: t('admin.nav.events') 
     },
@@ -102,32 +104,32 @@ const AdminLayout = () => {
   // Secondary navigation items
   const secondaryNavItems = [
     { 
-      path: '/admin-panel/financials', 
+      path: `${adminBasePath}/financials`, 
       icon: Wallet, 
       label: t('admin.nav.financials') || 'Finances'
     },
     { 
-      path: '/admin-panel/users', 
+      path: `${adminBasePath}/users`, 
       icon: Users, 
       label: t('admin.nav.users') 
     },
     { 
-      path: '/admin-panel/feedback', 
+      path: `${adminBasePath}/feedback`, 
       icon: MessageSquare, 
       label: t('admin.nav.feedback') 
     },
     { 
-      path: '/admin-panel/analytics', 
+      path: `${adminBasePath}/analytics`, 
       icon: BarChart3, 
       label: t('admin.nav.analytics') 
     },
     { 
-      path: '/admin-panel/audit', 
+      path: `${adminBasePath}/audit`, 
       icon: History, 
       label: t('admin.nav.audit') || 'System Log'
     },
     { 
-      path: '/admin-panel/settings', 
+      path: `${adminBasePath}/settings`, 
       icon: Settings, 
       label: t('admin.nav.settings') 
     },

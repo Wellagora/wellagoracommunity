@@ -215,7 +215,7 @@ BEGIN
     'zero_balance_sponsors', (SELECT COUNT(*) FROM sponsor_credits WHERE available_credits <= 0)
   ) INTO v_result
   FROM credit_transactions ct
-  WHERE ct.transaction_type = 'spend';
+  WHERE ct.transaction_type IN ('purchase', 'subscription', 'initial', 'rollover', 'bonus');
   
   RETURN v_result;
 END;

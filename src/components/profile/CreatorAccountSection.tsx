@@ -24,6 +24,7 @@ export const CreatorAccountSection = ({ userId, profile, onUpdate }: CreatorAcco
   const [payoutPreference, setPayoutPreference] = useState<string>(profile?.payout_preference || 'stripe');
   const [wiseEmail, setWiseEmail] = useState<string>(profile?.wise_email || '');
   const [wiseIban, setWiseIban] = useState<string>(profile?.wise_iban || '');
+  const [creatorLegalStatus, setCreatorLegalStatus] = useState<'individual' | 'entrepreneur'>(profile?.creator_legal_status || 'individual');
   const stripeConnected = profile?.stripe_onboarding_complete || false;
 
   useEffect(() => {
@@ -31,6 +32,7 @@ export const CreatorAccountSection = ({ userId, profile, onUpdate }: CreatorAcco
       setPayoutPreference(profile.payout_preference || 'stripe');
       setWiseEmail(profile.wise_email || '');
       setWiseIban(profile.wise_iban || '');
+      setCreatorLegalStatus(profile.creator_legal_status || 'individual');
     }
   }, [profile]);
 
@@ -43,6 +45,7 @@ export const CreatorAccountSection = ({ userId, profile, onUpdate }: CreatorAcco
           payout_preference: payoutPreference,
           wise_email: payoutPreference === 'wise' ? wiseEmail : null,
           wise_iban: payoutPreference === 'wise' ? wiseIban : null,
+          creator_legal_status: creatorLegalStatus,
         })
         .eq('id', userId);
 
@@ -92,6 +95,30 @@ export const CreatorAccountSection = ({ userId, profile, onUpdate }: CreatorAcco
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
+        <div className="space-y-3">
+          <Label className="text-foreground font-medium">
+            {t('creator.legal_status') || 'Jogi státusz'}
+          </Label>
+          <RadioGroup
+            value={creatorLegalStatus}
+            onValueChange={(value) => setCreatorLegalStatus(value as 'individual' | 'entrepreneur')}
+            className="space-y-2"
+          >
+            <div className="flex items-center space-x-3 p-3 rounded-lg bg-background/30 border border-border/30 hover:border-[#00E5FF]/30 transition-colors">
+              <RadioGroupItem value="individual" id="creator_legal_status_individual" className="border-[#00E5FF]" />
+              <Label htmlFor="creator_legal_status_individual" className="cursor-pointer flex-1">
+                {t('creator.legal_status_individual') || 'Közösségi kreátor (magánszemély)'}
+              </Label>
+            </div>
+            <div className="flex items-center space-x-3 p-3 rounded-lg bg-background/30 border border-border/30 hover:border-[#00E5FF]/30 transition-colors">
+              <RadioGroupItem value="entrepreneur" id="creator_legal_status_entrepreneur" className="border-[#00E5FF]" />
+              <Label htmlFor="creator_legal_status_entrepreneur" className="cursor-pointer flex-1">
+                {t('creator.legal_status_entrepreneur') || 'Profi kreátor (vállalkozás / cég)'}
+              </Label>
+            </div>
+          </RadioGroup>
+        </div>
+
         {/* Payout Preference */}
         <div className="space-y-3">
           <Label className="text-foreground font-medium">

@@ -1,41 +1,106 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { resolveImageUrl } from "@/lib/imageResolver";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronLeft, ChevronRight, Sparkles, Gift, ShoppingCart, BookOpen, Leaf } from "lucide-react";
 import { motion } from "framer-motion";
-import { MOCK_PROGRAMS, MOCK_EXPERTS, getLocalizedExpertName, getLocalizedSponsorName, formatPriceByLanguage } from "@/data/mockData";
+import { Skeleton } from "@/components/ui/skeleton";
+
+interface Program {
+  id: string;
+  title: string;
+  description: string | null;
+  image_url: string | null;
+  thumbnail_url: string | null;
+  access_type: string | null;
+  price_huf: number | null;
+  sponsor_name: string | null;
+  sponsor_logo_url: string | null;
+  is_sponsored: boolean | null;
+  category: string | null;
+  creator: {
+    first_name: string | null;
+    last_name: string | null;
+    avatar_url: string | null;
+  } | null;
+}
 
 const RecommendedProgramsSlider = () => {
   const { t, language } = useLanguage();
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // FORCE MOCK DATA ONLY - no database fallback for clean preview mode
-  const programs = MOCK_PROGRAMS.map(p => {
-    const creator = MOCK_EXPERTS.find(e => e.id === p.creator_id);
-    const localizedCreatorName = creator ? getLocalizedExpertName(creator, language) : null;
-    const localizedSponsorName = getLocalizedSponsorName(p, language);
-    
-    return {
-      id: p.id,
-      title: language === 'en' ? p.title_en : language === 'de' ? p.title_de : p.title,
-      description: language === 'en' ? p.description_en : language === 'de' ? p.description_de : p.description,
-      image_url: p.image_url,
-      thumbnail_url: p.thumbnail_url,
-      access_type: p.access_type,
-      price_huf: p.price_huf,
-      sponsor_name: localizedSponsorName,
-      sponsor_logo_url: p.sponsor_logo_url,
-      is_sponsored: p.is_sponsored,
-      creator: localizedCreatorName && creator ? {
-        first_name: localizedCreatorName.firstName,
-        last_name: localizedCreatorName.lastName,
-        avatar_url: creator.avatar_url
-      } : null
-    };
+  // Fetch real published programs from database
+  const { data: programs = [], isLoading } = useQuery({
+    queryKey: ['recommended-programs', language],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('expert_contents')
+        .select(`
+          id,
+          title,
+          title_en,
+          title_de,
+          description,
+          description_en,
+          description_de,
+          image_url,
+          thumbnail_url,
+          access_type,
+          price_huf,
+          is_sponsored,
+          category,
+          creator_id,
+          profiles:creator_id (
+            first_name,
+            last_name,
+            avatar_url
+          )
+        `)
+        .eq('is_published', true)
+        .order('created_at', { ascending: false })
+        .limit(8);
+      
+      if (error) {
+        console.error('Error fetching programs:', error);
+        return [];
+      }
+      
+      // Map and localize the data
+      return (data || []).map((content: any) => {
+        const localizedTitle = language === 'en' ? (content.title_en || content.title) :
+                              language === 'de' ? (content.title_de || content.title) :
+                              content.title;
+        const localizedDescription = language === 'en' ? (content.description_en || content.description) :
+                                     language === 'de' ? (content.description_de || content.description) :
+                                     content.description;
+        
+        return {
+          id: content.id,
+          title: localizedTitle || '',
+          description: localizedDescription,
+          image_url: resolveImageUrl(content.image_url),
+          thumbnail_url: resolveImageUrl(content.thumbnail_url),
+          access_type: content.access_type,
+          price_huf: content.price_huf,
+          sponsor_name: null,
+          sponsor_logo_url: null,
+          is_sponsored: content.is_sponsored,
+          category: content.category,
+          creator: content.profiles ? {
+            first_name: content.profiles.first_name,
+            last_name: content.profiles.last_name,
+            avatar_url: content.profiles.avatar_url
+          } : null
+        } as Program;
+      });
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   const scroll = (direction: "left" | "right") => {
@@ -48,47 +113,6 @@ const RecommendedProgramsSlider = () => {
     }
   };
 
-  const getAccessBadge = (program: typeof programs[0]) => {
-    const priceInfo = formatPriceByLanguage(program.price_huf || 0, language);
-    const sponsorLabel = language === 'de' ? 'Gesponsert von' : language === 'en' ? 'Sponsored by' : 'Támogató';
-    
-    // SINGLE elegant badge for sponsored content - no redundant text
-    if (program.is_sponsored && program.sponsor_name) {
-      return (
-        <div className="flex flex-col gap-1">
-          <Badge className="bg-primary/15 text-primary border border-primary/30 text-xs font-medium">
-            {sponsorLabel}: {program.sponsor_name}
-          </Badge>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-bold text-primary">{language === 'hu' ? '0 Ft' : '0 €'}</span>
-            {program.price_huf && program.price_huf > 0 && (
-              <span className="text-xs text-muted-foreground line-through">
-                {priceInfo.originalPrice}
-              </span>
-            )}
-          </div>
-        </div>
-      );
-    }
-    
-    // Paid content
-    if (program.price_huf && program.price_huf > 0) {
-      return (
-        <Badge className="bg-slate-600 text-white border-0">
-          <ShoppingCart className="w-3 h-3 mr-1" />
-          {priceInfo.price}
-        </Badge>
-      );
-    }
-    
-    // Open content
-    return (
-      <Badge className="bg-blue-600 text-white border-0">
-        {t("marketplace.open_content")}
-      </Badge>
-    );
-  };
-
   // Placeholder for missing images
   const ImagePlaceholder = () => (
     <div className="w-full h-full flex items-center justify-center bg-muted">
@@ -98,8 +122,42 @@ const RecommendedProgramsSlider = () => {
     </div>
   );
 
+  // Loading skeleton
+  if (isLoading) {
+    return (
+      <section className="py-10 bg-gradient-to-b from-background via-black/[0.01] to-background">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between mb-6">
+            <Skeleton className="h-10 w-64" />
+            <Skeleton className="h-10 w-32" />
+          </div>
+          <div className="flex gap-6 overflow-hidden">
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} className="w-[320px] h-[300px] rounded-lg flex-shrink-0" />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Empty state
   if (!programs || programs.length === 0) {
-    return null;
+    return (
+      <section className="py-10 bg-gradient-to-b from-background via-black/[0.01] to-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center py-12">
+            <BookOpen className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+            <h3 className="text-xl font-semibold text-foreground mb-2">
+              {t("marketplace.no_programs")}
+            </h3>
+            <p className="text-muted-foreground">
+              {t("marketplace.no_programs_desc")}
+            </p>
+          </div>
+        </div>
+      </section>
+    );
   }
 
   return (
@@ -186,9 +244,11 @@ const RecommendedProgramsSlider = () => {
                     {/* Ultra-Minimal Content */}
                     <CardContent className="p-6">
                       {/* Category */}
-                      <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-black/40 mb-3 block">
-                        Workshop
-                      </span>
+                      {program.category && (
+                        <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-black/40 mb-3 block">
+                          {t(`categories.${program.category}`)}
+                        </span>
+                      )}
                       
                       {/* Title - Serif */}
                       <h3 className="text-lg font-medium text-foreground leading-snug line-clamp-2 group-hover:text-black transition-colors duration-300">

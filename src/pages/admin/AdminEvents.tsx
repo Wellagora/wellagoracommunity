@@ -117,7 +117,7 @@ const AdminEvents = () => {
 
   // Handle card click - open modal
   const handleCardClick = (eventId: string) => {
-    console.log('[AdminEvents] Card clicked:', eventId);
+    // Card clicked
     setSelectedEventId(eventId);
     setModalOpen(true);
   };

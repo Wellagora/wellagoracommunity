@@ -113,7 +113,7 @@ export const AffiliateTrackingService = {
       });
     } catch (error) {
       // Silently fail for analytics
-      console.warn('Analytics event failed:', error);
+      // Analytics event failed
     }
   },
 

@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { UserPlus, Sparkles, Ticket, Star, Heart, Gift, Clock, Trophy, MessageCircle } from 'lucide-react';
+import { UserPlus, Sparkles, Ticket, Star, Heart, Gift, Clock, Trophy, MessageCircle, BookOpen } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 
 // Activity types for diverse content
-type ActivityType = 'signup' | 'review' | 'expert_join' | 'sponsor_impact' | 'milestone' | 'comment';
+type ActivityType = 'signup' | 'review' | 'expert_join' | 'sponsor_impact' | 'milestone' | 'comment' | 'program_published';
 
 interface ActivityNotification {
   id: number | string;
@@ -179,6 +179,7 @@ export const LiveNotificationFeed = () => {
       case 'signup': return UserPlus;
       case 'review': return Star;
       case 'expert_join': return Sparkles;
+      case 'program_published': return BookOpen;
       case 'sponsor_impact': return Gift;
       case 'milestone': return Trophy;
       case 'comment': return MessageCircle;
@@ -192,6 +193,7 @@ export const LiveNotificationFeed = () => {
       case 'signup': return 'bg-emerald-100 text-emerald-600 ring-emerald-200';
       case 'review': return 'bg-amber-100 text-amber-600 ring-amber-200';
       case 'expert_join': return 'bg-purple-100 text-purple-600 ring-purple-200';
+      case 'program_published': return 'bg-indigo-100 text-indigo-600 ring-indigo-200';
       case 'sponsor_impact': return 'bg-blue-100 text-blue-600 ring-blue-200';
       case 'milestone': return 'bg-rose-100 text-rose-600 ring-rose-200';
       default: return 'bg-slate-100 text-slate-600 ring-slate-200';
@@ -210,8 +212,10 @@ export const LiveNotificationFeed = () => {
           return `${userName} ${rating} csillagos értékelést adott`;
         case 'expert_join':
           return `${userName} új Szakértőként csatlakozott`;
+        case 'program_published':
+          return `${userName} új programot publikált: ${programTitle}`;
         case 'sponsor_impact':
-          return `${sponsorName} támogatásával ${seatsOpened} új hely nyílt`;
+          return `${sponsorName} támogatja: ${programTitle}`;
         case 'milestone':
           return `${userName} ${programTitle}`;
         default:
@@ -226,8 +230,10 @@ export const LiveNotificationFeed = () => {
           return `${userName} hat ${rating} Sterne gegeben`;
         case 'expert_join':
           return `${userName} ist als Experte beigetreten`;
+        case 'program_published':
+          return `${userName} hat neues Programm veröffentlicht: ${programTitle}`;
         case 'sponsor_impact':
-          return `${sponsorName} hat ${seatsOpened} Plätze eröffnet`;
+          return `${sponsorName} unterstützt: ${programTitle}`;
         case 'milestone':
           return `${userName} ${programTitle}`;
         default:
@@ -242,8 +248,10 @@ export const LiveNotificationFeed = () => {
         return `${userName} gave ${rating} stars`;
       case 'expert_join':
         return `${userName} joined as Expert`;
+      case 'program_published':
+        return `${userName} published new program: ${programTitle}`;
       case 'sponsor_impact':
-        return `${sponsorName} opened ${seatsOpened} new spots`;
+        return `${sponsorName} sponsors: ${programTitle}`;
       case 'milestone':
         return `${userName} ${programTitle}`;
       default:
@@ -251,64 +259,135 @@ export const LiveNotificationFeed = () => {
     }
   };
 
-  // Fetch initial real data from Supabase + mix with mock
+  // Fetch initial real data from Supabase - recent activity from multiple sources
   const fetchRealNotifications = useCallback(async () => {
     try {
-      // Fetch last 3 vouchers with user profiles and content
-      const { data: vouchers, error } = await supabase
-        .from('vouchers')
-        .select(`id, created_at, user_id, content_id`)
+      let realActivities: ActivityNotification[] = [];
+
+      // 1. Fetch recent program publications (expert_contents)
+      const { data: recentPrograms } = await supabase
+        .from('expert_contents')
+        .select(`
+          id, 
+          created_at, 
+          title,
+          title_en,
+          title_de,
+          thumbnail_url,
+          creator_id,
+          profiles:creator_id (first_name, last_name, avatar_url)
+        `)
+        .eq('is_published', true)
         .order('created_at', { ascending: false })
         .limit(3);
 
-      let realActivities: ActivityNotification[] = [];
-
-      if (!error && vouchers && vouchers.length > 0) {
-        // Fetch profiles and content for each voucher
-        const notificationPromises = vouchers.map(async (voucher) => {
-          const [profileRes, contentRes] = await Promise.all([
-            supabase.from('profiles').select('first_name, last_name, avatar_url').eq('id', voucher.user_id).single(),
-            supabase.from('expert_contents').select('title, thumbnail_url').eq('id', voucher.content_id).single()
-          ]);
-
-          const profile = profileRes.data;
-          const content = contentRes.data;
-
-          return {
-            id: voucher.id,
-            type: 'signup' as ActivityType,
+      if (recentPrograms) {
+        recentPrograms.forEach((program: any) => {
+          const profile = program.profiles;
+          const localizedTitle = language === 'en' ? (program.title_en || program.title) :
+                                language === 'de' ? (program.title_de || program.title) :
+                                program.title;
+          
+          realActivities.push({
+            id: `program-${program.id}`,
+            type: 'program_published',
             userName: profile?.first_name 
-              ? `${profile.first_name} ${profile.last_name?.[0] || ''}.`
-              : 'Egy Tag',
+              ? `${profile.first_name} ${profile.last_name || ''}`
+              : 'Szakértő',
             userAvatar: profile?.avatar_url || null,
             userInitials: getInitials(profile?.first_name, profile?.last_name),
-            programTitle: content?.title || 'programhoz',
-            programThumbnail: content?.thumbnail_url || null,
-            time: voucher.created_at,
-            timeAgo: formatRelativeTime(voucher.created_at),
-          };
+            programTitle: localizedTitle || 'új program',
+            programThumbnail: program.thumbnail_url || null,
+            time: program.created_at,
+            timeAgo: formatRelativeTime(program.created_at),
+          });
         });
-
-        realActivities = await Promise.all(notificationPromises);
       }
 
-      // Mix real data with mock activities for variety
-      const mockWithTime = getMockActivities(language, formatRelativeTime);
+      // 2. Fetch recent expert registrations (profiles with user_role = creator)
+      const { data: recentExperts } = await supabase
+        .from('profiles')
+        .select('id, created_at, first_name, last_name, avatar_url, expert_title')
+        .eq('user_role', 'creator')
+        .order('created_at', { ascending: false })
+        .limit(2);
 
-      // Combine and sort by time, take top 5
-      const combined = [...realActivities, ...mockWithTime]
+      if (recentExperts) {
+        recentExperts.forEach((expert: any) => {
+          realActivities.push({
+            id: `expert-${expert.id}`,
+            type: 'expert_join',
+            userName: expert.first_name 
+              ? `${expert.first_name} ${expert.last_name || ''}`
+              : 'Új Szakértő',
+            userAvatar: expert.avatar_url || null,
+            userInitials: getInitials(expert.first_name, expert.last_name),
+            programTitle: expert.expert_title || undefined,
+            time: expert.created_at,
+            timeAgo: formatRelativeTime(expert.created_at),
+          });
+        });
+      }
+
+      // 3. Fetch recent sponsorships (content_sponsorships)
+      const { data: recentSponsorships } = await supabase
+        .from('content_sponsorships')
+        .select(`
+          id,
+          created_at,
+          sponsored_seats_used,
+          content_id,
+          sponsor_id,
+          expert_contents:content_id (title, title_en, title_de, thumbnail_url),
+          sponsors:sponsor_id (name)
+        `)
+        .order('created_at', { ascending: false })
+        .limit(2);
+
+      if (recentSponsorships) {
+        recentSponsorships.forEach((sponsorship: any) => {
+          const content = sponsorship.expert_contents;
+          const sponsor = sponsorship.sponsors;
+          const localizedTitle = language === 'en' ? (content?.title_en || content?.title) :
+                                language === 'de' ? (content?.title_de || content?.title) :
+                                content?.title;
+          
+          realActivities.push({
+            id: `sponsor-${sponsorship.id}`,
+            type: 'sponsor_impact',
+            userName: sponsor?.name || 'Támogató',
+            userAvatar: null,
+            userInitials: sponsor?.name?.[0]?.toUpperCase() || 'T',
+            sponsorName: sponsor?.name || 'Támogató',
+            programTitle: localizedTitle || 'programhoz',
+            programThumbnail: content?.thumbnail_url || null,
+            seatsOpened: sponsorship.sponsored_seats_used || 0,
+            time: sponsorship.created_at,
+            timeAgo: formatRelativeTime(sponsorship.created_at),
+          });
+        });
+      }
+
+      // Sort all real activities by time and take top 5
+      const sortedActivities = realActivities
         .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
         .slice(0, 5);
 
-      setNotifications(combined);
+      // If we have real data, use it; otherwise fall back to mock
+      if (sortedActivities.length > 0) {
+        setNotifications(sortedActivities);
+      } else {
+        // Fall back to mock data if no real data available
+        setNotifications(getMockActivities(language, formatRelativeTime).slice(0, 5));
+      }
     } catch (err) {
       console.error('Error fetching notifications:', err);
-      // Fall back to mock data
+      // Fall back to mock data on error
       setNotifications(getMockActivities(language, formatRelativeTime).slice(0, 5));
     } finally {
       setIsLoading(false);
     }
-  }, [language, formatRelativeTime]);
+  }, [language, formatRelativeTime, getInitials]);
 
   // Load real data on mount
   useEffect(() => {
