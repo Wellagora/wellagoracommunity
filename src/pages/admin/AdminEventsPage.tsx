@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
@@ -95,9 +95,14 @@ type EventFormData = {
   status: string;
 };
 
+interface AdminOutletContext {
+  selectedProjectId: string | null;
+}
+
 const AdminEventsPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { selectedProjectId } = useOutletContext<AdminOutletContext>();
   
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -135,10 +140,12 @@ const AdminEventsPage = () => {
   const fetchEvents = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('events')
         .select('*')
         .order('start_date', { ascending: false });
+      if (selectedProjectId) query = query.eq('project_id', selectedProjectId);
+      const { data, error } = await query;
 
       if (error) throw error;
       setEvents((data || []) as Event[]);
@@ -152,7 +159,7 @@ const AdminEventsPage = () => {
 
   useEffect(() => {
     fetchEvents();
-  }, []);
+  }, [selectedProjectId]);
 
   // Filter events by status
   const filteredEvents = useMemo(() => {

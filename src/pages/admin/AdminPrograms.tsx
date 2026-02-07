@@ -29,9 +29,13 @@ import {
   StarOff,
   Award
 } from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useOutletContext } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ProgramDetailModal } from '@/components/admin/modals/ProgramDetailModal';
+
+interface AdminOutletContext {
+  selectedProjectId: string | null;
+}
 
 interface Program {
   id: string;
@@ -101,6 +105,7 @@ const formatPrice = (price: number): string => {
 
 const AdminPrograms = () => {
   const { isDemoMode, user: adminUser } = useAuth();
+  const { selectedProjectId } = useOutletContext<AdminOutletContext>();
   const [searchParams, setSearchParams] = useSearchParams();
   const [programs, setPrograms] = useState<Program[]>([]);
   const [loading, setLoading] = useState(true);
@@ -124,10 +129,12 @@ const AdminPrograms = () => {
         return;
       }
 
-      const { data, error } = await supabase
+      let query = supabase
         .from('expert_contents')
         .select('*')
         .order('created_at', { ascending: false });
+      if (selectedProjectId) query = query.eq('region_id', selectedProjectId);
+      const { data, error } = await query;
 
       if (error) throw error;
       
@@ -209,7 +216,7 @@ const AdminPrograms = () => {
 
   useEffect(() => {
     fetchPrograms();
-  }, [isDemoMode]);
+  }, [isDemoMode, selectedProjectId]);
 
   // Handle card click - open modal
   const handleCardClick = (programId: string) => {

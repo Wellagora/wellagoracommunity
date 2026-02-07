@@ -18,6 +18,7 @@ import {
   Calendar,
   Activity
 } from 'lucide-react';
+import { useOutletContext } from 'react-router-dom';
 import {
   LineChart,
   Line,
@@ -59,8 +60,13 @@ interface ActivityItem {
   created_at: string;
 }
 
+interface AdminOutletContext {
+  selectedProjectId: string | null;
+}
+
 const AdminAnalytics = () => {
   const { t } = useLanguage();
+  const { selectedProjectId } = useOutletContext<AdminOutletContext>();
   
   const [loading, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState<AnalyticsData>({
@@ -108,9 +114,11 @@ const AdminAnalytics = () => {
 
     try {
       // 1. USER STATS
-      const { data: profiles } = await supabase
+      let profilesQuery = supabase
         .from('profiles')
         .select('user_role, created_at');
+      if (selectedProjectId) profilesQuery = profilesQuery.eq('project_id', selectedProjectId);
+      const { data: profiles } = await profilesQuery;
 
       const totalUsers = profiles?.length || 0;
       const newUsersThisMonth = profiles?.filter(p => p.created_at >= dates.startOfMonth).length || 0;
@@ -150,10 +158,12 @@ const AdminAnalytics = () => {
         .sort((a, b) => b.count - a.count);
 
       // 2. PROGRAM STATS
-      const { data: programs } = await supabase
+      let programsQuery = supabase
         .from('expert_contents')
         .select('id, status, category, created_at')
         .eq('status', 'published');
+      if (selectedProjectId) programsQuery = programsQuery.eq('region_id', selectedProjectId);
+      const { data: programs } = await programsQuery;
 
       const totalPrograms = programs?.length || 0;
       const newProgramsThisMonth = programs?.filter(p => p.created_at >= dates.startOfMonth).length || 0;
@@ -171,9 +181,11 @@ const AdminAnalytics = () => {
         .slice(0, 5);
 
       // 3. EVENT STATS
-      const { data: events } = await supabase
+      let eventsQuery = supabase
         .from('events')
         .select('id, start_date, category, created_at');
+      if (selectedProjectId) eventsQuery = eventsQuery.eq('project_id', selectedProjectId);
+      const { data: events } = await eventsQuery;
 
       const totalEvents = events?.length || 0;
       const upcomingEvents = events?.filter(e => new Date(e.start_date) >= new Date()).length || 0;
@@ -234,7 +246,7 @@ const AdminAnalytics = () => {
 
   useEffect(() => {
     fetchAnalytics();
-  }, []);
+  }, [selectedProjectId]);
 
   // Format date helper
   const formatDate = (dateString: string) => {

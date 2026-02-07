@@ -23,6 +23,11 @@ import {
   Percent, ArrowUpRight, Wallet, PiggyBank, Banknote, Receipt,
   Download, ChevronDown, ChevronUp, BarChart3, UserX
 } from 'lucide-react';
+import { useOutletContext } from 'react-router-dom';
+
+interface AdminOutletContext {
+  selectedProjectId: string | null;
+}
 
 // ─── Types ───────────────────────────────────────────────────────
 type TimePeriod = '7d' | '30d' | '90d' | 'all';
@@ -90,6 +95,7 @@ const periodToDate = (period: TimePeriod): string | null => {
 // ─── Component ───────────────────────────────────────────────────
 const AdminFinancials = () => {
   const { user: adminUser } = useAuth();
+  const { selectedProjectId } = useOutletContext<AdminOutletContext>();
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<TimePeriod>('30d');
   const [kpi, setKpi] = useState<KpiData>({ totalRevenue: 0, platformFee: 0, pendingPayouts: 0, completedPayouts: 0, transactionCount: 0, pendingExpertCount: 0, userPayments: 0, sponsorContributions: 0, wellpointsDiscount: 0 });
@@ -255,7 +261,7 @@ const AdminFinancials = () => {
     }
   };
 
-  useEffect(() => { fetchData(); }, [period]);
+  useEffect(() => { fetchData(); }, [period, selectedProjectId]);
 
   // ─── Actions ─────────────────────────────────────────────────
   const markPayoutComplete = async (expertId: string) => {

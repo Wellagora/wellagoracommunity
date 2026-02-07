@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useOutletContext } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
@@ -50,8 +50,13 @@ interface RoleStats {
   superAdmin: number;
 }
 
+interface AdminOutletContext {
+  selectedProjectId: string | null;
+}
+
 const AdminUsers = () => {
   const { isDemoMode } = useAuth();
+  const { selectedProjectId } = useOutletContext<AdminOutletContext>();
   const [searchParams, setSearchParams] = useSearchParams();
   
   const [users, setUsers] = useState<UserProfile[]>([]);
@@ -127,6 +132,9 @@ const AdminUsers = () => {
         .select('id, email, first_name, last_name, avatar_url, user_role, is_super_admin, created_at, expert_title, location_city')
         .order('created_at', { ascending: false });
 
+      // Apply project filter
+      if (selectedProjectId) query = query.eq('project_id', selectedProjectId);
+
       // Apply role filter
       if (activeTab !== 'all') {
         if (activeTab === 'superAdmin') {
@@ -181,7 +189,7 @@ const AdminUsers = () => {
   // Fetch users when filters change
   useEffect(() => {
     fetchUsers();
-  }, [activeTab, debouncedSearch]);
+  }, [activeTab, debouncedSearch, selectedProjectId]);
 
   // Fetch stats on mount
   useEffect(() => {

@@ -23,6 +23,8 @@ import {
   Plus,
   Search,
   RefreshCw,
+  Edit,
+  CheckCircle2,
 } from 'lucide-react';
 import {
   Dialog,
@@ -49,7 +51,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useNavigate, useSearchParams as useRouterSearchParams, useOutletContext } from 'react-router-dom';
 import { toast } from 'sonner';
+
+interface AdminOutletContext {
+  selectedProjectId: string | null;
+}
 
 interface Project {
   id: string;
@@ -75,6 +82,9 @@ type ProjectStatusFilter = 'active' | 'draft' | 'archived';
 
 const AdminProjects = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useRouterSearchParams();
+  const { selectedProjectId } = useOutletContext<AdminOutletContext>();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -405,6 +415,7 @@ const AdminProjects = () => {
                   <TableHead>Státusz</TableHead>
                   <TableHead>Ország</TableHead>
                   <TableHead>Frissítve</TableHead>
+                  <TableHead></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -416,11 +427,24 @@ const AdminProjects = () => {
                   return (
                     <TableRow
                       key={project.id}
-                      className="cursor-pointer"
-                      onClick={() => openModal(project)}
+                      className={cn(
+                        "cursor-pointer",
+                        selectedProjectId === project.id && "bg-emerald-50 dark:bg-emerald-950"
+                      )}
+                      onClick={() => {
+                        const newParams = new URLSearchParams(searchParams);
+                        newParams.set('project', project.id);
+                        setSearchParams(newParams);
+                        navigate(`/admin?project=${project.id}`);
+                      }}
                     >
                       <TableCell className="font-medium">
-                        <div className="truncate">{project.name || '—'}</div>
+                        <div className="flex items-center gap-2 truncate">
+                          {selectedProjectId === project.id && (
+                            <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0" />
+                          )}
+                          {project.name || '—'}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <Badge variant={status.variant}>{status.label}</Badge>
@@ -436,6 +460,19 @@ const AdminProjects = () => {
                       </TableCell>
                       <TableCell>
                         {updated ? new Date(updated).toLocaleDateString() : '—'}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openModal(project);
+                          }}
+                          title={t('admin.projects.edit')}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
                       </TableCell>
                     </TableRow>
                   );

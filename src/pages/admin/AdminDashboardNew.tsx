@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -24,7 +25,10 @@ import {
   UserCheck,
   ClipboardList
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+
+interface AdminOutletContext {
+  selectedProjectId: string | null;
+}
 
 type KpiTileState = {
   loading: boolean;
@@ -63,10 +67,10 @@ const AdminDashboardNew = () => {
   const { t, language } = useLanguage();
   const { isDemoMode } = useAuth();
   const navigate = useNavigate();
+  const { selectedProjectId } = useOutletContext<AdminOutletContext>();
   const adminBasePath = '/admin';
   
   const [projects, setProjects] = useState<Project[]>([]);
-  const [selectedProject, setSelectedProject] = useState<string>('all');
   const [loading, setLoading] = useState(true);
 
   const [platformOverview, setPlatformOverview] = useState<Record<string, KpiTileState>>({
@@ -155,7 +159,13 @@ const AdminDashboardNew = () => {
 
       // Read-only KPI tiles (isolated queries, must never crash)
       const safeCount = async (table: string, build: (q: any) => any) => {
-        const q = supabase.from(table).select('*', { count: 'exact', head: true });
+        let q = supabase.from(table).select('*', { count: 'exact', head: true });
+        // Apply project filter where applicable
+        if (selectedProjectId) {
+          if (table === 'profiles') q = q.eq('project_id', selectedProjectId);
+          else if (table === 'expert_contents') q = q.eq('region_id', selectedProjectId);
+          else if (table === 'events') q = q.eq('project_id', selectedProjectId);
+        }
         const res = await build(q);
         if (res.error) throw res.error;
         return res.count || 0;
@@ -229,7 +239,7 @@ const AdminDashboardNew = () => {
 
   useEffect(() => {
     fetchData();
-  }, [isDemoMode]);
+  }, [isDemoMode, selectedProjectId]);
 
   const KpiTile = ({
     label,
@@ -296,22 +306,12 @@ const AdminDashboardNew = () => {
         </div>
         
         <div className="flex items-center gap-3">
-          {/* Project Selector */}
-          <Select value={selectedProject} onValueChange={setSelectedProject}>
-            <SelectTrigger className="w-[200px]">
-              <FolderOpen className="h-4 w-4 mr-2 text-muted-foreground" />
-              <SelectValue placeholder={t('admin.dashboard.select_project')} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t('admin.dashboard.all_projects')}</SelectItem>
-              {projects.map(project => (
-                <SelectItem key={project.id} value={project.id}>
-                  {project.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          
+          {selectedProjectId && (
+            <Badge variant="outline" className="text-sm border-emerald-500 text-emerald-700">
+              <FolderOpen className="h-3 w-3 mr-1" />
+              {projects.find(p => p.id === selectedProjectId)?.name || 'Szűrt projekt'}
+            </Badge>
+          )}
           <Button onClick={fetchData} variant="outline" size="icon">
             <RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />
           </Button>

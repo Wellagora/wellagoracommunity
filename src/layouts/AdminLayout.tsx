@@ -27,7 +27,8 @@ import {
   CalendarDays,
   FolderKanban,
   Wallet,
-  History
+  History,
+  FolderOpen
 } from 'lucide-react';
 
 interface Project {
@@ -314,12 +315,27 @@ const AdminLayout = () => {
       <main className="flex-1 h-full overflow-y-auto lg:pt-0 pt-16">
         {/* Project Filter Bar */}
         {projects.length > 0 && (
-          <div className="sticky top-0 z-10 bg-white dark:bg-slate-900 border-b px-6 py-2 flex items-center gap-3">
-            <span className="text-sm text-muted-foreground whitespace-nowrap">
-              {t('admin.filter_by_project') || 'Projekt szűrő'}:
+          <div className={cn(
+            "sticky top-0 z-10 border-b px-6 py-2.5 flex items-center gap-3 transition-colors",
+            selectedProjectId !== 'all'
+              ? "bg-emerald-50 dark:bg-emerald-950 border-emerald-300 dark:border-emerald-700"
+              : "bg-white dark:bg-slate-900"
+          )}>
+            <FolderOpen className={cn(
+              "h-4 w-4 flex-shrink-0",
+              selectedProjectId !== 'all' ? "text-emerald-600" : "text-muted-foreground"
+            )} />
+            <span className={cn(
+              "text-sm font-medium whitespace-nowrap",
+              selectedProjectId !== 'all' ? "text-emerald-700 dark:text-emerald-300" : "text-muted-foreground"
+            )}>
+              {t('admin.filter_by_project') || 'Aktív projekt'}:
             </span>
             <Select value={selectedProjectId} onValueChange={handleProjectChange}>
-              <SelectTrigger className="w-[220px] h-8 text-sm">
+              <SelectTrigger className={cn(
+                "w-[260px] h-9 text-sm font-medium",
+                selectedProjectId !== 'all' && "border-emerald-400 ring-1 ring-emerald-300 dark:ring-emerald-700"
+              )}>
                 <SelectValue placeholder={t('admin.all_projects') || 'Minden projekt'} />
               </SelectTrigger>
               <SelectContent>

@@ -29,7 +29,7 @@ import {
   Mail,
   Plus
 } from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useOutletContext } from 'react-router-dom';
 import { toast } from 'sonner';
 import { SponsorDetailModal } from '@/components/admin/modals/SponsorDetailModal';
 
@@ -46,8 +46,13 @@ interface Sponsor {
   source: 'sponsors_table' | 'profiles_table';
 }
 
+interface AdminOutletContext {
+  selectedProjectId: string | null;
+}
+
 const AdminSponsors = () => {
   const { isDemoMode } = useAuth();
+  const { selectedProjectId } = useOutletContext<AdminOutletContext>();
   const [searchParams, setSearchParams] = useSearchParams();
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
   const [loading, setLoading] = useState(true);

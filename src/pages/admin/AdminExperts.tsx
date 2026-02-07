@@ -21,7 +21,12 @@ import {
   Calendar,
   Briefcase
 } from 'lucide-react';
+import { useOutletContext } from 'react-router-dom';
 import { ExpertDetailModal } from '@/components/admin/modals/ExpertDetailModal';
+
+interface AdminOutletContext {
+  selectedProjectId: string | null;
+}
 
 interface Expert {
   id: string;
@@ -97,6 +102,7 @@ const MOCK_EXPERTS: Expert[] = [
 const AdminExperts = () => {
   const { t } = useLanguage();
   const { isDemoMode } = useAuth();
+  const { selectedProjectId } = useOutletContext<AdminOutletContext>();
 
   const [experts, setExperts] = useState<Expert[]>([]);
   const [loading, setLoading] = useState(true);
@@ -114,11 +120,13 @@ const AdminExperts = () => {
       if (isDemoMode) {
         setExperts(MOCK_EXPERTS);
       } else {
-        const { data, error } = await supabase
+        let query = supabase
           .from('profiles')
           .select('id, first_name, last_name, email, avatar_url, expert_title, verification_status, created_at')
           .in('user_role', ['expert', 'creator'])
           .order('created_at', { ascending: false });
+        if (selectedProjectId) query = query.eq('project_id', selectedProjectId);
+        const { data, error } = await query;
 
         if (error) throw error;
 
@@ -155,7 +163,7 @@ const AdminExperts = () => {
 
   useEffect(() => {
     fetchExperts();
-  }, [isDemoMode]);
+  }, [isDemoMode, selectedProjectId]);
 
   // Handle card click - open modal
   const handleCardClick = (expertId: string) => {
