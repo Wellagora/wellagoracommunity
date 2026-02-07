@@ -3,7 +3,7 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { notificationTriggers } from '@/lib/notificationTriggers';
-import { DEMO_ACCOUNTS, MOCK_SPONSORS, MOCK_EXPERTS } from '@/data/mockData';
+import { DEMO_ACCOUNTS } from '@/data/mockData';
 
 // User roles - simplified to main roles + admin
 export type UserRole = 'member' | 'expert' | 'sponsor' | 'admin';

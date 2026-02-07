@@ -40,64 +40,6 @@ interface Expert {
   expert_title?: string | null;
 }
 
-// Mock experts for demo mode
-const MOCK_EXPERTS: Expert[] = [
-  {
-    id: 'exp-1',
-    full_name: 'Dr. Kovács István',
-    email: 'kovacs@example.com',
-    avatar_url: null,
-    specialization: 'Gasztronómia',
-    verification_status: 'pending',
-    programs_count: 3,
-    created_at: '2025-12-15T10:00:00Z',
-    expert_title: 'Mesterszakács'
-  },
-  {
-    id: 'exp-2',
-    full_name: 'Nagy Eszter',
-    email: 'nagy@example.com',
-    avatar_url: null,
-    specialization: 'Fenntarthatóság',
-    verification_status: 'pending',
-    programs_count: 2,
-    created_at: '2025-12-20T14:00:00Z',
-    expert_title: 'Öko tanácsadó'
-  },
-  {
-    id: 'exp-3',
-    full_name: 'Szabó Péter',
-    email: 'szabo@example.com',
-    avatar_url: null,
-    specialization: 'Outdoor',
-    verification_status: 'verified',
-    programs_count: 5,
-    created_at: '2025-10-01T09:00:00Z',
-    expert_title: 'Túravezető'
-  },
-  {
-    id: 'exp-4',
-    full_name: 'Tóth Anna',
-    email: 'toth@example.com',
-    avatar_url: null,
-    specialization: 'Jóllét',
-    verification_status: 'verified',
-    programs_count: 4,
-    created_at: '2025-09-15T11:00:00Z',
-    expert_title: 'Jóga oktató'
-  },
-  {
-    id: 'exp-5',
-    full_name: 'Kiss Gábor',
-    email: 'kiss@example.com',
-    avatar_url: null,
-    specialization: 'Mezőgazdaság',
-    verification_status: 'rejected',
-    programs_count: 0,
-    created_at: '2025-11-01T08:00:00Z',
-    expert_title: 'Biogazda'
-  },
-];
 
 const AdminExperts = () => {
   const { t } = useLanguage();
@@ -117,42 +59,38 @@ const AdminExperts = () => {
   const fetchExperts = async () => {
     setLoading(true);
     try {
-      if (isDemoMode) {
-        setExperts(MOCK_EXPERTS);
-      } else {
-        let query = supabase
-          .from('profiles')
-          .select('id, first_name, last_name, email, avatar_url, expert_title, verification_status, created_at')
-          .in('user_role', ['expert', 'creator'])
-          .order('created_at', { ascending: false });
-        if (selectedProjectId) query = query.eq('project_id', selectedProjectId);
-        const { data, error } = await query;
+      let query = supabase
+        .from('profiles')
+        .select('id, first_name, last_name, email, avatar_url, expert_title, verification_status, created_at')
+        .in('user_role', ['expert', 'creator'])
+        .order('created_at', { ascending: false });
+      if (selectedProjectId) query = query.eq('project_id', selectedProjectId);
+      const { data, error } = await query;
 
-        if (error) throw error;
+      if (error) throw error;
 
-        const expertsWithCounts = await Promise.all(
-          (data || []).map(async (profile) => {
-            const { count } = await supabase
-              .from('expert_contents')
-              .select('*', { count: 'exact', head: true })
-              .eq('creator_id', profile.id);
+      const expertsWithCounts = await Promise.all(
+        (data || []).map(async (profile) => {
+          const { count } = await supabase
+            .from('expert_contents')
+            .select('*', { count: 'exact', head: true })
+            .eq('creator_id', profile.id);
 
-            return {
-              id: profile.id,
-              full_name: `${profile.first_name} ${profile.last_name}`,
-              email: profile.email,
-              avatar_url: profile.avatar_url,
-              specialization: profile.expert_title,
-              verification_status: (profile.verification_status || 'unverified') as Expert['verification_status'],
-              programs_count: count || 0,
-              created_at: profile.created_at,
-              expert_title: profile.expert_title
-            };
-          })
-        );
+          return {
+            id: profile.id,
+            full_name: `${profile.first_name} ${profile.last_name}`,
+            email: profile.email,
+            avatar_url: profile.avatar_url,
+            specialization: profile.expert_title,
+            verification_status: (profile.verification_status || 'unverified') as Expert['verification_status'],
+            programs_count: count || 0,
+            created_at: profile.created_at,
+            expert_title: profile.expert_title
+          };
+        })
+      );
 
-        setExperts(expertsWithCounts);
-      }
+      setExperts(expertsWithCounts);
     } catch (error) {
       console.error('Error fetching experts:', error);
       toast.error('Hiba a szakértők betöltésekor');

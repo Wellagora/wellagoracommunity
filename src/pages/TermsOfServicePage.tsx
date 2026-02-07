@@ -193,8 +193,8 @@ const TermsOfServicePage = () => {
             <CardContent className="prose prose-sm max-w-none dark:prose-invert">
               <p className="text-muted-foreground">{t("terms.contact_text")}</p>
               <div className="mt-4 bg-muted/50 p-4 rounded-lg">
-                <p className="font-semibold text-foreground">ProSelf Int Inc.</p>
-                <p className="text-muted-foreground">[cég székhelye]</p>
+                <p className="font-semibold text-foreground">ProSelf International Zrt.</p>
+                <p className="text-muted-foreground">1133 Budapest, Pannónia u 102.</p>
                 <p className="text-muted-foreground">
                   <strong>Email:</strong>{" "}
                   <a href="mailto:info@wellagora.org" className="text-primary hover:underline">info@wellagora.org</a>

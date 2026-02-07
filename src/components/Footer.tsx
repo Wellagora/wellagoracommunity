@@ -19,10 +19,10 @@ const Footer = () => {
               {t('footer.about_text')}
             </p>
             <div className="space-y-1 text-sm text-muted-foreground">
-              <p className="font-medium text-foreground">Wellagora OG</p>
+              <p className="font-medium text-foreground">ProSelf International Zrt.</p>
               <div className="flex items-start gap-1.5">
                 <MapPin className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
-                <span>Nastlbergergasse 12, 1130 Vienna</span>
+                <span>1133 Budapest, Pannónia u 102.</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Mail className="w-3.5 h-3.5 flex-shrink-0" />
@@ -124,7 +124,7 @@ const Footer = () => {
             <button onClick={resetCookieConsent} className="hover:text-primary transition-colors">
               {t('footer.cookie_settings') || 'Cookie beállítások'}
             </button>
-            <span>© {currentYear} ProSelf Int Inc.</span>
+            <span>© {currentYear} ProSelf International Zrt.</span>
           </div>
         </div>
       </div>

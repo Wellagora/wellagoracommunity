@@ -56,48 +56,6 @@ interface Program {
   expert_green_pass?: boolean;
 }
 
-// Mock programs for demo mode
-const MOCK_PROGRAMS: Program[] = [
-  { 
-    id: 'p1', 
-    title: 'Gyógynövénytúra a Káli-medencében', 
-    description: 'Fedezd fel a helyi gyógynövényeket szakértő vezetésével.', 
-    expert_name: 'Nagy Eszter', 
-    category: 'Természet', 
-    publication_status: 'pending_review', 
-    price: 8000,
-    created_at: '2026-01-10T10:00:00Z',
-    image_url: null,
-    project_id: 'kali-medence',
-    expert_id: 'expert-2'
-  },
-  { 
-    id: 'p2', 
-    title: 'Kovászolás Alapjai Workshop', 
-    description: 'Tanuld meg a tökéletes kovászkenyér titkait.', 
-    expert_name: 'Kovács István', 
-    category: 'Gasztronómia', 
-    publication_status: 'pending_review', 
-    price: 12000,
-    created_at: '2026-01-08T10:00:00Z',
-    image_url: null,
-    project_id: 'kali-medence',
-    expert_id: 'expert-1'
-  },
-  { 
-    id: 'p3', 
-    title: 'Fenntartható Gazdálkodás', 
-    description: 'Permakultúra és ökogazdálkodás a gyakorlatban.', 
-    expert_name: 'Szabó Péter', 
-    category: 'Mezőgazdaság', 
-    publication_status: 'published', 
-    price: 15000,
-    created_at: '2026-01-05T10:00:00Z',
-    image_url: null,
-    project_id: 'kali-medence',
-    expert_id: 'expert-3'
-  },
-];
 
 const formatPrice = (price: number): string => {
   return price.toLocaleString('hu-HU') + ' Ft';
@@ -123,11 +81,6 @@ const AdminPrograms = () => {
   const fetchPrograms = async () => {
     setLoading(true);
     try {
-      if (isDemoMode) {
-        setPrograms(MOCK_PROGRAMS);
-        setLoading(false);
-        return;
-      }
 
       let query = supabase
         .from('expert_contents')

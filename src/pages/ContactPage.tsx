@@ -110,10 +110,10 @@ export default function ContactPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-sm">
-                  <p className="font-semibold text-foreground">Wellagora OG</p>
+                  <p className="font-semibold text-foreground">ProSelf International Zrt.</p>
                   <div className="flex items-start gap-2 text-muted-foreground">
                     <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                    <span>Nastlbergergasse 12<br />1130 Vienna, Austria</span>
+                    <span>1133 Budapest, Pannónia u 102.</span>
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Mail className="w-4 h-4 flex-shrink-0" />

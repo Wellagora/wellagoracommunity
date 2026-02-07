@@ -11,15 +11,7 @@ interface SocialProofBadgeProps {
   size?: 'sm' | 'md';
 }
 
-// Simulated avatars for social proof
-const MOCK_AVATARS = [
-  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
-  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
-  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face',
-  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
-];
-
-const INITIALS = ['AK', 'BP', 'MT', 'ZN'];
+const INITIALS = ['W', 'A', 'G'];
 
 export const SocialProofBadge = ({
   attendeeCount = 0,
@@ -71,14 +63,13 @@ export const SocialProofBadge = ({
       {showAvatars && (
         <div className="flex items-center gap-2">
           <div className="flex items-center">
-            {MOCK_AVATARS.slice(0, 3).map((avatar, idx) => (
+            {INITIALS.map((initial, idx) => (
               <Avatar 
                 key={idx} 
                 className={`${avatarSize} ${idx > 0 ? overlapSize : ''} ring-2 ring-white`}
               >
-                <AvatarImage src={avatar} />
                 <AvatarFallback className="text-[8px] bg-primary/10 text-primary">
-                  {INITIALS[idx]}
+                  {initial}
                 </AvatarFallback>
               </Avatar>
             ))}
