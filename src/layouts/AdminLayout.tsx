@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   LayoutDashboard, 
   Users, 
@@ -28,14 +30,22 @@ import {
   History
 } from 'lucide-react';
 
+interface Project {
+  id: string;
+  name: string;
+}
+
 const AdminLayout = () => {
   const { user, profile, isDemoMode } = useAuth();
   const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [accessChecked, setAccessChecked] = useState(false);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const selectedProjectId = searchParams.get('project') || 'all';
 
   const adminBasePath = '/admin';
 
@@ -65,6 +75,34 @@ const AdminLayout = () => {
       checkAccess();
     }
   }, [profile, isDemoMode, navigate, t]);
+
+  // Fetch projects for the filter dropdown
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('projects')
+          .select('id, name')
+          .order('name');
+        if (!error && data) {
+          setProjects(data);
+        }
+      } catch (e) {
+        console.error('[AdminLayout] Failed to fetch projects:', e);
+      }
+    };
+    if (accessChecked) fetchProjects();
+  }, [accessChecked]);
+
+  const handleProjectChange = (value: string) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (value === 'all') {
+      newParams.delete('project');
+    } else {
+      newParams.set('project', value);
+    }
+    setSearchParams(newParams);
+  };
 
   // Main navigation items
   const mainNavItems = [
@@ -274,8 +312,27 @@ const AdminLayout = () => {
 
       {/* Main Content - Only this area scrolls */}
       <main className="flex-1 h-full overflow-y-auto lg:pt-0 pt-16">
+        {/* Project Filter Bar */}
+        {projects.length > 0 && (
+          <div className="sticky top-0 z-10 bg-white dark:bg-slate-900 border-b px-6 py-2 flex items-center gap-3">
+            <span className="text-sm text-muted-foreground whitespace-nowrap">
+              {t('admin.filter_by_project') || 'Projekt szűrő'}:
+            </span>
+            <Select value={selectedProjectId} onValueChange={handleProjectChange}>
+              <SelectTrigger className="w-[220px] h-8 text-sm">
+                <SelectValue placeholder={t('admin.all_projects') || 'Minden projekt'} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('admin.all_projects') || 'Minden projekt'}</SelectItem>
+                {projects.map((p) => (
+                  <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
         <div className="p-6">
-          <Outlet />
+          <Outlet context={{ selectedProjectId: selectedProjectId === 'all' ? null : selectedProjectId }} />
         </div>
       </main>
     </div>

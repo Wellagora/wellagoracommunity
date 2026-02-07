@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { writeAuditLog } from '@/lib/auditLog';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +9,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { 
   ClipboardList,
   Search,
@@ -21,7 +24,10 @@ import {
   Tag,
   Plus,
   Building2,
-  Users
+  Users,
+  Star,
+  StarOff,
+  Award
 } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -42,6 +48,8 @@ interface Program {
   sponsor_name?: string;
   seats_used?: number;
   seats_max?: number;
+  is_featured?: boolean;
+  expert_green_pass?: boolean;
 }
 
 // Mock programs for demo mode
@@ -92,7 +100,7 @@ const formatPrice = (price: number): string => {
 };
 
 const AdminPrograms = () => {
-  const { isDemoMode } = useAuth();
+  const { isDemoMode, user: adminUser } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [programs, setPrograms] = useState<Program[]>([]);
   const [loading, setLoading] = useState(true);
@@ -102,6 +110,10 @@ const AdminPrograms = () => {
   // Modal state
   const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+
+  // Rejection reason dialog state
+  const [rejectDialogProgramId, setRejectDialogProgramId] = useState<string | null>(null);
+  const [rejectionReason, setRejectionReason] = useState('');
 
   const fetchPrograms = async () => {
     setLoading(true);
@@ -119,18 +131,20 @@ const AdminPrograms = () => {
 
       if (error) throw error;
       
-      // Fetch expert names
+      // Fetch expert names and green_pass status
       const creatorIds = data?.filter(d => d.creator_id).map(d => d.creator_id) || [];
       let expertsMap: Record<string, string> = {};
+      let greenPassMap: Record<string, boolean> = {};
       
       if (creatorIds.length > 0) {
         const { data: expertsData } = await supabase
           .from('profiles')
-          .select('id, first_name, last_name')
+          .select('id, first_name, last_name, green_pass')
           .in('id', creatorIds);
         
-        expertsData?.forEach((e: { id: string; first_name: string; last_name: string }) => {
+        expertsData?.forEach((e: any) => {
           expertsMap[e.id] = [e.first_name, e.last_name].filter(Boolean).join(' ');
+          greenPassMap[e.id] = e.green_pass === true;
         });
       }
       
@@ -180,7 +194,9 @@ const AdminPrograms = () => {
           expert_name: d.creator_id ? expertsMap[d.creator_id] : undefined,
           sponsor_name: sponsorInfo?.sponsor_name,
           seats_used: sponsorInfo?.seats_used,
-          seats_max: sponsorInfo?.seats_max
+          seats_max: sponsorInfo?.seats_max,
+          is_featured: d.is_featured || false,
+          expert_green_pass: d.creator_id ? greenPassMap[d.creator_id] : false
         };
       }) || []);
     } catch (error) {
@@ -225,10 +241,25 @@ const AdminPrograms = () => {
     try {
       const { error } = await supabase
         .from('expert_contents')
-        .update({ is_published: true, reviewed_at: new Date().toISOString() })
+        .update({
+          is_published: true,
+          reviewed_at: new Date().toISOString(),
+          reviewed_by: adminUser?.id || null,
+        })
         .eq('id', programId);
 
       if (error) throw error;
+
+      if (adminUser) {
+        await writeAuditLog({
+          action: 'admin_approve_program',
+          tableName: 'expert_contents',
+          recordId: programId,
+          userId: adminUser.id,
+          userEmail: adminUser.email,
+          newValues: { is_published: true },
+        });
+      }
       
       setPrograms(prev => prev.map(p => 
         p.id === programId ? { ...p, publication_status: 'published' } : p
@@ -240,32 +271,88 @@ const AdminPrograms = () => {
     }
   };
 
-  const rejectProgram = async (programId: string, e: React.MouseEvent) => {
+  const openRejectDialog = (programId: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    setRejectDialogProgramId(programId);
+    setRejectionReason('');
+  };
+
+  const confirmRejectProgram = async () => {
+    const programId = rejectDialogProgramId;
+    if (!programId) return;
     
     if (isDemoMode) {
       setPrograms(prev => prev.map(p =>
         p.id === programId ? { ...p, publication_status: 'rejected' } : p
       ));
       toast.success('Program elutasítva');
+      setRejectDialogProgramId(null);
       return;
     }
 
     try {
       const { error } = await supabase
         .from('expert_contents')
-        .update({ is_published: false, rejected_at: new Date().toISOString() })
+        .update({
+          is_published: false,
+          rejected_at: new Date().toISOString(),
+          rejection_reason: rejectionReason.trim() || null,
+          reviewed_by: adminUser?.id || null,
+        })
         .eq('id', programId);
 
       if (error) throw error;
+
+      if (adminUser) {
+        await writeAuditLog({
+          action: 'admin_reject_program',
+          tableName: 'expert_contents',
+          recordId: programId,
+          userId: adminUser.id,
+          userEmail: adminUser.email,
+          newValues: { rejection_reason: rejectionReason.trim() },
+        });
+      }
       
       setPrograms(prev => prev.map(p => 
         p.id === programId ? { ...p, publication_status: 'rejected' } : p
       ));
       toast.success('Program elutasítva');
+      setRejectDialogProgramId(null);
     } catch (error) {
       console.error('Error rejecting program:', error);
       toast.error('Hiba az elutasítás során');
+    }
+  };
+
+  const toggleFeatured = async (programId: string, currentState: boolean, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      const { error } = await supabase
+        .from('expert_contents')
+        .update({ is_featured: !currentState })
+        .eq('id', programId);
+
+      if (error) throw error;
+
+      if (adminUser) {
+        await writeAuditLog({
+          action: currentState ? 'admin_unfeature_program' : 'admin_feature_program',
+          tableName: 'expert_contents',
+          recordId: programId,
+          userId: adminUser.id,
+          userEmail: adminUser.email,
+          newValues: { is_featured: !currentState },
+        });
+      }
+
+      setPrograms(prev => prev.map(p =>
+        p.id === programId ? { ...p, is_featured: !currentState } : p
+      ));
+      toast.success(!currentState ? 'Kiemelt program' : 'Kiemelés visszavonva');
+    } catch (error) {
+      console.error('Error toggling featured:', error);
+      toast.error('Hiba a kiemelés során');
     }
   };
 
@@ -449,6 +536,23 @@ const AdminPrograms = () => {
                   </div>
 
                   <div className="flex items-center gap-2">
+                    {/* Green Pass indicator */}
+                    {program.expert_green_pass && (
+                      <Badge className="bg-emerald-100 text-emerald-700 border-emerald-300" title="Green Pass — auto-publish">
+                        <Award className="h-3 w-3 mr-1" />
+                        GP
+                      </Badge>
+                    )}
+                    {/* Featured toggle */}
+                    <Button
+                      size="sm"
+                      variant={program.is_featured ? "default" : "outline"}
+                      className={cn(program.is_featured && "bg-amber-500 hover:bg-amber-600")}
+                      onClick={(e) => toggleFeatured(program.id, !!program.is_featured, e)}
+                      title={program.is_featured ? "Kiemelés visszavonása" : "Kiemelt program"}
+                    >
+                      {program.is_featured ? <Star className="h-4 w-4" /> : <StarOff className="h-4 w-4" />}
+                    </Button>
                     {program.publication_status === 'pending_review' && (
                       <>
                         <Button 
@@ -462,7 +566,7 @@ const AdminPrograms = () => {
                         <Button 
                           size="sm" 
                           variant="destructive"
-                          onClick={(e) => rejectProgram(program.id, e)}
+                          onClick={(e) => openRejectDialog(program.id, e)}
                         >
                           <ThumbsDown className="h-4 w-4 mr-1" />
                           Elutasítás
@@ -474,6 +578,32 @@ const AdminPrograms = () => {
               </CardContent>
             </Card>
           ))}
+        </div>
+      )}
+
+      {/* Rejection Reason Dialog */}
+      {rejectDialogProgramId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setRejectDialogProgramId(null)}>
+          <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4 space-y-4" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-lg font-semibold text-red-700">Program elutasítása</h3>
+            <div className="space-y-2">
+              <Label className="text-red-700">Elutasítás indoka</Label>
+              <Textarea
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                placeholder="Írd le az elutasítás okát (opcionális)..."
+                className="border-red-200"
+                rows={3}
+              />
+            </div>
+            <div className="flex gap-2 justify-end">
+              <Button variant="outline" onClick={() => setRejectDialogProgramId(null)}>Mégse</Button>
+              <Button variant="destructive" onClick={confirmRejectProgram}>
+                <ThumbsDown className="h-4 w-4 mr-1" />
+                Elutasítás
+              </Button>
+            </div>
+          </div>
         </div>
       )}
 
