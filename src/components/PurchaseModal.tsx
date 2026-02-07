@@ -124,41 +124,34 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
 
         setOrderReference(`SPON-${Date.now()}`);
       } else {
-        // Standard purchase (non-sponsored) using transaction service
-        // Step 1: Create transaction with pending status
+        // Standard purchase — redirect to Stripe Checkout
         if (!content.creator_id || content.creator_id === '') {
           throw new Error('Invalid creator_id - cannot create transaction');
         }
 
-        const transaction = await createTransaction({
-          contentId: content.id,
-          userId: user.id,
-          creatorId: content.creator_id,
-          pricing: pricing,
-          currency: 'HUF'
-        });
+        // Call the create-checkout-session edge function
+        const { data: sessionData, error: sessionError } = await supabase.functions.invoke(
+          'create-checkout-session',
+          {
+            body: {
+              contentId: content.id,
+              successUrl: `${window.location.origin}/purchase/success?session_id={CHECKOUT_SESSION_ID}`,
+              cancelUrl: `${window.location.origin}/piacer`,
+            },
+          }
+        );
 
-        // Step 2: Simulate payment success (in production, this would be Stripe callback)
-        // For now, immediately complete the transaction
-        await completeTransaction(transaction.id);
-
-        // Step 3: Also insert into content_access for backward compatibility
-        const paymentReference = `TXN-${transaction.id}`;
-        const { error: accessError } = await supabase
-          .from("content_access")
-          .insert({
-            content_id: content.id,
-            user_id: user.id,
-            amount_paid: pricing.userPays,
-            payment_reference: paymentReference,
-          });
-
-        if (accessError) {
-          console.error('Error creating content_access record:', accessError);
-          // Don't throw - transaction is already completed
+        if (sessionError) {
+          throw new Error(sessionError.message || 'Failed to create checkout session');
         }
 
-        setOrderReference(paymentReference);
+        if (sessionData?.url) {
+          // Redirect to Stripe Checkout
+          window.location.href = sessionData.url;
+          return; // Don't continue — user is leaving the page
+        } else {
+          throw new Error('No checkout URL returned');
+        }
       }
 
       // Capture allocation if this was a sponsored purchase

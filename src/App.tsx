@@ -56,6 +56,7 @@ const TranslationToolPage = lazy(() => import("@/pages/TranslationToolPage"));
 const PrivacyPolicyPage = lazy(() => import("@/pages/PrivacyPolicyPage"));
 const ImpressumPage = lazy(() => import("@/pages/ImpressumPage"));
 const TermsOfServicePage = lazy(() => import("@/pages/TermsOfServicePage"));
+const PurchaseSuccessPage = lazy(() => import("@/pages/PurchaseSuccessPage"));
 const SuperAdminPage = lazy(() => import("@/pages/SuperAdminPage"));
 const AdminLayout = lazy(() => import("@/layouts/AdminLayout"));
 const AdminDashboardNew = lazy(() => import("@/pages/admin/AdminDashboardNew"));
@@ -223,6 +224,8 @@ function App() {
                           <Route path="/impressum" element={<ImpressumPage />} />
                           <Route path="/terms" element={<TermsOfServicePage />} />
                           <Route path="/aszf" element={<Navigate to="/terms" replace />} />
+                          <Route path="/purchase/success" element={<PurchaseSuccessPage />} />
+                          <Route path="/purchase/cancel" element={<Navigate to="/piacer" replace />} />
                           <Route
                             path="/super-admin"
                             element={<Navigate to="/admin" replace />}
