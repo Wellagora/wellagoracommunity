@@ -588,7 +588,7 @@ export function SponsorDetailModal(props: {
                           )}
                           <div>
                             <p className="font-medium">
-                              {tx.transaction_type === 'purchase' ? '+' : '-'}{formatCurrency(tx.credits)}
+                              {tx.transaction_type === 'purchase' ? '+' : '-'}{formatCurrency(Math.abs(tx.credits))}
                             </p>
                             <p className="text-xs text-muted-foreground">
                               {tx.description || (tx.transaction_type === 'purchase' ? 'Kredit vásárlás' : 'Kredit felhasználás')}

@@ -148,7 +148,7 @@ const SponsorTransactionHistory = () => {
                 <div className="text-right">
                   <p className={`font-bold ${getTransactionColor(transaction.transaction_type)}`}>
                     {transaction.transaction_type === 'spend' ? '-' : '+'}
-                    {transaction.credits}
+                    {Math.abs(transaction.credits)}
                   </p>
                   <Badge variant="outline" className="text-xs">
                     {t(`sponsor.type.${transaction.transaction_type}`)}
