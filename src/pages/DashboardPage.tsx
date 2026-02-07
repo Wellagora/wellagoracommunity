@@ -273,11 +273,16 @@ const DashboardPage = () => {
                     ))}
                   </div>
                 ) : programs.length === 0 ? (
-                  <div className="text-center py-12">
-                    <Target className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-lg font-medium mb-2">{t("dashboard.no_programs")}</p>
-                    <p className="text-muted-foreground mb-4">{t("dashboard.no_programs_desc")}</p>
-                    <Button onClick={() => navigate("/piacer")}>{t("dashboard.browse_programs")}</Button>
+                  <div className="flex flex-col items-center text-center py-12">
+                    <div className="w-16 h-16 mb-4 rounded-full bg-emerald-50 flex items-center justify-center">
+                      <Target className="h-8 w-8 text-emerald-500" />
+                    </div>
+                    <p className="text-lg font-medium mb-2">{t("community_building.hub_title")}</p>
+                    <p className="text-muted-foreground mb-4 max-w-md">{t("community_building.hub_desc")}</p>
+                    <div className="flex gap-3">
+                      <Button onClick={() => navigate("/piacer")}>{t("community_building.hub_explore_programs")}</Button>
+                      <Button variant="outline" onClick={() => navigate("/kozosseg")}>{t("community_building.hub_explore_community")}</Button>
+                    </div>
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -338,9 +343,11 @@ const DashboardPage = () => {
                     </div>
                   ) : activities.length === 0 ? (
                     <div className="text-center py-8">
-                      <Calendar className="h-10 w-10 mx-auto text-muted-foreground mb-2" />
-                      <p className="text-muted-foreground">{t("dashboard.no_activity")}</p>
-                      <p className="text-sm text-muted-foreground">{t("dashboard.no_activity_desc")}</p>
+                      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-emerald-50 flex items-center justify-center">
+                        <Calendar className="h-6 w-6 text-emerald-500" />
+                      </div>
+                      <p className="text-sm font-medium text-gray-700 mb-1">{t("community_building.activity_title")}</p>
+                      <p className="text-xs text-gray-400 max-w-xs mx-auto">{t("community_building.activity_desc")}</p>
                     </div>
                   ) : (
                     <div className="space-y-4">

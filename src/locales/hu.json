@@ -5355,5 +5355,46 @@
   "cancel.confirm": "Biztosan lemondod?",
   "cancel.refund_full": "100% visszajár (platform kreditként)",
   "cancel.refund_half": "50% visszajár (platform kreditként)",
-  "cancel.refund_none": "Nincs visszatérítés"
+  "cancel.refund_none": "Nincs visszatérítés",
+
+  "community_building.programs_title": "A közösség első programjai most formálódnak",
+  "community_building.programs_desc": "Legyél te is része a kezdeteknek! Ha van szaktudásod amit megosztanál, hozd létre az első programodat.",
+  "community_building.programs_join_expert": "Szakértőként csatlakozom",
+  "community_building.programs_notify": "Értesítést kérek az első programokról",
+
+  "community_building.events_title": "Az első közösségi események szervezés alatt",
+  "community_building.events_desc": "Közösségünk hamarosan életre kel! Legyél ott az első találkozón.",
+  "community_building.events_notify": "Értesítést kérek",
+  "community_building.events_organize": "Eseményt szerveznék",
+
+  "community_building.community_title": "Te vagy az első hullám tagja",
+  "community_building.community_desc": "Minden nagy közösség kicsiben kezdte. Tedd fel az első kérdést, oszd meg az első gondolatod!",
+  "community_building.community_first_post": "Első bejegyzés írása",
+  "community_building.community_introduce": "Bemutatkozom",
+
+  "community_building.experts_title": "Szakértőink épp csatlakoznak",
+  "community_building.experts_desc": "Az első szakértők már regisztráltak. Ha te is szaktudással rendelkezel, csatlakozz hozzájuk!",
+  "community_building.experts_register": "Szakértőként regisztrálok",
+
+  "community_building.hub_title": "Ez a te közösségi központod",
+  "community_building.hub_desc": "Itt látod majd a programjaidat, értesítéseidet és közösségi aktivitásaidat. Kezdd egy program böngészéssel!",
+  "community_building.hub_explore_programs": "Programok felfedezése",
+  "community_building.hub_explore_community": "Közösség felfedezése",
+
+  "community_building.activity_title": "A közösségi élet hamarosan beindul",
+  "community_building.activity_desc": "Az első bejegyzések, értékelések és események itt fognak megjelenni. Légy te az első aki ír!",
+  "community_building.activity_write_post": "Közösségi bejegyzés írása",
+
+  "community_building.featured_title": "Az első programok hamarosan megérkeznek",
+  "community_building.featured_desc": "Szakértőink épp készítik az első közösségi programokat. Iratkozz fel és értesítünk, amint elérhetők!",
+  "community_building.featured_notify": "Értesítést kérek",
+  "community_building.featured_become_expert": "Szakértő lennék",
+
+  "community_building.sponsor_title": "Támogasd a közösséget mint szponzor",
+  "community_building.sponsor_desc": "Szponzoraink lehetővé teszik, hogy a tagok ingyenesen vagy kedvezményesen vegyenek részt programokon.",
+  "community_building.sponsor_packages": "Szponzor csomagok megtekintése",
+
+  "community_building.join_community": "Csatlakozz a közösséghez",
+
+  "community_building.welcome_back": "Üdv újra, {name}! 👋 A közösségünk most épül — és te már itt vagy az elsők között!"
 }

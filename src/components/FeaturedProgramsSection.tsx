@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Star, Crown, ShoppingCart, Gift, Leaf, TrendingUp } from "lucide-react";
+import { Star, Crown, ShoppingCart, Gift, Leaf, TrendingUp, Sprout } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveImageUrl, resolveAvatarUrl } from "@/lib/imageResolver";
@@ -146,7 +147,39 @@ const FeaturedProgramsSection = () => {
     }
   };
 
-  if (featuredPrograms.length === 0) return null;
+  if (featuredPrograms.length === 0) {
+    return (
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+            viewport={{ once: true }}
+            className="flex flex-col items-center justify-center py-12 text-center"
+          >
+            <div className="w-20 h-20 mb-6 rounded-full bg-emerald-50 flex items-center justify-center">
+              <Sprout className="w-10 h-10 text-emerald-500" />
+            </div>
+            <h3 className="text-2xl font-semibold text-gray-800 mb-2">
+              {t("community_building.featured_title")}
+            </h3>
+            <p className="text-gray-500 max-w-md mb-6">
+              {t("community_building.featured_desc")}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button asChild>
+                <Link to="/contact">{t("community_building.featured_notify")}</Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link to="/register?role=expert">{t("community_building.featured_become_expert")}</Link>
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-16 bg-background">

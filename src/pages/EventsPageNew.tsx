@@ -296,13 +296,33 @@ const EventsPageNew = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center py-16"
+            className="flex flex-col items-center justify-center py-16 px-4 text-center"
           >
-            <Calendar className="w-16 h-16 mx-auto mb-4 text-black/20" />
-            <h3 className="text-xl font-semibold text-black mb-2">
-              {t("events.empty_state")}
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-emerald-50 flex items-center justify-center">
+              <Calendar className="w-10 h-10 text-emerald-500" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              {t("community_building.events_title")}
             </h3>
-            <p className="text-black/60">{t("events.empty_state_desc")}</p>
+            <p className="text-gray-500 max-w-md mb-6">
+              {t("community_building.events_desc")}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              {!user ? (
+                <Button asChild>
+                  <Link to="/register">{t("community_building.join_community")}</Link>
+                </Button>
+              ) : (
+                <>
+                  <Button asChild>
+                    <Link to="/contact">{t("community_building.events_notify")}</Link>
+                  </Button>
+                  <Button variant="outline" asChild>
+                    <Link to="/contact">{t("community_building.events_organize")}</Link>
+                  </Button>
+                </>
+              )}
+            </div>
           </motion.div>
         )}
 

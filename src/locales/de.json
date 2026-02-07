@@ -5218,5 +5218,46 @@
   "cancel.confirm": "Bist du sicher?",
   "cancel.refund_full": "100% Erstattung (als Plattformguthaben)",
   "cancel.refund_half": "50% Erstattung (als Plattformguthaben)",
-  "cancel.refund_none": "Keine Erstattung"
+  "cancel.refund_none": "Keine Erstattung",
+
+  "community_building.programs_title": "Die ersten Programme der Gemeinschaft nehmen Form an",
+  "community_building.programs_desc": "Sei von Anfang an dabei! Wenn du Fachwissen teilen möchtest, erstelle das erste Programm.",
+  "community_building.programs_join_expert": "Als Expert:in beitreten",
+  "community_building.programs_notify": "Über neue Programme benachrichtigen",
+
+  "community_building.events_title": "Die ersten Community-Events werden organisiert",
+  "community_building.events_desc": "Unsere Gemeinschaft erwacht zum Leben! Sei beim ersten Treffen dabei.",
+  "community_building.events_notify": "Benachrichtige mich",
+  "community_building.events_organize": "Event organisieren",
+
+  "community_building.community_title": "Du gehörst zur ersten Welle",
+  "community_building.community_desc": "Jede großartige Gemeinschaft hat klein angefangen. Stelle die erste Frage, teile deinen ersten Gedanken!",
+  "community_building.community_first_post": "Ersten Beitrag schreiben",
+  "community_building.community_introduce": "Stelle dich vor",
+
+  "community_building.experts_title": "Unsere Expert:innen treten bei",
+  "community_building.experts_desc": "Die ersten Expert:innen haben sich bereits registriert. Wenn du Fachwissen hast, schließe dich an!",
+  "community_building.experts_register": "Als Expert:in registrieren",
+
+  "community_building.hub_title": "Das ist dein Community-Hub",
+  "community_building.hub_desc": "Hier siehst du deine Programme, Benachrichtigungen und Community-Aktivitäten. Starte mit dem Entdecken!",
+  "community_building.hub_explore_programs": "Programme entdecken",
+  "community_building.hub_explore_community": "Community entdecken",
+
+  "community_building.activity_title": "Das Community-Leben beginnt bald",
+  "community_building.activity_desc": "Die ersten Beiträge, Bewertungen und Events erscheinen hier. Sei der/die Erste!",
+  "community_building.activity_write_post": "Community-Beitrag schreiben",
+
+  "community_building.featured_title": "Die ersten Programme sind unterwegs",
+  "community_building.featured_desc": "Unsere Expert:innen bereiten die ersten Community-Programme vor. Melde dich an und wir informieren dich!",
+  "community_building.featured_notify": "Benachrichtige mich",
+  "community_building.featured_become_expert": "Expert:in werden",
+
+  "community_building.sponsor_title": "Unterstütze die Gemeinschaft als Sponsor",
+  "community_building.sponsor_desc": "Unsere Sponsoren ermöglichen es Mitgliedern, kostenlos oder vergünstigt an Programmen teilzunehmen.",
+  "community_building.sponsor_packages": "Sponsor-Pakete ansehen",
+
+  "community_building.join_community": "Tritt der Gemeinschaft bei",
+
+  "community_building.welcome_back": "Willkommen zurück, {name}! 👋 Unsere Gemeinschaft entsteht gerade — und du bist von Anfang an dabei!"
 }

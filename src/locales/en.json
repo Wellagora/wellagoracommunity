@@ -5136,5 +5136,46 @@
   "cancel.confirm": "Are you sure?",
   "cancel.refund_full": "100% refund (as platform credit)",
   "cancel.refund_half": "50% refund (as platform credit)",
-  "cancel.refund_none": "No refund"
+  "cancel.refund_none": "No refund",
+
+  "community_building.programs_title": "The community's first programs are taking shape",
+  "community_building.programs_desc": "Be part of the beginning! If you have expertise to share, create the first program.",
+  "community_building.programs_join_expert": "Join as Expert",
+  "community_building.programs_notify": "Notify me about new programs",
+
+  "community_building.events_title": "First community events are being organized",
+  "community_building.events_desc": "Our community is about to come alive! Be there at the first gathering.",
+  "community_building.events_notify": "Notify me",
+  "community_building.events_organize": "I'd like to organize an event",
+
+  "community_building.community_title": "You're part of the first wave",
+  "community_building.community_desc": "Every great community started small. Ask the first question, share your first thought!",
+  "community_building.community_first_post": "Write the first post",
+  "community_building.community_introduce": "Introduce yourself",
+
+  "community_building.experts_title": "Our experts are joining",
+  "community_building.experts_desc": "The first experts have already registered. If you have expertise, join them!",
+  "community_building.experts_register": "Register as Expert",
+
+  "community_building.hub_title": "This is your community hub",
+  "community_building.hub_desc": "Here you'll see your programs, notifications, and community activity. Start by exploring!",
+  "community_building.hub_explore_programs": "Explore programs",
+  "community_building.hub_explore_community": "Explore community",
+
+  "community_building.activity_title": "Community life is about to begin",
+  "community_building.activity_desc": "The first posts, reviews, and events will appear here. Be the first to share!",
+  "community_building.activity_write_post": "Write a community post",
+
+  "community_building.featured_title": "The first programs are on their way",
+  "community_building.featured_desc": "Our experts are crafting the first community programs. Sign up and we'll notify you when they're live!",
+  "community_building.featured_notify": "Notify me",
+  "community_building.featured_become_expert": "Become an Expert",
+
+  "community_building.sponsor_title": "Support the community as a sponsor",
+  "community_building.sponsor_desc": "Our sponsors make it possible for members to join programs for free or at a discount.",
+  "community_building.sponsor_packages": "View sponsor packages",
+
+  "community_building.join_community": "Join the community",
+
+  "community_building.welcome_back": "Welcome back, {name}! 👋 Our community is just getting started — and you're among the first!"
 }

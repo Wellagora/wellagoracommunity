@@ -246,9 +246,28 @@ const SocialFeed = () => {
       </motion.div>
 
       {filteredPosts.length === 0 && (
-        <Card className="p-8 text-center">
-          <p className="text-muted-foreground">{t("feed.no_posts")}</p>
-        </Card>
+        <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
+          <div className="w-16 h-16 mb-4 rounded-full bg-emerald-50 flex items-center justify-center">
+            <Sparkles className="w-8 h-8 text-emerald-500" />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">
+            {t("community_building.community_title")}
+          </h3>
+          <p className="text-gray-500 max-w-md mb-6">
+            {t("community_building.community_desc")}
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            {user ? (
+              <Button onClick={() => toast.info(t("feed.coming_soon") || "Hamarosan elérhető!")}>
+                {t("community_building.community_first_post")}
+              </Button>
+            ) : (
+              <Button asChild>
+                <a href="/register">{t("community_building.join_community")}</a>
+              </Button>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );

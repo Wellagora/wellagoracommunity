@@ -23,7 +23,7 @@ interface RegionalProgram {
 }
 
 const RegionalProgramsHighlight = () => {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const { profile } = useAuth();
   const navigate = useNavigate();
   const [programs, setPrograms] = useState<RegionalProgram[]>([]);
@@ -162,19 +162,21 @@ const RegionalProgramsHighlight = () => {
       <CardContent className="pt-3">
         {programs.length === 0 ? (
           <div className="text-center py-6">
-            <MapPin className="w-10 h-10 mx-auto text-black/20 mb-2" />
-            <p className="text-sm text-black/50">
-              {language === 'hu' 
-                ? 'Még nincsenek programok a közeledben'
-                : 'No programs nearby yet'}
+            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-emerald-50 flex items-center justify-center">
+              <MapPin className="w-6 h-6 text-emerald-500" />
+            </div>
+            <p className="text-sm font-medium text-gray-700 mb-1">
+              {t('community_building.programs_title')}
+            </p>
+            <p className="text-xs text-gray-400 max-w-xs mx-auto mb-3">
+              {t('community_building.programs_desc')}
             </p>
             <Button
               variant="outline"
               size="sm"
-              className="mt-3"
               onClick={() => navigate('/piacer')}
             >
-              {language === 'hu' ? 'Összes program' : 'Browse all'}
+              {t('community_building.hub_explore_programs')}
               <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
           </div>

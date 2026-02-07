@@ -429,10 +429,15 @@ export const LiveNotificationFeed = () => {
       </AnimatePresence>
       
       {notifications.length === 0 && !isLoading && (
-        <div className="text-center py-8 text-black/40">
-          <Sparkles className="w-10 h-10 mx-auto mb-3 opacity-40" />
-          <p className="text-sm">
-            {language === 'hu' ? 'Még nincsenek közösségi aktivitások' : language === 'de' ? 'Noch keine Community-Aktivitäten' : 'No community activities yet'}
+        <div className="text-center py-8">
+          <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-emerald-50 flex items-center justify-center">
+            <Sparkles className="w-6 h-6 text-emerald-500" />
+          </div>
+          <p className="text-sm font-medium text-gray-700 mb-1">
+            {t('community_building.activity_title')}
+          </p>
+          <p className="text-xs text-gray-400 max-w-xs mx-auto">
+            {t('community_building.activity_desc')}
           </p>
         </div>
       )}

@@ -556,7 +556,7 @@ const ProgramsListingPage = () => {
               <span className="font-medium text-black">{filteredPrograms.length}</span> {t("marketplace.showing_results")}
             </div>
 
-            {/* Programs Grid - Ultra Minimalist Salesforce AI Style */}
+            {/* Programs Grid */}
             {filteredPrograms.length === 0 ? (
               <motion.div 
                 className="text-center py-20"
@@ -564,155 +564,52 @@ const ProgramsListingPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                <div className="w-24 h-24 mx-auto mb-8 rounded-full bg-black/[0.03] flex items-center justify-center">
-                  <Search className="w-12 h-12 text-black/20" />
-                </div>
-                <h3 className="font-serif text-2xl font-semibold text-foreground mb-3">{t("marketplace.no_results")}</h3>
-                <p className="text-muted-foreground mb-8 max-w-md mx-auto">{t("marketplace.no_results_desc")}</p>
-                
-                {/* DEV ONLY: Comprehensive Empty State Diagnostics */}
-                {false && import.meta.env.DEV && (
-                  <div className="max-w-3xl mx-auto mb-8 p-6 bg-amber-50 border-2 border-amber-300 rounded-lg text-left shadow-lg">
-                    <h4 className="font-bold text-amber-900 mb-4 text-lg">🔧 DEV DIAGNOSTICS: Why 0 programs?</h4>
-                    
-                    {/* DIAGNOSIS SECTION */}
-                    <div className="space-y-3 text-sm">
-                      {/* Root cause analysis */}
-                      {programs.length === 0 ? (
-                        <div className="bg-red-50 border-2 border-red-300 rounded-lg p-4">
-                          <p className="font-bold text-red-900 text-base mb-2">❌ ROOT CAUSE: No published programs in database</p>
-                          <p className="text-red-800 mb-2">
-                            <strong>Fetched:</strong> {programs.length} published programs from DB
-                          </p>
-                          <p className="text-xs text-red-700 mt-2">
-                            Marketplace uses ONLY real DB data. No mock fallback in DEV or production.
-                          </p>
-                        </div>
-                      ) : (
-                        <div className="bg-orange-50 border-2 border-orange-300 rounded-lg p-4">
-                          <p className="font-bold text-orange-900 text-base mb-2">⚠️ ROOT CAUSE: No approved localization for language "{language}"</p>
-                          <p className="text-orange-800 mb-2">
-                            <strong>Fetched:</strong> {programs.length} published programs<br/>
-                            <strong>Approved {language.toUpperCase()}:</strong> {programs.filter(p => p.title).length} programs
-                          </p>
-                          <div className="bg-orange-100 border border-orange-200 rounded p-2 mt-2">
-                            <p className="text-xs font-semibold text-orange-900 mb-1">📋 BUSINESS POLICY:</p>
-                            <p className="text-xs text-orange-800">
-                              Marketplace shows ONLY programs with approved localizations in current language.
-                              <br/>❌ NO fallback to other languages
-                              <br/>❌ NO mixed-language content
-                              <br/>✅ Quality over availability
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* Detailed counts */}
-                      <div className="bg-white border border-amber-300 rounded-lg p-4">
-                        <p className="font-semibold text-amber-900 mb-3">📊 Detailed Counts:</p>
-                        <div className="grid grid-cols-4 gap-3 text-xs">
-                          <div className="bg-gray-50 p-3 rounded border">
-                            <div className="text-gray-600 mb-1">Published</div>
-                            <div className={`text-2xl font-bold ${programs.length === 0 ? 'text-red-600' : 'text-green-600'}`}>
-                              {programs.length}
-                            </div>
-                            <div className="text-gray-500 mt-1">from DB</div>
-                          </div>
-                          <div className="bg-gray-50 p-3 rounded border">
-                            <div className="text-gray-600 mb-1">Approved {language.toUpperCase()}</div>
-                            <div className={`text-2xl font-bold ${programs.filter(p => p.title).length === 0 ? 'text-red-600' : 'text-green-600'}`}>
-                              {programs.filter(p => p.title).length}
-                            </div>
-                            <div className="text-gray-500 mt-1">with localization</div>
-                          </div>
-                          <div className="bg-gray-50 p-3 rounded border">
-                            <div className="text-gray-600 mb-1">After Filters</div>
-                            <div className="text-2xl font-bold text-blue-600">{filteredPrograms.length}</div>
-                            <div className="text-gray-500 mt-1">search + category</div>
-                          </div>
-                          <div className="bg-gray-50 p-3 rounded border">
-                            <div className="text-gray-600 mb-1">Sponsor Rules</div>
-                            <div className={`text-2xl font-bold ${supportMap && Object.keys(supportMap).length > 0 ? 'text-green-600' : 'text-gray-400'}`}>
-                              {supportMap ? Object.values(supportMap).filter(s => s?.hasSupport).length : 0}
-                            </div>
-                            <div className="text-gray-500 mt-1">active</div>
-                          </div>
-                        </div>
-                        
-                        {/* Sponsor support warning */}
-                        {supportMap && Object.keys(supportMap).length === 0 && programs.length > 0 && (
-                          <div className="mt-3 bg-yellow-50 border border-yellow-200 rounded p-2">
-                            <p className="text-xs text-yellow-800">
-                              ⚠️ No active sponsor support rules found. "Sponsored" badge will not appear.
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                      
-                      {/* SOLUTION SECTION */}
-                      <div className="bg-green-50 border-2 border-green-300 rounded-lg p-4">
-                        <p className="font-bold text-green-900 mb-3 text-base">✅ SOLUTION: Run seed script</p>
-                        
-                        <div className="space-y-2 text-xs text-green-800">
-                          <p className="font-semibold">📝 EXACT STEPS:</p>
-                          <ol className="list-decimal list-inside space-y-1 ml-2">
-                            <li>Open <strong>Supabase Dashboard</strong> → SQL Editor</li>
-                            <li>Open file <code className="bg-green-100 px-2 py-1 rounded font-mono">supabase/seed_marketplace_dev.sql</code> in your code editor</li>
-                            <li>Copy the <strong>ENTIRE FILE CONTENTS</strong> (not the file path!)</li>
-                            <li>Paste into SQL Editor</li>
-                            <li>Click <strong>"Run"</strong> or press Cmd+Enter</li>
-                            <li>Verify output: <code className="bg-green-100 px-2 py-1 rounded">"✅ MARKETPLACE SEED COMPLETE"</code></li>
-                            <li>Check verification queries show ✅ PASS for all checks</li>
-                            <li>Hard refresh this page: <strong>Cmd+Shift+R</strong> (Mac) or <strong>Ctrl+Shift+R</strong> (Windows)</li>
-                          </ol>
-                          
-                          <div className="bg-green-100 border border-green-200 rounded p-2 mt-3">
-                            <p className="font-semibold mb-1">📦 What seed creates:</p>
-                            <ul className="list-disc list-inside space-y-0.5 ml-2">
-                              <li>2 published programs (1 HUF, 1 EUR)</li>
-                              <li>Approved localizations in HU/DE/EN for both</li>
-                              <li>1 active sponsor support rule (HUF program)</li>
-                              <li>Test expert + sponsor profiles</li>
-                            </ul>
-                          </div>
-                          
-                          <div className="bg-green-100 border border-green-200 rounded p-2 mt-2">
-                            <p className="font-semibold mb-1">✅ Expected result after seed:</p>
-                            <ul className="list-disc list-inside space-y-0.5 ml-2">
-                              <li>2 programs visible in HU/DE/EN (language switching works)</li>
-                              <li>HUF program has "Támogatott/Sponsored" badge</li>
-                              <li>Program detail shows SupportBreakdownCard</li>
-                            </ul>
-                          </div>
-                          
-                          <p className="mt-3 text-xs text-green-700">
-                            <strong>Note:</strong> Seed is idempotent (safe to re-run). Uses fixed UUIDs and ON CONFLICT.
-                          </p>
-                        </div>
-                      </div>
-                      
-                      {/* Additional checks */}
-                      <div className="bg-blue-50 border border-blue-200 rounded p-3">
-                        <p className="font-semibold text-blue-900 text-xs mb-2">🔍 Additional Checks:</p>
-                        <ul className="list-disc list-inside space-y-1 text-xs text-blue-800 ml-2">
-                          <li>localStorage language: <code className="bg-blue-100 px-1 rounded">{language}</code> (matches seed approvals?)</li>
-                          <li>Console errors: Check browser DevTools (F12) for RLS or query errors</li>
-                          <li>Auth users: Ensure user2@wellagora.dev and user3@wellagora.dev exist in Auth Dashboard</li>
-                        </ul>
-                      </div>
+                {programs.length === 0 ? (
+                  <>
+                    <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-emerald-50 flex items-center justify-center">
+                      <Sprout className="w-10 h-10 text-emerald-500" />
                     </div>
-                  </div>
+                    <h3 className="font-serif text-2xl font-semibold text-foreground mb-3">
+                      {t("community_building.programs_title")}
+                    </h3>
+                    <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+                      {t("community_building.programs_desc")}
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                      {!user ? (
+                        <Button asChild>
+                          <Link to="/register">{t("community_building.join_community")}</Link>
+                        </Button>
+                      ) : (
+                        <>
+                          <Button asChild>
+                            <Link to="/register?role=expert">{t("community_building.programs_join_expert")}</Link>
+                          </Button>
+                          <Button variant="outline" asChild>
+                            <Link to="/contact">{t("community_building.programs_notify")}</Link>
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-black/[0.03] flex items-center justify-center">
+                      <Search className="w-10 h-10 text-black/20" />
+                    </div>
+                    <h3 className="font-serif text-2xl font-semibold text-foreground mb-3">{t("marketplace.no_results")}</h3>
+                    <p className="text-muted-foreground mb-8 max-w-md mx-auto">{t("marketplace.no_results_desc")}</p>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setSearchQuery("");
+                        setSelectedCategory("all");
+                      }}
+                    >
+                      {t("marketplace.clear_filters")}
+                    </Button>
+                  </>
                 )}
-                
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setSearchQuery("");
-                    setSelectedCategory("all");
-                  }}
-                >
-                  {t("marketplace.clear_filters")}
-                </Button>
               </motion.div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
