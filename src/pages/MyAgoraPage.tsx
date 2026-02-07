@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
-import { BookOpen, Ticket, Star, Coins, Flame, Trophy, Sparkles, ArrowRight } from "lucide-react";
+import { BookOpen, Ticket, Star, Coins, Flame, Trophy, Sparkles, ArrowRight, Calendar, MapPin, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { hu, de, enUS } from "date-fns/locale";
 import { getUserBalance, WELLPOINTS_QUERY_KEY, STREAK_QUERY_KEY } from "@/lib/wellpoints";
@@ -224,6 +224,34 @@ const MyAgoraPage = () => {
     retry: false,
   });
 
+  // Upcoming Events (RSVPd by the user)
+  const { data: upcomingEvents = [], isLoading: eventsLoading } = useQuery({
+    queryKey: ["myUpcomingEvents", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [];
+      // Get user's RSVPd events
+      const { data: rsvps, error } = await supabase
+        .from("event_rsvps")
+        .select(`
+          event_id,
+          events (
+            id, title, start_date, end_date, location_name, village, image_url, current_participants, max_participants
+          )
+        `)
+        .eq("user_id", user.id)
+        .eq("status", "going");
+      if (error) throw error;
+      return (rsvps || [])
+        .map((r: any) => r.events)
+        .filter(Boolean)
+        .filter((e: any) => new Date(e.start_date) >= new Date())
+        .sort((a: any, b: any) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())
+        .slice(0, 5);
+    },
+    enabled: !!user?.id,
+    retry: false,
+  });
+
   // Card 3: Sponsored Access - Fetch from vouchers table
   const { data: sponsoredAccess = [], isLoading: sponsoredLoading, isError: sponsoredError } = useQuery({
     queryKey: ["mySponsoredAccess", user?.id],
@@ -374,7 +402,57 @@ const MyAgoraPage = () => {
           </div>
         </div>
 
-        {/* SECTION 4: Existing content (programs + vouchers) */}
+        {/* SECTION 4: Upcoming Events */}
+        {!eventsLoading && upcomingEvents.length > 0 && (
+          <div>
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+              <Calendar className="w-6 h-6 text-indigo-500" />
+              {t('my_agora.upcoming_events') || 'Közelgő eseményeim'}
+            </h2>
+            <div className="space-y-3">
+              {upcomingEvents.map((event: any) => (
+                <Card
+                  key={event.id}
+                  className="hover:shadow-md transition-shadow cursor-pointer"
+                  onClick={() => navigate(`/esemenyek/${event.id}`)}
+                >
+                  <CardContent className="p-4 flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-lg bg-indigo-500/10 flex items-center justify-center flex-shrink-0 text-center">
+                      <div>
+                        <p className="text-xs font-bold text-indigo-600">
+                          {format(new Date(event.start_date), 'MMM', { locale: dateLocale })}
+                        </p>
+                        <p className="text-xl font-bold text-indigo-700 leading-none">
+                          {format(new Date(event.start_date), 'd')}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{event.title}</p>
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {format(new Date(event.start_date), 'HH:mm')}
+                        </span>
+                        {event.location_name && (
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3" />
+                            {event.location_name}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <Badge variant="secondary" className="text-xs flex-shrink-0">
+                      {event.current_participants || 0}/{event.max_participants || '∞'}
+                    </Badge>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* SECTION 5: Existing content (programs + vouchers) */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Active Programs */}
           <Card>

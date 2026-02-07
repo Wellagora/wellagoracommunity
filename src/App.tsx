@@ -41,6 +41,7 @@ const ExpertAnalytics = lazy(() => import("@/pages/ExpertAnalytics"));
 const ExpertMedia = lazy(() => import("@/pages/ExpertMedia"));
 const ExpertSettings = lazy(() => import("@/pages/ExpertSettings"));
 const ExpertPayouts = lazy(() => import("@/pages/ExpertPayouts"));
+const ProgramParticipantsPage = lazy(() => import("@/pages/ProgramParticipantsPage"));
 const SponsorCampaigns = lazy(() => import("@/pages/SponsorCampaigns"));
 const SponsorFinances = lazy(() => import("@/pages/SponsorFinances"));
 const SponsorSupport = lazy(() => import("@/pages/SponsorSupport"));
@@ -291,6 +292,14 @@ function App() {
                             element={
                               <ProtectedRoute allowedRoles={["expert"]}>
                                 <ExpertSettings />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/expert-studio/:id/participants"
+                            element={
+                              <ProtectedRoute allowedRoles={["expert"]}>
+                                <ProgramParticipantsPage />
                               </ProtectedRoute>
                             }
                           />
