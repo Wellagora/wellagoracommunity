@@ -9,6 +9,7 @@ import { ViewModeProvider } from "@/contexts/ViewModeContext";
 import { RegionProvider } from "@/contexts/RegionContext";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
+import CookieConsentBanner from "@/components/CookieConsentBanner";
 import { initSentry } from "@/lib/sentry";
 import { LoadingFallback } from "@/components/LoadingFallback";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -54,6 +55,7 @@ const InboxPage = lazy(() => import("@/pages/InboxPage"));
 const TranslationToolPage = lazy(() => import("@/pages/TranslationToolPage"));
 const PrivacyPolicyPage = lazy(() => import("@/pages/PrivacyPolicyPage"));
 const ImpressumPage = lazy(() => import("@/pages/ImpressumPage"));
+const TermsOfServicePage = lazy(() => import("@/pages/TermsOfServicePage"));
 const SuperAdminPage = lazy(() => import("@/pages/SuperAdminPage"));
 const AdminLayout = lazy(() => import("@/layouts/AdminLayout"));
 const AdminDashboardNew = lazy(() => import("@/pages/admin/AdminDashboardNew"));
@@ -219,6 +221,8 @@ function App() {
                           />
                           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
                           <Route path="/impressum" element={<ImpressumPage />} />
+                          <Route path="/terms" element={<TermsOfServicePage />} />
+                          <Route path="/aszf" element={<Navigate to="/terms" replace />} />
                           <Route
                             path="/super-admin"
                             element={<Navigate to="/admin" replace />}
@@ -483,6 +487,7 @@ function App() {
                     </Suspense>
                     <Toaster />
                     <SonnerToaster />
+                    <CookieConsentBanner />
                   </BrowserRouter>
                   </RegionProvider>
                 </ProjectProvider>

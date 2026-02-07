@@ -90,6 +90,11 @@ const Footer = () => {
                   {t('footer.link_impressum')}
                 </Link>
               </li>
+              <li>
+                <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  {t('footer.link_terms') || 'ÁSZF'}
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
@@ -106,6 +111,9 @@ const Footer = () => {
             </Link>
             <Link to="/impressum" className="hover:text-primary transition-colors">
               {t('footer.impressum_short')}
+            </Link>
+            <Link to="/terms" className="hover:text-primary transition-colors">
+              {t('footer.terms_short') || 'ÁSZF'}
             </Link>
           </div>
         </div>
