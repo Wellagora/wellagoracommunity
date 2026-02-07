@@ -32,12 +32,37 @@ import {
 import WellBotAvatar from "@/components/ai/WellBotAvatar";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import {
-  MOCK_FEED_POSTS,
-  FeedPost,
-  MOCK_PROGRAMS,
-  getLocalizedProgramTitle,
-} from "@/data/mockData";
+type PostType = 'expert_tip' | 'question' | 'success_story' | 'announcement' | 'wellbot_answer';
+
+interface FeedComment {
+  id: string;
+  authorId: string;
+  authorName: string;
+  authorRole: 'member' | 'expert' | 'wellbot';
+  authorBadge?: string;
+  content: string;
+  createdAt: string;
+  isExpertAnswer?: boolean;
+}
+
+interface FeedPost {
+  id: string;
+  type: PostType;
+  authorId: string;
+  authorName: string;
+  authorRole: 'member' | 'expert' | 'sponsor' | 'wellbot';
+  authorBadge?: string;
+  content: string;
+  imageUrl?: string;
+  programKeywords?: string[];
+  relatedProgramId?: string;
+  createdAt: string;
+  likes: number;
+  isLikedByMe: boolean;
+  comments: FeedComment[];
+  isWellBotResponse?: boolean;
+  replyToPostId?: string;
+}
 
 // Animation variants
 const containerVariants = {
@@ -68,13 +93,9 @@ const SocialFeed = () => {
   const [filter, setFilter] = useState<string>("all");
 
   useEffect(() => {
-    if (isDemoMode) {
-      setPosts(MOCK_FEED_POSTS);
-    } else {
-      // For now, use mock data even in non-demo mode
-      setPosts(MOCK_FEED_POSTS);
-    }
-  }, [isDemoMode]);
+    // No community_posts table yet — start with empty feed
+    setPosts([]);
+  }, []);
 
   const filteredPosts =
     filter === "all"
@@ -283,38 +304,8 @@ const RelatedProgramCard = ({ programId }: { programId: string }) => {
   const { t, language } = useLanguage();
   const navigate = useNavigate();
 
-  const program = MOCK_PROGRAMS.find((p) => p.id === programId);
-  if (!program) return null;
-
-  return (
-    <div
-      onClick={() => navigate(`/piacter/${programId}`)}
-      className="mt-3 p-3 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-200 cursor-pointer hover:shadow-md transition-all group"
-    >
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
-          <Bookmark className="w-5 h-5 text-indigo-600" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-xs text-indigo-600 font-medium">
-            {t("feed.related_program")}
-          </p>
-          <p className="font-semibold text-sm truncate group-hover:text-indigo-700">
-            {getLocalizedProgramTitle(program, language)}
-          </p>
-        </div>
-        <ChevronRight className="w-5 h-5 text-indigo-400 group-hover:translate-x-1 transition-transform" />
-      </div>
-
-      {/* Sponsor Attribution */}
-      {program.sponsor_name && (
-        <p className="mt-2 text-xs text-indigo-600/70 flex items-center gap-1">
-          <Gift className="w-3 h-3" />
-          {t("feed.sponsored_by")}: {program.sponsor_name}
-        </p>
-      )}
-    </div>
-  );
+  // No DB-backed program lookup yet
+  return null;
 };
 
 // Comment Card Component

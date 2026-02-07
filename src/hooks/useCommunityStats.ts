@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { DEMO_STATS as GLOBAL_DEMO_STATS } from '@/data/mockData';
 
 interface CommunityStats {
   members: number;
@@ -22,21 +21,16 @@ interface UseCommunityStatsResult {
   refetch: () => void;
 }
 
-// Demo stats with realistic fallback numbers
-export const DEMO_STATS: CommunityStats = {
-  members: GLOBAL_DEMO_STATS.members,
-  experts: GLOBAL_DEMO_STATS.experts,
-  sponsors: GLOBAL_DEMO_STATS.sponsors,
-  programs: GLOBAL_DEMO_STATS.programs,
-  events: GLOBAL_DEMO_STATS.events,
-  // Legacy fields
-  sharedIdeas: GLOBAL_DEMO_STATS.programs,
-  collaborations: 89,
-  eventsCount: GLOBAL_DEMO_STATS.events,
+const ZERO_STATS: CommunityStats = {
+  members: 0,
+  experts: 0,
+  sponsors: 0,
+  programs: 0,
+  events: 0,
+  sharedIdeas: 0,
+  collaborations: 0,
+  eventsCount: 0,
 };
-
-// Demo sponsors count from central source
-export const DEMO_SPONSORS_COUNT = GLOBAL_DEMO_STATS.sponsors;
 
 /**
  * Hook to fetch community impact statistics from Supabase
@@ -59,9 +53,8 @@ export const useCommunityStats = (projectId?: string): UseCommunityStatsResult =
   const [error, setError] = useState<Error | null>(null);
 
   const fetchStats = useCallback(async () => {
-    // In demo mode, use mock stats immediately
     if (isDemoMode) {
-      setStats(DEMO_STATS);
+      setStats(ZERO_STATS);
       setLoading(false);
       return;
     }
@@ -93,27 +86,20 @@ export const useCommunityStats = (projectId?: string): UseCommunityStatsResult =
       const collaborationsCount = vouchersResult.count ?? 0;
       const eventsCount = eventsResult.count ?? 0;
 
-      // If database is empty, use demo data
-      if (membersCount === 0 && programsCount === 0 && eventsCount === 0) {
-        setStats(DEMO_STATS);
-      } else {
-        setStats({
-          members: membersCount,
-          experts: expertsCount,
-          sponsors: sponsorsCount,
-          programs: programsCount,
-          events: eventsCount,
-          // Legacy fields
-          sharedIdeas: programsCount,
-          collaborations: collaborationsCount,
-          eventsCount: eventsCount,
-        });
-      }
+      setStats({
+        members: membersCount,
+        experts: expertsCount,
+        sponsors: sponsorsCount,
+        programs: programsCount,
+        events: eventsCount,
+        sharedIdeas: programsCount,
+        collaborations: collaborationsCount,
+        eventsCount: eventsCount,
+      });
     } catch (e) {
       console.error('Failed to fetch community stats:', e);
       setError(e as Error);
-      // Fallback to demo stats on error
-      setStats(DEMO_STATS);
+      setStats(ZERO_STATS);
     } finally {
       setLoading(false);
     }

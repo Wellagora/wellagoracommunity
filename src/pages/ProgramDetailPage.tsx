@@ -11,7 +11,6 @@ import { calculateSupportBreakdown } from "@/lib/sponsorSupport";
 import { calculatePricing } from '@/lib/pricing';
 import { PricingDisplay } from '@/components/PricingDisplay';
 import { SupportBreakdownCard, SponsoredBadge } from "@/components/sponsor/SupportBreakdownCard";
-import { MOCK_PROGRAMS, getMockExpertById } from "@/data/mockData";
 import type { Currency } from "@/types/sponsorSupport";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -55,8 +54,6 @@ const ProgramDetailPage = () => {
   const { claimVoucher, hasVoucherForContent, getVoucherByContentId } = useVouchers();
   const { isFavorite, toggleFavorite } = useFavorites();
 
-  // Check if this is a mock program
-  const isMockProgram = id?.startsWith('mock-program-');
   
   // Check if user already has voucher for this program
   const existingVoucher = id ? getVoucherByContentId(id) : undefined;
@@ -66,24 +63,6 @@ const ProgramDetailPage = () => {
   const { data: program, isLoading: programLoading } = useQuery({
     queryKey: ['program', id],
     queryFn: async () => {
-      // If mock program, return mock data
-      if (isMockProgram) {
-        const mockProgram = MOCK_PROGRAMS.find(p => p.id === id);
-        if (mockProgram) {
-          const mockCreator = getMockExpertById(mockProgram.creator_id);
-          return {
-            ...mockProgram,
-            creator: mockCreator ? {
-              id: mockCreator.id,
-              first_name: mockCreator.first_name,
-              last_name: mockCreator.last_name,
-              avatar_url: mockCreator.avatar_url,
-              is_verified_expert: mockCreator.is_verified_expert
-            } : null
-          };
-        }
-        return null;
-      }
       const { data, error } = await supabase
         .from('expert_contents')
         .select(`
@@ -152,7 +131,6 @@ const ProgramDetailPage = () => {
   const { data: sponsorship } = useQuery({
     queryKey: ['programSponsorship', id],
     queryFn: async () => {
-      if (isMockProgram) return null;
       const { data } = await supabase
         .from('content_sponsorships')
         .select('id, sponsor_contribution_huf, is_active, total_licenses, used_licenses, max_sponsored_seats, sponsored_seats_used')
@@ -161,7 +139,7 @@ const ProgramDetailPage = () => {
         .maybeSingle();
       return data;
     },
-    enabled: !!id && !isMockProgram,
+    enabled: !!id,
   });
 
   // Calculate quota status
@@ -176,13 +154,6 @@ const ProgramDetailPage = () => {
   const { data: relatedPrograms } = useQuery({
     queryKey: ['relatedPrograms', program?.creator_id, id],
     queryFn: async () => {
-      // For mock programs, use getMockProgramsByExpert
-      if (isMockProgram && program?.creator_id) {
-        const mockRelated = MOCK_PROGRAMS
-          .filter(p => p.creator_id === program.creator_id && p.id !== id)
-          .slice(0, 3);
-        return mockRelated;
-      }
       const { data } = await supabase
         .from('expert_contents')
         .select('id, thumbnail_url, access_level, price_huf')
@@ -303,8 +274,8 @@ const ProgramDetailPage = () => {
     // Check if this is a SPONSORED program (is_sponsored=true)
     const isSponsored = (program as any)?.is_sponsored === true;
 
-    // For SPONSORED programs (real or mock), show voucher claim button
-    if (isSponsored && !isMockProgram && id) {
+    // For SPONSORED programs, show voucher claim button
+    if (isSponsored && id) {
       // If quota is exhausted, show impact message instead
       if (quotaInfo?.isExhausted) {
         return (
@@ -346,8 +317,8 @@ const ProgramDetailPage = () => {
       );
     }
     
-    // For mock SPONSORED programs, show a special test button
-    if (isSponsored && isMockProgram) {
+    // Fallback for sponsored programs without id
+    if (isSponsored) {
       return (
         <Button 
           size="lg"
@@ -515,31 +486,26 @@ const ProgramDetailPage = () => {
   let localizedTitle = '';
   let localizedDescription = '';
   
-  if (isMockProgram) {
+  // Use embedded language fields based on current language
+  if (language === 'hu') {
     localizedTitle = cleanProgramTitle(programData?.title || '');
-    localizedDescription = programData?.description || t('program.no_description');
-  } else {
-    // Use embedded language fields based on current language
-    if (language === 'hu') {
-      localizedTitle = cleanProgramTitle(programData?.title || '');
-      localizedDescription = programData?.description || '';
-    } else if (language === 'en') {
-      localizedTitle = cleanProgramTitle(programData?.title_en || '');
-      localizedDescription = programData?.description_en || '';
-    } else if (language === 'de') {
-      localizedTitle = cleanProgramTitle(programData?.title_de || '');
-      localizedDescription = programData?.description_de || '';
-    }
-    
-    // If no localized content exists, show placeholder
-    if (!localizedTitle || !localizedDescription) {
-      return (
-        <GracefulPlaceholder
-          title={t('creator.translation.not_available_public')}
-          description=""
-        />
-      );
-    }
+    localizedDescription = programData?.description || '';
+  } else if (language === 'en') {
+    localizedTitle = cleanProgramTitle(programData?.title_en || '');
+    localizedDescription = programData?.description_en || '';
+  } else if (language === 'de') {
+    localizedTitle = cleanProgramTitle(programData?.title_de || '');
+    localizedDescription = programData?.description_de || '';
+  }
+  
+  // If no localized content exists, show placeholder
+  if (!localizedTitle || !localizedDescription) {
+    return (
+      <GracefulPlaceholder
+        title={t('creator.translation.not_available_public')}
+        description=""
+      />
+    );
   }
 
   // Calculate sponsor contribution for JSON-LD

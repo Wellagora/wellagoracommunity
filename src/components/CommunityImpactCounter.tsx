@@ -1,72 +1,38 @@
-import { useRef } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useRef, useState, useEffect } from "react";
+import { Card } from "@/components/ui/card";
 import { PressableButton } from "@/components/ui/PressableButton";
-import { Sparkles, Heart, Users, LucideIcon, TrendingUp, Zap } from "lucide-react";
+import { TrendingUp, Zap } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { motion, useInView } from "framer-motion";
 import { Link } from "react-router-dom";
-import { StaggerContainer, StaggerItem } from "@/components/ui/StaggerAnimation";
 import { LiveNotificationFeed } from "@/components/home/LiveNotificationFeed";
-import { DEMO_STATS } from "@/data/mockData";
-
-// Story card config - only static data, text comes from translations
-const STORY_CARD_CONFIG: Array<{
-  id: string;
-  titleKey: string;
-  quoteKey: string;
-  authorKey: string;
-  roleKey: string;
-  avatar: string;
-  icon: LucideIcon;
-  borderColor: string;
-}> = [
-  {
-    id: 'community',
-    titleKey: 'community_pulse.story_active_title',
-    quoteKey: 'community_pulse.story_active_quote',
-    authorKey: 'community_pulse.story_active_author',
-    roleKey: 'community_pulse.story_active_role',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100',
-    icon: Users,
-    borderColor: 'border-l-black/20',
-  },
-  {
-    id: 'experiences',
-    titleKey: 'community_pulse.story_experiences_title',
-    quoteKey: 'community_pulse.story_experiences_quote',
-    authorKey: 'community_pulse.story_experiences_author',
-    roleKey: 'community_pulse.story_experiences_role',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100',
-    icon: Sparkles,
-    borderColor: 'border-l-black/15',
-  },
-  {
-    id: 'connections',
-    titleKey: 'community_pulse.story_connections_title',
-    quoteKey: 'community_pulse.story_connections_quote',
-    authorKey: 'community_pulse.story_connections_author',
-    roleKey: 'community_pulse.story_connections_role',
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100',
-    icon: Heart,
-    borderColor: 'border-l-black/10',
-  },
-];
 
 export const CommunityImpactCounter = () => {
   const { t, language } = useLanguage();
   const { user } = useAuth();
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const [memberCount, setMemberCount] = useState<number>(0);
 
-  // Social proof count with localization - Using 'Tag/Tagunk' instead of 'tanuló'
-  const memberCount = DEMO_STATS.members + 1073; // 1200+ members
-  const socialProofText = language === 'hu' 
-    ? `Csatlakozz ${memberCount.toLocaleString('hu-HU')}+ Tagunkhoz!`
-    : language === 'de'
-    ? `Schließe dich ${memberCount.toLocaleString('de-DE')}+ Mitgliedern an!`
-    : `Join ${memberCount.toLocaleString()}+ Members!`;
+  useEffect(() => {
+    const fetchCount = async () => {
+      const { count } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true });
+      setMemberCount(count || 0);
+    };
+    fetchCount();
+  }, []);
+
+  const socialProofText = memberCount > 0
+    ? language === 'hu'
+      ? `Csatlakozz ${memberCount.toLocaleString('hu-HU')}+ Tagunkhoz!`
+      : language === 'de'
+      ? `Schließe dich ${memberCount.toLocaleString('de-DE')}+ Mitgliedern an!`
+      : `Join ${memberCount.toLocaleString()}+ Members!`
+    : '';
 
   return (
     <section 
@@ -99,40 +65,6 @@ export const CommunityImpactCounter = () => {
             {t('community_pulse.subtitle')}
           </p>
         </motion.div>
-
-        {/* Story Cards - Monochrome with left border + Stagger */}
-        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          {STORY_CARD_CONFIG.map((story) => {
-            const author = t(story.authorKey);
-            return (
-              <StaggerItem key={story.id}>
-                <Card className={`h-full bg-white/90 backdrop-blur-xl border-[0.5px] border-black/5 border-l-4 ${story.borderColor} hover:shadow-lg hover:scale-[1.02] transition-all duration-300`}>
-                  <CardContent className="p-5">
-                    <div className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center mb-4">
-                      <story.icon className="w-5 h-5 text-black/70" />
-                    </div>
-                    <h3 className="font-bold text-black">{t(story.titleKey)}</h3>
-                    <p className="text-black/60 mt-2 text-sm italic line-clamp-3">
-                      "{t(story.quoteKey)}"
-                    </p>
-                    <div className="flex items-center gap-2 mt-4">
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage src={story.avatar} />
-                        <AvatarFallback className="bg-black/10 text-black/70 text-xs">
-                          {author.split(' ').map(n => n[0]).join('')}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="text-sm font-medium text-black">{author}</p>
-                        <p className="text-xs text-black/40">{t(story.roleKey)}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </StaggerItem>
-            );
-          })}
-        </StaggerContainer>
 
         {/* Live Notification Feed - Enhanced with warm background */}
         <motion.div
@@ -182,17 +114,11 @@ export const CommunityImpactCounter = () => {
             transition={{ duration: 0.6, delay: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             {/* Social proof badge */}
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <div className="flex -space-x-2">
-                {['photo-1494790108377-be9c29b29330', 'photo-1507003211169-0a1dd7228f2d', 'photo-1438761681033-6461ffad8d80', 'photo-1500648767791-00dcc994a43e'].map((photo, i) => (
-                  <Avatar key={i} className="w-7 h-7 ring-2 ring-white">
-                    <AvatarImage src={`https://images.unsplash.com/${photo}?w=50&h=50&fit=crop&crop=face`} />
-                    <AvatarFallback className="bg-black/10 text-xs">U</AvatarFallback>
-                  </Avatar>
-                ))}
+            {socialProofText && (
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <span className="text-sm text-black/60 font-medium">{socialProofText}</span>
               </div>
-              <span className="text-sm text-black/60 font-medium">{socialProofText}</span>
-            </div>
+            )}
             
             {/* CTA Button with glow effect */}
             <div className="relative inline-block">

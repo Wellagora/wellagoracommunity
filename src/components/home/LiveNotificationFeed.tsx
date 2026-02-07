@@ -24,116 +24,6 @@ interface ActivityNotification {
   timeAgo: string;
 }
 
-// Localized program title mappings
-const PROGRAM_TITLE_TRANSLATIONS: Record<string, { en: string; de: string }> = {
-  'Kovászos Kenyér Mesterkurzus': { en: 'Sourdough Bread Masterclass', de: 'Sauerteigbrot Meisterkurs' },
-  'Gyógynövénytúra': { en: 'Herbal Tour', de: 'Kräuterwanderung' },
-  'Természetes Kozmetikumok Mestere': { en: 'Natural Cosmetics Master', de: 'Natürliche Kosmetik Meister' },
-  'Fenntartható Kertészkedés': { en: 'Sustainable Gardening', de: 'Nachhaltiges Gärtnern' },
-  'Borkóstoló és Pincetúra': { en: 'Wine Tasting & Cellar Tour', de: 'Weinprobe & Kellerführung' },
-  '5. programját fejezte be': { en: 'completed their 5th program', de: 'hat ihr 5. Programm abgeschlossen' },
-};
-
-// Helper to get localized program title
-const getLocalizedProgramTitle = (title: string, language: string): string => {
-  if (language === 'hu') return title;
-  const translations = PROGRAM_TITLE_TRANSLATIONS[title];
-  if (translations) {
-    return language === 'en' ? translations.en : translations.de;
-  }
-  return title; // Fallback to Hungarian
-};
-
-interface MockActivityBase {
-  id: string;
-  type: ActivityType;
-  userName: string;
-  userAvatar: string | null;
-  userInitials: string;
-  programTitleKey: string;
-  programThumbnail?: string;
-  sponsorName?: string;
-  reviewText?: string;
-  rating?: number;
-  seatsOpened?: number;
-  time: string;
-}
-
-// Mock diverse activities for demonstration (base data in Hungarian)
-const MOCK_ACTIVITIES_BASE: MockActivityBase[] = [
-  {
-    id: 'mock-1',
-    type: 'signup',
-    userName: 'Kovács Júlia',
-    userAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
-    userInitials: 'KJ',
-    programTitleKey: 'Kovászos Kenyér Mesterkurzus',
-    programThumbnail: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&h=150&fit=crop',
-    time: new Date(Date.now() - 2 * 60000).toISOString(),
-  },
-  {
-    id: 'mock-2',
-    type: 'review',
-    userName: 'Nagy Péter',
-    userAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
-    userInitials: 'NP',
-    programTitleKey: 'Gyógynövénytúra',
-    programThumbnail: 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=200&h=150&fit=crop',
-    reviewText: 'Zseniális volt! Rengeteg praktikus tippet kaptam.',
-    rating: 5,
-    time: new Date(Date.now() - 15 * 60000).toISOString(),
-  },
-  {
-    id: 'mock-3',
-    type: 'expert_join',
-    userName: 'Szabó Eszter',
-    userAvatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
-    userInitials: 'SzE',
-    programTitleKey: 'Természetes Kozmetikumok Mestere',
-    time: new Date(Date.now() - 45 * 60000).toISOString(),
-  },
-  {
-    id: 'mock-4',
-    type: 'sponsor_impact',
-    userName: 'Balaton Bio Kft.',
-    userAvatar: null,
-    userInitials: 'BB',
-    sponsorName: 'Balaton Bio Kft.',
-    programTitleKey: 'Fenntartható Kertészkedés',
-    programThumbnail: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=200&h=150&fit=crop',
-    seatsOpened: 5,
-    time: new Date(Date.now() - 2 * 60 * 60000).toISOString(),
-  },
-  {
-    id: 'mock-5',
-    type: 'signup',
-    userName: 'Tóth Gábor',
-    userAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face',
-    userInitials: 'TG',
-    programTitleKey: 'Borkóstoló és Pincetúra',
-    programThumbnail: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=200&h=150&fit=crop',
-    time: new Date(Date.now() - 5 * 60000).toISOString(),
-  },
-  {
-    id: 'mock-6',
-    type: 'milestone',
-    userName: 'Horváth Anna',
-    userAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face',
-    userInitials: 'HA',
-    programTitleKey: '5. programját fejezte be',
-    time: new Date(Date.now() - 3 * 60 * 60000).toISOString(),
-  },
-];
-
-// Helper to convert base mock data to ActivityNotification with localized titles
-const getMockActivities = (language: string, formatTime: (time: string) => string): ActivityNotification[] => {
-  return MOCK_ACTIVITIES_BASE.map(m => ({
-    ...m,
-    programTitle: getLocalizedProgramTitle(m.programTitleKey, language),
-    timeAgo: formatTime(m.time),
-  }));
-};
-
 export const LiveNotificationFeed = () => {
   const { t, language } = useLanguage();
   const [notifications, setNotifications] = useState<ActivityNotification[]>([]);
@@ -373,17 +263,10 @@ export const LiveNotificationFeed = () => {
         .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
         .slice(0, 5);
 
-      // If we have real data, use it; otherwise fall back to mock
-      if (sortedActivities.length > 0) {
-        setNotifications(sortedActivities);
-      } else {
-        // Fall back to mock data if no real data available
-        setNotifications(getMockActivities(language, formatRelativeTime).slice(0, 5));
-      }
+      setNotifications(sortedActivities);
     } catch (err) {
       console.error('Error fetching notifications:', err);
-      // Fall back to mock data on error
-      setNotifications(getMockActivities(language, formatRelativeTime).slice(0, 5));
+      setNotifications([]);
     } finally {
       setIsLoading(false);
     }
@@ -548,7 +431,9 @@ export const LiveNotificationFeed = () => {
       {notifications.length === 0 && !isLoading && (
         <div className="text-center py-8 text-black/40">
           <Sparkles className="w-10 h-10 mx-auto mb-3 opacity-40" />
-          <p className="text-sm">{language === 'hu' ? 'Hamarosan itt lesznek az aktivitások!' : 'Activities coming soon!'}</p>
+          <p className="text-sm">
+            {language === 'hu' ? 'Még nincsenek közösségi aktivitások' : language === 'de' ? 'Noch keine Community-Aktivitäten' : 'No community activities yet'}
+          </p>
         </div>
       )}
     </div>

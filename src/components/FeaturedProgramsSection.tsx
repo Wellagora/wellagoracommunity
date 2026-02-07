@@ -1,13 +1,13 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useLocalizedContent } from "@/hooks/useLocalizedContent";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Star, Crown, ShoppingCart, Gift, Leaf, TrendingUp, Sparkles } from "lucide-react";
+import { Star, Crown, ShoppingCart, Gift, Leaf, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
-import { MOCK_PROGRAMS, getMockExpertById, getLocalizedExpertName, getLocalizedSponsorName, formatPriceByLanguage } from "@/data/mockData";
-import { SocialProofBadge } from "@/components/marketplace/SocialProofBadge";
+import { supabase } from "@/integrations/supabase/client";
+import { resolveImageUrl, resolveAvatarUrl } from "@/lib/imageResolver";
 import { VerifiedExpertBadge } from "@/components/marketplace/VerifiedExpertBadge";
 import { SponsorContributionBadge } from "@/components/marketplace/SponsorContributionBadge";
 import { calculatePricing } from '@/lib/pricing';
@@ -37,79 +37,72 @@ const ImagePlaceholder = () => (
   </div>
 );
 
+interface FeaturedProgram {
+  id: string;
+  title: string;
+  thumbnail_url: string | null;
+  image_url: string | null;
+  access_level: string | null;
+  price_huf: number | null;
+  is_sponsored: boolean | null;
+  sponsor_name: string | null;
+  category: string | null;
+  creator: { id: string; first_name: string | null; last_name: string | null; avatar_url: string | null } | null;
+}
+
 const FeaturedProgramsSection = () => {
   const { t, language } = useLanguage();
-  const { getLocalizedField } = useLocalizedContent();
+  const [featuredPrograms, setFeaturedPrograms] = useState<FeaturedProgram[]>([]);
 
-  // HARD ENFORCEMENT: featured section shows ONLY mock programs
-  const featuredPrograms = MOCK_PROGRAMS
-    .filter((p) => p.is_featured)
-    .map((mp, idx) => {
-      const creator = getMockExpertById(mp.creator_id);
-      const localizedCreatorName = creator ? getLocalizedExpertName(creator, language) : null;
-      const localizedSponsorName = getLocalizedSponsorName(mp, language);
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      const { data } = await supabase
+        .from('expert_contents')
+        .select(`
+          id, title, title_en, title_de, thumbnail_url, image_url,
+          access_level, price_huf, is_sponsored, sponsor_name, category,
+          creator:profiles!expert_contents_creator_id_fkey (id, first_name, last_name, avatar_url)
+        `)
+        .eq('is_published', true)
+        .eq('is_featured', true)
+        .order('created_at', { ascending: false })
+        .limit(6);
 
-      // Calculate sponsorship details
-      const sponsorContribution = mp.is_sponsored ? Math.round(mp.price_huf * 0.8) : 0; // 80% sponsor contribution
-      const maxSeats = mp.is_sponsored ? (mp.max_sponsored_seats || 10) : 0;
-      const usedSeats = mp.is_sponsored ? Math.min(maxSeats - 2, 2 + idx) : 0; // Deterministic usage
+      if (data) {
+        setFeaturedPrograms(data.map((p: any) => ({
+          id: p.id,
+          title: language === 'en' ? (p.title_en || p.title) : language === 'de' ? (p.title_de || p.title) : p.title,
+          thumbnail_url: resolveImageUrl(p.thumbnail_url),
+          image_url: resolveImageUrl(p.image_url),
+          access_level: p.access_level,
+          price_huf: p.price_huf,
+          is_sponsored: p.is_sponsored,
+          sponsor_name: p.sponsor_name,
+          category: p.category,
+          creator: p.creator ? {
+            id: p.creator.id,
+            first_name: p.creator.first_name,
+            last_name: p.creator.last_name,
+            avatar_url: resolveAvatarUrl(p.creator.avatar_url),
+          } : null,
+        })));
+      }
+    };
+    fetchFeatured();
+  }, [language]);
 
-      return {
-        id: mp.id,
-        title: getLocalizedField(mp as unknown as Record<string, unknown>, "title"),
-        thumbnail_url: mp.thumbnail_url,
-        image_url: mp.image_url,
-        access_level: mp.access_level,
-        price_huf: mp.price_huf,
-        is_sponsored: mp.is_sponsored,
-        sponsor_name: localizedSponsorName,
-        sponsor_contribution: sponsorContribution,
-        max_seats: maxSeats,
-        used_seats: usedSeats,
-        category: mp.category,
-        // Pass content type for quota-specific labels
-        content_type: mp.content_type || 'in_person',
-        max_capacity: mp.max_capacity,
-        creator: creator && localizedCreatorName
-          ? {
-              id: creator.id,
-              first_name: localizedCreatorName.firstName,
-              last_name: localizedCreatorName.lastName,
-              avatar_url: creator.avatar_url,
-            }
-          : null,
-      };
-    })
-    .slice(0, 6);
-
-  const getAccessBadge = (program: {
-    access_level: string | null;
-    is_sponsored?: boolean;
-    sponsor_name?: string | null;
-    price_huf?: number | null;
-    sponsor_contribution?: number;
-    max_seats?: number;
-    used_seats?: number;
-    content_type?: 'recorded' | 'online_live' | 'in_person';
-    max_capacity?: number;
-  }) => {
-    const priceInfo = formatPriceByLanguage(program.price_huf || 0, language);
-    const remainingSeats = (program.max_seats || 0) - (program.used_seats || 0);
-    const seatsExhausted = remainingSeats <= 0;
-    
-    // ALWAYS show sponsor contribution badge if sponsored (regardless of seat availability)
+  const getAccessBadge = (program: FeaturedProgram) => {
     if (program.is_sponsored && program.sponsor_name) {
       return (
         <SponsorContributionBadge
           sponsorName={program.sponsor_name}
-          contributionAmount={program.sponsor_contribution || Math.round((program.price_huf || 0) * 0.8)}
+          contributionAmount={Math.round((program.price_huf || 0) * 0.8)}
           originalPrice={program.price_huf || 0}
           size="sm"
-          maxSeats={program.max_seats || 10}
-          usedSeats={program.used_seats || 0}
-          showImpactMode={seatsExhausted}
-          contentType={program.content_type || 'in_person'}
-          maxCapacity={program.max_capacity}
+          maxSeats={10}
+          usedSeats={0}
+          showImpactMode={false}
+          contentType="in_person"
         />
       );
     }
@@ -247,16 +240,7 @@ const FeaturedProgramsSection = () => {
                           </div>
                         )}
 
-                        {/* Social proof */}
-                        <div className="mt-3">
-                          <SocialProofBadge 
-                            attendeeCount={8 + index * 3} 
-                            seatsLeft={index === 0 ? 2 : index === 1 ? 4 : undefined}
-                            size="sm"
-                          />
-                        </div>
-
-                        {/* Price/Access badge */}
+                                      {/* Price/Access badge */}
                         <div className="mt-4">
                           {getAccessBadge(program)}
                         </div>

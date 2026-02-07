@@ -3,13 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { 
-  MOCK_VOUCHERS, 
-  MOCK_PROGRAMS, 
-  MOCK_MEMBERS,
-  getMockExpertById,
-  formatPriceByLanguage 
-} from "@/data/mockData";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -100,54 +93,59 @@ const MyHubPage = () => {
       setLoadingData(true);
 
       try {
-        // For demo, use member-1 (Tóth Eszter) as default demo member
-        const demoMemberId = "member-1";
-        
-        // Get member's vouchers from mock data
-        const memberVouchers = MOCK_VOUCHERS.filter(v => v.member_id === demoMemberId);
-        
-        // Enrich vouchers with program and expert data
-        const enrichedVouchers: Voucher[] = memberVouchers.map(v => {
-          const program = MOCK_PROGRAMS.find(p => p.id === v.content_id);
-          const expert = program ? getMockExpertById(program.creator_id) : undefined;
-          
+        // Fetch user's vouchers from DB
+        const { data: voucherData } = await supabase
+          .from('vouchers')
+          .select(`
+            id, code, content_id, status, created_at,
+            expert_contents:content_id (title, thumbnail_url, creator_id,
+              profiles:creator_id (first_name, last_name, avatar_url)
+            )
+          `)
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+
+        const enrichedVouchers: Voucher[] = (voucherData || []).map((v: any) => {
+          const content = v.expert_contents;
+          const creator = content?.profiles;
           return {
             id: v.id,
             code: v.code,
             content_id: v.content_id,
-            content_title: v.content_title,
-            status: v.status,
-            pickup_location: v.pickup_location,
+            content_title: content?.title || '',
+            status: v.status === 'redeemed' ? 'redeemed' : 'active',
+            pickup_location: '',
             created_at: v.created_at,
-            expert_name: expert ? `${expert.first_name} ${expert.last_name}` : undefined,
-            expert_avatar: expert?.avatar_url,
-            program_image: program?.thumbnail_url,
-            sponsor_name: v.sponsor_name,
-            value_huf: v.value_huf,
-            expires_at: v.expires_at
+            expert_name: creator ? `${creator.first_name || ''} ${creator.last_name || ''}`.trim() : undefined,
+            expert_avatar: creator?.avatar_url,
+            program_image: content?.thumbnail_url,
           };
         });
-        
         setVouchers(enrichedVouchers);
 
-        // Mock registrations
-        setRegistrations([
-          {
-            id: 'reg-1',
-            program_title: 'Kemenceépítés Workshop',
-            program_image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
-            event_date: '2026-01-20T10:00:00Z',
-            location: 'Köveskál',
-            expert_name: language === 'hu' ? 'Kovács István' : language === 'de' ? 'Hans Schmidt' : 'Stephen Smith'
-          }
-        ]);
+        // Fetch user's event RSVPs as registrations
+        const { data: rsvpData } = await supabase
+          .from('event_rsvps')
+          .select(`
+            id, events:event_id (title, image_url, start_date, location_name)
+          `)
+          .eq('user_id', user.id)
+          .eq('status', 'going');
 
-        // Mock past participations from redeemed vouchers
-        const redeemedVouchers = MOCK_VOUCHERS.filter(v => v.status === 'redeemed');
-        setPastParticipations(redeemedVouchers.map(v => ({
+        setRegistrations((rsvpData || []).map((r: any) => ({
+          id: r.id,
+          program_title: r.events?.title || '',
+          program_image: r.events?.image_url,
+          event_date: r.events?.start_date,
+          location: r.events?.location_name,
+        })));
+
+        // Past participations from redeemed vouchers
+        const redeemed = enrichedVouchers.filter(v => v.status === 'redeemed');
+        setPastParticipations(redeemed.map(v => ({
           id: v.id,
           program_title: v.content_title,
-          completed_at: v.redeemed_at || v.created_at,
+          completed_at: v.created_at,
           voucher_code: v.code
         })));
 
@@ -163,9 +161,7 @@ const MyHubPage = () => {
     }
   }, [user, loading, language]);
 
-  // Calculate total savings from member's vouchers
-  const memberData = MOCK_MEMBERS.find(m => m.id === "member-1");
-  const totalSavings = memberData?.total_savings || 0;
+  const totalSavings = 0;
   const activeVouchersCount = vouchers.filter(v => v.status === 'active').length;
 
   if (loading) {
