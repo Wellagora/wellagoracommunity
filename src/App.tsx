@@ -224,6 +224,10 @@ function App() {
                           <Route path="/impressum" element={<ImpressumPage />} />
                           <Route path="/terms" element={<TermsOfServicePage />} />
                           <Route path="/aszf" element={<Navigate to="/terms" replace />} />
+                          <Route path="/agb" element={<Navigate to="/terms" replace />} />
+                          <Route path="/adatkezeles" element={<Navigate to="/privacy-policy" replace />} />
+                          <Route path="/privacy" element={<Navigate to="/privacy-policy" replace />} />
+                          <Route path="/datenschutz" element={<Navigate to="/privacy-policy" replace />} />
                           <Route path="/purchase/success" element={<PurchaseSuccessPage />} />
                           <Route path="/purchase/cancel" element={<Navigate to="/piacer" replace />} />
                           <Route

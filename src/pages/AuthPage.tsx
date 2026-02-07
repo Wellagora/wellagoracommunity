@@ -772,13 +772,13 @@ const AuthPage = () => {
                             </Link>
                             {t('auth.and') || ' és az '}
                             <Link 
-                              to="/adatvedelem" 
+                              to="/privacy-policy" 
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-primary hover:underline font-medium"
                               onClick={(e) => e.stopPropagation()}
                             >
-                              {t('auth.privacy_link') || 'Adatvédelmi tájékoztatót'}
+                              {t('auth.privacy_link') || 'Adatkezelési tájékoztatót'}
                             </Link>
                             {t('auth.accept_terms_suffix') || '.'}
                           </label>

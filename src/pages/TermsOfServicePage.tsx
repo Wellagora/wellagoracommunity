@@ -28,7 +28,7 @@ const TermsOfServicePage = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-foreground">{t("terms.title")}</h1>
-              <p className="text-muted-foreground">{t("terms.last_updated")}: 2026-02-07</p>
+              <p className="text-muted-foreground">{t("terms.last_updated")}: 2026-02-10</p>
             </div>
           </div>
 
@@ -193,8 +193,8 @@ const TermsOfServicePage = () => {
             <CardContent className="prose prose-sm max-w-none dark:prose-invert">
               <p className="text-muted-foreground">{t("terms.contact_text")}</p>
               <div className="mt-4 bg-muted/50 p-4 rounded-lg">
-                <p className="font-semibold text-foreground">Wellagora OG</p>
-                <p className="text-muted-foreground">Nastlbergergasse 12, 1130 Vienna, Austria</p>
+                <p className="font-semibold text-foreground">ProSelf Int Inc.</p>
+                <p className="text-muted-foreground">[cég székhelye]</p>
                 <p className="text-muted-foreground">
                   <strong>Email:</strong>{" "}
                   <a href="mailto:info@wellagora.org" className="text-primary hover:underline">info@wellagora.org</a>

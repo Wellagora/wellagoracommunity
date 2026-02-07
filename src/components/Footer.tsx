@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Separator } from "@/components/ui/separator";
 import { MapPin, Mail } from "lucide-react";
+import { resetCookieConsent } from "@/components/CookieConsentBanner";
 
 const Footer = () => {
   const { t } = useLanguage();
@@ -81,6 +82,11 @@ const Footer = () => {
             <h3 className="font-bold text-foreground mb-3">{t('footer.legal_title')}</h3>
             <ul className="space-y-2">
               <li>
+                <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  {t('footer.link_terms') || 'ÁSZF'}
+                </Link>
+              </li>
+              <li>
                 <Link to="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                   {t('footer.link_privacy')}
                 </Link>
@@ -91,9 +97,12 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  {t('footer.link_terms') || 'ÁSZF'}
-                </Link>
+                <button
+                  onClick={resetCookieConsent}
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t('footer.cookie_settings') || 'Cookie beállítások'}
+                </button>
               </li>
             </ul>
           </div>
@@ -105,16 +114,17 @@ const Footer = () => {
           <p>
             © {currentYear} {t('footer.copyright')}
           </p>
-          <div className="flex gap-4">
-            <Link to="/privacy-policy" className="hover:text-primary transition-colors">
-              {t('footer.privacy_short')}
-            </Link>
-            <Link to="/impressum" className="hover:text-primary transition-colors">
-              {t('footer.impressum_short')}
-            </Link>
+          <div className="flex flex-wrap gap-4">
             <Link to="/terms" className="hover:text-primary transition-colors">
               {t('footer.terms_short') || 'ÁSZF'}
             </Link>
+            <Link to="/privacy-policy" className="hover:text-primary transition-colors">
+              {t('footer.privacy_short')}
+            </Link>
+            <button onClick={resetCookieConsent} className="hover:text-primary transition-colors">
+              {t('footer.cookie_settings') || 'Cookie beállítások'}
+            </button>
+            <span>© {currentYear} ProSelf Int Inc.</span>
           </div>
         </div>
       </div>

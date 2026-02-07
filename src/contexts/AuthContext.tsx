@@ -297,6 +297,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             organization_name: data.organization || null,
             bio: data.bio || null,
             industry: data.industry || null,
+            accepted_terms_at: new Date().toISOString(),
+            accepted_terms_version: '2026-02-10',
           },
         },
     });

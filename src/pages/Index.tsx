@@ -12,6 +12,7 @@ import RecommendedProgramsSlider from "@/components/RecommendedProgramsSlider";
 import CTABanner from "@/components/CTABanner";
 import { CommunityImpactCounter } from "@/components/CommunityImpactCounter";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 
 const Index = () => {
   const { t } = useLanguage();
@@ -105,6 +106,7 @@ const Index = () => {
   // Non-authenticated user view - Modern landing page
   return (
     <>
+      <SEOHead />
       <div className="min-h-screen bg-white flex flex-col">
         <Navigation />
         <main className="flex-1">

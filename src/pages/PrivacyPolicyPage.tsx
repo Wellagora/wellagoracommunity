@@ -28,7 +28,7 @@ const PrivacyPolicyPage = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-foreground">{t("privacy.title")}</h1>
-              <p className="text-muted-foreground">{t("privacy.last_updated")}: 2025-01-26</p>
+              <p className="text-muted-foreground">{t("privacy.last_updated")}: 2026-02-10</p>
             </div>
           </div>
 
@@ -302,8 +302,8 @@ const PrivacyPolicyPage = () => {
             <CardContent className="prose prose-sm max-w-none dark:prose-invert">
               <p className="text-muted-foreground">{t("privacy.contact_text")}</p>
               <div className="mt-4 bg-muted/50 p-4 rounded-lg">
-                <p className="font-semibold text-foreground">Wellagora OG</p>
-                <p className="text-muted-foreground">Nastlbergergasse 12, 1130 Vienna, Austria</p>
+                <p className="font-semibold text-foreground">ProSelf Int Inc.</p>
+                <p className="text-muted-foreground">[cég székhelye]</p>
                 <p className="text-muted-foreground">
                   <strong>{t("privacy.contact_email")}:</strong>{" "}
                   <a href="mailto:info@wellagora.org" className="text-primary hover:underline">info@wellagora.org</a>
