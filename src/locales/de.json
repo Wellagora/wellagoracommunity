@@ -5220,6 +5220,11 @@
   "cancel.refund_half": "50% Erstattung (als Plattformguthaben)",
   "cancel.refund_none": "Keine Erstattung",
 
+  "marketplace.no_programs": "Die ersten Programme der Gemeinschaft nehmen Form an",
+  "marketplace.no_programs_desc": "Sei von Anfang an dabei! Wenn du Fachwissen teilen möchtest, erstelle das erste Programm.",
+  "marketplace.no_results": "Keine Programme gefunden",
+  "marketplace.no_results_desc": "Versuche andere Suchbegriffe oder Kategorien",
+
   "community_building.programs_title": "Die ersten Programme der Gemeinschaft nehmen Form an",
   "community_building.programs_desc": "Sei von Anfang an dabei! Wenn du Fachwissen teilen möchtest, erstelle das erste Programm.",
   "community_building.programs_join_expert": "Als Expert:in beitreten",

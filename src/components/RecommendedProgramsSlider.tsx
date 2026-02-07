@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ChevronLeft, ChevronRight, Sparkles, Gift, ShoppingCart, BookOpen, Leaf } from "lucide-react";
+import { ChevronLeft, ChevronRight, Sparkles, Gift, ShoppingCart, BookOpen, Leaf, Sprout } from "lucide-react";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -146,12 +146,14 @@ const RecommendedProgramsSlider = () => {
     return (
       <section className="py-10 bg-gradient-to-b from-background via-black/[0.01] to-background">
         <div className="container mx-auto px-4">
-          <div className="text-center py-12">
-            <BookOpen className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+          <div className="flex flex-col items-center text-center py-12">
+            <div className="w-20 h-20 mb-6 rounded-full bg-emerald-50 flex items-center justify-center">
+              <Sprout className="w-10 h-10 text-emerald-500" />
+            </div>
             <h3 className="text-xl font-semibold text-foreground mb-2">
               {t("marketplace.no_programs")}
             </h3>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground max-w-md">
               {t("marketplace.no_programs_desc")}
             </p>
           </div>

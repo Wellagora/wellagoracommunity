@@ -5138,6 +5138,11 @@
   "cancel.refund_half": "50% refund (as platform credit)",
   "cancel.refund_none": "No refund",
 
+  "marketplace.no_programs": "The community's first programs are taking shape",
+  "marketplace.no_programs_desc": "Be part of the beginning! If you have expertise to share, create the first program.",
+  "marketplace.no_results": "No programs found",
+  "marketplace.no_results_desc": "Try different keywords or category",
+
   "community_building.programs_title": "The community's first programs are taking shape",
   "community_building.programs_desc": "Be part of the beginning! If you have expertise to share, create the first program.",
   "community_building.programs_join_expert": "Join as Expert",

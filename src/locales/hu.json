@@ -1142,6 +1142,8 @@
   "marketplace.all_categories": "Összes",
   "marketplace.all_guides": "Összes program",
   "marketplace.workshop_secrets": "Programok",
+  "marketplace.no_programs": "A közösség első programjai most formálódnak",
+  "marketplace.no_programs_desc": "Legyél te is része a kezdeteknek! Ha van szaktudásod amit megosztanál, hozd létre az első programodat.",
   "marketplace.no_results": "Nem találtunk programot",
   "marketplace.no_results_desc": "Próbálj más kulcsszavakat vagy kategóriát",
   "marketplace.filter_by": "Szűrés",
