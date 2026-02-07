@@ -35,47 +35,6 @@ interface Event {
   is_public: boolean;
 }
 
-const MOCK_EVENTS: Event[] = [
-  {
-    id: 'evt-1',
-    title: 'Közösségi Takarítási Nap',
-    description: 'Csatlakozz a környék takarításához!',
-    start_date: '2024-07-15T09:00:00Z',
-    end_date: '2024-07-15T14:00:00Z',
-    location_name: 'Káli-medence Központ',
-    location_address: 'Köveskál, Fő utca 1.',
-    status: 'published',
-    current_participants: 23,
-    max_participants: 50,
-    is_public: true
-  },
-  {
-    id: 'evt-2',
-    title: 'Fenntarthatósági Workshop',
-    description: 'Tanuld meg a háztáji komposztálás alapjait',
-    start_date: '2024-07-20T14:00:00Z',
-    end_date: '2024-07-20T17:00:00Z',
-    location_name: 'Kéki Porta',
-    location_address: 'Mindszentkálla, Petőfi u. 5.',
-    status: 'published',
-    current_participants: 12,
-    max_participants: 20,
-    is_public: true
-  },
-  {
-    id: 'evt-3',
-    title: 'Helyi Termelők Találkozója',
-    description: 'Zárt esemény a helyi termelők számára',
-    start_date: '2024-07-25T10:00:00Z',
-    end_date: null,
-    location_name: 'Online',
-    location_address: null,
-    status: 'draft',
-    current_participants: 0,
-    max_participants: null,
-    is_public: false
-  },
-];
 
 const AdminEvents = () => {
   const { isDemoMode } = useAuth();
@@ -90,12 +49,6 @@ const AdminEvents = () => {
   const fetchEvents = async () => {
     setLoading(true);
     try {
-      if (isDemoMode) {
-        setEvents(MOCK_EVENTS);
-        setLoading(false);
-        return;
-      }
-
       const { data, error } = await supabase
         .from('events')
         .select('*')

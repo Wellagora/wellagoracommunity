@@ -58,11 +58,6 @@ interface Project {
   is_active: boolean;
 }
 
-const MOCK_PROJECTS: Project[] = [
-  { id: 'proj-1', name: 'Káli-medence Közösség', slug: 'kali-medence', is_active: true },
-  { id: 'proj-2', name: 'Balaton-felvidék Projekt', slug: 'balaton-felvidek', is_active: true },
-  { id: 'proj-3', name: 'Demo Projekt', slug: 'demo', is_active: false },
-];
 
 const AdminDashboardNew = () => {
   const { t, language } = useLanguage();
@@ -128,27 +123,6 @@ const AdminDashboardNew = () => {
     setKpiLoading();
     
     try {
-      if (isDemoMode) {
-        setProjects(MOCK_PROJECTS);
-        setPlatformOverview({
-          totalUsers: { loading: false, value: 156, unavailable: false },
-          creators: { loading: false, value: 24, unavailable: false },
-          sponsors: { loading: false, value: 8, unavailable: false },
-          activeProjects: { loading: false, value: 2, unavailable: false },
-          activePrograms: { loading: false, value: 45, unavailable: false },
-          activeSponsoredPrograms: { loading: false, value: 12, unavailable: false },
-        });
-        setCreditOverview({
-          loading: false,
-          purchases: 1500000,
-          spend: 750000,
-          balance: 750000,
-          unavailable: false,
-        });
-        setCreditTx30d({ loading: false, value: 38, unavailable: false });
-        setLoading(false);
-        return;
-      }
 
       // Fetch projects
       const { data: projectsData } = await supabase
