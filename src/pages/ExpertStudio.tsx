@@ -20,6 +20,7 @@ import { hu, de, enUS } from "date-fns/locale";
 // Import components for tabs
 import ExpertImpactReport from "@/components/expert-studio/ExpertImpactReport";
 import MyProgramsList from "@/components/expert-studio/MyProgramsList";
+import ExpertCalendar from "@/components/expert-studio/ExpertCalendar";
 
 const ExpertStudio = () => {
   const { user, loading } = useAuth();
@@ -204,10 +205,14 @@ const ExpertStudio = () => {
     >
       {/* Tabs for Műhely (Workshop) vs Üzlet (Business) */}
       <Tabs defaultValue="muhely" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 mb-6">
+        <TabsList className="grid w-full grid-cols-3 mb-6">
           <TabsTrigger value="muhely" className="flex items-center gap-2">
             <Sparkles className="w-4 h-4" />
             {t('expert_studio.tab_muhely') || 'Műhely'}
+          </TabsTrigger>
+          <TabsTrigger value="calendar" className="flex items-center gap-2">
+            <Calendar className="w-4 h-4" />
+            {t('expert_studio.tab_calendar') || 'Naptár'}
           </TabsTrigger>
           <TabsTrigger value="business" className="flex items-center gap-2">
             <Wallet className="w-4 h-4" />
@@ -218,6 +223,11 @@ const ExpertStudio = () => {
         {/* Műhely Tab - Programs Management Only */}
         <TabsContent value="muhely" className="space-y-6">
           <MyProgramsList userId={user.id} />
+        </TabsContent>
+
+        {/* Naptár Tab - Calendar View */}
+        <TabsContent value="calendar" className="space-y-6">
+          <ExpertCalendar userId={user.id} />
         </TabsContent>
 
         {/* Üzlet Tab - Business Overview with Revenue + Stats + Transactions + Impact Report */}

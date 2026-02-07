@@ -533,7 +533,7 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                               {t("expert_studio.duplicate")}
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
-                              <Link to={`/szakertoi-studio/${program.id}/resztvevok`}>
+                              <Link to={`/expert-studio/${program.id}/participants`}>
                                 <UserCheck className="w-4 h-4 mr-2" />
                                 {t("expert_studio.view_participants")}
                               </Link>
@@ -699,7 +699,7 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                         {t("expert_studio.duplicate")}
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to={`/szakertoi-studio/${program.id}/resztvevok`}>
+                        <Link to={`/expert-studio/${program.id}/participants`}>
                           <UserCheck className="w-4 h-4 mr-2" />
                           {t("expert_studio.view_participants")}
                         </Link>
