@@ -5329,5 +5329,31 @@
       "save_error": "Mentés sikertelen",
       "delete_not_allowed": "Felhasználó törlése nem engedélyezett biztonsági okokból."
     }
-  }
+  },
+  "checkout.title": "Jelentkezés",
+  "checkout.pay_button": "Jelentkezem és fizetek",
+  "checkout.free_button": "Jelentkezem (ingyenes)",
+  "checkout.success_title": "Sikeres jelentkezés!",
+  "checkout.voucher_code": "Voucher kódod",
+  "checkout.voucher_email_note": "A voucher kódot e-mailben is megküldtük.",
+  "checkout.wellpoints_use": "WellPoints beváltás",
+  "checkout.wellpoints_no": "Nem használok",
+  "checkout.sponsored_by": "Szponzorálva",
+  "checkout.you_pay": "Fizetendő",
+  "checkout.platform_credit": "Platform kredit",
+  "checkout.stripe_secure": "A fizetés a Stripe biztonságos felületén történik.",
+  "checkout.expert_not_onboarded": "A szakértő még nem állította be a fizetési fiókját.",
+  "expert.stripe_payout_title": "Kifizetések",
+  "expert.stripe_setup": "Stripe fiók beállítása",
+  "expert.stripe_active": "Stripe fiók aktív",
+  "expert.stripe_required": "A programjaid bevételéhez csatlakoztasd Stripe fiókodat.",
+  "expert.total_revenue": "Összes bevétel",
+  "expert.pending_payout": "Függő kifizetés",
+  "expert.paid_out": "Már kifizetett",
+  "expert.open_stripe_dashboard": "Stripe Dashboard megnyitása",
+  "cancel.title": "Jelentkezés lemondása",
+  "cancel.confirm": "Biztosan lemondod?",
+  "cancel.refund_full": "100% visszajár (platform kreditként)",
+  "cancel.refund_half": "50% visszajár (platform kreditként)",
+  "cancel.refund_none": "Nincs visszatérítés"
 }

@@ -4,7 +4,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Loader2, ArrowRight } from "lucide-react";
+import { CheckCircle2, ArrowRight, Ticket, Copy, Check } from "lucide-react";
 import confetti from "canvas-confetti";
 
 const PurchaseSuccessPage = () => {
@@ -12,7 +12,9 @@ const PurchaseSuccessPage = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const [showConfetti, setShowConfetti] = useState(false);
+  const [copied, setCopied] = useState(false);
   const sessionId = searchParams.get("session_id");
+  const voucherCode = searchParams.get("voucher");
 
   useEffect(() => {
     if (!showConfetti) {
@@ -26,6 +28,14 @@ const PurchaseSuccessPage = () => {
     }
   }, [showConfetti]);
 
+  const handleCopy = async () => {
+    if (voucherCode) {
+      await navigator.clipboard.writeText(voucherCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navigation />
@@ -36,19 +46,51 @@ const PurchaseSuccessPage = () => {
               <CheckCircle2 className="w-10 h-10 text-emerald-500" />
             </div>
             <h1 className="text-2xl font-bold mb-2">
-              {t("purchase.complete") || "Sikeres vásárlás!"}
+              {t("checkout.success_title") || "Sikeres jelentkezés!"}
             </h1>
             <p className="text-muted-foreground mb-6">
               {t("purchase.success_description") || "A program hozzáadva a fiókodhoz. Jó tanulást!"}
             </p>
-            {sessionId && (
+
+            {voucherCode && (
+              <div className="w-full bg-muted/50 border border-dashed border-primary/30 rounded-xl p-4 mb-6">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <Ticket className="w-4 h-4 text-primary" />
+                  <p className="text-sm font-medium text-muted-foreground">
+                    {t("checkout.voucher_code") || "Voucher kódod"}
+                  </p>
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <p className="text-2xl font-mono font-bold tracking-wider text-foreground">
+                    {voucherCode}
+                  </p>
+                  <button
+                    onClick={handleCopy}
+                    className="p-1.5 rounded-md hover:bg-muted transition-colors"
+                    title="Másolás"
+                  >
+                    {copied ? (
+                      <Check className="w-4 h-4 text-emerald-500" />
+                    ) : (
+                      <Copy className="w-4 h-4 text-muted-foreground" />
+                    )}
+                  </button>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  {t("checkout.voucher_email_note") || "A voucher kódot e-mailben is megküldtük."}
+                </p>
+              </div>
+            )}
+
+            {sessionId && !voucherCode && (
               <p className="text-xs text-muted-foreground mb-6">
                 {t("purchase.order_reference") || "Rendelés azonosító"}: <span className="font-mono">{sessionId.slice(0, 20)}...</span>
               </p>
             )}
+
             <div className="flex gap-3">
               <Button onClick={() => navigate("/kurzusaim")} className="gap-2">
-                {t("purchase.go_to_courses") || "Kurzusaim"}
+                {t("purchase.go_to_courses") || "Programjaim"}
                 <ArrowRight className="w-4 h-4" />
               </Button>
               <Button variant="outline" onClick={() => navigate("/piacer")}>

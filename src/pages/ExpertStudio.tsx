@@ -3,8 +3,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, BarChart3, BookOpen, Wallet, Users, Plus, TrendingUp, Calendar, DollarSign, ArrowRight, Store } from "lucide-react";
+import { Sparkles, BarChart3, BookOpen, Wallet, Users, Plus, TrendingUp, Calendar, DollarSign, ArrowRight, Store, CreditCard, ExternalLink, CheckCircle2, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { DashboardCard } from "@/components/dashboard/DashboardCard";
 import { ExpertStudioSkeleton } from "@/components/ui/loading-skeleton";
@@ -16,6 +17,7 @@ import { motion } from "framer-motion";
 import { formatPrice } from "@/lib/pricing";
 import { format } from "date-fns";
 import { hu, de, enUS } from "date-fns/locale";
+import { useToast } from "@/hooks/use-toast";
 
 // Import components for tabs
 import ExpertImpactReport from "@/components/expert-studio/ExpertImpactReport";
@@ -23,9 +25,11 @@ import MyProgramsList from "@/components/expert-studio/MyProgramsList";
 import ExpertCalendar from "@/components/expert-studio/ExpertCalendar";
 
 const ExpertStudio = () => {
-  const { user, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
   const { t, language } = useLanguage();
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [stripeLoading, setStripeLoading] = useState(false);
 
   // Card 1: Program Status (top 3 programs + CTA)
   const programsQuery = useQuery({
@@ -232,6 +236,95 @@ const ExpertStudio = () => {
 
         {/* Üzlet Tab - Business Overview with Revenue + Stats + Transactions + Impact Report */}
         <TabsContent value="business" className="space-y-6">
+          {/* Stripe Connect Onboarding Section */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <Card className={`border-l-4 ${(profile as any)?.stripe_onboarding_complete ? 'border-l-emerald-500' : 'border-l-amber-500'}`}>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <CreditCard className="w-5 h-5" />
+                    {t('expert.stripe_payout_title') || 'Kifizetések'}
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {(profile as any)?.stripe_onboarding_complete ? (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-full bg-emerald-500/20">
+                        <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-emerald-600">
+                          {t('expert.stripe_active') || 'Stripe fiók aktív'}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {(profile as any)?.stripe_account_id ? `(${(profile as any).stripe_account_id.substring(0, 12)}...)` : ''}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3 mt-4">
+                      <div className="bg-muted/50 rounded-lg p-3 text-center">
+                        <p className="text-sm text-muted-foreground">{t('expert.total_revenue') || 'Összes bevétel'}</p>
+                        <p className="text-lg font-bold">{formatPrice(revenueQuery.data?.totalEarnings || 0, 'HUF')}</p>
+                      </div>
+                      <div className="bg-muted/50 rounded-lg p-3 text-center">
+                        <p className="text-sm text-muted-foreground">{t('expert.pending_payout') || 'Függő kifizetés'}</p>
+                        <p className="text-lg font-bold">{formatPrice(0, 'HUF')}</p>
+                      </div>
+                      <div className="bg-muted/50 rounded-lg p-3 text-center">
+                        <p className="text-sm text-muted-foreground">{t('expert.paid_out') || 'Már kifizetett'}</p>
+                        <p className="text-lg font-bold">{formatPrice(0, 'HUF')}</p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full mt-2"
+                      onClick={() => window.open('https://dashboard.stripe.com', '_blank')}
+                    >
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      {t('expert.open_stripe_dashboard') || 'Stripe Dashboard megnyitása'}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <AlertCircle className="w-5 h-5 text-amber-500 mt-0.5 flex-shrink-0" />
+                      <p className="text-sm text-muted-foreground">
+                        {t('expert.stripe_required') || 'A programjaid bevételéhez csatlakoztasd Stripe fiókodat.'}
+                      </p>
+                    </div>
+                    <Button
+                      onClick={async () => {
+                        setStripeLoading(true);
+                        try {
+                          const { data: { session } } = await supabase.auth.getSession();
+                          const res = await supabase.functions.invoke('create-connect-account', {
+                            body: {},
+                          });
+                          if (res.error) throw new Error(res.error.message);
+                          if (res.data?.url) {
+                            window.location.href = res.data.url;
+                          }
+                        } catch (err: any) {
+                          toast({ title: 'Hiba', description: err.message, variant: 'destructive' });
+                        } finally {
+                          setStripeLoading(false);
+                        }
+                      }}
+                      disabled={stripeLoading}
+                      className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white"
+                    >
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      {stripeLoading ? '...' : (t('expert.stripe_setup') || 'Stripe fiók beállítása')}
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[1, 2].map(i => (

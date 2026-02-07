@@ -2,14 +2,18 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.14.0?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+function generateVoucherCode(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "WA-";
+  for (let i = 0; i < 8; i++) {
+    code += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return code;
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" } });
   }
 
   try {
@@ -29,7 +33,6 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Verify webhook signature
     const body = await req.text();
     const sig = req.headers.get("stripe-signature");
 
@@ -50,91 +53,184 @@ serve(async (req) => {
 
     console.log(`Received Stripe event: ${event.type}`);
 
-    // Handle checkout.session.completed
-    if (event.type === "checkout.session.completed") {
-      const session = event.data.object as Stripe.Checkout.Session;
-      const { transaction_id, content_id, user_id, creator_id } = session.metadata || {};
+    switch (event.type) {
+      case "checkout.session.completed": {
+        const session = event.data.object as Stripe.Checkout.Session;
 
-      if (!transaction_id || !content_id || !user_id) {
-        console.error("Missing metadata in checkout session:", session.metadata);
-        return new Response(JSON.stringify({ error: "Missing metadata" }), { status: 400 });
-      }
+        // Get metadata from payment_intent (Connect) or session
+        let meta = session.metadata || {};
+        if (session.payment_intent) {
+          try {
+            const pi = await stripe.paymentIntents.retrieve(session.payment_intent as string);
+            if (pi.metadata && pi.metadata.wellagora_user_id) {
+              meta = pi.metadata;
+            }
+          } catch (e) {
+            console.error("Failed to retrieve payment intent metadata:", e);
+          }
+        }
 
-      console.log(`Processing completed checkout for transaction: ${transaction_id}`);
+        const userId = meta.wellagora_user_id;
+        const contentId = meta.wellagora_content_id;
+        const transactionId = meta.wellagora_transaction_id;
+        const basePrice = parseInt(meta.wellagora_base_price || "0");
+        const sponsorCreditId = meta.wellagora_sponsor_credit_id || null;
+        const sponsorContribution = parseInt(meta.wellagora_sponsor_contribution || "0");
+        const wellpointsUsed = parseInt(meta.wellagora_wellpoints_used || "0");
+        const wellpointsDiscount = parseInt(meta.wellagora_wellpoints_discount || "0");
+        const platformCreditUsed = parseInt(meta.wellagora_platform_credit_used || "0");
+        const expertPayout = parseInt(meta.wellagora_expert_payout || "0");
+        const platformFee = parseInt(meta.wellagora_platform_fee || "0");
+        const userPayment = basePrice - sponsorContribution - wellpointsDiscount - platformCreditUsed;
 
-      // 1. Update transaction to completed
-      const { error: txError } = await supabase
-        .from("transactions")
-        .update({
-          status: "completed",
-          stripe_session_id: session.id,
-          stripe_payment_intent: session.payment_intent as string,
-        })
-        .eq("id", transaction_id);
+        if (!userId || !contentId) {
+          console.error("Missing metadata in checkout session:", meta);
+          return new Response(JSON.stringify({ error: "Missing metadata" }), { status: 400 });
+        }
 
-      if (txError) {
-        console.error("Error updating transaction:", txError);
-      }
+        console.log(`Processing completed checkout: user=${userId}, content=${contentId}, tx=${transactionId}`);
 
-      // 2. Create content_access record
-      const { error: accessError } = await supabase
-        .from("content_access")
-        .insert({
-          content_id,
-          user_id,
-          amount_paid: (session.amount_total || 0),
-          payment_reference: `STRIPE-${session.id}`,
-        });
+        // 1. Update transaction to completed
+        if (transactionId) {
+          await supabase
+            .from("transactions")
+            .update({
+              status: "completed",
+              stripe_session_id: session.id,
+              stripe_payment_intent: session.payment_intent as string,
+            })
+            .eq("id", transactionId);
+        }
 
-      if (accessError) {
-        console.error("Error creating content_access:", accessError);
-      }
-
-      // 3. Create content_participations record
-      const { error: partError } = await supabase
-        .from("content_participations")
-        .insert({
-          content_id,
-          user_id,
-          status: "active",
-          access_granted_at: new Date().toISOString(),
-        });
-
-      if (partError) {
-        console.error("Error creating participation:", partError);
-      }
-
-      // 4. Create voucher for the purchase
-      const voucherCode = `WA-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
-      const { error: voucherError } = await supabase
-        .from("vouchers")
-        .insert({
+        // 2. Voucher generation
+        const voucherCode = generateVoucherCode();
+        const { data: voucher } = await supabase.from("vouchers").insert({
           code: voucherCode,
-          content_id,
-          user_id,
+          content_id: contentId,
+          user_id: userId,
           status: "active",
+          payout_amount: expertPayout,
+          sponsor_credit_deducted: sponsorContribution || null,
+          created_at: new Date().toISOString(),
+        }).select().single();
+
+        // 3. Get content creator
+        const { data: content } = await supabase
+          .from("expert_contents")
+          .select("creator_id")
+          .eq("id", contentId)
+          .single();
+
+        // 4. Settlement record
+        let sponsorUserId = null;
+        if (sponsorCreditId) {
+          const { data: sc } = await supabase
+            .from("sponsor_credits")
+            .select("sponsor_user_id")
+            .eq("id", sponsorCreditId)
+            .single();
+          sponsorUserId = sc?.sponsor_user_id || null;
+        }
+
+        await supabase.from("voucher_settlements").insert({
+          voucher_id: voucher?.id,
+          content_id: contentId,
+          user_id: userId,
+          expert_id: content?.creator_id,
+          original_price: basePrice,
+          user_payment: userPayment,
+          sponsor_contribution: sponsorContribution,
+          expert_payout: expertPayout,
+          platform_fee: platformFee,
+          wellpoints_discount: wellpointsDiscount,
+          wellpoints_used: wellpointsUsed,
+          settlement_type: sponsorContribution > 0 ? "sponsored" : wellpointsDiscount > 0 ? "wellpoints" : "standard",
+          settlement_status: "completed",
+          sponsor_id: sponsorUserId,
         });
 
-      if (voucherError) {
-        console.error("Error creating voucher:", voucherError);
+        // 5. Content access
+        await supabase.from("content_access").insert({
+          content_id: contentId,
+          user_id: userId,
+          amount_paid: userPayment,
+          access_type: "purchased",
+          purchased_at: new Date().toISOString(),
+          payment_reference: session.payment_intent as string,
+        });
+
+        // 6. Sponsor credit deduction
+        if (sponsorCreditId && sponsorContribution > 0) {
+          await supabase.rpc("deduct_sponsor_credit", {
+            p_credit_id: sponsorCreditId,
+            p_amount: sponsorContribution,
+          });
+        }
+
+        // 7. WellPoints deduction
+        if (wellpointsUsed > 0) {
+          // Deduct WellPoints from user profile
+          const { data: userProfile } = await supabase
+            .from("profiles")
+            .select("wellpoints")
+            .eq("id", userId)
+            .single();
+
+          if (userProfile) {
+            await supabase
+              .from("profiles")
+              .update({ wellpoints: Math.max(0, (userProfile.wellpoints || 0) - wellpointsUsed) })
+              .eq("id", userId);
+          }
+
+          // Record redemption
+          await supabase.from("wellpoints_redemptions").insert({
+            user_id: userId,
+            points_spent: wellpointsUsed,
+            redemption_type: "checkout_discount",
+            discount_percent: wellpointsUsed >= 1000 ? 20 : wellpointsUsed >= 500 ? 10 : 5,
+            discount_amount_ft: wellpointsDiscount,
+            voucher_id: voucher?.id,
+          });
+        }
+
+        console.log(`Successfully processed checkout: voucher=${voucherCode}, tx=${transactionId}`);
+        break;
       }
 
-      console.log(`Successfully processed checkout for transaction ${transaction_id}`);
-    }
+      case "account.updated": {
+        // Stripe Connect onboarding status update
+        const account = event.data.object as Stripe.Account;
+        if (account.charges_enabled && account.payouts_enabled) {
+          const { error } = await supabase
+            .from("profiles")
+            .update({
+              stripe_onboarding_complete: true,
+              payout_enabled: true,
+            })
+            .eq("stripe_account_id", account.id);
 
-    // Handle payment_intent.payment_failed
-    if (event.type === "payment_intent.payment_failed") {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent;
-      console.log(`Payment failed for intent: ${paymentIntent.id}`);
+          if (error) {
+            console.error("Error updating onboarding status:", error);
+          } else {
+            console.log(`Stripe Connect onboarding completed for account: ${account.id}`);
+          }
+        }
+        break;
+      }
 
-      // Find and fail the transaction by stripe payment intent
-      const { error } = await supabase
-        .from("transactions")
-        .update({ status: "failed" })
-        .eq("stripe_payment_intent", paymentIntent.id);
+      case "payment_intent.payment_failed": {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent;
+        console.log(`Payment failed for intent: ${paymentIntent.id}`);
 
-      if (error) {
-        console.error("Error updating failed transaction:", error);
+        const txId = paymentIntent.metadata?.wellagora_transaction_id;
+        if (txId) {
+          await supabase
+            .from("transactions")
+            .update({ status: "failed" })
+            .eq("id", txId);
+        }
+        break;
       }
     }
 
