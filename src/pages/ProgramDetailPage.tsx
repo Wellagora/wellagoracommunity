@@ -37,6 +37,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import PurchaseModal from "@/components/PurchaseModal";
+import { enrollFree, startPaidCheckout, isFreeContent } from "@/services/enrollmentService";
 import MobileStickyPurchaseBar from "@/components/program/MobileStickyPurchaseBar";
 import ProblemSolutionSection from "@/components/program/ProblemSolutionSection";
 import ProgramJsonLd from "@/components/seo/ProgramJsonLd";
@@ -47,6 +48,7 @@ import GracefulPlaceholder from "@/components/GracefulPlaceholder";
 const ProgramDetailPage = () => {
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
   const [isClaimingVoucher, setIsClaimingVoucher] = useState(false);
+  const [isEnrolling, setIsEnrolling] = useState(false);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -345,38 +347,18 @@ const ProgramDetailPage = () => {
       case 'registered':
       case 'purchased':
       case 'premium_subscriber':
-        // Determine button text and icon based on pricing for already-accessed content
-        const isFreeAccess = !program.price_huf || program.price_huf === 0;
-        const isSponsoredAccess = (program as any).is_sponsored && ((program as any).fixed_sponsor_amount || sponsorship?.sponsor_contribution_huf);
-        
-        let accessButtonText = '';
-        let AccessIcon = PlayCircle;
-        
-        if (isFreeAccess) {
-          accessButtonText = 'Csatlakozás';
-          AccessIcon = CheckCircle2;
-        } else if (isSponsoredAccess) {
-          const sponsorAmountAccess = (program as any).fixed_sponsor_amount || sponsorship?.sponsor_contribution_huf || 0;
-          const discountedPriceAccess = Math.max(0, (program.price_huf || 0) - sponsorAmountAccess);
-          accessButtonText = `Csatlakozom — ${discountedPriceAccess.toLocaleString()} Ft`;
-          AccessIcon = Heart;
-        } else {
-          accessButtonText = `Megvásárlom — ${(program.price_huf || 0).toLocaleString()} Ft`;
-          AccessIcon = ShoppingCart;
-        }
-        
+        // User already has access — show "Megnyitás" button
         return (
           <Button 
             size="lg"
-            className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg w-full"
+            variant="outline"
+            className="w-full border-emerald-500/50 text-emerald-600 bg-emerald-50"
             onClick={() => {
-              toast.info('Hamarosan elérhető!', {
-                description: 'A program tartalma előkészítés alatt áll.'
-              });
+              navigate(`/piacer/${id}/learn`);
             }}
           >
-            <AccessIcon className="w-5 h-5 mr-2" />
-            {accessButtonText}
+            <PlayCircle className="w-5 h-5 mr-2" />
+            Megnyitás
           </Button>
         );
       case 'login_required':
@@ -403,41 +385,78 @@ const ProgramDetailPage = () => {
             {t('program.premium_required')}
           </Button>
         );
-      case 'purchase_required':
-        // Determine button text and icon based on pricing
-        const isFree = !program.price_huf || program.price_huf === 0;
-        const isSponsored = (program as any).is_sponsored && ((program as any).fixed_sponsor_amount || sponsorship?.sponsor_contribution_huf);
-        const sponsorAmount = (program as any).fixed_sponsor_amount || sponsorship?.sponsor_contribution_huf || 0;
-        const discountedPrice = Math.max(0, (program.price_huf || 0) - sponsorAmount);
-        
-        let buttonText = '';
-        let ButtonIcon = ShoppingCart;
+      case 'purchase_required': {
+        // Determine if free or paid
+        const isFree = isFreeContent(program.price_huf);
         
         if (isFree) {
-          buttonText = 'Csatlakozás';
-          ButtonIcon = CheckCircle2;
-        } else if (isSponsored) {
-          buttonText = `Csatlakozom — ${discountedPrice.toLocaleString()} Ft`;
-          ButtonIcon = Heart;
-        } else {
-          buttonText = `Megvásárlom — ${(program.price_huf || 0).toLocaleString()} Ft`;
-          ButtonIcon = ShoppingCart;
+          // FREE enrollment — direct insert
+          return (
+            <Button 
+              size="lg"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-lg w-full"
+              disabled={isEnrolling}
+              onClick={async () => {
+                if (!user) { navigate('/auth'); return; }
+                setIsEnrolling(true);
+                try {
+                  const result = await enrollFree(id!, user.id);
+                  if (result.success) {
+                    toast.success('Sikeresen regisztráltál! 🎉');
+                    // Refresh access status
+                    window.location.reload();
+                  } else {
+                    toast.error(result.error || 'Hiba történt');
+                  }
+                } finally {
+                  setIsEnrolling(false);
+                }
+              }}
+            >
+              {isEnrolling ? (
+                <><span className="animate-spin mr-2">⏳</span>Regisztráció...</>
+              ) : (
+                <><CheckCircle2 className="w-5 h-5 mr-2" />Regisztrálok</>
+              )}
+            </Button>
+          );
         }
-        
+
+        // PAID enrollment — Stripe checkout
         return (
           <Button 
             size="lg"
-            className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg w-full"
-            onClick={() => {
-              toast.info('Hamarosan elérhető!', {
-                description: 'A fizetési rendszer integrációja folyamatban van.'
-              });
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg w-full"
+            disabled={isEnrolling}
+            onClick={async () => {
+              if (!user) { navigate('/auth'); return; }
+              setIsEnrolling(true);
+              try {
+                const result = await startPaidCheckout(
+                  id!,
+                  user.id,
+                  program.creator_id || '',
+                  program.title || '',
+                  program.price_huf || 0
+                );
+                if (result.success && result.checkoutUrl) {
+                  window.location.href = result.checkoutUrl;
+                } else {
+                  toast.error(result.error || 'Fizetési hiba');
+                }
+              } finally {
+                setIsEnrolling(false);
+              }
             }}
           >
-            <ButtonIcon className="w-5 h-5 mr-2" />
-            {buttonText}
+            {isEnrolling ? (
+              <><span className="animate-spin mr-2">⏳</span>Feldolgozás...</>
+            ) : (
+              <><ShoppingCart className="w-5 h-5 mr-2" />Megveszem — {(program.price_huf || 0).toLocaleString('hu-HU')} Ft</>
+            )}
           </Button>
         );
+      }
       default:
         return null;
     }
