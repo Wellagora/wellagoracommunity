@@ -53,6 +53,28 @@ serve(async (req) => {
 
     console.log(`Received Stripe event: ${event.type}`);
 
+    // Idempotency check: skip if we already processed this event
+    const { data: existingEvent } = await supabase
+      .from("stripe_events")
+      .select("id")
+      .eq("event_id", event.id)
+      .maybeSingle();
+
+    if (existingEvent) {
+      console.log(`Skipping already-processed event: ${event.id}`);
+      return new Response(
+        JSON.stringify({ received: true, skipped: true }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    // Record the event for idempotency
+    await supabase.from("stripe_events").insert({
+      event_id: event.id,
+      event_type: event.type,
+      processed_at: new Date().toISOString(),
+    });
+
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
