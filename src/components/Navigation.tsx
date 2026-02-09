@@ -44,6 +44,7 @@ import { getExpertMetrics, getSponsorMetrics, type RoleMetrics } from "@/lib/rol
 import wellagoraLogo from "@/assets/wellagora-logo.png";
 import LanguageSelector from "./LanguageSelector";
 import { RoleSwitcher } from "./admin/RoleSwitcher";
+import { NotificationBell } from "./notifications/NotificationBell";
 
 // Helper to determine effective role from database user_role
 const getEffectiveRole = (userRole: string | undefined): 'member' | 'expert' | 'sponsor' => {
@@ -388,6 +389,13 @@ const Navigation = () => {
                 <LanguageSelector />
               </div>
 
+              {/* Notification Bell */}
+              {user && (
+                <div className="shrink-0">
+                  <NotificationBell />
+                </div>
+              )}
+
             {user ? (
               <>
                 {/* Role-specific Metrics */}
@@ -555,6 +563,13 @@ const Navigation = () => {
             <div className="shrink-0">
               <LanguageSelector />
             </div>
+
+            {/* Notification Bell - Mobile */}
+            {user && (
+              <div className="shrink-0">
+                <NotificationBell />
+              </div>
+            )}
 
             {/* Role-specific Metrics - Mobile (compact version) */}
             {user && roleMetrics && (

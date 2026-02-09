@@ -1,15 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+
+export type NotificationCategory = 'general' | 'program' | 'payment' | 'community' | 'system' | 'sponsor';
+export type NotificationPriority = 'low' | 'medium' | 'high' | 'critical';
 
 export interface Notification {
   id: string;
   title: string;
   message: string;
-  type: 'milestone' | 'community' | 'reminder' | 'admin';
+  type: string;
+  category: NotificationCategory;
+  priority: NotificationPriority;
+  icon?: string;
+  image_url?: string;
   action_url?: string;
+  action_label?: string;
+  related_type?: string;
+  related_id?: string;
   read: boolean;
+  read_at?: string;
+  is_archived: boolean;
+  channels: string[];
   created_at: string;
+  expires_at?: string;
   metadata?: Record<string, any>;
 }
 
@@ -18,7 +32,7 @@ export const useNotifications = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -27,31 +41,40 @@ export const useNotifications = () => {
         .from('notifications')
         .select('*')
         .eq('user_id', user.id)
+        .eq('is_archived', false)
         .order('created_at', { ascending: false })
         .limit(50);
 
       if (error) throw error;
 
-      setNotifications((data || []) as Notification[]);
-      setUnreadCount((data || []).filter(n => !n.read).length);
+      const mapped = (data || []).map(n => ({
+        ...n,
+        category: n.category || 'general',
+        priority: n.priority || 'medium',
+        is_archived: n.is_archived || false,
+        channels: n.channels || ['in_app'],
+      })) as Notification[];
+
+      setNotifications(mapped);
+      setUnreadCount(mapped.filter(n => !n.read).length);
     } catch (error) {
       console.error('Failed to fetch notifications:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const markAsRead = async (notificationId: string) => {
     try {
       const { error } = await supabase
         .from('notifications')
-        .update({ read: true })
+        .update({ read: true, read_at: new Date().toISOString() })
         .eq('id', notificationId);
 
       if (error) throw error;
 
       setNotifications(prev =>
-        prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
+        prev.map(n => n.id === notificationId ? { ...n, read: true, read_at: new Date().toISOString() } : n)
       );
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (error) {
@@ -64,18 +87,61 @@ export const useNotifications = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      const now = new Date().toISOString();
       const { error } = await supabase
         .from('notifications')
-        .update({ read: true })
+        .update({ read: true, read_at: now })
         .eq('user_id', user.id)
         .eq('read', false);
 
       if (error) throw error;
 
-      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+      setNotifications(prev => prev.map(n => ({ ...n, read: true, read_at: now })));
       setUnreadCount(0);
     } catch (error) {
       console.error('Failed to mark all notifications as read:', error);
+    }
+  };
+
+  const deleteNotification = async (notificationId: string) => {
+    try {
+      const { error } = await supabase
+        .from('notifications')
+        .delete()
+        .eq('id', notificationId);
+
+      if (error) throw error;
+
+      setNotifications(prev => {
+        const removed = prev.find(n => n.id === notificationId);
+        if (removed && !removed.read) {
+          setUnreadCount(c => Math.max(0, c - 1));
+        }
+        return prev.filter(n => n.id !== notificationId);
+      });
+    } catch (error) {
+      console.error('Failed to delete notification:', error);
+    }
+  };
+
+  const archiveNotification = async (notificationId: string) => {
+    try {
+      const { error } = await supabase
+        .from('notifications')
+        .update({ is_archived: true })
+        .eq('id', notificationId);
+
+      if (error) throw error;
+
+      setNotifications(prev => {
+        const archived = prev.find(n => n.id === notificationId);
+        if (archived && !archived.read) {
+          setUnreadCount(c => Math.max(0, c - 1));
+        }
+        return prev.filter(n => n.id !== notificationId);
+      });
+    } catch (error) {
+      console.error('Failed to archive notification:', error);
     }
   };
 
@@ -200,6 +266,8 @@ export const useNotifications = () => {
     loading,
     markAsRead,
     markAllAsRead,
+    deleteNotification,
+    archiveNotification,
     subscribeToPush,
     refetch: fetchNotifications
   };
