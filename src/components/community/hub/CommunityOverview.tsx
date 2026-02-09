@@ -16,6 +16,7 @@ import {
   BookOpen,
   Flame
 } from "lucide-react";
+import { useCommunityStats } from "@/hooks/useCommunityStats";
 
 interface CommunityOverviewProps {
   stakeholderCount: number;
@@ -26,6 +27,7 @@ interface CommunityOverviewProps {
 const CommunityOverview = ({ stakeholderCount, onViewChange, onOpenStoryBook }: CommunityOverviewProps) => {
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const { stats } = useCommunityStats();
 
   const features = [
     {
@@ -35,7 +37,7 @@ const CommunityOverview = ({ stakeholderCount, onViewChange, onOpenStoryBook }: 
       iconBg: "bg-gradient-to-br from-warning to-accent",
       title: t('unified_hub.story_book_title'),
       description: t('unified_hub.story_book_desc'),
-      stats: "12 " + t('unified_hub.stories'),
+      stats: `${stats.programs} ` + t('unified_hub.stories'),
       action: onOpenStoryBook
     },
     {
@@ -45,7 +47,7 @@ const CommunityOverview = ({ stakeholderCount, onViewChange, onOpenStoryBook }: 
       iconBg: "bg-gradient-to-br from-primary to-secondary",
       title: t('unified_hub.forums_title'),
       description: t('unified_hub.forums_desc'),
-      stats: "1,247 " + t('unified_hub.discussions'),
+      stats: `${stats.collaborations} ` + t('unified_hub.discussions'),
       action: () => onViewChange("forums")
     },
     {
@@ -65,7 +67,7 @@ const CommunityOverview = ({ stakeholderCount, onViewChange, onOpenStoryBook }: 
       iconBg: "bg-gradient-to-br from-accent to-success",
       title: t('unified_hub.events_title'),
       description: t('unified_hub.events_desc'),
-      stats: "23 " + t('unified_hub.upcoming'),
+      stats: `${stats.events} ` + t('unified_hub.upcoming'),
       action: () => onViewChange("events")
     },
     {
@@ -75,7 +77,7 @@ const CommunityOverview = ({ stakeholderCount, onViewChange, onOpenStoryBook }: 
       iconBg: "bg-gradient-to-br from-primary-dark to-primary",
       title: t('unified_hub.programs_title'),
       description: t('unified_hub.programs_desc'),
-      stats: "15 " + t('unified_hub.active'),
+      stats: `${stats.programs} ` + t('unified_hub.active'),
       action: () => navigate('/piacer')
     }
   ];
@@ -169,7 +171,7 @@ const CommunityOverview = ({ stakeholderCount, onViewChange, onOpenStoryBook }: 
                 <Trophy className="w-8 h-8 text-white" />
               </motion.div>
               <div>
-                <div className="text-4xl font-bold text-warning mb-1">2,450</div>
+                <div className="text-4xl font-bold text-warning mb-1">{stats.collaborations}</div>
                 <div className="text-sm text-warning-foreground/70 font-medium">{t('unified_hub.total_points')}</div>
               </div>
             </CardContent>
@@ -188,7 +190,7 @@ const CommunityOverview = ({ stakeholderCount, onViewChange, onOpenStoryBook }: 
                 <Flame className="w-8 h-8 text-white" />
               </motion.div>
               <div>
-                <div className="text-4xl font-bold text-primary mb-1">156</div>
+                <div className="text-4xl font-bold text-primary mb-1">{stats.members}</div>
                 <div className="text-sm text-primary-foreground/70 font-medium">{t('unified_hub.active_today')}</div>
               </div>
             </CardContent>

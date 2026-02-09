@@ -26,17 +26,17 @@ export const DashboardStats = memo(({
 }: DashboardStatsProps) => {
   const { t } = useLanguage();
 
-  // Default stats if none provided
+  // Default stats if none provided — show zeros, no fake data
   const defaultStats: StatItem[] = variant === "citizen" 
     ? [
-        { icon: "🎯", value: "1,247", label: t('dashboard.points'), trend: { value: "+15%", positive: true } },
-        { icon: "🏆", value: "8", label: t('dashboard.active_challenges'), trend: { value: "+3", positive: true } },
-        { icon: "👥", value: "#42", label: t('dashboard.community_rank'), trend: { value: "↑12", positive: true } }
+        { icon: "🎯", value: "0", label: t('dashboard.points') },
+        { icon: "🏆", value: "0", label: t('dashboard.active_challenges') },
+        { icon: "👥", value: "-", label: t('dashboard.community_rank') }
       ]
     : [
-        { icon: "🎯", value: "+4", label: t('dashboard.new_initiatives') },
-        { icon: "👥", value: "+842", label: t('dashboard.new_participants') },
-        { icon: "🌱", value: "+12.3t", label: t('dashboard.co2_saved') }
+        { icon: "🎯", value: "0", label: t('dashboard.new_initiatives') },
+        { icon: "👥", value: "0", label: t('dashboard.new_participants') },
+        { icon: "🌱", value: "0", label: t('dashboard.co2_saved') }
       ];
 
   const displayStats = stats || defaultStats;
@@ -94,23 +94,23 @@ export const DashboardStats = memo(({
           <div>
             <div className="flex justify-between mb-2">
               <span className="text-sm text-muted-foreground">{t('dashboard.quarterly_co2_goal')}</span>
-              <span className="text-sm font-medium">45.6 / 60t</span>
+              <span className="text-sm font-medium">0 / 60t</span>
             </div>
-            <Progress value={76} className="h-3" />
+            <Progress value={0} className="h-3" />
           </div>
           <div>
             <div className="flex justify-between mb-2">
               <span className="text-sm text-muted-foreground">{t('dashboard.community_reach_goal')}</span>
-              <span className="text-sm font-medium">2,847 / 5,000</span>
+              <span className="text-sm font-medium">0 / 5,000</span>
             </div>
-            <Progress value={57} className="h-3" />
+            <Progress value={0} className="h-3" />
           </div>
           <div>
             <div className="flex justify-between mb-2">
               <span className="text-sm text-muted-foreground">{t('dashboard.new_partnerships')}</span>
-              <span className="text-sm font-medium">8 / 10</span>
+              <span className="text-sm font-medium">0 / 10</span>
             </div>
-            <Progress value={80} className="h-3" />
+            <Progress value={0} className="h-3" />
           </div>
         </div>
       </CardContent>

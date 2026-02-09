@@ -14,39 +14,22 @@ import {
   ArrowRight,
   Sparkles,
   Heart,
+  Loader2,
 } from "lucide-react";
+import { useCommunityStats } from "@/hooks/useCommunityStats";
 
 const CommunityTeaser = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const { stats, loading } = useCommunityStats();
 
-  // Mock preview data
   const previewStats = [
-    { label: t('community.teaser.members'), value: "2,450+", icon: Users },
-    { label: t('community.teaser.experts'), value: "85+", icon: Star },
-    { label: t('community.teaser.events_monthly'), value: "40+", icon: Calendar },
+    { label: t('community.teaser.members'), value: stats.members, icon: Users },
+    { label: t('community.teaser.experts'), value: stats.experts, icon: Star },
+    { label: t('community.teaser.events_monthly'), value: stats.events, icon: Calendar },
   ];
 
-  const previewActivities = [
-    {
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
-      name: "Anna M.",
-      action: t('community.teaser.activity_joined'),
-      time: "2 min",
-    },
-    {
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
-      name: "Péter K.",
-      action: t('community.teaser.activity_rated'),
-      time: "5 min",
-    },
-    {
-      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
-      name: "Eszter T.",
-      action: t('community.teaser.activity_shared'),
-      time: "12 min",
-    },
-  ];
+  const hasStats = stats.members > 0 || stats.experts > 0 || stats.events > 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -86,20 +69,28 @@ const CommunityTeaser = () => {
             transition={{ delay: 0.2 }}
             className="flex flex-wrap justify-center gap-6 mb-12"
           >
-            {previewStats.map((stat, index) => {
-              const Icon = stat.icon;
-              return (
-                <div key={index} className="flex items-center gap-3 px-6 py-3 bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-border/50">
-                  <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <Icon className="h-5 w-5 text-emerald-600" />
+            {loading ? (
+              <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            ) : hasStats ? (
+              previewStats.map((stat, index) => {
+                const Icon = stat.icon;
+                return (
+                  <div key={index} className="flex items-center gap-3 px-6 py-3 bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-border/50">
+                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                      <Icon className="h-5 w-5 text-emerald-600" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                      <p className="text-sm text-muted-foreground">{stat.label}</p>
+                    </div>
                   </div>
-                  <div className="text-left">
-                    <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-                    <p className="text-sm text-muted-foreground">{stat.label}</p>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <div className="text-center py-2">
+                <p className="text-muted-foreground">{t('community.emptyState.subtitle')}</p>
+              </div>
+            )}
           </motion.div>
         </div>
       </div>
@@ -116,27 +107,9 @@ const CommunityTeaser = () => {
               </div>
               
               <div className="space-y-4">
-                {previewActivities.map((activity, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 + index * 0.1 }}
-                    className="flex items-center gap-3 p-3 rounded-xl bg-muted/50"
-                  >
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={activity.avatar} />
-                      <AvatarFallback>{activity.name[0]}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm">
-                        <span className="font-medium text-foreground">{activity.name}</span>
-                        <span className="text-muted-foreground"> {activity.action}</span>
-                      </p>
-                    </div>
-                    <span className="text-xs text-muted-foreground">{activity.time}</span>
-                  </motion.div>
-                ))}
+                <div className="flex items-center justify-center py-6 text-center">
+                  <p className="text-sm text-muted-foreground">{t('community.activity.empty')}</p>
+                </div>
               </div>
 
               {/* Blur overlay */}
