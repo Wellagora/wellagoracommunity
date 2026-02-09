@@ -1,0 +1,18 @@
+name: Health Check
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check demo.wellagora.org
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://demo.wellagora.org)
+          if [ "$STATUS" != "200" ]; then
+            echo "❌ demo.wellagora.org DOWN (HTTP $STATUS)"
+            exit 1
+          fi
+          echo "✅ demo.wellagora.org UP"
