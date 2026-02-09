@@ -21,6 +21,16 @@ DO $$ BEGIN
   END IF;
 END $$;
 
+-- can_view_as_member: allows Experts to switch to Tag view without being Super Admin
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'profiles' AND column_name = 'can_view_as_member'
+  ) THEN
+    ALTER TABLE profiles ADD COLUMN can_view_as_member BOOLEAN DEFAULT FALSE;
+  END IF;
+END $$;
+
 -- Index for quick lookups
 CREATE INDEX IF NOT EXISTS idx_profiles_founding_expert
   ON profiles (is_founding_expert) WHERE is_founding_expert = TRUE;
@@ -31,7 +41,8 @@ RETURNS VOID AS $$
 BEGIN
   UPDATE profiles
   SET is_founding_expert = TRUE,
-      founding_expert_since = NOW()
+      founding_expert_since = NOW(),
+      can_view_as_member = TRUE
   WHERE id = p_user_id
     AND user_role IN ('expert', 'creator')
     AND is_founding_expert = FALSE;

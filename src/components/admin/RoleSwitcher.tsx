@@ -11,17 +11,25 @@ export const RoleSwitcher = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
 
-  // Only show for super admins or specific email
+  // Super Admin: full God Mode (all roles)
   const isSuperAdmin = profile?.is_super_admin === true || 
     profile?.email === 'attila.kelemen@proself.org';
 
-  if (!isSuperAdmin || !profile) return null;
+  // Founding Expert / dual-role: simplified Expert ↔ Tag toggle
+  const canViewAsMember = (profile as any)?.can_view_as_member === true;
 
-  const currentRole = viewAsRole || (profile.user_role as UserRole) || 'member';
+  if ((!isSuperAdmin && !canViewAsMember) || !profile) return null;
+
+  const baseRole = (profile.user_role as UserRole) || 'member';
+  const currentRole = viewAsRole || baseRole;
 
   const handleRoleChange = (newRole: string) => {
-    setViewAsRole(newRole as UserRole);
-    // Navigate to the role's dashboard using centralized paths
+    // If switching back to own role, clear viewAsRole
+    if (newRole === baseRole) {
+      setViewAsRole(null);
+    } else {
+      setViewAsRole(newRole as UserRole);
+    }
     const effectiveRole = getEffectiveRole(newRole, newRole === 'admin');
     navigate(ROLE_DASHBOARDS[effectiveRole]);
   };
@@ -56,6 +64,34 @@ export const RoleSwitcher = () => {
     }
   };
 
+  // Simplified Expert ↔ Tag toggle for Founding Experts
+  if (canViewAsMember && !isSuperAdmin) {
+    const isViewingAsMember = viewAsRole === 'member';
+    return (
+      <button
+        onClick={() => handleRoleChange(isViewingAsMember ? 'expert' : 'member')}
+        className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 rounded-lg hover:border-emerald-500/40 transition-colors"
+      >
+        {isViewingAsMember ? (
+          <>
+            <Sparkles className="w-4 h-4 text-amber-500" />
+            <span className="text-xs font-medium text-emerald-700 hidden sm:inline">
+              {t('roles.switch_to_expert') || 'Szakértő nézet'}
+            </span>
+          </>
+        ) : (
+          <>
+            <User className="w-4 h-4 text-emerald-600" />
+            <span className="text-xs font-medium text-emerald-700 hidden sm:inline">
+              {t('roles.switch_to_member') || 'Tag nézet'}
+            </span>
+          </>
+        )}
+      </button>
+    );
+  }
+
+  // Full God Mode for Super Admins
   return (
     <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-lg">
       <Shield className="w-4 h-4 text-amber-600 shrink-0" />

@@ -135,7 +135,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           preferred_language,
           company_size,
           employee_count,
-          role
+          role,
+          is_founding_expert,
+          can_view_as_member
         `)
         .eq('id', userId)
         .maybeSingle();
