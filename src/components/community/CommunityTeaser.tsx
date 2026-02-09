@@ -160,12 +160,12 @@ const CommunityTeaser = () => {
           transition={{ delay: 0.6 }}
           className="mt-12 text-center"
         >
-          <Card className="max-w-2xl mx-auto bg-gradient-to-br from-slate-900 to-slate-800 border-0 text-white overflow-hidden">
-            <CardContent className="p-8 relative">
+          <div className="max-w-2xl mx-auto rounded-xl overflow-hidden relative" style={{ background: 'linear-gradient(135deg, #0f172a, #1e293b)' }}>
+            <div className="p-8 relative">
               <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/20 rounded-full blur-2xl" />
               
               <Lock className="h-12 w-12 mx-auto mb-4 text-emerald-400" />
-              <h2 className="text-2xl font-bold mb-3">{t('community.teaser.cta_title')}</h2>
+              <h2 className="text-2xl font-bold mb-3 text-white">{t('community.teaser.cta_title')}</h2>
               <p className="text-slate-300 mb-6 max-w-md mx-auto">
                 {t('community.teaser.cta_description')}
               </p>
@@ -188,8 +188,8 @@ const CommunityTeaser = () => {
                   {t('community.teaser.cta_login')}
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </motion.div>
       </div>
     </div>

@@ -110,7 +110,7 @@ export default function ContactPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-sm">
-                  <p className="font-semibold text-foreground">ProSelf International Zrt.</p>
+                  <p className="font-semibold text-foreground">ProSelf International Inc.</p>
                   <div className="flex items-start gap-2 text-muted-foreground">
                     <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
                     <span>1133 Budapest, Pannónia u 102.</span>
