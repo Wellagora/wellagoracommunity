@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { NotificationPreferences } from "@/components/notifications/NotificationPreferences";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -440,43 +441,8 @@ const ProfilePage = () => {
               </CardContent>
             </Card>
 
-            {/* ===== SECTION: Notification Preferences (MEMBER ONLY) ===== */}
-            {userRole === 'member' && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Bell className="w-5 h-5 text-primary" />
-                    Értesítési beállítások
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-                    <div>
-                      <div className="font-medium">Email értesítések</div>
-                      <div className="text-sm text-muted-foreground">
-                        Kapj értesítést új tartalmakról emailben
-                      </div>
-                    </div>
-                    <Switch
-                      checked={profileForm.notifications_email}
-                      onCheckedChange={(checked) => setProfileForm(prev => ({ ...prev, notifications_email: checked }))}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-                    <div>
-                      <div className="font-medium">Push értesítések</div>
-                      <div className="text-sm text-muted-foreground">
-                        Böngésző push értesítések
-                      </div>
-                    </div>
-                    <Switch
-                      checked={profileForm.notifications_push}
-                      onCheckedChange={(checked) => setProfileForm(prev => ({ ...prev, notifications_push: checked }))}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+            {/* ===== SECTION: Notification Preferences (ALL ROLES) ===== */}
+            <NotificationPreferences />
 
             {/* ===== SECTION: Expert Profile (EXPERT ONLY) ===== */}
             {userRole === 'expert' && (

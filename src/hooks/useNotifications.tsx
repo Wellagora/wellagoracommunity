@@ -239,13 +239,28 @@ export const useNotifications = () => {
             filter: `user_id=eq.${data.user.id}`
           },
           (payload) => {
-            const newNotification = payload.new as Notification;
+            const raw = payload.new as any;
+            const newNotification: Notification = {
+              ...raw,
+              category: raw.category || 'general',
+              priority: raw.priority || 'medium',
+              is_archived: raw.is_archived || false,
+              channels: raw.channels || ['in_app'],
+            };
             setNotifications(prev => [newNotification, ...prev]);
             setUnreadCount(prev => prev + 1);
             
-            // Show browser notification if permission granted
-            if (Notification.permission === 'granted') {
-              new Notification(newNotification.title, {
+            // Show in-app toast notification
+            toast({
+              title: newNotification.icon 
+                ? `${newNotification.icon} ${newNotification.title}` 
+                : newNotification.title,
+              description: newNotification.message,
+            });
+
+            // Also show browser notification if permission granted
+            if ('Notification' in window && window.Notification.permission === 'granted') {
+              new window.Notification(newNotification.title, {
                 body: newNotification.message,
                 icon: '/favicon.png'
               });

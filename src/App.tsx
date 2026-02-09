@@ -381,6 +381,14 @@ function App() {
                               </ProtectedRoute>
                             }
                           />
+                          <Route
+                            path="/notifications"
+                            element={
+                              <ProtectedRoute>
+                                <NotificationsPage />
+                              </ProtectedRoute>
+                            }
+                          />
                           
                           {/* Favorites page for members */}
                           <Route

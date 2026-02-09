@@ -238,6 +238,13 @@ export const notificationTriggers = {
     actionUrl?: string,
     metadata?: Record<string, any>
   ) {
+    const categoryMap: Record<string, string> = {
+      milestone: 'community',
+      community: 'community',
+      reminder: 'program',
+      admin: 'system',
+    };
+
     try {
       const { data, error } = await supabase
         .from('notifications')
@@ -246,7 +253,10 @@ export const notificationTriggers = {
           title,
           message,
           type,
+          category: categoryMap[type] || 'general',
+          priority: 'medium',
           action_url: actionUrl,
+          channels: ['in_app'],
           metadata: metadata || {}
         })
         .select()
