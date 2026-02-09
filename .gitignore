@@ -29,3 +29,6 @@ test-results/
 
 # Supabase temp
 supabase/.temp/
+.env
+.env.local
+.env.production
