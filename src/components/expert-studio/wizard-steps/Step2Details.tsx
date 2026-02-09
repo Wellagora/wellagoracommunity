@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Leaf, ChefHat, Hammer, Heart, Palette, MoreHorizontal, MapPin, Monitor, Video, Calendar, Clock, Link as LinkIcon, Users } from "lucide-react";
+import { calculateSplit } from "@/services/enrollmentService";
 import type { ProgramFormData, ContentType } from "../ProgramCreatorWizard";
 
 interface Step2DetailsProps {
@@ -483,6 +484,19 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
               <p className="text-xs text-muted-foreground mt-2">
                 {t("program_creator.revenue_hint")}
               </p>
+              {formData.price_huf > 0 && (() => {
+                const { expertAmount, platformFee } = calculateSplit(formData.price_huf);
+                return (
+                  <div className="mt-3 p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-sm">
+                    <span className="font-medium text-emerald-700">
+                      {language === 'hu' ? 'Ebből te kapsz' : language === 'de' ? 'Dein Anteil' : 'Your share'}: {expertAmount.toLocaleString('hu-HU')} Ft (80%)
+                    </span>
+                    <span className="text-muted-foreground ml-2">
+                      | {language === 'hu' ? 'Platform díj' : language === 'de' ? 'Plattformgebühr' : 'Platform fee'}: {platformFee.toLocaleString('hu-HU')} Ft (20%)
+                    </span>
+                  </div>
+                );
+              })()}
             </div>
           )}
         </CardContent>

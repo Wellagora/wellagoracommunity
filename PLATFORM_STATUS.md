@@ -1,7 +1,7 @@
 # WellAgora — Platform Státusz
-**Generálva:** 2026-02-09 15:27
+**Generálva:** 2026-02-09 15:36
 **Branch:** main
-**Utolsó commit:** 8a28315 fix: correct edge function name create-checkout → create-checkout-session (2026-02-09 15:22:09 +0100)
+**Utolsó commit:** f3c68b1 docs: add platform status generator script (2026-02-09 15:27:48 +0100)
 
 ---
 
@@ -314,6 +314,8 @@ AffiliateTrackingService.ts: 2 exports
 AnalyticsService.ts: 2 exports
 SponsorImpactService.ts: 4 exports
 enrollmentService.ts: 7 exports
+notificationService.ts: 4 exports
+nudgeService.ts: 1 exports
 transactionService.ts: 6 exports
 translationService.ts: 4 exports
 ```
@@ -377,6 +379,9 @@ pages/ProgramDetailPage.tsx
 
 ## 10. NOTIFICATION RENDSZER
 ```
+ NotifyParams) {
+  const { error } = await supabase.from('notifications').insert({
+export async function notifyExpertOnEnrollment(
 ```
 
 ## 11. STRIPE / FIZETÉS
@@ -402,11 +407,11 @@ wellbot.test.ts
 | 1 | Expert tartalom form | content_type UI | ✅ |
 | 2 | Ingyenes regisztráció | enrollFree() | ✅ |
 | 3 | Fizetős vásárlás | startPaidCheckout() | ✅ |
-| 4 | Stripe Checkout edge fn | create-checkout/ | ❌ |
+| 4 | Stripe Checkout edge fn | create-checkout-session/ | ✅ |
 | 5 | Stripe Webhook | stripe-webhook/ | ✅ |
 | 6 | Tag értékelés | ReviewSection | ✅ |
 | 7 | WellBot Expert Coach | getRoleSystemPrompt | ✅ |
-| 8 | Nudge értesítések | milestone notification | ❌ |
+| 8 | Nudge értesítések | milestone notification | ✅ |
 | 9 | Expert bevétel dashboard | earnings.*transactions | ✅ |
 | 10 | Admin tranzakció lista | admin.*transactions | ✅ |
 

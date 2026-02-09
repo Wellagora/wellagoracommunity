@@ -125,7 +125,7 @@ check_exists() {
 echo "| 1 | Expert tartalom form | content_type UI | $(check_exists 'content_type.*Select\|content_type.*input\|ContentTypeSelector' grep) |"
 echo "| 2 | Ingyenes regisztráció | enrollFree() | $(check_exists 'enrollFree' grep) |"
 echo "| 3 | Fizetős vásárlás | startPaidCheckout() | $(check_exists 'startPaidCheckout' grep) |"
-echo "| 4 | Stripe Checkout edge fn | create-checkout/ | $(check_exists 'supabase/functions/create-checkout' dir) |"
+echo "| 4 | Stripe Checkout edge fn | create-checkout-session/ | $(check_exists 'supabase/functions/create-checkout-session' dir) |"
 echo "| 5 | Stripe Webhook | stripe-webhook/ | $(check_exists 'supabase/functions/stripe-webhook' dir) |"
 echo "| 6 | Tag értékelés | ReviewSection | $(check_exists 'ReviewSection' grep) |"
 echo "| 7 | WellBot Expert Coach | getRoleSystemPrompt | $(check_exists 'getRoleSystemPrompt' grep) |"

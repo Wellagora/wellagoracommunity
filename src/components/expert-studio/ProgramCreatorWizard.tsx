@@ -172,10 +172,10 @@ const ProgramCreatorWizard = () => {
         problemStatement: problemSolution?.problem || "",
         solutionStatement: problemSolution?.solution || "",
         contentType: (data.content_type as ContentType) || "in_person",
-        eventDate: "",
-        eventTime: "",
+        eventDate: data.event_date ? new Date(data.event_date).toISOString().split('T')[0] : "",
+        eventTime: data.event_date ? new Date(data.event_date).toTimeString().slice(0, 5) : "",
         maxParticipants: data.max_capacity || 10,
-        locationAddress: "",
+        locationAddress: data.event_location || "",
         locationMapUrl: "",
         meetingLink: data.content_url || "",
         videoUrl: data.content_url || "",
@@ -259,6 +259,15 @@ const ProgramCreatorWizard = () => {
         ? formData.meetingLink 
         : formData.locationMapUrl;
 
+      // Build event_date from date + time
+      let eventDateISO: string | null = null;
+      if (formData.eventDate && formData.contentType !== 'recorded') {
+        const dateStr = formData.eventTime 
+          ? `${formData.eventDate}T${formData.eventTime}:00` 
+          : `${formData.eventDate}T00:00:00`;
+        eventDateISO = new Date(dateStr).toISOString();
+      }
+
       const contentData = {
         title: formData.title_hu || "Névtelen program",
         title_en: formData.title_en || null,
@@ -274,6 +283,8 @@ const ProgramCreatorWizard = () => {
         price_huf: formData.pricingMode === "purchasable" ? formData.price_huf : 0,
         access_type: formData.pricingMode === "purchasable" ? "paid" : "sponsored",
         max_capacity: formData.contentType !== 'recorded' ? formData.maxParticipants : null,
+        event_date: eventDateISO,
+        event_location: formData.contentType === 'in_person' ? (formData.locationAddress || null) : null,
         is_published: false,
         updated_at: new Date().toISOString(),
         // Add problem_solution metadata for AI indexing

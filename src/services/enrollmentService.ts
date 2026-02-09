@@ -1,4 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
+import { notifyExpertOnEnrollment, notifyTagOnEnrollment } from './notificationService';
+import { checkAndSendNudges } from './nudgeService';
 
 /**
  * Enrollment Service — handles free and paid program enrollment
@@ -57,7 +59,7 @@ export async function enrollFree(contentId: string, userId: string): Promise<Enr
   // 1. Fetch content to validate
   const { data: content, error: fetchError } = await supabase
     .from('expert_contents')
-    .select('id, price_huf, max_capacity, is_published')
+    .select('id, title, price_huf, max_capacity, is_published, creator_id')
     .eq('id', contentId)
     .single();
 
@@ -102,9 +104,21 @@ export async function enrollFree(contentId: string, userId: string): Promise<Enr
 
   // 4. Increment participants (via RPC if available, otherwise direct update)
   await supabase.rpc('increment_participants', { p_content_id: contentId }).catch(() => {
-    // Fallback: if RPC doesn't exist yet, the SQL migration will add it
     console.warn('increment_participants RPC not available yet');
   });
+
+  // 5. Send notifications (fire-and-forget)
+  if (content.creator_id) {
+    const { data: userProfile } = await supabase
+      .from('profiles')
+      .select('first_name, last_name')
+      .eq('id', userId)
+      .single();
+    const tagName = userProfile ? `${userProfile.first_name || ''} ${userProfile.last_name || ''}`.trim() : 'Valaki';
+    notifyExpertOnEnrollment(content.creator_id, tagName, content.title || 'Program').catch(console.error);
+    notifyTagOnEnrollment(userId, content.title || 'Program').catch(console.error);
+    checkAndSendNudges(content.creator_id).catch(console.error);
+  }
 
   return { success: true };
 }
