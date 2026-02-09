@@ -349,10 +349,10 @@ const Navigation = () => {
                     <Link
                       key={item.path}
                       to={item.path}
-                      className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-full transition-all duration-300 whitespace-nowrap ${
+                      className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-all duration-300 whitespace-nowrap border-b-2 ${
                         active 
-                          ? "bg-[#111111] text-white" 
-                          : "text-[#6E6E73] hover:text-[#111111] hover:bg-[#F5F5F7]"
+                          ? "text-[#111111] border-[#111111]" 
+                          : "text-[#6E6E73] border-transparent hover:text-[#111111] hover:border-[#D1D1D6]"
                       }`}
                     >
                       {Icon && <Icon className="h-4 w-4" />}

@@ -94,7 +94,7 @@ const CommunityActivityFeed = () => {
               type: 'join',
               user_name: `${v.profiles.first_name} ${v.profiles.last_name?.[0] || ''}.`,
               user_avatar: v.profiles.avatar_url,
-              action_text: language === 'hu' ? 'csatlakozott:' : 'joined:',
+              action_text: language === 'hu' ? 'csatlakozott:' : language === 'de' ? 'beigetreten:' : 'joined:',
               target_name: v.expert_contents.title,
               created_at: v.created_at
             });

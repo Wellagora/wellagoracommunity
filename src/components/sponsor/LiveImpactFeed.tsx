@@ -112,14 +112,20 @@ const LiveImpactFeed = () => {
       case 'claim':
         return language === 'hu' 
           ? `${name} csatlakozott a támogatásoddal`
+          : language === 'de'
+          ? `${name} ist mit deiner Unterstützung beigetreten`
           : `${name} joined with your support`;
       case 'redeem':
         return language === 'hu'
           ? `${name} részt vett a programon`
+          : language === 'de'
+          ? `${name} hat am Programm teilgenommen`
           : `${name} attended the program`;
       case 'complete':
         return language === 'hu'
           ? `${name} sikeresen teljesítette`
+          : language === 'de'
+          ? `${name} hat erfolgreich abgeschlossen`
           : `${name} completed successfully`;
       default:
         return name;

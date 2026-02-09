@@ -159,7 +159,7 @@ const CommunityTicker = () => {
               {currentActivity.userName}
             </span>
             <span className="text-emerald-600/70 flex-shrink-0">
-              {language === 'hu' ? 'csatlakozott:' : 'joined'}
+              {language === 'hu' ? 'csatlakozott:' : language === 'de' ? 'beigetreten:' : 'joined'}
             </span>
             <span className="font-medium text-emerald-700 truncate">
               {currentActivity.programTitle}
