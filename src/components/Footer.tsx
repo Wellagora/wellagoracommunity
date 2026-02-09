@@ -112,7 +112,7 @@ const Footer = () => {
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
           <p>
-            © {currentYear} {t('footer.copyright')}
+            © {currentYear} ProSelf International Inc. — {t('footer.copyright')}
           </p>
           <div className="flex flex-wrap gap-4">
             <Link to="/terms" className="hover:text-primary transition-colors">
@@ -124,7 +124,6 @@ const Footer = () => {
             <button onClick={resetCookieConsent} className="hover:text-primary transition-colors">
               {t('footer.cookie_settings') || 'Cookie beállítások'}
             </button>
-            <span>© {currentYear} ProSelf International Inc.</span>
           </div>
         </div>
       </div>

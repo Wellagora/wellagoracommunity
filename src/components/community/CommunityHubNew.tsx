@@ -17,7 +17,7 @@ const CommunityHubNew = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Community Header with Stats and Expert Gallery */}
-      <div className="sticky top-0 z-30 bg-gradient-to-b from-card/95 to-background/95 backdrop-blur-sm py-8 border-b border-border/50 shadow-sm">
+      <div className="sticky top-16 z-30 bg-gradient-to-b from-card/95 to-background/95 backdrop-blur-sm py-8 border-b border-border/50 shadow-sm">
         <div className="container mx-auto px-4">
           <CommunityHeader />
         </div>

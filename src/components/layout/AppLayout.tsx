@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import MobileBottomNav from "@/components/navigation/MobileBottomNav";
+import Footer from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import FeedbackButton from "@/components/feedback/FeedbackButton";
 import PWAInstallBanner from "@/components/pwa/PWAInstallBanner";
@@ -18,6 +19,11 @@ export default function AppLayout() {
       <main className={`${isDemoMode ? "pt-24" : "pt-16"} pb-16 md:pb-0`}>
         <Outlet />
       </main>
+      
+      {/* Footer - hidden on mobile where bottom nav is shown */}
+      <div className="hidden md:block">
+        <Footer />
+      </div>
       
       {/* Mobile Bottom Navigation */}
       <MobileBottomNav />

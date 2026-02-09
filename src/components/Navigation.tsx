@@ -365,7 +365,7 @@ const Navigation = () => {
             </div>
 
             {/* Desktop Actions - Right */}
-            <div className="hidden md:flex items-center gap-4 shrink-0 z-10 pr-8 lg:pr-12">
+            <div className="hidden md:flex items-center gap-3 shrink-0 z-10">
               {/* God Mode Role Switcher - Only for Super Admins */}
               <RoleSwitcher />
 

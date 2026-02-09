@@ -1,7 +1,7 @@
 # WellAgora — Platform Státusz
-**Generálva:** 2026-02-09 15:36
+**Generálva:** 2026-02-09 16:11
 **Branch:** main
-**Utolsó commit:** f3c68b1 docs: add platform status generator script (2026-02-09 15:27:48 +0100)
+**Utolsó commit:** 27bb88d feat: S.12b — Expert Studio event fields + Notification service + Nudge system (2026-02-09 15:36:57 +0100)
 
 ---
 

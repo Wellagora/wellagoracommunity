@@ -136,7 +136,7 @@ const WorkshopHeader = ({
   const { t } = useLanguage();
 
   return (
-    <header className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border z-50">
+    <header className="sticky top-16 bg-background/95 backdrop-blur-sm border-b border-border z-40">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center gap-4">
           <Button

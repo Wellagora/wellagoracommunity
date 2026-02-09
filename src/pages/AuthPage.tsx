@@ -277,8 +277,8 @@ const AuthPage = () => {
           )}
 
           {success && (
-            <Alert className="mb-6 bg-black/5 border-black/10">
-              <AlertDescription className="text-black/70">{success}</AlertDescription>
+            <Alert className="mb-6 bg-emerald-50 border-emerald-200">
+              <AlertDescription className="text-emerald-700">{success}</AlertDescription>
             </Alert>
           )}
 
