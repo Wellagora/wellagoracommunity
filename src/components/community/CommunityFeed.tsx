@@ -25,6 +25,7 @@ import {
   Send,
   X,
   Loader2,
+  Shield,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -48,6 +49,7 @@ interface CommunityPost {
     avatar_url: string | null;
     user_role: string | null;
     expert_title: string | null;
+    is_founding_expert: boolean | null;
   };
   likes: { user_id: string }[];
   comments: {
@@ -61,6 +63,7 @@ interface CommunityPost {
       avatar_url: string | null;
       user_role: string | null;
       expert_title: string | null;
+      is_founding_expert: boolean | null;
     };
   }[];
 }
@@ -90,11 +93,11 @@ const CommunityFeed = () => {
         .from('community_posts')
         .select(`
           *,
-          author:profiles!author_id(id, first_name, last_name, avatar_url, user_role, expert_title),
+          author:profiles!author_id(id, first_name, last_name, avatar_url, user_role, expert_title, is_founding_expert),
           likes:community_post_likes(user_id),
           comments:community_post_comments(
             id, content, created_at,
-            author:profiles!author_id(id, first_name, last_name, avatar_url, user_role, expert_title)
+            author:profiles!author_id(id, first_name, last_name, avatar_url, user_role, expert_title, is_founding_expert)
           )
         `)
         .order('created_at', { ascending: false })
@@ -174,11 +177,11 @@ const CommunityFeed = () => {
         })
         .select(`
           *,
-          author:profiles!author_id(id, first_name, last_name, avatar_url, user_role, expert_title),
+          author:profiles!author_id(id, first_name, last_name, avatar_url, user_role, expert_title, is_founding_expert),
           likes:community_post_likes(user_id),
           comments:community_post_comments(
             id, content, created_at,
-            author:profiles!author_id(id, first_name, last_name, avatar_url, user_role, expert_title)
+            author:profiles!author_id(id, first_name, last_name, avatar_url, user_role, expert_title, is_founding_expert)
           )
         `)
         .single();
@@ -482,10 +485,43 @@ const CommunityFeed = () => {
       </motion.div>
 
       {posts.length === 0 && (
-        <Card className="p-12 text-center">
-          <Sparkles className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-          <p className="text-lg font-medium text-foreground mb-2">{t('community.be_first')}</p>
-          <p className="text-sm text-muted-foreground">Share your thoughts with the community</p>
+        <Card className="p-8 md:p-12 text-center border-dashed">
+          <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-emerald-50 flex items-center justify-center">
+            <Sparkles className="w-8 h-8 text-emerald-500" />
+          </div>
+          <h3 className="text-xl font-bold text-foreground mb-2">
+            {t('community.welcome_title') || 'Üdv a közösségben!'}
+          </h3>
+          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+            {t('community.welcome_subtitle') || 'Ez a te közösséged. Oszd meg gondolataidat, kérdezz, vagy inspirálj másokat egy sikertörténettel!'}
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button
+              onClick={() => setShowPostCreator(true)}
+              className="gap-2 bg-black hover:bg-black/90 text-white"
+            >
+              <Send className="w-4 h-4" />
+              {t('community.write_first_post') || 'Első posztom megírása'}
+            </Button>
+          </div>
+          <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div className="p-3 rounded-lg bg-slate-50">
+              <Sparkles className="w-5 h-5 mx-auto mb-1 text-slate-500" />
+              <p className="text-xs text-muted-foreground">{t('community.post_types.general') || 'Általános'}</p>
+            </div>
+            <div className="p-3 rounded-lg bg-blue-50">
+              <HelpCircle className="w-5 h-5 mx-auto mb-1 text-blue-500" />
+              <p className="text-xs text-muted-foreground">{t('community.post_types.question') || 'Kérdés'}</p>
+            </div>
+            <div className="p-3 rounded-lg bg-amber-50">
+              <Trophy className="w-5 h-5 mx-auto mb-1 text-amber-500" />
+              <p className="text-xs text-muted-foreground">{t('community.post_types.success_story') || 'Sikertörténet'}</p>
+            </div>
+            <div className="p-3 rounded-lg bg-purple-50">
+              <Lightbulb className="w-5 h-5 mx-auto mb-1 text-purple-500" />
+              <p className="text-xs text-muted-foreground">{t('community.post_types.tip') || 'Tipp'}</p>
+            </div>
+          </div>
         </Card>
       )}
     </div>
@@ -515,6 +551,7 @@ const PostCard = ({
 
   const isLiked = user ? post.likes.some(like => like.user_id === user.id) : false;
   const isExpert = post.author.user_role === 'expert';
+  const isFoundingExpert = post.author.is_founding_expert === true;
 
   const postTypeBadges = {
     general: { icon: Sparkles, label: t('community.post_types.general'), className: 'bg-slate-100 text-slate-700' },
@@ -558,7 +595,13 @@ const PostCard = ({
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-semibold">{getFullName(post.author.first_name, post.author.last_name)}</span>
-                {isExpert && post.author.expert_title && (
+                {isFoundingExpert && (
+                  <Badge className="bg-amber-100 text-amber-800 text-xs gap-1">
+                    <Shield className="w-3 h-3" />
+                    {t('community.founding_expert') || 'Alapító Szakértő'}
+                  </Badge>
+                )}
+                {isExpert && !isFoundingExpert && post.author.expert_title && (
                   <Badge className="bg-indigo-100 text-indigo-700 text-xs">
                     <Sparkles className="w-3 h-3 mr-1" />
                     {post.author.expert_title}
