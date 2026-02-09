@@ -221,6 +221,17 @@ export const useNotifications = () => {
     }
   };
 
+  // Sync app badge count (Android PWA)
+  useEffect(() => {
+    if ('setAppBadge' in navigator) {
+      if (unreadCount > 0) {
+        (navigator as any).setAppBadge(unreadCount).catch(() => {});
+      } else {
+        (navigator as any).clearAppBadge().catch(() => {});
+      }
+    }
+  }, [unreadCount]);
+
   useEffect(() => {
     fetchNotifications();
 

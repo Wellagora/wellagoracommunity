@@ -58,6 +58,23 @@
     "settings_saved_description": "Értesítési beállításaid sikeresen frissültek.",
     "settings_save_error": "Nem sikerült menteni a beállításokat"
   },
+  "push": {
+    "prompt_title": "Szeretnél értesítést kapni?",
+    "prompt_desc": "Szólunk ha elfogadják a jelentkezésed, közeleg az eseményed, vagy új program jelenik meg.",
+    "prompt_short": "Kapcsold be az értesítéseket, hogy ne maradj le semmiről!",
+    "yes_notify": "Igen, értesítsetek!",
+    "not_now": "Most nem",
+    "enable_button": "Bekapcsolás",
+    "enabled_title": "Értesítések bekapcsolva",
+    "enabled_desc": "Mostantól push értesítéseket is kapsz.",
+    "denied_title": "Értesítés letiltva",
+    "denied_desc": "A böngésző beállításaiban engedélyezheted újra.",
+    "ios_install_title": "Telepítsd az appot a push értesítésekhez!",
+    "ios_install_desc": "iPhone-on a push értesítések csak a telepített alkalmazásban működnek.",
+    "ios_step_1": "Koppints a Megosztás (□↑) gombra",
+    "ios_step_2": "2. Válaszd: Hozzáadás a Főképernyőhöz",
+    "ios_step_3": "3. Nyisd meg onnan az appot"
+  },
   "my_courses": {
     "title": "Kurzusaim",
     "total_courses": "Kurzus",

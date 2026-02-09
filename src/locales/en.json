@@ -2266,6 +2266,23 @@
     "settings_saved_description": "Your notification preferences have been updated.",
     "settings_save_error": "Failed to save notification settings"
   },
+  "push": {
+    "prompt_title": "Want to receive notifications?",
+    "prompt_desc": "We'll let you know when your application is accepted, your event is coming up, or a new program appears.",
+    "prompt_short": "Turn on notifications so you don't miss anything!",
+    "yes_notify": "Yes, notify me!",
+    "not_now": "Not now",
+    "enable_button": "Enable",
+    "enabled_title": "Notifications enabled",
+    "enabled_desc": "You'll now receive push notifications.",
+    "denied_title": "Notifications blocked",
+    "denied_desc": "You can re-enable them in your browser settings.",
+    "ios_install_title": "Install the app for push notifications!",
+    "ios_install_desc": "On iPhone, push notifications only work in the installed app.",
+    "ios_step_1": "Tap the Share (□↑) button",
+    "ios_step_2": "2. Choose \"Add to Home Screen\"",
+    "ios_step_3": "3. Open the app from there"
+  },
   "impact_garden": {
     "badge": "Community Growth",
     "title": "Our Environment",

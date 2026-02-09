@@ -17,6 +17,7 @@ import { formatDistanceToNow, isToday, isYesterday, isThisWeek } from "date-fns"
 import { hu, enUS, de } from "date-fns/locale";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { PushPermissionPrompt } from "@/components/notifications/PushPermissionPrompt";
 
 const categoryIcons: Record<string, any> = {
   all: Bell,
@@ -167,6 +168,11 @@ const NotificationsPage = () => {
               </button>
             );
           })}
+        </div>
+
+        {/* Push Permission Prompt */}
+        <div className="mb-4">
+          <PushPermissionPrompt variant="banner" />
         </div>
 
         {/* Notifications List */}

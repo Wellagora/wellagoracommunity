@@ -1,73 +1,102 @@
-// Service Worker for Push Notifications
+// WellAgora Service Worker — Push Notifications + Offline Support
+
+// ============================================================
+// Install & Activate
+// ============================================================
 self.addEventListener('install', (event) => {
-  console.log('Service Worker installing...');
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker activating...');
   event.waitUntil(self.clients.claim());
 });
 
+// ============================================================
+// Push Event — Display notification
+// ============================================================
 self.addEventListener('push', (event) => {
-  console.log('Push notification received:', event);
-  
-  if (!event.data) {
-    console.log('No data in push event');
-    return;
+  if (!event.data) return;
+
+  let data;
+  try {
+    data = event.data.json();
+  } catch (e) {
+    data = { title: 'WellAgora', message: event.data.text() };
   }
 
-  const data = event.data.json();
-  const { title, body, icon, badge, data: notificationData } = data;
-
   const options = {
-    body: body,
-    icon: icon || '/favicon.png',
-    badge: badge || '/favicon.png',
-    data: notificationData,
+    body: data.message || data.body || 'Új értesítés a WellAgora-ból',
+    icon: data.icon || '/icons/icon-192.png',
+    badge: '/icons/icon-72.png',
+    image: data.imageUrl || undefined,
     vibrate: [200, 100, 200],
-    requireInteraction: false,
+    tag: data.type || 'default',
+    renotify: true,
+    requireInteraction: data.priority === 'high' || data.priority === 'critical',
+    data: {
+      url: data.actionUrl || data.url || '/',
+      notificationId: data.id || data.notificationId,
+    },
     actions: [
-      {
-        action: 'open',
-        title: 'Open'
-      },
-      {
-        action: 'close',
-        title: 'Dismiss'
-      }
-    ]
+      { action: 'open', title: data.actionLabel || 'Megtekintés' },
+      { action: 'dismiss', title: 'Elutasítás' },
+    ],
   };
 
   event.waitUntil(
-    self.registration.showNotification(title, options)
+    self.registration.showNotification(data.title || 'WellAgora', options)
   );
+
+  // Update app badge (Android)
+  if (navigator.setAppBadge) {
+    event.waitUntil(
+      self.clients.matchAll({ type: 'window' }).then((windowClients) => {
+        // Tell clients to update badge count
+        windowClients.forEach((client) => {
+          client.postMessage({ type: 'BADGE_UPDATE' });
+        });
+      })
+    );
+  }
 });
 
+// ============================================================
+// Notification Click — Navigate to action URL
+// ============================================================
 self.addEventListener('notificationclick', (event) => {
-  console.log('Notification clicked:', event);
-  
   event.notification.close();
 
-  if (event.action === 'close') {
-    return;
-  }
+  if (event.action === 'dismiss') return;
 
-  const urlToOpen = event.notification.data?.url || '/';
+  const url = event.notification.data?.url || '/';
+  const notificationId = event.notification.data?.notificationId;
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true })
-      .then((windowClients) => {
-        // Check if there's already a window open
-        for (let client of windowClients) {
-          if (client.url === urlToOpen && 'focus' in client) {
-            return client.focus();
+      .then((clientList) => {
+        // If there's an open WellAgora window, focus it and navigate
+        for (const client of clientList) {
+          if ('focus' in client) {
+            client.focus();
+            client.postMessage({
+              type: 'NOTIFICATION_CLICK',
+              url: url,
+              notificationId: notificationId,
+            });
+            return;
           }
         }
-        // If not, open a new window
+        // Otherwise open a new window
         if (clients.openWindow) {
-          return clients.openWindow(urlToOpen);
+          return clients.openWindow(url);
         }
       })
   );
+});
+
+// ============================================================
+// Notification Close (dismiss)
+// ============================================================
+self.addEventListener('notificationclose', (event) => {
+  // Optionally track dismissed notifications
 });

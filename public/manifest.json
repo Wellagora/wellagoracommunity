@@ -70,5 +70,25 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "Piactér böngészése",
+      "short_name": "Piactér",
+      "url": "/programs",
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Események",
+      "short_name": "Események",
+      "url": "/esemenyek",
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "WellBot kérdezése",
+      "short_name": "WellBot",
+      "url": "/ai-assistant",
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+    }
   ]
 }

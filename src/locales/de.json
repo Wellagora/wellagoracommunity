@@ -5094,6 +5094,23 @@
     "settings_saved_description": "Deine Benachrichtigungseinstellungen wurden aktualisiert.",
     "settings_save_error": "Einstellungen konnten nicht gespeichert werden"
   },
+  "push": {
+    "prompt_title": "Möchtest du Benachrichtigungen erhalten?",
+    "prompt_desc": "Wir informieren dich, wenn deine Bewerbung akzeptiert wird, dein Event bevorsteht oder ein neues Programm erscheint.",
+    "prompt_short": "Aktiviere Benachrichtigungen, damit du nichts verpasst!",
+    "yes_notify": "Ja, benachrichtigt mich!",
+    "not_now": "Jetzt nicht",
+    "enable_button": "Aktivieren",
+    "enabled_title": "Benachrichtigungen aktiviert",
+    "enabled_desc": "Du erhältst jetzt Push-Benachrichtigungen.",
+    "denied_title": "Benachrichtigungen blockiert",
+    "denied_desc": "Du kannst sie in den Browsereinstellungen wieder aktivieren.",
+    "ios_install_title": "Installiere die App für Push-Benachrichtigungen!",
+    "ios_install_desc": "Auf dem iPhone funktionieren Push-Benachrichtigungen nur in der installierten App.",
+    "ios_step_1": "Tippe auf die Teilen-Taste (□↑)",
+    "ios_step_2": "2. Wähle \"Zum Home-Bildschirm\"",
+    "ios_step_3": "3. Öffne die App von dort"
+  },
   "my_courses": {
     "title": "Meine Programme",
     "total_courses": "Programme",

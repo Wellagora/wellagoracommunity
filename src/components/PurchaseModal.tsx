@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Loader2, ShoppingCart, CheckCircle2, CreditCard, Gift, Sparkles } from "lucide-react";
+import { PushPermissionPrompt } from "@/components/notifications/PushPermissionPrompt";
 import confetti from "canvas-confetti";
 
 interface PurchaseModalProps {
@@ -250,6 +251,9 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
                 {t("purchase.order_reference")}: <span className="font-mono">{orderReference}</span>
               </p>
             )}
+            <div className="mt-4 w-full">
+              <PushPermissionPrompt variant="banner" />
+            </div>
           </div>
         ) : (
           <>
