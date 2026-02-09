@@ -133,7 +133,7 @@ export async function startPaidCheckout(
   }
 
   // Call Stripe checkout edge function
-  const { data, error } = await supabase.functions.invoke('create-checkout', {
+  const { data, error } = await supabase.functions.invoke('create-checkout-session', {
     body: {
       content_id: contentId,
       user_id: userId,
