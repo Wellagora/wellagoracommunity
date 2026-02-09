@@ -68,59 +68,6 @@ export type Database = {
           },
         ]
       }
-      content_localizations: {
-        Row: {
-          approved_at: string | null
-          content_id: string
-          description: string | null
-          edited_at: string | null
-          id: string
-          is_ai_generated: boolean
-          is_approved: boolean
-          locale: string
-          long_content: Json | null
-          source_locale: string | null
-          title: string | null
-          translated_at: string | null
-        }
-        Insert: {
-          approved_at?: string | null
-          content_id: string
-          description?: string | null
-          edited_at?: string | null
-          id?: string
-          is_ai_generated?: boolean
-          is_approved?: boolean
-          locale: string
-          long_content?: Json | null
-          source_locale?: string | null
-          title?: string | null
-          translated_at?: string | null
-        }
-        Update: {
-          approved_at?: string | null
-          content_id?: string
-          description?: string | null
-          edited_at?: string | null
-          id?: string
-          is_ai_generated?: boolean
-          is_approved?: boolean
-          locale?: string
-          long_content?: Json | null
-          source_locale?: string | null
-          title?: string | null
-          translated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "content_localizations_content_id_fkey"
-            columns: ["content_id"]
-            isOneToOne: false
-            referencedRelation: "expert_contents"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       affiliate_links: {
         Row: {
           click_count: number | null
@@ -747,6 +694,135 @@ export type Database = {
           },
         ]
       }
+      community_post_comments: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string | null
+          id: string
+          post_id: string
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string | null
+          id?: string
+          post_id: string
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string | null
+          id?: string
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_post_comments_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_post_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_post_likes: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_post_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_post_likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_posts: {
+        Row: {
+          author_id: string
+          comments_count: number | null
+          content: string
+          created_at: string | null
+          id: string
+          image_url: string | null
+          likes_count: number | null
+          post_type: string | null
+          related_program_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          author_id: string
+          comments_count?: number | null
+          content: string
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          likes_count?: number | null
+          post_type?: string | null
+          related_program_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          author_id?: string
+          comments_count?: number | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          likes_count?: number | null
+          post_type?: string | null
+          related_program_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_posts_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_posts_related_program_id_fkey"
+            columns: ["related_program_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       community_questions: {
         Row: {
           content_id: string | null
@@ -785,6 +861,7 @@ export type Database = {
           amount_paid: number | null
           content_id: string
           created_at: string
+          granted_at: string | null
           id: string
           payment_reference: string | null
           purchased_at: string
@@ -796,6 +873,7 @@ export type Database = {
           amount_paid?: number | null
           content_id: string
           created_at?: string
+          granted_at?: string | null
           id?: string
           payment_reference?: string | null
           purchased_at?: string
@@ -807,6 +885,7 @@ export type Database = {
           amount_paid?: number | null
           content_id?: string
           created_at?: string
+          granted_at?: string | null
           id?: string
           payment_reference?: string | null
           purchased_at?: string
@@ -870,6 +949,67 @@ export type Database = {
             columns: ["content_id"]
             isOneToOne: false
             referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_participations: {
+        Row: {
+          access_granted_at: string | null
+          content_id: string
+          created_at: string | null
+          id: string
+          is_sponsored: boolean | null
+          payment_amount: number | null
+          status: string
+          transaction_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          access_granted_at?: string | null
+          content_id: string
+          created_at?: string | null
+          id?: string
+          is_sponsored?: boolean | null
+          payment_amount?: number | null
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          access_granted_at?: string | null
+          content_id?: string
+          created_at?: string | null
+          id?: string
+          is_sponsored?: boolean | null
+          payment_amount?: number | null
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_participations_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_participations_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_participations_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1233,6 +1373,7 @@ export type Database = {
       }
       events: {
         Row: {
+          category: string | null
           created_at: string | null
           created_by: string | null
           current_participants: number | null
@@ -1243,6 +1384,7 @@ export type Database = {
           id: string
           image_url: string | null
           is_all_day: boolean | null
+          is_free: boolean | null
           is_public: boolean | null
           latitude: number | null
           location_address: string | null
@@ -1262,6 +1404,7 @@ export type Database = {
           village: string | null
         }
         Insert: {
+          category?: string | null
           created_at?: string | null
           created_by?: string | null
           current_participants?: number | null
@@ -1272,6 +1415,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_all_day?: boolean | null
+          is_free?: boolean | null
           is_public?: boolean | null
           latitude?: number | null
           location_address?: string | null
@@ -1291,6 +1435,7 @@ export type Database = {
           village?: string | null
         }
         Update: {
+          category?: string | null
           created_at?: string | null
           created_by?: string | null
           current_participants?: number | null
@@ -1301,6 +1446,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_all_day?: boolean | null
+          is_free?: boolean | null
           is_public?: boolean | null
           latitude?: number | null
           location_address?: string | null
@@ -1376,18 +1522,23 @@ export type Database = {
           content_url: string | null
           created_at: string | null
           creator_id: string | null
+          currency: string | null
+          current_participants: number | null
           description: string | null
           description_de: string | null
           description_en: string | null
+          event_date: string | null
+          event_location: string | null
           fixed_sponsor_amount: number | null
           id: string
           image_url: string | null
           is_featured: boolean | null
           is_published: boolean | null
           is_sponsored: boolean | null
-          master_locale: string
           max_capacity: number | null
           og_image_url: string | null
+          original_price: number | null
+          platform_fee_percent: number | null
           price_huf: number | null
           problem_solution: Json | null
           region_id: string | null
@@ -1401,13 +1552,13 @@ export type Database = {
           sponsor_id: string | null
           sponsor_logo_url: string | null
           sponsor_name: string | null
+          sponsored_at: string | null
           thumbnail_url: string | null
           title: string
           title_de: string | null
           title_en: string | null
           tools_needed: string | null
           total_licenses: number | null
-          translation_status: string
           updated_at: string | null
           used_licenses: number | null
         }
@@ -1419,18 +1570,23 @@ export type Database = {
           content_url?: string | null
           created_at?: string | null
           creator_id?: string | null
+          currency?: string | null
+          current_participants?: number | null
           description?: string | null
           description_de?: string | null
           description_en?: string | null
+          event_date?: string | null
+          event_location?: string | null
           fixed_sponsor_amount?: number | null
           id?: string
           image_url?: string | null
           is_featured?: boolean | null
           is_published?: boolean | null
           is_sponsored?: boolean | null
-          master_locale?: string
           max_capacity?: number | null
           og_image_url?: string | null
+          original_price?: number | null
+          platform_fee_percent?: number | null
           price_huf?: number | null
           problem_solution?: Json | null
           region_id?: string | null
@@ -1444,13 +1600,13 @@ export type Database = {
           sponsor_id?: string | null
           sponsor_logo_url?: string | null
           sponsor_name?: string | null
+          sponsored_at?: string | null
           thumbnail_url?: string | null
           title: string
           title_de?: string | null
           title_en?: string | null
           tools_needed?: string | null
           total_licenses?: number | null
-          translation_status?: string
           updated_at?: string | null
           used_licenses?: number | null
         }
@@ -1462,18 +1618,23 @@ export type Database = {
           content_url?: string | null
           created_at?: string | null
           creator_id?: string | null
+          currency?: string | null
+          current_participants?: number | null
           description?: string | null
           description_de?: string | null
           description_en?: string | null
+          event_date?: string | null
+          event_location?: string | null
           fixed_sponsor_amount?: number | null
           id?: string
           image_url?: string | null
           is_featured?: boolean | null
           is_published?: boolean | null
           is_sponsored?: boolean | null
-          master_locale?: string
           max_capacity?: number | null
           og_image_url?: string | null
+          original_price?: number | null
+          platform_fee_percent?: number | null
           price_huf?: number | null
           problem_solution?: Json | null
           region_id?: string | null
@@ -1487,13 +1648,13 @@ export type Database = {
           sponsor_id?: string | null
           sponsor_logo_url?: string | null
           sponsor_name?: string | null
+          sponsored_at?: string | null
           thumbnail_url?: string | null
           title?: string
           title_de?: string | null
           title_en?: string | null
           tools_needed?: string | null
           total_licenses?: number | null
-          translation_status?: string
           updated_at?: string | null
           used_licenses?: number | null
         }
@@ -1829,6 +1990,67 @@ export type Database = {
         }
         Relationships: []
       }
+      lesson_progress: {
+        Row: {
+          completed: boolean | null
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          last_position: number | null
+          lesson_id: string
+          program_id: string
+          progress_percent: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          last_position?: number | null
+          lesson_id: string
+          program_id: string
+          progress_percent?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          last_position?: number | null
+          lesson_id?: string
+          program_id?: string
+          progress_percent?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_progress_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "program_lessons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lesson_progress_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lesson_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       local_partners: {
         Row: {
           category: string | null
@@ -1908,68 +2130,143 @@ export type Database = {
         Row: {
           admin_enabled: boolean
           community_enabled: boolean
+          community_updates: boolean | null
           created_at: string
+          digest_frequency: string | null
+          email_enabled: boolean | null
+          event_reminders: boolean | null
           id: string
+          marketing_emails: boolean | null
           milestones_enabled: boolean
+          payment_notifications: boolean | null
+          program_notifications: boolean | null
           push_enabled: boolean
+          quiet_hours_end: string | null
+          quiet_hours_start: string | null
+          quiet_hours_timezone: string | null
           reminders_enabled: boolean
+          sponsor_updates: boolean | null
           updated_at: string
           user_id: string
+          weekly_digest: boolean | null
         }
         Insert: {
           admin_enabled?: boolean
           community_enabled?: boolean
+          community_updates?: boolean | null
           created_at?: string
+          digest_frequency?: string | null
+          email_enabled?: boolean | null
+          event_reminders?: boolean | null
           id?: string
+          marketing_emails?: boolean | null
           milestones_enabled?: boolean
+          payment_notifications?: boolean | null
+          program_notifications?: boolean | null
           push_enabled?: boolean
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          quiet_hours_timezone?: string | null
           reminders_enabled?: boolean
+          sponsor_updates?: boolean | null
           updated_at?: string
           user_id: string
+          weekly_digest?: boolean | null
         }
         Update: {
           admin_enabled?: boolean
           community_enabled?: boolean
+          community_updates?: boolean | null
           created_at?: string
+          digest_frequency?: string | null
+          email_enabled?: boolean | null
+          event_reminders?: boolean | null
           id?: string
+          marketing_emails?: boolean | null
           milestones_enabled?: boolean
+          payment_notifications?: boolean | null
+          program_notifications?: boolean | null
           push_enabled?: boolean
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          quiet_hours_timezone?: string | null
           reminders_enabled?: boolean
+          sponsor_updates?: boolean | null
           updated_at?: string
           user_id?: string
+          weekly_digest?: boolean | null
         }
         Relationships: []
       }
       notifications: {
         Row: {
+          action_label: string | null
           action_url: string | null
+          category: string
+          channels: string[] | null
           created_at: string
+          email_sent: boolean | null
+          expires_at: string | null
+          icon: string | null
           id: string
+          image_url: string | null
+          is_archived: boolean | null
           message: string
           metadata: Json | null
+          priority: string
+          push_sent: boolean | null
           read: boolean
+          read_at: string | null
+          related_id: string | null
+          related_type: string | null
           title: string
           type: string
           user_id: string
         }
         Insert: {
+          action_label?: string | null
           action_url?: string | null
+          category?: string
+          channels?: string[] | null
           created_at?: string
+          email_sent?: boolean | null
+          expires_at?: string | null
+          icon?: string | null
           id?: string
+          image_url?: string | null
+          is_archived?: boolean | null
           message: string
           metadata?: Json | null
+          priority?: string
+          push_sent?: boolean | null
           read?: boolean
+          read_at?: string | null
+          related_id?: string | null
+          related_type?: string | null
           title: string
           type: string
           user_id: string
         }
         Update: {
+          action_label?: string | null
           action_url?: string | null
+          category?: string
+          channels?: string[] | null
           created_at?: string
+          email_sent?: boolean | null
+          expires_at?: string | null
+          icon?: string | null
           id?: string
+          image_url?: string | null
+          is_archived?: boolean | null
           message?: string
           metadata?: Json | null
+          priority?: string
+          push_sent?: boolean | null
           read?: boolean
+          read_at?: string | null
+          related_id?: string | null
+          related_type?: string | null
           title?: string
           type?: string
           user_id?: string
@@ -2269,12 +2566,13 @@ export type Database = {
           bio: string | null
           bio_de: string | null
           bio_en: string | null
+          can_view_as_member: boolean | null
           city: string | null
           company_size: string | null
           country: string | null
           created_at: string
-          creator_legal_status: Database["public"]["Enums"]["creator_legal_status"]
           credit_balance: number | null
+          current_streak: number | null
           district: string | null
           email: string
           employee_count: number | null
@@ -2284,18 +2582,22 @@ export type Database = {
           expert_title_en: string | null
           expertise_areas: string[] | null
           first_name: string
+          founding_expert_since: string | null
           green_pass: boolean | null
           id: string
           industry: string | null
+          is_founding_expert: boolean | null
           is_premium: boolean | null
           is_public_profile: boolean | null
           is_super_admin: boolean | null
           is_verified_expert: boolean | null
+          last_activity_date: string | null
           last_name: string
           latitude: number | null
           location: string | null
           location_city: string | null
           location_point: unknown
+          longest_streak: number | null
           longitude: number | null
           organization: string | null
           organization_id: string | null
@@ -2332,6 +2634,7 @@ export type Database = {
           verification_status: string | null
           visibility_radius_km: number | null
           website_url: string | null
+          wellpoints_balance: number | null
           wise_email: string | null
           wise_iban: string | null
         }
@@ -2343,12 +2646,13 @@ export type Database = {
           bio?: string | null
           bio_de?: string | null
           bio_en?: string | null
+          can_view_as_member?: boolean | null
           city?: string | null
           company_size?: string | null
           country?: string | null
           created_at?: string
-          creator_legal_status?: Database["public"]["Enums"]["creator_legal_status"]
           credit_balance?: number | null
+          current_streak?: number | null
           district?: string | null
           email: string
           employee_count?: number | null
@@ -2358,18 +2662,22 @@ export type Database = {
           expert_title_en?: string | null
           expertise_areas?: string[] | null
           first_name: string
+          founding_expert_since?: string | null
           green_pass?: boolean | null
           id: string
           industry?: string | null
+          is_founding_expert?: boolean | null
           is_premium?: boolean | null
           is_public_profile?: boolean | null
           is_super_admin?: boolean | null
           is_verified_expert?: boolean | null
+          last_activity_date?: string | null
           last_name: string
           latitude?: number | null
           location?: string | null
           location_city?: string | null
           location_point?: unknown
+          longest_streak?: number | null
           longitude?: number | null
           organization?: string | null
           organization_id?: string | null
@@ -2406,6 +2714,7 @@ export type Database = {
           verification_status?: string | null
           visibility_radius_km?: number | null
           website_url?: string | null
+          wellpoints_balance?: number | null
           wise_email?: string | null
           wise_iban?: string | null
         }
@@ -2417,12 +2726,13 @@ export type Database = {
           bio?: string | null
           bio_de?: string | null
           bio_en?: string | null
+          can_view_as_member?: boolean | null
           city?: string | null
           company_size?: string | null
           country?: string | null
           created_at?: string
-          creator_legal_status?: Database["public"]["Enums"]["creator_legal_status"]
           credit_balance?: number | null
+          current_streak?: number | null
           district?: string | null
           email?: string
           employee_count?: number | null
@@ -2432,18 +2742,22 @@ export type Database = {
           expert_title_en?: string | null
           expertise_areas?: string[] | null
           first_name?: string
+          founding_expert_since?: string | null
           green_pass?: boolean | null
           id?: string
           industry?: string | null
+          is_founding_expert?: boolean | null
           is_premium?: boolean | null
           is_public_profile?: boolean | null
           is_super_admin?: boolean | null
           is_verified_expert?: boolean | null
+          last_activity_date?: string | null
           last_name?: string
           latitude?: number | null
           location?: string | null
           location_city?: string | null
           location_point?: unknown
+          longest_streak?: number | null
           longitude?: number | null
           organization?: string | null
           organization_id?: string | null
@@ -2480,6 +2794,7 @@ export type Database = {
           verification_status?: string | null
           visibility_radius_km?: number | null
           website_url?: string | null
+          wellpoints_balance?: number | null
           wise_email?: string | null
           wise_iban?: string | null
         }
@@ -2503,6 +2818,59 @@ export type Database = {
             columns: ["suspended_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      program_lessons: {
+        Row: {
+          content: string | null
+          content_type: string | null
+          created_at: string | null
+          description: string | null
+          duration_minutes: number | null
+          id: string
+          is_free_preview: boolean | null
+          program_id: string
+          sort_order: number | null
+          title: string
+          updated_at: string | null
+          video_url: string | null
+        }
+        Insert: {
+          content?: string | null
+          content_type?: string | null
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_free_preview?: boolean | null
+          program_id: string
+          sort_order?: number | null
+          title: string
+          updated_at?: string | null
+          video_url?: string | null
+        }
+        Update: {
+          content?: string | null
+          content_type?: string | null
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_free_preview?: boolean | null
+          program_id?: string
+          sort_order?: number | null
+          title?: string
+          updated_at?: string | null
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "program_lessons_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "expert_contents"
             referencedColumns: ["id"]
           },
         ]
@@ -2654,25 +3022,37 @@ export type Database = {
       push_subscriptions: {
         Row: {
           auth: string
+          auth_key: string | null
           created_at: string
+          device_name: string | null
           endpoint: string
           id: string
+          is_active: boolean | null
+          last_used_at: string | null
           p256dh: string
           user_id: string
         }
         Insert: {
           auth: string
+          auth_key?: string | null
           created_at?: string
+          device_name?: string | null
           endpoint: string
           id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
           p256dh: string
           user_id: string
         }
         Update: {
           auth?: string
+          auth_key?: string | null
           created_at?: string
+          device_name?: string | null
           endpoint?: string
           id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
           p256dh?: string
           user_id?: string
         }
@@ -2804,6 +3184,30 @@ export type Database = {
           table_name?: string | null
           user_agent?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      spatial_ref_sys: {
+        Row: {
+          auth_name: string | null
+          auth_srid: number | null
+          proj4text: string | null
+          srid: number
+          srtext: string | null
+        }
+        Insert: {
+          auth_name?: string | null
+          auth_srid?: number | null
+          proj4text?: string | null
+          srid: number
+          srtext?: string | null
+        }
+        Update: {
+          auth_name?: string | null
+          auth_srid?: number | null
+          proj4text?: string | null
+          srid?: number
+          srtext?: string | null
         }
         Relationships: []
       }
@@ -3011,6 +3415,60 @@ export type Database = {
         }
         Relationships: []
       }
+      sponsor_support_rules: {
+        Row: {
+          amount_per_participant: number
+          budget_spent: number
+          budget_total: number
+          created_at: string
+          currency: string
+          end_at: string | null
+          id: string
+          max_participants: number | null
+          scope_id: string
+          scope_type: string
+          sponsor_id: string | null
+          sponsor_name: string | null
+          start_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount_per_participant: number
+          budget_spent?: number
+          budget_total: number
+          created_at?: string
+          currency: string
+          end_at?: string | null
+          id?: string
+          max_participants?: number | null
+          scope_id: string
+          scope_type?: string
+          sponsor_id?: string | null
+          sponsor_name?: string | null
+          start_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount_per_participant?: number
+          budget_spent?: number
+          budget_total?: number
+          created_at?: string
+          currency?: string
+          end_at?: string | null
+          id?: string
+          max_participants?: number | null
+          scope_id?: string
+          scope_type?: string
+          sponsor_id?: string | null
+          sponsor_name?: string | null
+          start_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       sponsors: {
         Row: {
           created_at: string | null
@@ -3047,6 +3505,30 @@ export type Database = {
           name?: string
           slug?: string | null
           website_url?: string | null
+        }
+        Relationships: []
+      }
+      stripe_events: {
+        Row: {
+          event_id: string
+          event_type: string
+          id: string
+          payload: Json | null
+          processed_at: string | null
+        }
+        Insert: {
+          event_id: string
+          event_type: string
+          id?: string
+          payload?: Json | null
+          processed_at?: string | null
+        }
+        Update: {
+          event_id?: string
+          event_type?: string
+          id?: string
+          payload?: Json | null
+          processed_at?: string | null
         }
         Relationships: []
       }
@@ -3331,85 +3813,115 @@ export type Database = {
       }
       transactions: {
         Row: {
+          allocation_id: string | null
           amount: number
           amount_creator: number | null
           amount_platform: number | null
+          base_price: number | null
           buyer_id: string
+          completed_at: string | null
           content_id: string
           created_at: string | null
+          creator_earning: number | null
           creator_id: string
           creator_revenue: number
+          currency: string | null
           expert_payout: number | null
           expert_price_huf: number | null
           expert_share: number | null
           gross_amount: number | null
           id: string
-          invoice_issued_by: string | null
           license_count: number | null
           member_payment_amount: number | null
+          metadata: Json | null
           platform_commission: number | null
           platform_fee: number
           platform_share: number | null
           share_percentage: number | null
+          sponsor_amount: number | null
           sponsor_id: string | null
           sponsor_payment_amount: number | null
           sponsorship_id: string | null
           status: string | null
+          stripe_checkout_session_id: string | null
+          stripe_payment_intent_id: string | null
           transaction_type: string | null
+          updated_at: string | null
+          user_paid: number | null
         }
         Insert: {
+          allocation_id?: string | null
           amount: number
           amount_creator?: number | null
           amount_platform?: number | null
+          base_price?: number | null
           buyer_id: string
+          completed_at?: string | null
           content_id: string
           created_at?: string | null
+          creator_earning?: number | null
           creator_id: string
           creator_revenue: number
+          currency?: string | null
           expert_payout?: number | null
           expert_price_huf?: number | null
           expert_share?: number | null
           gross_amount?: number | null
           id?: string
-          invoice_issued_by?: string | null
           license_count?: number | null
           member_payment_amount?: number | null
+          metadata?: Json | null
           platform_commission?: number | null
           platform_fee: number
           platform_share?: number | null
           share_percentage?: number | null
+          sponsor_amount?: number | null
           sponsor_id?: string | null
           sponsor_payment_amount?: number | null
           sponsorship_id?: string | null
           status?: string | null
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
           transaction_type?: string | null
+          updated_at?: string | null
+          user_paid?: number | null
         }
         Update: {
+          allocation_id?: string | null
           amount?: number
           amount_creator?: number | null
           amount_platform?: number | null
+          base_price?: number | null
           buyer_id?: string
+          completed_at?: string | null
           content_id?: string
           created_at?: string | null
+          creator_earning?: number | null
           creator_id?: string
           creator_revenue?: number
+          currency?: string | null
           expert_payout?: number | null
           expert_price_huf?: number | null
           expert_share?: number | null
           gross_amount?: number | null
           id?: string
-          invoice_issued_by?: string | null
           license_count?: number | null
           member_payment_amount?: number | null
+          metadata?: Json | null
           platform_commission?: number | null
           platform_fee?: number
           platform_share?: number | null
           share_percentage?: number | null
+          sponsor_amount?: number | null
           sponsor_id?: string | null
           sponsor_payment_amount?: number | null
           sponsorship_id?: string | null
           status?: string | null
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
           transaction_type?: string | null
+          updated_at?: string | null
+          user_paid?: number | null
         }
         Relationships: [
           {
@@ -3543,6 +4055,8 @@ export type Database = {
           user_payment: number | null
           user_refund: number | null
           voucher_id: string
+          wellpoints_discount: number | null
+          wellpoints_used: number | null
         }
         Insert: {
           cancellation_date?: string | null
@@ -3566,6 +4080,8 @@ export type Database = {
           user_payment?: number | null
           user_refund?: number | null
           voucher_id: string
+          wellpoints_discount?: number | null
+          wellpoints_used?: number | null
         }
         Update: {
           cancellation_date?: string | null
@@ -3589,6 +4105,8 @@ export type Database = {
           user_payment?: number | null
           user_refund?: number | null
           voucher_id?: string
+          wellpoints_discount?: number | null
+          wellpoints_used?: number | null
         }
         Relationships: [
           {
@@ -3717,6 +4235,91 @@ export type Database = {
           },
         ]
       }
+      wellpoints_ledger: {
+        Row: {
+          action: string
+          amount: number
+          created_at: string | null
+          description: string | null
+          id: string
+          reference_id: string | null
+          reference_type: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          amount: number
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          reference_id?: string | null
+          reference_type?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          amount?: number
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          reference_id?: string | null
+          reference_type?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wellpoints_ledger_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wellpoints_redemptions: {
+        Row: {
+          created_at: string | null
+          discount_amount_ft: number | null
+          discount_percent: number | null
+          id: string
+          order_id: string | null
+          points_spent: number
+          redemption_type: string | null
+          user_id: string
+          voucher_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          discount_amount_ft?: number | null
+          discount_percent?: number | null
+          id?: string
+          order_id?: string | null
+          points_spent: number
+          redemption_type?: string | null
+          user_id: string
+          voucher_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          discount_amount_ft?: number | null
+          discount_percent?: number | null
+          id?: string
+          order_id?: string | null
+          points_spent?: number
+          redemption_type?: string | null
+          user_id?: string
+          voucher_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wellpoints_redemptions_voucher_id_fkey"
+            columns: ["voucher_id"]
+            isOneToOne: false
+            referencedRelation: "vouchers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       admin_task_queue: {
@@ -3725,6 +4328,17 @@ export type Database = {
           label_en: string | null
           label_hu: string | null
           task_type: string | null
+        }
+        Relationships: []
+      }
+      credit_balances_view: {
+        Row: {
+          current_balance: number | null
+          last_transaction_at: string | null
+          sponsor_user_id: string | null
+          total_purchased: number | null
+          total_spent: number | null
+          transaction_count: number | null
         }
         Relationships: []
       }
@@ -3821,7 +4435,7 @@ export type Database = {
         Returns: number
       }
       _postgis_stats: {
-        Args: { "": string; att_name: string; tbl: unknown }
+        Args: { ""?: string; att_name: string; tbl: unknown }
         Returns: string
       }
       _st_3dintersects: {
@@ -3880,10 +4494,7 @@ export type Database = {
         Args: { geom1: unknown; geom2: unknown }
         Returns: boolean
       }
-      _st_overlaps_3d: {
-        Args: { geom1: unknown; geom2: unknown }
-        Returns: boolean
-      }
+      _st_sortablehash: { Args: { geom: unknown }; Returns: number }
       _st_touches: {
         Args: { geom1: unknown; geom2: unknown }
         Returns: boolean
@@ -3898,6 +4509,10 @@ export type Database = {
         Returns: unknown
       }
       _st_within: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      add_platform_credit: {
+        Args: { p_amount: number; p_user_id: string }
+        Returns: undefined
+      }
       addauth: { Args: { "": string }; Returns: boolean }
       addgeometrycolumn:
         | {
@@ -3962,7 +4577,20 @@ export type Database = {
         Args: { p_content_id: string; p_user_id: string }
         Returns: boolean
       }
+      check_credit_balance: {
+        Args: { p_user_id: string }
+        Returns: {
+          calculated_balance: number
+          total_purchased: number
+          total_spent: number
+          user_id: string
+        }[]
+      }
       current_user_is_super_admin: { Args: never; Returns: boolean }
+      deduct_sponsor_credit: {
+        Args: { p_amount: number; p_credit_id: string }
+        Returns: undefined
+      }
       disablelongtransactions: { Args: never; Returns: string }
       dropgeometrycolumn:
         | {
@@ -4226,12 +4854,17 @@ export type Database = {
         }[]
       }
       gettransactionid: { Args: never; Returns: unknown }
+      grant_founding_expert: { Args: { p_user_id: string }; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_participants: {
+        Args: { p_content_id: string }
+        Returns: undefined
       }
       is_profile_public: { Args: { _profile_id: string }; Returns: boolean }
       is_project_admin: {
@@ -4332,6 +4965,10 @@ export type Database = {
           sponsor_amount: number
           success: boolean
         }[]
+      }
+      restore_sponsor_credit: {
+        Args: { p_amount: number; p_credit_id: string }
+        Returns: undefined
       }
       st_3dclosestpoint: {
         Args: { geom1: unknown; geom2: unknown }
@@ -4935,7 +5572,6 @@ export type Database = {
         | "ngo"
         | "citizen"
         | "project_admin"
-      creator_legal_status: "individual" | "entrepreneur"
       content_access_level:
         | "free"
         | "registered"
@@ -4955,12 +5591,12 @@ export type Database = {
       geometry_dump: {
         path: number[] | null
         geom: unknown
-      },
+      }
       valid_detail: {
         valid: boolean | null
         reason: string | null
         location: unknown
-      },
+      }
     }
   }
 }
