@@ -37,7 +37,7 @@ export const MembershipCard = memo(({ variant = "full", className = "" }: Member
     navigator.clipboard.writeText(memberNumber);
     setCopied(true);
     toast({
-      title: language === "hu" ? "Tagszám másolva!" : "Member number copied!",
+      title: t('membership.number_copied'),
       description: memberNumber,
     });
     setTimeout(() => setCopied(false), 2000);
@@ -49,14 +49,14 @@ export const MembershipCard = memo(({ variant = "full", className = "" }: Member
         <DialogTrigger asChild>
           <Button variant="outline" className={`gap-2 ${className}`}>
             <CreditCard className="w-4 h-4" />
-            {language === "hu" ? "Tagsági Kártya" : "Membership Card"}
+            {t('membership.button_label')}
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-primary" />
-              {language === "hu" ? "WellAgora Tagsági Kártya" : "WellAgora Membership Card"}
+              {t('membership.card_title')}
             </DialogTitle>
           </DialogHeader>
           <MembershipCardContent 
@@ -107,7 +107,7 @@ const MembershipCardContent = memo(({
   onCopyNumber,
   copied
 }: MembershipCardContentProps) => {
-  const { language } = useLanguage();
+  const { t } = useLanguage();
 
   return (
     <CardContent className="p-6">
@@ -120,7 +120,7 @@ const MembershipCardContent = memo(({
           <div>
             <h3 className="font-bold text-xl tracking-tight text-white drop-shadow-sm">WellAgora</h3>
             <p className="text-sm text-white/90 font-medium">
-              {language === "hu" ? "Digitális Tagsági Kártya" : language === "de" ? "Digitale Mitgliedskarte" : "Digital Membership Card"}
+              {t('membership.digital_card')}
             </p>
           </div>
         </div>
@@ -135,7 +135,7 @@ const MembershipCardContent = memo(({
       {/* Member Info */}
       <div className="mb-6">
         <p className="text-sm text-white/80 mb-1 font-medium">
-          {language === "hu" ? "Tag neve" : "Member Name"}
+          {t('membership.member_name')}
         </p>
         <p className="font-bold text-2xl text-white drop-shadow-sm">{displayName}</p>
       </div>
@@ -144,7 +144,7 @@ const MembershipCardContent = memo(({
       <div className="flex items-end justify-between gap-4">
         <div className="flex-1">
           <p className="text-sm text-white/80 mb-1 font-medium">
-            {language === "hu" ? "Tagszám" : "Member Number"}
+            {t('membership.member_number')}
           </p>
           <div className="flex items-center gap-2">
             <p className="font-mono text-lg tracking-widest font-bold text-white">{memberNumber}</p>
@@ -158,7 +158,7 @@ const MembershipCardContent = memo(({
             </Button>
           </div>
           <p className="text-sm text-white/70 mt-2 font-medium">
-            {language === "hu" ? `Tag ${memberSince} óta` : `Member since ${memberSince}`}
+            {t('membership.member_since').replace('{{year}}', String(memberSince))}
           </p>
         </div>
 
@@ -175,11 +175,7 @@ const MembershipCardContent = memo(({
         <div className="flex items-center gap-2 text-sm text-white/90 font-medium">
           <Store className="w-5 h-5" />
           <span>
-            {language === "hu" 
-              ? "Mutasd fel partnereinknél az exkluzív kedvezményekhez!" 
-              : language === "de"
-              ? "Zeigen Sie bei unseren Partnern für exklusiven Zugang."
-              : "Show at our partners for exclusive access!"}
+            {t('membership.show_at_partners')}
           </span>
         </div>
       </div>

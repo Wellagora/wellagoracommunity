@@ -234,7 +234,7 @@ const EventsPageNew = () => {
               {t("events.title")}
             </h1>
             <p className="text-lg text-black/60">
-              {currentProject?.name ? `${currentProject.name} élő közösségi programjai` : 'Élő közösségi programok'}
+              {t("events.subtitle")}
             </p>
           </motion.div>
         </div>

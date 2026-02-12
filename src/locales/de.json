@@ -1107,6 +1107,7 @@
     "tab_muhely": "Werkstatt",
     "tab_programs": "Meine Programme",
     "tab_business": "Geschäft",
+    "tab_calendar": "Kalender",
     "from": "davon",
     "recent_transactions": "Letzte Transaktionen",
     "recent_transactions_desc": "Details der letzten 5 Verkäufe",
@@ -5379,5 +5380,29 @@
 
   "common.save_changes": "Änderungen speichern",
   "common.saving": "Speichern...",
-  "auth.social_login_soon": "Social Login kommt bald"
+  "auth.social_login_soon": "Social Login kommt bald",
+
+  "calendar.title": "Kalender",
+  "calendar.select_day": "Wähle einen Tag",
+  "calendar.select_day_hint": "Klicke auf einen Tag für Details",
+  "calendar.upcoming_week": "Nächste 7 Tage",
+  "calendar.event": "Veranstaltung",
+  "calendar.program": "Programm",
+  "calendar.items": "Einträge",
+  "calendar.no_items": "Keine Einträge an diesem Tag",
+  "calendar.participants_label": "Teilnehmer",
+  "calendar.view_participants": "Teilnehmer",
+
+  "events.subtitle": "Live-Community-Programme",
+  "events.search_placeholder": "Nach Titel suchen...",
+  "events.all_categories": "Alle Kategorien",
+
+  "membership.card_title": "WellAgora Mitgliedskarte",
+  "membership.digital_card": "Digitale Mitgliedskarte",
+  "membership.member_name": "Mitgliedsname",
+  "membership.member_number": "Mitgliedsnummer",
+  "membership.member_since": "Mitglied seit {{year}}",
+  "membership.show_at_partners": "Zeige bei unseren Partnern für exklusiven Zugang!",
+  "membership.button_label": "Mitgliedskarte",
+  "membership.number_copied": "Mitgliedsnummer kopiert!"
 }

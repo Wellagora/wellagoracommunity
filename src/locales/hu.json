@@ -5488,5 +5488,14 @@
 
   "community_building.join_community": "Csatlakozz a közösséghez",
 
-  "community_building.welcome_back": "Üdv újra, {name}! 👋 A közösségünk most épül — és te már itt vagy az elsők között!"
+  "community_building.welcome_back": "Üdv újra, {name}! 👋 A közösségünk most épül — és te már itt vagy az elsők között!",
+
+  "membership.card_title": "WellAgora Tagsági Kártya",
+  "membership.digital_card": "Digitális Tagsági Kártya",
+  "membership.member_name": "Tag neve",
+  "membership.member_number": "Tagszám",
+  "membership.member_since": "Tag {{year}} óta",
+  "membership.show_at_partners": "Mutasd partnereinknél az exkluzív hozzáférésért!",
+  "membership.button_label": "Tagsági Kártya",
+  "membership.number_copied": "Tagszám másolva!"
 }
