@@ -140,10 +140,22 @@ const LiveImpactFeed = () => {
     const diffHours = Math.floor(diffMins / 60);
     const diffDays = Math.floor(diffHours / 24);
 
-    if (diffMins < 1) return language === 'hu' ? 'most' : 'just now';
-    if (diffMins < 60) return `${diffMins} ${language === 'hu' ? 'perce' : 'min ago'}`;
-    if (diffHours < 24) return `${diffHours} ${language === 'hu' ? 'órája' : 'h ago'}`;
-    return `${diffDays} ${language === 'hu' ? 'napja' : 'd ago'}`;
+    if (language === 'hu') {
+      if (diffMins < 1) return 'most';
+      if (diffMins < 60) return `${diffMins} perce`;
+      if (diffHours < 24) return `${diffHours} órája`;
+      return `${diffDays} napja`;
+    }
+    if (language === 'de') {
+      if (diffMins < 1) return 'Jetzt';
+      if (diffMins < 60) return `vor ${diffMins} Min`;
+      if (diffHours < 24) return `vor ${diffHours} Std`;
+      return `vor ${diffDays} Tagen`;
+    }
+    if (diffMins < 1) return 'just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    return `${diffDays}d ago`;
   };
 
   return (

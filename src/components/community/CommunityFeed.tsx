@@ -70,7 +70,7 @@ interface CommunityPost {
 
 const CommunityFeed = () => {
   const { user, profile } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [posts, setPosts] = useState<CommunityPost[]>([]);
@@ -340,10 +340,22 @@ const CommunityFeed = () => {
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    if (diffMins < 1) return 'most';
-    if (diffMins < 60) return `${diffMins} perce`;
-    if (diffHours < 24) return `${diffHours} órája`;
-    return `${diffDays} napja`;
+    if (language === 'hu') {
+      if (diffMins < 1) return 'most';
+      if (diffMins < 60) return `${diffMins} perce`;
+      if (diffHours < 24) return `${diffHours} órája`;
+      return `${diffDays} napja`;
+    }
+    if (language === 'de') {
+      if (diffMins < 1) return 'Jetzt';
+      if (diffMins < 60) return `vor ${diffMins} Min`;
+      if (diffHours < 24) return `vor ${diffHours} Std`;
+      return `vor ${diffDays} Tagen`;
+    }
+    if (diffMins < 1) return 'Now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    return `${diffDays}d ago`;
   };
 
   if (loading) {
