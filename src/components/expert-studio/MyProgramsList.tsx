@@ -44,6 +44,7 @@ import {
   Monitor,
   UserCheck,
   Tag,
+  Share2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
@@ -51,6 +52,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { hu, de, enUS } from "date-fns/locale";
 import { formatPrice } from "@/lib/pricing";
+import { ShareToolkit } from "@/components/expert/ShareToolkit";
 
 interface Program {
   id: string;
@@ -107,6 +109,7 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [programToDelete, setProgramToDelete] = useState<Program | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [shareProgram, setShareProgram] = useState<Program | null>(null);
 
   const dateLocale = language === 'hu' ? hu : language === 'de' ? de : enUS;
 
@@ -533,6 +536,12 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                               <Copy className="w-4 h-4 mr-2" />
                               {t("expert_studio.duplicate")}
                             </DropdownMenuItem>
+                            {program.is_published && (
+                              <DropdownMenuItem onClick={() => setShareProgram(program)}>
+                                <Share2 className="w-4 h-4 mr-2" />
+                                {t("share.share_program")}
+                              </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem asChild>
                               <Link to={`/expert-studio/${program.id}/participants`}>
                                 <UserCheck className="w-4 h-4 mr-2" />
@@ -699,6 +708,12 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                         <Copy className="w-4 h-4 mr-2" />
                         {t("expert_studio.duplicate")}
                       </DropdownMenuItem>
+                      {program.is_published && (
+                        <DropdownMenuItem onClick={() => setShareProgram(program)}>
+                          <Share2 className="w-4 h-4 mr-2" />
+                          {t("share.share_program")}
+                        </DropdownMenuItem>
+                      )}
                       <DropdownMenuItem asChild>
                         <Link to={`/expert-studio/${program.id}/participants`}>
                           <UserCheck className="w-4 h-4 mr-2" />
@@ -722,6 +737,20 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
         )}
       </CardContent>
     </Card>
+
+    {/* Share Program Dialog */}
+    {shareProgram && (
+      <ShareToolkit
+        type="program"
+        programUrl={`${window.location.origin}/program/${shareProgram.id}`}
+        expertName=""
+        programTitle={shareProgram.title}
+        programDate={shareProgram.event_date ? format(new Date(shareProgram.event_date), 'PPP', { locale: dateLocale }) : undefined}
+        programPrice={shareProgram.price_huf ? formatPrice(shareProgram.price_huf, 'HUF') : undefined}
+        imageUrl={shareProgram.image_url || undefined}
+        onClose={() => setShareProgram(null)}
+      />
+    )}
 
     {/* Delete Confirmation Dialog */}
     <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

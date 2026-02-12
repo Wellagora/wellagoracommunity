@@ -33,7 +33,8 @@ import {
   Video,
   Sparkles,
   Heart,
-  Clock
+  Clock,
+  Share2
 } from "lucide-react";
 import { motion } from "framer-motion";
 import PurchaseModal from "@/components/PurchaseModal";
@@ -44,11 +45,13 @@ import ProgramJsonLd from "@/components/seo/ProgramJsonLd";
 import ReviewSection from "@/components/reviews/ReviewSection";
 import StarRating from "@/components/reviews/StarRating";
 import GracefulPlaceholder from "@/components/GracefulPlaceholder";
+import { ShareToolkit } from "@/components/expert/ShareToolkit";
 
 const ProgramDetailPage = () => {
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
   const [isClaimingVoucher, setIsClaimingVoucher] = useState(false);
   const [isEnrolling, setIsEnrolling] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -753,6 +756,18 @@ const ProgramDetailPage = () => {
                       </p>
                     </div>
 
+                    {/* Share Button */}
+                    <div className="mb-4">
+                      <Button
+                        variant="outline"
+                        className="w-full gap-2"
+                        onClick={() => setShareOpen(true)}
+                      >
+                        <Share2 className="w-4 h-4" />
+                        {t('share.share_program')}
+                      </Button>
+                    </div>
+
                     {/* Program Metadata */}
                     <div className="space-y-3 pt-4 border-t border-border">
                       {/* Category Badge */}
@@ -866,6 +881,20 @@ const ProgramDetailPage = () => {
             />
           );
         })()}
+
+        {/* Share Toolkit Dialog */}
+        {shareOpen && program && (
+          <ShareToolkit
+            type="program"
+            programUrl={`${window.location.origin}/program/${program.id}`}
+            expertName={`${(program as any).creator?.first_name || ''} ${(program as any).creator?.last_name || ''}`.trim()}
+            programTitle={localizedTitle}
+            programDate={program.event_date ? new Date(program.event_date).toLocaleDateString(language === 'hu' ? 'hu-HU' : language === 'de' ? 'de-DE' : 'en-US') : undefined}
+            programPrice={program.price_huf ? `${program.price_huf.toLocaleString()} Ft` : undefined}
+            imageUrl={program.image_url || program.thumbnail_url || undefined}
+            onClose={() => setShareOpen(false)}
+          />
+        )}
 
         {/* Mobile Sticky Purchase Bar */}
         {program && (

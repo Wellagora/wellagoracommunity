@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, BarChart3, BookOpen, Wallet, Users, Plus, TrendingUp, Calendar, DollarSign, ArrowRight, Store, CreditCard, ExternalLink, CheckCircle2, AlertCircle } from "lucide-react";
+import { Sparkles, BarChart3, BookOpen, Wallet, Users, Plus, TrendingUp, Calendar, DollarSign, ArrowRight, Store, CreditCard, ExternalLink, CheckCircle2, AlertCircle, Share2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
 import DashboardLayout from "@/layouts/DashboardLayout";
@@ -23,6 +23,7 @@ import { useToast } from "@/hooks/use-toast";
 import ExpertImpactReport from "@/components/expert-studio/ExpertImpactReport";
 import MyProgramsList from "@/components/expert-studio/MyProgramsList";
 import ExpertCalendar from "@/components/expert-studio/ExpertCalendar";
+import { ShareToolkit } from "@/components/expert/ShareToolkit";
 
 const ExpertStudio = () => {
   const { user, profile, loading } = useAuth();
@@ -30,6 +31,7 @@ const ExpertStudio = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [stripeLoading, setStripeLoading] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   // Card 1: Program Status (top 3 programs + CTA)
   const programsQuery = useQuery({
@@ -207,6 +209,24 @@ const ExpertStudio = () => {
       iconColor="text-black"
       backUrl="/"
     >
+      {/* Share Profile Button */}
+      <div className="flex justify-end mb-4">
+        <Button onClick={() => setShareOpen(true)} variant="outline" className="gap-2">
+          <Share2 className="h-4 w-4" />
+          {t('share.share_profile')}
+        </Button>
+      </div>
+
+      {shareOpen && (
+        <ShareToolkit
+          type="profile"
+          profileUrl={`${window.location.origin}/szakertok/${user.id}`}
+          expertName={`${profile?.first_name || ''} ${profile?.last_name || ''}`.trim()}
+          imageUrl={profile?.avatar_url || undefined}
+          onClose={() => setShareOpen(false)}
+        />
+      )}
+
       {/* Tabs for Műhely (Workshop) vs Üzlet (Business) */}
       <Tabs defaultValue="muhely" className="w-full">
         <TabsList className="grid w-full grid-cols-3 mb-6">
