@@ -23,7 +23,7 @@ export const WizardHeader = ({
   const { t } = useLanguage();
 
   return (
-    <div className="sticky top-0 z-50 bg-background border-b border-border">
+    <div className="sticky top-16 z-40 bg-background border-b border-border">
       <div className="container mx-auto px-4 py-3 max-w-2xl">
         {/* Top row: Back + Title + Close */}
         <div className="flex items-center justify-between mb-3">

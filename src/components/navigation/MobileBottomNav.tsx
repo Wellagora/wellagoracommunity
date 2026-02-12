@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Store, BookOpen, Bell, User, Sparkles, Building2, LayoutDashboard, Heart, Wallet, BarChart3 } from "lucide-react";
+import { Store, BookOpen, Bell, User, Sparkles, Building2, LayoutDashboard, Heart, Wallet, BarChart3, Users as UsersIcon } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
@@ -94,11 +94,11 @@ const MobileBottomNav = () => {
       ];
     }
 
-    // EXPERT: Stúdió, Programjaim, Értesítések, Profil
+    // EXPERT: Stúdió, Közösség, Értesítések, Profil
     if (effectiveRole === 'expert') {
       return [
         { path: "/expert-studio", icon: Sparkles, labelKey: "mobile_nav.my_studio", iconColor: "text-amber-500" },
-        { path: "/expert-studio/programs", icon: Store, labelKey: "mobile_nav.my_programs" },
+        { path: "/community", icon: UsersIcon, labelKey: "mobile_nav.community" },
         { path: "/ertesitesek", icon: Bell, labelKey: "mobile_nav.notifications" },
         { path: "/profile", icon: User, labelKey: "mobile_nav.profile" },
       ];

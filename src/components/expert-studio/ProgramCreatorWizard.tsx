@@ -451,7 +451,7 @@ const ProgramCreatorWizard = () => {
   return (
     <div className="min-h-screen bg-background pb-32">
       {/* Header with Progress */}
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/40">
+      <div className="sticky top-16 z-40 bg-background/95 backdrop-blur-md border-b border-border/40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-4">
             <Button

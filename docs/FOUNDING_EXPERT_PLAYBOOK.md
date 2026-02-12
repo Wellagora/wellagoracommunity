@@ -1,48 +1,65 @@
 # 🏅 WellAgora — Alapító Szakértő Playbook
 
-## Mi az Alapító Szakértő?
+## Kedves [Név],
 
-Az Alapító Szakértők a WellAgora közösségi piactér **első meghívott szakértői**, akik a platform pilot fázisában csatlakoznak. Ők azok, akik formálják a közösséget, és cserébe **örökre privilégiumokat kapnak**.
+Személyesen kereslek, mert olyasvalakit látok benned, aki képes másokat inspirálni a fenntarthatóbb élet felé.
 
----
+A WellAgora egy közösségi piactér, ahol a fenntarthatóság szakértői — kertészek, táplálkozási tanácsadók, zero waste trénerek, kézművesek — megoszthatják tudásukat workshopok, kurzusok és programok formájában. A résztvevők a helyi közösségből jönnek. A szponzorok helyi vállalkozások, akik finanszírozzák a részvételt.
 
-## 🎁 Alapító Szakértő Privilégiumok
+**A platform kész. Ami hiányzik: az első 5 szakértő, aki tartalommal kelti életre.**
 
-| Privilégium | Leírás | Időtartam |
-|-------------|--------|-----------|
-| **🏅 Alapító Szakértő badge** | Arany badge a profilod és minden posztod mellett | Örökre |
-| **💰 0% platform díj** | Minden bevételed 100%-a a tiéd | Örökre |
-| **⭐ Kiemelt megjelenés** | Programjaid előnyt élveznek a piactéren | Pilot + 6 hónap |
-| **🤖 WellBot AI coaching** | Személyre szabott tanácsadás a programjaidhoz | Korlátlan |
-| **📣 Közvetlen feedback csatorna** | A véleményed közvetlenül formálja a platformot | Örökre |
-
-> **Fontos:** Az Alapító Szakértő badge-et később NEM lehet megszerezni. Csak az első meghívott szakértők kapják meg.
+Téged az **Alapító Szakértők** közé hívlak — ez egy zárt, 5 fős kör, aki a platform indulásánál ott van, és cserébe élethosszig tartó privilégiumokat kap. Ezt a státuszt később nem lehet megszerezni, nem lehet megvásárolni — csak most, csak meghívóval.
 
 ---
 
-## 📋 Az Első 2 Hét — Teendők
+## 🎁 Amit Kapsz — Örökre
 
-### 1. hét: Bemutatkozás és Tartalom
+**🏅 Arany Alapító badge** — örökre a profilod mellett, minden posztodnál.
+**💰 0% platform díj** — amit keresel, az 100%-ban a tiéd. Mindig.
+**⭐ Kiemelt hely a piactéren** — a programjaid előnyt élveznek a keresésben.
+**🤖 WellBot AI coaching** — személyre szabott tanácsadás a programjaidhoz.
+**📣 Közvetlen vonal a fejlesztőkhöz** — a véleményed formálja a platformot.
 
-| Nap | Teendő | WellPoints |
-|-----|--------|-----------|
-| **1. nap** | Profil kitöltése (fotó, bemutatkozás, szakterület) | +30 WP |
-| **1. nap** | Bemutatkozó poszt a közösségi falon | +5 WP |
-| **2. nap** | Első program létrehozása az Expert Stúdióban | — |
-| **3. nap** | Egy szakértői tipp megosztása a falon | +5 WP |
-| **4-5. nap** | Válaszolj legalább 2 kérdésre a falon | +6 WP |
-| **6-7. nap** | Oszd meg a programod linkjét 5 ismerősöddel | — |
+### Egy konkrét példa:
 
-### 2. hét: Közösségépítés
+Ha tartasz egy **15 fős kertészeti workshopot 8.000 Ft/fő** áron, az **120.000 Ft bevétel — és minden forint a tiéd.** Később, amikor szponzorok is csatlakoznak, ők finanszírozzák a résztvevők helyét, tehát a programod megtelik anélkül, hogy a résztvevőknek fizetniük kellene.
 
-| Nap | Teendő | WellPoints |
-|-----|--------|-----------|
-| **8. nap** | Írj egy sikertörténetet vagy esettanulmányt | +5 WP |
-| **9-10. nap** | Kommentelj más szakértők posztjaira | +3 WP/komment |
-| **11. nap** | Kérdezd meg a közösséget: "Mit szeretnétek tanulni?" | +5 WP |
-| **12-14. nap** | Készíts egy 2. programot az első visszajelzések alapján | — |
+> **5 hely van összesen.** Ezt a státuszt később NEM lehet megszerezni — csak az első meghívott szakértők kapják meg.
 
-**Cél a 2. hét végére:** 2 publikált program, 5+ poszt, 10+ interakció
+---
+
+## 📋 Az Első 3 Hét — Javasolt Ütemezés
+
+> Ez nem házi feladat — a saját tempódban haladj. Az alábbiak javasolt mérföldkövek, nem határidők.
+
+### 1. hét: Ismerkedés és Bemutatkozás
+
+| Mikor | Teendő | ~ Idő |
+|-------|--------|-------|
+| **1-2. nap** | Profil kitöltése (fotó, bemutatkozás, szakterület) | 20 perc |
+| **1-2. nap** | Bemutatkozó poszt a közösségi falon | 5 perc |
+| **3-4. nap** | Egy szakértői tipp megosztása a falon | 5 perc |
+| **5-7. nap** | Nézz körül a platformon, próbáld ki a WellBot-ot | szabadon |
+
+### 2. hét: Első Program
+
+| Mikor | Teendő | ~ Idő |
+|-------|--------|-------|
+| **8-10. nap** | Első program létrehozása az Expert Stúdióban (ingyenes!) | 1-2 óra |
+| **11-12. nap** | Válaszolj kérdésekre a falon, kommentelj | 10 perc |
+| **13-14. nap** | Oszd meg a programod linkjét 5 ismerősöddel | 10 perc |
+
+### 3. hét: Közösségépítés
+
+| Mikor | Teendő | ~ Idő |
+|-------|--------|-------|
+| **15-16. nap** | Írj egy sikertörténetet vagy kérdezd meg a közösséget | 10 perc |
+| **17-19. nap** | Kommentelj más szakértők posztjaira | 10 perc |
+| **20-21. nap** | Készíts egy 2. programot az első visszajelzések alapján | 1-2 óra |
+
+**Cél a 3. hét végére:** 1-2 publikált program, 5+ poszt, és a közösség ismer téged
+
+**Összesen kb. 3-4 óra az első 3 hétben** — a legtöbb lépés 5-10 perces.
 
 ---
 
@@ -92,32 +109,21 @@ Miért?
 
 ---
 
-## 📊 WellPoints Rendszer
+## 📊 WellPoints — Röviden
 
-A WellPoints a közösségi aktivitásod mérőszáma. Minél aktívabb vagy, annál több pontot kapsz.
+A WellPoints a közösségi aktivitásod mérőszáma. Minél aktívabb vagy, annál több pontot kapsz — amit később **kedvezményekre válthatsz** (max 20%) a fizetős programoknál.
 
-| Tevékenység | Pont |
-|------------|------|
-| Poszt létrehozása | +5 WP |
-| Komment írása | +3 WP |
-| Like adása | +1 WP |
-| Like kapása | +2 WP |
-| Program befejezése (résztvevőként) | +50 WP |
-| Review írása | +20 WP |
-| Napi bejelentkezés | +2 WP |
-| Profil kitöltése | +30 WP |
-| **Streak bónusz (3 nap)** | +15 WP |
-| **Streak bónusz (7 nap)** | +35 WP |
-| **Streak bónusz (14 nap)** | +70 WP |
-| **Streak bónusz (30 nap)** | +150 WP |
+Pontot kapsz minden posztért, kommentért, like-ért, programrészvételért, és napi bejelentkezésért. Ha egymás után több napig aktív vagy, **streak bónuszt** is kapsz.
+
+> A részletes ponttáblázatot a platformon belül találod.
 
 ---
 
 ## 🤝 Mit Kérünk Cserébe?
 
-1. **Légy aktív** — Legalább heti 3 poszt vagy komment a falon
+1. **Légy aktív** — Heti 2-3 poszt vagy komment a falon
 2. **Adj visszajelzést** — A Feedback gomb (jobb alsó sarok) mindig elérhető
-3. **Hívj meg másokat** — Oszd meg a platformot 5+ ismerősöddel
+3. **Hívj meg 5-10 ismerőst** — A Tagokat a te hálózatodon keresztül hozzuk be. Mi adjuk az eszközt és a platformot, te az első résztvevőket.
 4. **Légy türelmes** — Pilot fázisban vagyunk, fejlesztünk a visszajelzéseid alapján
 
 ---
@@ -139,9 +145,13 @@ A WellPoints a közösségi aktivitásod mérőszáma. Minél aktívabb vagy, an
 4. Írj egy bemutatkozó posztot a közösségi falon
 5. Hozd létre az első programodat az Expert Stúdióban
 
-**Üdvözlünk a WellAgora Alapító Szakértők között! 🏅**
+Ha kérdésed van, írj nekem közvetlenül, vagy kérdezd a WellBot-ot a platformon.
+
+Számítok rád! 🏅
+
+Attila
+*WellAgora alapító*
 
 ---
 
-*Verzió: 1.0 — 2026. február*
-*WellAgora — Közösségi Piactér a Fenntarthatóságért*
+*Verzió: 2.0 — 2026. február*

@@ -272,10 +272,12 @@ const Navigation = () => {
       ];
     }
 
-    // EXPERT: Szakértői Stúdió, Események
+    // EXPERT: Szakértői Stúdió, Piactér, Közösség, Események
     if (roleToUse === 'expert') {
       return [
         { path: "/expert-studio", label: t("nav.expert_studio"), icon: Sparkles, iconColor: "text-amber-500" },
+        { path: "/programs", label: t("nav.marketplace"), icon: Store },
+        { path: "/community", label: t("nav.community"), icon: UsersIcon },
         { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
       ];
     }
