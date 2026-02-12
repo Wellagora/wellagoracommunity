@@ -2,23 +2,24 @@ import { Link } from "react-router-dom";
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { SmartTiltCard } from "@/components/ui/SmartTiltCard";
 import { StaggerContainer, StaggerItem } from "@/components/ui/StaggerAnimation";
+
+const HERO_BG = "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1920&q=80&auto=format&fit=crop";
 
 const HeroSection = () => {
   const { t } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Scroll-based parallax for typography
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"]
   });
 
-  const line1Y = useTransform(scrollYProgress, [0, 1], [0, -30]);
-  const line2Y = useTransform(scrollYProgress, [0, 1], [0, -15]);
-  const line3Y = useTransform(scrollYProgress, [0, 1], [0, 0]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0.3]);
+  const bgY = useTransform(scrollYProgress, [0, 1], [0, 80]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0.3]);
 
   const registrationPaths = [
     {
@@ -42,70 +43,81 @@ const HeroSection = () => {
   ];
 
   return (
-    <section 
-      ref={sectionRef}
-      className="min-h-[70vh] flex items-center justify-center py-8 relative overflow-hidden bg-white"
-    >
-      {/* Background is now handled globally by AppLayout */}
-
-      <motion.div 
-        style={{ opacity }}
-        className="max-w-6xl mx-auto px-4 text-center relative z-10"
+    <>
+      {/* Hero with background image */}
+      <section
+        ref={sectionRef}
+        className="relative min-h-[70vh] flex items-center justify-center overflow-hidden"
       >
-        {/* Kinetic Typographic Hero */}
-        <div className="mb-6">
-          <motion.h1 
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-black leading-[0.95] tracking-tight"
-          >
-            <motion.span 
-              style={{ y: line1Y }}
-              className="block relative"
-            >
-              {t('landing.hero_line1')}
-            </motion.span>
-            <motion.span 
-              style={{ y: line2Y }}
-              className="block mt-1 text-black/80"
-            >
-              {t('landing.hero_line2')}
-            </motion.span>
-            <motion.span 
-              style={{ y: line3Y }}
-              className="block mt-1 text-black/60"
-            >
-              {t('landing.hero_line3')}
-            </motion.span>
-          </motion.h1>
-        </div>
-
-        {/* Subtitle */}
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.2 }}
-          className="text-base md:text-lg text-black/40 max-w-xl mx-auto font-light tracking-wide mb-6"
+        {/* Parallax background image */}
+        <motion.div
+          style={{ y: bgY }}
+          className="absolute inset-0 -top-20 -bottom-20"
         >
-          {t('landing.hero_subtitle')}
-        </motion.p>
+          <img
+            src={HERO_BG}
+            alt=""
+            className="w-full h-full object-cover"
+            loading="eager"
+          />
+        </motion.div>
 
-        {/* CTA Cards with Glassmorphism on top of Liquid Background */}
-        <div className="relative">
-          
-          {/* Cards Grid with Stagger + SmartTiltCard */}
-          <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto relative z-10">
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/50" />
+
+        {/* Content */}
+        <motion.div
+          style={{ opacity: contentOpacity }}
+          className="relative z-10 max-w-4xl mx-auto px-4 text-center py-16"
+        >
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: "spring", stiffness: 80, damping: 20 }}
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight tracking-tight mb-4"
+          >
+            {t('home.hero_title')}
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: "spring", stiffness: 80, damping: 20, delay: 0.15 }}
+            className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-8"
+          >
+            {t('home.hero_subtitle')}
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: "spring", stiffness: 80, damping: 20, delay: 0.3 }}
+          >
+            <Link to="/piacer">
+              <Button
+                size="lg"
+                className="bg-[#C67B4E] hover:bg-[#b56a3f] text-white text-lg px-8 py-6 rounded-xl shadow-lg"
+              >
+                {t('home.hero_cta')}
+                <ChevronRight className="w-5 h-5 ml-1" />
+              </Button>
+            </Link>
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* Registration cards — below the hero */}
+      <section className="py-10 bg-[#FEFCF7]">
+        <div className="max-w-4xl mx-auto px-4">
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {registrationPaths.map((path) => (
               <StaggerItem key={path.id}>
                 <SmartTiltCard>
                   <Link to={path.link} className="block">
-                    <div 
-                      className="relative bg-white/80 backdrop-blur-xl rounded-2xl p-6 min-h-[100px] flex flex-col justify-center border border-slate-200/50 shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
-                      {/* Title - NO numbers */}
+                    <div className="relative bg-white rounded-2xl p-6 min-h-[100px] flex flex-col justify-center border border-slate-200/50 shadow-lg hover:shadow-xl transition-all duration-300">
                       <h3 className="text-xl font-semibold text-slate-900 mb-2">
                         {path.title}
                       </h3>
-
-                      {/* Static description - NO hover swap */}
                       <p className="text-slate-500 text-sm leading-snug font-light">
                         {path.description}
                       </p>
@@ -116,11 +128,8 @@ const HeroSection = () => {
             ))}
           </StaggerContainer>
         </div>
-      </motion.div>
-
-      {/* Ultra-thin bottom separator */}
-      <div className="absolute bottom-0 left-0 right-0 h-[0.5px] bg-black/[0.06]" />
-    </section>
+      </section>
+    </>
   );
 };
 

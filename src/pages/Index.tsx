@@ -9,6 +9,7 @@ import ExpertGallery from "@/components/ExpertGallery";
 import FeaturedEventsGrid from "@/components/FeaturedEventsGrid";
 import RecommendedProgramsSlider from "@/components/RecommendedProgramsSlider";
 import CTABanner from "@/components/CTABanner";
+import HowItWorksSection from "@/components/home/HowItWorksSection";
 import { CommunityImpactCounter } from "@/components/CommunityImpactCounter";
 import SEOHead from "@/components/SEOHead";
 
@@ -19,7 +20,7 @@ const Index = () => {
   // Show loading state while checking authentication
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#FEFCF7] flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">{t("common.loading")}</p>
@@ -32,7 +33,7 @@ const Index = () => {
   if (user && profile) {
     return (
       <>
-        <div className="min-h-screen bg-white flex flex-col">
+        <div className="min-h-screen bg-[#FEFCF7] flex flex-col">
           <main className="pt-2 md:pt-4 flex-1">
             {/* 1. SIMPLIFIED HERO - Welcome + Single CTA */}
             <section className="relative overflow-hidden bg-white/80 backdrop-blur-xl border-b border-black/5">
@@ -108,7 +109,10 @@ const Index = () => {
           {/* 1. HERO SECTION - Full viewport with integrated registration cards */}
           <HeroSection />
 
-          {/* 2. SZAKÉRTŐI ARCKÉPCSARNOK - Expert Portrait Gallery */}
+          {/* 2. HOW IT WORKS — 3-step explainer */}
+          <HowItWorksSection />
+
+          {/* 3. SZAKÉRTŐI ARCKÉPCSARNOK - Expert Portrait Gallery */}
           <ExpertGallery />
 
           {/* 3. KIEMELT ESEMÉNYEK - Fixed 3-column grid */}

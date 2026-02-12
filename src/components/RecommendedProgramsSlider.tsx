@@ -141,21 +141,26 @@ const RecommendedProgramsSlider = () => {
     );
   }
 
-  // Empty state
+  // Empty state — motivating "coming soon" section
   if (!programs || programs.length === 0) {
     return (
-      <section className="py-10 bg-gradient-to-b from-background via-black/[0.01] to-background">
+      <section className="py-14 bg-[#F7F3EB]">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col items-center text-center py-12">
+          <div className="flex flex-col items-center text-center py-8">
             <div className="w-20 h-20 mb-6 rounded-full bg-emerald-50 flex items-center justify-center">
               <Sprout className="w-10 h-10 text-emerald-500" />
             </div>
-            <h3 className="text-xl font-semibold text-foreground mb-2">
-              {t("marketplace.no_programs")}
+            <h3 className="text-2xl font-bold text-foreground mb-3">
+              {t("home.programs_coming_title")}
             </h3>
-            <p className="text-muted-foreground max-w-md">
-              {t("marketplace.no_programs_desc")}
+            <p className="text-muted-foreground max-w-lg mb-6 leading-relaxed">
+              {t("home.programs_coming_desc")}
             </p>
+            <Link to="/auth">
+              <Button className="bg-[#C67B4E] hover:bg-[#b56a3f] text-white px-6">
+                {t("home.programs_coming_cta")}
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

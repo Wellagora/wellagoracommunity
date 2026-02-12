@@ -26,13 +26,13 @@ export const CommunityImpactCounter = () => {
     fetchCount();
   }, []);
 
-  const socialProofText = memberCount > 0
-    ? language === 'hu'
-      ? `Csatlakozz ${memberCount.toLocaleString('hu-HU')}+ Tagunkhoz!`
-      : language === 'de'
-      ? `Schließe dich ${memberCount.toLocaleString('de-DE')}+ Mitgliedern an!`
-      : `Join ${memberCount.toLocaleString()}+ Members!`
-    : '';
+  const socialProofText = memberCount >= 50
+    ? t('home.join_members_title').replace('{{count}}', memberCount.toLocaleString())
+    : t('home.founding_title');
+
+  const socialProofSubtext = memberCount >= 50
+    ? t('home.join_members_subtitle')
+    : t('home.founding_subtitle');
 
   return (
     <section 
@@ -115,8 +115,9 @@ export const CommunityImpactCounter = () => {
           >
             {/* Social proof badge */}
             {socialProofText && (
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <span className="text-sm text-black/60 font-medium">{socialProofText}</span>
+              <div className="text-center mb-4">
+                <span className="text-sm text-black/60 font-medium block">{socialProofText}</span>
+                <span className="text-xs text-black/40 block mt-1">{socialProofSubtext}</span>
               </div>
             )}
             

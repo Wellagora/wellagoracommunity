@@ -100,6 +100,58 @@ const ExpertGallery = () => {
     return null;
   }
 
+  // Featured single expert view for < 3 experts
+  if (experts.length < 3) {
+    const expert = experts[0];
+    return (
+      <section className="py-12 bg-muted/30 relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-[0.5px] bg-foreground/5" />
+        <div className="container mx-auto px-4">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="text-3xl md:text-4xl font-bold text-center text-foreground mb-10"
+          >
+            {t('home.first_expert_title')}
+          </motion.h2>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="max-w-3xl mx-auto flex flex-col md:flex-row items-center gap-8"
+          >
+            <img
+              src={resolveAvatarUrl(expert.avatar_url) || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop'}
+              alt={`${expert.first_name || ''} ${expert.last_name || ''}`}
+              className="w-48 h-48 rounded-full object-cover shadow-lg flex-shrink-0"
+            />
+            <div>
+              <h3 className="text-2xl font-bold text-foreground">
+                {expert.first_name} {expert.last_name}
+              </h3>
+              <p className="text-muted-foreground mt-1">{expert.expert_title || translateLocation(expert.location)}</p>
+              {expert.bio && (
+                <blockquote className="mt-4 text-foreground/80 italic border-l-4 border-emerald-400 pl-4">
+                  {expert.bio.substring(0, 200)}{expert.bio.length > 200 ? '...' : ''}
+                </blockquote>
+              )}
+              <Link
+                to={`/szakertok/${expert.id}`}
+                className="inline-flex items-center gap-2 mt-4 text-emerald-600 hover:text-emerald-700 font-medium"
+              >
+                {t('home.view_profile')} →
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-[0.5px] bg-foreground/5" />
+      </section>
+    );
+  }
+
   return (
     <section className="py-12 bg-muted/30 relative overflow-hidden">
       {/* Ultra-thin top separator */}
