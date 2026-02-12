@@ -28,24 +28,24 @@ const CATEGORIES = [
   { value: "other", icon: MoreHorizontal, color: "text-gray-500" },
 ];
 
-const CONTENT_TYPES: { value: ContentType; label: string; icon: typeof MapPin; description: string }[] = [
+const CONTENT_TYPES: { value: ContentType; labelKey: string; icon: typeof MapPin; descKey: string }[] = [
   { 
     value: "in_person", 
-    label: "📍 Élő esemény", 
+    labelKey: "program_creator.content_type_in_person", 
     icon: MapPin,
-    description: "Személyes részvétel egy helyszínen" 
+    descKey: "program_creator.content_type_in_person_desc" 
   },
   { 
     value: "online_live", 
-    label: "💻 Online élő", 
+    labelKey: "program_creator.content_type_online_live", 
     icon: Monitor,
-    description: "Zoom, Teams vagy más videóhívás" 
+    descKey: "program_creator.content_type_online_live_desc" 
   },
   { 
     value: "recorded", 
-    label: "🎥 Videókurzus", 
+    labelKey: "program_creator.content_type_recorded", 
     icon: Video,
-    description: "Bármikor megtekinthető felvétel" 
+    descKey: "program_creator.content_type_recorded_desc" 
   },
 ];
 
@@ -186,10 +186,10 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
                   <div className="flex-1">
                     <Label htmlFor={type.value} className="text-base font-medium cursor-pointer flex items-center gap-2">
                       <Icon className={`w-4 h-4 ${isSelected ? 'text-blue-600' : 'text-muted-foreground'}`} />
-                      {type.label}
+                      {t(type.labelKey)}
                     </Label>
                     <p className="text-sm text-muted-foreground mt-1">
-                      {type.description}
+                      {t(type.descKey)}
                     </p>
                   </div>
                 </div>
