@@ -191,7 +191,7 @@ const ProfilePage = () => {
             <CardContent className="space-y-4">
               {viewedProfile.bio && (
                 <div>
-                  <h3 className="font-semibold mb-2">Bemutatkozás</h3>
+                  <h3 className="font-semibold mb-2">{t('profile.bio')}</h3>
                   <p className="text-muted-foreground">{viewedProfile.bio}</p>
                 </div>
               )}
@@ -227,9 +227,9 @@ const ProfilePage = () => {
         .getPublicUrl(fileName);
 
       await updateProfile({ avatar_url: publicUrl } as any);
-      toast({ title: "Siker!", description: "Profilkép feltöltve" });
+      toast({ title: t('profile.avatar_success'), description: t('profile.avatar_uploaded_desc') });
     } catch (error) {
-      toast({ title: "Hiba", description: "Feltöltés sikertelen", variant: "destructive" });
+      toast({ title: t('common.error'), description: t('profile.avatar_error'), variant: "destructive" });
     } finally {
       setAvatarUploading(false);
     }
@@ -254,9 +254,9 @@ const ProfilePage = () => {
         .getPublicUrl(fileName);
 
       setProfileForm(prev => ({ ...prev, organization_logo_url: publicUrl }));
-      toast({ title: "Siker!", description: "Logo feltöltve" });
+      toast({ title: t('profile.logo_success'), description: t('profile.logo_uploaded_desc') });
     } catch (error) {
-      toast({ title: "Hiba", description: "Feltöltés sikertelen", variant: "destructive" });
+      toast({ title: t('common.error'), description: t('profile.logo_error'), variant: "destructive" });
     } finally {
       setLogoUploading(false);
     }
@@ -299,14 +299,14 @@ const ProfilePage = () => {
 
       const { error } = await updateProfile(updates as any);
       if (error) {
-        setError("Hiba történt a mentés során");
+        setError(t('profile.error'));
         return;
       }
 
-      setSuccess("Profil sikeresen mentve!");
+      setSuccess(t('profile.success'));
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
-      setError("Hiba történt a mentés során");
+      setError(t('profile.error'));
     } finally {
       setIsLoading(false);
     }
@@ -364,13 +364,13 @@ const ProfilePage = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <User className="w-5 h-5 text-primary" />
-                  Személyes adatok
+                  {t('profile.personal_info')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="first_name">Keresztnév *</Label>
+                    <Label htmlFor="first_name">{t('profile.first_name')} *</Label>
                     <Input
                       id="first_name"
                       value={profileForm.first_name}
@@ -379,7 +379,7 @@ const ProfilePage = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="last_name">Vezetéknév *</Label>
+                    <Label htmlFor="last_name">{t('profile.last_name')} *</Label>
                     <Input
                       id="last_name"
                       value={profileForm.last_name}
@@ -401,27 +401,27 @@ const ProfilePage = () => {
                     />
                     <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                   </div>
-                  <p className="text-xs text-muted-foreground">Az email cím nem módosítható</p>
+                  <p className="text-xs text-muted-foreground">{t('profile.email_readonly')}</p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="public_display_name">Megjelenített név (opcionális)</Label>
+                  <Label htmlFor="public_display_name">{t('profile.display_name')}</Label>
                   <Input
                     id="public_display_name"
                     value={profileForm.public_display_name}
                     onChange={(e) => setProfileForm(prev => ({ ...prev, public_display_name: e.target.value }))}
-                    placeholder="Ha üres, a teljes név jelenik meg"
+                    placeholder={t('profile.display_name_hint')}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="location">Helyszín</Label>
+                  <Label htmlFor="location">{t('profile.location')}</Label>
                   <div className="relative">
                     <Input
                       id="location"
                       value={profileForm.location}
                       onChange={(e) => setProfileForm(prev => ({ ...prev, location: e.target.value }))}
-                      placeholder="Város, Ország"
+                      placeholder={t('profile.location_placeholder')}
                       className="pl-10"
                     />
                     <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
@@ -429,12 +429,12 @@ const ProfilePage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="bio">Bemutatkozás</Label>
+                  <Label htmlFor="bio">{t('profile.bio')}</Label>
                   <Textarea
                     id="bio"
                     value={profileForm.bio}
                     onChange={(e) => setProfileForm(prev => ({ ...prev, bio: e.target.value }))}
-                    placeholder="Rövid bemutatkozás..."
+                    placeholder={t('profile.bio_placeholder')}
                     className="min-h-[100px]"
                   />
                 </div>
@@ -451,37 +451,44 @@ const ProfilePage = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Sparkles className="w-5 h-5 text-cyan-500" />
-                      Szakértői profil
+                      {t('profile.expert_profile')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="expert_title">Szakmai cím</Label>
+                      <Label htmlFor="expert_title">{t('profile.professional_title')}</Label>
                       <Input
                         id="expert_title"
                         value={profileForm.expert_title}
                         onChange={(e) => setProfileForm(prev => ({ ...prev, expert_title: e.target.value }))}
-                        placeholder="pl. Fenntarthatósági tanácsadó"
+                        placeholder={t('profile.title_placeholder')}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>Szakterületek</Label>
+                      <Label>{t('profile.expertise_areas')}</Label>
                       <div className="flex flex-wrap gap-2">
-                        {['Fenntarthatóság', 'Energia', 'Kertészet', 'DIY', 'Táplálkozás', 'Wellness'].map((area) => (
+                        {[
+                          { key: 'sustainability', hu: 'Fenntarthatóság' },
+                          { key: 'energy', hu: 'Energia' },
+                          { key: 'gardening', hu: 'Kertészet' },
+                          { key: 'diy', hu: 'DIY' },
+                          { key: 'nutrition', hu: 'Táplálkozás' },
+                          { key: 'wellness', hu: 'Wellness' }
+                        ].map((area) => (
                           <Badge
-                            key={area}
-                            variant={profileForm.expertise_areas.includes(area) ? "default" : "outline"}
+                            key={area.key}
+                            variant={profileForm.expertise_areas.includes(area.hu) ? "default" : "outline"}
                             className="cursor-pointer"
                             onClick={() => {
                               setProfileForm(prev => ({
                                 ...prev,
-                                expertise_areas: prev.expertise_areas.includes(area)
-                                  ? prev.expertise_areas.filter(a => a !== area)
-                                  : [...prev.expertise_areas, area]
+                                expertise_areas: prev.expertise_areas.includes(area.hu)
+                                  ? prev.expertise_areas.filter(a => a !== area.hu)
+                                  : [...prev.expertise_areas, area.hu]
                               }));
                             }}
                           >
-                            {area}
+                            {t(`profile.expertise_${area.key}`)}
                           </Badge>
                         ))}
                       </div>
@@ -494,17 +501,17 @@ const ProfilePage = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Wallet className="w-5 h-5 text-green-500" />
-                      Kifizetési beállítások
+                      {t('profile.payment_settings')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
-                      <Label>Kifizetési mód</Label>
+                      <Label>{t('profile.payment_method')}</Label>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                         {[
                           { value: 'stripe', label: 'Stripe', icon: CreditCard },
                           { value: 'wise', label: 'Wise', icon: Globe },
-                          { value: 'bank_transfer', label: 'Banki átutalás', icon: Building2 }
+                          { value: 'bank_transfer', label: t('profile.bank_transfer'), icon: Building2 }
                         ].map((option) => (
                           <div
                             key={option.value}
@@ -557,13 +564,13 @@ const ProfilePage = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Building2 className="w-5 h-5 text-amber-500" />
-                      Szervezet
+                      {t('profile.organization')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="organization_name">Szervezet neve *</Label>
+                        <Label htmlFor="organization_name">{t('profile.organization_name')} *</Label>
                         <Input
                           id="organization_name"
                           value={profileForm.organization_name}
@@ -572,18 +579,18 @@ const ProfilePage = () => {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="organization_industry">Iparág</Label>
+                        <Label htmlFor="organization_industry">{t('profile.industry')}</Label>
                         <Input
                           id="organization_industry"
                           value={profileForm.organization_industry}
                           onChange={(e) => setProfileForm(prev => ({ ...prev, organization_industry: e.target.value }))}
-                          placeholder="pl. Technológia"
+                          placeholder={t('profile.industry_placeholder')}
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="organization_website">Weboldal</Label>
+                      <Label htmlFor="organization_website">{t('profile.website')}</Label>
                       <div className="relative">
                         <Input
                           id="organization_website"
@@ -597,7 +604,7 @@ const ProfilePage = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Szervezet logója</Label>
+                      <Label>{t('profile.organization_logo')}</Label>
                       <div className="flex items-center gap-4">
                         {profileForm.organization_logo_url ? (
                           <img
@@ -613,7 +620,7 @@ const ProfilePage = () => {
                         <label>
                           <Button variant="outline" asChild>
                             <span>
-                              {logoUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Logo feltöltése"}
+                              {logoUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : t('profile.upload_logo')}
                             </span>
                           </Button>
                           <input
@@ -637,12 +644,12 @@ const ProfilePage = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <FileText className="w-5 h-5 text-amber-500" />
-                      Számlázási adatok
+                      {t('profile.billing_info')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="billing_company_name">Cégnév</Label>
+                      <Label htmlFor="billing_company_name">{t('profile.billing_company')}</Label>
                       <Input
                         id="billing_company_name"
                         value={profileForm.billing_company_name}
@@ -650,7 +657,7 @@ const ProfilePage = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="billing_tax_number">Adószám</Label>
+                      <Label htmlFor="billing_tax_number">{t('profile.tax_number')}</Label>
                       <Input
                         id="billing_tax_number"
                         value={profileForm.billing_tax_number}
@@ -659,12 +666,12 @@ const ProfilePage = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="billing_address">Számlázási cím</Label>
+                      <Label htmlFor="billing_address">{t('profile.billing_address')}</Label>
                       <Textarea
                         id="billing_address"
                         value={profileForm.billing_address}
                         onChange={(e) => setProfileForm(prev => ({ ...prev, billing_address: e.target.value }))}
-                        placeholder="Utca, házszám, város, irányítószám"
+                        placeholder={t('profile.billing_address_placeholder')}
                       />
                     </div>
                   </CardContent>
@@ -679,15 +686,15 @@ const ProfilePage = () => {
                       ) : (
                         <EyeOff className="w-5 h-5 text-muted-foreground" />
                       )}
-                      Láthatóság
+                      {t('profile.visibility')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
                       <div>
-                        <div className="font-medium">Publikus profil</div>
+                        <div className="font-medium">{t('profile.public_profile')}</div>
                         <div className="text-sm text-muted-foreground">
-                          A szervezeted megjelenik a közösségi oldalon
+                          {t('profile.public_note')}
                         </div>
                       </div>
                       <Switch
@@ -711,12 +718,12 @@ const ProfilePage = () => {
                 {isLoading ? (
                   <>
                     <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Mentés...
+                    {t('common.saving')}
                   </>
                 ) : (
                   <>
                     <Save className="w-5 h-5 mr-2" />
-                    Változtatások mentése
+                    {t('common.save_changes')}
                   </>
                 )}
               </Button>
