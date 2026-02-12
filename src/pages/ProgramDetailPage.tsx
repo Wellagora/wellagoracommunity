@@ -46,6 +46,7 @@ import ReviewSection from "@/components/reviews/ReviewSection";
 import StarRating from "@/components/reviews/StarRating";
 import GracefulPlaceholder from "@/components/GracefulPlaceholder";
 import { ShareToolkit } from "@/components/expert/ShareToolkit";
+import SEOHead from "@/components/SEOHead";
 
 const ProgramDetailPage = () => {
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
@@ -541,6 +542,17 @@ const ProgramDetailPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Dynamic OG meta tags for social sharing */}
+      {program && (
+        <SEOHead
+          title={localizedTitle}
+          description={localizedDescription?.substring(0, 155) || `${localizedTitle} — WellAgora`}
+          image={program.image_url || program.thumbnail_url || undefined}
+          url={`/program/${program.id}`}
+          type="article"
+        />
+      )}
+
       {/* JSON-LD Schema for AI/GEO optimization */}
       {program && (
         <ProgramJsonLd 

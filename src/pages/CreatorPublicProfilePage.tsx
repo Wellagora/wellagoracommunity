@@ -25,6 +25,7 @@ import { format } from "date-fns";
 import { hu, enUS, de } from "date-fns/locale";
 import StarRating from "@/components/reviews/StarRating";
 import GracefulPlaceholder from "@/components/GracefulPlaceholder";
+import SEOHead from "@/components/SEOHead";
 
 const CreatorPublicProfilePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -192,6 +193,15 @@ const CreatorPublicProfilePage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Dynamic OG meta tags for social sharing */}
+      <SEOHead
+        title={`${creator.first_name} ${creator.last_name} — ${expertTitle || t('common.expert')}`}
+        description={getLocalizedField(creator, 'bio')?.substring(0, 155) || `${creator.first_name} ${creator.last_name} — WellAgora`}
+        image={creator.avatar_url || undefined}
+        url={`/szakertok/${creator.id}`}
+        type="website"
+      />
+
       {/* Hero Section with Blurred Background */}
       <div className="relative">
         {/* Blurred Background Cover */}
