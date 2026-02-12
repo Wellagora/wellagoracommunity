@@ -61,6 +61,7 @@ interface Program {
   total_licenses: number;
   max_capacity: number | null;
   created_at: string;
+  event_date: string | null;
   price_huf: number | null;
   category: string | null;
   content_type: string | null;
@@ -120,7 +121,7 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
         .from("expert_contents")
         .select(`
           id, title, image_url, is_published, used_licenses, total_licenses, 
-          max_capacity, created_at, price_huf, category, content_type, region_id
+          max_capacity, created_at, event_date, price_huf, category, content_type, region_id
         `)
         .eq("creator_id", userId)
         .order("created_at", { ascending: false });
@@ -565,7 +566,7 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                           )}
                           <span className="flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
-                            {format(new Date(program.created_at), 'MMM d, yyyy', { locale: dateLocale })}
+                            {format(new Date(program.event_date || program.created_at), 'MMM d, yyyy', { locale: dateLocale })}
                           </span>
                           {program.region_id && (
                             <span className="flex items-center gap-1">
@@ -663,7 +664,7 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                       )}
                       <span className="text-xs text-muted-foreground flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
-                        {format(new Date(program.created_at), 'MMM d, yyyy', { locale: dateLocale })}
+                        {format(new Date(program.event_date || program.created_at), 'MMM d, yyyy', { locale: dateLocale })}
                       </span>
                     </div>
                   </div>

@@ -120,10 +120,10 @@ const Step4Preview = ({ formData, onPublish, onSaveDraft, isPublishing, hasPayou
                     {t("program_creator.sponsored")}
                   </Badge>
                 ) : (
-                  <Badge className="bg-white text-foreground shadow-md">
-                    {language === "hu" 
+                  <Badge className={`shadow-md ${formData.price_huf > 0 ? 'bg-white text-foreground' : 'bg-amber-100 text-amber-800'}`}>
+                    {formData.price_huf > 0
                       ? `${formData.price_huf.toLocaleString()} Ft`
-                      : `€${Math.round(formData.price_huf / 400)}`
+                      : t("program_creator.price_not_set") || "0 Ft"
                     }
                   </Badge>
                 )}

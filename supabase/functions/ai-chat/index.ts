@@ -717,7 +717,12 @@ function getSystemPrompt(language: string, context: any): string {
 - searchPrograms() - platform programok keresese
 - getExpertInfo() - platform szakertok keresese
 - getUserVouchers() - felhasznalo kuponjai
-- getProgramDetails() - program reszletek`;
+- getProgramDetails() - program reszletek
+
+FONTOS SZABALYOK:
+- Ha barmilyen adatbazis hiba tortenik, NE ird ki hogy "database error" vagy "try again in sometime". Ehelyett mondd: "Sajnos most nem tudom lekerdezni az adatokat. Kerlek, probald ujra kesobb." (vagy az aktualis nyelven).
+- Mindig az aktualis nyelven valaszolj (hu/en/de).
+- Angolul SOHA ne hasznald az "in sometime" kifejezest - helyette "later" vagy "in a moment".`;
 
   if (userName) {
     fullPrompt += `\n\nA felhasznalo neve: ${userName}.`;
@@ -738,8 +743,8 @@ function getSystemPrompt(language: string, context: any): string {
 
 function getFallbackMessage(language: string, lastUserMessage: string): string {
   const templates: Record<string, string> = {
-    en: "I couldn't generate a clear answer to your last question: \"{question}\". Please try to rephrase it or choose one of the suggestions below.",
-    de: "Ich konnte gerade keine klare Antwort auf deine letzte Frage erzeugen: \"{question}\". Bitte formuliere sie neu oder wähle eine der untenstehenden Vorschläge.",
+    en: "I couldn't generate a clear answer to your last question: \"{question}\". Please try rephrasing it or choose one of the suggestions below.",
+    de: "Ich konnte gerade keine klare Antwort auf deine letzte Frage erzeugen: \"{question}\". Bitte formuliere sie neu oder wähle einen der untenstehenden Vorschläge.",
     hu: "Most nem sikerült egyértelmű választ adnom erre a kérdésre: \"{question}\". Próbáld meg kicsit máshogy megfogalmazni, vagy válassz az alábbi javaslatok közül."
   };
 
