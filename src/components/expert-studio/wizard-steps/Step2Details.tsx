@@ -73,7 +73,7 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
       <Card>
         <CardContent className="p-6">
           <Label className="text-base font-medium mb-2 block">
-            {language === 'hu' ? 'Forrásnyelv (master)' : language === 'de' ? 'Quellsprache (Master)' : 'Master language'}
+            {t('program_creator.master_language')}
           </Label>
           <Select
             value={formData.masterLocale}
@@ -114,14 +114,12 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
         <CardContent className="p-6 space-y-4">
           <div>
             <Label className="text-base font-medium mb-2 block flex items-center gap-2">
-              💡 {language === 'hu' ? 'Milyen problémát old meg?' : 'What problem does this solve?'}
+              💡 {t('program_creator.problem_question')}
             </Label>
             <textarea
               value={formData.problemStatement}
               onChange={(e) => setFormData(prev => ({ ...prev, problemStatement: e.target.value }))}
-              placeholder={language === 'hu' 
-                ? 'pl. Sokan nem tudják, hogyan kezdjék el a komposztálást...' 
-                : 'e.g. Many people don\'t know how to start composting...'}
+              placeholder={t('program_creator.problem_placeholder')}
               className="w-full min-h-[80px] p-3 text-sm rounded-lg border border-input bg-background resize-none focus:outline-none focus:ring-2 focus:ring-amber-500/50"
               maxLength={300}
             />
@@ -131,14 +129,12 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
           </div>
           <div>
             <Label className="text-base font-medium mb-2 block flex items-center gap-2">
-              ✅ {language === 'hu' ? 'Hogyan segít ez a program?' : 'How does this program help?'}
+              ✅ {t('program_creator.solution_question')}
             </Label>
             <textarea
               value={formData.solutionStatement}
               onChange={(e) => setFormData(prev => ({ ...prev, solutionStatement: e.target.value }))}
-              placeholder={language === 'hu' 
-                ? 'pl. Lépésről lépésre megmutatom a komposztálás alapjait...' 
-                : 'e.g. I\'ll show you step-by-step the basics of composting...'}
+              placeholder={t('program_creator.solution_placeholder')}
               className="w-full min-h-[80px] p-3 text-sm rounded-lg border border-input bg-background resize-none focus:outline-none focus:ring-2 focus:ring-amber-500/50"
               maxLength={300}
             />
@@ -147,9 +143,7 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
             </p>
           </div>
           <p className="text-xs text-muted-foreground">
-            {language === 'hu' 
-              ? '💡 Ezek a mezők segítenek a felhasználóknak megtalálni a programodat, és az AI-nak is könnyebb lesz ajánlani.' 
-              : '💡 These fields help users find your program and make it easier for AI to recommend.'}
+            💡 {t('program_creator.ai_indexing_hint')}
           </p>
         </CardContent>
       </Card>
@@ -159,7 +153,7 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
         <CardContent className="p-6">
           <Label className="text-base font-medium mb-4 block flex items-center gap-2">
             <Video className="w-5 h-5 text-blue-600" />
-            {language === 'hu' ? 'Program típusa' : 'Program Type'} *
+            {t('program_creator.program_type_label')} *
           </Label>
           
           <RadioGroup
@@ -211,7 +205,7 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
                 <div>
                   <Label htmlFor="eventDate" className="text-sm font-medium flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
-                    {language === 'hu' ? 'Dátum' : 'Date'} *
+                    {t('program_creator.date_label')} *
                   </Label>
                   <Input
                     id="eventDate"
@@ -224,7 +218,7 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
                 <div>
                   <Label htmlFor="eventTime" className="text-sm font-medium flex items-center gap-1">
                     <Clock className="w-4 h-4" />
-                    {language === 'hu' ? 'Időpont' : 'Time'} *
+                    {t('program_creator.time_label')} *
                   </Label>
                   <Input
                     id="eventTime"
@@ -238,7 +232,7 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
               <div>
                 <Label htmlFor="maxParticipants" className="text-sm font-medium flex items-center gap-1">
                   <Users className="w-4 h-4" />
-                  {language === 'hu' ? 'Maximum résztvevők' : 'Max participants'} *
+                  {t('program_creator.max_participants')} *
                 </Label>
                 <Input
                   id="maxParticipants"
@@ -254,20 +248,20 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
               <div>
                 <Label htmlFor="locationAddress" className="text-sm font-medium flex items-center gap-1">
                   <MapPin className="w-4 h-4" />
-                  {language === 'hu' ? 'Helyszín címe' : 'Location Address'} *
+                  {t('program_creator.location_address')} *
                 </Label>
                 <Input
                   id="locationAddress"
                   value={formData.locationAddress}
                   onChange={(e) => setFormData(prev => ({ ...prev, locationAddress: e.target.value }))}
-                  placeholder={language === 'hu' ? 'pl. Budapest, Fő utca 12.' : 'e.g. 123 Main Street'}
+                  placeholder={t('program_creator.location_placeholder')}
                   className="mt-1"
                 />
               </div>
               <div>
                 <Label htmlFor="locationMapUrl" className="text-sm font-medium flex items-center gap-1">
                   <LinkIcon className="w-4 h-4" />
-                  {language === 'hu' ? 'Google Maps link (opcionális)' : 'Google Maps link (optional)'}
+                  {t('program_creator.maps_link')}
                 </Label>
                 <Input
                   id="locationMapUrl"
@@ -287,7 +281,7 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
                 <div>
                   <Label htmlFor="eventDate" className="text-sm font-medium flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
-                    {language === 'hu' ? 'Dátum' : 'Date'} *
+                    {t('program_creator.date_label')} *
                   </Label>
                   <Input
                     id="eventDate"
@@ -300,7 +294,7 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
                 <div>
                   <Label htmlFor="eventTime" className="text-sm font-medium flex items-center gap-1">
                     <Clock className="w-4 h-4" />
-                    {language === 'hu' ? 'Időpont' : 'Time'} *
+                    {t('program_creator.time_label')} *
                   </Label>
                   <Input
                     id="eventTime"
@@ -314,7 +308,7 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
               <div>
                 <Label htmlFor="maxParticipantsOnline" className="text-sm font-medium flex items-center gap-1">
                   <Users className="w-4 h-4" />
-                  {language === 'hu' ? 'Maximum résztvevők' : 'Max participants'} *
+                  {t('program_creator.max_participants')} *
                 </Label>
                 <Input
                   id="maxParticipantsOnline"
@@ -330,7 +324,7 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
               <div>
                 <Label htmlFor="meetingLink" className="text-sm font-medium flex items-center gap-1">
                   <Monitor className="w-4 h-4" />
-                  {language === 'hu' ? 'Csatlakozási link (Zoom/Teams)' : 'Meeting Link (Zoom/Teams)'} *
+                  {t('program_creator.meeting_link')} *
                 </Label>
                 <Input
                   id="meetingLink"
@@ -341,9 +335,7 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
                   className="mt-1"
                 />
                 <p className="text-xs text-muted-foreground mt-1">
-                  {language === 'hu' 
-                    ? 'A linket csak a jelentkezők láthatják majd' 
-                    : 'The link will only be visible to registered participants'}
+                  {t('program_creator.meeting_link_note')}
                 </p>
               </div>
             </div>
@@ -354,7 +346,7 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
               <div>
                 <Label htmlFor="videoUrl" className="text-sm font-medium flex items-center gap-1">
                   <Video className="w-4 h-4" />
-                  {language === 'hu' ? 'Videó link (YouTube/Vimeo)' : 'Video Link (YouTube/Vimeo)'} *
+                  {t('program_creator.video_link')} *
                 </Label>
                 <Input
                   id="videoUrl"
@@ -365,9 +357,7 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
                   className="mt-1"
                 />
                 <p className="text-xs text-muted-foreground mt-1">
-                  {language === 'hu' 
-                    ? 'Felvett tartalom, amit bármikor megtekinthetnek' 
-                    : 'Recorded content that can be viewed anytime'}
+                  {t('program_creator.video_link_note')}
                 </p>
               </div>
             </div>
@@ -496,10 +486,10 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
                 return (
                   <div className="mt-3 p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-sm">
                     <span className="font-medium text-emerald-700">
-                      {language === 'hu' ? 'Ebből te kapsz' : language === 'de' ? 'Dein Anteil' : 'Your share'}: {expertAmount.toLocaleString('hu-HU')} Ft (80%)
+                      {t('program_creator.your_share')}: {expertAmount.toLocaleString(language === 'hu' ? 'hu-HU' : language === 'de' ? 'de-DE' : 'en-US')} Ft (80%)
                     </span>
                     <span className="text-muted-foreground ml-2">
-                      | {language === 'hu' ? 'Platform díj' : language === 'de' ? 'Plattformgebühr' : 'Platform fee'}: {platformFee.toLocaleString('hu-HU')} Ft (20%)
+                      | {t('program_creator.platform_fee')}: {platformFee.toLocaleString(language === 'hu' ? 'hu-HU' : language === 'de' ? 'de-DE' : 'en-US')} Ft (20%)
                     </span>
                   </div>
                 );
