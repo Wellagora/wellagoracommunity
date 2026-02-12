@@ -12,6 +12,8 @@ import Step1Media from "./wizard-steps/Step1Media";
 import Step2Details from "./wizard-steps/Step2Details";
 import Step3Localization from "./wizard-steps/Step3Localization";
 import Step4Preview from "./wizard-steps/Step4Preview";
+import { ShareToolkit } from "@/components/expert/ShareToolkit";
+import confetti from "canvas-confetti";
 
 export type ContentType = 'in_person' | 'online_live' | 'recorded';
 
@@ -392,6 +394,8 @@ const ProgramCreatorWizard = () => {
     }
   };
 
+  const [showCelebration, setShowCelebration] = useState(false);
+
   const handlePublish = async () => {
     if (!contentId || !user) return;
     setIsPublishing(true);
@@ -429,7 +433,14 @@ const ProgramCreatorWizard = () => {
       }
 
       toast.success(t("program_creator.published_success"));
-      navigate("/szakertoi-studio");
+
+      // Fire confetti and show ShareToolkit celebration
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 },
+      });
+      setShowCelebration(true);
     } catch (error) {
       console.error("Publish error:", error);
       toast.error(t("program_creator.publish_error"));
@@ -555,6 +566,24 @@ const ProgramCreatorWizard = () => {
           </motion.div>
         </AnimatePresence>
       </div>
+
+      {/* Celebration ShareToolkit after publish */}
+      {showCelebration && contentId && (
+        <ShareToolkit
+          type="program"
+          programUrl={`${window.location.origin}/program/${contentId}`}
+          expertName={`${profile?.first_name || ''} ${profile?.last_name || ''}`.trim()}
+          programTitle={formData.title_hu}
+          programDate={formData.eventDate || undefined}
+          programPrice={formData.price_huf ? `${formData.price_huf.toLocaleString()} Ft` : undefined}
+          imageUrl={formData.mediaUrl || undefined}
+          onClose={() => {
+            setShowCelebration(false);
+            navigate("/szakertoi-studio");
+          }}
+          celebrationMode
+        />
+      )}
 
       {/* Footer Navigation */}
       {currentStep < STEPS.length - 1 && (
