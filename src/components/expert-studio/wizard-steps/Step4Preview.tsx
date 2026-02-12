@@ -62,11 +62,11 @@ const Step4Preview = ({ formData, onPublish, onSaveDraft, isPublishing, hasPayou
 
   const checklist = [
     { key: "media", done: !!formData.mediaUrl, label: t("program_creator.checklist_media") },
-    { key: "title", done: formData.title_hu.length >= 3, label: t("program_creator.checklist_title") },
+    { key: "title", done: formData.title_hu.length >= 3, label: t("program_creator.checklist_title_provided") },
     { key: "category", done: !!formData.category, label: t("program_creator.checklist_category") },
     { key: "description", done: formData.description_hu.length >= 20, label: t("program_creator.checklist_description") },
     { key: "translations", done: !!formData.title_en && !!formData.title_de, label: t("program_creator.checklist_translations") },
-    { key: "payout", done: hasPayoutMethod, label: language === "hu" ? "Kifizetési mód beállítva" : "Payout method set" },
+    { key: "payout", done: hasPayoutMethod, label: t("program_creator.checklist_payout") },
   ];
 
   // Payout method is required for publishing
