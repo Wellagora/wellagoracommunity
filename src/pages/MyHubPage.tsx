@@ -209,7 +209,7 @@ const MyHubPage = () => {
               <div className="text-right">
                 <p className="text-xs text-muted-foreground">{t("my_hub.total_savings") || "Megtakarításod"}</p>
                 <p className="text-xl font-bold text-emerald-600">
-                  {language === 'hu' ? `${totalSavings.toLocaleString('hu-HU')} Ft` : `${Math.round(totalSavings / 400)} €`}
+                  {totalSavings.toLocaleString(language === 'hu' ? 'hu-HU' : language === 'de' ? 'de-DE' : 'en-US')} Ft
                 </p>
               </div>
               <div className="p-3 rounded-xl bg-emerald-500/10">

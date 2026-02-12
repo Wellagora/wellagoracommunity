@@ -497,7 +497,7 @@ const ExpertAnalyticsDashboard = ({ userId }: ExpertAnalyticsDashboardProps) => 
                   <YAxis
                     tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
                     axisLine={{ stroke: "hsl(var(--border))" }}
-                    tickFormatter={(value) => language === "hu" ? `${(value / 1000).toFixed(0)}k` : `€${Math.round(value / 400)}`}
+                    tickFormatter={(value) => `${(value / 1000).toFixed(0)}k Ft`}
                   />
                   <Tooltip
                     contentStyle={{

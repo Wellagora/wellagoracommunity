@@ -475,7 +475,7 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
                   step={100}
                 />
                 <span className="text-lg font-medium text-muted-foreground">
-                  {language === "hu" ? "Ft" : "€"}
+                  Ft
                 </span>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
