@@ -499,6 +499,26 @@
       "legend": "Legende"
     },
     "points_to_next": "{{points}} WP bis zum nächsten Level",
+    "record": "Rekord: {{days}} Tage",
+    "earn": {
+      "post": "Beitrag",
+      "comment": "Kommentar",
+      "like": "Gefällt mir",
+      "participation": "Teilnahme",
+      "review": "Bewertung",
+      "invite": "Einladung"
+    },
+    "reward": {
+      "discount_10": "10% Rabatt auf jedes Programm",
+      "free_event": "Kostenlose Veranstaltungsticket",
+      "expert_consultation": "Exklusive Expertenberatung"
+    },
+    "toast_points": "+{{points}} WellPunkte!",
+    "toast_thanks": "Danke für deine Aktivität!",
+    "toast_streak": "{{days}} Tage Serie!",
+    "toast_streak_bonus": "Bonuspunkte gutgeschrieben!",
+    "toast_streak_keep": "Toll gemacht, weiter so!",
+    "toast_review_thanks": "Danke für die Bewertung!",
     "active_programs": "Deine aktiven Programme",
     "your_vouchers": "Deine Gutscheine"
   },

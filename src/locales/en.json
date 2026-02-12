@@ -5021,6 +5021,26 @@
       "legend": "Legend"
     },
     "points_to_next": "{{points}} WP to next level",
+    "record": "Record: {{days}} days",
+    "earn": {
+      "post": "Post",
+      "comment": "Comment",
+      "like": "Like",
+      "participation": "Participation",
+      "review": "Review",
+      "invite": "Invite"
+    },
+    "reward": {
+      "discount_10": "10% discount on any program",
+      "free_event": "Free event ticket",
+      "expert_consultation": "Exclusive expert consultation"
+    },
+    "toast_points": "+{{points}} WellPoints!",
+    "toast_thanks": "Thanks for being active!",
+    "toast_streak": "{{days}} day streak!",
+    "toast_streak_bonus": "Bonus points awarded!",
+    "toast_streak_keep": "Great job, keep going!",
+    "toast_review_thanks": "Thanks for the review!",
     "active_programs": "Your active programs",
     "your_vouchers": "Your vouchers"
   },

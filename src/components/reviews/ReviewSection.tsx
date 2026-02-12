@@ -137,7 +137,7 @@ const ReviewSection = ({ contentId }: ReviewSectionProps) => {
           title: t("reviews.updated"),
         });
       } else {
-        sonnerToast.success('+20 WellPont! 🪙', { description: 'Köszönjük az értékelést!' });
+        sonnerToast.success(t('gamification.toast_points').replace('{{points}}', '20'), { description: t('gamification.toast_review_thanks') });
       }
       
       setRating(0);

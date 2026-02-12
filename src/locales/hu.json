@@ -548,6 +548,26 @@
       "legend": "Legenda"
     },
     "points_to_next": "Még {{points}} WP a következő szintig",
+    "record": "Rekord: {{days}} nap",
+    "earn": {
+      "post": "Poszt",
+      "comment": "Komment",
+      "like": "Kedvelés",
+      "participation": "Részvétel",
+      "review": "Értékelés",
+      "invite": "Meghívás"
+    },
+    "reward": {
+      "discount_10": "10% kedvezmény bármely programra",
+      "free_event": "Ingyenes esemény belépő",
+      "expert_consultation": "Exkluzív szakértői konzultáció"
+    },
+    "toast_points": "+{{points}} WellPont! 🪙",
+    "toast_thanks": "Köszönjük az aktivitásod!",
+    "toast_streak": "🔥 {{days}} napos sorozat!",
+    "toast_streak_bonus": "Bónusz pontok jóváírva!",
+    "toast_streak_keep": "Szép munka, folytasd!",
+    "toast_review_thanks": "Köszönjük az értékelést!",
     "active_programs": "Aktív programjaid",
     "your_vouchers": "Vouchereid"
   },

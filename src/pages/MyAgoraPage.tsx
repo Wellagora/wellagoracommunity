@@ -47,19 +47,19 @@ function getUserLevel(totalPoints: number) {
 
 // Earning methods
 const EARNING_METHODS = [
-  { icon: '📝', action: 'Poszt', points: 5, key: 'post' },
-  { icon: '💬', action: 'Komment', points: 3, key: 'comment' },
-  { icon: '❤️', action: 'Kedvelés', points: 1, key: 'like' },
-  { icon: '�', action: 'Részvétel', points: 25, key: 'participation' },
-  { icon: '⭐', action: 'Értékelés', points: 20, key: 'review' },
-  { icon: '👥', action: 'Meghívás', points: 100, key: 'invite' },
+  { icon: '📝', points: 5, key: 'post' },
+  { icon: '💬', points: 3, key: 'comment' },
+  { icon: '❤️', points: 1, key: 'like' },
+  { icon: '🎓', points: 25, key: 'participation' },
+  { icon: '⭐', points: 20, key: 'review' },
+  { icon: '👥', points: 100, key: 'invite' },
 ];
 
 // Rewards
 const REWARDS = [
-  { points: 500, reward: '10% kedvezmény bármely programra', icon: '🏷️' },
-  { points: 1000, reward: 'Ingyenes esemény belépő', icon: '🎟️' },
-  { points: 2000, reward: 'Exkluzív szakértői konzultáció', icon: '💎' },
+  { points: 500, key: 'discount_10', icon: '🏷️' },
+  { points: 1000, key: 'free_event', icon: '🎟️' },
+  { points: 2000, key: 'expert_consultation', icon: '💎' },
 ];
 
 interface JoinedProgram {
@@ -143,8 +143,8 @@ const MyAgoraPage = () => {
           if (t.expert_contents) {
             allPrograms.push({
               id: t.content_id,
-              title: (t.expert_contents as any)?.title || "Ismeretlen program",
-              category: (t.expert_contents as any)?.category || "Általános",
+              title: (t.expert_contents as any)?.title || "",
+              category: (t.expert_contents as any)?.category || "",
               image_url: (t.expert_contents as any)?.image_url,
               purchased_at: t.created_at,
             });
@@ -174,8 +174,8 @@ const MyAgoraPage = () => {
           if (v.expert_contents) {
             allPrograms.push({
               id: v.content_id,
-              title: (v.expert_contents as any)?.title || "Ismeretlen program",
-              category: (v.expert_contents as any)?.category || "Általános",
+              title: (v.expert_contents as any)?.title || "",
+              category: (v.expert_contents as any)?.category || "",
               image_url: (v.expert_contents as any)?.image_url,
               purchased_at: v.created_at,
             });
@@ -204,8 +204,8 @@ const MyAgoraPage = () => {
           if (a.expert_contents) {
             allPrograms.push({
               id: a.content_id,
-              title: (a.expert_contents as any)?.title || "Ismeretlen program",
-              category: (a.expert_contents as any)?.category || "Általános",
+              title: (a.expert_contents as any)?.title || "",
+              category: (a.expert_contents as any)?.category || "",
               image_url: (a.expert_contents as any)?.image_url,
               purchased_at: a.purchased_at,
             });
@@ -281,7 +281,7 @@ const MyAgoraPage = () => {
       return (voucherData || []).map(v => ({
         id: v.id,
         content_id: v.content_id,
-        content_title: (v.expert_contents as any)?.title || "Ismeretlen",
+        content_title: (v.expert_contents as any)?.title || "",
         access_type: "voucher",
         purchased_at: v.created_at,
         sponsor_name: (v.expert_contents as any)?.sponsor_name,
@@ -327,7 +327,7 @@ const MyAgoraPage = () => {
                 <div className="text-4xl font-bold text-amber-700 mb-1">{wellPointsBalance}</div>
                 <div className="text-sm text-amber-600">{t('gamification.your_points')}</div>
                 {todayPoints > 0 && (
-                  <div className="text-xs text-emerald-600 mt-1">+{todayPoints} ma</div>
+                  <div className="text-xs text-emerald-600 mt-1">{t('gamification.today_earned').replace('{{points}}', String(todayPoints))}</div>
                 )}
               </CardContent>
             </Card>
@@ -338,10 +338,10 @@ const MyAgoraPage = () => {
                 <div className={`text-4xl mb-2 ${currentStreak === 0 ? 'opacity-40' : ''}`}>🔥</div>
                 <div className="text-4xl font-bold text-red-700 mb-1">{currentStreak}</div>
                 <div className="text-sm text-red-600">
-                  {currentStreak === 0 ? 'Kezdj új sorozatot!' : currentStreak === 1 ? '1 napos sorozat' : `${currentStreak} napos sorozat`}
+                  {currentStreak === 0 ? t('gamification.start_streak') : `${currentStreak} ${t('gamification.streak')}`}
                 </div>
                 {longestStreak > 0 && (
-                  <div className="text-xs text-red-500 mt-1">Rekord: {longestStreak} nap</div>
+                  <div className="text-xs text-red-500 mt-1">{t('gamification.record').replace('{{days}}', String(longestStreak))}</div>
                 )}
               </CardContent>
             </Card>
@@ -356,7 +356,7 @@ const MyAgoraPage = () => {
                 <Progress value={userLevel.progress} className="h-2 mb-2" />
                 {userLevel.nextLevel && (
                   <div className="text-xs text-purple-600">
-                    {userLevel.nextLevel.min - wellPointsBalance} pont a következő szintig
+                    {t('gamification.points_to_next').replace('{{points}}', String(userLevel.nextLevel.min - wellPointsBalance))}
                   </div>
                 )}
               </CardContent>
@@ -372,7 +372,7 @@ const MyAgoraPage = () => {
               <Card key={index} className="flex-shrink-0 w-32">
                 <CardContent className="p-4 text-center">
                   <div className="text-3xl mb-2">{method.icon}</div>
-                  <div className="text-sm font-medium mb-1">{method.action}</div>
+                  <div className="text-sm font-medium mb-1">{t(`gamification.earn.${method.key}`)}</div>
                   <Badge variant="secondary" className="bg-emerald-100 text-emerald-700">
                     +{method.points} WP
                   </Badge>
@@ -391,7 +391,7 @@ const MyAgoraPage = () => {
                 <CardContent className="p-4 flex items-center gap-4">
                   <div className="text-3xl">{reward.icon}</div>
                   <div className="flex-1">
-                    <div className="font-medium">{reward.reward}</div>
+                    <div className="font-medium">{t(`gamification.reward.${reward.key}`)}</div>
                     <Badge variant="outline" className="mt-1">
                       {reward.points} WP
                     </Badge>

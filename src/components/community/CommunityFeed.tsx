@@ -196,8 +196,8 @@ const CommunityFeed = () => {
       const streakResult = await updateStreak(user.id);
       queryClient.invalidateQueries({ queryKey: STREAK_QUERY_KEY(user.id) });
       if (streakResult.isNewDay && streakResult.streak > 1) {
-        toast.success(`🔥 ${streakResult.streak} napos sorozat!`, { 
-          description: streakResult.bonusAwarded ? 'Bónusz pontok jóváírva!' : 'Szép munka, folytasd!'
+        toast.success(t('gamification.toast_streak').replace('{{days}}', String(streakResult.streak)), { 
+          description: streakResult.bonusAwarded ? t('gamification.toast_streak_bonus') : t('gamification.toast_streak_keep')
         });
       }
 
@@ -207,7 +207,7 @@ const CommunityFeed = () => {
       setNewPostImage(null);
       setImagePreview(null);
       setShowPostCreator(false);
-      toast.success('+5 WellPont! 🪙', { description: 'Köszönjük az aktivitásod!' });
+      toast.success(t('gamification.toast_points').replace('{{points}}', '5'), { description: t('gamification.toast_thanks') });
     } catch (error) {
       console.error('Error creating post:', error);
       toast.error('Failed to create post');
@@ -257,18 +257,18 @@ const CommunityFeed = () => {
         const streakResult = await updateStreak(user.id);
         queryClient.invalidateQueries({ queryKey: STREAK_QUERY_KEY(user.id) });
         if (streakResult.isNewDay && streakResult.streak > 1) {
-          toast.success(`🔥 ${streakResult.streak} napos sorozat!`, { 
-            description: streakResult.bonusAwarded ? 'Bónusz pontok jóváírva!' : 'Szép munka, folytasd!'
+          toast.success(t('gamification.toast_streak').replace('{{days}}', String(streakResult.streak)), { 
+            description: streakResult.bonusAwarded ? t('gamification.toast_streak_bonus') : t('gamification.toast_streak_keep')
           });
         }
         
         // Award points to post author for receiving like
         if (post.author_id !== user.id) {
-          await awardPoints(post.author_id, 'like_received', 'Kedvelést kapott', postId, 'like');
+          await awardPoints(post.author_id, 'like_received', t('gamification.like_received'), postId, 'like');
           queryClient.invalidateQueries({ queryKey: WELLPOINTS_QUERY_KEY(post.author_id) });
         }
         
-        toast.success('+1 WellPont! 🪙', { description: 'Köszönjük az aktivitásod!' });
+        toast.success(t('gamification.toast_points').replace('{{points}}', '1'), { description: t('gamification.toast_thanks') });
       }
     } catch (error) {
       console.error('Error toggling like:', error);
@@ -304,8 +304,8 @@ const CommunityFeed = () => {
       const streakResult = await updateStreak(user.id);
       queryClient.invalidateQueries({ queryKey: STREAK_QUERY_KEY(user.id) });
       if (streakResult.isNewDay && streakResult.streak > 1) {
-        toast.success(`🔥 ${streakResult.streak} napos sorozat!`, { 
-          description: streakResult.bonusAwarded ? 'Bónusz pontok jóváírva!' : 'Szép munka, folytasd!'
+        toast.success(t('gamification.toast_streak').replace('{{days}}', String(streakResult.streak)), { 
+          description: streakResult.bonusAwarded ? t('gamification.toast_streak_bonus') : t('gamification.toast_streak_keep')
         });
       }
 
@@ -315,7 +315,7 @@ const CommunityFeed = () => {
         comments: [...p.comments, data]
       } : p));
 
-      toast.success('+3 WellPont! 🪙', { description: 'Köszönjük az aktivitásod!' });
+      toast.success(t('gamification.toast_points').replace('{{points}}', '3'), { description: t('gamification.toast_thanks') });
     } catch (error) {
       console.error('Error adding comment:', error);
       toast.error('Failed to add comment');
