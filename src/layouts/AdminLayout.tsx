@@ -28,7 +28,8 @@ import {
   FolderKanban,
   Wallet,
   History,
-  FolderOpen
+  FolderOpen,
+  TrendingUp
 } from 'lucide-react';
 
 interface Project {
@@ -161,6 +162,11 @@ const AdminLayout = () => {
       path: `${adminBasePath}/analytics`, 
       icon: BarChart3, 
       label: t('admin.nav.analytics') 
+    },
+    { 
+      path: `${adminBasePath}/growth`, 
+      icon: TrendingUp, 
+      label: t('admin.nav.growth') || 'Növekedés'
     },
     { 
       path: `${adminBasePath}/audit`, 
