@@ -26,8 +26,8 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  // Default to German for the Vienna-Budapest-Eisenstadt urban region
-  const [language, setLanguageState] = useState<Language>('de');
+  // Default to Hungarian — primary target market
+  const [language, setLanguageState] = useState<Language>('hu');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -143,7 +143,7 @@ export const useLanguage = () => {
   if (!context) {
     // useLanguage called outside of LanguageProvider, using fallback
     return {
-      language: 'de' as Language, // Default to German for urban region
+      language: 'hu' as Language, // Default to Hungarian — primary target market
       setLanguage: () => {},
       t: (key: string) => key,
       isLoading: false,

@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,7 +10,6 @@ import FeaturedEventsGrid from "@/components/FeaturedEventsGrid";
 import RecommendedProgramsSlider from "@/components/RecommendedProgramsSlider";
 import CTABanner from "@/components/CTABanner";
 import { CommunityImpactCounter } from "@/components/CommunityImpactCounter";
-import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 
 const Index = () => {
@@ -35,7 +33,6 @@ const Index = () => {
     return (
       <>
         <div className="min-h-screen bg-white flex flex-col">
-          <Navigation />
           <main className="pt-2 md:pt-4 flex-1">
             {/* 1. SIMPLIFIED HERO - Welcome + Single CTA */}
             <section className="relative overflow-hidden bg-white/80 backdrop-blur-xl border-b border-black/5">
@@ -98,7 +95,6 @@ const Index = () => {
           </main>
         </div>
 
-        <Footer />
       </>
     );
   }
@@ -108,7 +104,6 @@ const Index = () => {
     <>
       <SEOHead />
       <div className="min-h-screen bg-white flex flex-col">
-        <Navigation />
         <main className="flex-1">
           {/* 1. HERO SECTION - Full viewport with integrated registration cards */}
           <HeroSection />
@@ -127,7 +122,6 @@ const Index = () => {
         </main>
       </div>
 
-      <Footer />
     </>
   );
 };

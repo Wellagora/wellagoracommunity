@@ -1445,7 +1445,7 @@
     "coming_soon_masterclass": "Masterclass",
     "coming_soon_masterclass_desc": "Learn from the region's best experts",
     "date_tba": "Date to be announced",
-    "title": "Event name",
+    "title": "Events",
     "subtitle": "Meet the community",
     "discover_subtitle": "Discover upcoming community events",
     "upcoming": "Upcoming Events",
@@ -2417,15 +2417,15 @@
     "post_login_headline": "Start by meeting one creator — then do one small community action.",
     "post_login_primary_cta": "Go to Community (start here)",
     "post_login_secondary_ask": "Ask your first question",
-    "post_login_secondary_browse": "Browse programs (secondary)",
-    "browse_programs_cta": "Browse Workshop Secrets",
+    "post_login_secondary_browse": "Browse programs",
+    "browse_programs_cta": "Browse Programs",
     "go_to_marketplace": "Go to Marketplace",
     "featured_events_title": "Featured Events",
     "workshop_secrets_title": "Recommended Programs",
     "view_all_secrets": "View All Programs",
     "cta_badge": "WellAgora",
     "cta_headline": "Practical knowledge and proven methods from the community's best Experts.",
-    "cta_subheadline": "Discover Workshop Secrets and make your ideas a reality!",
+    "cta_subheadline": "Discover programs and make your ideas a reality!",
     "cta_explore_marketplace": "Explore Marketplace",
     "cta_become_expert": "Become an Expert",
     "stat_members": "Active Members",
@@ -5247,5 +5247,9 @@
 
   "community_building.join_community": "Join the community",
 
-  "community_building.welcome_back": "Welcome back, {name}! 👋 Our community is just getting started — and you're among the first!"
+  "community_building.welcome_back": "Welcome back, {name}! 👋 Our community is just getting started — and you're among the first!",
+
+  "common.save_changes": "Save changes",
+  "common.saving": "Saving...",
+  "auth.social_login_soon": "Social login coming soon"
 }

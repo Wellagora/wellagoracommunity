@@ -3669,6 +3669,8 @@
   "common.error": "Hiba",
   "common.success": "Siker",
   "common.save": "Mentés",
+  "common.save_changes": "Változások mentése",
+  "common.saving": "Mentés...",
   "common.cancel": "Mégse",
   "common.delete": "Törlés",
   "common.edit": "Szerkesztés",
