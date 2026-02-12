@@ -5180,6 +5180,7 @@
     "back": "Vissza",
     "next": "Következő",
     "fill_required": "Kérjük, töltsd ki a kötelező mezőket!",
+    "media_required": "Kérjük, először tölts fel egy fotót vagy videót!",
     "draft_saved": "Piszkozat mentve!",
     "published_success": "Program sikeresen közzétéve! 🎉",
     "publish_error": "Hiba történt a közzététel során"

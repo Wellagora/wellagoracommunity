@@ -215,7 +215,11 @@ const ProgramCreatorWizard = () => {
 
   const handleNext = async () => {
     if (!isStepValid(currentStep)) {
-      toast.error(t("program_creator.fill_required"));
+      if (currentStep === 0) {
+        toast.error(t("program_creator.media_required") || "Please upload a photo or video first!");
+      } else {
+        toast.error(t("program_creator.fill_required"));
+      }
       return;
     }
     
@@ -567,7 +571,6 @@ const ProgramCreatorWizard = () => {
             </Button>
             <Button
               onClick={handleNext}
-              disabled={!isStepValid(currentStep)}
               className="gap-2 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600"
             >
               {t("program_creator.next")}

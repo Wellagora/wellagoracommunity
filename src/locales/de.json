@@ -4956,6 +4956,7 @@
     "publish": "Veröffentlichen",
     "back": "Zurück",
     "fill_required": "Bitte fülle die Pflichtfelder aus!",
+    "media_required": "Bitte lade zuerst ein Foto oder Video hoch!",
     "publish_error": "Fehler bei der Veröffentlichung"
   },
   "feed": {

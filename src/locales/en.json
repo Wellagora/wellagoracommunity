@@ -4974,6 +4974,7 @@
     "back": "Back",
     "next": "Next",
     "fill_required": "Please fill in the required fields!",
+    "media_required": "Please upload a photo or video first!",
     "draft_saved": "Draft saved!",
     "published_success": "Program published successfully! 🎉",
     "publish_error": "Error publishing program",
