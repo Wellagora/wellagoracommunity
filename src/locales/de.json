@@ -5221,9 +5221,13 @@
   "community.stats_title": "Unsere Gemeinschaft in Zahlen",
   "community.stats_subtitle": "Die wachsende wertbewahrende Gemeinschaft der Region",
   "community.stats_members": "Mitglieder",
+  "community.stats_members_one": "Mitglied",
   "community.stats_experts": "Experten",
+  "community.stats_experts_one": "Experte",
   "community.stats_sponsors": "Sponsoren",
+  "community.stats_sponsors_one": "Sponsor",
   "community.stats_programs": "Programme",
+  "community.stats_programs_one": "Programm",
   "member": {
     "sponsored_access": "Gesponserte Zugänge",
     "no_sponsored_participations": "Noch keine gesponserten Teilnahmen",

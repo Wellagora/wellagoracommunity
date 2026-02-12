@@ -2369,9 +2369,13 @@
   "community.stats_title": "Our community in numbers",
   "community.stats_subtitle": "The growing value-preserving community of the region",
   "community.stats_members": "Members",
+  "community.stats_members_one": "Member",
   "community.stats_experts": "Experts",
+  "community.stats_experts_one": "Expert",
   "community.stats_sponsors": "Sponsors",
+  "community.stats_sponsors_one": "Sponsor",
   "community.stats_programs": "Programs",
+  "community.stats_programs_one": "Program",
   "index": {
     "platform_title": "Káli medence Community Forum",
     "platform_subtitle": "Join the Káli medence community. Participate in programs, share experiences, and build the future together!",

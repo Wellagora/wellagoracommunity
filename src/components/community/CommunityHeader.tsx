@@ -107,19 +107,19 @@ export const CommunityHeader = () => {
           <>
             <Badge variant="secondary" className="px-4 py-2 text-sm font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
               <Users className="w-4 h-4 mr-2" />
-              {stats.members} {t('community.stats_members')}
+              {stats.members} {stats.members === 1 ? t('community.stats_members_one') || t('community.stats_members') : t('community.stats_members')}
             </Badge>
             <Badge variant="secondary" className="px-4 py-2 text-sm font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
               <GraduationCap className="w-4 h-4 mr-2" />
-              {stats.experts} {t('community.stats_experts')}
+              {stats.experts} {stats.experts === 1 ? t('community.stats_experts_one') || t('community.stats_experts') : t('community.stats_experts')}
             </Badge>
             <Badge variant="secondary" className="px-4 py-2 text-sm font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
               <HandHeart className="w-4 h-4 mr-2" />
-              {stats.sponsors} {t('community.stats_sponsors')}
+              {stats.sponsors} {stats.sponsors === 1 ? t('community.stats_sponsors_one') || t('community.stats_sponsors') : t('community.stats_sponsors')}
             </Badge>
             <Badge variant="secondary" className="px-4 py-2 text-sm font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
               <BookOpen className="w-4 h-4 mr-2" />
-              {stats.programs} {t('community.stats_programs')}
+              {stats.programs} {stats.programs === 1 ? t('community.stats_programs_one') || t('community.stats_programs') : t('community.stats_programs')}
             </Badge>
           </>
         ) : null}
