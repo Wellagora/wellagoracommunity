@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { SmartTiltCard } from "@/components/ui/SmartTiltCard";
 import { StaggerContainer, StaggerItem } from "@/components/ui/StaggerAnimation";
 
-const HERO_BG = "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1920&q=80&auto=format&fit=crop";
+const HERO_BG = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1920&q=80&auto=format&fit=crop";
 
 const HeroSection = () => {
   const { t } = useLanguage();

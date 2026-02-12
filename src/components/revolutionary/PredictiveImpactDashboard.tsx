@@ -462,7 +462,7 @@ const PredictiveImpactDashboard: React.FC = () => {
               },
               {
                 title: "Partner with Local Universities",
-                description: "Student involvement could accelerate innovation projects",
+                description: "Participant involvement could accelerate innovation projects",
                 priority: "Medium", 
                 impact: "+600kg CO₂",
                 timeframe: "6 weeks"

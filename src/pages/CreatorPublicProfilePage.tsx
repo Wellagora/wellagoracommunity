@@ -72,7 +72,7 @@ const CreatorPublicProfilePage = () => {
     enabled: !!id,
   });
 
-  // Fetch total students count (from content_access)
+  // Fetch total participants count (from content_access)
   const { data: totalMembers } = useQuery({
     queryKey: ["creatorMembers", id],
     queryFn: async () => {
