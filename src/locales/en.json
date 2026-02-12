@@ -5193,7 +5193,7 @@
   "footer.legal_title": "Legal",
   "footer.link_terms": "Terms of Service",
   "footer.link_privacy": "Privacy Policy",
-  "footer.link_impressum": "Impressum",
+  "footer.link_impressum": "Legal Notice",
   "footer.copyright": "ProSelf International Inc. All rights reserved.",
   "footer.cookie_settings": "Cookie settings",
   "footer.terms_short": "Terms",
@@ -5301,5 +5301,13 @@
   "membership.member_since": "Member since {{year}}",
   "membership.show_at_partners": "Show at our partners for exclusive access!",
   "membership.button_label": "Membership Card",
-  "membership.number_copied": "Member number copied!"
+  "membership.number_copied": "Member number copied!",
+
+  "auth.demo_login": "Demo login",
+  "nav.sponsor_hub": "Sponsor Hub",
+  "sponsor.people_reached_badge": "{{count}} people reached",
+  "sponsor.people_reached_tooltip": "People reached",
+
+  "sponsor_dashboard.title": "Sponsor Hub",
+  "sponsor_dashboard.overview": "Overview"
 }

@@ -465,7 +465,7 @@ const AuthPage = () => {
                   {/* Demo Login Panel */}
                   <Collapsible className="mt-6 pt-6 border-t border-slate-200">
                     <CollapsibleTrigger className="flex items-center justify-center gap-2 w-full text-sm text-slate-500 hover:text-slate-700 transition-colors">
-                      <span>🎭 Demo belépés</span>
+                      <span>🎭 {t('auth.demo_login')}</span>
                       <ChevronDown className="w-4 h-4" />
                     </CollapsibleTrigger>
                     <CollapsibleContent className="mt-4">

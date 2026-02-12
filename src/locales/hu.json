@@ -912,7 +912,7 @@
   "marketplace.sponsor": "Támogató",
   "marketplace.sponsor_badge": "Támogató • {{name}}",
   "marketplace.supported": "Támogató",
-  "sponsor_dashboard.title": "Hatásközpont",
+  "sponsor_dashboard.title": "Támogatói Központ",
   "sponsor_dashboard.overview": "Áttekintés",
   "sponsor_dashboard.total_licenses": "Összes Licenc",
   "sponsor_dashboard.used": "felhasználva",
@@ -5497,5 +5497,9 @@
   "membership.member_since": "Tag {{year}} óta",
   "membership.show_at_partners": "Mutasd partnereinknél az exkluzív hozzáférésért!",
   "membership.button_label": "Tagsági Kártya",
-  "membership.number_copied": "Tagszám másolva!"
+  "membership.number_copied": "Tagszám másolva!",
+
+  "auth.demo_login": "Demo belépés",
+  "sponsor.people_reached_badge": "{{count}} fő elérve",
+  "sponsor.people_reached_tooltip": "Elért emberek"
 }

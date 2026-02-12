@@ -444,11 +444,11 @@ const Navigation = () => {
                           className="flex items-center gap-1.5 px-3 py-1 bg-blue-50 hover:bg-blue-100 rounded-full transition-colors"
                         >
                           <BarChart3 className="h-4 w-4 text-blue-500" />
-                          <span className="text-sm font-semibold text-blue-700">{roleMetrics.supportedMembers} fő elérve</span>
+                          <span className="text-sm font-semibold text-blue-700">{t('sponsor.people_reached_badge').replace('{{count}}', String(roleMetrics.supportedMembers))}</span>
                         </Link>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Elért emberek</p>
+                        <p>{t('sponsor.people_reached_tooltip')}</p>
                       </TooltipContent>
                     </Tooltip>
                   )}

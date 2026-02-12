@@ -5404,5 +5404,13 @@
   "membership.member_since": "Mitglied seit {{year}}",
   "membership.show_at_partners": "Zeige bei unseren Partnern für exklusiven Zugang!",
   "membership.button_label": "Mitgliedskarte",
-  "membership.number_copied": "Mitgliedsnummer kopiert!"
+  "membership.number_copied": "Mitgliedsnummer kopiert!",
+
+  "auth.demo_login": "Demo-Anmeldung",
+  "nav.sponsor_hub": "Sponsor-Zentrum",
+  "sponsor.people_reached_badge": "{{count}} Personen erreicht",
+  "sponsor.people_reached_tooltip": "Erreichte Personen",
+
+  "sponsor_dashboard.title": "Sponsor-Zentrum",
+  "sponsor_dashboard.overview": "Übersicht"
 }

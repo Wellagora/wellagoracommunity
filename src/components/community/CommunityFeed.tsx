@@ -69,7 +69,7 @@ interface CommunityPost {
 }
 
 const CommunityFeed = () => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -365,9 +365,9 @@ const CommunityFeed = () => {
             {!showPostCreator ? (
               <div className="flex items-center gap-3">
                 <Avatar>
-                  <AvatarImage src={(user as any).avatar_url} />
+                  <AvatarImage src={profile?.avatar_url || undefined} />
                   <AvatarFallback className="bg-primary/20 text-primary">
-                    {getInitials((user as any).first_name, (user as any).last_name)}
+                    {getInitials(profile?.first_name || null, profile?.last_name || null)}
                   </AvatarFallback>
                 </Avatar>
                 <div
