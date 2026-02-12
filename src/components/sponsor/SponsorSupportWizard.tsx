@@ -21,7 +21,7 @@ interface SponsorSupportWizardProps {
 }
 
 export function SponsorSupportWizard({ onComplete, onCancel }: SponsorSupportWizardProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
   const [step, setStep] = useState(1);
@@ -126,6 +126,27 @@ export function SponsorSupportWizard({ onComplete, onCancel }: SponsorSupportWiz
 
     setIsSubmitting(true);
     try {
+      // Check sponsor credit balance
+      const { data: sponsorCredits } = await supabase
+        .from('sponsor_credits')
+        .select('available_credits')
+        .eq('sponsor_user_id', user.id)
+        .maybeSingle();
+
+      const available = sponsorCredits?.available_credits || 0;
+      if (available < budget) {
+        toast({
+          title: t("common.error"),
+          description: t('sponsor.campaign_not_enough_credits', {
+            required: budget.toLocaleString(),
+            available: available.toLocaleString()
+          }),
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
       const ruleData: CreateSupportRuleInput = {
         scope_type: scopeType,
         scope_id: scopeId,
