@@ -84,18 +84,20 @@ const SponsorFinances = () => {
       });
     } catch (error) {
       console.error("Error loading financial data:", error);
-      setLoadError(language === 'hu'
-        ? 'Nem sikerült betölteni a pénzügyeket.'
-        : language === 'de'
-        ? 'Finanzdaten konnten nicht geladen werden.'
-        : 'Could not load finances.');
+      setLoadError(t('sponsor.finances_load_error'));
     } finally {
       setIsLoading(false);
     }
   };
 
   const formatCurrency = (amount: number) => {
-    return `${amount.toLocaleString('hu-HU')} Ft`;
+    const locale = language === 'hu' ? 'hu-HU' : language === 'de' ? 'de-DE' : 'en-US';
+    return `${amount.toLocaleString(locale)} Ft`;
+  };
+
+  const formatDate = (dateStr: string) => {
+    const locale = language === 'hu' ? 'hu-HU' : language === 'de' ? 'de-DE' : 'en-US';
+    return new Date(dateStr).toLocaleString(locale);
   };
 
   const getTransactionIcon = (type: string) => {
@@ -106,18 +108,9 @@ const SponsorFinances = () => {
   };
 
   const getTransactionLabel = (type: string) => {
-    const labels: Record<string, { hu: string; en: string; de: string }> = {
-      purchase: { hu: 'Kredit vásárlás', en: 'Credit Purchase', de: 'Kreditkauf' },
-      subscription: { hu: 'Előfizetés', en: 'Subscription', de: 'Abonnement' },
-      initial: { hu: 'Kezdő egyenleg', en: 'Initial Balance', de: 'Anfangssaldo' },
-      bonus: { hu: 'Bónusz kredit', en: 'Bonus Credit', de: 'Bonus-Kredit' },
-      rollover: { hu: 'Átvitt egyenleg', en: 'Rollover Balance', de: 'Übertragenes Guthaben' },
-      deduction: { hu: 'Levonás', en: 'Deduction', de: 'Abzug' },
-      sponsorship: { hu: 'Szponzoráció', en: 'Sponsorship', de: 'Sponsoring' },
-      usage: { hu: 'Felhasználás', en: 'Usage', de: 'Nutzung' },
-      spend: { hu: 'Szponzorálás', en: 'Sponsorship', de: 'Sponsoring' },
-    };
-    return labels[type]?.[language as keyof (typeof labels)[string]] || type;
+    const key = `sponsor.tx_${type}`;
+    const translated = t(key);
+    return translated !== key ? translated : type;
   };
 
   if (loading) {
@@ -166,7 +159,7 @@ const SponsorFinances = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-primary" />
-              {language === 'hu' ? 'Vásárlások' : language === 'de' ? 'Käufe' : 'Purchases'}
+              {t('sponsor.finances_purchases')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -175,7 +168,7 @@ const SponsorFinances = () => {
             ) : purchases.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-muted-foreground">
-                  {language === 'hu' ? 'Még nincs tranzakció' : language === 'de' ? 'Noch keine Transaktionen' : 'No transactions yet'}
+                  {t('sponsor.finances_no_transactions')}
                 </p>
               </div>
             ) : (
@@ -183,10 +176,10 @@ const SponsorFinances = () => {
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-muted/30">
-                      <TableHead>{language === 'hu' ? 'Dátum' : 'Date'}</TableHead>
-                      <TableHead>{language === 'hu' ? 'Típus' : 'Type'}</TableHead>
-                      <TableHead>{language === 'hu' ? 'Leírás' : 'Description'}</TableHead>
-                      <TableHead className="text-right">{language === 'hu' ? 'Összeg' : 'Amount'}</TableHead>
+                      <TableHead>{t('sponsor.finances_date')}</TableHead>
+                      <TableHead>{t('sponsor.finances_type')}</TableHead>
+                      <TableHead>{t('sponsor.finances_description')}</TableHead>
+                      <TableHead className="text-right">{t('sponsor.finances_amount')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -195,7 +188,7 @@ const SponsorFinances = () => {
                       return (
                         <TableRow key={tx.id}>
                           <TableCell className="text-sm">
-                            {new Date(tx.created_at).toLocaleString()}
+                            {formatDate(tx.created_at)}
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
@@ -226,7 +219,7 @@ const SponsorFinances = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingDown className="w-5 h-5 text-primary" />
-              {language === 'hu' ? 'Költések' : language === 'de' ? 'Ausgaben' : 'Spending'}
+              {t('sponsor.finances_spending')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -235,7 +228,7 @@ const SponsorFinances = () => {
             ) : spending.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-muted-foreground">
-                  {language === 'hu' ? 'Még nincs költés' : language === 'de' ? 'Noch keine Ausgaben' : 'No spending yet'}
+                  {t('sponsor.finances_no_spending')}
                 </p>
               </div>
             ) : (
@@ -243,17 +236,17 @@ const SponsorFinances = () => {
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-muted/30">
-                      <TableHead>{language === 'hu' ? 'Dátum' : 'Date'}</TableHead>
-                      <TableHead>{language === 'hu' ? 'Típus' : 'Type'}</TableHead>
-                      <TableHead>{language === 'hu' ? 'Leírás' : 'Description'}</TableHead>
-                      <TableHead className="text-right">{language === 'hu' ? 'Összeg' : 'Amount'}</TableHead>
+                      <TableHead>{t('sponsor.finances_date')}</TableHead>
+                      <TableHead>{t('sponsor.finances_type')}</TableHead>
+                      <TableHead>{t('sponsor.finances_description')}</TableHead>
+                      <TableHead className="text-right">{t('sponsor.finances_amount')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {spending.slice(0, 20).map((tx) => (
                       <TableRow key={tx.id}>
                         <TableCell className="text-sm">
-                          {new Date(tx.created_at).toLocaleString()}
+                          {formatDate(tx.created_at)}
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
@@ -296,15 +289,15 @@ const SponsorFinances = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-white rounded-xl p-4 border border-black/5">
-                  <p className="text-sm text-muted-foreground">{language === 'hu' ? 'Összes vásárlás' : language === 'de' ? 'Gesamt gekauft' : 'Total purchased'}</p>
+                  <p className="text-sm text-muted-foreground">{t('sponsor.finances_total_purchased')}</p>
                   <p className="text-2xl font-bold text-foreground">{formatCurrency(creditInfo.totalCredits)}</p>
                 </div>
                 <div className="bg-white rounded-xl p-4 border border-black/5">
-                  <p className="text-sm text-muted-foreground">{language === 'hu' ? 'Összes költés' : language === 'de' ? 'Gesamt ausgegeben' : 'Total spent'}</p>
+                  <p className="text-sm text-muted-foreground">{t('sponsor.finances_total_spent')}</p>
                   <p className="text-2xl font-bold text-foreground">{formatCurrency(creditInfo.usedCredits)}</p>
                 </div>
                 <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-500/10">
-                  <p className="text-sm text-emerald-700">{language === 'hu' ? 'Aktuális egyenleg' : language === 'de' ? 'Aktuelles Guthaben' : 'Current balance'}</p>
+                  <p className="text-sm text-emerald-700">{t('sponsor.finances_current_balance')}</p>
                   <p className="text-2xl font-bold text-emerald-700">{formatCurrency(creditInfo.availableCredits)}</p>
                 </div>
               </div>
@@ -313,7 +306,7 @@ const SponsorFinances = () => {
             <div className="mt-6">
               <div className="flex justify-between text-sm mb-2">
                 <span className="text-muted-foreground">
-                  {language === 'hu' ? 'Felhasználva' : language === 'de' ? 'Verwendet' : 'Used'}
+                  {t('sponsor.finances_used')}
                 </span>
                 <span className="font-medium">{usagePercent}%</span>
               </div>
