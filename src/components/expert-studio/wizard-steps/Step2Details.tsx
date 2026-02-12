@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Leaf, ChefHat, Hammer, Heart, Palette, MoreHorizontal, MapPin, Monitor, Video, Calendar, Clock, Link as LinkIcon, Users } from "lucide-react";
+import { Leaf, ChefHat, Hammer, Heart, Palette, Mountain, Users2, ShoppingBag, Dumbbell, BookOpen, Home, MapPin, Monitor, Video, Calendar, Clock, Link as LinkIcon, Users } from "lucide-react";
 import { calculateSplit } from "@/services/enrollmentService";
 import type { ProgramFormData, ContentType } from "../ProgramCreatorWizard";
 
@@ -22,10 +22,17 @@ interface Step2DetailsProps {
 const CATEGORIES = [
   { value: "gardening", icon: Leaf, color: "text-green-500" },
   { value: "gastronomy", icon: ChefHat, color: "text-orange-500" },
-  { value: "crafts", icon: Hammer, color: "text-amber-600" },
-  { value: "health", icon: Heart, color: "text-red-500" },
-  { value: "art", icon: Palette, color: "text-purple-500" },
-  { value: "other", icon: MoreHorizontal, color: "text-gray-500" },
+  { value: "craft", icon: Hammer, color: "text-amber-600" },
+  { value: "wellness", icon: Heart, color: "text-red-500" },
+  { value: "culture", icon: Palette, color: "text-purple-500" },
+  { value: "lifestyle", icon: Home, color: "text-sky-500" },
+  { value: "hiking", icon: Mountain, color: "text-emerald-600" },
+  { value: "heritage", icon: BookOpen, color: "text-yellow-700" },
+  { value: "community", icon: Users2, color: "text-indigo-500" },
+  { value: "sport", icon: Dumbbell, color: "text-blue-600" },
+  { value: "volunteering", icon: Heart, color: "text-pink-500" },
+  { value: "market", icon: ShoppingBag, color: "text-teal-500" },
+  { value: "family", icon: Users, color: "text-rose-400" },
 ];
 
 const CONTENT_TYPES: { value: ContentType; labelKey: string; icon: typeof MapPin; descKey: string }[] = [
