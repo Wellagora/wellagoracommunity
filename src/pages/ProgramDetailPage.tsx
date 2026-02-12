@@ -48,6 +48,7 @@ import GracefulPlaceholder from "@/components/GracefulPlaceholder";
 import { ShareToolkit } from "@/components/expert/ShareToolkit";
 import SEOHead from "@/components/SEOHead";
 import { useShareTracking } from "@/hooks/useShareTracking";
+import GuestRegistrationForm from "@/components/program/GuestRegistrationForm";
 
 const ProgramDetailPage = () => {
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
@@ -369,17 +370,7 @@ const ProgramDetailPage = () => {
           </Button>
         );
       case 'login_required':
-        return (
-          <Button 
-            size="lg"
-            variant="outline"
-            className="border-primary/50 text-primary hover:bg-primary/10"
-            onClick={() => navigate('/auth')}
-          >
-            <Lock className="w-5 h-5 mr-2" />
-            {t('program.login_to_view')}
-          </Button>
-        );
+        return id ? <GuestRegistrationForm programId={id} /> : null;
       case 'premium_required':
         return (
           <Button 
@@ -393,6 +384,11 @@ const ProgramDetailPage = () => {
           </Button>
         );
       case 'purchase_required': {
+        // If not logged in, show guest registration form
+        if (!user && id) {
+          return <GuestRegistrationForm programId={id} />;
+        }
+
         // Determine if free or paid
         const isFree = isFreeContent(program.price_huf);
         

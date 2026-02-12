@@ -2226,6 +2226,27 @@
     "profile_views": "Profile views",
     "click_stats": "Share statistics"
   },
+  "guest_registration": {
+    "title": "Register for this program",
+    "name_label": "Your name",
+    "name_placeholder": "First Last",
+    "email_label": "Your email",
+    "email_placeholder": "email@example.com",
+    "submit": "Register",
+    "submitting": "Registering...",
+    "or_login": "or sign in with an existing account",
+    "success": "Successfully registered! Check your email for confirmation.",
+    "already_registered": "You have already registered for this program with this email.",
+    "account_exists": "An account already exists with this email. Please sign in!",
+    "error": "An error occurred during registration. Please try again.",
+    "confirm_title": "Registration confirmed!",
+    "confirm_description": "You have successfully confirmed your registration for the program.",
+    "confirm_error": "Invalid or expired confirmation link.",
+    "confirm_loading": "Confirming...",
+    "create_account_prompt": "You're already registered for the program! Create an account to make things easier next time.",
+    "view_program": "View program",
+    "create_account": "Create account"
+  },
   "hero": {
     "impact_badge": "Impact Platform",
     "headline_part1": "Your Impact Matters.",

@@ -2280,6 +2280,27 @@
     "profile_views": "Profilaufrufe",
     "click_stats": "Teilen-Statistiken"
   },
+  "guest_registration": {
+    "title": "Fuer dieses Programm anmelden",
+    "name_label": "Dein Name",
+    "name_placeholder": "Vorname Nachname",
+    "email_label": "Deine E-Mail",
+    "email_placeholder": "email@beispiel.de",
+    "submit": "Anmelden",
+    "submitting": "Anmeldung...",
+    "or_login": "oder melde dich mit einem bestehenden Konto an",
+    "success": "Erfolgreich angemeldet! Pruefe deine E-Mails zur Bestaetigung.",
+    "already_registered": "Du hast dich bereits mit dieser E-Mail fuer dieses Programm angemeldet.",
+    "account_exists": "Mit dieser E-Mail existiert bereits ein Konto. Bitte melde dich an!",
+    "error": "Bei der Anmeldung ist ein Fehler aufgetreten. Bitte versuche es erneut.",
+    "confirm_title": "Anmeldung bestaetigt!",
+    "confirm_description": "Du hast deine Anmeldung fuer das Programm erfolgreich bestaetigt.",
+    "confirm_error": "Ungueltiger oder abgelaufener Bestaetigungslink.",
+    "confirm_loading": "Bestaetigung...",
+    "create_account_prompt": "Du bist bereits fuer das Programm angemeldet! Erstelle ein Konto, damit es beim naechsten Mal noch einfacher geht.",
+    "view_program": "Programm ansehen",
+    "create_account": "Konto erstellen"
+  },
   "hero": {
     "impact_badge": "Impact Plattform",
     "headline_part1": "Deine Wirkung zählt.",

@@ -96,6 +96,7 @@ const PartnerProfilePage = lazy(() => import("@/pages/PartnerProfilePage"));
 const FavoritesPage = lazy(() => import("@/pages/FavoritesPage"));
 const MyAgoraPage = lazy(() => import("@/pages/MyAgoraPage"));
 const PointsHistoryPage = lazy(() => import("@/pages/PointsHistoryPage"));
+const GuestConfirmPage = lazy(() => import("@/pages/GuestConfirmPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -228,6 +229,7 @@ function App() {
                           <Route path="/adatkezeles" element={<Navigate to="/privacy-policy" replace />} />
                           <Route path="/privacy" element={<Navigate to="/privacy-policy" replace />} />
                           <Route path="/datenschutz" element={<Navigate to="/privacy-policy" replace />} />
+                          <Route path="/confirm/:token" element={<GuestConfirmPage />} />
                           <Route path="/purchase/success" element={<PurchaseSuccessPage />} />
                           <Route path="/purchase/cancel" element={<Navigate to="/piacer" replace />} />
                           <Route

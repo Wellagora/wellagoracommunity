@@ -17,6 +17,7 @@ import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { DEMO_ACCOUNTS } from "@/data/mockData";
 import { supabase } from "@/integrations/supabase/client";
+import { convertGuestToUser } from "@/services/guestRegistration";
 
 // Monochrome accent colors
 const ACCENT_BLACK = "#000000";
@@ -34,6 +35,10 @@ const AuthPage = () => {
   // Get role and referral code from URL parameters
   const roleFromUrl = searchParams.get('role');
   const refCodeFromUrl = searchParams.get('ref');
+  const fromGuest = searchParams.get('from') === 'guest';
+  const prefillName = searchParams.get('name') || '';
+  const prefillEmail = searchParams.get('email') || '';
+  const redirectAfterLogin = searchParams.get('redirect') || '';
 
   // Role selection state
   const [selectedRole, setSelectedRole] = useState<string>(roleFromUrl || '');
@@ -100,11 +105,11 @@ const AuthPage = () => {
   const [resetSuccess, setResetSuccess] = useState(false);
 
   const [signupForm, setSignupForm] = useState({
-    email: "",
+    email: prefillEmail,
     password: "",
     confirmPassword: "",
-    firstName: "",
-    lastName: "",
+    firstName: prefillName.split(' ')[0] || '',
+    lastName: prefillName.split(' ').slice(1).join(' ') || '',
     organization: "",
     bio: "",
     industry: "",
@@ -207,6 +212,17 @@ const AuthPage = () => {
     } else {
       setSuccess(t('auth.account_created'));
 
+      // Link any guest registrations to this new user
+      try {
+        const { data: { user: newUser } } = await supabase.auth.getUser();
+        if (newUser) {
+          await convertGuestToUser(newUser.id, signupForm.email.trim());
+        }
+      } catch (e) {
+        // Non-critical — don't block signup flow
+        console.error('Guest conversion error:', e);
+      }
+
       const storedRefCode = localStorage.getItem('referral_code');
       if (storedRefCode) {
         localStorage.removeItem('referral_code');
@@ -282,7 +298,15 @@ const AuthPage = () => {
             </Alert>
           )}
 
-          <Tabs defaultValue="signup" className="w-full">
+          {fromGuest && (
+            <Alert className="mb-6 bg-emerald-50 border-emerald-200">
+              <AlertDescription className="text-emerald-700">
+                {t('guest_registration.create_account_prompt')}
+              </AlertDescription>
+            </Alert>
+          )}
+
+          <Tabs defaultValue={fromGuest ? 'signup' : 'signup'} className="w-full">
             <TabsList className="grid w-full grid-cols-2 bg-black/5 rounded-xl p-1 mb-8">
               <TabsTrigger
                 value="login"
