@@ -172,13 +172,13 @@ export async function startPaidCheckout(
 }
 
 /**
- * Calculate 80/20 split
+ * Calculate revenue split (default 80/20, founding experts get 0% platform fee)
  */
-export function calculateSplit(totalAmount: number): {
+export function calculateSplit(totalAmount: number, platformFeePercent: number = 20): {
   expertAmount: number;
   platformFee: number;
 } {
-  const platformFee = Math.round(totalAmount * 0.20);
+  const platformFee = Math.round(totalAmount * (platformFeePercent / 100));
   const expertAmount = totalAmount - platformFee;
   return { expertAmount, platformFee };
 }

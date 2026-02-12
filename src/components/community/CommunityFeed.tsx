@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
+import { FoundingExpertBadge } from '@/components/expert/FoundingExpertBadge';
 import {
   Heart,
   MessageCircle,
@@ -608,10 +609,7 @@ const PostCard = ({
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-semibold">{getFullName(post.author.first_name, post.author.last_name)}</span>
                 {isFoundingExpert && (
-                  <Badge className="bg-amber-100 text-amber-800 text-xs gap-1">
-                    <Shield className="w-3 h-3" />
-                    {t('community.founding_expert') || 'Alapító Szakértő'}
-                  </Badge>
+                  <FoundingExpertBadge size="sm" showTooltip={false} />
                 )}
                 {isExpert && !isFoundingExpert && post.author.expert_title && (
                   <Badge className="bg-indigo-100 text-indigo-700 text-xs">

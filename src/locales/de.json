@@ -2016,6 +2016,23 @@
     "all_experts": "Alle Experten",
     "go_to_marketplace": "Zum Marktplatz"
   },
+  "founding_expert": {
+    "badge_label": "Gründungsexperte",
+    "badge_tooltip": "Einer der ersten 5 Experten, die die WellAgora-Gemeinschaft gegründet haben.",
+    "founders_title": "Unsere Gründer",
+    "founders_subtitle": "Sie waren die Ersten, die an die Kraft lokalen Wissens glaubten.",
+    "my_programs": "Meine Programme",
+    "no_programs_yet": "Erste Programme kommen bald.",
+    "member_since": "Mitglied seit {{date}}",
+    "programs_count": "Programme",
+    "participants_count": "Teilnehmer",
+    "cta_title": "Interessiert an diesem Experten?",
+    "cta_desc": "Tritt WellAgora bei und nimm an seinen Programmen teil!",
+    "cta_button": "Registrieren",
+    "copy_link": "Mein Profil-Link kopieren",
+    "link_copied": "Link kopiert! Teile ihn in sozialen Medien oder per E-Mail.",
+    "bio_tabs": "Über mich"
+  },
   "control_panel": {
     "hello": "Hallo",
     "member": "Mitglied",

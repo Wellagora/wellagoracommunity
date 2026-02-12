@@ -88,6 +88,7 @@ const ProgramDetailPage = lazy(() => import("@/pages/ProgramDetailPage"));
 const ProgramLearnPage = lazy(() => import("@/pages/ProgramLearnPageNew"));
 const MyLearningPage = lazy(() => import("@/pages/MyLearningPage"));
 const CreatorPublicProfilePage = lazy(() => import("@/pages/CreatorPublicProfilePage"));
+const PublicExpertProfile = lazy(() => import("@/pages/PublicExpertProfile"));
 const ProgramsListingPage = lazy(() => import("@/pages/ProgramsListingPage"));
 const NotificationsPage = lazy(() => import("@/pages/NotificationsPage"));
 const MyCoursesPage = lazy(() => import("@/pages/MyCoursesPage"));
@@ -467,6 +468,7 @@ function App() {
                           <Route path="/my-learning" element={<Navigate to="/iranyitopult" replace />} />
                           
                           {/* Expert profiles (Szakértők) */}
+                          <Route path="/expert/:slug" element={<PublicExpertProfile />} />
                           <Route path="/szakertok/:id" element={<CreatorPublicProfilePage />} />
                           <Route path="/creators/:id" element={<CreatorPublicProfilePage />} />
                           

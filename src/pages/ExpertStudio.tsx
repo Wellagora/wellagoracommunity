@@ -10,6 +10,7 @@ import { useState } from "react";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { DashboardCard } from "@/components/dashboard/DashboardCard";
 import { ExpertStudioSkeleton } from "@/components/ui/loading-skeleton";
+import { FoundingExpertBadge } from "@/components/expert/FoundingExpertBadge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -229,8 +230,11 @@ const ExpertStudio = () => {
       iconColor="text-black"
       backUrl="/"
     >
-      {/* Share Profile Button */}
-      <div className="flex justify-end mb-4">
+      {/* Share Profile Button + Founding Badge */}
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          {(profile as any)?.is_founding_expert && <FoundingExpertBadge size="md" />}
+        </div>
         <Button onClick={() => setShareOpen(true)} variant="outline" className="gap-2">
           <Share2 className="h-4 w-4" />
           {t('share.share_profile')}
@@ -240,7 +244,7 @@ const ExpertStudio = () => {
       {shareOpen && (
         <ShareToolkit
           type="profile"
-          profileUrl={`${window.location.origin}/szakertok/${user.id}`}
+          profileUrl={`${window.location.origin}/expert/${(profile as any)?.expert_slug || user.id}`}
           expertName={`${profile?.first_name || ''} ${profile?.last_name || ''}`.trim()}
           imageUrl={profile?.avatar_url || undefined}
           onClose={() => setShareOpen(false)}

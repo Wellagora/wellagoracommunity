@@ -33,8 +33,10 @@ export async function createTransaction(params: CreateTransactionParams): Promis
   const { contentId, userId, creatorId, pricing, currency = 'HUF' } = params;
 
   // Calculate creator revenue and platform fee from base price
-  const creatorRevenue = Math.round(pricing.basePrice * 0.80);
-  const platformFee = Math.round(pricing.basePrice * 0.20);
+  // platformFeePercent can be overridden (e.g. 0 for founding experts)
+  const feePercent = (pricing as any).platformFeePercent ?? 20;
+  const platformFee = Math.round(pricing.basePrice * (feePercent / 100));
+  const creatorRevenue = pricing.basePrice - platformFee;
 
   // Map to actual database schema
   const transactionData = {

@@ -10,6 +10,7 @@ import FeaturedEventsGrid from "@/components/FeaturedEventsGrid";
 import RecommendedProgramsSlider from "@/components/RecommendedProgramsSlider";
 import CTABanner from "@/components/CTABanner";
 import HowItWorksSection from "@/components/home/HowItWorksSection";
+import FoundersWallSection from "@/components/home/FoundersWallSection";
 import { CommunityImpactCounter } from "@/components/CommunityImpactCounter";
 import SEOHead from "@/components/SEOHead";
 
@@ -111,6 +112,9 @@ const Index = () => {
 
           {/* 2. HOW IT WORKS — 3-step explainer */}
           <HowItWorksSection />
+
+          {/* 2b. FOUNDERS WALL — founding experts */}
+          <FoundersWallSection />
 
           {/* 3. SZAKÉRTŐI ARCKÉPCSARNOK - Expert Portrait Gallery */}
           <ExpertGallery />

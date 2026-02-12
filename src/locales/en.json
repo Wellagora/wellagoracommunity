@@ -1585,6 +1585,23 @@
     "all_experts": "All Experts",
     "go_to_marketplace": "Go to Marketplace"
   },
+  "founding_expert": {
+    "badge_label": "Founding Expert",
+    "badge_tooltip": "One of the first 5 experts who founded the WellAgora community.",
+    "founders_title": "Our Founders",
+    "founders_subtitle": "They were the first to believe in the power of local knowledge.",
+    "my_programs": "My Programs",
+    "no_programs_yet": "First programs coming soon.",
+    "member_since": "Member since {{date}}",
+    "programs_count": "Programs",
+    "participants_count": "Participants",
+    "cta_title": "Interested in this expert?",
+    "cta_desc": "Join WellAgora and participate in their programs!",
+    "cta_button": "Register",
+    "copy_link": "Copy my profile link",
+    "link_copied": "Link copied! Share it on social media or via email.",
+    "bio_tabs": "About"
+  },
   "control_panel": {
     "my_sponsorships": "My Sponsorships",
     "my_sponsorships_subtitle": "Workshop Secrets you are supporting",

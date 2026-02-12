@@ -49,6 +49,7 @@ import { ShareToolkit } from "@/components/expert/ShareToolkit";
 import SEOHead from "@/components/SEOHead";
 import { useShareTracking } from "@/hooks/useShareTracking";
 import GuestRegistrationForm from "@/components/program/GuestRegistrationForm";
+import { FoundingExpertBadge } from "@/components/expert/FoundingExpertBadge";
 
 const ProgramDetailPage = () => {
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
@@ -681,6 +682,9 @@ const ProgramDetailPage = () => {
                       </span>
                       {creator.is_verified_expert && (
                         <CheckCircle2 className="w-4 h-4 text-primary fill-primary/20" />
+                      )}
+                      {(creator as any).is_founding_expert && (
+                        <FoundingExpertBadge size="sm" />
                       )}
                     </div>
                     <p className="text-sm text-muted-foreground mt-1">
