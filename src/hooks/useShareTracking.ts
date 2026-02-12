@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { shareClicks } from "@/integrations/supabase/untyped";
 
 /**
  * Track UTM-based share clicks on page load.
@@ -32,8 +32,7 @@ export function useShareTracking(opts: {
     if (sessionStorage.getItem(dedupeKey)) return;
     sessionStorage.setItem(dedupeKey, "1");
 
-    (supabase as any)
-      .from("share_clicks")
+    shareClicks()
       .insert({
         expert_id: opts.expertId || null,
         program_id: opts.programId || null,

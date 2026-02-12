@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { guestRegistrations } from "@/integrations/supabase/untyped";
 
 export type GuestRegistrationResult =
   | { success: true; data: any }
@@ -13,11 +14,8 @@ export async function registerAsGuest(
   name: string,
   email: string
 ): Promise<GuestRegistrationResult> {
-  const db = supabase as any; // guest_registrations not in generated types yet
-
   // 1. Check if already registered for this program
-  const { data: existing } = await db
-    .from("guest_registrations")
+  const { data: existing } = await guestRegistrations()
     .select("id")
     .eq("program_id", programId)
     .eq("guest_email", email.toLowerCase().trim())
@@ -39,8 +37,7 @@ export async function registerAsGuest(
   }
 
   // 3. Insert guest registration
-  const { data, error } = await db
-    .from("guest_registrations")
+  const { data, error } = await guestRegistrations()
     .insert({
       program_id: programId,
       guest_name: name.trim(),
@@ -63,10 +60,7 @@ export async function registerAsGuest(
 export async function confirmGuestRegistration(
   token: string
 ): Promise<{ success: boolean; programId?: string; guestName?: string }> {
-  const db = supabase as any;
-
-  const { data, error } = await db
-    .from("guest_registrations")
+  const { data, error } = await guestRegistrations()
     .select("id, program_id, guest_name, confirmed")
     .eq("confirmation_token", token)
     .maybeSingle();
@@ -80,8 +74,7 @@ export async function confirmGuestRegistration(
   }
 
   // Mark as confirmed
-  await db
-    .from("guest_registrations")
+  await guestRegistrations()
     .update({ confirmed: true })
     .eq("id", data.id);
 
@@ -96,10 +89,7 @@ export async function convertGuestToUser(
   userId: string,
   email: string
 ): Promise<void> {
-  const db = supabase as any;
-
-  await db
-    .from("guest_registrations")
+  await guestRegistrations()
     .update({ converted_to_user_id: userId })
     .eq("guest_email", email.toLowerCase().trim());
 }

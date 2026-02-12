@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sparkles, BarChart3, BookOpen, Wallet, Users, Plus, TrendingUp, Calendar, DollarSign, ArrowRight, Store, CreditCard, ExternalLink, CheckCircle2, AlertCircle, Share2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { shareClicks } from "@/integrations/supabase/untyped";
 import { useState } from "react";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { DashboardCard } from "@/components/dashboard/DashboardCard";
@@ -181,13 +182,12 @@ const ExpertStudio = () => {
     queryKey: ['shareStats', user?.id],
     queryFn: async () => {
       if (!user) throw new Error('No user');
-      const { data, error } = await (supabase as any)
-        .from('share_clicks')
+      const { data, error } = await shareClicks()
         .select('source')
         .eq('expert_id', user.id);
       if (error) return { total: 0, bySource: {} as Record<string, number> };
       const bySource: Record<string, number> = {};
-      (data || []).forEach((row: any) => {
+      (data || []).forEach((row: { source: string }) => {
         bySource[row.source] = (bySource[row.source] || 0) + 1;
       });
       return { total: (data || []).length, bySource };
