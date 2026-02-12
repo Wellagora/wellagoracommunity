@@ -44,7 +44,7 @@ interface CampaignSetupProps {
  */
 const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const { t, language } = useLanguage();
   const [showDialog, setShowDialog] = useState(false);
   const [programs, setPrograms] = useState<Program[]>([]);
   const [loading, setLoading] = useState(false);
@@ -123,9 +123,7 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
 
       if (availableCredits < totalCreditCost) {
         toast.error(
-          language === 'hu'
-            ? `Nincs elég kredit! Szükséges: ${totalCreditCost.toLocaleString()} Ft, Elérhető: ${availableCredits.toLocaleString()} Ft`
-            : `Not enough credits! Required: ${totalCreditCost.toLocaleString()}, Available: ${availableCredits.toLocaleString()}`
+          t('sponsor.campaign_not_enough_credits', { required: totalCreditCost.toLocaleString(), available: availableCredits.toLocaleString() })
         );
         setCreating(false);
         return;
@@ -182,22 +180,14 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
           description: `Campaign: ${selectedProgramData?.title || selectedProgram}`
         });
 
-      toast.success(
-        language === 'hu' 
-          ? 'Kampány sikeresen létrehozva!'
-          : 'Campaign created successfully!'
-      );
+      toast.success(t('sponsor.campaign_success'));
 
       setShowDialog(false);
       resetForm();
       onCampaignCreated?.();
     } catch (error) {
       console.error('Error creating campaign:', error);
-      toast.error(
-        language === 'hu'
-          ? 'Hiba a kampány létrehozásakor'
-          : 'Error creating campaign'
-      );
+      toast.error(t('sponsor.campaign_error'));
     } finally {
       setCreating(false);
     }
@@ -219,12 +209,10 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg text-black">
             <Target className="w-5 h-5 text-indigo-600" />
-            {language === 'hu' ? 'Új Kampány Indítása' : 'Start New Campaign'}
+            {t('sponsor.campaign_new')}
           </CardTitle>
           <CardDescription>
-            {language === 'hu' 
-              ? 'Válasszon programot és határozza meg a támogatás mértékét'
-              : 'Select a program and define your sponsorship level'}
+            {t('sponsor.campaign_description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -233,7 +221,7 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
             className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
           >
             <Plus className="w-4 h-4 mr-2" />
-            {language === 'hu' ? 'Kampány Létrehozása' : 'Create Campaign'}
+            {t('sponsor.campaign_start')}
           </Button>
         </CardContent>
       </Card>
@@ -243,22 +231,20 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-black">
               <Target className="w-5 h-5 text-indigo-600" />
-              {language === 'hu' ? 'Szponzorációs Kampány' : 'Sponsorship Campaign'}
+              {t('sponsor.campaign_title')}
             </DialogTitle>
             <DialogDescription>
-              {language === 'hu'
-                ? 'Határozza meg, mennyivel támogatja a tagok részvételét'
-                : 'Define how much you contribute to member participation'}
+              {t('sponsor.campaign_description')}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-6 py-4">
             {/* Program Selection */}
             <div className="space-y-2">
-              <Label>{language === 'hu' ? 'Program' : 'Program'}</Label>
+              <Label>{t('sponsor.campaign_program_label')}</Label>
               <Select value={selectedProgram} onValueChange={setSelectedProgram}>
                 <SelectTrigger className="border-black/10">
-                  <SelectValue placeholder={language === 'hu' ? 'Válasszon programot...' : 'Select program...'} />
+                  <SelectValue placeholder={t('sponsor.campaign_select_program')} />
                 </SelectTrigger>
                 <SelectContent>
                   {loading ? (
@@ -281,15 +267,15 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
               </Select>
               {selectedProgramData && (
                 <p className="text-xs text-black/50">
-                  {language === 'hu' ? 'Szakértő' : 'Expert'}: {selectedProgramData.creator_name} • 
-                  {language === 'hu' ? ' Teljes ár' : ' Full price'}: {formatCurrency(selectedProgramData.price_huf)}
+                  {t('sponsor.campaign_expert_label')}: {selectedProgramData.creator_name} • 
+                  {' '}{t('sponsor.campaign_full_price')}: {formatCurrency(selectedProgramData.price_huf)}
                 </p>
               )}
             </div>
 
             {/* Contribution per Seat */}
             <div className="space-y-2">
-              <Label>{language === 'hu' ? 'Hozzájárulás / fő (Ft)' : 'Contribution / seat (Ft)'}</Label>
+              <Label>{t('sponsor.campaign_contribution_label')}</Label>
               <Input
                 type="number"
                 value={contributionPerSeat}
@@ -299,15 +285,13 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
                 className="border-black/10"
               />
               <p className="text-xs text-black/50">
-                {language === 'hu' 
-                  ? `1 Kredit = 1 Ft. A tag fizeti a különbséget: ${formatCurrency(memberPayment)}`
-                  : `1 Credit = 1 Ft. Member pays the difference: ${formatCurrency(memberPayment)}`}
+                {t('sponsor.campaign_credit_note', { amount: formatCurrency(memberPayment) })}
               </p>
             </div>
 
             {/* Max Seats */}
             <div className="space-y-2">
-              <Label>{language === 'hu' ? 'Maximum támogatott hely' : 'Max sponsored seats'}</Label>
+              <Label>{t('sponsor.campaign_max_seats_label')}</Label>
               <Input
                 type="number"
                 value={maxSeats}
@@ -321,22 +305,22 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
             {/* Cost Summary */}
             <div className="p-4 rounded-xl bg-indigo-50 border border-indigo-100 space-y-3">
               <h4 className="font-semibold text-indigo-900 text-sm">
-                {language === 'hu' ? 'Költség Összesítő' : 'Cost Summary'}
+                {t('sponsor.campaign_cost_summary')}
               </h4>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs text-indigo-600/70">{language === 'hu' ? 'Hozzájárulás / fő' : 'Per seat'}</p>
+                  <p className="text-xs text-indigo-600/70">{t('sponsor.campaign_per_seat')}</p>
                   <p className="font-bold text-indigo-900">{formatCurrency(contributionPerSeat)}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-indigo-600/70">{language === 'hu' ? 'Max helyek' : 'Max seats'}</p>
+                  <p className="text-xs text-indigo-600/70">{t('sponsor.campaign_max_seats_short')}</p>
                   <p className="font-bold text-indigo-900">{maxSeats}</p>
                 </div>
               </div>
               <div className="pt-3 border-t border-indigo-200">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-indigo-900">
-                    {language === 'hu' ? 'Összes kredit szükséges' : 'Total credits needed'}
+                    {t('sponsor.campaign_total_credits')}
                   </span>
                   <span className="text-xl font-bold text-indigo-700">
                     {formatCurrency(totalCreditCost)}
@@ -352,7 +336,7 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
               onClick={() => setShowDialog(false)}
               className="border-black/10"
             >
-              {language === 'hu' ? 'Mégse' : 'Cancel'}
+              {t('sponsor.campaign_cancel')}
             </Button>
             <Button
               onClick={handleCreateCampaign}
@@ -362,12 +346,12 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
               {creating ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  {language === 'hu' ? 'Létrehozás...' : 'Creating...'}
+                  {t('sponsor.campaign_creating')}
                 </>
               ) : (
                 <>
                   <CheckCircle className="w-4 h-4 mr-2" />
-                  {language === 'hu' ? 'Kampány Indítása' : 'Start Campaign'}
+                  {t('sponsor.campaign_start')}
                 </>
               )}
             </Button>
