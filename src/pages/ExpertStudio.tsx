@@ -176,6 +176,26 @@ const ExpertStudio = () => {
     retry: false,
   });
 
+  // Share click stats
+  const shareStatsQuery = useQuery({
+    queryKey: ['shareStats', user?.id],
+    queryFn: async () => {
+      if (!user) throw new Error('No user');
+      const { data, error } = await (supabase as any)
+        .from('share_clicks')
+        .select('source')
+        .eq('expert_id', user.id);
+      if (error) return { total: 0, bySource: {} as Record<string, number> };
+      const bySource: Record<string, number> = {};
+      (data || []).forEach((row: any) => {
+        bySource[row.source] = (bySource[row.source] || 0) + 1;
+      });
+      return { total: (data || []).length, bySource };
+    },
+    enabled: !!user,
+    retry: false,
+  });
+
   const getDateLocale = () => {
     switch (language) {
       case 'hu': return hu;
@@ -433,6 +453,37 @@ const ExpertStudio = () => {
                 </Card>
               </motion.div>
             </div>
+          )}
+
+          {/* Share Stats Card */}
+          {shareStatsQuery.data && shareStatsQuery.data.total > 0 && (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+              <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-cyan-500">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Share2 className="w-5 h-5 text-cyan-500" />
+                      {t('share.click_stats')}
+                    </CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center mb-4">
+                    <p className="text-3xl font-bold">{shareStatsQuery.data.total}</p>
+                    <p className="text-sm text-muted-foreground">{t('share.profile_views')}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    {Object.entries(shareStatsQuery.data.bySource)
+                      .sort(([,a], [,b]) => (b as number) - (a as number))
+                      .map(([source, count]) => (
+                        <Badge key={source} variant="outline" className="text-xs">
+                          {source}: {count as number}
+                        </Badge>
+                      ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           )}
 
           {/* Recent Transactions Section */}

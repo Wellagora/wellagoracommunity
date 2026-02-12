@@ -47,6 +47,7 @@ import StarRating from "@/components/reviews/StarRating";
 import GracefulPlaceholder from "@/components/GracefulPlaceholder";
 import { ShareToolkit } from "@/components/expert/ShareToolkit";
 import SEOHead from "@/components/SEOHead";
+import { useShareTracking } from "@/hooks/useShareTracking";
 
 const ProgramDetailPage = () => {
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
@@ -60,7 +61,9 @@ const ProgramDetailPage = () => {
   const { claimVoucher, hasVoucherForContent, getVoucherByContentId } = useVouchers();
   const { isFavorite, toggleFavorite } = useFavorites();
 
-  
+  // Track UTM-based share clicks
+  useShareTracking({ programId: id });
+
   // Check if user already has voucher for this program
   const existingVoucher = id ? getVoucherByContentId(id) : undefined;
   const alreadyClaimed = id ? hasVoucherForContent(id) : false;

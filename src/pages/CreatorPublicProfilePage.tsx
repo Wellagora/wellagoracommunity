@@ -26,6 +26,7 @@ import { hu, enUS, de } from "date-fns/locale";
 import StarRating from "@/components/reviews/StarRating";
 import GracefulPlaceholder from "@/components/GracefulPlaceholder";
 import SEOHead from "@/components/SEOHead";
+import { useShareTracking } from "@/hooks/useShareTracking";
 
 const CreatorPublicProfilePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,6 +35,9 @@ const CreatorPublicProfilePage = () => {
   const { getLocalizedField } = useLocalizedContent();
 
   const dateLocales = { hu, en: enUS, de };
+
+  // Track UTM-based share clicks
+  useShareTracking({ expertId: id });
 
   // Fetch creator profile with all localized fields - use maybeSingle to avoid errors
   const { data: creator, isLoading: creatorLoading } = useQuery({
