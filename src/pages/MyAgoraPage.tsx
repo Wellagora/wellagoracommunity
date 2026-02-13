@@ -13,6 +13,7 @@ import { BookOpen, Ticket, Star, Coins, Flame, Trophy, Sparkles, ArrowRight, Cal
 import { format } from "date-fns";
 import { hu, de, enUS } from "date-fns/locale";
 import { getUserBalance, WELLPOINTS_QUERY_KEY, STREAK_QUERY_KEY } from "@/lib/wellpoints";
+import { BrowseProgramsNudge } from "@/components/growth/BrowseProgramsNudge";
 
 const getDateLocale = (language: Language) => {
   switch (language) {
@@ -473,10 +474,7 @@ const MyAgoraPage = () => {
                 <p className="text-sm text-muted-foreground">{t("common.no_data")}</p>
               </div>
             ) : participations.length === 0 ? (
-              <div className="text-center py-6">
-                <BookOpen className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
-                <p className="text-sm text-muted-foreground">{t("my_agora.no_participations")}</p>
-              </div>
+              <BrowseProgramsNudge />
             ) : (
               <div className="space-y-3">
                 {participations.slice(0, 5).map((program) => (

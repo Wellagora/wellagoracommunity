@@ -6,8 +6,9 @@ import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SmartTiltCard } from "@/components/ui/SmartTiltCard";
 import { StaggerContainer, StaggerItem } from "@/components/ui/StaggerAnimation";
+import { getHeroImage } from "@/constants/heroImages";
 
-const HERO_BG = "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1920&q=80";
+const HERO_BG = getHeroImage('homepage');
 
 const HeroSection = () => {
   const { t } = useLanguage();

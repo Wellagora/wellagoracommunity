@@ -20,6 +20,9 @@ const Footer = () => {
             </p>
             <div className="space-y-1 text-sm text-muted-foreground">
               <p className="font-medium text-foreground">ProSelf International Inc.</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                {t('footer.tagline')}
+              </p>
               <div className="flex items-start gap-1.5">
                 <MapPin className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
                 <span>1133 Budapest, Pannónia u 102.</span>

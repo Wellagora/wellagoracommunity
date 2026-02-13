@@ -47,6 +47,7 @@ import { SponsorContributionBadge } from "@/components/marketplace/SponsorContri
 import { LivePulseToast } from "@/components/marketplace/LivePulseToast";
 import { ProgramGridSkeleton } from "@/components/ui/loading-skeleton";
 import { CATEGORIES as CATEGORY_LIST } from "@/constants/categories";
+import { RoleSpecificEmptyState } from "@/components/growth/RoleSpecificEmptyState";
 
 // Icon mapping for categories
 const CATEGORY_ICONS: Record<string, any> = {
@@ -565,37 +566,7 @@ const ProgramsListingPage = () => {
                 transition={{ duration: 0.6 }}
               >
                 {programs.length === 0 ? (
-                  <>
-                    <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-emerald-50 flex items-center justify-center">
-                      <Sprout className="w-10 h-10 text-emerald-500" />
-                    </div>
-                    <h3 className="font-serif text-2xl font-semibold text-foreground mb-3">
-                      {t("community_building.programs_title")}
-                    </h3>
-                    <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-                      {t("community_building.programs_desc")}
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                      {!user ? (
-                        <Button asChild>
-                          <Link to="/register">{t("community_building.join_community")}</Link>
-                        </Button>
-                      ) : (profile as any)?.user_role === 'expert' || (profile as any)?.user_role === 'creator' ? (
-                        <Button asChild>
-                          <Link to="/expert-studio">{t("community_building.go_to_expert_studio") || "Go to Expert Studio"}</Link>
-                        </Button>
-                      ) : (
-                        <>
-                          <Button asChild>
-                            <Link to="/register?role=expert">{t("community_building.programs_join_expert")}</Link>
-                          </Button>
-                          <Button variant="outline" asChild>
-                            <Link to="/contact">{t("community_building.programs_notify")}</Link>
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                  </>
+                  <RoleSpecificEmptyState type="marketplace" />
                 ) : (
                   <>
                     <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-black/[0.03] flex items-center justify-center">

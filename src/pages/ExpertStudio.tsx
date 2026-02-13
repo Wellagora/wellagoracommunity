@@ -26,6 +26,7 @@ import ExpertImpactReport from "@/components/expert-studio/ExpertImpactReport";
 import MyProgramsList from "@/components/expert-studio/MyProgramsList";
 import ExpertCalendar from "@/components/expert-studio/ExpertCalendar";
 import { ShareToolkit } from "@/components/expert/ShareToolkit";
+import { ReferralWidget } from "@/components/referral/ReferralWidget";
 
 const ExpertStudio = () => {
   const { user, profile, loading } = useAuth();
@@ -230,6 +231,11 @@ const ExpertStudio = () => {
       iconColor="text-black"
       backUrl="/"
     >
+      {/* Referral Widget — prominent at top */}
+      <div className="mb-6">
+        <ReferralWidget />
+      </div>
+
       {/* Share Profile Button + Founding Badge */}
       <div className="flex items-center justify-between mb-4">
         <div>
