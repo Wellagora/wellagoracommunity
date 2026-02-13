@@ -37,6 +37,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { NotificationPreferences } from "@/components/notifications/NotificationPreferences";
+import { awardPoints } from "@/lib/wellpoints";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -301,6 +302,11 @@ const ProfilePage = () => {
       if (error) {
         setError(t('profile.error'));
         return;
+      }
+
+      // Award profile_completed points (one-time, duplicates handled by backend)
+      if (user) {
+        awardPoints(user.id, 'profile_completed', 'Profil kiegészítés').catch(() => {});
       }
 
       setSuccess(t('profile.success'));

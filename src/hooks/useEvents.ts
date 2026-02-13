@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { awardPoints } from '@/lib/wellpoints';
 
 export interface Event {
   id: string;
@@ -117,9 +118,14 @@ export function useEvents() {
         return data;
       }
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['userRsvps'] });
       queryClient.invalidateQueries({ queryKey: ['upcomingEvents'] });
+
+      // Award points when RSVP is 'going'
+      if (variables.status === 'going' && user?.id) {
+        awardPoints(user.id, 'event_attended', 'Esemény részvétel', variables.eventId, 'event').catch(() => {});
+      }
     },
   });
 

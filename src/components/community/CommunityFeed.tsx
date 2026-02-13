@@ -191,6 +191,11 @@ const CommunityFeed = () => {
 
       // Award points for creating post
       await awardPoints(user.id, 'post_created', 'Közösségi poszt létrehozva', data.id, 'community_post');
+      
+      // Check if this is the user's first post → bonus points
+      if (posts.length === 0) {
+        awardPoints(user.id, 'first_post', 'Első közösségi poszt bónusz!', data.id, 'community_post').catch(() => {});
+      }
       queryClient.invalidateQueries({ queryKey: WELLPOINTS_QUERY_KEY(user.id) });
       
       // Update streak

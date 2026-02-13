@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
 import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai@0.24.0";
+import { checkRateLimit, rateLimitResponse } from "../_shared/rateLimit.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -13,6 +14,12 @@ serve(async (req) => {
   }
 
   try {
+    // Rate limiting: 20 requests per minute per user/IP
+    const clientIp = req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip') || 'unknown';
+    const authToken = req.headers.get('Authorization')?.slice(-12) || clientIp;
+    const rl = checkRateLimit(`ai-chat:${authToken}`, 20, 60_000);
+    if (!rl.allowed) return rateLimitResponse(rl.retryAfterMs);
+
     const { messages, language = 'en', conversationId = null, projectId = null, currentRoute = null, currentPageTitle = null } = await req.json();
     
     // Try to use the authenticated user when available, but allow anonymous access too

@@ -3,6 +3,7 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { notificationTriggers } from '@/lib/notificationTriggers';
+import { awardPoints, updateStreak } from '@/lib/wellpoints';
 import { DEMO_ACCOUNTS } from '@/data/mockData';
 
 // User roles - simplified to main roles + admin
@@ -178,6 +179,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         user_role: profileData?.user_role,
         is_super_admin: profileData?.is_super_admin
       }, 'Auth');
+
+      // Fire-and-forget: daily login points + streak
+      if (profileData) {
+        awardPoints(userId, 'daily_login', 'Napi bejelentkezés').catch(() => {});
+        updateStreak(userId).catch(() => {});
+      }
     } catch (err) {
       logger.error('User data load error', err, 'Auth');
       setProfile(null);
@@ -305,14 +312,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         },
     });
 
-    // Send welcome email if signup was successful
+    // Send welcome email + award registration points if signup was successful
     if (!error && authData?.user) {
+      const newUserId = authData.user.id;
       notificationTriggers.onUserRegistration({
-        userId: authData.user.id,
+        userId: newUserId,
         email: data.email,
         name: `${data.firstName} ${data.lastName}`.trim() || undefined,
         role: data.role
       }).catch(err => logger.error('Failed to send welcome email', err, 'Auth'));
+
+      // Award 30 WP welcome points for registration
+      awardPoints(newUserId, 'profile_completed', 'Üdvözlő pontok — regisztráció').catch(() => {});
     }
 
     return { error };

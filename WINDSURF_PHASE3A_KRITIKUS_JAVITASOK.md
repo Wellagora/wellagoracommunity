@@ -211,19 +211,152 @@ Ezt fűzd hozzá a meglévő system prompt-hoz.
 
 ---
 
+---
+
+## RÉSZ 5/7: DummyPaymentModal Eltávolítása (Halott Kód)
+
+### Probléma
+A `src/components/marketplace/DummyPaymentModal.tsx` egy szimulált fizetési modal (2 mp várakozás, fake tranzakció). Sehol nincs importálva — halott kód, de zavart okoz és biztonsági kockázat.
+
+### Feladat
+1. **Töröld** a fájlt: `src/components/marketplace/DummyPaymentModal.tsx`
+2. **Töröld** a tesztben a hivatkozást: `src/__tests__/financial.test.ts` — a `describe('Sponsorship 80/20 split (DummyPaymentModal logic)')` blokkot frissítsd, hogy ne hivatkozzon DummyPaymentModal-ra (a teszt logika maradhat, csak a név cseréje: "Payment 80/20 split logic")
+3. **Ellenőrizd** `git grep -r "DummyPayment"` — sehol ne maradjon hivatkozás
+
+---
+
+## RÉSZ 6/7: Supabase Rate Limiting Alapok
+
+### Probléma
+NINCS semmilyen API rate limiting — brute-force támadásra nyitott az auth és a fizetési végpontok.
+
+### Feladat
+A Supabase edge function-ökben (különösen `create-checkout-session` és `ai-chat`) adj hozzá egyszerű IP-alapú rate limiting-et:
+
+**A) `supabase/functions/_shared/rateLimit.ts`** — Hozd létre:
+
+```typescript
+// Egyszerű in-memory rate limiter (Deno-kompatibilis)
+const requests = new Map<string, { count: number; resetAt: number }>();
+
+export function checkRateLimit(
+  identifier: string,
+  maxRequests: number = 10,
+  windowMs: number = 60000
+): { allowed: boolean; retryAfter?: number } {
+  const now = Date.now();
+  const record = requests.get(identifier);
+
+  if (!record || now > record.resetAt) {
+    requests.set(identifier, { count: 1, resetAt: now + windowMs });
+    return { allowed: true };
+  }
+
+  if (record.count >= maxRequests) {
+    return { allowed: false, retryAfter: Math.ceil((record.resetAt - now) / 1000) };
+  }
+
+  record.count++;
+  return { allowed: true };
+}
+```
+
+**B) Alkalmazd a `create-checkout-session/index.ts`-ben** (a serve handler elején):
+```typescript
+import { checkRateLimit } from "../_shared/rateLimit.ts";
+
+// A serve handler-ben, a CORS check után:
+const clientIp = req.headers.get("x-forwarded-for") || req.headers.get("cf-connecting-ip") || "unknown";
+const { allowed, retryAfter } = checkRateLimit(clientIp, 5, 60000); // 5 kérés / perc
+if (!allowed) {
+  return new Response(JSON.stringify({ error: "Too many requests" }), {
+    status: 429,
+    headers: { ...corsHeaders, "Retry-After": String(retryAfter) },
+  });
+}
+```
+
+**C) Alkalmazd az `ai-chat/index.ts`-ben is** (10 kérés / perc limit)
+
+---
+
+## RÉSZ 7/7: Email Provider Előkészítés (Resend)
+
+### Probléma
+A notification infrastruktúra kész (notificationService.ts, triggerek), de nincs tényleges email küldő bekötve. A `send-welcome-email` edge function hivatkozás létezik, de a tényleges implementáció hiányos.
+
+### Feladat
+**Ha van `supabase/functions/send-welcome-email/index.ts`**, ellenőrizd, hogy valódi email-t küld-e (Resend API).
+**Ha nincs**, hozd létre:
+
+```typescript
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  const { email, firstName, language = "hu" } = await req.json();
+
+  if (!RESEND_API_KEY) {
+    console.warn("RESEND_API_KEY not set — email not sent");
+    return new Response(JSON.stringify({ success: false, reason: "no_api_key" }), {
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const subjects: Record<string, string> = {
+    hu: `Üdvözlünk a WellAgorán, ${firstName}!`,
+    en: `Welcome to WellAgora, ${firstName}!`,
+    de: `Willkommen bei WellAgora, ${firstName}!`,
+  };
+
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${RESEND_API_KEY}`,
+    },
+    body: JSON.stringify({
+      from: "WellAgora <hello@wellagora.org>",
+      to: email,
+      subject: subjects[language] || subjects.hu,
+      html: `<h1>${subjects[language] || subjects.hu}</h1><p>...</p>`,
+    }),
+  });
+
+  return new Response(JSON.stringify({ success: res.ok }), {
+    headers: { "Content-Type": "application/json" },
+  });
+});
+```
+
+**Megjegyzés:** Ha nincs RESEND_API_KEY beállítva, a function ne dobjon hibát — csak logoljon.
+
+---
+
 ## VÉGREHAJTÁSI SORREND
 
 1. **RÉSZ 1** (5 perc) — Bucket fix: `"expert-content"` → `"expert-media"`
 2. **RÉSZ 2** (30 perc) — Founding expert 0% díj a Stripe kódban
 3. **RÉSZ 3** (45 perc) — Gamifikáció triggerek (csak meglévő handler-ekhez!)
 4. **RÉSZ 4** (30 perc) — WellBot route kontextus
+5. **RÉSZ 5** (5 perc) — DummyPaymentModal törlése
+6. **RÉSZ 6** (20 perc) — Rate limiting edge function-ökben
+7. **RÉSZ 7** (20 perc) — Email provider előkészítés
 
 ## COMMIT ÜZENET
 ```
-fix: Phase 3A kritikus javítások
+fix: Phase 3A kritikus javítások (7 rész)
 
 - fix(storage): expert-content → expert-media bucket a ProgramCreatorWizard-ban
 - feat(stripe): founding expert 0% platform díj érvényesítése
 - feat(gamification): pont-szerzési triggerek bekötése meglévő akciókhoz
 - feat(wellbot): route-alapú kontextus-tudatosság
+- chore: DummyPaymentModal halott kód eltávolítása
+- feat(security): rate limiting edge function-ökben
+- feat(email): Resend email provider előkészítés
 ```
