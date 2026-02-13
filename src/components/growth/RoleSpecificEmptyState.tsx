@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ShoppingBag, BookOpen, MessageSquare, UserPlus } from 'lucide-react';
 
 interface RoleSpecificEmptyStateProps {
   type: 'marketplace' | 'community' | 'programs';
@@ -17,19 +17,19 @@ export const RoleSpecificEmptyState = ({ type, userRole }: RoleSpecificEmptyStat
   const getEmptyStateContent = () => {
     if (!user && type === 'marketplace') {
       return {
-        icon: '🏪',
+        icon: <UserPlus className="w-12 h-12 text-primary/60" />,
         title: t('growth.empty_marketplace_title'),
         description: t('growth.empty_marketplace_guest'),
         cta: {
-          label: t('growth.explore_now'),
-          action: () => navigate('/programs'),
+          label: t('growth.join_now'),
+          action: () => navigate('/auth'),
         },
       };
     }
 
     if (userRole === 'expert' && type === 'programs') {
       return {
-        icon: '📚',
+        icon: <BookOpen className="w-12 h-12 text-amber-500/60" />,
         title: t('growth.empty_programs_expert'),
         description: t('growth.create_first_program'),
         cta: {
@@ -41,19 +41,19 @@ export const RoleSpecificEmptyState = ({ type, userRole }: RoleSpecificEmptyStat
 
     if (userRole === 'member' && type === 'marketplace') {
       return {
-        icon: '🎓',
+        icon: <ShoppingBag className="w-12 h-12 text-emerald-500/60" />,
         title: t('growth.empty_marketplace_member'),
         description: t('growth.find_programs'),
         cta: {
           label: t('growth.browse_now'),
-          action: () => navigate('/programs'),
+          action: () => navigate('/piacer'),
         },
       };
     }
 
     if (userRole === 'member' && type === 'community') {
       return {
-        icon: '💬',
+        icon: <MessageSquare className="w-12 h-12 text-blue-500/60" />,
         title: t('growth.empty_community_member'),
         description: t('growth.join_discussions'),
         cta: {
@@ -70,10 +70,10 @@ export const RoleSpecificEmptyState = ({ type, userRole }: RoleSpecificEmptyStat
   if (!content) return null;
 
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-4">
-      <div className="text-5xl mb-4">{content.icon}</div>
-      <h3 className="text-lg font-semibold text-center mb-2">{content.title}</h3>
-      <p className="text-sm text-muted-foreground text-center mb-6 max-w-sm">
+    <div className="flex flex-col items-center justify-center py-16 px-4">
+      <div className="mb-5">{content.icon}</div>
+      <h3 className="text-xl font-semibold text-center mb-2">{content.title}</h3>
+      <p className="text-sm text-muted-foreground text-center mb-8 max-w-sm leading-relaxed">
         {content.description}
       </p>
       <Button onClick={content.cta.action} size="lg" className="gap-2">
