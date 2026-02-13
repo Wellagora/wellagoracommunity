@@ -36,10 +36,10 @@ const NotFound = () => {
         </div>
 
         {/* Message */}
-        <h2 className="text-2xl font-bold text-foreground mb-3">
+        <h2 className="text-2xl font-bold text-white mb-3">
           {t("error.404_title")}
         </h2>
-        <p className="text-muted-foreground mb-8">
+        <p className="text-gray-300 mb-8">
           {t("error.404_description")}
         </p>
 

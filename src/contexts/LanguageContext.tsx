@@ -43,6 +43,16 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
+  // Update browser tab title when language changes
+  useEffect(() => {
+    const titles: Record<Language, string> = {
+      hu: 'WellAgora — Fenntarthatósági Piactér',
+      en: 'WellAgora — Impact Marketplace',
+      de: 'WellAgora — Nachhaltigkeits-Marktplatz',
+    };
+    document.title = titles[language];
+  }, [language]);
+
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     try {

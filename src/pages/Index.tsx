@@ -104,7 +104,10 @@ const Index = () => {
   // Non-authenticated user view - Modern landing page
   return (
     <>
-      <SEOHead />
+      <SEOHead
+        title={t('seo.homepage.title')}
+        description={t('seo.homepage.description')}
+      />
       <div className="min-h-screen bg-white flex flex-col">
         <main className="flex-1">
           {/* 1. HERO SECTION - Full viewport with integrated registration cards */}

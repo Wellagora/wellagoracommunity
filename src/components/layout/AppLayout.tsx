@@ -20,10 +20,8 @@ export default function AppLayout() {
         <Outlet />
       </main>
       
-      {/* Footer - hidden on mobile where bottom nav is shown */}
-      <div className="hidden md:block">
-        <Footer />
-      </div>
+      {/* Footer - visible on all screen sizes (legal links required by GDPR) */}
+      <Footer />
       
       {/* Mobile Bottom Navigation */}
       <MobileBottomNav />

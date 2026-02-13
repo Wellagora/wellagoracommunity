@@ -260,7 +260,8 @@ const Navigation = () => {
     }
 
     // Role-specific navigation
-    const roleToUse = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
+    // Super admins default to member view unless they explicitly chose a viewAsRole
+    const roleToUse = isSuperAdmin ? (viewAsRole || 'member') : effectiveRole;
 
     // MEMBER: Piactér, Események, Közösség, Agórám
     if (roleToUse === 'member') {
@@ -368,8 +369,8 @@ const Navigation = () => {
 
             {/* Desktop Actions - Right */}
             <div className="hidden md:flex items-center gap-3 shrink-0 z-10">
-              {/* God Mode Role Switcher - Only for Super Admins */}
-              <RoleSwitcher />
+              {/* God Mode Role Switcher - Only for Super Admins in DEV */}
+              {import.meta.env.DEV && <RoleSwitcher />}
 
               {/* WellBot Button - Moved here from center nav to prevent overlap */}
               <Link
@@ -765,6 +766,22 @@ const Navigation = () => {
                       <span className="font-medium">Super Admin</span>
                     </Link>
                   )}
+
+                  {/* WellBot - Mobile hamburger menu */}
+                  <Link
+                    to="/ai-assistant"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                      isActive('/ai-assistant')
+                        ? "bg-gradient-to-r from-indigo-100 to-sky-100 text-indigo-700"
+                        : "hover:bg-accent/50"
+                    }`}
+                  >
+                    <div style={{ transform: 'scaleX(-1)' }}>
+                      <WellBotAvatar size="xs" mood="neutral" />
+                    </div>
+                    <span className="font-medium">WellBot</span>
+                  </Link>
 
                   {/* Auth Actions - Mobile */}
                   <div className="pt-4 border-t space-y-2 mt-auto">

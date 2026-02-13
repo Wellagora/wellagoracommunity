@@ -26,6 +26,7 @@ import { hu, enUS, de } from "date-fns/locale";
 import StarRating from "@/components/reviews/StarRating";
 import GracefulPlaceholder from "@/components/GracefulPlaceholder";
 import SEOHead from "@/components/SEOHead";
+import ExpertJsonLd from "@/components/seo/ExpertJsonLd";
 import { useShareTracking } from "@/hooks/useShareTracking";
 
 const CreatorPublicProfilePage = () => {
@@ -205,6 +206,7 @@ const CreatorPublicProfilePage = () => {
         url={`/szakertok/${creator.id}`}
         type="website"
       />
+      <ExpertJsonLd expert={creator} />
 
       {/* Hero Section with Blurred Background */}
       <div className="relative">

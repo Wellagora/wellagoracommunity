@@ -286,19 +286,23 @@ const AdminLayout = () => {
         </div>
 
         {/* Navigation - scrollable only if menu items exceed height */}
-        <div className="flex-1 overflow-y-auto py-4">
-          <nav className="px-2 space-y-1">
-            {mainNavItems.map((item) => (
-              <NavItem key={item.path} item={item} />
-            ))}
-            
-            {/* Divider */}
-            <div className="my-3 border-t border-slate-700" />
-            
-            {secondaryNavItems.map((item) => (
-              <NavItem key={item.path} item={item} />
-            ))}
-          </nav>
+        <div className="relative flex-1 min-h-0">
+          <div className="h-full overflow-y-auto py-4">
+            <nav className="px-2 space-y-1">
+              {mainNavItems.map((item) => (
+                <NavItem key={item.path} item={item} />
+              ))}
+              
+              {/* Divider */}
+              <div className="my-3 border-t border-slate-700" />
+              
+              {secondaryNavItems.map((item) => (
+                <NavItem key={item.path} item={item} />
+              ))}
+            </nav>
+          </div>
+          {/* Scroll fade indicator — hints that more items are below */}
+          <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-slate-800 to-transparent pointer-events-none lg:hidden" />
         </div>
 
         {/* Exit Admin Button */}

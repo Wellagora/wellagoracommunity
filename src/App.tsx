@@ -100,6 +100,8 @@ const FavoritesPage = lazy(() => import("@/pages/FavoritesPage"));
 const MyAgoraPage = lazy(() => import("@/pages/MyAgoraPage"));
 const PointsHistoryPage = lazy(() => import("@/pages/PointsHistoryPage"));
 const GuestConfirmPage = lazy(() => import("@/pages/GuestConfirmPage"));
+const HelpPage = lazy(() => import("@/pages/HelpPage"));
+const SitemapPage = lazy(() => import("@/pages/SitemapPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 const LegacyEditRedirect = () => {
@@ -213,6 +215,8 @@ function App() {
                           <Route path="/projects" element={<ProjectsListPage />} />
                           <Route path="/join/:projectSlug" element={<JoinProjectPage />} />
                           <Route path="/contact" element={<ContactPage />} />
+                          <Route path="/help" element={<HelpPage />} />
+                          <Route path="/sitemap.xml" element={<SitemapPage />} />
                           <Route
                             path="/inbox"
                             element={
