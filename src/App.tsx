@@ -10,6 +10,10 @@ import { ViewModeProvider } from "@/contexts/ViewModeContext";
 import { RegionProvider } from "@/contexts/RegionContext";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
+import { WelcomeModal } from "@/components/onboarding/WelcomeModal";
+import { useWelcomeModal } from "@/hooks/useWelcomeModal";
+import { StreakCelebration } from "@/components/engagement/StreakCelebration";
+import { useStreakCelebration } from "@/hooks/useStreakCelebration";
 import CookieConsentBanner from "@/components/CookieConsentBanner";
 import { initSentry } from "@/lib/sentry";
 import { LoadingFallback } from "@/components/LoadingFallback";
@@ -116,6 +120,27 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+function EngagementLayer() {
+  const { showWelcome, setShowWelcome, userRole, isFoundingExpert } = useWelcomeModal();
+  const { streakDays, showCelebration, setShowCelebration } = useStreakCelebration();
+
+  return (
+    <>
+      <WelcomeModal
+        isOpen={showWelcome}
+        onOpenChange={setShowWelcome}
+        userRole={userRole}
+        isFoundingExpert={isFoundingExpert}
+      />
+      <StreakCelebration
+        streakDays={streakDays}
+        isVisible={showCelebration}
+        onDismiss={() => setShowCelebration(false)}
+      />
+    </>
+  );
+}
 
 function App() {
   // Initialize Sentry after React is ready
@@ -519,6 +544,7 @@ function App() {
                     <Toaster />
                     <SonnerToaster />
                     <CookieConsentBanner />
+                    <EngagementLayer />
                   </BrowserRouter>
                   </RegionProvider>
                 </ProjectProvider>
