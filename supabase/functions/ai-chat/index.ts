@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, language = 'en', conversationId = null, projectId = null } = await req.json();
+    const { messages, language = 'en', conversationId = null, projectId = null, currentRoute = null, currentPageTitle = null } = await req.json();
     
     // Try to use the authenticated user when available, but allow anonymous access too
     const authHeader = req.headers.get('Authorization');
@@ -57,7 +57,7 @@ serve(async (req) => {
       ? await fetchUserContext(supabase, userId, projectId)
       : { profile: null, programs: [], project: null, activeProjectId: projectId };
     const activeProjectId = userContext.activeProjectId;
-    const systemPrompt = getSystemPrompt(language, userContext);
+    const systemPrompt = getSystemPrompt(language, userContext, currentRoute, currentPageTitle);
 
     // Define tools for Gemini function calling
     const tools = [
@@ -694,7 +694,7 @@ function getRoleSystemPrompt(userRole: string): string {
   }
 }
 
-function getSystemPrompt(language: string, context: any): string {
+function getSystemPrompt(language: string, context: any, currentRoute?: string | null, currentPageTitle?: string | null): string {
   const { profile, project, expertContext } = context;
   
   const userName = profile?.first_name || '';
@@ -726,6 +726,52 @@ FONTOS SZABALYOK:
 
   if (userName) {
     fullPrompt += `\n\nA felhasznalo neve: ${userName}.`;
+  }
+
+  // Route-based context awareness
+  if (currentRoute) {
+    const routeContextMap: Record<string, Record<string, string>> = {
+      hu: {
+        '/': 'A felhasználó a főoldalon van. Üdvözöld, mutasd be a platformot, segíts a regisztrációban ha vendég.',
+        '/piacer': 'A felhasználó a Piactéren van. Ajánlj programokat, segíts a szűrésben és kategóriákban.',
+        '/programs': 'A felhasználó a Programok oldalon van. Ajánlj programokat, segíts a szűrésben.',
+        '/esemenyek': 'A felhasználó az Események oldalon van. Ajánlj eseményeket, segíts az RSVP-ben.',
+        '/szakertoi-studio': 'A felhasználó az Expert Stúdióban van. Segíts program létrehozásban, Stripe Connect beállításban, bevétel optimalizálásban.',
+        '/my-agora': 'A felhasználó a My Agora oldalon van. Adj tippeket pontszerzéshez, program kezeléshez, streak fenntartásához.',
+        '/szponzor-panel': 'A felhasználó a Szponzor Panelen van. Segíts kredit vásárlásban, szponzorálásban, hatásmérésben.',
+        '/kozosseg': 'A felhasználó a Közösség oldalon van. Bátorítsd közösségi aktivitásra, posztolásra.',
+      },
+      en: {
+        '/': 'User is on the homepage. Welcome them, introduce the platform, help with registration if guest.',
+        '/piacer': 'User is on the Marketplace. Recommend programs, help with filtering and categories.',
+        '/programs': 'User is on the Programs page. Recommend programs, help with filtering.',
+        '/esemenyek': 'User is on the Events page. Recommend events, help with RSVP.',
+        '/szakertoi-studio': 'User is in Expert Studio. Help with program creation, Stripe Connect setup, revenue optimization.',
+        '/my-agora': 'User is on My Agora. Give tips for earning points, managing programs, maintaining streaks.',
+        '/szponzor-panel': 'User is on Sponsor Panel. Help with credit purchase, sponsoring, impact measurement.',
+        '/kozosseg': 'User is on the Community page. Encourage community activity and posting.',
+      },
+      de: {
+        '/': 'Benutzer ist auf der Startseite. Begrüße ihn, stelle die Plattform vor.',
+        '/piacer': 'Benutzer ist auf dem Marktplatz. Empfehle Programme, hilf beim Filtern.',
+        '/programs': 'Benutzer ist auf der Programmseite. Empfehle Programme.',
+        '/esemenyek': 'Benutzer ist auf der Veranstaltungsseite. Empfehle Events, hilf beim RSVP.',
+        '/szakertoi-studio': 'Benutzer ist im Expert Studio. Hilf bei Programmerstellung.',
+        '/my-agora': 'Benutzer ist auf My Agora. Gib Tipps zum Punkte sammeln.',
+        '/szponzor-panel': 'Benutzer ist im Sponsor Panel. Hilf beim Sponsoring.',
+        '/kozosseg': 'Benutzer ist auf der Community-Seite. Ermutige zur Aktivität.',
+      }
+    };
+
+    const langMap = routeContextMap[language] || routeContextMap.hu;
+    // Match exact route or prefix (e.g. /expert/:id)
+    const routeHint = langMap[currentRoute] || Object.entries(langMap).find(([key]) => currentRoute.startsWith(key) && key !== '/')?.[1] || null;
+    
+    if (routeHint) {
+      fullPrompt += `\n\nAKTUÁLIS KONTEXTUS: ${routeHint}`;
+    } else {
+      fullPrompt += `\n\nA felhasználó jelenleg ezen az oldalon van: ${currentRoute}${currentPageTitle ? ` (${currentPageTitle})` : ''}. Adj kontextus-specifikus segítséget!`;
+    }
   }
 
   // For non-expert roles, keep the general assistant capabilities

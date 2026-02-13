@@ -1,18 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, ArrowRight, Ticket, Copy, Check } from "lucide-react";
+import { awardPoints } from "@/lib/wellpoints";
 import confetti from "canvas-confetti";
 
 const PurchaseSuccessPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const { user } = useAuth();
   const [showConfetti, setShowConfetti] = useState(false);
   const [copied, setCopied] = useState(false);
+  const pointsAwarded = useRef(false);
   const sessionId = searchParams.get("session_id");
   const voucherCode = searchParams.get("voucher");
 
@@ -27,6 +31,13 @@ const PurchaseSuccessPage = () => {
       });
     }
   }, [showConfetti]);
+
+  useEffect(() => {
+    if (user && !pointsAwarded.current && (sessionId || voucherCode)) {
+      pointsAwarded.current = true;
+      awardPoints(user.id, 'voucher_redeemed', 'Program vásárlás', sessionId || voucherCode || undefined, 'purchase').catch(console.error);
+    }
+  }, [user, sessionId, voucherCode]);
 
   const handleCopy = async () => {
     if (voucherCode) {

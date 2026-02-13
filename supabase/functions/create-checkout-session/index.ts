@@ -88,7 +88,7 @@ serve(async (req) => {
     // Get expert's Stripe account
     const { data: expertProfile } = await supabase
       .from("profiles")
-      .select("stripe_account_id, stripe_onboarding_complete")
+      .select("stripe_account_id, stripe_onboarding_complete, is_founding_expert")
       .eq("id", content.creator_id)
       .single();
 
@@ -145,9 +145,11 @@ serve(async (req) => {
     // 5. Final payment amount
     const userPayment = Math.max(0, basePrice - sponsorContribution - wellpointsDiscount - platformCreditUsed);
 
-    // Expert always gets 80% of base price
-    const expertPayout = Math.round(basePrice * 0.80);
-    const applicationFee = Math.max(0, userPayment - expertPayout);
+    // Founding experts get 0% platform fee (100% goes to expert)
+    const isFoundingExpert = expertProfile?.is_founding_expert === true;
+    const expertSharePercent = isFoundingExpert ? 1.00 : 0.80;
+    const expertPayout = Math.round(basePrice * expertSharePercent);
+    const applicationFee = isFoundingExpert ? 0 : Math.max(0, userPayment - expertPayout);
 
     const siteUrl = Deno.env.get("SITE_URL") || req.headers.get("origin") || "https://demo.wellagora.org";
 
@@ -277,6 +279,8 @@ serve(async (req) => {
           wellagora_platform_credit_used: platformCreditUsed.toString(),
           wellagora_expert_payout: expertPayout.toString(),
           wellagora_platform_fee: applicationFee.toString(),
+          wellagora_founding_expert: isFoundingExpert ? "true" : "false",
+          wellagora_expert_share_percent: String(expertSharePercent * 100),
         },
       },
       success_url: `${siteUrl}/purchase/success?session_id={CHECKOUT_SESSION_ID}`,

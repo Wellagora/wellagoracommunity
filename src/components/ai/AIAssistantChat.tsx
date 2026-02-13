@@ -137,7 +137,9 @@ const AIAssistantChat = ({ embedded = false }: AIAssistantChatProps) => {
           messages: conversationHistory,
           language: language,
           conversationId: conversationId,
-          projectId: null
+          projectId: null,
+          currentRoute: window.location.pathname,
+          currentPageTitle: document.title
         }
       });
 

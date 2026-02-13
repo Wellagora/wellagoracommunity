@@ -243,12 +243,12 @@ const ProgramCreatorWizard = () => {
         const fileName = `${user.id}/${Date.now()}.${fileExt}`;
         
         const { data: uploadData, error: uploadError } = await supabase.storage
-          .from("expert-content")
+          .from("expert-media")
           .upload(fileName, formData.mediaFile, { upsert: true });
 
         if (!uploadError && uploadData) {
           const { data: urlData } = supabase.storage
-            .from("expert-content")
+            .from("expert-media")
             .getPublicUrl(uploadData.path);
           imageUrl = urlData.publicUrl;
         }
