@@ -23,9 +23,9 @@ export const HERO_IMAGES = {
     credit: 'Unsplash - Kampus Production',
   },
   homepage: {
-    placeholder: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1400&h=700&fit=crop',
-    alt: 'Welcome to WellAgora',
-    credit: 'Unsplash - Campaign Creators',
+    placeholder: '/images/hero-community.jpg',
+    alt: 'WellAgora közösség',
+    credit: 'WellAgora',
   },
 };
 
