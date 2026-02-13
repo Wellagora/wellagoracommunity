@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveAvatarUrl } from "@/lib/imageResolver";
@@ -26,6 +27,7 @@ interface ExpertProfile {
 
 const ExpertGallery = () => {
   const { t, language } = useLanguage();
+  const { user } = useAuth();
 
   // Translate location names to Hungarian
   const translateLocation = (location: string | null): string => {
@@ -70,7 +72,12 @@ const ExpertGallery = () => {
         return [];
       }
       
-      return (data || []) as ExpertProfile[];
+      const profiles = (data || []) as ExpertProfile[];
+      // Filter out the current logged-in user so they don't see themselves
+      if (user?.id) {
+        return profiles.filter(p => p.id !== user.id);
+      }
+      return profiles;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
   });

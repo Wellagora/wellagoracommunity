@@ -618,7 +618,7 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                           </div>
                           <div className="p-2 bg-muted/50 rounded-lg">
                             <Ticket className="w-4 h-4 mx-auto text-amber-500 mb-1" />
-                            <p className="text-xs text-muted-foreground">{t("expert_studio.vouchers_short")}</p>
+                            <p className="text-xs text-muted-foreground">{t("expert_studio.registrations_short") || "Registrations"}</p>
                             <p className="font-semibold text-sm">{program.vouchers_count || 0}</p>
                           </div>
                           <div className="p-2 bg-muted/50 rounded-lg">

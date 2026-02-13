@@ -486,8 +486,8 @@ const AuthPage = () => {
                     )}
                   </AnimatePresence>
 
-                  {/* Demo Login Panel */}
-                  <Collapsible className="mt-6 pt-6 border-t border-slate-200">
+                  {/* Demo Login Panel - only in development */}
+                  {import.meta.env.DEV && <Collapsible className="mt-6 pt-6 border-t border-slate-200">
                     <CollapsibleTrigger className="flex items-center justify-center gap-2 w-full text-sm text-slate-500 hover:text-slate-700 transition-colors">
                       <span>🎭 {t('auth.demo_login')}</span>
                       <ChevronDown className="w-4 h-4" />
@@ -513,7 +513,7 @@ const AuthPage = () => {
                         Kattints, majd nyomd meg a "Bejelentkezés" gombot
                       </p>
                     </CollapsibleContent>
-                  </Collapsible>
+                  </Collapsible>}
 
                   {/* Social Login Options */}
                   <div className="mt-6 pt-6 border-t border-slate-200">

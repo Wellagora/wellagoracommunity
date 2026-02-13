@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +21,7 @@ const dateLocales = { hu, en: enUS, de } as const;
 const PublicExpertProfile = () => {
   const { slug } = useParams<{ slug: string }>();
   const { t, language } = useLanguage();
+  const { user } = useAuth();
   const [bioLang, setBioLang] = useState<string>(language);
 
   // Fetch expert by slug OR by id (fallback)
@@ -106,7 +108,7 @@ const PublicExpertProfile = () => {
   const fullName = expert ? `${expert.first_name || ""} ${expert.last_name || ""}`.trim() : "";
   const bioText = getBio(language);
   const memberSince = expert?.created_at
-    ? format(new Date(expert.created_at), "yyyy. MMMM", { locale: dateLocales[language] || hu })
+    ? format(new Date(expert.created_at), language === 'hu' ? "yyyy. MMMM" : "MMMM yyyy", { locale: dateLocales[language] || hu })
     : "";
 
   if (isLoading) {
@@ -294,13 +296,37 @@ const PublicExpertProfile = () => {
         <section className="max-w-4xl mx-auto px-4 pb-16">
           <Card className="bg-gradient-to-r from-emerald-50 to-amber-50 border-0">
             <CardContent className="py-10 text-center">
-              <h3 className="text-xl font-bold text-foreground mb-2">{t("founding_expert.cta_title")}</h3>
-              <p className="text-muted-foreground mb-6">{t("founding_expert.cta_desc")}</p>
-              <Link to="/auth">
-                <Button className="bg-[#C67B4E] hover:bg-[#b56a3f] text-white px-8 py-3 text-lg">
-                  {t("founding_expert.cta_button")}
-                </Button>
-              </Link>
+              {user?.id === expert.id ? (
+                <>
+                  <h3 className="text-xl font-bold text-foreground mb-2">{t("public_profile.edit_cta_title") || "This is your profile"}</h3>
+                  <p className="text-muted-foreground mb-6">{t("public_profile.edit_cta_desc") || "Keep your profile up to date to attract participants."}</p>
+                  <Link to="/expert-studio">
+                    <Button className="bg-[#2C5530] hover:bg-[#234425] text-white px-8 py-3 text-lg">
+                      {t("public_profile.edit_profile_button") || "Edit your profile"}
+                    </Button>
+                  </Link>
+                </>
+              ) : user ? (
+                <>
+                  <h3 className="text-xl font-bold text-foreground mb-2">{t("founding_expert.cta_title")}</h3>
+                  <p className="text-muted-foreground mb-6">{t("founding_expert.cta_desc")}</p>
+                  <Link to="/piacer">
+                    <Button className="bg-[#C67B4E] hover:bg-[#b56a3f] text-white px-8 py-3 text-lg">
+                      {t("public_profile.browse_programs") || "Browse programs"}
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <h3 className="text-xl font-bold text-foreground mb-2">{t("founding_expert.cta_title")}</h3>
+                  <p className="text-muted-foreground mb-6">{t("founding_expert.cta_desc")}</p>
+                  <Link to="/auth">
+                    <Button className="bg-[#C67B4E] hover:bg-[#b56a3f] text-white px-8 py-3 text-lg">
+                      {t("founding_expert.cta_button")}
+                    </Button>
+                  </Link>
+                </>
+              )}
             </CardContent>
           </Card>
         </section>

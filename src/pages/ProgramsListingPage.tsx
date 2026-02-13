@@ -171,7 +171,7 @@ const FALLBACK_SPONSOR = {
 
 const ProgramsListingPage = () => {
   const { t, language } = useLanguage();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -579,6 +579,10 @@ const ProgramsListingPage = () => {
                       {!user ? (
                         <Button asChild>
                           <Link to="/register">{t("community_building.join_community")}</Link>
+                        </Button>
+                      ) : (profile as any)?.user_role === 'expert' || (profile as any)?.user_role === 'creator' ? (
+                        <Button asChild>
+                          <Link to="/expert-studio">{t("community_building.go_to_expert_studio") || "Go to Expert Studio"}</Link>
                         </Button>
                       ) : (
                         <>
