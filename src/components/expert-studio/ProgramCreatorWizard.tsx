@@ -202,8 +202,8 @@ const ProgramCreatorWizard = () => {
 
   const isStepValid = (step: number): boolean => {
     switch (step) {
-      case 0: // Media
-        return !!formData.mediaUrl || !!formData.mediaFile;
+      case 0: // Media — optional, can skip
+        return true;
       case 1: // Details
         return formData.title_hu.trim().length >= 3 && !!formData.category;
       case 2: // Localization
@@ -217,11 +217,7 @@ const ProgramCreatorWizard = () => {
 
   const handleNext = async () => {
     if (!isStepValid(currentStep)) {
-      if (currentStep === 0) {
-        toast.error(t("program_creator.media_required") || "Please upload a photo or video first!");
-      } else {
-        toast.error(t("program_creator.fill_required"));
-      }
+      toast.error(t("program_creator.fill_required"));
       return;
     }
     

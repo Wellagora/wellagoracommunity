@@ -505,12 +505,12 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                             src={program.image_url}
                             alt={program.title}
                             className="w-full h-full object-cover"
+                            onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement?.querySelector('.img-fallback')?.classList.remove('hidden'); }}
                           />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-emerald-500/10">
-                            <Leaf className="w-12 h-12 text-primary/30" />
-                          </div>
-                        )}
+                        ) : null}
+                        <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-emerald-500/10 img-fallback ${program.image_url ? 'hidden' : ''}`}>
+                          <Leaf className="w-12 h-12 text-primary/30" />
+                        </div>
                         <div className="absolute top-2 left-2 flex flex-wrap gap-1">
                           {getStatusBadge(program)}
                           {getContentTypeBadge(program.content_type)}
@@ -651,12 +651,12 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                         src={program.image_url}
                         alt={program.title}
                         className="w-full h-full object-cover"
+                        onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement?.querySelector('.img-fallback')?.classList.remove('hidden'); }}
                       />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-emerald-500/10">
-                        <Leaf className="w-6 h-6 text-primary/30" />
-                      </div>
-                    )}
+                    ) : null}
+                    <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-emerald-500/10 img-fallback ${program.image_url ? 'hidden' : ''}`}>
+                      <Leaf className="w-6 h-6 text-primary/30" />
+                    </div>
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-foreground truncate">

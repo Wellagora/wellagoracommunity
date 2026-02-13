@@ -7,10 +7,11 @@ import { motion } from 'framer-motion';
 
 interface RevenueOverviewProps {
   grossSales: number;
-  expertShare: number; // 80%
-  platformShare: number; // 20%
+  expertShare: number;
+  platformShare: number;
   pendingPayout: number;
   lastPayoutDate?: string;
+  isFoundingExpert?: boolean;
 }
 
 const RevenueOverview = ({
@@ -18,7 +19,8 @@ const RevenueOverview = ({
   expertShare,
   platformShare,
   pendingPayout,
-  lastPayoutDate
+  lastPayoutDate,
+  isFoundingExpert = false
 }: RevenueOverviewProps) => {
   const { language } = useLanguage();
 
@@ -26,8 +28,10 @@ const RevenueOverview = ({
     return `${amount.toLocaleString()} Ft`;
   };
 
-  const expertPercent = grossSales > 0 ? (expertShare / grossSales) * 100 : 80;
-  const platformPercent = grossSales > 0 ? (platformShare / grossSales) * 100 : 20;
+  const defaultExpertPercent = isFoundingExpert ? 100 : 80;
+  const defaultPlatformPercent = isFoundingExpert ? 0 : 20;
+  const expertPercent = grossSales > 0 ? (expertShare / grossSales) * 100 : defaultExpertPercent;
+  const platformPercent = grossSales > 0 ? (platformShare / grossSales) * 100 : defaultPlatformPercent;
 
   return (
     <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm">
@@ -36,7 +40,7 @@ const RevenueOverview = ({
           <DollarSign className="w-5 h-5 text-emerald-600" />
           {language === 'hu' ? 'Bevétel Áttekintés' : 'Revenue Overview'}
           <Badge className="ml-auto bg-emerald-100 text-emerald-700 text-xs">
-            80/20 Split
+            {isFoundingExpert ? '100/0 Founding' : '80/20 Split'}
           </Badge>
         </CardTitle>
       </CardHeader>
@@ -69,7 +73,7 @@ const RevenueOverview = ({
               transition={{ duration: 0.8, ease: 'easeOut' }}
             >
               <span className="text-white text-sm font-bold">
-                {language === 'hu' ? 'Te: 80%' : 'You: 80%'}
+                {language === 'hu' ? `Te: ${defaultExpertPercent}%` : `You: ${defaultExpertPercent}%`}
               </span>
             </motion.div>
             <motion.div
@@ -79,7 +83,7 @@ const RevenueOverview = ({
               transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
             >
               <span className="text-white/80 text-xs font-medium">
-                20%
+                {defaultPlatformPercent}%
               </span>
             </motion.div>
           </div>
@@ -90,7 +94,7 @@ const RevenueOverview = ({
               <div className="flex items-center gap-2 mb-1">
                 <Wallet className="w-4 h-4 text-emerald-600" />
                 <span className="text-xs text-emerald-700">
-                  {language === 'hu' ? 'A Te 80%-od' : 'Your 80%'}
+                  {language === 'hu' ? `A Te ${defaultExpertPercent}%-od` : `Your ${defaultExpertPercent}%`}
                 </span>
               </div>
               <p className="text-xl font-bold text-emerald-700">
@@ -101,7 +105,7 @@ const RevenueOverview = ({
               <div className="flex items-center gap-2 mb-1">
                 <PieChart className="w-4 h-4 text-black/40" />
                 <span className="text-xs text-black/50">
-                  {language === 'hu' ? 'Platform 20%' : 'Platform 20%'}
+                  {language === 'hu' ? `Platform ${defaultPlatformPercent}%` : `Platform ${defaultPlatformPercent}%`}
                 </span>
               </div>
               <p className="text-xl font-bold text-black/60">

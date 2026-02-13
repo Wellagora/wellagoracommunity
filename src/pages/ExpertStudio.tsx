@@ -358,7 +358,7 @@ const ExpertStudio = () => {
                         }
                       }}
                       disabled={stripeLoading}
-                      className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white"
+                      className="w-full bg-[#2C5530] hover:bg-[#234425] text-white"
                     >
                       <CreditCard className="w-4 h-4 mr-2" />
                       {stripeLoading ? '...' : (t('expert.stripe_setup') || 'Stripe fiók beállítása')}
@@ -389,7 +389,7 @@ const ExpertStudio = () => {
                       <CardTitle className="text-lg">{t('expert_studio.cards.revenue.title') || 'Bevétel áttekintés'}</CardTitle>
                       <Wallet className="w-5 h-5 text-emerald-500" />
                     </div>
-                    <CardDescription>{t('expert_studio.cards.revenue.subtitle') || 'Bevételeid (80%)'}</CardDescription>
+                    <CardDescription>{t('expert_studio.cards.revenue.subtitle') || `Bevételeid (${(profile as any)?.is_founding_expert ? 100 : 80}%)`}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     {revenueQuery.isError || !revenueQuery.data ? (
