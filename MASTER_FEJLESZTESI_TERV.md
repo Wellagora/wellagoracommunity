@@ -1,225 +1,446 @@
-# WELLAGORA — MASTER FEJLESZTÉSI TERV
+# WELLAGORA — MASTER FEJLESZTÉSI TERV v2.0
 
-**44 feladat | 5 fázis | Teljes platform lefedettséggel**
-
-Kiindulás: Stratégiai Audit 2026Q1 + Gap Analízis
-Phase 3A KÉSZ: commit c0e82b4 (2026-02-13)
-Dátum: 2026. február 14.
+**Frissítve:** 2026-02-13 (kódbázis verifikáció után)
+**Előzmény:** Phase 3A KÉSZ (commit c0e82b4)
+**Felülvizsgálat oka:** Az v1.0 terv több helyen pontatlan volt — a kódbázis valós állapota kedvezőbb.
 
 ---
 
-## 1. ÖSSZEFOGLALÓ
+## WINDSURF VÉGREHAJTÁSI UTASÍTÁS
 
-A WellAgora platform **44 azonosított feladat** közé esik, melyből **11 már KÉSZ** (Phase 3A + korábbi fejlesztés), **20 RÉSZLEGES** (elkezdve de nem befejezve), és **13 HIÁNYZIK** (még nem kezdett).
+**Ez a dokumentum önmagában elegendő az összes fejlesztési feladat végrehajtásához.**
+
+Olvasd el a teljes tervet, majd hajtsd végre az összes fázist sorrendben:
+**Phase 3B → Phase 3C → Phase 3D → Phase 3E**
+
+Szabályok:
+1. **Commitolj minden fázis végén** külön commit-tal (pl. `fix: Phase 3B — Biztonság + Infrastruktúra`)
+2. **A Stripe end-to-end tesztet NE csináld** — az az utolsó lépés, azt együtt végezzük
+3. Ha egy feladathoz a leírásban KÉSZ van jelölve, **ellenőrizd hogy valóban működik**, de ne írd újra
+4. Ha egy feladat részleges, **csak a hiányzó részt pótold**
+5. Minden fájlmódosítás előtt **olvasd el az aktuális fájlt** — a sor-hivatkozások közelítőek
+6. Ne hozz létre felesleges UI-t — csak meglévő handler-ekhez köss be új logikát
+7. `npm run build` legyen sikeres minden fázis végén
+
+---
+
+## 1. VALÓS ÁLLAPOT ÖSSZEFOGLALÓ (verifikált 2026-02-13)
+
+| Metrika | Régi terv (v1.0) | Valós állapot (v2.0) |
+|---------|-------------------|----------------------|
+| Gamifikáció triggerek | 1/13 bekötve | **12/14 bekötve** |
+| Email (Resend) | "nincs bekötve" | **Resend API integrálva** |
+| Event RSVP | "nincs perzisztencia" | **event_rsvps tábla + RLS kész** |
+| Sitemap | "HIÁNYZIK" | **Kliens-oldali generálás kész** |
+| JSON-LD | "HIÁNYZIK" | **Program + Partner schema kész** |
+| Meta tagek | "HIÁNYZIK" | **react-helmet-async + SEOHead kész** |
+| Impact Dashboard | "nincs dashboard" | **3 komponens + service kész** |
+| Unit tesztek | "0 unit teszt" | **4 vitest fájl létezik** |
+
+**Következmény:** A tényleges munka ~40%-kal kevesebb mint az v1.0-ban becsült.
 
 | Fázis | Leírás | Becsült idő |
 |-------|--------|-------------|
-| **Phase 3A** | ✅ KÉSZ (c0e82b4): Bucket fix + 0% díj + Gamifikáció trigger + WellBot kontextus | KÉSZ |
-| **Phase 3B** | Biztonság + Infrastruktúra (rate limit, email, DummyPayment, gamif. triggerek) | ~3 nap |
-| **Phase 3C** | Felhasználói Út Kiegészítés (keresés, RSVP, közösség, szponzor hatás, i18n) | ~5 nap |
-| **Phase 3D** | Üzleti Logika Kiegészítés (naptár, jelenlét, értesítés, kredit UI, GDPR) | ~5 nap |
-| **Phase 3E** | Minőségbiztosítás (SEO, tesztek, sitemap, meta tagek, strukturált adatok) | ~4 nap |
-| **UTOLSÓ** | Stripe end-to-end teszt | ~1 nap |
+| **Phase 3A** | ✅ KÉSZ (c0e82b4) | KÉSZ |
+| **Phase 3B** | Biztonság + Cleanup | ~1 nap |
+| **Phase 3C** | UX kiegészítés | ~3 nap |
+| **Phase 3D** | Üzleti logika befejezés | ~3 nap |
+| **Phase 3E** | Minőségbiztosítás (SEO + teszt kiegészítés) | ~2 nap |
+| **UTOLSÓ** | Stripe end-to-end teszt (NE CSINÁLD) | ~1 nap |
 
-**Összes becsült idő: ~18 munkanap (3.5 hét)**
+**Összes becsült idő: ~10 munkanap (2 hét)** (régi becslés: 18 nap)
 
 ---
 
-## 2. TELJES PLATFORM LELTÁR (44 feladat)
+## 2. TELJES PLATFORM LELTÁR (frissített státuszok)
 
 ### SZAKÉRTŐI ÚT
 
 | # | Funkció | Státusz | Fázis | Megjegyzés |
 |---|---------|---------|-------|------------|
-| 1 | Expert regisztráció (email/jelszó) | ✅ KÉSZ | 3A KÉSZ | Működik, szerepkör választással |
+| 1 | Expert regisztráció | ✅ KÉSZ | - | Működik, szerepkör választással |
 | 2 | Expert profil kitöltés | ⚠️ RÉSZLEGES | 3C | Mezők vannak, nincs onboarding varázsló |
-| 3 | Program létrehozás varázsló (4 lépés) | ✅ KÉSZ | 3A KÉSZ | Step1-4 működik, media upload javítva |
-| 4 | Program publikálás (3 nyelv) | ✅ KÉSZ | - | HU/EN/DE jóváhagyás után publikus |
-| 5 | Stripe Connect onboarding | ✅ KÉSZ | - | Express fiók, refresh flow |
-| 6 | Alapító Szakértő 0% díj | ✅ KÉSZ | 3A KÉSZ | create-checkout-session javítva |
+| 3 | Program létrehozás varázsló | ✅ KÉSZ | - | Step1-4, media upload javítva (c0e82b4) |
+| 4 | Program publikálás (3 nyelv) | ✅ KÉSZ | - | HU/EN/DE |
+| 5 | Stripe Connect onboarding | ✅ KÉSZ | - | Express fiók |
+| 6 | Alapító Szakértő 0% díj | ✅ KÉSZ | - | c0e82b4 |
 | 7 | Szakértői naptár | ⚠️ RÉSZLEGES | 3D | Hónap nézet van, nincs időpont-kezelés |
-| 8 | Szakértői üzenetküldés/Inbox | ⚠️ RÉSZLEGES | 4 | Inbox betölt, nincs szálkezelés |
-| 9 | Jelenlét-követés (check-in) | ❌ HIÁNYZIK | 3D | Nincs QR-kód, check-in, statisztika |
-| 10 | Szakértői analitika | ⚠️ RÉSZLEGES | 3D | Bevétel + résztvevők, hiányzik engagement |
+| 8 | Szakértői üzenetküldés | ⚠️ RÉSZLEGES | 4+ | Inbox betölt, nincs szálkezelés (post-launch) |
+| 9 | Jelenlét-követés | ❌ HIÁNYZIK | 3D | Nincs check-in |
+| 10 | Szakértői analitika | ⚠️ RÉSZLEGES | 3D | Bevétel van, engagement hiányzik |
 
 ### TAG ÚT
 
 | # | Funkció | Státusz | Fázis | Megjegyzés |
 |---|---------|---------|-------|------------|
-| 11 | Tag regisztráció | ✅ KÉSZ | - | Email/jelszó + szerepkör választás |
-| 12 | Piactér böngészés + szűrők | ⚠️ RÉSZLEGES | 3C | 12 kategória, cím keresés; nincs full-text |
-| 13 | Stripe fizetés (checkout) | ✅ KÉSZ | - | Edge fn → Stripe session → webhook |
-| 14 | Hozzáférés vásárlás után | ⚠️ RÉSZLEGES | 3D | content_access tábla, nincs lejárat-kezelés |
-| 15 | Esemény RSVP | ⚠️ RÉSZLEGES | 3C | UI kész, nincs perzisztencia + email |
-| 16 | Kedvencek/könyvjelzők | ✅ KÉSZ | - | Szív ikon, favorites tábla, toggle |
-| 17 | Profil szerkesztés | ✅ KÉSZ | - | Név, bio, helyszín, értesítési beáll. |
-| 18 | Közösségi posztok | ⚠️ RÉSZLEGES | 3C | Post/like/comment; nincs edit/delete/mention |
-| 19 | Gamifikáció pont-triggerek | ⚠️ RÉSZLEGES | 3B | 1/13 trigger bekötve (voucher_redeemed) |
-| 20 | Streak rendszer | ⚠️ RÉSZLEGES | 3B | Struktúra létezik, triggerek hiányoznak |
+| 11 | Tag regisztráció | ✅ KÉSZ | - | Email/jelszó + szerepkör |
+| 12 | Piactér + szűrők | ⚠️ RÉSZLEGES | 3C | Cím keresés van, full-text nincs |
+| 13 | Stripe fizetés | ✅ KÉSZ | - | Edge fn → Stripe session → webhook |
+| 14 | Hozzáférés vásárlás után | ⚠️ RÉSZLEGES | 3D | content_access tábla, nincs lejárat |
+| 15 | Esemény RSVP | ✅ KÉSZ | - | **event_rsvps tábla + RLS + mutation** |
+| 16 | Kedvencek | ✅ KÉSZ | - | Szív ikon, toggle |
+| 17 | Profil szerkesztés | ✅ KÉSZ | - | Név, bio, helyszín |
+| 18 | Közösségi posztok | ⚠️ RÉSZLEGES | 3C | Post/like/comment kész; edit hiányzik |
+| 19 | Gamifikáció triggerek | ✅ KÉSZ (12/14) | 3B | Csak `program_completed` + `lesson_completed` hiányzik |
+| 20 | Streak rendszer | ✅ KÉSZ | - | daily_login + streak_bonus bekötve |
 
 ### SZPONZOR ÚT
 
 | # | Funkció | Státusz | Fázis | Megjegyzés |
 |---|---------|---------|-------|------------|
-| 21 | Szponzor regisztráció + onboarding | ✅ KÉSZ | - | 4 lépéses onboarding (cég, logo, web) |
+| 21 | Szponzor regisztráció | ✅ KÉSZ | - | 4 lépéses onboarding |
 | 22 | Kredit vásárlás | ⚠️ RÉSZLEGES | 3D | Edge fn kész, UI form hiányos |
-| 23 | Program szponzorálás | ⚠️ RÉSZLEGES | 3D | Modal + DB oszlopok, nincs kampány UI |
-| 24 | Hatás-követés (impact) | ⚠️ RÉSZLEGES | 3C | Kalkuláció van, nincs dashboard/ROI |
+| 23 | Program szponzorálás | ⚠️ RÉSZLEGES | 3D | Modal + DB, nincs kampány UI |
+| 24 | Hatás-követés | ✅ KÉSZ | - | **3 dashboard + SponsorImpactService** |
 
 ### PLATFORM-SZINTŰ
 
 | # | Funkció | Státusz | Fázis | Megjegyzés |
 |---|---------|---------|-------|------------|
-| 25 | WellBot AI házigazda | ⚠️ RÉSZLEGES | 3A KÉSZ | Route kontextus hozzáadva (c0e82b4) |
-| 26 | i18n fordítások (HU/EN/DE) | ⚠️ RÉSZLEGES | 3C | Fájlok vannak, hiányosságok maradtak |
-| 27 | In-app értesítések | ⚠️ RÉSZLEGES | 3D | Tábla + UI, email küldés nincs bekötve |
-| 28 | Email küldés (Resend) | ⚠️ RÉSZLEGES | 3B | Edge fn-ök léteznek, provider nincs bekötve |
-| 29 | Globális keresés | ❌ HIÁNYZIK | 3C | Csak cím keresés a piactéren |
-| 30 | Mobil navigáció | ⚠️ RÉSZLEGES | - | Sheet menü, MobileBottomNav komponens létezik |
-| 31 | 404/hiba oldalak | ⚠️ RÉSZLEGES | - | 404 van, 403/500 nincs |
-| 32 | Betöltési állapotok (skeleton) | ⚠️ RÉSZLEGES | - | Fő komponensek kész, nem konzisztens |
+| 25 | WellBot AI | ✅ KÉSZ | - | Route kontextus hozzáadva (c0e82b4) |
+| 26 | i18n (HU/EN/DE) | ⚠️ RÉSZLEGES | 3C | 6 fájl (3 fő + 3 admin), hiányosságok |
+| 27 | In-app értesítések | ⚠️ RÉSZLEGES | 3D | Tábla + UI kész, email triggerek hiányoznak |
+| 28 | Email küldés (Resend) | ✅ KÉSZ | - | **send-welcome-email Resend API-val működik** |
+| 29 | Globális keresés | ❌ HIÁNYZIK | 3C | Csak RegionalHub-ban van searchQuery |
+| 30 | Mobil navigáció | ✅ KÉSZ | - | Sheet menü + MobileBottomNav |
 
 ### BIZTONSÁG + INFRASTRUKTÚRA
 
 | # | Funkció | Státusz | Fázis | Megjegyzés |
 |---|---------|---------|-------|------------|
-| 33 | Supabase RLS policy-k | ✅ KÉSZ | - | 190 migráció, RLS audit alkalmazva |
-| 34 | Rate limiting (API védelem) | ❌ HIÁNYZIK | 3B | Nincs brute-force védelem |
-| 35 | GDPR adat-törlés | ❌ HIÁNYZIK | 3D | Cookie consent van, törlés funkció nincs |
-| 36 | DummyPaymentModal eltávolítás | ⚠️ RÉSZLEGES | 3B | Halott kód, el kell távolítani |
-| 37 | Sentry hibakezelés | ✅ KÉSZ | - | Konfigurálva (opcionális mód) |
-| 38 | CI/CD pipeline | ✅ KÉSZ | - | GitHub Actions: tsc + build + test |
+| 31 | RLS policy-k | ✅ KÉSZ | - | 190 migráció |
+| 32 | Rate limiting | ❌ HIÁNYZIK | 3B | **Kritikus biztonsági rés** |
+| 33 | GDPR adat-törlés | ❌ HIÁNYZIK | 3D | Cookie consent van, törlés nincs |
+| 34 | DummyPaymentModal | ⚠️ HALOTT KÓD | 3B | Létezik, sehol nincs importálva, törölni kell |
+| 35 | Sentry | ✅ KÉSZ | - | Konfigurálva |
+| 36 | CI/CD | ✅ KÉSZ | - | GitHub Actions |
 
 ### SEO + TESZTELÉS
 
 | # | Funkció | Státusz | Fázis | Megjegyzés |
 |---|---------|---------|-------|------------|
-| 39 | sitemap.xml | ❌ HIÁNYZIK | 3E | robots.txt hivatkozik rá, de nem létezik |
-| 40 | Dinamikus meta tagek | ❌ HIÁNYZIK | 3E | Cím/leírás nem frissül oldalváltáskor |
-| 41 | hreflang tagek | ❌ HIÁNYZIK | 3E | Háromnyelvű oldalhoz kritikus |
-| 42 | Strukturált adatok (JSON-LD) | ❌ HIÁNYZIK | 3E | Schema.org nincs |
-| 43 | Unit tesztek (Vitest) | ❌ HIÁNYZIK | 3E | 0 unit teszt, 8 E2E Playwright fájl |
-| 44 | Stripe end-to-end teszt | ❌ HIÁNYZIK | UTOLSÓ | Kifejezetten az utolsó lépés |
+| 37 | sitemap.xml | ✅ KÉSZ | - | **SitemapPage.tsx + siteMapGenerator.ts** |
+| 38 | Meta tagek | ✅ KÉSZ | - | **react-helmet-async + SEOHead** |
+| 39 | hreflang tagek | ❌ HIÁNYZIK | 3E | Háromnyelvű oldalhoz szükséges |
+| 40 | JSON-LD | ⚠️ RÉSZLEGES | 3E | **Program + Partner kész**, Expert + Event hiányzik |
+| 41 | Unit tesztek | ⚠️ RÉSZLEGES | 3E | **4 vitest fájl van**, vitest.config hiányzik, bővítés kell |
+| 42 | Stripe E2E teszt | ❌ HIÁNYZIK | UTOLSÓ | **NE CSINÁLD — együtt végezzük** |
 
 ---
 
 ## 3. FÁZIS RÉSZLETEZÉS
 
-### Phase 3B — Biztonság + Infrastruktúra (~3 nap)
+---
 
-Ezek a feladatok kritikus biztonsági és infrastrukturális hiányosságokat pótolnak.
+### Phase 3B — Biztonság + Cleanup (~1 nap)
 
-| # | Feladat | Típus | Becslés | Függőség | Végrehajtó |
-|---|---------|-------|---------|----------|------------|
-| 1 | Összes gamifikáció pont-trigger bekötés | Kód | 1 nap | Nincs | Windsurf |
-| 2 | Streak rendszer triggerek | Kód | 0.5 nap | #1 | Windsurf |
-| 3 | Rate limiting edge function-ökben | Biztonság | 0.5 nap | Nincs | Windsurf |
-| 4 | DummyPaymentModal eltávolítás | Cleanup | 10 perc | Nincs | Windsurf |
-| 5 | Email provider (Resend) bekötés | Infra | 0.5 nap | Nincs | Windsurf |
-| 6 | Regisztrációs welcome pont (50 WP) | Kód | 0.5 nap | #1 | Windsurf |
+**Cél:** Biztonsági rések betömése és halott kód eltávolítása.
 
-**Részletes utasítások:** Lásd `WINDSURF_PHASE3B_BIZTONSAG.md` (külön fájl)
+#### 3B-1: Rate Limiting Edge Function-ökben
+**Prioritás:** KRITIKUS
+**Probléma:** Nincs brute-force védelem — az auth és fizetési végpontok nyitottak.
+
+**Feladat:**
+1. Hozd létre: `supabase/functions/_shared/rateLimit.ts`
+   - In-memory Map alapú rate limiter (Deno-kompatibilis)
+   - `checkRateLimit(identifier: string, maxRequests: number, windowMs: number)` → `{ allowed: boolean, retryAfter?: number }`
+
+2. Alkalmazd a `supabase/functions/create-checkout-session/index.ts`-ben:
+   - A serve handler elején, CORS check után
+   - IP kinyerés: `req.headers.get("x-forwarded-for") || req.headers.get("cf-connecting-ip") || "unknown"`
+   - Limit: 5 kérés / perc
+   - 429 válasz ha túllépte
+
+3. Alkalmazd a `supabase/functions/ai-chat/index.ts`-ben:
+   - Limit: 10 kérés / perc
 
 ---
 
-### Phase 3C — Felhasználói Út Kiegészítés (~5 nap)
+#### 3B-2: DummyPaymentModal Eltávolítás
+**Prioritás:** KÖZEPES
+**Probléma:** `src/components/marketplace/DummyPaymentModal.tsx` halott kód — sehol nincs importálva.
 
-Azok a funkciók, amelyek a három szerepkör (Expert, Tag, Szponzor) felhasználói élményét teszik teljesebbé.
-
-| # | Feladat | Típus | Becslés | Függőség | Végrehajtó |
-|---|---------|-------|---------|----------|------------|
-| 1 | Expert onboarding varázsló (profil → program → Stripe) | UI | 1.5 nap | Nincs | Windsurf |
-| 2 | Globális keresés (full-text + expert + program) | Backend+UI | 1 nap | Nincs | Windsurf |
-| 3 | Esemény RSVP perzisztencia + email | Backend+UI | 0.5 nap | 3B#5 | Windsurf |
-| 4 | Közösségi post edit/delete + moderáció | UI | 0.5 nap | Nincs | Windsurf |
-| 5 | Szponzor hatás-dashboard (impact query, ROI) | Dashboard | 1 nap | Nincs | Windsurf |
-| 6 | i18n fordítási hiányosságok pótlása | i18n | 0.5 nap | Nincs | Windsurf |
-
-**Részletes utasítások:** `WINDSURF_PHASE3C_UX.md` (készül a fázis előtt)
+**Feladat:**
+1. Töröld: `src/components/marketplace/DummyPaymentModal.tsx`
+2. Frissítsd: `src/__tests__/financial.test.ts` — ha hivatkozik DummyPaymentModal-ra, cseréld a nevet "Payment 80/20 split logic"-ra
+3. Ellenőrizd: `grep -r "DummyPayment" src/` — sehol ne maradjon hivatkozás
 
 ---
 
-### Phase 3D — Üzleti Logika Kiegészítés (~5 nap)
+#### 3B-3: Hiányzó Gamifikáció Triggerek Pótlása
+**Prioritás:** ALACSONY (12/14 már kész)
+**Már bekötve:** review_submitted, daily_login, profile_completed, event_attended, post_created, first_post, like_given, like_received, comment_added, voucher_redeemed, streak_bonus
+**Hiányzik:** `program_completed` (50 WP), `lesson_completed` (10 WP)
 
-A működő de befejezetlen üzleti funkciók befejezése.
-
-| # | Feladat | Típus | Becslés | Függőség | Végrehajtó |
-|---|---------|-------|---------|----------|------------|
-| 1 | Szakértői naptár (időpont-kezelés, foglaltság) | UI+Backend | 1.5 nap | Nincs | Windsurf |
-| 2 | Jelenlét-követés (check-in rendszer) | Backend+UI | 1 nap | Nincs | Windsurf |
-| 3 | Értesítés rendszer bekötés (email triggerek) | Backend | 0.5 nap | 3B#5 | Windsurf |
-| 4 | Szponzor kredit vásárlás UI | UI | 0.5 nap | Nincs | Windsurf |
-| 5 | Program hozzáférés lejárat-kezelés | Backend | 0.5 nap | Nincs | Windsurf |
-| 6 | GDPR adat-törlés funkció | Backend+UI | 0.5 nap | Nincs | Windsurf |
-| 7 | Szakértői analitika bővítés (engagement) | Dashboard | 0.5 nap | #1 | Windsurf |
-
-**Részletes utasítások:** `WINDSURF_PHASE3D_UZLET.md` (készül a fázis előtt)
+**Feladat:**
+- Keresd meg a program befejezés logikáját (content_access vagy hasonló) — ha van sikeres "program completed" állapot, ott hívd meg: `awardPoints(userId, 'program_completed', 50, 'Program befejezve')`
+- Keresd meg a lecke/modul befejezés logikáját — ha van, hívd meg: `awardPoints(userId, 'lesson_completed', 10, 'Lecke befejezve')`
+- **Ha nincs ilyen handler, hagyd ki** — ne hozz létre új UI-t
 
 ---
 
-### Phase 3E — Minőségbiztosítás (~4 nap)
+#### 3B Commit:
+```
+fix: Phase 3B — Biztonság + Cleanup
 
-SEO, tesztek, és minőségi ellenőrzés a produkciós bevezetéshez.
-
-| # | Feladat | Típus | Becslés | Függőség | Végrehajtó |
-|---|---------|-------|---------|----------|------------|
-| 1 | sitemap.xml generálás (dinamikus) | SEO | 0.5 nap | Nincs | Windsurf |
-| 2 | Dinamikus meta tagek (react-helmet) | SEO | 0.5 nap | Nincs | Windsurf |
-| 3 | hreflang tagek (HU/EN/DE) | SEO | 0.5 nap | #2 | Windsurf |
-| 4 | Strukturált adatok (JSON-LD schema.org) | SEO | 0.5 nap | #2 | Windsurf |
-| 5 | Vitest beállítás + unit tesztek (fizetés, auth, pontok) | Teszt | 1.5 nap | Nincs | Windsurf |
-| 6 | E2E tesztek bővítés (vásárlás, szponzor flow) | Teszt | 0.5 nap | #5 | Windsurf |
-
-**Részletes utasítások:** `WINDSURF_PHASE3E_MINOSEG.md` (készül a fázis előtt)
+- feat(security): rate limiting edge function-ökben (checkout + ai-chat)
+- chore: DummyPaymentModal halott kód eltávolítása
+- feat(gamification): hiányzó pont-triggerek pótlása (program_completed, lesson_completed)
+```
 
 ---
 
-### UTOLSÓ LÉPÉS — Stripe End-to-End Teszt (~1 nap)
+### Phase 3C — Felhasználói Út Kiegészítés (~3 nap)
 
-**KIFEJEZETTEN AZ UTOLSÓ LÉPÉS.** Csak akkor, ha Phase 3B-3E mind kész.
+**Cél:** A három szerepkör UX-ének javítása és hiányzó funkciók pótlása.
 
-| # | Feladat | Típus | Becslés | Függőség | Végrehajtó |
-|---|---------|-------|---------|----------|------------|
-| 1 | Stripe test mode teljes vásárlási flow | E2E | 0.5 nap | 3B-3E | Együtt |
-| 2 | Webhook feldolgozás ellenőrzés | E2E | 0.25 nap | #1 | Együtt |
-| 3 | Founding expert 0% díj verifikáció | E2E | 0.25 nap | #1 | Együtt |
+#### 3C-1: Expert Onboarding Varázsló
+**Probléma:** A regisztráció után nincs irányított flow (profil → program → Stripe).
 
----
+**Feladat:**
+- Hozz létre egy onboarding checklist komponenst (ExpertOnboardingChecklist)
+- Jelenjen meg a szakértői dashboard tetején, ha a profil/program/Stripe bármelyike hiányos
+- 3 lépés: (1) Profil kitöltése ✓/✗, (2) Első program létrehozása ✓/✗, (3) Stripe Connect ✓/✗
+- Minden lépés linkeljen a megfelelő oldalra
+- Ha mind kész, rejtsd el a checklistet
 
-## 4. IDŐTERV
-
-- **1. hét:** Phase 3B (biztonság, triggerek, email)
-- **2. hét:** Phase 3C (UX: keresés, RSVP, onboarding, szponzor impact)
-- **3. hét:** Phase 3D (üzleti: naptár, jelenlét, értesítés, GDPR)
-- **4. hét eleje:** Phase 3E (SEO + tesztek)
-- **4. hét vége:** Stripe E2E teszt → PRODUKCIÓS BEVEZETÉS
-
-**Minden fázishoz külön Windsurf prompt készül** — a Phase 3A mintájára, részletes fájl-szintű utasításokkal.
+**Fájlok:** Vizsgáld meg `src/pages/ExpertStudio.tsx` vagy hasonló dashboard oldalt.
 
 ---
 
-## 5. STATISZTIKA
+#### 3C-2: Globális Keresés
+**Probléma:** Csak a RegionalHub-ban van cím-keresés, nincs platformszintű kereső.
+
+**Feladat:**
+- Hozz létre `src/components/search/GlobalSearch.tsx` komponenst
+- Supabase full-text search: `programs.title`, `programs.description`, `profiles.display_name`
+- Integráld a fejlécbe (Header komponens) egy keresőmező / Command Palette formájában
+- Eredmények: programok + szakértők, linkekkel
+
+---
+
+#### 3C-3: Közösségi Post Edit
+**Probléma:** Delete már működik (RLS: "Authors can delete own posts"), de edit hiányzik.
+
+**Fájl:** `src/components/community/CommunityFeed.tsx` (753 sor)
+
+**Feladat:**
+- A PostCard komponensben (a delete gomb mellé) adj hozzá "Szerkesztés" gombot
+- Szerkesztés: inline edit mód — a post szövege szerkeszthetővé válik
+- Mentés: `supabase.from('community_posts').update({ content }).eq('id', postId)`
+- Csak a saját posztjainál jelenjen meg (auth.uid() === post.author_id)
+
+---
+
+#### 3C-4: i18n Hiányosságok Pótlása
+**Fájlok:** `src/locales/hu.json`, `src/locales/en.json`, `src/locales/de.json` + admin változatok
+
+**Feladat:**
+- Futtass egy összehasonlítást: a `hu.json` az elsődleges — minden kulcs ami ott van, legyen meg `en.json`-ban és `de.json`-ban is
+- Pótold a hiányzó kulcsokat angol és német fordítással
+- Admin fájlokra is alkalmazd
+
+---
+
+#### 3C Commit:
+```
+feat: Phase 3C — Felhasználói Út Kiegészítés
+
+- feat(expert): onboarding checklist (profil → program → Stripe)
+- feat(search): globális keresés platformszinten
+- feat(community): post szerkesztés funkció
+- fix(i18n): hiányzó fordítási kulcsok pótlása (HU/EN/DE)
+```
+
+---
+
+### Phase 3D — Üzleti Logika Befejezés (~3 nap)
+
+**Cél:** Befejezetlen üzleti funkciók lezárása.
+
+#### 3D-1: Szakértői Naptár Időpont-Kezelés
+**Probléma:** Hónap nézet van, de nincs időpont hozzáadás/foglalás.
+
+**Feladat:**
+- A meglévő naptár komponensben adj hozzá időpont-slot kezelést
+- Szakértő beállíthatja az elérhető időpontjait (nap + óra)
+- Tag láthatja és foglalhatja (egyszerű foglalás, nem komplex booking)
+- Supabase tábla ha nincs: `expert_availability (expert_id, date, start_time, end_time, is_booked)`
+
+---
+
+#### 3D-2: Jelenlét-Követés (Check-in)
+**Probléma:** Nincs mód a program résztvevőinek jelenlétét rögzíteni.
+
+**Feladat:**
+- Szakértői dashboard-on "Résztvevők" szekció a programjaihoz
+- Egyszerű check-in gomb a résztvevők listájánál (NINCS QR-kód szükséges ebben a fázisban)
+- Supabase tábla ha nincs: `attendance (id, program_id, user_id, checked_in_at, checked_in_by)`
+- Statisztika: "X/Y résztvevő jelent meg"
+
+---
+
+#### 3D-3: Értesítés Rendszer Email Trigger Bekötés
+**Probléma:** A notification infrastruktúra kész (notificationService.ts, triggerek), de az email küldés nincs bekötve az in-app eseményekhez.
+
+**Feladat:**
+- Keresd meg a `notificationService.ts` vagy hasonló szolgáltatást
+- A kulcs-eseményeknél (program vásárlás, RSVP, stb.) add hozzá email küldést a meglévő Resend edge function-ökön keresztül
+- Ellenőrizd: `supabase/functions/send-purchase-confirmation/index.ts` és `send-event-reminders/index.ts` — ha léteznek, kösd be őket a megfelelő eseményekhez
+
+---
+
+#### 3D-4: Szponzor Kredit Vásárlás UI Befejezés
+**Probléma:** Edge function kész, UI form hiányos.
+
+**Feladat:**
+- Keresd meg a szponzor kredit vásárlás oldalt/komponenst
+- Egészítsd ki a formot: összeg választás, Stripe checkout indítás
+- A meglévő edge function-t használd
+
+---
+
+#### 3D-5: Program Hozzáférés Lejárat-Kezelés
+**Probléma:** `content_access` tábla van, de nincs lejárat-ellenőrzés.
+
+**Feladat:**
+- Ha a `content_access` táblában van `expires_at` oszlop, adj hozzá ellenőrzést a tartalomhoz való hozzáférésnél
+- Ha lejárt, mutass "Hozzáférés lejárt — újra vásárolhatod" üzenetet
+- Ha nincs `expires_at` oszlop, adj hozzá opcionális mezőt
+
+---
+
+#### 3D-6: GDPR Adat-Törlés Funkció
+**Probléma:** Cookie consent van, de a felhasználó nem tudja törölni az adatait.
+
+**Feladat:**
+- Profil beállítások oldalon adj hozzá "Fiók törlése" szekciót
+- Megerősítő modal (jelszó vagy "TÖRLÉS" szó beírása)
+- Supabase edge function vagy RPC: felhasználó összes adatának törlése (CASCADE a DB-ben már be van állítva)
+- Auth user törlés: `supabase.auth.admin.deleteUser(userId)` (edge function-ből)
+
+---
+
+#### 3D-7: Szakértői Analitika Bővítés
+**Probléma:** Bevétel + résztvevők van, engagement hiányzik.
+
+**Feladat:**
+- A meglévő expert analytics dashboard-hoz adj hozzá: értékelések átlaga, közösségi aktivitás, visszatérő tagok aránya
+- Ezeket a meglévő táblákból aggregáld (reviews, community_posts, content_access)
+
+---
+
+#### 3D Commit:
+```
+feat: Phase 3D — Üzleti Logika Befejezés
+
+- feat(calendar): szakértői időpont-kezelés
+- feat(attendance): jelenlét-követés rendszer
+- feat(notifications): email trigger bekötés meglévő Resend fn-ökkel
+- feat(sponsor): kredit vásárlás UI befejezés
+- feat(access): program hozzáférés lejárat-kezelés
+- feat(gdpr): fiók törlés funkció
+- feat(analytics): szakértői engagement metrikák
+```
+
+---
+
+### Phase 3E — Minőségbiztosítás (~2 nap)
+
+**Cél:** SEO kiegészítés, teszt bővítés, produkciós készültség.
+
+#### 3E-1: hreflang Tagek
+**Probléma:** Háromnyelvű oldal, de nincs hreflang — SEO szempontból kritikus.
+
+**Feladat:**
+- A meglévő `SEOHead.tsx` komponensben adj hozzá hreflang linkeket
+- `<link rel="alternate" hreflang="hu" href="..." />`
+- `<link rel="alternate" hreflang="en" href="..." />`
+- `<link rel="alternate" hreflang="de" href="..." />`
+- `<link rel="alternate" hreflang="x-default" href="..." />`
+
+---
+
+#### 3E-2: JSON-LD Bővítés
+**Meglévő:** `ProgramJsonLd.tsx`, `PartnerJsonLd.tsx`
+**Hiányzik:** Expert (Person schema), Event (Event schema)
+
+**Feladat:**
+- Hozd létre: `src/components/seo/ExpertJsonLd.tsx` — Person schema a szakértő profil oldalhoz
+- Hozd létre: `src/components/seo/EventJsonLd.tsx` — Event schema az esemény oldalhoz
+- Integráld a megfelelő oldalakba
+
+---
+
+#### 3E-3: Vitest Konfiguráció + Teszt Bővítés
+**Meglévő:** 4 teszt fájl (`security.test.ts`, `financial.test.ts`, `enrollment.test.ts`, `wellbot.test.ts`), de nincs `vitest.config.ts` és nincs npm script.
+
+**Feladat:**
+1. Hozd létre `vitest.config.ts`-t (Vite alapú, path alias-ok, setup file)
+2. Adj hozzá `package.json`-ba: `"test:unit": "vitest run"`, `"test:unit:watch": "vitest"`
+3. Írd meg a kritikus teszteket:
+   - `src/__tests__/wellpoints.test.ts` — awardPoints() összes action type
+   - `src/__tests__/rateLimit.test.ts` — rate limiter helyes működése
+   - `src/__tests__/auth.test.ts` — alapvető auth flow (ha nincs)
+4. A meglévő 4 tesztet is futtasd le — javíts ha hibásak
+
+---
+
+#### 3E-4: 403/500 Hiba Oldalak
+**Meglévő:** 404 oldal van.
+**Hiányzik:** 403 (Forbidden) és 500 (Server Error).
+
+**Feladat:**
+- Hozd létre a 403 és 500 hiba oldalakat a 404 mintájára
+- Az App.tsx-ben használd ezeket az ErrorBoundary-vel
+
+---
+
+#### 3E Commit:
+```
+feat: Phase 3E — Minőségbiztosítás
+
+- feat(seo): hreflang tagek (HU/EN/DE)
+- feat(seo): Expert + Event JSON-LD schema
+- feat(test): vitest konfiguráció + unit tesztek bővítés
+- feat(ux): 403/500 hiba oldalak
+```
+
+---
+
+### UTOLSÓ LÉPÉS — Stripe End-to-End Teszt
+
+## ⛔ NE HAJTSD VÉGRE — EZT EGYÜTT VÉGEZZÜK ⛔
+
+Ez a lépés kézi tesztelést igényel Stripe test mode-ban:
+1. Teljes vásárlási flow (tag → checkout → webhook → hozzáférés)
+2. Founding expert 0% díj verifikáció
+3. Szponzor kredit vásárlás flow
+4. Webhook feldolgozás ellenőrzés
+
+---
+
+## 4. ÖSSZESÍTETT STATISZTIKA
 
 | Metrika | Érték |
 |---------|-------|
-| Összes feladat | 44 |
-| KÉSZ (Phase 3A + korábbi) | 11 |
-| RÉSZLEGES (elkezdve) | 20 |
-| HIÁNYZIK (nem kezdett) | 13 |
-| Becsült munkanap | ~18 nap |
-| Fázisok száma | 5 (3B-3E + Stripe) |
-| Edge function-ök | 25 |
-| DB migrációk | 190 |
-| Komponensek | 336 |
+| Összes funkció | 42 |
+| ✅ KÉSZ | **20** (v1.0-ban 11 volt — 9 félreosztályozott) |
+| ⚠️ RÉSZLEGES | **13** |
+| ❌ HIÁNYZIK | **9** |
+| Becsült munkanap | **~10 nap** (v1.0-ban 18 volt) |
+| Fázisok | 4 (3B-3E) + Stripe |
 
 ---
 
-## 6. REFERENCIA DOKUMENTUMOK
+## 5. REFERENCIA
 
 - **Stratégiai Audit:** `WellAgora_Strategiai_Audit_2026Q1.docx`
-- **Phase 3A prompt (KÉSZ):** `WINDSURF_PHASE3A_KRITIKUS_JAVITASOK.md`
-- **Phase 3A commit:** c0e82b4
-- **Phase 3B prompt:** `WINDSURF_PHASE3B_BIZTONSAG.md` (következő)
-- **Phase 3C prompt:** `WINDSURF_PHASE3C_UX.md` (készül)
-- **Phase 3D prompt:** `WINDSURF_PHASE3D_UZLET.md` (készül)
-- **Phase 3E prompt:** `WINDSURF_PHASE3E_MINOSEG.md` (készül)
+- **Phase 3A (KÉSZ):** commit c0e82b4, `WINDSURF_PHASE3A_KRITIKUS_JAVITASOK.md`
+- **Tech stack:** React 18 + TypeScript + Vite 5 + TailwindCSS + shadcn/ui + Supabase + Stripe + Google Gemini AI
+- **Gamifikáció:** `src/lib/wellpoints.ts` (awardPoints fn + POINT_VALUES objektum)
+- **Email:** `supabase/functions/send-welcome-email/index.ts` (Resend API)
+- **Edge functions:** 25 db a `supabase/functions/` alatt
+- **i18n:** `src/locales/` (hu.json, en.json, de.json + admin változatok)
+- **SEO:** `src/components/SEOHead.tsx`, `src/components/seo/ProgramJsonLd.tsx`, `src/components/seo/PartnerJsonLd.tsx`
+- **Teszt:** 4 vitest fájl a `src/__tests__/`-ben, 8 Playwright E2E fájl az `e2e/`-ben

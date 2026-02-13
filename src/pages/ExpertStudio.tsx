@@ -27,6 +27,7 @@ import MyProgramsList from "@/components/expert-studio/MyProgramsList";
 import ExpertCalendar from "@/components/expert-studio/ExpertCalendar";
 import { ShareToolkit } from "@/components/expert/ShareToolkit";
 import { ReferralWidget } from "@/components/referral/ReferralWidget";
+import { ExpertOnboardingChecklist } from "@/components/expert-studio/ExpertOnboardingChecklist";
 
 const ExpertStudio = () => {
   const { user, profile, loading } = useAuth();
@@ -231,6 +232,11 @@ const ExpertStudio = () => {
       iconColor="text-black"
       backUrl="/"
     >
+      {/* Expert Onboarding Checklist — shows until all steps done */}
+      <div className="mb-6">
+        <ExpertOnboardingChecklist />
+      </div>
+
       {/* Referral Widget — prominent at top */}
       <div className="mb-6">
         <ReferralWidget />

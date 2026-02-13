@@ -22,7 +22,10 @@ import {
   Gift,
   Building2,
   CreditCard,
-  Plus
+  Plus,
+  TrendingUp,
+  Target,
+  BarChart3
 } from 'lucide-react';
 
 // ============= TYPE DEFINITIONS =============
@@ -190,7 +193,41 @@ const SponsorDashboardPage = () => {
     retry: false,
   });
 
-  // Removed impactQuery - not needed for MVP
+  // Impact metrics query
+  const impactQuery = useQuery({
+    queryKey: ['sponsorDashboard', 'impact', user?.id],
+    enabled: !!user?.id,
+    queryFn: async () => {
+      if (!user?.id) return { beneficiaries: 0, programsSponsored: 0, eventsSponsored: 0, totalReach: 0 };
+
+      const [programSponsorships, eventSponsorships, vouchersUsed] = await Promise.all([
+        supabase
+          .from('content_sponsorships')
+          .select('id, content_id')
+          .eq('sponsor_id', user.id),
+        supabase
+          .from('event_sponsors')
+          .select('id, event_id')
+          .eq('sponsor_id', user.id),
+        supabase
+          .from('voucher_settlements')
+          .select('id, user_id')
+          .eq('sponsor_id', user.id),
+      ]);
+
+      const uniqueBeneficiaries = new Set(
+        (vouchersUsed.data || []).map((v: any) => v.user_id)
+      );
+
+      return {
+        beneficiaries: uniqueBeneficiaries.size,
+        programsSponsored: (programSponsorships.data || []).length,
+        eventsSponsored: (eventSponsorships.data || []).length,
+        totalReach: uniqueBeneficiaries.size + (eventSponsorships.data || []).length * 10,
+      };
+    },
+    retry: false,
+  });
 
   const loadSponsorTargets = async () => {
     try {
@@ -474,6 +511,50 @@ const SponsorDashboardPage = () => {
                   </Button>
                 </div>
               </>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* IMPACT METRICS */}
+        <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg sm:text-xl text-black flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-blue-600" />
+              {t('sponsor_hub.cards.impact.title') || 'Hatás és Elérés'}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-blue-50 rounded-xl p-4 text-center">
+                <Users className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+                <p className="text-2xl font-bold text-blue-900">{impactQuery.data?.beneficiaries || 0}</p>
+                <p className="text-xs text-blue-700">{t('sponsor_hub.impact.beneficiaries') || 'Kedvezményezettek'}</p>
+              </div>
+              <div className="bg-indigo-50 rounded-xl p-4 text-center">
+                <Gift className="w-6 h-6 text-indigo-600 mx-auto mb-2" />
+                <p className="text-2xl font-bold text-indigo-900">{impactQuery.data?.programsSponsored || 0}</p>
+                <p className="text-xs text-indigo-700">{t('sponsor_hub.impact.programs') || 'Szponzorált programok'}</p>
+              </div>
+              <div className="bg-emerald-50 rounded-xl p-4 text-center">
+                <Target className="w-6 h-6 text-emerald-600 mx-auto mb-2" />
+                <p className="text-2xl font-bold text-emerald-900">{impactQuery.data?.eventsSponsored || 0}</p>
+                <p className="text-xs text-emerald-700">{t('sponsor_hub.impact.events') || 'Szponzorált események'}</p>
+              </div>
+              <div className="bg-amber-50 rounded-xl p-4 text-center">
+                <TrendingUp className="w-6 h-6 text-amber-600 mx-auto mb-2" />
+                <p className="text-2xl font-bold text-amber-900">{impactQuery.data?.totalReach || 0}</p>
+                <p className="text-xs text-amber-700">{t('sponsor_hub.impact.reach') || 'Becsült elérés'}</p>
+              </div>
+            </div>
+            {creditTotals && creditTotals.totalSpent > 0 && impactQuery.data && impactQuery.data.beneficiaries > 0 && (
+              <div className="mt-4 p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+                <p className="text-sm text-emerald-800 font-medium">
+                  {t('sponsor_hub.impact.cost_per_beneficiary') || 'Költség / kedvezményezett'}:{' '}
+                  <span className="font-bold">
+                    {formatCurrency(Math.round(creditTotals.totalSpent / impactQuery.data.beneficiaries))}
+                  </span>
+                </p>
+              </div>
             )}
           </CardContent>
         </Card>

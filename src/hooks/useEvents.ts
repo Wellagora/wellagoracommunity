@@ -125,6 +125,10 @@ export function useEvents() {
       // Award points when RSVP is 'going'
       if (variables.status === 'going' && user?.id) {
         awardPoints(user.id, 'event_attended', 'Esemény részvétel', variables.eventId, 'event').catch(() => {});
+        // Send RSVP confirmation email (fire-and-forget)
+        supabase.functions.invoke('send-event-rsvp-confirmation', {
+          body: { event_id: variables.eventId, user_id: user.id }
+        }).catch(() => {});
       }
     },
   });

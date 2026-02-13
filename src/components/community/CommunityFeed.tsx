@@ -27,7 +27,16 @@ import {
   X,
   Loader2,
   Shield,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
 } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { awardPoints, WELLPOINTS_QUERY_KEY, updateStreak, STREAK_QUERY_KEY } from '@/lib/wellpoints';
@@ -328,6 +337,44 @@ const CommunityFeed = () => {
     }
   };
 
+  const handleEditPost = async (postId: string, newContent: string) => {
+    if (!user) return;
+    try {
+      const { error } = await supabase
+        .from('community_posts')
+        .update({ content: newContent })
+        .eq('id', postId)
+        .eq('author_id', user.id);
+
+      if (error) throw error;
+
+      setPosts(prev => prev.map(p => p.id === postId ? { ...p, content: newContent } : p));
+      toast.success(t('community.post_edited') || 'Poszt szerkesztve');
+    } catch (error) {
+      console.error('Error editing post:', error);
+      toast.error(t('common.error') || 'Hiba történt');
+    }
+  };
+
+  const handleDeletePost = async (postId: string) => {
+    if (!user) return;
+    try {
+      const { error } = await supabase
+        .from('community_posts')
+        .delete()
+        .eq('id', postId)
+        .eq('author_id', user.id);
+
+      if (error) throw error;
+
+      setPosts(prev => prev.filter(p => p.id !== postId));
+      toast.success(t('community.post_deleted') || 'Poszt törölve');
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      toast.error(t('common.error') || 'Hiba történt');
+    }
+  };
+
   const getInitials = (firstName: string | null, lastName: string | null) => {
     const first = firstName?.charAt(0) || '';
     const last = lastName?.charAt(0) || '';
@@ -494,6 +541,8 @@ const CommunityFeed = () => {
               post={post}
               onLike={handleLike}
               onAddComment={handleAddComment}
+              onEdit={handleEditPost}
+              onDelete={handleDeletePost}
               getInitials={getInitials}
               getFullName={getFullName}
               formatTimeAgo={formatTimeAgo}
@@ -550,6 +599,8 @@ const PostCard = ({
   post,
   onLike,
   onAddComment,
+  onEdit,
+  onDelete,
   getInitials,
   getFullName,
   formatTimeAgo,
@@ -557,6 +608,8 @@ const PostCard = ({
   post: CommunityPost;
   onLike: (postId: string) => void;
   onAddComment: (postId: string, content: string) => Promise<void>;
+  onEdit: (postId: string, newContent: string) => Promise<void>;
+  onDelete: (postId: string) => Promise<void>;
   getInitials: (firstName: string | null, lastName: string | null) => string;
   getFullName: (firstName: string | null, lastName: string | null) => string;
   formatTimeAgo: (date: string) => string;
@@ -566,6 +619,9 @@ const PostCard = ({
   const [showComments, setShowComments] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [submittingComment, setSubmittingComment] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editContent, setEditContent] = useState(post.content);
+  const isOwner = user?.id === post.author_id;
 
   const isLiked = user ? post.likes.some(like => like.user_id === user.id) : false;
   const isExpert = post.author.user_role === 'expert';
@@ -630,10 +686,55 @@ const PostCard = ({
               <BadgeIcon className="w-3 h-3" />
               {badge.label}
             </Badge>
+
+            {isOwner && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 ml-1">
+                    <MoreHorizontal className="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => { setEditContent(post.content); setIsEditing(true); }}>
+                    <Pencil className="w-4 h-4 mr-2" />
+                    {t('community.edit_post') || 'Szerkesztés'}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="text-destructive"
+                    onClick={() => {
+                      if (window.confirm(t('community.delete_confirm') || 'Biztosan törlöd ezt a posztot?')) {
+                        onDelete(post.id);
+                      }
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    {t('community.delete_post') || 'Törlés'}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
 
           {/* Content */}
-          <p className="mt-3 text-foreground whitespace-pre-wrap leading-relaxed">{post.content}</p>
+          {isEditing ? (
+            <div className="mt-3 space-y-2">
+              <Textarea
+                value={editContent}
+                onChange={(e) => setEditContent(e.target.value)}
+                className="min-h-[80px]"
+              />
+              <div className="flex gap-2 justify-end">
+                <Button size="sm" variant="outline" onClick={() => setIsEditing(false)}>
+                  {t('common.cancel') || 'Mégse'}
+                </Button>
+                <Button size="sm" onClick={() => { onEdit(post.id, editContent); setIsEditing(false); }}>
+                  {t('common.save') || 'Mentés'}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <p className="mt-3 text-foreground whitespace-pre-wrap leading-relaxed">{post.content}</p>
+          )}
 
           {/* Image */}
           {post.image_url && (

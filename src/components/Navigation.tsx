@@ -45,6 +45,8 @@ import wellagoraLogo from "@/assets/wellagora-logo.png";
 import LanguageSelector from "./LanguageSelector";
 import { RoleSwitcher } from "./admin/RoleSwitcher";
 import { NotificationBell } from "./notifications/NotificationBell";
+import { GlobalSearch } from "./search/GlobalSearch";
+import { Search } from "lucide-react";
 
 // Helper to determine effective role from database user_role
 const getEffectiveRole = (userRole: string | undefined): 'member' | 'expert' | 'sponsor' => {
@@ -57,10 +59,23 @@ const getEffectiveRole = (userRole: string | undefined): 'member' | 'expert' | '
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [searchOpen, setSearchOpen] = useState(false);
   const { user, profile, signOut, isDemoMode, viewAsRole, setViewAsRole } = useAuth();
   const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
+
+  // ⌘K keyboard shortcut for global search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen(prev => !prev);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
   
   // Determine user's role from profile
   const effectiveRole = getEffectiveRole(profile?.user_role);
@@ -386,6 +401,15 @@ const Navigation = () => {
                 </div>
                 <span className="hidden lg:inline">{t("nav.wellbot")}</span>
               </Link>
+
+              {/* Global Search Button */}
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="shrink-0 p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                title="⌘K"
+              >
+                <Search className="h-4 w-4" />
+              </button>
 
               {/* Language Selector */}
               <div className="shrink-0">
@@ -834,6 +858,7 @@ const Navigation = () => {
         </div>
       </div>
       </nav>
+      <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
     </>
   );
 };
