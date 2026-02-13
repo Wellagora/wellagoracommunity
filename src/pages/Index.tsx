@@ -13,6 +13,7 @@ import HowItWorksSection from "@/components/home/HowItWorksSection";
 import FoundersWallSection from "@/components/home/FoundersWallSection";
 import { CommunityImpactCounter } from "@/components/CommunityImpactCounter";
 import SEOHead from "@/components/SEOHead";
+import { WhyWellAgoraSection } from "@/components/homepage/WhyWellAgoraSection";
 
 const Index = () => {
   const { t } = useLanguage();
@@ -128,7 +129,10 @@ const Index = () => {
           {/* 4. AJÁNLOTT PROGRAMOK - Horizontal slider */}
           <RecommendedProgramsSlider />
 
-          {/* 5. COMMUNITY PULSE - After recommended programs */}
+          {/* 5. WHY WELLAGORA - Three pillars */}
+          <WhyWellAgoraSection />
+
+          {/* 6. COMMUNITY PULSE - After recommended programs */}
           <CommunityImpactCounter />
         </main>
       </div>
