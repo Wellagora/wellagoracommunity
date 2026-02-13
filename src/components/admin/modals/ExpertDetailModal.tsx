@@ -52,6 +52,7 @@ interface ExpertProfile {
   verification_expires_at: string | null;
   organization_name: string | null;
   expertise_areas: string[] | null;
+  is_founding_expert: boolean | null;
 }
 
 interface ExpertProgram {
@@ -108,7 +109,8 @@ export function ExpertDetailModal(props: {
       const price = p.price_huf || 0;
       return sum + (seats * price);
     }, 0);
-    const platformFee = grossRevenue * 0.2;
+    const feeRate = profile?.is_founding_expert ? 0 : 0.2;
+    const platformFee = grossRevenue * feeRate;
     const netEarnings = grossRevenue - platformFee;
     const pendingPayout = payouts
       .filter(p => p.status === 'pending')
@@ -124,7 +126,7 @@ export function ExpertDetailModal(props: {
       // Load profile
       const { data: p, error: pErr } = await supabase
         .from("profiles")
-        .select("id,email,first_name,last_name,expert_title,bio,avatar_url,verification_status,is_verified_expert,is_super_admin,user_role,created_at,green_pass,verification_expires_at,organization_name,expertise_areas")
+        .select("id,email,first_name,last_name,expert_title,bio,avatar_url,verification_status,is_verified_expert,is_super_admin,user_role,created_at,green_pass,verification_expires_at,organization_name,expertise_areas,is_founding_expert")
         .eq("id", expertId)
         .maybeSingle();
       if (pErr) throw pErr;
@@ -472,7 +474,7 @@ export function ExpertDetailModal(props: {
                           <DollarSign className="h-5 w-5 text-red-600" />
                         </div>
                         <div>
-                          <p className="text-sm text-muted-foreground">Platform Díj (20%)</p>
+                          <p className="text-sm text-muted-foreground">{profile?.is_founding_expert ? 'Platform Díj (0%) — Alapító Szakértő' : 'Platform Díj (20%)'}</p>
                           <p className="text-xl font-bold text-red-600">-{formatCurrency(earnings.platformFee)}</p>
                         </div>
                       </div>

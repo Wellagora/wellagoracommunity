@@ -245,6 +245,8 @@
     "error_deleting": "Fehler beim Löschen"
   },
   "admin": {
+    "access_denied": "Zugriff verweigert",
+    "access_denied_description": "Sie haben keinen Admin-Zugang.",
     "modal": {
       "user_details": "Benutzerdetails",
       "missing_id": "Fehlende ID",

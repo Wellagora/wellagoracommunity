@@ -437,7 +437,7 @@ const AdminFinancials = () => {
         </CardHeader>
         <CardContent>
           {loading ? <Skeleton className="h-48" /> : expertBreakdown.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">Nincs settlement adat az időszakban</div>
+            <div className="text-center py-8 text-muted-foreground">Nincs elszámolási adat az időszakban</div>
           ) : (
             <Table>
               <TableHeader>
@@ -557,7 +557,7 @@ const AdminFinancials = () => {
           {loading ? <Skeleton className="h-24" /> : (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">No-show-k</p>
+                <p className="text-sm text-muted-foreground">No-show esetek</p>
                 <p className="text-xl font-bold">{noShow.no_show_count} db</p>
               </div>
               <div className="space-y-1">

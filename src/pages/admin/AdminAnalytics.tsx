@@ -493,12 +493,15 @@ const AdminAnalytics = () => {
                 <div className="p-3 rounded-lg bg-muted/50">
                   <p className="text-sm font-medium mb-3">Felhasználók Szerepkör Szerint</p>
                   <div className="space-y-2">
-                    {analytics.usersByRole.slice(0, 4).map((role) => (
-                      <div key={role.role} className="flex items-center justify-between">
-                        <span className="text-xs text-muted-foreground capitalize">{role.role}</span>
-                        <Badge variant="secondary" className="text-xs">{role.count}</Badge>
-                      </div>
-                    ))}
+                    {analytics.usersByRole.slice(0, 4).map((role) => {
+                      const roleLabels: Record<string, string> = { member: 'Tag', expert: 'Szakértő', sponsor: 'Szponzor', admin: 'Admin' };
+                      return (
+                        <div key={role.role} className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground">{roleLabels[role.role] || role.role}</span>
+                          <Badge variant="secondary" className="text-xs">{role.count}</Badge>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
 

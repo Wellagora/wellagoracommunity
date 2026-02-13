@@ -245,6 +245,8 @@
     "error_deleting": "Error deleting"
   },
   "admin": {
+    "access_denied": "Access Denied",
+    "access_denied_description": "You do not have admin access.",
     "modal": {
       "user_details": "User Details",
       "missing_id": "Missing ID",
@@ -343,7 +345,7 @@
     "projects": {
       "title": "Projects",
       "subtitle": "Manage and configure projects",
-      "add_new": "New projekt",
+      "add_new": "New Project",
       "search_placeholder": "Search projects...",
       "edit": "Edit Project",
       "name": "Név",

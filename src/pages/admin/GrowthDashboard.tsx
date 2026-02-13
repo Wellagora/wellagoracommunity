@@ -129,7 +129,8 @@ const GrowthDashboard = () => {
       .select("id,first_name,last_name,role,created_at").order("created_at",{ascending:false}).limit(10);
     profiles?.forEach(p => {
       const name = `${p.first_name||""} ${p.last_name||""}`.trim()||"?";
-      evts.push({ id:`p-${p.id}`, type:"reg", message:`${name} regisztrált mint ${p.role==="expert"?"szakértő":"tag"}`, time:p.created_at, icon:"🟢" });
+      const roleLabel = p.role==="expert"?"szakértő":p.role==="sponsor"?"szponzor":p.role==="admin"?"admin":"tag";
+      evts.push({ id:`p-${p.id}`, type:"reg", message:`${name} regisztrált mint ${roleLabel}`, time:p.created_at, icon:"🟢" });
     });
     const { data: access } = await supabase.from("content_access")
       .select("id,content_id,created_at").order("created_at",{ascending:false}).limit(10);

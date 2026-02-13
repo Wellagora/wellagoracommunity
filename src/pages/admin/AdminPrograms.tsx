@@ -134,7 +134,7 @@ const AdminPrograms = () => {
           publication_status = 'published';
         } else if (d.rejected_at) {
           publication_status = 'rejected';
-        } else if (d.reviewed_at === null && d.is_published === false) {
+        } else if (d.reviewed_at !== null && d.is_published === false) {
           publication_status = 'pending_review';
         }
         
