@@ -1,5 +1,3 @@
-import { Helmet } from 'react-helmet-async';
-
 interface SchemaOrgPerson {
   '@context': string;
   '@type': string;
@@ -76,4 +74,45 @@ export function generateProgramSchema(
         }
       : undefined,
   };
+}
+
+export function generateEventSchema(event: {
+  id: string;
+  title: string;
+  description?: string | null;
+  start_date?: string | null;
+  end_date?: string | null;
+  location?: string | null;
+  image_url?: string | null;
+  max_participants?: number | null;
+  current_participants?: number | null;
+  is_free?: boolean | null;
+}): Record<string, unknown> {
+  const schema: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: event.title,
+    description: event.description || undefined,
+    image: event.image_url || undefined,
+    url: `${window.location.origin}/esemenyek/${event.id}`,
+    organizer: {
+      '@type': 'Organization',
+      name: 'WellAgora',
+      url: window.location.origin,
+    },
+  };
+
+  if (event.start_date) schema.startDate = event.start_date;
+  if (event.end_date) schema.endDate = event.end_date;
+  if (event.location) {
+    schema.location = { '@type': 'Place', name: event.location };
+  }
+  if (event.is_free) {
+    schema.isAccessibleForFree = true;
+  }
+  if (event.max_participants) {
+    schema.maximumAttendeeCapacity = event.max_participants;
+  }
+
+  return schema;
 }

@@ -5887,6 +5887,12 @@
   "expert_studio.cards.engagement.returning": "Visszatérő tagok",
   "expert_studio.cards.engagement.profile_views": "Profil megtekintés",
 
+  "error.403_title": "Hozzáférés megtagadva",
+  "error.403_description": "Nincs jogosultságod ennek az oldalnak a megtekintéséhez.",
+  "error.500_title": "Szerverhiba",
+  "error.500_description": "Valami hiba történt a szerveren. Kérjük, próbáld újra később.",
+  "common.retry": "Újrapróbálás",
+
   "access.expired": "Hozzáférés lejárt",
   "access.expired_desc": "A hozzáférésed lejárt — újra megvásárolhatod a programot.",
 

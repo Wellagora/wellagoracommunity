@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Calendar, MapPin, Users, Gift } from "lucide-react";
 import { motion } from "framer-motion";
 import { resolveImageUrl, resolveAvatarUrl } from "@/lib/imageResolver";
+import EventJsonLd from "@/components/seo/EventJsonLd";
 
 interface EventDetail {
   id: string;
@@ -257,6 +258,7 @@ const EventDetailPageNew = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <EventJsonLd event={{ ...event, location: event.location_name }} />
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Back Link */}
         <Link

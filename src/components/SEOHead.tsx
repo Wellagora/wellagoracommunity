@@ -50,6 +50,12 @@ const SEOHead = ({
       
       {/* Canonical URL */}
       <link rel="canonical" href={fullUrl} />
+
+      {/* hreflang for multilingual SEO */}
+      <link rel="alternate" hrefLang="hu" href={fullUrl} />
+      <link rel="alternate" hrefLang="en" href={fullUrl} />
+      <link rel="alternate" hrefLang="de" href={fullUrl} />
+      <link rel="alternate" hrefLang="x-default" href={fullUrl} />
     </Helmet>
   );
 };
