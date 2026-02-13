@@ -369,7 +369,7 @@ const MyHubPage = () => {
                   <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                   <h3 className="text-lg font-semibold mb-2">{t("my_hub.no_registrations") || "Nincs regisztrációd"}</h3>
                   <p className="text-muted-foreground mb-4">{t("my_hub.no_registrations_hint") || "Iratkozz fel eseményekre!"}</p>
-                  <Button onClick={() => navigate("/esemenyek")}>{t("my_hub.browse_events") || "Események böngészése"}</Button>
+                  <Button onClick={() => navigate("/events")}>{t("my_hub.browse_events") || "Események böngészése"}</Button>
                 </CardContent>
               </Card>
             ) : (

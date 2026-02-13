@@ -144,7 +144,7 @@ export const notificationService = {
       title: '📅 Holnap!',
       message: `"${eventTitle}" — ${time}, ${location}`,
       icon: '📅',
-      actionUrl: `/esemenyek/${eventId}`,
+      actionUrl: `/events/${eventId}`,
       actionLabel: 'Részletek',
       relatedType: 'event',
       relatedId: eventId,

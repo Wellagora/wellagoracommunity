@@ -255,7 +255,7 @@ const EventDetailPage = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">{t("events.notFound") || "Event not found"}</h1>
-          <Button onClick={() => navigate("/esemenyek")}>
+          <Button onClick={() => navigate("/events")}>
             <ArrowLeft className="w-4 h-4 mr-2" />
             {t("events.backToEvents") || "Back to events"}
           </Button>
@@ -291,7 +291,7 @@ const EventDetailPage = () => {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => navigate("/esemenyek")}
+          onClick={() => navigate("/events")}
           className="absolute top-4 left-4 bg-white/90 hover:bg-white text-foreground"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
@@ -457,7 +457,7 @@ const EventDetailPage = () => {
                 spotsLeft={spotsLeft}
                 isOnline={isOnline}
                 onRsvp={(status) => rsvpMutation.mutate(status)}
-                onLogin={() => navigate("/auth", { state: { returnTo: `/esemenyek/${id}` } })}
+                onLogin={() => navigate("/auth", { state: { returnTo: `/events/${id}` } })}
                 isLoading={rsvpMutation.isPending}
               />
             </div>

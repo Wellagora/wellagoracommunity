@@ -159,10 +159,10 @@ function App() {
                           <Route path="/revolutionary" element={<Navigate to="/community" replace />} />
                           <Route path="/community" element={<CommunityPage />} />
                           <Route path="/ai-assistant" element={<AIAssistantPage />} />
-                          <Route path="/events" element={<Navigate to="/esemenyek" replace />} />
-                          <Route path="/elo-alkalmak" element={<Navigate to="/esemenyek" replace />} />
-                          <Route path="/esemenyek" element={<EventsPage />} />
-                          <Route path="/esemenyek/:id" element={<EventDetailPage />} />
+                          <Route path="/esemenyek" element={<Navigate to="/events" replace />} />
+                          <Route path="/elo-alkalmak" element={<Navigate to="/events" replace />} />
+                          <Route path="/events" element={<EventsPage />} />
+                          <Route path="/events/:id" element={<EventDetailPage />} />
                           
                           {/* Partner routes */}
                           <Route path="/partners" element={<PartnersPage />} />

@@ -94,7 +94,7 @@ export function UpcomingEventsSection() {
               <Calendar className="w-6 h-6 text-primary" />
               <h2 className="text-2xl font-bold">{t("events.upcoming")}</h2>
             </div>
-            <Link to="/esemenyek">
+            <Link to="/events">
               <Button variant="ghost" className="gap-2">
                 {t("events.view_all")}
                 <ChevronRight className="w-4 h-4" />
@@ -155,7 +155,7 @@ export function UpcomingEventsSection() {
                         </div>
                       </div>
 
-                      <Link to={`/esemenyek/${event.id}`} className="block mt-4">
+                      <Link to={`/events/${event.id}`} className="block mt-4">
                         <Button variant="secondary" size="sm" className="w-full">
                           {t("common.details")}
                         </Button>

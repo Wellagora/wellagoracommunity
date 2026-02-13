@@ -294,13 +294,6 @@ export const NotificationPreferences = () => {
           </div>
         </div>
 
-        <Button
-          onClick={savePreferences}
-          disabled={saving}
-          className="w-full"
-        >
-          {saving ? t('common.saving') : t('common.save_changes')}
-        </Button>
       </CardContent>
     </Card>
   );

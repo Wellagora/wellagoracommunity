@@ -56,7 +56,7 @@ const RelatedEvents = ({ currentEventId, village, projectId }: RelatedEventsProp
           <Card 
             key={event.id}
             className="overflow-hidden cursor-pointer hover:shadow-lg transition-all hover:border-primary/50"
-            onClick={() => navigate(`/esemenyek/${event.id}`)}
+            onClick={() => navigate(`/events/${event.id}`)}
           >
             <div className="aspect-video relative overflow-hidden">
               <img

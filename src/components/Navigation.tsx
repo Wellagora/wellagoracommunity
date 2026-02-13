@@ -254,7 +254,7 @@ const Navigation = () => {
       return [
         { path: "/", label: t("nav.home"), icon: Home },
         { path: "/programs", label: t("nav.marketplace"), icon: Store },
-        { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
+        { path: "/events", label: t("nav.events"), icon: Calendar },
         { path: "/community", label: t("nav.community"), icon: UsersIcon },
       ];
     }
@@ -266,7 +266,7 @@ const Navigation = () => {
     if (roleToUse === 'member') {
       return [
         { path: "/programs", label: t("nav.marketplace"), icon: Store },
-        { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
+        { path: "/events", label: t("nav.events"), icon: Calendar },
         { path: "/community", label: t("nav.community"), icon: UsersIcon },
         { path: "/my-agora", label: t("nav.my_agora"), icon: LayoutDashboard },
       ];
@@ -278,7 +278,7 @@ const Navigation = () => {
         { path: "/expert-studio", label: t("nav.expert_studio"), icon: Sparkles, iconColor: "text-amber-500" },
         { path: "/programs", label: t("nav.marketplace"), icon: Store },
         { path: "/community", label: t("nav.community"), icon: UsersIcon },
-        { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
+        { path: "/events", label: t("nav.events"), icon: Calendar },
       ];
     }
 
@@ -286,7 +286,7 @@ const Navigation = () => {
     if (roleToUse === 'sponsor') {
       return [
         { path: "/sponsor-dashboard", label: t("nav.sponsor_hub"), icon: Building2, iconColor: "text-blue-500" },
-        { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
+        { path: "/events", label: t("nav.events"), icon: Calendar },
         { path: "/sponsor-dashboard/finances", label: t("nav.finances"), icon: BarChart3 },
       ];
     }
@@ -577,13 +577,20 @@ const Navigation = () => {
             {user && roleMetrics && (
               <>
                 {roleMetrics.type === 'member' && (
-                  <Link 
-                    to="/my-agora" 
-                    className="flex items-center gap-1"
-                  >
-                    <Coins className="h-4 w-4 text-amber-500" />
-                    <span className="text-xs font-semibold text-amber-700">{roleMetrics.wellpoints}</span>
-                  </Link>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link 
+                        to="/my-agora" 
+                        className="flex items-center gap-1"
+                      >
+                        <Coins className="h-4 w-4 text-amber-500" />
+                        <span className="text-xs font-semibold text-amber-700">{roleMetrics.wellpoints}</span>
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{t('wallet.your_balance')}</p>
+                    </TooltipContent>
+                  </Tooltip>
                 )}
                 {roleMetrics.type === 'expert' && (
                   <Link 

@@ -122,7 +122,7 @@ const CommunityCalendarPreview = () => {
         </div>
         <Button
           variant="ghost"
-          onClick={() => navigate("/esemenyek")}
+          onClick={() => navigate("/events")}
           className="text-indigo-600 hover:text-indigo-700"
         >
           {t("community.see_all_events") || "Összes esemény"}
@@ -140,7 +140,7 @@ const CommunityCalendarPreview = () => {
           >
             <Card
               className="bg-card/80 backdrop-blur-sm border-border/50 hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer group"
-              onClick={() => navigate(`/esemenyek/${event.id}`)}
+              onClick={() => navigate(`/events/${event.id}`)}
             >
               <CardContent className="p-4">
                 {/* Date Badge */}

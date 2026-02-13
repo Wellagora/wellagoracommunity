@@ -414,7 +414,7 @@ const MyAgoraPage = () => {
                 <Card
                   key={event.id}
                   className="hover:shadow-md transition-shadow cursor-pointer"
-                  onClick={() => navigate(`/esemenyek/${event.id}`)}
+                  onClick={() => navigate(`/events/${event.id}`)}
                 >
                   <CardContent className="p-4 flex items-center gap-4">
                     <div className="w-14 h-14 rounded-lg bg-indigo-500/10 flex items-center justify-center flex-shrink-0 text-center">

@@ -244,7 +244,7 @@ const EventDetailPageNew = () => {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-black mb-4">Esemény nem található</h2>
-          <Button onClick={() => navigate("/esemenyek")}>
+          <Button onClick={() => navigate("/events")}>
             <ArrowLeft className="w-4 h-4 mr-2" />
             Vissza az eseményekhez
           </Button>
@@ -260,7 +260,7 @@ const EventDetailPageNew = () => {
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Back Link */}
         <Link
-          to="/esemenyek"
+          to="/events"
           className="inline-flex items-center gap-2 text-black/60 hover:text-black mb-6 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />

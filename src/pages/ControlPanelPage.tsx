@@ -247,7 +247,7 @@ const ControlPanelPage = () => {
 
   const handleNewsClick = (item: NewsItem) => {
     if (item.type === 'event') {
-      navigate(`/esemenyek`);
+      navigate(`/events`);
     } else if (item.type === 'content') {
       navigate(`/muhelytitok/${item.id}`);
     }

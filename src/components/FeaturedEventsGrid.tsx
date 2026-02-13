@@ -112,7 +112,7 @@ const FeaturedEventsGrid = () => {
               </div>
               <h2 className="text-2xl md:text-3xl font-bold">{t("index.featured_events_title")}</h2>
             </div>
-            <Link to="/esemenyek">
+            <Link to="/events">
               <Button variant="ghost" className="gap-2">
                 {t("events.view_all")}
                 <ChevronRight className="w-4 h-4" />
@@ -174,7 +174,7 @@ const FeaturedEventsGrid = () => {
                         </Badge>
                       )}
 
-                      <Link to={`/esemenyek/${event.id}`}>
+                      <Link to={`/events/${event.id}`}>
                         <Button className="w-full" variant="outline">
                           {t("common.details")}
                         </Button>

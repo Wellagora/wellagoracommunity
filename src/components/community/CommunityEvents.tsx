@@ -72,7 +72,7 @@ const CommunityEvents = () => {
         <h2 className="text-2xl font-bold">{t('community.upcoming_events')}</h2>
         <Button
           variant="ghost"
-          onClick={() => navigate('/esemenyek')}
+          onClick={() => navigate('/events')}
           className="gap-2"
         >
           {t('community.view_all_events')}
@@ -86,7 +86,7 @@ const CommunityEvents = () => {
           <p className="text-muted-foreground">{t('community.events_coming_soon')}</p>
           <Button
             variant="link"
-            onClick={() => navigate('/esemenyek')}
+            onClick={() => navigate('/events')}
             className="mt-2"
           >
             {t('community.view_all_events')}
@@ -104,7 +104,7 @@ const CommunityEvents = () => {
               >
                 <Card
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => navigate(`/esemenyek/${event.id}`)}
+                  onClick={() => navigate(`/events/${event.id}`)}
                 >
                   <CardContent className="p-4">
                     <div className="flex gap-4">

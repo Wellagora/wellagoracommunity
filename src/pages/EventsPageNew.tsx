@@ -343,7 +343,7 @@ const EventsPageNew = () => {
                 >
                   <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col cursor-pointer">
                     {/* Event Image */}
-                    <Link to={`/esemenyek/${event.id}`} className="block">
+                    <Link to={`/events/${event.id}`} className="block">
                       <div className="relative aspect-[16/9] bg-black/5 overflow-hidden">
                         {event.image_url ? (
                           <img
@@ -374,7 +374,7 @@ const EventsPageNew = () => {
                       </div>
                     </Link>
 
-                    <Link to={`/esemenyek/${event.id}`} className="block flex-1">
+                    <Link to={`/events/${event.id}`} className="block flex-1">
                       <CardContent className="p-5 flex-1 flex flex-col">
                       {/* Date */}
                       <div className="flex items-center gap-2 text-sm text-black/60 mb-2">

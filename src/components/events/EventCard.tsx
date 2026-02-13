@@ -75,7 +75,7 @@ const EventCard = ({
   const imageHeight = variant === "compact" ? "h-32" : "h-44";
 
   const handleCardClick = () => {
-    navigate(`/esemenyek/${event.id}`);
+    navigate(`/events/${event.id}`);
   };
 
   return (

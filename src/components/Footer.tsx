@@ -43,7 +43,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/esemenyek" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/events" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                   {t('nav.events')}
                 </Link>
               </li>
