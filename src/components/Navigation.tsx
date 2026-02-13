@@ -577,20 +577,22 @@ const Navigation = () => {
             {user && roleMetrics && (
               <>
                 {roleMetrics.type === 'member' && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Link 
-                        to="/my-agora" 
-                        className="flex items-center gap-1"
-                      >
-                        <Coins className="h-4 w-4 text-amber-500" />
-                        <span className="text-xs font-semibold text-amber-700">{roleMetrics.wellpoints}</span>
-                      </Link>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{t('wallet.your_balance')}</p>
-                    </TooltipContent>
-                  </Tooltip>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link 
+                          to="/my-agora" 
+                          className="flex items-center gap-1"
+                        >
+                          <Coins className="h-4 w-4 text-amber-500" />
+                          <span className="text-xs font-semibold text-amber-700">{roleMetrics.wellpoints}</span>
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{t('wallet.your_balance')}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
                 {roleMetrics.type === 'expert' && (
                   <Link 
