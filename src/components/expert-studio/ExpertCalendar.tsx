@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 import {
   Calendar,
   Clock,
@@ -17,6 +19,9 @@ import {
   CalendarDays,
   Ticket,
   Eye,
+  Plus,
+  Trash2,
+  CheckCircle2,
 } from "lucide-react";
 import {
   format,
@@ -40,11 +45,22 @@ interface CalendarEvent {
   date: string;
   end_date?: string | null;
   location?: string | null;
-  type: "event" | "program";
+  type: "event" | "program" | "slot";
   participants: number;
   maxParticipants: number;
   image_url?: string | null;
   category?: string | null;
+}
+
+interface AvailabilitySlot {
+  id: string;
+  expert_id: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  is_booked: boolean;
+  booked_by: string | null;
+  notes: string | null;
 }
 
 interface ExpertCalendarProps {
@@ -53,8 +69,12 @@ interface ExpertCalendarProps {
 
 const ExpertCalendar = ({ userId }: ExpertCalendarProps) => {
   const { t, language } = useLanguage();
+  const queryClient = useQueryClient();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [showAddSlot, setShowAddSlot] = useState(false);
+  const [slotStart, setSlotStart] = useState("09:00");
+  const [slotEnd, setSlotEnd] = useState("10:00");
 
   const dateLocale = language === "hu" ? hu : language === "de" ? de : enUS;
 
@@ -142,11 +162,68 @@ const ExpertCalendar = ({ userId }: ExpertCalendarProps) => {
     enabled: !!userId,
   });
 
+  // Fetch availability slots
+  const { data: slots } = useQuery({
+    queryKey: ["expert-availability", userId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("expert_availability")
+        .select("*")
+        .eq("expert_id", userId)
+        .gte("date", new Date().toISOString().split("T")[0])
+        .order("date", { ascending: true });
+      if (error) return [];
+      return (data || []) as AvailabilitySlot[];
+    },
+    enabled: !!userId,
+  });
+
+  const addSlotMutation = useMutation({
+    mutationFn: async ({ date, startTime, endTime }: { date: string; startTime: string; endTime: string }) => {
+      const { error } = await supabase.from("expert_availability").insert({
+        expert_id: userId,
+        date,
+        start_time: startTime,
+        end_time: endTime,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["expert-availability", userId] });
+      setShowAddSlot(false);
+      toast.success(t("calendar.slot_added") || "Időpont hozzáadva");
+    },
+    onError: () => toast.error(t("common.error") || "Hiba történt"),
+  });
+
+  const deleteSlotMutation = useMutation({
+    mutationFn: async (slotId: string) => {
+      const { error } = await supabase.from("expert_availability").delete().eq("id", slotId).eq("expert_id", userId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["expert-availability", userId] });
+      toast.success(t("calendar.slot_deleted") || "Időpont törölve");
+    },
+  });
+
+  const slotItems: CalendarEvent[] = useMemo(() => {
+    return (slots || []).map((s) => ({
+      id: s.id,
+      title: s.is_booked ? (t("calendar.booked") || "Foglalt") : (t("calendar.available") || "Elérhető"),
+      date: `${s.date}T${s.start_time}`,
+      end_date: `${s.date}T${s.end_time}`,
+      type: "slot" as const,
+      participants: s.is_booked ? 1 : 0,
+      maxParticipants: 1,
+    }));
+  }, [slots, t]);
+
   const allItems = useMemo(() => {
-    return [...(events || []), ...(programs || [])].sort(
+    return [...(events || []), ...(programs || []), ...slotItems].sort(
       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
     );
-  }, [events, programs]);
+  }, [events, programs, slotItems]);
 
   // Calendar grid
   const monthStart = startOfMonth(currentMonth);
@@ -307,6 +384,8 @@ const ExpertCalendar = ({ userId }: ExpertCalendarProps) => {
                                     ? "bg-white"
                                     : e.type === "event"
                                     ? "bg-indigo-500"
+                                    : e.type === "slot"
+                                    ? "bg-amber-500"
                                     : "bg-emerald-500"
                                 }`}
                               />
@@ -331,6 +410,10 @@ const ExpertCalendar = ({ userId }: ExpertCalendarProps) => {
                   <div className="flex items-center gap-1">
                     <div className="w-2 h-2 rounded-full bg-emerald-500" />
                     {t("calendar.program") || "Program"}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 rounded-full bg-amber-500" />
+                    {t("calendar.slot") || "Id\u0151pont"}
                   </div>
                 </div>
               </div>
@@ -392,18 +475,42 @@ const ExpertCalendar = ({ userId }: ExpertCalendarProps) => {
                         </div>
                       </div>
                       <div className="flex items-center gap-2 mt-2">
-                        <Badge variant={item.type === "event" ? "default" : "secondary"} className="text-xs">
+                        <Badge
+                          variant={item.type === "event" ? "default" : "secondary"}
+                          className={`text-xs ${
+                            item.type === "slot"
+                              ? item.participants > 0
+                                ? "bg-red-100 text-red-700"
+                                : "bg-amber-100 text-amber-700"
+                              : ""
+                          }`}
+                        >
                           {item.type === "event"
-                            ? t("calendar.event") || "Esemény"
+                            ? t("calendar.event") || "Esem\u00e9ny"
+                            : item.type === "slot"
+                            ? item.participants > 0
+                              ? t("calendar.booked") || "Foglalt"
+                              : t("calendar.available") || "El\u00e9rhet\u0151"
                             : t("calendar.program") || "Program"}
                         </Badge>
                         {item.type === "program" && (
                           <Link to={`/expert-studio/${item.id.split("-")[0]}/participants`}>
                             <Button variant="ghost" size="sm" className="h-6 text-xs gap-1">
                               <Eye className="w-3 h-3" />
-                              {t("calendar.view_participants") || "Résztvevők"}
+                              {t("calendar.view_participants") || "R\u00e9sztvev\u0151k"}
                             </Button>
                           </Link>
+                        )}
+                        {item.type === "slot" && !item.participants && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 text-xs gap-1 text-destructive"
+                            onClick={() => deleteSlotMutation.mutate(item.id)}
+                          >
+                            <Trash2 className="w-3 h-3" />
+                            {t("common.delete") || "T\u00f6rl\u00e9s"}
+                          </Button>
                         )}
                       </div>
                     </div>
@@ -417,7 +524,7 @@ const ExpertCalendar = ({ userId }: ExpertCalendarProps) => {
                 >
                   <CalendarDays className="w-10 h-10 mx-auto mb-2 text-muted-foreground/30" />
                   <p className="text-sm text-muted-foreground">
-                    {t("calendar.no_items") || "Nincs esemény ezen a napon"}
+                    {t("calendar.no_items") || "Nincs esem\u00e9ny ezen a napon"}
                   </p>
                 </motion.div>
               ) : (
@@ -429,6 +536,59 @@ const ExpertCalendar = ({ userId }: ExpertCalendarProps) => {
                 </div>
               )}
             </AnimatePresence>
+
+            {/* Add Slot Button + Form */}
+            {selectedDate && (
+              <div className="mt-4 pt-4 border-t">
+                {showAddSlot ? (
+                  <div className="space-y-3">
+                    <p className="text-sm font-medium">{t("calendar.add_slot") || "Időpont hozzáadása"}</p>
+                    <div className="flex gap-2">
+                      <Input
+                        type="time"
+                        value={slotStart}
+                        onChange={(e) => setSlotStart(e.target.value)}
+                        className="flex-1"
+                      />
+                      <span className="self-center text-muted-foreground">—</span>
+                      <Input
+                        type="time"
+                        value={slotEnd}
+                        onChange={(e) => setSlotEnd(e.target.value)}
+                        className="flex-1"
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        className="flex-1"
+                        disabled={addSlotMutation.isPending}
+                        onClick={() => {
+                          const dateStr = format(selectedDate, "yyyy-MM-dd");
+                          addSlotMutation.mutate({ date: dateStr, startTime: slotStart, endTime: slotEnd });
+                        }}
+                      >
+                        <CheckCircle2 className="w-4 h-4 mr-1" />
+                        {t("common.save") || "Mentés"}
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => setShowAddSlot(false)}>
+                        {t("common.cancel") || "Mégse"}
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full gap-2"
+                    onClick={() => setShowAddSlot(true)}
+                  >
+                    <Plus className="w-4 h-4" />
+                    {t("calendar.add_slot") || "Időpont hozzáadása"}
+                  </Button>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

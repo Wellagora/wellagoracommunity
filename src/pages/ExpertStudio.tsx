@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, BarChart3, BookOpen, Wallet, Users, Plus, TrendingUp, Calendar, DollarSign, ArrowRight, Store, CreditCard, ExternalLink, CheckCircle2, AlertCircle, Share2 } from "lucide-react";
+import { Sparkles, BarChart3, BookOpen, Wallet, Users, Plus, TrendingUp, Calendar, DollarSign, ArrowRight, Store, CreditCard, ExternalLink, CheckCircle2, AlertCircle, Share2, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { shareClicks } from "@/integrations/supabase/untyped";
 import { useState } from "react";
@@ -175,6 +175,64 @@ const ExpertStudio = () => {
       ]);
       
       return { totalBookings: allParticipants.size };
+    },
+    enabled: !!user,
+    retry: false,
+  });
+
+  // Engagement metrics (reviews, community posts, returning members)
+  const engagementQuery = useQuery({
+    queryKey: ['expertEngagement', user?.id],
+    queryFn: async () => {
+      if (!user) throw new Error('No user');
+
+      // Get creator's content IDs
+      const { data: contents } = await supabase
+        .from('expert_contents')
+        .select('id')
+        .eq('creator_id', user.id);
+      const contentIds = contents?.map(c => c.id) || [];
+
+      // Reviews average
+      let avgRating = 0;
+      let reviewCount = 0;
+      if (contentIds.length > 0) {
+        const { data: reviews } = await supabase
+          .from('reviews')
+          .select('rating')
+          .in('content_id', contentIds);
+        if (reviews && reviews.length > 0) {
+          reviewCount = reviews.length;
+          avgRating = reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviewCount;
+        }
+      }
+
+      // Community posts by the expert
+      const { count: postCount } = await supabase
+        .from('community_posts')
+        .select('id', { count: 'exact', head: true })
+        .eq('author_id', user.id);
+
+      // Returning members (users who purchased more than one program)
+      let returningPercent = 0;
+      if (contentIds.length > 0) {
+        const { data: accessData } = await supabase
+          .from('content_access')
+          .select('user_id, content_id')
+          .in('content_id', contentIds);
+        if (accessData && accessData.length > 0) {
+          const userContentMap = new Map<string, Set<string>>();
+          accessData.forEach(a => {
+            if (!userContentMap.has(a.user_id)) userContentMap.set(a.user_id, new Set());
+            userContentMap.get(a.user_id)!.add(a.content_id);
+          });
+          const totalUsers = userContentMap.size;
+          const returningUsers = Array.from(userContentMap.values()).filter(s => s.size > 1).length;
+          returningPercent = totalUsers > 0 ? Math.round((returningUsers / totalUsers) * 100) : 0;
+        }
+      }
+
+      return { avgRating, reviewCount, postCount: postCount || 0, returningPercent };
     },
     enabled: !!user,
     retry: false,
@@ -469,6 +527,60 @@ const ExpertStudio = () => {
                 </Card>
               </motion.div>
             </div>
+          )}
+
+          {/* Engagement Metrics Card */}
+          {engagementQuery.data && (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
+              <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-amber-500">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">
+                      {t('expert_studio.cards.engagement.title') || 'Elköteleződés'}
+                    </CardTitle>
+                    <Star className="w-5 h-5 text-amber-500" />
+                  </div>
+                  <CardDescription>
+                    {t('expert_studio.cards.engagement.subtitle') || 'Értékelések, aktivitás, visszatérők'}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="text-center p-3 bg-amber-50 rounded-lg">
+                      <p className="text-2xl font-bold text-amber-700">
+                        {engagementQuery.data.avgRating > 0 ? engagementQuery.data.avgRating.toFixed(1) : '—'}
+                      </p>
+                      <p className="text-xs text-amber-600">
+                        {t('expert_studio.cards.engagement.avg_rating') || 'Átlag értékelés'}
+                      </p>
+                      {engagementQuery.data.reviewCount > 0 && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          ({engagementQuery.data.reviewCount} {t('expert_studio.cards.engagement.reviews') || 'értékelés'})
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-center p-3 bg-indigo-50 rounded-lg">
+                      <p className="text-2xl font-bold text-indigo-700">{engagementQuery.data.postCount}</p>
+                      <p className="text-xs text-indigo-600">
+                        {t('expert_studio.cards.engagement.posts') || 'Közösségi poszt'}
+                      </p>
+                    </div>
+                    <div className="text-center p-3 bg-emerald-50 rounded-lg">
+                      <p className="text-2xl font-bold text-emerald-700">{engagementQuery.data.returningPercent}%</p>
+                      <p className="text-xs text-emerald-600">
+                        {t('expert_studio.cards.engagement.returning') || 'Visszatérő tagok'}
+                      </p>
+                    </div>
+                    <div className="text-center p-3 bg-cyan-50 rounded-lg">
+                      <p className="text-2xl font-bold text-cyan-700">{shareStatsQuery.data?.total || 0}</p>
+                      <p className="text-xs text-cyan-600">
+                        {t('expert_studio.cards.engagement.profile_views') || 'Profil megtekintés'}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           )}
 
           {/* Share Stats Card */}

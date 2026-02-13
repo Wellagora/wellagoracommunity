@@ -5859,6 +5859,37 @@
   "sponsor_hub.impact.reach": "Becsült elérés",
   "sponsor_hub.impact.cost_per_beneficiary": "Költség / kedvezményezett",
 
+  "calendar.slot": "Időpont",
+  "calendar.add_slot": "Időpont hozzáadása",
+  "calendar.slot_added": "Időpont hozzáadva",
+  "calendar.slot_deleted": "Időpont törölve",
+  "calendar.booked": "Foglalt",
+  "calendar.available": "Elérhető",
+
+  "attendance.checked_in": "Jelenlét rögzítve",
+  "attendance.no_participants": "Még nincs résztvevő",
+  "attendance.present": "Jelen",
+  "attendance.check_in": "Bejelentkeztetés",
+
+  "profile.danger_zone": "Veszélyzóna",
+  "profile.delete_account": "Fiók törlése",
+  "profile.delete_account_desc": "A fiókod törlése végleges. Minden adatod, posztod, vásárlásod és pontjaid törölve lesznek.",
+  "profile.delete_account_warning": "Írd be a \"TÖRLÉS\" szót a megerősítéshez. Ez a művelet nem vonható vissza.",
+  "profile.type_delete": "Írd be: TÖRLÉS",
+  "profile.confirm_delete": "Végleges törlés",
+  "profile.delete_failed": "A fiók törlése nem sikerült.",
+
+  "expert_studio.cards.engagement.title": "Elköteleződés",
+  "expert_studio.cards.engagement.subtitle": "Értékelések, aktivitás, visszatérők",
+  "expert_studio.cards.engagement.avg_rating": "Átlag értékelés",
+  "expert_studio.cards.engagement.reviews": "értékelés",
+  "expert_studio.cards.engagement.posts": "Közösségi poszt",
+  "expert_studio.cards.engagement.returning": "Visszatérő tagok",
+  "expert_studio.cards.engagement.profile_views": "Profil megtekintés",
+
+  "access.expired": "Hozzáférés lejárt",
+  "access.expired_desc": "A hozzáférésed lejárt — újra megvásárolhatod a programot.",
+
   "seo.homepage.title": "WellAgora — Fenntartható közösségek, megosztott tudás",
   "seo.homepage.description": "Csatlakozz fenntartható közösségekhez és tanuld meg a helyi szakértőktől. Támogatott tanulás, közösségi kapcsolatok.",
   "seo.marketplace.title": "WellAgora Piactér — Fenntarthatósági Programok",

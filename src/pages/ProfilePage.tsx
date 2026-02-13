@@ -32,8 +32,11 @@ import {
   FileText,
   Link as LinkIcon,
   Eye,
-  EyeOff
+  EyeOff,
+  AlertTriangle,
+  Trash2
 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { NotificationPreferences } from "@/components/notifications/NotificationPreferences";
@@ -44,7 +47,7 @@ const ProfilePage = () => {
   const [searchParams] = useSearchParams();
   const { userId: paramUserId } = useParams<{ userId: string }>();
   const viewingUserId = paramUserId || searchParams.get('userId');
-  const { user, profile, updateProfile, loading: authLoading } = useAuth();
+  const { user, profile, updateProfile, signOut, loading: authLoading } = useAuth();
   const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
@@ -52,6 +55,9 @@ const ProfilePage = () => {
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [logoUploading, setLogoUploading] = useState(false);
   const [viewedProfile, setViewedProfile] = useState<any>(null);
+  const [showDeleteAccount, setShowDeleteAccount] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const { toast } = useToast();
 
   // Derive user role from profile
@@ -713,6 +719,29 @@ const ProfilePage = () => {
               </>
             )}
 
+            {/* GDPR Account Deletion */}
+            <Card className="border-destructive/30 bg-destructive/5">
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2 text-destructive">
+                  <AlertTriangle className="w-4 h-4" />
+                  {t('profile.danger_zone') || 'Veszélyzóna'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {t('profile.delete_account_desc') || 'A fiókod törlése végleges. Minden adatod, posztod, vásárlásod és pontjaid törölve lesznek.'}
+                </p>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => setShowDeleteAccount(true)}
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  {t('profile.delete_account') || 'Fiók törlése'}
+                </Button>
+              </CardContent>
+            </Card>
+
             {/* Save Button */}
             <div className="flex justify-end pt-4">
               <Button 
@@ -737,6 +766,53 @@ const ProfilePage = () => {
           </form>
         </div>
       </div>
+      {/* Delete Account Confirmation Dialog */}
+      <Dialog open={showDeleteAccount} onOpenChange={setShowDeleteAccount}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-destructive">
+              <AlertTriangle className="w-5 h-5" />
+              {t('profile.delete_account') || 'Fiók törlése'}
+            </DialogTitle>
+            <DialogDescription>
+              {t('profile.delete_account_warning') || 'Írd be a "TÖRLÉS" szót a megerősítéshez. Ez a művelet nem vonható vissza.'}
+            </DialogDescription>
+          </DialogHeader>
+          <Input
+            value={deleteConfirmText}
+            onChange={(e) => setDeleteConfirmText(e.target.value)}
+            placeholder={t('profile.type_delete') || 'Írd be: TÖRLÉS'}
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowDeleteAccount(false)}>
+              {t('common.cancel') || 'Mégse'}
+            </Button>
+            <Button
+              variant="destructive"
+              disabled={deleteConfirmText !== 'TÖRLÉS' || deleteLoading}
+              onClick={async () => {
+                setDeleteLoading(true);
+                try {
+                  const { error } = await supabase.functions.invoke('delete-user-account', {
+                    body: { user_id: user?.id }
+                  });
+                  if (error) throw error;
+                  await signOut();
+                  navigate('/');
+                } catch (err) {
+                  console.error('Account deletion failed:', err);
+                  toast({ title: t('common.error') || 'Hiba', description: t('profile.delete_failed') || 'A fiók törlése nem sikerült.', variant: 'destructive' });
+                } finally {
+                  setDeleteLoading(false);
+                }
+              }}
+            >
+              {deleteLoading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Trash2 className="w-4 h-4 mr-2" />}
+              {t('profile.confirm_delete') || 'Végleges törlés'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -63,7 +63,7 @@ const checkAccess = async (
   userId: string
 ): Promise<{
   hasAccess: boolean;
-  reason: "free" | "purchased" | "sponsored" | "no_access" | "no_licenses";
+  reason: "free" | "purchased" | "sponsored" | "no_access" | "no_licenses" | "expired";
 }> => {
   const { data: content } = await supabase
     .from("expert_contents")
@@ -83,15 +83,19 @@ const checkAccess = async (
     return { hasAccess: true, reason: "free" };
   }
 
-  // Check content_access table
+  // Check content_access table (with expiration check)
   const { data: access } = await supabase
     .from("content_access")
-    .select("id")
+    .select("id, expires_at")
     .eq("user_id", userId)
     .eq("content_id", contentId)
     .maybeSingle();
 
   if (access) {
+    // Check if access has expired
+    if (access.expires_at && new Date(access.expires_at) < new Date()) {
+      return { hasAccess: false, reason: "expired" };
+    }
     return {
       hasAccess: true,
       reason: content.access_type === "sponsored" ? "sponsored" : "purchased",
