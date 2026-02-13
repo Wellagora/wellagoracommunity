@@ -19,7 +19,7 @@ const translations: Record<Language, any> = {
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, string | number>) => string;
   isLoading: boolean;
 }
 
@@ -52,7 +52,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const t = (key: string): string => {
+  const t = (key: string, params?: Record<string, string | number>): string => {
     const langTranslations = translations[language] || {};
     const fallbackTranslations = translations['en'] || {}; // English as fallback
     const baseFallbackTranslations = translations['hu'] || {}; // Hungarian as final fallback
@@ -115,18 +115,24 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
     // Try current language first
     let result = findValue(langTranslations, key);
-    if (result) return result;
 
     // Fallback to English
-    result = findValue(fallbackTranslations, key);
-    if (result) return result;
+    if (!result) result = findValue(fallbackTranslations, key);
 
     // Final fallback to Hungarian
-    result = findValue(baseFallbackTranslations, key);
-    if (result) return result;
+    if (!result) result = findValue(baseFallbackTranslations, key);
 
     // Key not found anywhere - return the key itself
-    return key;
+    if (!result) return key;
+
+    // Interpolate {{variable}} placeholders
+    if (params) {
+      for (const [k, v] of Object.entries(params)) {
+        result = result.replace(new RegExp(`\\{\\{${k}\\}\\}`, 'g'), String(v));
+      }
+    }
+
+    return result;
   };
 
   return (
@@ -145,7 +151,7 @@ export const useLanguage = () => {
     return {
       language: 'hu' as Language, // Default to Hungarian — primary target market
       setLanguage: () => {},
-      t: (key: string) => key,
+      t: (key: string, _params?: Record<string, string | number>) => key,
       isLoading: false,
     };
   }

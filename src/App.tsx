@@ -1,5 +1,6 @@
 import { useEffect, lazy, Suspense } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
@@ -100,6 +101,11 @@ const MyAgoraPage = lazy(() => import("@/pages/MyAgoraPage"));
 const PointsHistoryPage = lazy(() => import("@/pages/PointsHistoryPage"));
 const GuestConfirmPage = lazy(() => import("@/pages/GuestConfirmPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
+
+const LegacyEditRedirect = () => {
+  const { id } = useParams<{ id: string }>();
+  return <Navigate to={`/expert-studio/${id}/edit`} replace />;
+};
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -356,13 +362,13 @@ function App() {
                           {/* Expert Studio - Hungarian legacy routes (redirect to English) */}
                           <Route path="/szakertoi-studio" element={<Navigate to="/expert-studio" replace />} />
                           <Route path="/szakertoi-studio/uj" element={<Navigate to="/expert-studio/new" replace />} />
-                          <Route path="/szakertoi-studio/:id/szerkesztes" element={<Navigate to="/expert-studio/:id/edit" replace />} />
+                          <Route path="/szakertoi-studio/:id/szerkesztes" element={<LegacyEditRedirect />} />
                           <Route path="/szakertoi-studio/uj-utmutato" element={<Navigate to="/expert-studio/new" replace />} />
                           
                           {/* Redirects from old creator routes */}
                           <Route path="/creator/dashboard" element={<Navigate to="/expert-studio" replace />} />
                           <Route path="/creator/programs/new" element={<Navigate to="/expert-studio/new" replace />} />
-                          <Route path="/creator/programs/:id/edit" element={<Navigate to="/expert-studio/:id/edit" replace />} />
+                          <Route path="/creator/programs/:id/edit" element={<LegacyEditRedirect />} />
                           
                           {/* Marketplace (Piactér) - new Hungarian routes */}
                           <Route path="/piacer" element={<ProgramsListingPage />} />

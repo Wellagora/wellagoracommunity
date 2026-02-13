@@ -527,7 +527,7 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem asChild>
-                              <Link to={`/szakertoi-studio/${program.id}/szerkesztes`}>
+                              <Link to={`/expert-studio/${program.id}/edit`}>
                                 <Pencil className="w-4 h-4 mr-2" />
                                 {t("common.edit")}
                               </Link>
