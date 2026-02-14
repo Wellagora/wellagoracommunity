@@ -20,7 +20,7 @@ export const WizardFooter = ({
   const { t } = useLanguage();
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border p-4 z-40">
+    <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border p-4 z-[60]">
       <div className="container mx-auto max-w-2xl flex gap-3">
         {currentStep > 1 && (
           <Button variant="outline" onClick={onBack} className="flex-1 py-6">

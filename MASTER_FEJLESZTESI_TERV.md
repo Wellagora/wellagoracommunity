@@ -1,8 +1,25 @@
-# WELLAGORA — MASTER FEJLESZTÉSI TERV v2.0
+# WELLAGORA — MASTER FEJLESZTÉSI TERV v2.1
 
-**Frissítve:** 2026-02-13 (kódbázis verifikáció után)
-**Előzmény:** Phase 3A KÉSZ (commit c0e82b4)
-**Felülvizsgálat oka:** Az v1.0 terv több helyen pontatlan volt — a kódbázis valós állapota kedvezőbb.
+**Frissítve:** 2026-02-13 (Phase 3B-3E VÉGREHAJTVA + audit)
+**Előzmény:** Phase 3A-3E KÉSZ
+**Státusz:** ✅ ÖSSZES FEJLESZTÉSI FÁZIS BEFEJEZVE — Stripe E2E teszt hátravan
+
+## VÉGREHAJTÁS ÖSSZEFOGLALÓ
+
+| Fázis | Commit | Dátum | Státusz |
+|-------|--------|-------|---------|
+| 3A | c0e82b4 | 2026-02-13 | ✅ KÉSZ |
+| 3B | 9a33d09 | 2026-02-13 | ✅ KÉSZ |
+| 3C | 5ee9beb | 2026-02-13 | ✅ KÉSZ |
+| 3D | c1439ec | 2026-02-13 | ✅ KÉSZ |
+| 3E | 614bb37 | 2026-02-13 | ✅ KÉSZ |
+| Stripe E2E | - | - | ⏳ KÖVETKEZŐ |
+
+**Minőségi audit eredmény (2026-02-13):**
+- TypeScript: 0 hiba
+- Vitest: 82 teszt (6 fájl) — MIND SIKERES
+- 32 fájl módosult, +3540 sor, -322 sor
+- 3 kisebb CONCERN azonosítva (lásd audit szekció alul)
 
 ---
 
@@ -420,27 +437,103 @@ Ez a lépés kézi tesztelést igényel Stripe test mode-ban:
 
 ---
 
-## 4. ÖSSZESÍTETT STATISZTIKA
+## 4. ÖSSZESÍTETT STATISZTIKA (VÉGREHAJTÁS UTÁN)
 
-| Metrika | Érték |
-|---------|-------|
-| Összes funkció | 42 |
-| ✅ KÉSZ | **20** (v1.0-ban 11 volt — 9 félreosztályozott) |
-| ⚠️ RÉSZLEGES | **13** |
-| ❌ HIÁNYZIK | **9** |
-| Becsült munkanap | **~10 nap** (v1.0-ban 18 volt) |
-| Fázisok | 4 (3B-3E) + Stripe |
+| Metrika | Tervezett (v2.0) | Végrehajtott (v2.1) |
+|---------|-------------------|---------------------|
+| Összes funkció | 42 | 42 |
+| ✅ KÉSZ | 20 | **38** |
+| ⚠️ RÉSZLEGES | 13 | **3** (keresés, naptár-ütközés, tesztek) |
+| ❌ HIÁNYZIK | 9 | **1** (Stripe E2E) |
+| Becsült munkanap | ~10 nap | Windsurf ~1 nap alatt végrehajtotta |
 
 ---
 
-## 5. REFERENCIA
+## 5. MINŐSÉGI AUDIT EREDMÉNY (2026-02-13)
+
+### Minden OK (10/12):
+| Komponens | Értékelés |
+|-----------|-----------|
+| Rate Limiting | ✅ OK — Sliding window, proper CORS, 429 response |
+| GDPR Törlés | ✅ OK — Bearer token + admin API + "TÖRLÉS" megerősítés |
+| Expert Checklist | ✅ OK — Profil/Program/Stripe 3 lépés |
+| Calendar Slots | ✅ OK — Időpont hozzáadás/törlés, upsert |
+| Attendance | ✅ OK — Check-in, upsert, progress bar |
+| Event JSON-LD | ✅ OK — schema.org Event markup |
+| Error Pages | ✅ OK — 403 + 500, animációk, navigáció |
+| AuthContext | ✅ OK — daily_login trigger bekötve |
+| DummyPayment | ✅ OK — Sikeresen törölve |
+| Gamification | ✅ OK — 12/14 trigger aktív |
+
+### Kisebb problémák (2/12):
+| Komponens | Értékelés | Javaslat |
+|-----------|-----------|----------|
+| Globális Keresés | ⚠️ CONCERN — Csak title-ilike, nem full-text | Supabase pg_trgm vagy ts_vector |
+| Vitest Config | ⚠️ CONCERN — node env, nincs jsdom → komponens tesztek nem futnak | Env: jsdom-ra cserélni |
+
+### Javítási prioritás (Post-Stripe):
+1. Globális keresés bővítés (full-text pg_trgm)
+2. Vitest environment → jsdom
+3. Naptár időpont-ütközés detektálás
+
+---
+
+## 6. STRIPE E2E TESZT TERV (KÖVETKEZŐ LÉPÉS)
+
+### Előfeltételek:
+- [ ] Stripe test mode API kulcsok aktívak a Supabase-ben
+- [ ] Legalább 1 Founding Expert profil Stripe Connect-tel
+- [ ] Legalább 1 normál Expert profil Stripe Connect-tel
+- [ ] Szponzor fiók kredit egyenleggel
+
+### Teszt forgatókönyvek:
+
+**1. Tag → Program Vásárlás:**
+- [ ] Tag böngészi a piacteret
+- [ ] Kiválaszt egy programot
+- [ ] Checkout indul (create-checkout-session edge fn)
+- [ ] Stripe test card: 4242 4242 4242 4242
+- [ ] Webhook feldolgozás: `checkout.session.completed`
+- [ ] content_access tábla frissül
+- [ ] Vásárlás megerősítő email (send-purchase-confirmation)
+- [ ] WellPoints: `voucher_redeemed` trigger
+
+**2. Founding Expert 0% Díj Verifikáció:**
+- [ ] Founding Expert programjának vásárlása
+- [ ] Ellenőrzés: `expertSharePercent === 1.00` (100% az expertnek)
+- [ ] Stripe Transfer: teljes összeg megy az expertnek
+- [ ] Dashboard bevétel megjelenik
+
+**3. Normál Expert 80/20 Split:**
+- [ ] Normál Expert programjának vásárlása
+- [ ] Ellenőrzés: `expertSharePercent === 0.80` (80% expert, 20% platform)
+- [ ] Stripe Transfer: helyes összeg
+
+**4. Szponzor Kredit Vásárlás:**
+- [ ] Szponzor dashboard → Kredit vásárlás
+- [ ] Stripe checkout a kredit csomagért
+- [ ] Kredit egyenleg frissül
+- [ ] Program szponzorálás kreditből
+
+**5. Webhook Robusztusság:**
+- [ ] Dupla webhook kezelés (idempotency)
+- [ ] Hibás webhook signature elutasítás
+- [ ] Stripe CLI webhook tesztelés: `stripe trigger checkout.session.completed`
+
+---
+
+## 7. REFERENCIA
 
 - **Stratégiai Audit:** `WellAgora_Strategiai_Audit_2026Q1.docx`
-- **Phase 3A (KÉSZ):** commit c0e82b4, `WINDSURF_PHASE3A_KRITIKUS_JAVITASOK.md`
+- **Phase 3A:** commit c0e82b4
+- **Phase 3B:** commit 9a33d09
+- **Phase 3C:** commit 5ee9beb
+- **Phase 3D:** commit c1439ec
+- **Phase 3E:** commit 614bb37
 - **Tech stack:** React 18 + TypeScript + Vite 5 + TailwindCSS + shadcn/ui + Supabase + Stripe + Google Gemini AI
 - **Gamifikáció:** `src/lib/wellpoints.ts` (awardPoints fn + POINT_VALUES objektum)
 - **Email:** `supabase/functions/send-welcome-email/index.ts` (Resend API)
-- **Edge functions:** 25 db a `supabase/functions/` alatt
+- **Edge functions:** 26 db a `supabase/functions/` alatt (+ delete-user-account)
 - **i18n:** `src/locales/` (hu.json, en.json, de.json + admin változatok)
-- **SEO:** `src/components/SEOHead.tsx`, `src/components/seo/ProgramJsonLd.tsx`, `src/components/seo/PartnerJsonLd.tsx`
-- **Teszt:** 4 vitest fájl a `src/__tests__/`-ben, 8 Playwright E2E fájl az `e2e/`-ben
+- **SEO:** `src/components/SEOHead.tsx` + 4 JSON-LD komponens
+- **Teszt:** 6 vitest fájl (82 teszt), 8 Playwright E2E fájl

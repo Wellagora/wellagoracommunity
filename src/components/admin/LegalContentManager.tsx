@@ -208,7 +208,7 @@ const LegalContentManager = () => {
 
       // Real company data to be inserted
       const companyData = {
-        name: 'Wellagora',
+        name: 'WellAgora',
         registrationNumber: 'HRB 123456',
         address: 'Musterstraße 1',
         city: 'Wien',

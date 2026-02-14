@@ -76,7 +76,7 @@ const InteractiveFeatures = () => {
     if (navigator.share) {
       navigator.share({
         title: "Inspiring sustainability action!",
-        text: `${activity.user} ${activity.action}. Join us on Wellagora!`,
+        text: `${activity.user} ${activity.action}. Join us on WellAgora!`,
         url: window.location.href,
       });
     }

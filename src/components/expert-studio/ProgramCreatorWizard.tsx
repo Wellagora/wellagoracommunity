@@ -583,7 +583,7 @@ const ProgramCreatorWizard = () => {
 
       {/* Footer Navigation */}
       {currentStep < STEPS.length - 1 && (
-        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-md border-t border-border/40 p-4">
+        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-md border-t border-border/40 p-4 z-[60]">
           <div className="container mx-auto max-w-2xl flex justify-between">
             <Button
               variant="outline"

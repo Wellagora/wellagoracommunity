@@ -4,8 +4,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, Video, Image, X, Camera, FileVideo, FileImage } from "lucide-react";
 import { toast } from "sonner";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import type { ProgramFormData } from "../ProgramCreatorWizard";
+import WebcamCapture from "./WebcamCapture";
 
 interface Step1MediaProps {
   formData: ProgramFormData;
@@ -15,12 +16,15 @@ interface Step1MediaProps {
 const MAX_VIDEO_SIZE = 100 * 1024 * 1024; // 100MB
 const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
 
+const isMobileDevice = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
 const Step1Media = ({ formData, setFormData }: Step1MediaProps) => {
   const { t } = useLanguage();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
   const photoInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [webcamMode, setWebcamMode] = useState<"photo" | "video" | null>(null);
 
   const handleFileSelect = useCallback((file: File) => {
     const isVideo = file.type.startsWith("video/");
@@ -204,25 +208,53 @@ const Step1Media = ({ formData, setFormData }: Step1MediaProps) => {
         </div>
       )}
 
-      {/* Quick Action Buttons for Mobile */}
-      <div className="grid grid-cols-2 gap-4 mt-6">
-        <Button
-          variant="outline"
-          onClick={() => videoInputRef.current?.click()}
-          className="h-16 flex flex-col items-center justify-center gap-2 border-red-300 hover:border-red-500 hover:bg-red-500/10"
-        >
-          <Video className="w-6 h-6 text-red-500" />
-          <span className="text-sm">{t("program_creator.record_video")}</span>
-        </Button>
-        <Button
-          variant="outline"
-          onClick={() => photoInputRef.current?.click()}
-          className="h-16 flex flex-col items-center justify-center gap-2 border-blue-300 hover:border-blue-500 hover:bg-blue-500/10"
-        >
-          <Camera className="w-6 h-6 text-blue-500" />
-          <span className="text-sm">{t("program_creator.take_photo")}</span>
-        </Button>
-      </div>
+      {/* Webcam Capture Mode */}
+      <AnimatePresence>
+        {webcamMode && (
+          <WebcamCapture
+            mode={webcamMode}
+            onCapture={(file) => {
+              handleFileSelect(file);
+              setWebcamMode(null);
+            }}
+            onClose={() => setWebcamMode(null)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Quick Action Buttons */}
+      {!webcamMode && (
+        <div className="grid grid-cols-2 gap-4 mt-6">
+          <Button
+            variant="outline"
+            onClick={() => {
+              if (isMobileDevice()) {
+                videoInputRef.current?.click();
+              } else {
+                setWebcamMode("video");
+              }
+            }}
+            className="h-16 flex flex-col items-center justify-center gap-2 border-red-300 hover:border-red-500 hover:bg-red-500/10"
+          >
+            <Video className="w-6 h-6 text-red-500" />
+            <span className="text-sm">{t("program_creator.record_video")}</span>
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              if (isMobileDevice()) {
+                photoInputRef.current?.click();
+              } else {
+                setWebcamMode("photo");
+              }
+            }}
+            className="h-16 flex flex-col items-center justify-center gap-2 border-blue-300 hover:border-blue-500 hover:bg-blue-500/10"
+          >
+            <Camera className="w-6 h-6 text-blue-500" />
+            <span className="text-sm">{t("program_creator.take_photo")}</span>
+          </Button>
+        </div>
+      )}
 
       {/* File Size Info */}
       <div className="bg-muted/50 rounded-lg p-4">

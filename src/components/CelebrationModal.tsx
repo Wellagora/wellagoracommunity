@@ -48,7 +48,7 @@ const CelebrationModal = ({ isOpen, onClose, achievement }: CelebrationModalProp
       });
     } else {
       navigator.clipboard.writeText(
-        `🎉 I just ${achievement.title}! ${achievement.description} Join me on Wellagora!`
+        `🎉 I just ${achievement.title}! ${achievement.description} Join me on WellAgora!`
       );
     }
   };

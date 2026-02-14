@@ -82,7 +82,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = "register" }: AuthModalProps
         <DialogHeader className="sr-only">
           <DialogTitle>Authentication</DialogTitle>
           <DialogDescription>
-            Sign in or create an account to access Wellagora
+            Sign in or create an account to access WellAgora
           </DialogDescription>
         </DialogHeader>
         {renderContent()}

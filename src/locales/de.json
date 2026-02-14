@@ -849,7 +849,7 @@
     "signup_error": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
     "account_created": "Konto erstellt! Überprüfen Sie Ihre E-Mail und melden Sie sich an.",
     "registration_success": "Registrierung erfolgreich!",
-    "registration_success_desc": "Willkommen bei Wellagora! Überprüfen Sie Ihre E-Mail zur Bestätigung.",
+    "registration_success_desc": "Willkommen bei WellAgora! Überprüfen Sie Ihre E-Mail zur Bestätigung.",
     "registration_failed": "Registrierung fehlgeschlagen",
     "registration_error": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
     "email_already_registered": "Diese E-Mail wird bereits verwendet.",
@@ -1317,7 +1317,7 @@
     "updated": "Bewertung aktualisiert!",
     "deleted": "Bewertung gelöscht",
     "already_reviewed": "Du hast dieses Programm bereits bewertet",
-    "must_enroll": "Nur eingeschriebene Benutzer können Bewertungen schreiben",
+    "must_enroll": "Nur in dieses Programm eingeschriebene Benutzer können Bewertungen schreiben",
     "average": "Durchschnitt",
     "count": "Bewertungen",
     "based_on": "basierend auf Bewertungen"
@@ -4583,7 +4583,7 @@
     "contact_initiated_desc": "Sie können bald Kontakt aufnehmen mit: {{name}}"
   },
   "footer": {
-    "about_title": "Über Wellagora",
+    "about_title": "Über WellAgora",
     "about_text": "Aufbau nachhaltiger Gemeinschaften durch gemeinsames Handeln und Innovation.",
     "quick_links": "Schnellzugriff",
     "link_programs": "Programme",
@@ -4596,7 +4596,7 @@
     "legal_title": "Rechtliches",
     "link_privacy": "Datenschutzerklärung",
     "link_impressum": "Impressum",
-    "copyright": "Wellagora. Alle Rechte vorbehalten.",
+    "copyright": "WellAgora. Alle Rechte vorbehalten.",
     "privacy_short": "Datenschutz",
     "impressum_short": "Impressum",
     "legal": "Rechtliches",
@@ -4615,7 +4615,7 @@
     "intro_title": "Einleitung",
     "intro_text": "ProSelf International Inc. (\"wir\", \"uns\" oder \"unser\") betreibt die WellAgora-Plattform. Diese Datenschutzerklärung informiert Sie darüber, wie wir personenbezogene Daten erheben, verwenden, speichern und schützen, wenn Sie unsere Dienste nutzen.",
     "controller_title": "Verantwortlicher",
-    "controller_text": "Wellagora\nSitz: [Adresse]\nE-Mail: info@wellagora.com\nTelefon: [Telefonnummer]",
+    "controller_text": "WellAgora\nSitz: [Adresse]\nE-Mail: info@wellagora.com\nTelefon: [Telefonnummer]",
     "data_collected_title": "Erhobene Daten",
     "data_collected_intro": "Wir erheben folgende Arten personenbezogener Daten:",
     "data_personal": "Persönliche Identifikationsinformationen (Name, E-Mail-Adresse, Telefonnummer)",
@@ -5068,7 +5068,13 @@
     "back": "Zurück",
     "fill_required": "Bitte fülle die Pflichtfelder aus!",
     "media_required": "Bitte lade zuerst ein Foto oder Video hoch!",
-    "publish_error": "Fehler bei der Veröffentlichung"
+    "publish_error": "Fehler bei der Veröffentlichung",
+    "webcam_error": "Kamera konnte nicht geöffnet werden. Bitte erlauben Sie den Kamerazugriff in Ihren Browsereinstellungen.",
+    "webcam_permission_denied": "Kamerazugriff verweigert. Bitte erlauben Sie ihn in Ihren Browsereinstellungen.",
+    "webcam_not_found": "Keine Kamera auf diesem Gerät gefunden.",
+    "recording_error": "Fehler beim Starten der Aufnahme.",
+    "retake": "Wiederholen",
+    "use_capture": "Verwenden"
   },
   "feed": {
     "title": "Community Feed",
@@ -5826,5 +5832,28 @@
   "seo.community.title": "WellAgora Gemeinschaft — Geteiltes Wissen",
   "seo.community.description": "Treten Sie einer wachsenden Gemeinschaft bei, teilen Sie Ideen und sammeln Sie WellPoints.",
   "seo.events.title": "WellAgora Veranstaltungen — Nachhaltigkeitsschulung",
-  "seo.events.description": "Entdecken Sie Nachhaltigkeitsveranstaltungen und Gemeinschaftsprogramme in Ihrer Region."
+  "seo.events.description": "Entdecken Sie Nachhaltigkeitsveranstaltungen und Gemeinschaftsprogramme in Ihrer Region.",
+
+  "actions.browse": "Durchsuchen",
+  "actions.view_all": "Alle anzeigen",
+  "actions.learn_more": "Mehr erfahren",
+
+  "roles.member": "Mitglied",
+  "roles.expert": "Experte",
+  "roles.sponsor": "Förderer",
+  "roles.admin": "Admin",
+  "roles.creator": "Experte",
+  "roles.business": "Förderer",
+  "roles.government": "Förderer",
+  "roles.ngo": "Förderer",
+
+  "cookie.customize": "Anpassen",
+  "cookie.customize_title": "Cookie-Einstellungen",
+  "cookie.functional": "Funktionale Cookies",
+  "cookie.functional_desc": "Ermöglichen erweiterte Funktionen und Personalisierung.",
+  "cookie.analytics": "Analytische Cookies",
+  "cookie.analytics_desc": "Helfen uns zu verstehen, wie Besucher die Seite nutzen.",
+  "cookie.marketing": "Marketing-Cookies",
+  "cookie.marketing_desc": "Werden für gezielte Werbung verwendet.",
+  "cookie.save_preferences": "Einstellungen speichern"
 }

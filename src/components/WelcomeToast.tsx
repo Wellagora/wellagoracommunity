@@ -58,7 +58,7 @@ const WelcomeToast = () => {
                   Welcome Champion! 
                   <Sparkles className="w-4 h-4 ml-2 text-warning animate-pulse" />
                 </h3>
-                <p className="text-sm text-muted-foreground">Sarah from Wellagora</p>
+                <p className="text-sm text-muted-foreground">Sarah from WellAgora</p>
               </div>
             </div>
             <Button 

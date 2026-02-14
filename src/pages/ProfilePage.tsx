@@ -191,7 +191,7 @@ const ProfilePage = () => {
                   <CardTitle className="text-xl sm:text-2xl">
                     {viewedProfile.public_display_name || `${viewedProfile.first_name} ${viewedProfile.last_name}`}
                   </CardTitle>
-                  <Badge className="mt-2">{viewedProfile.user_role}</Badge>
+                  <Badge className="mt-2">{t(`roles.${viewedProfile.user_role?.toLowerCase()}`) || viewedProfile.user_role}</Badge>
                 </div>
               </div>
             </CardHeader>

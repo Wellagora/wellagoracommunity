@@ -186,6 +186,7 @@ function App() {
                           <Route path="/revolutionary" element={<Navigate to="/community" replace />} />
                           <Route path="/community" element={<CommunityPage />} />
                           <Route path="/ai-assistant" element={<AIAssistantPage />} />
+                          <Route path="/wellbot" element={<Navigate to="/ai-assistant" replace />} />
                           <Route path="/esemenyek" element={<Navigate to="/events" replace />} />
                           <Route path="/elo-alkalmak" element={<Navigate to="/events" replace />} />
                           <Route path="/events" element={<EventsPage />} />

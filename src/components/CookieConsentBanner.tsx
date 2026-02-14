@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { Link } from "react-router-dom";
-import { Cookie, X } from "lucide-react";
+import { Cookie, X, Settings } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export const COOKIE_CONSENT_KEY = "wellagora_cookie_consent";
@@ -12,12 +13,24 @@ export const resetCookieConsent = () => {
   window.dispatchEvent(new Event('cookie-consent-reset'));
 };
 
+const getStoredConsent = (): string | null => {
+  try {
+    return localStorage.getItem(COOKIE_CONSENT_KEY);
+  } catch {
+    return null;
+  }
+};
+
 const CookieConsentBanner = () => {
   const { t } = useLanguage();
   const [visible, setVisible] = useState(false);
+  const [showCustomize, setShowCustomize] = useState(false);
+  const [functional, setFunctional] = useState(true);
+  const [analytics, setAnalytics] = useState(false);
+  const [marketing, setMarketing] = useState(false);
 
   useEffect(() => {
-    const consent = localStorage.getItem(COOKIE_CONSENT_KEY);
+    const consent = getStoredConsent();
     if (!consent) {
       const timer = setTimeout(() => setVisible(true), 1000);
       return () => clearTimeout(timer);
@@ -25,19 +38,32 @@ const CookieConsentBanner = () => {
   }, []);
 
   useEffect(() => {
-    const handleReset = () => setVisible(true);
+    const handleReset = () => {
+      setShowCustomize(false);
+      setVisible(true);
+    };
     window.addEventListener('cookie-consent-reset', handleReset);
     return () => window.removeEventListener('cookie-consent-reset', handleReset);
   }, []);
 
-  const handleAcceptAll = () => {
-    localStorage.setItem(COOKIE_CONSENT_KEY, 'all');
+  const saveConsent = useCallback((choice: string) => {
+    try {
+      localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify({ choice, date: new Date().toISOString() }));
+    } catch {
+      localStorage.setItem(COOKIE_CONSENT_KEY, choice);
+    }
     setVisible(false);
-  };
+    setShowCustomize(false);
+  }, []);
 
-  const handleEssentialOnly = () => {
-    localStorage.setItem(COOKIE_CONSENT_KEY, 'essential');
-    setVisible(false);
+  const handleAcceptAll = () => saveConsent('all');
+  const handleEssentialOnly = () => saveConsent('essential');
+  const handleSaveCustom = () => {
+    const parts = ['essential'];
+    if (functional) parts.push('functional');
+    if (analytics) parts.push('analytics');
+    if (marketing) parts.push('marketing');
+    saveConsent(parts.join(','));
   };
 
   return (
@@ -62,9 +88,65 @@ const CookieConsentBanner = () => {
                     {t("cookie.details_link") || "Részletek az Adatkezelési tájékoztatóban."}
                   </Link>
                 </p>
+
+                <AnimatePresence>
+                  {showCustomize && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden mb-4"
+                    >
+                      <div className="space-y-3 border rounded-lg p-4 bg-background">
+                        <h4 className="text-sm font-semibold">{t("cookie.customize_title") || "Cookie beállítások"}</h4>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium">{t("cookie.essential_only") || "Szükséges"}</p>
+                            <p className="text-xs text-muted-foreground">Mindig aktív</p>
+                          </div>
+                          <Switch checked disabled />
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium">{t("cookie.functional") || "Funkcionális"}</p>
+                            <p className="text-xs text-muted-foreground">{t("cookie.functional_desc") || "Fejlett funkciók"}</p>
+                          </div>
+                          <Switch checked={functional} onCheckedChange={setFunctional} />
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium">{t("cookie.analytics") || "Analitikai"}</p>
+                            <p className="text-xs text-muted-foreground">{t("cookie.analytics_desc") || "Használati statisztikák"}</p>
+                          </div>
+                          <Switch checked={analytics} onCheckedChange={setAnalytics} />
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium">{t("cookie.marketing") || "Marketing"}</p>
+                            <p className="text-xs text-muted-foreground">{t("cookie.marketing_desc") || "Célzott hirdetések"}</p>
+                          </div>
+                          <Switch checked={marketing} onCheckedChange={setMarketing} />
+                        </div>
+                        <Button onClick={handleSaveCustom} size="sm" className="w-full">
+                          {t("cookie.save_preferences") || "Beállítások mentése"}
+                        </Button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 <div className="flex flex-wrap items-center gap-3">
                   <Button onClick={handleEssentialOnly} variant="outline" size="sm">
                     {t("cookie.essential_only") || "Csak szükségesek"}
+                  </Button>
+                  <Button
+                    onClick={() => setShowCustomize(!showCustomize)}
+                    variant="outline"
+                    size="sm"
+                    className="gap-1"
+                  >
+                    <Settings className="w-3 h-3" />
+                    {t("cookie.customize") || "Testreszabás"}
                   </Button>
                   <Button onClick={handleAcceptAll} size="sm" className="bg-teal-600 hover:bg-teal-700 text-white">
                     {t("cookie.accept_all") || "Mindent elfogadok"}

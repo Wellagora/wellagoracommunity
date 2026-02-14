@@ -132,8 +132,8 @@ const MobileBottomNav = () => {
   };
 
   // Don't show on auth pages, admin pages, or if not logged in
-  const hiddenPaths = ["/auth", "/admin", "/admin-panel"];
-  const shouldHide = hiddenPaths.some(p => location.pathname.startsWith(p));
+  const hiddenPaths = ["/auth", "/admin", "/admin-panel", "/expert-studio/new", "/expert-studio/edit"];
+  const shouldHide = hiddenPaths.some(p => location.pathname.startsWith(p)) || /\/expert-studio\/[^/]+\/edit/.test(location.pathname);
   
   if (shouldHide || !user) {
     return null;

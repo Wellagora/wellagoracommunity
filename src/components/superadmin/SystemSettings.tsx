@@ -238,7 +238,7 @@ const SystemSettings = () => {
                     id="platformName"
                     value={platformName}
                     onChange={(e) => setPlatformName(e.target.value)}
-                    placeholder="Wellagora"
+                    placeholder="WellAgora"
                   />
                   <Button onClick={handleSavePlatformName}>Mentés</Button>
                 </div>

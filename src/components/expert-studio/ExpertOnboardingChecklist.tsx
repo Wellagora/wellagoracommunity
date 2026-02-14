@@ -112,7 +112,7 @@ export function ExpertOnboardingChecklist() {
                 <Circle className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
               )}
               <div className="flex-1 min-w-0">
-                <p className={`text-sm font-medium ${step.completed ? 'text-emerald-700 line-through' : ''}`}>
+                <p className={`text-sm font-medium ${step.completed ? 'text-emerald-700' : ''}`}>
                   {step.label}
                 </p>
                 <p className="text-xs text-muted-foreground mt-0.5">{step.description}</p>

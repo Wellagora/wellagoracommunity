@@ -1790,7 +1790,7 @@
     "updated": "Review updated!",
     "deleted": "Review deleted",
     "already_reviewed": "You already reviewed this program",
-    "must_enroll": "Only enrolled users can write reviews",
+    "must_enroll": "Only users enrolled in this program can write reviews",
     "average": "average",
     "count": "reviews",
     "based_on": "based on reviews"
@@ -4716,7 +4716,7 @@
     "contact_initiated_desc": "You can soon get in touch with: {{name}}"
   },
   "footer": {
-    "about_title": "About Wellagora",
+    "about_title": "About WellAgora",
     "about_text": "Building sustainable communities through collaborative action and innovation.",
     "quick_links": "Quick Links",
     "link_programs": "Programs",
@@ -4730,7 +4730,7 @@
     "legal_title": "Legal",
     "link_privacy": "Privacy Policy",
     "link_impressum": "Impressum",
-    "copyright": "Wellagora. All rights reserved.",
+    "copyright": "WellAgora. All rights reserved.",
     "privacy_short": "Privacy",
     "impressum_short": "Impressum"
   },
@@ -4770,7 +4770,7 @@
     "creator_type_stories": "Success stories and testimonials",
     "creator_type_images": "Uploaded images and media files",
     "creator_ownership_title": "Ownership and Usage",
-    "creator_ownership_text": "You retain copyright of uploaded content. By uploading, you grant Wellagora a non-exclusive, revocable license to display content on the platform, use for community purposes, and promote the service.",
+    "creator_ownership_text": "You retain copyright of uploaded content. By uploading, you grant WellAgora a non-exclusive, revocable license to display content on the platform, use for community purposes, and promote the service.",
     "creator_moderation_title": "Moderation",
     "creator_moderation_text": "Uploaded content is moderated to ensure compliance with community guidelines. We reserve the right to remove violating content without prior notice.",
     "creator_visibility_title": "Visibility",
@@ -4832,17 +4832,6 @@
     "contact_email": "Email",
     "cookies_text": "We use cookies to enhance your experience, analyze platform usage, and deliver personalized content. You can control cookie settings through your browser."
   },
-  "impressum": {
-    "title": "Impressum",
-    "subtitle": "Legal Notice",
-    "back_home": "Back to Home",
-    "company_info_title": "Company Information",
-    "company_info": "Wellagora\n[Company Registration Number]\n[Registered Office Address]\n[City, Postal Code]\n[Country]",
-    "contact_title": "Contact Information",
-    "contact_info": "Email: info@wellagora.com\nPhone: [Phone Number]\nWebsite: www.wellagora.com",
-    "represented_title": "Represented By",
-    "represented_info": "[Managing Director Name(s)]",
-    "registration_title": "Commercial Register",
     "registration_info": "Registered at: [Registry Court]\nRegistration Number: [Number]\nTax ID: [Tax Identification Number]",
     "vat_title": "VAT Identification",
     "vat_info": "VAT ID: [VAT Number]",
@@ -5097,7 +5086,13 @@
     "description_placeholder_hu": "Describe in detail what members will get from your program...",
     "description_placeholder_en": "Describe in detail what members will get from your program...",
     "description_placeholder_de": "Describe in detail what members will get from your program...",
-    "no_description": "No leírás"
+    "no_description": "No description",
+    "webcam_error": "Could not access the camera. Please allow camera access in your browser settings.",
+    "webcam_permission_denied": "Camera access denied. Please allow it in your browser settings.",
+    "webcam_not_found": "No camera found on this device.",
+    "recording_error": "Error starting recording.",
+    "retake": "Retake",
+    "use_capture": "Use this"
   },
   "feed": {
     "title": "Community Feed",
@@ -5723,5 +5718,28 @@
   "seo.community.title": "WellAgora Community — Shared Knowledge",
   "seo.community.description": "Join a growing community, share ideas, and earn WellPoints.",
   "seo.events.title": "WellAgora Events — Sustainability Learning",
-  "seo.events.description": "Discover sustainability events and community programs in your region."
+  "seo.events.description": "Discover sustainability events and community programs in your region.",
+
+  "actions.browse": "Browse",
+  "actions.view_all": "View all",
+  "actions.learn_more": "Learn more",
+
+  "roles.member": "Member",
+  "roles.expert": "Expert",
+  "roles.sponsor": "Sponsor",
+  "roles.admin": "Admin",
+  "roles.creator": "Expert",
+  "roles.business": "Sponsor",
+  "roles.government": "Sponsor",
+  "roles.ngo": "Sponsor",
+
+  "cookie.customize": "Customize",
+  "cookie.customize_title": "Cookie Settings",
+  "cookie.functional": "Functional cookies",
+  "cookie.functional_desc": "Enable enhanced features and personalization.",
+  "cookie.analytics": "Analytics cookies",
+  "cookie.analytics_desc": "Help us understand how visitors use the site.",
+  "cookie.marketing": "Marketing cookies",
+  "cookie.marketing_desc": "Used for targeted advertising.",
+  "cookie.save_preferences": "Save preferences"
 }

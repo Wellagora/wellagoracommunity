@@ -1229,7 +1229,7 @@
   "reviews.updated": "Vélemény frissítve!",
   "reviews.deleted": "Vélemény törölve",
   "reviews.already_reviewed": "Már értékelted ezt a programot",
-  "reviews.must_enroll": "Csak beiratkozott felhasználók írhatnak véleményt",
+  "reviews.must_enroll": "Csak a programra beiratkozott felhasználók írhatnak véleményt",
   "reviews.average": "átlag",
   "reviews.count": "értékelés",
   "reviews.based_on": "értékelés alapján",
@@ -2545,9 +2545,13 @@
   "community.subtitle": "Ahol a közösség él és lélegzik",
   "community.our_experts": "Szakértőink",
   "community.stats_members": "Tag",
+  "community.stats_members_one": "Tag",
   "community.stats_experts": "Szakértő",
+  "community.stats_experts_one": "Szakértő",
   "community.stats_sponsors": "Támogató",
+  "community.stats_sponsors_one": "Támogató",
   "community.stats_programs": "Program",
+  "community.stats_programs_one": "Program",
 "community.create_post": "Oszd meg gondolataid...",
 "community.be_first": "Légy az első aki posztol!",
 "community.post_button": "Közzététel",
@@ -5288,7 +5292,13 @@
     "media_required": "Kérjük, először tölts fel egy fotót vagy videót!",
     "draft_saved": "Piszkozat mentve!",
     "published_success": "Program sikeresen közzétéve! 🎉",
-    "publish_error": "Hiba történt a közzététel során"
+    "publish_error": "Hiba történt a közzététel során",
+    "webcam_error": "Nem sikerült hozzáférni a kamerához. Kérjük, engedélyezd a kamera hozzáférést a böngésző beállításaiban.",
+    "webcam_permission_denied": "Kamera hozzáférés megtagadva. Engedélyezd a böngésző beállításaiban.",
+    "webcam_not_found": "Nem található kamera ezen az eszközön.",
+    "recording_error": "Hiba a felvétel indításakor.",
+    "retake": "Újra",
+    "use_capture": "Használat"
   },
   "feed": {
     "title": "Közösségi Fal",
@@ -5903,5 +5913,28 @@
   "seo.community.title": "WellAgora Közösség — Megosztott Tudás",
   "seo.community.description": "Csatlakozz ezer tagból álló közösséghez, ossz meg ötleteket és szerezz WellPoints pontokat.",
   "seo.events.title": "WellAgora Események — Fenntarthatósági Tanulás",
-  "seo.events.description": "Fedezd fel a fenntarthatósági eseményeket és közösségi programokat a régiódban."
+  "seo.events.description": "Fedezd fel a fenntarthatósági eseményeket és közösségi programokat a régiódban.",
+
+  "actions.browse": "Böngészés",
+  "actions.view_all": "Összes megtekintése",
+  "actions.learn_more": "Részletek",
+
+  "roles.member": "Tag",
+  "roles.expert": "Szakértő",
+  "roles.sponsor": "Támogató",
+  "roles.admin": "Admin",
+  "roles.creator": "Szakértő",
+  "roles.business": "Támogató",
+  "roles.government": "Támogató",
+  "roles.ngo": "Támogató",
+
+  "cookie.customize": "Testreszabás",
+  "cookie.customize_title": "Cookie beállítások",
+  "cookie.functional": "Funkcionális cookie-k",
+  "cookie.functional_desc": "Fejlett funkciók és személyre szabás engedélyezése.",
+  "cookie.analytics": "Analitikai cookie-k",
+  "cookie.analytics_desc": "Segítenek megérteni, hogyan használják a látogatók az oldalt.",
+  "cookie.marketing": "Marketing cookie-k",
+  "cookie.marketing_desc": "Célzott hirdetések megjelenítéséhez használjuk.",
+  "cookie.save_preferences": "Beállítások mentése"
 }
