@@ -17,7 +17,8 @@
     "impact_report": "Impact",
     "my_agora": "My Agora",
     "my_programs": "My Programs",
-    "campaigns": "Campaigns"
+    "campaigns": "Campaigns",
+    "community": "Community"
   },
   "favorites": {
     "title": "My Favorites",
@@ -183,20 +184,56 @@
     "browse_programs": "Browse Programs"
   },
   "points": {
-    "post_created": "Post created",
+    "total_points": "Total Points",
+    "level": "Level",
+    "points_to_level": "points to level",
+    "challenges_completed": "Challenges Completed",
+    "current_streak": "Current Streak",
+    "days": "days",
+    "your_badges": "Your Badges",
+    "your_badges_desc": "Achievements you've unlocked through your sustainability journey",
+    "available_badges": "Available Badges",
+    "available_badges_desc": "Unlock these badges by completing specific challenges and milestones",
+    "earned_on": "Earned on",
+    "leaderboard": "Leaderboard",
+    "leaderboard_desc": "See how you rank among other sustainability champions",
+    "you": "You",
+    "challenges": "challenges",
+    "points": "points",
+    "rarity": {
+      "common": "common",
+      "rare": "rare",
+      "epic": "epic",
+      "legendary": "legendary"
+    },
+    "badge": {
+      "first_steps": "First Steps",
+      "first_steps_desc": "Completed your first challenge",
+      "plastic_warrior": "Plastic Warrior",
+      "plastic_warrior_desc": "Completed 5 waste reduction challenges",
+      "energy_saver": "Energy Saver",
+      "energy_saver_desc": "Reduced energy consumption by 30%",
+      "transport_hero": "Transport Hero",
+      "transport_hero_desc": "Complete 3 sustainable transport challenges",
+      "community_leader": "Community Leader",
+      "community_leader_desc": "Organize a community environmental project",
+      "green_streak": "Green Streak",
+      "green_streak_desc": "Maintain a 30-day activity streak"
+    },
     "comment_added": "Comment added",
+    "daily_login": "Daily login",
+    "event_attended": "Event attended",
+    "first_post": "First post",
+    "lesson_completed": "Lesson completed",
     "like_given": "Like given",
     "like_received": "Like received",
-    "program_completed": "Program completed",
-    "lesson_completed": "Lesson completed",
-    "review_submitted": "Review submitted",
-    "daily_login": "Daily login",
-    "referral_bonus": "Referral bonus",
-    "voucher_redeemed": "Voucher redeemed",
-    "event_attended": "Event attended",
+    "post_created": "Post created",
     "profile_completed": "Profile completed",
-    "first_post": "First post",
-    "streak_bonus": "Streak bonus"
+    "program_completed": "Program completed",
+    "referral_bonus": "Referral bonus",
+    "review_submitted": "Review submitted",
+    "streak_bonus": "Streak bonus",
+    "voucher_redeemed": "Voucher redeemed"
   },
   "lessons": {
     "title": "Lessons",
@@ -277,12 +314,11 @@
     "payout": "Payout",
     "contents": "Contents",
     "actions": {
-      "_value": "Actions",
-      "manage_projects": "Manage Projects",
-      "verify_experts": "Expertk ellenőrzése",
-      "review_programs": "Programs áttekintése",
-      "manage_sponsors": "Sponsork kezelése",
-      "analytics": "Analytics"
+      "analytics": "Analytics",
+      "manage_projects": "Manage projects",
+      "manage_sponsors": "Manage sponsors",
+      "review_programs": "Review programs",
+      "verify_experts": "Verify experts"
     },
     "no_results": "No results",
     "suspended": "Suspended",
@@ -414,7 +450,19 @@
       "funnel_view": "View",
       "funnel_start": "Start",
       "funnel_complete": "Complete"
-    }
+    },
+    "all_projects": "All projects",
+    "filter_by_project": "Filter by project",
+    "green_pass": "Green Pass",
+    "green_pass_hint": "Founding experts with 0% platform fee",
+    "restore": "Restore",
+    "restore_success": "User restored successfully",
+    "suspend": "Suspend",
+    "suspend_success": "User suspended successfully",
+    "suspension_reason": "Suspension reason",
+    "suspension_reason_placeholder": "Enter the reason for suspension...",
+    "verified_expert": "Verified Expert",
+    "verified_expert_hint": "Manually verified expert badge"
   },
   "difficulty": {
     "beginner": "Beginner",
@@ -496,21 +544,20 @@
     "pilot_cta_share": "Share one outcome",
     "search_placeholder": "Search forums, posts...",
     "events": {
-      "_value": "Events",
+      "bike_challenge": {
+        "location": "City Hall",
+        "organizer": "City Transport Authority",
+        "title": "Bike to Work Program"
+      },
       "tree_planting": {
-        "title": "Community Tree Planting Day",
         "location": "Central Park",
-        "organizer": "Green Future NGO"
+        "organizer": "Green Future NGO",
+        "title": "Community Tree Planting Day"
       },
       "workshop": {
-        "title": "Sustainable Living Workshop",
         "location": "Community Center",
-        "organizer": "EcoTech Solutions"
-      },
-      "bike_challenge": {
-        "title": "Bike to Work Challenge Kickoff",
-        "location": "City Hall",
-        "organizer": "City Transport Authority"
+        "organizer": "EcoTech Solutions",
+        "title": "Sustainable Lifestyle Workshop"
       }
     },
     "new_post": "New Post",
@@ -657,7 +704,21 @@
       "impact": "30% reduction in heat island effect"
     },
     "coming_soon": "Coming Soon",
-    "forum_detail_coming_soon": "Forum details will be available soon."
+    "forum_detail_coming_soon": "Forum details will be available soon.",
+    "delete_confirm": "Are you sure you want to delete this post?",
+    "delete_post": "Delete",
+    "edit_post": "Edit",
+    "events_coming_soon": "New events coming soon!",
+    "explore_programs": "Explore programs",
+    "join_subtitle": "Discover the power of local knowledge",
+    "join_title": "Join our community!",
+    "post_deleted": "Post deleted",
+    "post_edited": "Post edited",
+    "register": "Register",
+    "share_first_photo": "Share your first photo!",
+    "view_all_events": "All events",
+    "which_program_inspired": "Which program inspired you?",
+    "write_post": "Write a post"
   },
   "wellbot": {
     "knowledge_guide_title": "Knowledge Guide",
@@ -824,7 +885,19 @@
     "expert": "Expert",
     "set_price": "Content price",
     "price_hint": "If you set 0, the content will be free.",
-    "earnings_info": "For paid content, you receive 85% of the revenue."
+    "earnings_info": "For paid content, you receive 85% of the revenue.",
+    "onboarding": {
+      "connect_stripe": "Connect Stripe",
+      "create_program": "Create program",
+      "edit_profile": "Edit profile",
+      "step_profile": "Complete your profile",
+      "step_profile_desc": "Add your name, bio and expertise",
+      "step_program": "Create your first program",
+      "step_program_desc": "Create your first program in 4 steps",
+      "step_stripe": "Connect Stripe account",
+      "step_stripe_desc": "Required to receive payments",
+      "title": "Get started!"
+    }
   },
   "expert_studio": {
     "tab_studio": "Workshop",
@@ -965,6 +1038,15 @@
         "subtitle": "Your reach",
         "bookings": "Total bookings",
         "participants": "Participant"
+      },
+      "engagement": {
+        "avg_rating": "Average rating",
+        "posts": "Community posts",
+        "profile_views": "Profile views",
+        "returning": "Returning members",
+        "reviews": "reviews",
+        "subtitle": "Reviews, activity, returning members",
+        "title": "Engagement"
       }
     },
     "vouchers_tab": "Vouchers",
@@ -1081,7 +1163,8 @@
     "from": "of which",
     "recent_transactions": "Recent Transactions",
     "recent_transactions_desc": "Details of the last 5 sales",
-    "view_all_transactions": "All tranzakció megtekintése"
+    "view_all_transactions": "All tranzakció megtekintése",
+    "registrations_short": "Registrations"
   },
   "workshop": {
     "view_full_profile": "View Full Profile",
@@ -1293,7 +1376,7 @@
     "goal_innovation": "Innovation",
     "goal_community": "Community Building",
     "org_info_section": "Additional Organization Information",
-    "industry_placeholder": "Select Industry",
+    "industry_placeholder": "e.g. Technology",
     "industry_tech": "Technology",
     "industry_energy": "Energy",
     "industry_manufacturing": "Manufacturing",
@@ -1368,7 +1451,13 @@
     "logo_success": "Logo uploaded successfully!",
     "logo_uploaded_desc": "Organization logo has been updated",
     "logo_error": "Error uploading logo",
-    "industry_placeholder": "e.g. Technology"
+    "confirm_delete": "Confirm deletion",
+    "danger_zone": "Danger zone",
+    "delete_account": "Delete account",
+    "delete_account_desc": "Deleting your account is permanent. All your data, posts, purchases and points will be deleted.",
+    "delete_account_warning": "Type \"DELETE\" to confirm. This action cannot be undone.",
+    "delete_failed": "Account deletion failed.",
+    "type_delete": "Type: DELETE"
   },
   "member_dashboard": {
     "greeting": "Hi, {{name}}! 👋",
@@ -1450,7 +1539,8 @@
     "complete_setup": "Complete Setup",
     "confirm_delete": "Are you sure you want to delete this?",
     "login": "Login",
-    "tons": "tons"
+    "tons": "tons",
+    "retry": "Retry"
   },
   "expert_dashboard": {
     "title": "Expert Studio",
@@ -1476,7 +1566,7 @@
     "coming_soon_masterclass_desc": "Learn from the region's best experts",
     "date_tba": "Date to be announced",
     "title": "Events",
-    "subtitle": "Meet the community",
+    "subtitle": "Live community programs",
     "discover_subtitle": "Discover upcoming community events",
     "upcoming": "Upcoming Events",
     "past": "Past events",
@@ -1547,7 +1637,6 @@
     "sponsored_by": "Sponsor:",
     "back_to_list": "Back az eseményekhez",
     "search_placeholder": "Search by title...",
-    "subtitle": "Live community programs",
     "all_categories": "All Categories",
     "empty_state": "Community events coming soon!",
     "empty_state_desc": "Check back later or subscribe to notifications.",
@@ -1881,7 +1970,9 @@
     "error_description": "The purchase failed. Please try again.",
     "sponsor_contribution_label": "támogatásával",
     "original_price": "Eredeti ár",
-    "you_pay": "Te fizeted"
+    "you_pay": "Te fizeted",
+    "browse_more": "Browse more programs",
+    "go_to_courses": "My courses"
   },
   "learning": {
     "my_learning": "My Agora",
@@ -1954,7 +2045,8 @@
     "my_tickets": "Jegyeim",
     "empty": "No ... yet Műhelytitkok",
     "browse": "Böngészd a Piacteret",
-    "continue": "Folytatás"
+    "continue": "Folytatás",
+    "upcoming_events": "My upcoming events"
   },
   "sponsor_support": {
     "new_support": "New Support",
@@ -2433,7 +2525,9 @@
     "404_title": "Page not found",
     "404_description": "The page you're looking for doesn't exist or has been moved.",
     "500_title": "Server Error",
-    "500_description": "Something went wrong on our server. Please try again later."
+    "500_description": "Something went wrong on our server. Please try again later.",
+    "403_description": "You don't have permission to view this page.",
+    "403_title": "Access Denied"
   },
   "community.teaser.badge": "Living Community",
   "community.teaser.title": "Join our community",
@@ -2721,8 +2815,7 @@
     "congratulations": "Congratulations!",
     "completed_pending": "Program completed! Awaiting approval.",
     "featured": {
-      "_value": "Featured",
-      "title": "Featured Programs"
+      "title": "Featured programs"
     },
     "view_all": "View All",
     "clear_filters": "Clear Filters",
@@ -3467,93 +3560,127 @@
     "propose_collaboration": "Propose Collaboration"
   },
   "gamification": {
-    "impact_forest": "Impact Forest",
+    "welcome": "Welcome, {{name}}!",
+    "your_points": "WellPoints",
+    "today_earned": "+{{points}} today",
+    "streak": "day streak",
+    "start_streak": "Start a new streak!",
+    "how_to_earn": "How to earn points",
+    "what_to_spend": "What can you spend your points on?",
+    "level": {
+      "active": "Active member",
+      "beginner": "Beginner",
+      "builder": "Community builder",
+      "explorer": "Explorer",
+      "legend": "Legend",
+      "master": "Master"
+    },
+    "points_to_next": "{{points}} WP to next level",
+    "record": "Record: {{days}} days",
+    "earn": {
+      "post": "Post",
+      "comment": "Comment",
+      "like": "Like",
+      "participation": "Participation",
+      "review": "Review",
+      "invite": "Invite"
+    },
+    "reward": {
+      "discount_10": "10% discount on any program",
+      "expert_consultation": "Exclusive expert consultation",
+      "free_event": "Free event ticket"
+    },
+    "toast_points": "+{{points}} WellPoints!",
+    "toast_thanks": "Thanks for being active!",
+    "toast_streak": "{{days}} day streak!",
+    "toast_streak_bonus": "Bonus points awarded!",
+    "toast_streak_keep": "Great job, keep going!",
+    "toast_review_thanks": "Thanks for the review!",
+    "active_programs": "Your active programs",
+    "your_vouchers": "Your vouchers",
+    "actions": "Actions",
+    "active": "Active",
+    "challenges": "Program",
+    "co2_absorbed": "CO₂ absorbed",
+    "coming_soon": "Coming soon",
+    "days_active": "Active days",
+    "donate": "Donate",
+    "event_progress": "Event progress",
     "events": {
-      "_value": "Events",
       "earth_month": {
-        "name": "Earth Month Mega Challenge",
-        "description": "Join 10,000+ participants in the largest sustainability challenge ever!",
-        "reward": "Exclusive Earth Guardian Badge + Tree Planting Certificate"
+        "description": "Join 10,000+ participants in the biggest sustainability program ever!",
+        "name": "Earth Month Community Program",
+        "reward": "Exclusive Earth Guardian badge + tree planting certificate"
       },
       "solar_sprint": {
-        "name": "Summer Solstice Solar Sprint",
         "description": "Switch to renewable energy and win solar-powered rewards",
-        "reward": "Solar Power Bank + Sustainability Toolkit"
+        "name": "Summer Solstice Solar Sprint",
+        "reward": "Solar power bank + sustainability toolkit"
       }
     },
-    "teams": "Teams",
-    "rewards": "Rewards",
-    "your_impact_forest": "Your Impact Forest",
-    "forest_description": "Watch your sustainability actions grow into a thriving digital forest. Each category of actions grows its own tree!",
-    "tree": {
-      "1": "Energy Conservation Oak",
-      "2": "Transport Efficiency Pine",
-      "3": "Waste Reduction Willow",
-      "4": "Community Action Cedar"
-    },
-    "stage": {
-      "seed": "seed",
-      "sprout": "sprout",
-      "sapling": "sapling",
-      "tree": "tree",
-      "forest": "forest"
-    },
-    "co2_absorbed": "CO₂ Absorbed",
-    "actions": "Actions",
-    "days_active": "Days Active",
-    "forest_health_score": "Forest Health Score",
-    "overall_ecosystem": "Your overall ecosystem impact",
-    "thriving": "Thriving",
-    "active": "Active",
-    "participants": "participants",
-    "event_progress": "Event Progress",
-    "reward": "Reward",
-    "join_event": "Join Event",
-    "coming_soon": "Coming Soon",
+    "forest": "Forest",
+    "forest_description": "Watch your sustainability actions grow into a thriving digital forest. Every action contributes to your ecosystem.",
+    "forest_health_score": "Forest health score",
+    "growing_tree": "Growing tree",
+    "impact_forest": "Impact forest",
+    "invite_friends": "Invite friends",
+    "join_event": "Join event",
+    "join_team": "Join team",
     "members": "members",
-    "remaining": "remaining",
-    "team_progress": "Team Progress",
-    "invite_friends": "Invite Friends",
-    "join_team": "Join Team",
-    "team_challenges": {
-      "green_squad": {
-        "name": "Neighborhood Green Squad",
-        "time_left": "5 days",
-        "reward": "Community Garden Startup Kit"
-      },
-      "eco_warriors": {
-        "name": "Office Eco Warriors",
-        "time_left": "12 days",
-        "reward": "Company Sustainability Audit"
-      }
-    },
+    "my_garden": "My Garden",
+    "next_level": "Next level",
+    "overall_ecosystem": "Overall ecosystem impact",
+    "participants": "participants",
+    "points": "Points",
     "redeem": "Redeem",
-    "donate": "Donate",
+    "remaining": "remaining",
+    "rewards": "Rewards",
     "rewards_catalog": {
-      "plant_tree": {
-        "name": "Plant a Real Tree",
-        "points": "1,000 points"
+      "charity": {
+        "name": "Charity donation",
+        "points": "500 points"
       },
       "eco_bundle": {
-        "name": "Eco Product Bundle",
+        "name": "Eco product bundle",
         "points": "1,500 points"
       },
-      "charity": {
-        "name": "Charity Donation",
-        "points": "500 pont"
+      "plant_tree": {
+        "name": "Plant a real tree",
+        "points": "1,000 points"
       }
     },
-    "my_garden": "My Impact Garden",
-    "level": "Level",
     "seed": "Seed",
     "seedling": "Seedling",
-    "growing_tree": "Growing Tree",
-    "strong_tree": "Strong Tree",
-    "forest": "Forest",
-    "next_level": "Next level",
-    "points_to_next": "points to next level",
-    "points": "Points",
-    "challenges": "Programs"
+    "stage": {
+      "forest": "forest",
+      "sapling": "sapling",
+      "seed": "seed",
+      "sprout": "sprout",
+      "tree": "tree"
+    },
+    "strong_tree": "Strong tree",
+    "team_challenges": {
+      "eco_warriors": {
+        "name": "Office Eco Warriors",
+        "reward": "Corporate sustainability audit",
+        "time_left": "12 days"
+      },
+      "green_squad": {
+        "name": "Neighborhood Green Squad",
+        "reward": "Community garden starter kit",
+        "time_left": "5 days"
+      }
+    },
+    "team_progress": "Team progress",
+    "teams": "Teams",
+    "thriving": "Thriving",
+    "tree": {
+      "1": "Energy savings oak",
+      "2": "Transport efficiency pine",
+      "3": "Waste reduction willow",
+      "4": "Community action cedar"
+    },
+    "your_impact_forest": "Your impact forest"
   },
   "dashboard": {
     "hello": "Hello",
@@ -3666,9 +3793,8 @@
     "organization_overview": "Organization Overview",
     "sponsored_challenges": "Sponsored Challenges",
     "partnerships": {
-      "_value": "Partnerships",
-      "green_earth_ngo": "Green Earth NGO",
-      "city_sustainability_office": "City Sustainability Office"
+      "city_sustainability_office": "City Sustainability Office",
+      "green_earth_ngo": "Green Earth NGO"
     },
     "current_streak": "Current Streak",
     "days": "days",
@@ -3823,12 +3949,11 @@
     "title": "Kéznyomod (Handprint)",
     "subtitle": "Pozitív környezeti hatásod ezen a hónapon",
     "rank": {
-      "_value": "Rang",
-      "beginner": "Kezdő",
-      "developing": "Fejlődő",
-      "experienced": "Tapasztalt",
-      "advanced": "Haladó",
-      "master": "Mester"
+      "advanced": "Advanced",
+      "beginner": "Beginner",
+      "developing": "Developing",
+      "experienced": "Experienced",
+      "master": "Master"
     },
     "co2_saved": "CO₂ megtakarítás",
     "trees_equivalent": "Fa egyenérték",
@@ -4161,44 +4286,6 @@
     "ready_to_start": "Ready to get started?",
     "join_champions": "Join more than 1,500 sustainability champions who are already building the future!",
     "start_now": "Start Now"
-  },
-  "points": {
-    "total_points": "Total Points",
-    "level": "Level",
-    "points_to_level": "points to level",
-    "challenges_completed": "Challenges Completed",
-    "current_streak": "Current Streak",
-    "days": "days",
-    "your_badges": "Your Badges",
-    "your_badges_desc": "Achievements you've unlocked through your sustainability journey",
-    "available_badges": "Available Badges",
-    "available_badges_desc": "Unlock these badges by completing specific challenges and milestones",
-    "earned_on": "Earned on",
-    "leaderboard": "Leaderboard",
-    "leaderboard_desc": "See how you rank among other sustainability champions",
-    "you": "You",
-    "challenges": "challenges",
-    "points": "points",
-    "rarity": {
-      "common": "common",
-      "rare": "rare",
-      "epic": "epic",
-      "legendary": "legendary"
-    },
-    "badge": {
-      "first_steps": "First Steps",
-      "first_steps_desc": "Completed your first challenge",
-      "plastic_warrior": "Plastic Warrior",
-      "plastic_warrior_desc": "Completed 5 waste reduction challenges",
-      "energy_saver": "Energy Saver",
-      "energy_saver_desc": "Reduced energy consumption by 30%",
-      "transport_hero": "Transport Hero",
-      "transport_hero_desc": "Complete 3 sustainable transport challenges",
-      "community_leader": "Community Leader",
-      "community_leader_desc": "Organize a community environmental project",
-      "green_streak": "Green Streak",
-      "green_streak_desc": "Maintain a 30-day activity streak"
-    }
   },
   "celebration": {
     "achievement_unlocked": "Achievement Unlocked!",
@@ -4832,6 +4919,17 @@
     "contact_email": "Email",
     "cookies_text": "We use cookies to enhance your experience, analyze platform usage, and deliver personalized content. You can control cookie settings through your browser."
   },
+  "impressum": {
+    "title": "Impressum",
+    "subtitle": "Legal Notice",
+    "back_home": "Back to Home",
+    "company_info_title": "Company Information",
+    "company_info": "WellAgora\n[Company Registration Number]",
+    "contact_title": "Contact Information",
+    "contact_info": "Email: info@wellagora.org\nWebsite: www.wellagora.org",
+    "represented_title": "Represented by",
+    "represented_info": "Management of ProSelf International Inc.",
+    "registration_title": "Commercial Register",
     "registration_info": "Registered at: [Registry Court]\nRegistration Number: [Number]\nTax ID: [Tax Identification Number]",
     "vat_title": "VAT Identification",
     "vat_info": "VAT ID: [VAT Number]",
@@ -4939,18 +5037,17 @@
     "final_cta_button": "Get Started Now"
   },
   "referral": {
-    "invite_friends": "Invite Friends",
-    "your_code": "Your referral code",
-    "copy_link": "Copy link",
+    "grow_community": "Grow the community!",
+    "invite_bonus": "Invite a friend and get 100 WellPoints",
+    "copy_link": "Copy invite link",
+    "link_copied": "Link copied!",
+    "reward_hint": "Earn 100 points when your friend completes their first challenge!",
     "share_link": "Share",
+    "stats_completed": "Completed",
     "stats_invited": "Invited",
     "stats_joined": "Joined",
-    "stats_completed": "Completed",
     "stats_points": "Points",
-    "reward_hint": "Earn 100 points when your friend completes their first challenge!",
-    "link_copied": "Link copied!",
-    "share_message": "Join me on this sustainability journey!",
-    "email_subject": "Join our sustainability community!"
+    "your_code": "Your referral code"
   },
   "nearby": {
     "title": "Search nearby",
@@ -5136,52 +5233,6 @@
     "ai_assistant": "AI Assistant",
     "chat_with_wellbot": "Ask WellBot"
   },
-  "referral": {
-    "grow_community": "Grow the community!",
-    "invite_bonus": "Invite a friend and get 100 WellPoints",
-    "copy_link": "Copy invite link",
-    "link_copied": "Link copied!"
-  },
-  "gamification": {
-    "welcome": "Welcome, {{name}}!",
-    "your_points": "WellPoints",
-    "today_earned": "+{{points}} today",
-    "streak": "day streak",
-    "start_streak": "Start a new streak!",
-    "how_to_earn": "How to earn points",
-    "what_to_spend": "What can you spend your points on?",
-    "level": {
-      "beginner": "Beginner",
-      "explorer": "Explorer",
-      "active": "Active Member",
-      "builder": "Community Builder",
-      "master": "Master",
-      "legend": "Legend"
-    },
-    "points_to_next": "{{points}} WP to next level",
-    "record": "Record: {{days}} days",
-    "earn": {
-      "post": "Post",
-      "comment": "Comment",
-      "like": "Like",
-      "participation": "Participation",
-      "review": "Review",
-      "invite": "Invite"
-    },
-    "reward": {
-      "discount_10": "10% discount on any program",
-      "free_event": "Free event ticket",
-      "expert_consultation": "Exclusive expert consultation"
-    },
-    "toast_points": "+{{points}} WellPoints!",
-    "toast_thanks": "Thanks for being active!",
-    "toast_streak": "{{days}} day streak!",
-    "toast_streak_bonus": "Bonus points awarded!",
-    "toast_streak_keep": "Great job, keep going!",
-    "toast_review_thanks": "Thanks for the review!",
-    "active_programs": "Your active programs",
-    "your_vouchers": "Your vouchers"
-  },
   "sponsor_hub": {
     "title": "Sponsor Hub",
     "subtitle": "Track your community impact",
@@ -5240,6 +5291,9 @@
         "people_reached_help": "Unique users based on redeemed vouchers.",
         "sponsored_items": "Sponsored items",
         "setup_cta": "Set up measurement"
+      },
+      "impact": {
+        "title": "Impact & Reach"
       }
     },
     "errors": {
@@ -5264,6 +5318,13 @@
       "spend_label": "Spend (credits)",
       "spend_help": "No invoicing: this behaves like a marketing budget spend.",
       "submit": "Sponsor"
+    },
+    "impact": {
+      "beneficiaries": "Beneficiaries",
+      "cost_per_beneficiary": "Cost per beneficiary",
+      "events": "Sponsored events",
+      "programs": "Sponsored programs",
+      "reach": "Estimated reach"
     }
   },
   "terms": {
@@ -5273,7 +5334,54 @@
     "accept": "Accept",
     "decline": "Decline",
     "updated_notice": "Our terms have been updated. Please read and accept the new version.",
-    "must_accept": "You must accept the Terms of Service to continue."
+    "must_accept": "You must accept the Terms of Service to continue.",
+    "back_home": "Back to Home",
+    "changes_text": "WellAgora reserves the right to modify these Terms. Users will be notified of changes via email and platform notification.",
+    "changes_title": "Changes",
+    "contact_text": "For questions about these Terms, please contact us:",
+    "contact_title": "Contact",
+    "content_license_text": "The WellAgora brand, logo, and platform source code are the exclusive property of ProSelf International Inc. Users receive a limited, non-exclusive license to use the platform.",
+    "content_license_title": "Platform License",
+    "content_ownership_text": "Content uploaded by Experts (programs, descriptions, images) remains the intellectual property of the Expert. By uploading, you grant WellAgora a non-exclusive license to display and promote the content.",
+    "content_ownership_title": "Content Ownership",
+    "content_prohibited_text": "Uploading infringing, hateful, misleading, sexual or violent content is prohibited. The platform reserves the right to remove such content without notice.",
+    "content_prohibited_title": "Prohibited Content",
+    "content_title": "Content & Intellectual Property",
+    "intro_text": "Welcome to the WellAgora platform! These General Terms and Conditions govern your use of the WellAgora Impact Marketplace.",
+    "intro_title": "Introduction",
+    "last_updated": "Last updated",
+    "law_text": "These Terms are governed by Austrian law. In case of disputes, the courts of Vienna have jurisdiction.",
+    "law_title": "Governing Law",
+    "liability_availability": "The platform does not guarantee uninterrupted availability. Maintenance or technical issues may cause temporary interruptions.",
+    "liability_expert": "The Expert is responsible for the accurate description of their programs and the delivery of promised services.",
+    "liability_platform": "The platform acts as an intermediary service. It is not responsible for the quality, content or delivery of programs offered by Experts.",
+    "liability_text": "Limitation of liability:",
+    "liability_title": "Liability",
+    "payments_commission_text": "WellAgora charges a 20% commission on every successful transaction. The Expert receives 80% of the sale price.",
+    "payments_commission_title": "Platform Commission",
+    "payments_pricing_text": "Program prices are set by Experts and are listed in HUF. Prices include VAT where applicable.",
+    "payments_pricing_title": "Pricing",
+    "payments_refund_text": "Refund requests can be submitted up to 48 hours before the program date. Refunds are processed after deducting the platform commission.",
+    "payments_refund_title": "Refunds",
+    "payments_title": "Payments & Pricing",
+    "payments_wellpoints_text": "WellPoints cannot be converted to cash. Maximum 20% discount can be achieved with WellPoints on programs. WellPoints cannot be combined with sponsor discounts.",
+    "payments_wellpoints_title": "WellPoints",
+    "role_expert_text": "A knowledge sharer who can create and sell programs on the platform. The Expert receives 80% of the sale price.",
+    "role_expert_title": "Expert",
+    "role_member_text": "A registered user who can participate in programs, attend events, and earn WellPoints.",
+    "role_member_title": "Member",
+    "role_sponsor_text": "An organization or business that can make programs free for community members by purchasing credits.",
+    "role_sponsor_title": "Sponsor",
+    "roles_title": "User Roles",
+    "service_community": "Community: Connecting local communities and knowledge sharing.",
+    "service_events": "Events: Organizing and participating in community events.",
+    "service_intro": "WellAgora is a community knowledge-sharing platform providing the following services:",
+    "service_marketplace": "Marketplace: Browse, purchase and participate in programs created by Experts.",
+    "service_title": "Service Description",
+    "service_wellpoints": "WellPoints: Gamification point system for rewarding community activity.",
+    "termination_text": "Users can delete their account at any time by emailing info@wellagora.org. The platform reserves the right to suspend accounts that violate these Terms.",
+    "termination_title": "Termination",
+    "title": "Terms of Service"
   },
   "activity_feed": {
     "kata_joined": "Kata just joined",
@@ -5389,57 +5497,44 @@
   "cancel.refund_full": "100% refund (as platform credit)",
   "cancel.refund_half": "50% refund (as platform credit)",
   "cancel.refund_none": "No refund",
-
   "marketplace.no_programs": "The community's first programs are taking shape",
   "marketplace.no_programs_desc": "Be part of the beginning! If you have expertise to share, create the first program.",
   "marketplace.no_results": "No programs found",
   "marketplace.no_results_desc": "Try different keywords or category",
-
   "community_building.programs_title": "The community's first programs are taking shape",
   "community_building.programs_desc": "Be part of the beginning! If you have expertise to share, create the first program.",
   "community_building.programs_join_expert": "Join as Expert",
   "community_building.programs_notify": "Notify me about new programs",
-
   "community_building.events_title": "First community events are being organized",
   "community_building.events_desc": "Our community is about to come alive! Be there at the first gathering.",
   "community_building.events_notify": "Notify me",
   "community_building.events_organize": "I'd like to organize an event",
-
   "community_building.community_title": "You're part of the first wave",
   "community_building.community_desc": "Every great community started small. Ask the first question, share your first thought!",
   "community_building.community_first_post": "Write the first post",
   "community_building.community_introduce": "Introduce yourself",
-
   "community_building.experts_title": "Our experts are joining",
   "community_building.experts_desc": "The first experts have already registered. If you have expertise, join them!",
   "community_building.experts_register": "Register as Expert",
-
   "community_building.hub_title": "This is your community hub",
   "community_building.hub_desc": "Here you'll see your programs, notifications, and community activity. Start by exploring!",
   "community_building.hub_explore_programs": "Explore programs",
   "community_building.hub_explore_community": "Explore community",
-
   "community_building.activity_title": "Community life is about to begin",
   "community_building.activity_desc": "The first posts, reviews, and events will appear here. Be the first to share!",
   "community_building.activity_write_post": "Write a community post",
-
   "community_building.featured_title": "The first programs are on their way",
   "community_building.featured_desc": "Our experts are crafting the first community programs. Sign up and we'll notify you when they're live!",
   "community_building.featured_notify": "Notify me",
   "community_building.featured_become_expert": "Become an Expert",
-
   "community_building.sponsor_title": "Support the community as a sponsor",
   "community_building.sponsor_desc": "Our sponsors make it possible for members to join programs for free or at a discount.",
   "community_building.sponsor_packages": "View sponsor packages",
-
   "community_building.join_community": "Join the community",
-
   "community_building.welcome_back": "Welcome back, {name}! 👋 Our community is just getting started — and you're among the first!",
-
   "common.save_changes": "Save changes",
   "common.saving": "Saving...",
   "auth.social_login_soon": "Social login coming soon",
-
   "calendar.title": "Calendar",
   "calendar.select_day": "Select a day",
   "calendar.select_day_hint": "Click a day for details",
@@ -5450,9 +5545,7 @@
   "calendar.no_items": "No events on this day",
   "calendar.participants_label": "participants",
   "calendar.view_participants": "Participants",
-
   "events.subtitle": "Live community programs",
-
   "membership.card_title": "WellAgora Membership Card",
   "membership.digital_card": "Digital Membership Card",
   "membership.member_name": "Member Name",
@@ -5461,7 +5554,6 @@
   "membership.show_at_partners": "Show at our partners for exclusive access!",
   "membership.button_label": "Membership Card",
   "membership.number_copied": "Member number copied!",
-
   "auth.demo_login": "Demo login",
   "nav.home": "Home",
   "nav.marketplace": "Marketplace",
@@ -5493,7 +5585,6 @@
   "nav.sign_in": "Sign In",
   "sponsor.people_reached_badge": "{{count}} people reached",
   "sponsor.people_reached_tooltip": "People reached",
-
   "sponsor.finances_title": "Finances",
   "sponsor.finances_subtitle": "Track credits and transactions",
   "sponsor.finances_load_error": "Could not load finances.",
@@ -5518,10 +5609,8 @@
   "sponsor.tx_sponsorship": "Sponsorship",
   "sponsor.tx_usage": "Usage",
   "sponsor.tx_spend": "Sponsorship",
-
   "sponsor_dashboard.title": "Sponsor Hub",
   "sponsor_dashboard.overview": "Overview",
-
   "sponsor_packages.title": "Choose a Sponsor Package",
   "sponsor_packages.subtitle": "1 Credit = 1 Ft value support. Use credits to sponsor programs and events.",
   "sponsor_packages.pkg_starter": "Starter",
@@ -5546,13 +5635,11 @@
   "sponsor_packages.package_purchase": "package purchase",
   "sponsor_packages.purchase_success": "{{package}} package activated successfully! {{credits}} credits added.",
   "sponsor_packages.purchase_error": "An error occurred during purchase. Please try again.",
-
   "profile.invite_member": "Invite Member",
   "profile.team_members_desc": "Manage team members",
   "profile.no_team_members": "No additional team members",
   "profile.invite_first_member": "Invite your first team member",
   "profile.owner": "OWNER",
-
   "profile.first_name": "First Name",
   "profile.last_name": "Last Name",
   "profile.email_readonly": "Email address cannot be changed",
@@ -5594,7 +5681,6 @@
   "profile.logo_success": "Logo uploaded successfully!",
   "profile.logo_uploaded_desc": "Your organization logo is now visible",
   "profile.logo_error": "An error occurred while uploading the logo.",
-
   "help.title": "Help",
   "help.subtitle": "Frequently asked questions about the WellAgora platform",
   "help.search_placeholder": "Search questions...",
@@ -5614,7 +5700,6 @@
   "help.contact_title": "Didn't find your answer?",
   "help.contact_desc": "Write to us and our team will respond soon.",
   "help.contact_button": "Contact",
-
   "onboarding.welcome.founding_expert_badge": "Founding Expert",
   "onboarding.welcome.founding_expert_perk": "0% platform fee for life, forever!",
   "onboarding.welcome.title.expert": "Welcome Among the Founders!",
@@ -5656,7 +5741,6 @@
   "profile.completion.expert_title": "Expert title added",
   "profile.completion.location": "City added",
   "profile.completion.expertise_areas": "Expertise areas listed",
-
   "referral.invite_friends": "Invite Friends",
   "referral.invite_friends_experts": "Invite Friends — 100 WellPoints Each",
   "referral.expert_benefit": "100 WellPoints for your referral and their signup",
@@ -5687,7 +5771,6 @@
   "growth.browse_programs_nudge": "You're not registered for any programs yet",
   "growth.discover_programs_desc": "Browse the Marketplace and find a program that interests you",
   "growth.empty_referral_expert": "Refer experts and earn WellPoints",
-
   "homepage.why_wellagora.title": "Why WellAgora?",
   "homepage.why_wellagora.subtitle": "Three pillars for sustainable communities",
   "homepage.why_wellagora.local_experts_title": "Local Experts",
@@ -5710,7 +5793,6 @@
   "empty_states.no_participants_desc": "Share your program to get participants.",
   "empty_states.no_followers": "No followers yet",
   "empty_states.no_followers_desc": "Be active in the community to gain followers.",
-
   "seo.homepage.title": "WellAgora — Sustainable Communities, Shared Knowledge",
   "seo.homepage.description": "Join sustainable communities and learn from local experts. Sponsored learning, community connections.",
   "seo.marketplace.title": "WellAgora Marketplace — Sustainability Programs",
@@ -5719,11 +5801,9 @@
   "seo.community.description": "Join a growing community, share ideas, and earn WellPoints.",
   "seo.events.title": "WellAgora Events — Sustainability Learning",
   "seo.events.description": "Discover sustainability events and community programs in your region.",
-
   "actions.browse": "Browse",
   "actions.view_all": "View all",
   "actions.learn_more": "Learn more",
-
   "roles.member": "Member",
   "roles.expert": "Expert",
   "roles.sponsor": "Sponsor",
@@ -5732,7 +5812,6 @@
   "roles.business": "Sponsor",
   "roles.government": "Sponsor",
   "roles.ngo": "Sponsor",
-
   "cookie.customize": "Customize",
   "cookie.customize_title": "Cookie Settings",
   "cookie.functional": "Functional cookies",
@@ -5741,5 +5820,57 @@
   "cookie.analytics_desc": "Help us understand how visitors use the site.",
   "cookie.marketing": "Marketing cookies",
   "cookie.marketing_desc": "Used for targeted advertising.",
-  "cookie.save_preferences": "Save preferences"
+  "cookie.save_preferences": "Save preferences",
+  "access": {
+    "expired": "Access expired",
+    "expired_desc": "Your access to this content has expired. You can purchase it again."
+  },
+  "attendance": {
+    "check_in": "Check in",
+    "checked_in": "Checked in",
+    "no_participants": "No participants yet",
+    "present": "Present"
+  },
+  "calendar": {
+    "add_slot": "Add time slot",
+    "available": "Available",
+    "booked": "Booked",
+    "slot": "Time slot",
+    "slot_added": "Time slot added",
+    "slot_deleted": "Time slot deleted"
+  },
+  "participants": {
+    "attendance_error": "Error updating attendance",
+    "attendance_updated": "Attendance updated",
+    "attended": "Attended",
+    "capacity": "capacity",
+    "exported": "CSV exported",
+    "fill_rate": "Capacity",
+    "filter_all": "All",
+    "filter_attended": "Attended",
+    "filter_registered": "Registered",
+    "list": "Participant list",
+    "mark_attended": "Mark as attended",
+    "mark_no_show": "Mark as no-show",
+    "no_participants": "No participants yet",
+    "no_participants_hint": "Registrations will appear here",
+    "no_results": "No results",
+    "registered": "Registered",
+    "registered_total": "registered participants",
+    "search_placeholder": "Search by name, email or voucher code...",
+    "subtitle": "Manage participants",
+    "title": "Participants",
+    "total": "Total",
+    "try_different_search": "Try a different search term"
+  },
+  "search": {
+    "close": "close",
+    "hint": "Type at least 2 characters to search",
+    "no_results": "No results",
+    "placeholder": "Search programs, experts, events...",
+    "shortcut_hint": "for quick search",
+    "type_event": "Event",
+    "type_expert": "Expert",
+    "type_program": "Program"
+  }
 }
