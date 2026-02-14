@@ -122,7 +122,7 @@ describe('Financial calculations', () => {
     });
   });
 
-  describe('Sponsorship 80/20 split (DummyPaymentModal logic)', () => {
+  describe('Sponsorship 80/20 split (Payment logic)', () => {
     it('should match the standard 80/20 split', () => {
       const price = 15000;
       const platformAmount = Math.round(price * 0.20);

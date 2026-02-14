@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { checkRateLimit, rateLimitResponse } from "../_shared/rateLimit.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -22,6 +23,12 @@ serve(async (req) => {
   }
 
   try {
+    // Rate limiting: 5 bulk translation requests per minute per user
+    const clientIp = req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip') || 'unknown';
+    const authToken = req.headers.get('Authorization')?.slice(-12) || clientIp;
+    const rl = checkRateLimit(`bulk-translate:${authToken}`, 5, 60_000);
+    if (!rl.allowed) return rateLimitResponse(rl.retryAfterMs);
+
     const { sourceLanguage, sourceText, targetLanguages } = await req.json();
 
     console.log("Translation request:", { sourceLanguage, sourceText, targetLanguages });

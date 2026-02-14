@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
 import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai@0.21.0";
+import { checkRateLimit, rateLimitResponse } from "../_shared/rateLimit.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -22,6 +23,12 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Rate limiting: 10 media analysis requests per minute per user
+    const clientIp = req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip') || 'unknown';
+    const authToken = req.headers.get('Authorization')?.slice(-12) || clientIp;
+    const rl = checkRateLimit(`analyze-media:${authToken}`, 10, 60_000);
+    if (!rl.allowed) return rateLimitResponse(rl.retryAfterMs);
+
     const { media_id, file_url, file_type, expert_id } = await req.json();
     
     console.log(`[analyze-media] Starting analysis for media ${media_id}, type: ${file_type}`);

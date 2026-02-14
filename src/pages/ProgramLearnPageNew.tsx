@@ -23,6 +23,7 @@ import {
   ChevronLeft
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { awardPoints, WELLPOINTS_QUERY_KEY } from '@/lib/wellpoints';
 
 interface Lesson {
   id: string;
@@ -159,9 +160,21 @@ const ProgramLearnPageNew = () => {
       
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: (_data, lessonId) => {
       queryClient.invalidateQueries({ queryKey: ['lesson-progress', id, user?.id] });
       toast.success(t('lessons.completed'));
+
+      // Award WellPoints for lesson completion
+      if (user?.id) {
+        awardPoints(user.id, 'lesson_completed', 'Lecke teljesítve', lessonId, 'lesson').catch(() => {});
+        queryClient.invalidateQueries({ queryKey: WELLPOINTS_QUERY_KEY(user.id) });
+
+        // Check if all lessons are now completed → award program_completed
+        const otherCompleted = progressData.filter(p => p.lesson_id !== lessonId && p.completed).length;
+        if (otherCompleted + 1 >= lessons.length && lessons.length > 0) {
+          awardPoints(user.id, 'program_completed', 'Program teljesítve', id!, 'program').catch(() => {});
+        }
+      }
     },
     onError: () => {
       toast.error(t('lessons.error_saving'));

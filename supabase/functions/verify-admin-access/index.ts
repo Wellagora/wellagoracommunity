@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+import { checkRateLimit, rateLimitResponse } from '../_shared/rateLimit.ts';
 
 // Allowed origins for CORS
 const ALLOWED_ORIGINS = [
@@ -29,6 +30,11 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Rate limiting: 20 admin access checks per minute per user
+    const clientIp = req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip') || 'unknown';
+    const rl = checkRateLimit(`verify-admin:${clientIp}`, 20, 60_000);
+    if (!rl.allowed) return rateLimitResponse(rl.retryAfterMs);
+
     // Get the authorization header
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
