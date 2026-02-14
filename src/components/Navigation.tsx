@@ -370,8 +370,8 @@ const Navigation = () => {
                       to={item.path}
                       className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-all duration-300 whitespace-nowrap border-b-2 ${
                         active 
-                          ? "text-[#111111] border-[#111111]" 
-                          : "text-[#6E6E73] border-transparent hover:text-[#111111] hover:border-[#D1D1D6]"
+                          ? "text-teal-700 font-semibold border-teal-600" 
+                          : "text-[#6E6E73] border-transparent hover:text-teal-600 hover:border-teal-300"
                       }`}
                     >
                       {Icon && <Icon className="h-4 w-4" />}
@@ -392,8 +392,8 @@ const Navigation = () => {
                 to="/ai-assistant"
                 className={`flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-full transition-all duration-300 shrink-0 ${
                   isActive('/ai-assistant')
-                    ? "bg-[#111111] text-white"
-                    : "text-[#6E6E73] hover:text-[#111111] hover:bg-[#F5F5F7]"
+                    ? "bg-gradient-to-r from-teal-600 to-emerald-600 text-white"
+                    : "text-[#6E6E73] hover:text-teal-600 hover:bg-teal-50"
                 }`}
               >
                 <div style={{ transform: 'scaleX(-1)' }}>
@@ -577,8 +577,8 @@ const Navigation = () => {
               to="/ai-assistant"
               className={`flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-full transition-all duration-300 ${
                 isActive('/ai-assistant')
-                  ? "bg-[#111111] text-white"
-                  : "text-[#6E6E73] hover:text-[#111111] hover:bg-[#F5F5F7]"
+                  ? "bg-gradient-to-r from-teal-600 to-emerald-600 text-white"
+                  : "text-[#6E6E73] hover:text-teal-600 hover:bg-teal-50"
               }`}
             >
               <div style={{ transform: 'scaleX(-1)' }}>

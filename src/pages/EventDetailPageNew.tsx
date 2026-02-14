@@ -458,7 +458,7 @@ const EventDetailPageNew = () => {
           ) : (
             <Button
               size="lg"
-              className="w-full bg-black hover:bg-black/90 text-white"
+              className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white"
               onClick={() => rsvpMutation.mutate({ action: "create" })}
               disabled={rsvpMutation.isPending}
             >

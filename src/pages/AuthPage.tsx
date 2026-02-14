@@ -383,7 +383,7 @@ const AuthPage = () => {
                     </div>
                     <Button
                       type="submit"
-                      className="w-full h-12 bg-black hover:bg-black/90 text-white font-semibold rounded-xl text-base"
+                      className="w-full h-12 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-semibold rounded-xl text-base shadow-lg hover:shadow-xl transition-all duration-200"
                       disabled={isLoading}
                     >
                       {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -471,7 +471,7 @@ const AuthPage = () => {
                                 </Button>
                                 <Button
                                   type="submit"
-                                  className="flex-1 bg-black hover:bg-black/90"
+                                  className="flex-1 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white"
                                   disabled={resetLoading}
                                 >
                                   {resetLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -487,7 +487,7 @@ const AuthPage = () => {
 
                   {/* Beta invitation notice */}
                   <div className="mt-6 pt-6 border-t border-slate-200">
-                    <p className="text-sm text-slate-500 text-center">
+                    <p className="text-sm text-teal-700 font-medium text-center">
                       {t('auth.beta_invite_notice') || 'Meghívott szakértő vagy? Jelentkezz be az email címeddel.'}
                     </p>
                   </div>
@@ -591,7 +591,7 @@ const AuthPage = () => {
                               <motion.div 
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
-                                className="w-6 h-6 rounded-full bg-black flex items-center justify-center"
+                                className="w-6 h-6 rounded-full bg-teal-600 flex items-center justify-center"
                               >
                                 <Check className="w-4 h-4 text-white" />
                               </motion.div>
@@ -787,7 +787,7 @@ const AuthPage = () => {
 
                         <Button
                           type="submit"
-                          className="w-full h-12 bg-black hover:bg-black/90 text-white font-semibold rounded-xl text-base transition-opacity"
+                          className="w-full h-12 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-semibold rounded-xl text-base shadow-lg hover:shadow-xl transition-all duration-200"
                           disabled={isLoading || !acceptedTerms}
                         >
                           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

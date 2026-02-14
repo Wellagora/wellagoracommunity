@@ -190,7 +190,7 @@ const FavoritesPage = () => {
               <Button 
                 asChild 
                 size="lg"
-                className="bg-black hover:bg-black/90 text-white rounded-full px-8 shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white rounded-full px-8 shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 <Link to="/programs">
                   <Store className="w-5 h-5 mr-2" />

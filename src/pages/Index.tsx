@@ -8,12 +8,13 @@ import HeroSection from "@/components/HeroSection";
 import ExpertGallery from "@/components/ExpertGallery";
 import FeaturedEventsGrid from "@/components/FeaturedEventsGrid";
 import RecommendedProgramsSlider from "@/components/RecommendedProgramsSlider";
-import CTABanner from "@/components/CTABanner";
+
 import HowItWorksSection from "@/components/home/HowItWorksSection";
 import FoundersWallSection from "@/components/home/FoundersWallSection";
 import { CommunityImpactCounter } from "@/components/CommunityImpactCounter";
 import SEOHead from "@/components/SEOHead";
 import { WhyWellAgoraSection } from "@/components/homepage/WhyWellAgoraSection";
+import { WellBotTeaser } from "@/components/home/WellBotTeaser";
 
 const Index = () => {
   const { t } = useLanguage();
@@ -58,7 +59,7 @@ const Index = () => {
                       whileTap={{ scale: 0.95 }}
                       transition={{ type: "spring", stiffness: 400, damping: 17 }}
                     >
-                      <Button size="lg" className="min-w-[200px] gap-2 bg-black hover:bg-black/90 text-white">
+                      <Button size="lg" className="min-w-[200px] gap-2 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-[1.02]">
                         {t("index.post_login_primary_cta")}
                         <ChevronRight className="w-5 h-5" />
                       </Button>
@@ -90,10 +91,13 @@ const Index = () => {
             {/* 3. AJÁNLOTT PROGRAMOK - Horizontal slider */}
             <RecommendedProgramsSlider />
 
-            {/* 4. CTA BANNER */}
-            <CTABanner />
+            {/* 4. HOW IT WORKS — always visible for context */}
+            <HowItWorksSection />
 
-            {/* 5. COMMUNITY IMPACT - Avatar Stack + Notification Stream */}
+            {/* 5. WHY WELLAGORA - Three pillars */}
+            <WhyWellAgoraSection />
+
+            {/* 6. COMMUNITY IMPACT - Avatar Stack + Notification Stream */}
             <CommunityImpactCounter />
           </main>
         </div>
@@ -117,7 +121,10 @@ const Index = () => {
           {/* 2. HOW IT WORKS — 3-step explainer */}
           <HowItWorksSection />
 
-          {/* 2b. FOUNDERS WALL — founding experts */}
+          {/* 2b. WELLBOT TEASER — introduce the digital host */}
+          <WellBotTeaser />
+
+          {/* 2c. FOUNDERS WALL — founding experts */}
           <FoundersWallSection />
 
           {/* 3. SZAKÉRTŐI ARCKÉPCSARNOK - Expert Portrait Gallery */}

@@ -183,7 +183,7 @@ const MyCoursesPage = () => {
               {t("my_courses.empty_desc")}
             </p>
             <Link to="/piacer">
-              <Button className="min-h-[44px] bg-black hover:bg-black/90 text-white">
+              <Button className="min-h-[44px] bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white">
                 <Store className="w-4 h-4 mr-2" />
                 {t("my_courses.browse_marketplace")}
               </Button>

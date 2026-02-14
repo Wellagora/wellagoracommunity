@@ -260,7 +260,7 @@ const MemberDashboard = () => {
                   : (t('member_dashboard.no_vouchers_in_category') || 'Nincs ilyen kuponod')}
               </p>
               <Link to="/piacer">
-                <Button className="bg-black hover:bg-black/90 text-white">
+                <Button className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white">
                   <Sparkles className="w-4 h-4 mr-2" />
                   {t('member_dashboard.explore_marketplace')}
                 </Button>

@@ -265,7 +265,7 @@ const EventsPageNew = () => {
                 onClick={() => setSelectedCategory(category.id)}
                 className={
                   selectedCategory === category.id
-                    ? "bg-black text-white hover:bg-black/90"
+                    ? "bg-teal-700 text-white hover:bg-teal-600"
                     : ""
                 }
               >
@@ -309,12 +309,12 @@ const EventsPageNew = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               {!user ? (
-                <Button asChild>
+                <Button asChild className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white transition-all duration-200 hover:scale-[1.02]">
                   <Link to="/register">{t("community_building.join_community")}</Link>
                 </Button>
               ) : (
                 <>
-                  <Button asChild>
+                  <Button asChild className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white transition-all duration-200 hover:scale-[1.02]">
                     <Link to="/contact">{t("community_building.events_notify")}</Link>
                   </Button>
                   <Button variant="outline" asChild>
@@ -443,7 +443,7 @@ const EventsPageNew = () => {
                         ) : (
                           <Button
                             size="sm"
-                            className="w-full bg-black hover:bg-black/90 text-white"
+                            className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white"
                             onClick={() =>
                               rsvpMutation.mutate({ eventId: event.id, action: "create" })
                             }

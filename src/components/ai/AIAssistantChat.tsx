@@ -234,7 +234,7 @@ const AIAssistantChat = ({ embedded = false }: AIAssistantChatProps) => {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className={embedded ? "flex-shrink-0 bg-white border-b px-3 py-3" : "flex-shrink-0 z-20 bg-white backdrop-blur-md border-b border-white/40 px-4 py-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"}
+        className={embedded ? "flex-shrink-0 bg-white border-b px-3 py-3" : "flex-shrink-0 z-20 bg-gradient-to-r from-teal-600 to-emerald-600 text-white px-4 py-5 rounded-t-2xl"}
       >
         <div className={embedded ? "flex items-center gap-2 mb-0" : "flex items-center gap-4 mb-5"}>
           <div className="relative flex-shrink-0">
@@ -250,7 +250,7 @@ const AIAssistantChat = ({ embedded = false }: AIAssistantChatProps) => {
           
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 flex-wrap">
-              <h1 className={embedded ? "text-base font-bold text-gray-900" : "text-2xl font-bold bg-gradient-to-r from-indigo-600 to-sky-500 bg-clip-text text-transparent"}>
+              <h1 className={embedded ? "text-base font-bold text-gray-900" : "text-2xl font-bold text-white"}>
                 WellBot
               </h1>
               <Button
@@ -264,22 +264,22 @@ const AIAssistantChat = ({ embedded = false }: AIAssistantChatProps) => {
               </Button>
               {!embedded && (
                 <div className="flex items-center gap-2">
-                  <Badge className="text-xs bg-indigo-100 text-indigo-700 border-indigo-200">
+                  <Badge className="text-xs bg-white/20 text-white border-white/30">
                     {language === 'hu' ? 'Digitális Házigazda' : language === 'de' ? 'Digitaler Gastgeber' : 'Digital Host'}
                   </Badge>
                   <div className="flex items-center gap-1.5">
                     <motion.div 
-                      className="w-2 h-2 bg-sky-500 rounded-full"
+                      className="w-2 h-2 bg-emerald-300 rounded-full"
                       animate={{ opacity: [1, 0.4, 1] }}
                       transition={{ duration: 1.5, repeat: Infinity }}
                     />
-                    <span className="text-xs text-sky-600">{t('wellbot.online')}</span>
+                    <span className="text-xs text-emerald-200">{t('wellbot.online')}</span>
                   </div>
                 </div>
               )}
             </div>
             {!embedded && (
-              <p className="text-sm text-slate-600 mt-1 line-clamp-2">
+              <p className="text-sm text-teal-100 mt-1 line-clamp-2">
                 {language === 'hu' 
                   ? 'A WellAgora digitális házigazdája vagyok! Segítek eligazodni a programok és szakértők között. 🤖'
                   : language === 'de'
@@ -305,11 +305,11 @@ const AIAssistantChat = ({ embedded = false }: AIAssistantChatProps) => {
             >
               <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${
                 message.sender === 'user' 
-                  ? 'bg-emerald-600 text-white rounded-br-md' 
-                  : 'bg-gray-100 text-gray-900 rounded-bl-md'
+                  ? 'bg-teal-600 text-white rounded-br-sm' 
+                  : 'bg-white border border-gray-200 text-gray-800 rounded-bl-sm shadow-sm'
               }`}>
                 <div className="whitespace-pre-wrap break-words">{message.content}</div>
-                <div className={`text-xs mt-1 ${message.sender === 'user' ? 'text-emerald-100' : 'text-gray-500'}`}>
+                <div className={`text-xs mt-1 ${message.sender === 'user' ? 'text-teal-100' : 'text-gray-400'}`}>
                   {format(message.timestamp, 'HH:mm')}
                 </div>
               </div>

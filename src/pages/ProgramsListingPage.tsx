@@ -530,8 +530,8 @@ const ProgramsListingPage = () => {
                     onClick={() => setSelectedCategory(category.id)}
                     className={`flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-full whitespace-nowrap transition-all duration-300 touch-manipulation ${
                       isActive
-                        ? "bg-black text-white shadow-[0_4px_16px_rgba(0,0,0,0.15)]"
-                        : "bg-white/80 backdrop-blur-sm border border-black/[0.05] text-black/60 hover:border-black/[0.15] hover:text-black hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)]"
+                        ? "bg-teal-700 text-white shadow-[0_4px_16px_rgba(0,0,0,0.15)]"
+                        : "bg-white/80 backdrop-blur-sm border border-black/[0.05] text-black/60 hover:border-teal-300 hover:text-teal-700 hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)]"
                     }`}
                   >
                     <Icon className="w-4 h-4" />

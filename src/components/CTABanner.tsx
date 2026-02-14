@@ -39,13 +39,13 @@ const CTABanner = () => {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/piacer">
-              <Button size="lg" className="min-w-[200px] gap-2 bg-black hover:bg-black/90 text-white">
+              <Button size="lg" className="min-w-[200px] gap-2 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-[1.02]">
                 {t("index.cta_explore_marketplace")}
                 <ChevronRight className="w-5 h-5" />
               </Button>
             </Link>
             <Link to="/auth">
-              <Button size="lg" variant="outline" className="min-w-[200px] border-black/20 hover:bg-black/5">
+              <Button size="lg" variant="outline" className="min-w-[200px] border-2 border-teal-600 text-teal-700 hover:bg-teal-50 transition-all duration-200">
                 {t("index.cta_become_expert")}
               </Button>
             </Link>

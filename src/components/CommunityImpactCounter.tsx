@@ -34,6 +34,9 @@ export const CommunityImpactCounter = () => {
     ? t('home.join_members_subtitle')
     : t('home.founding_subtitle');
 
+  // BUG #4: Hide section when no users exist (empty DB)
+  if (memberCount === 0) return null;
+
   return (
     <section 
       ref={sectionRef} 
@@ -129,7 +132,7 @@ export const CommunityImpactCounter = () => {
               <PressableButton 
                 asChild 
                 size="lg" 
-                className="relative bg-black hover:bg-black/90 text-white px-10 py-6 text-base font-semibold shadow-[0_4px_20px_rgba(0,0,0,0.25)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.35)] transition-all duration-300"
+                className="relative bg-gradient-to-r from-teal-700 to-emerald-700 hover:from-teal-600 hover:to-emerald-600 text-white px-10 py-6 text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300 rounded-full"
               >
                 <Link to="/auth" className="flex items-center gap-2">
                   <TrendingUp className="w-5 h-5" />

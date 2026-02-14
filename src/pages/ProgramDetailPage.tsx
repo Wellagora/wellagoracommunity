@@ -309,7 +309,7 @@ const ProgramDetailPage = () => {
       return (
         <Button 
           size="lg"
-          className="bg-black hover:bg-black/90 text-white font-semibold shadow-lg w-full"
+          className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-semibold shadow-lg w-full"
           onClick={handleClaimVoucher}
           disabled={isClaimingVoucher}
         >

@@ -565,7 +565,7 @@ const CommunityFeed = () => {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button
               onClick={() => setShowPostCreator(true)}
-              className="gap-2 bg-black hover:bg-black/90 text-white"
+              className="gap-2 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white"
             >
               <Send className="w-4 h-4" />
               {t('community.write_first_post') || 'Első posztom megírása'}

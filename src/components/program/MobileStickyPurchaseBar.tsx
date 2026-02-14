@@ -85,7 +85,7 @@ const MobileStickyPurchaseBar = ({
           </div>
           <Button
             onClick={onPurchaseClick}
-            className="min-w-[140px] min-h-[44px] bg-black hover:bg-black/90 text-white font-semibold rounded-xl shadow-lg"
+            className="min-w-[140px] min-h-[44px] bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-semibold rounded-xl shadow-lg"
           >
             <ShoppingCart className="w-5 h-5 mr-2" />
             {t("program.purchase_button")}
@@ -149,7 +149,7 @@ const MobileStickyPurchaseBar = ({
             <Button
               onClick={onClaimVoucher}
               disabled={isClaimingVoucher}
-              className="min-w-[140px] min-h-[44px] bg-black hover:bg-black/90 text-white font-semibold rounded-xl shadow-lg"
+              className="min-w-[140px] min-h-[44px] bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-semibold rounded-xl shadow-lg"
             >
               {isClaimingVoucher ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -163,7 +163,7 @@ const MobileStickyPurchaseBar = ({
           ) : (
             <Button
               onClick={onPurchaseClick}
-              className="min-w-[140px] min-h-[44px] bg-black hover:bg-black/90 text-white font-semibold rounded-xl shadow-lg"
+              className="min-w-[140px] min-h-[44px] bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-semibold rounded-xl shadow-lg"
             >
               <ShoppingCart className="w-5 h-5 mr-2" />
               {t("program.purchase_button")}
