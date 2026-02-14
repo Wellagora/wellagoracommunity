@@ -10,12 +10,11 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Textarea } from "@/components/ui/textarea";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Loader2, Users, Sparkles, Building2, ArrowLeft, Check, ChevronDown, Eye, EyeOff } from "lucide-react";
+import { Loader2, Users, Sparkles, Building2, ArrowLeft, Check, Eye, EyeOff } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
-import { DEMO_ACCOUNTS } from "@/data/mockData";
+// Demo accounts removed for production beta
 import { supabase } from "@/integrations/supabase/client";
 import { convertGuestToUser } from "@/services/guestRegistration";
 
@@ -486,34 +485,12 @@ const AuthPage = () => {
                     )}
                   </AnimatePresence>
 
-                  {/* Demo Login Panel - only in development */}
-                  {import.meta.env.DEV && <Collapsible className="mt-6 pt-6 border-t border-slate-200">
-                    <CollapsibleTrigger className="flex items-center justify-center gap-2 w-full text-sm text-slate-500 hover:text-slate-700 transition-colors">
-                      <span>🎭 {t('auth.demo_login')}</span>
-                      <ChevronDown className="w-4 h-4" />
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-4">
-                      <div className="grid grid-cols-2 gap-2">
-                        {DEMO_ACCOUNTS.map((acc) => (
-                          <Button
-                            key={acc.role}
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            className="text-xs border-slate-200 hover:bg-slate-50"
-                            onClick={() => {
-                              setLoginForm({ email: acc.email, password: acc.password });
-                            }}
-                          >
-                            {acc.name}
-                          </Button>
-                        ))}
-                      </div>
-                      <p className="text-xs text-slate-400 text-center mt-3">
-                        Kattints, majd nyomd meg a "Bejelentkezés" gombot
-                      </p>
-                    </CollapsibleContent>
-                  </Collapsible>}
+                  {/* Beta invitation notice */}
+                  <div className="mt-6 pt-6 border-t border-slate-200">
+                    <p className="text-sm text-slate-500 text-center">
+                      {t('auth.beta_invite_notice') || 'Meghívott szakértő vagy? Jelentkezz be az email címeddel.'}
+                    </p>
+                  </div>
 
                   {/* Social Login Options */}
                   <div className="mt-6 pt-6 border-t border-slate-200">

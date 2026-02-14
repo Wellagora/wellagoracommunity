@@ -1,12 +1,14 @@
-# HANDOFF — Teljes Audit + Befejezés
+# HANDOFF — Teljes Audit + Adatbázis Tisztítás
 
 ## Státusz
-- **Fázis:** Teljes audit + befejezés (v4)
+- **Fázis:** Teljes audit + adattisztítás éles induláshoz
 - **Állapot:** KÉSZ
-- **Dátum:** 2026-02-14 12:15
+- **Dátum:** 2026-02-14 14:45
 - **Commitok:**
   - `9f3a568` — fix: profile role badge, WellAgora branding, cookie consent panel + persistence
   - `dd56e3f` — fix: rewrite CookieConsentBanner — all buttons were dead, localStorage not saving
+  - `12d404b` — audit: full 42-function assessment
+  - *(pending)* — clean: database clean slate for production beta
 
 ## TypeScript Check
 npx tsc --noEmit → **0 hiba** ✅
@@ -107,5 +109,61 @@ npx vitest run → **82/82 teszt PASS** ✅ (6 test file: wellbot, rateLimit, we
 - **DE:** 5449 flat keys — 100% komplett (0 valódi hiány)
 - Hiányzó kulcsok: **0** (korábbi "8 missing" false positive volt — flat vs nested key struktúra)
 
-## Következő lépés
-**Stripe E2E teszt — EGYÜTT végezzük (NE csinálj semmit ezzel)**
+## Adatbázis Tisztítás — Éles Indulás
+
+### Clean Slate Migration
+- **Fájl:** `supabase/migrations/20260214_clean_slate.sql`
+- **Törli:** Minden teszt adat az alábbi sorrendben (FK constraint-ek miatt):
+  1. Tranzakciók, fizetések, Stripe (transactions, invoices, payouts, stripe_events, credit_transactions, vouchers, stb.)
+  2. Program-kapcsolódó (content_access, content_reviews, expert_contents, expert_availability, stb.)
+  3. Közösségi tartalom (community_posts, community_post_likes/comments, events, event_rsvps, stb.)
+  4. Gamification (wellpoints_ledger, challenge_completions, carbon_handprint_entries, stb.)
+  5. Kommunikáció (messages, notifications, push_subscriptions, broadcasts)
+  6. Szponzor (sponsor_credits, sponsor_packages, sponsorship_allocations, stb.)
+  7. Szervezetek (organizations, organization_invites, team_invitations)
+  8. Felhasználó-kapcsolódó (favorites, referrals, ai_conversations, analytics_events, stb.)
+  9. Profilok (profiles CASCADE)
+  10. Auth userek (DELETE FROM auth.users)
+  11. system_settings → platform_name = 'WellAgora'
+- **NEM töröl:** Sémát, triggereket, RLS policy-kat, függvényeket, enum-okat
+- **Használat:** Futtasd a Supabase SQL Editor-ban
+
+### Demo belépés eltávolítva ✅
+- `src/pages/AuthPage.tsx` — DEMO_ACCOUNTS import és demo login panel eltávolítva
+- Helyette: "Meghívott szakértő vagy? Jelentkezz be az email címeddel." szöveg
+- Unused imports (Collapsible, ChevronDown) törölve
+
+### Seed data kiürítve ✅
+7 seed SQL fájl tartalma törölve (fájlok megmaradtak, tartalomban comment):
+- `supabase/seed_dev.sql`
+- `supabase/seed_3_dev_programs.sql`
+- `supabase/seed_marketplace_clean_dev.sql`
+- `supabase/seed_marketplace_dev.sql`
+- `supabase/seed_sponsor_support_rule.sql`
+- `supabase/seed_test_programs.sql`
+- `supabase/seed_test_users_and_profiles.sql`
+
+**Nem módosítva:** `supabase/functions/seed-test-data/index.ts` (edge fn, super_admin auth mögötte)
+
+### Ellenőrzés ✅
+- `npx tsc --noEmit` → 0 hiba ✅
+- `npx vitest run` → 82/82 pass ✅
+- App-ot újra kell tölteni a migration futtatása után → üres állapotok jelennek meg, nem error
+
+### Összefoglalás
+| Elem | Státusz |
+|------|---------|
+| Clean slate migration | ✅ Létrehozva (futtatásra vár) |
+| Demo belépés eltávolítva | ✅ |
+| Seed data kiürítve | ✅ (7 fájl) |
+| Edge function módosítás | NEM (utasítás szerint) |
+| tsc | 0 hiba ✅ |
+| vitest | 82/82 pass ✅ |
+
+## Következő lépések
+1. **Futtasd a `20260214_clean_slate.sql` migration-t** a Supabase SQL Editor-ban
+2. Ellenőrizd: `SELECT count(*) FROM auth.users;` → 0
+3. Ellenőrizd: `SELECT count(*) FROM profiles;` → 0
+4. Töltsd újra az appot → üres állapotok, nem error
+5. Regisztrálj az első valódi szakértőként
+6. **Stripe E2E teszt — EGYÜTT végezzük**
