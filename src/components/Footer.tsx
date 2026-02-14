@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Separator } from "@/components/ui/separator";
 import { MapPin, Mail } from "lucide-react";
-import { resetCookieConsent } from "@/components/CookieConsentBanner";
+import { resetCookieConsent } from "@/lib/cookieConsent";
 
 const Footer = () => {
   const { t } = useLanguage();

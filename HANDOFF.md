@@ -4,7 +4,9 @@
 - **Fázis:** Javítás (Phase 0 fennmaradó)
 - **Állapot:** KÉSZ
 - **Dátum:** 2026-02-14
-- **Commit:** 9f3a568 — fix: profile role badge, WellAgora branding, cookie consent panel + persistence
+- **Commitok:**
+  - `9f3a568` — fix: profile role badge, WellAgora branding, cookie consent panel + persistence
+  - `5071aa6` — fix: rewrite CookieConsentBanner — all buttons were dead, localStorage not saving
 
 ## TypeScript Check
 npx tsc --noEmit → 0 hiba ✅
@@ -14,36 +16,33 @@ npx tsc --noEmit → 0 hiba ✅
 ### 1. "Expert" → "Szakértő" role badge (P1) ✅
 - **Fájl:** `src/components/profile/ProfileHeader.tsx`
 - **Gyökérok:** A `ProfileHeader` komponens a `role` prop-ot közvetlenül jelenítette meg (`{role}`), i18n fordítás nélkül.
-- **Javítás:** Hozzáadtam `useLanguage()` hookot és `t('roles.${roleKey}')` fordítást. A `roles.expert`, `roles.member`, `roles.sponsor`, `roles.admin` kulcsok mindhárom nyelven (HU/EN/DE) megvannak.
+- **Javítás:** Hozzáadtam `useLanguage()` hookot és `t('roles.${roleKey}')` fordítást.
 
 ### 2. "Wellagora" → "WellAgora" branding (P2) ✅
 - **Fájlok:** 
   - `supabase/functions/generate-challenge/index.ts` — 2 db "Wellagora" → "WellAgora"
   - `supabase/functions/match-challenge/index.ts` — 1 db "Wellagora" → "WellAgora"
-  - `supabase/migrations/20260214_fix_wellagora_branding.sql` — SQL migration a profiles tábla `organization` és `company` mezőihez
-- **FONTOS:** A DB migration-t futtatni kell a Supabase SQL Editor-ban!
+  - `supabase/migrations/20260214_fix_wellagora_branding.sql` — SQL migration (organization mező)
+- **DB migration lefuttatva** a Supabase SQL Editor-ban ✅
 
-### 3. Cookie "Testreszabás" panel (P2) ✅
-- **Fájl:** `src/components/CookieConsentBanner.tsx`
-- **Gyökérok:** Beágyazott `AnimatePresence` + `height: 0 → auto` animáció nem működött megbízhatóan framer-motion-ben.
-- **Javítás:** A customize panelt egyszerű conditional renderrel (`{showCustomize && <div>}`) cseréltem ki, Tailwind `animate-in` animációval.
-
-### 4. Cookie consent persistence (P2) ✅
-- **Fájl:** `src/components/CookieConsentBanner.tsx`
-- **Gyökérok:** A `visible` state `useState(false)`-ról indult, és `useEffect`-ben lett `true`-ra állítva — ha a komponens újra mountolódott, átmenetileg megjelent.
-- **Javítás:** 
-  - `dismissed` state szinkron inicializálás localStorage-ból: `useState(() => hasStoredConsent())`
-  - `visible` most derived state: `const visible = !dismissed && delayDone`
-  - Nincs race condition a state init és az useEffect között
+### 3–4. Cookie consent — TELJES ÚJRAÍRÁS (P2) ✅
+- **Gyökérok:** A `resetCookieConsent` **named export** a komponens fájlból törte a Vite Fast Refresh-t → MINDEN React state és event handler halott volt.
+- **Chrome konzol hibaüzenet:** `[vite] invalidate CookieConsentBanner.tsx: Could not Fast Refresh ("resetCookieConsent" export is incompatible)`
+- **Javítás (2. kör — 5071aa6):**
+  - `src/lib/cookieConsent.ts` — új utility fájl: `resetCookieConsent`, `hasStoredConsent`, `saveConsentToStorage`
+  - `src/components/CookieConsentBanner.tsx` — teljes újraírás, **CSAK default export**, nincs named export
+  - `src/components/Footer.tsx` — import átirányítva `@/lib/cookieConsent`-re
+  - Framer-motion AnimatePresence eltávolítva (felesleges komplexitás)
+  - Egyszerű `if (!isVisible) return null` pattern
 
 ## Érintett oldalak (QA agent ezeket ellenőrzi)
 - http://localhost:8080/profile — role badge + WellAgora branding
 - http://localhost:8080/community — cookie banner persistence
 - http://localhost:8080/piacer/cccccccc-cccc-cccc-cccc-cccccccccccc — cookie banner persistence
-- Bármely oldal — cookie "Testreszabás" panel
+- Bármely oldal — cookie "Testreszabás" panel + gombok működése
 
 ## Nem sikerült / Kihagytam
-- A "WellAgora" branding a `/profile` oldalon az `organization` mező a Supabase DB-ből jön — a `20260214_fix_wellagora_branding.sql` migration-t **kézzel kell futtatni** a Supabase SQL Editor-ban.
+- Nincs
 
 ## Nyitott kérdések
 - Nincs
