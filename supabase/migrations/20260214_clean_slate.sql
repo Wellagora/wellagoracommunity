@@ -71,7 +71,7 @@ BEGIN
     SELECT 1 FROM information_schema.tables
     WHERE table_schema = 'public' AND table_name = 'system_settings'
   ) THEN
-    UPDATE system_settings SET value = 'WellAgora' WHERE key = 'platform_name';
+    UPDATE system_settings SET value = '"WellAgora"'::jsonb WHERE key = 'platform_name';
     RAISE NOTICE 'UPDATED: system_settings platform_name = WellAgora';
   END IF;
 
