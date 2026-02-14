@@ -208,8 +208,8 @@ serve(async (req) => {
     console.log('[GENERATE-CHALLENGE] Inputs sanitized successfully');
 
     // Build AI prompt based on user data
-    const systemPrompt = `Te egy fenntarthatósági kihívás generátor vagy a Wellagora platformhoz.
-A Wellagora mottója: "Together we thrive" - közösen építjük a pozitív környezeti hatást (handprint).
+    const systemPrompt = `Te egy fenntarthatósági kihívás generátor vagy a WellAgora platformhoz.
+A WellAgora mottója: "Together we thrive" - közösen építjük a pozitív környezeti hatást (handprint).
 
 Feladatod: Generálj egy személyre szabott, konkrét fenntarthatósági kihívást a megadott adatok alapján.
 

@@ -96,7 +96,7 @@ serve(async (req) => {
     }
 
     // Build AI prompt for matching
-    const systemPrompt = `Te egy intelligens matching engine vagy a Wellagora platformhoz.
+    const systemPrompt = `Te egy intelligens matching engine vagy a WellAgora platformhoz.
 A platform mottója: "Together we thrive" - vállalatok és fenntarthatósági kihívások összekapcsolása.
 
 Feladatod: Értékelni egy vállalat és egy fenntarthatósági kihívás közötti illeszkedést.

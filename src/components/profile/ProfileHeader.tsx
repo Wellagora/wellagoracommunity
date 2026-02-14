@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Camera, Upload, Loader2 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ProfileHeaderProps {
   avatarUrl?: string;
@@ -21,6 +22,11 @@ export const ProfileHeader = ({
   onAvatarUpload,
   avatarUploading
 }: ProfileHeaderProps) => {
+  const { t } = useLanguage();
+
+  const roleKey = role?.toLowerCase() || 'member';
+  const displayRole = t(`roles.${roleKey}`) || role;
+
   return (
     <div className="flex flex-col sm:flex-row items-center gap-6 mb-8">
       <div className="relative group">
@@ -54,7 +60,7 @@ export const ProfileHeader = ({
         {organization && (
           <p className="text-lg text-muted-foreground mb-2">{organization}</p>
         )}
-        <p className="text-sm text-muted-foreground capitalize">{role}</p>
+        <p className="text-sm text-muted-foreground capitalize">{displayRole}</p>
       </div>
     </div>
   );
