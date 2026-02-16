@@ -35,10 +35,8 @@ const CommunityPage = lazy(() => import("@/pages/CommunityPage"));
 const AIAssistantPage = lazy(() => import("@/pages/AIAssistantPage"));
 const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
 const OrganizationDashboard = lazy(() => import("@/pages/OrganizationDashboard"));
-const HandprintPage = lazy(() => import("@/pages/HandprintPage"));
 const PublicOrganizationPage = lazy(() => import("@/pages/PublicOrganizationPage"));
 const AdminDashboardPage = lazy(() => import("@/pages/AdminDashboardPage"));
-const HandprintCalculatorPage = lazy(() => import("@/pages/HandprintCalculatorPage"));
 const SponsorDashboardPage = lazy(() => import("@/pages/SponsorDashboardPage"));
 const MemberDashboard = lazy(() => import("@/pages/MemberDashboard"));
 const ExpertStudio = lazy(() => import("@/pages/ExpertStudio"));
@@ -170,8 +168,6 @@ function App() {
                         <Route element={<TermsCheckWrapper />}>
                           <Route element={<AppLayout />}>
                             <Route path="/" element={<Index />} />
-                          <Route path="/dashboard/handprint" element={<HandprintPage />} />
-                          <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
                           {/* Member routes - redirect legacy paths to /my-agora */}
                           <Route path="/dashboard" element={<Navigate to="/my-agora" replace />} />
                           <Route path="/member-dashboard" element={<Navigate to="/my-agora" replace />} />

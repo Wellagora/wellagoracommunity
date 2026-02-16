@@ -252,7 +252,7 @@ const SystemSettings = () => {
                     type="email"
                     value={supportEmail}
                     onChange={(e) => setSupportEmail(e.target.value)}
-                    placeholder="support@wellagora.com"
+                    placeholder="info@wellagora.org"
                   />
                   <Button onClick={handleSaveSupportEmail}>Mentés</Button>
                 </div>

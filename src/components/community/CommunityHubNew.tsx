@@ -8,7 +8,7 @@ import CommunityGallery from './CommunityGallery';
 import CommunityEvents from './CommunityEvents';
 import CommunityCTA from './CommunityCTA';
 import { CommunityHeader } from './CommunityHeader';
-import { CO2ImpactCard } from './CO2ImpactCard';
+
 
 const CommunityHubNew = () => {
   const { t } = useLanguage();
@@ -48,9 +48,8 @@ const CommunityHubNew = () => {
         </Tabs>
       </div>
 
-      {/* CO₂ Impact + Upcoming Events and CTA */}
+      {/* Upcoming Events and CTA */}
       <div className="container mx-auto px-4 space-y-8 pb-12">
-        <CO2ImpactCard />
         <CommunityEvents />
         <CommunityCTA />
       </div>

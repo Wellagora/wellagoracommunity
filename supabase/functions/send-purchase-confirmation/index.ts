@@ -161,7 +161,7 @@ const handler = async (req: Request): Promise<Response> => {
                   <tr>
                     <td style="background-color: #f9fafb; padding: 30px 40px; border-top: 1px solid #e5e7eb;">
                       <p style="margin: 0 0 10px; color: #6b7280; font-size: 14px; text-align: center;">
-                        Kérdésed van? Írj nekünk: <a href="mailto:hello@wellagora.hu" style="color: #10b981;">hello@wellagora.hu</a>
+                        Kérdésed van? Írj nekünk: <a href="mailto:info@wellagora.org" style="color: #10b981;">info@wellagora.org</a>
                       </p>
                       <p style="margin: 0; color: #9ca3af; font-size: 12px; text-align: center;">
                         WellAgora - Fenntartható Közösségek Platformja

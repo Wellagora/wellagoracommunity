@@ -662,7 +662,7 @@ export const MOCK_MEMBERS: MockMember[] = [
   {
     id: "member-1",
     full_name: "Tóth Eszter",
-    email: "demo-tag@wellagora.hu",
+    email: "demo-tag@wellagora.org",
     user_role: "member",
     location_city: "Budapest",
     active_vouchers: 3,
