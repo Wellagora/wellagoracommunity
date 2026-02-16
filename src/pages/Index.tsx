@@ -36,8 +36,8 @@ const Index = () => {
   if (user && profile) {
     return (
       <>
-        <div className="min-h-screen bg-[#FEFCF7] flex flex-col">
-          <main className="pt-2 md:pt-4 flex-1">
+        <div className="bg-[#FEFCF7]">
+          <main className="pt-2 md:pt-4">
             {/* 1. SIMPLIFIED HERO - Welcome + Single CTA */}
             <section className="relative overflow-hidden bg-white/80 backdrop-blur-xl border-b border-black/5">
               <div className="container mx-auto px-4 py-6 sm:py-10 relative z-10">
@@ -113,8 +113,8 @@ const Index = () => {
         title={t('seo.homepage.title')}
         description={t('seo.homepage.description')}
       />
-      <div className="min-h-screen bg-white flex flex-col">
-        <main className="flex-1">
+      <div className="bg-white">
+        <main>
           {/* 1. HERO SECTION - Full viewport with integrated registration cards */}
           <HeroSection />
 
@@ -127,20 +127,17 @@ const Index = () => {
           {/* 2c. FOUNDERS WALL — founding experts */}
           <FoundersWallSection />
 
-          {/* 3. SZAKÉRTŐI ARCKÉPCSARNOK - Expert Portrait Gallery */}
+          {/* 3. SZAKÉRTŐI ARCKÉPCSARNOK - Expert Portrait Gallery (hidden when empty) */}
           <ExpertGallery />
 
-          {/* 3. KIEMELT ESEMÉNYEK - Fixed 3-column grid */}
+          {/* 4. KIEMELT ESEMÉNYEK - Fixed 3-column grid (hidden when empty) */}
           <FeaturedEventsGrid />
 
-          {/* 4. AJÁNLOTT PROGRAMOK - Horizontal slider */}
+          {/* 5. AJÁNLOTT PROGRAMOK - Horizontal slider (hidden when empty) */}
           <RecommendedProgramsSlider />
 
-          {/* 5. WHY WELLAGORA - Three pillars */}
+          {/* 6. WHY WELLAGORA - Three pillars — always visible */}
           <WhyWellAgoraSection />
-
-          {/* 6. COMMUNITY PULSE - After recommended programs */}
-          <CommunityImpactCounter />
         </main>
       </div>
 
