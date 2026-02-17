@@ -31,6 +31,11 @@ jobs:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           VITE_VAPID_PUBLIC_KEY: ${{ secrets.VITE_VAPID_PUBLIC_KEY }}
+
+      - name: Prerender static routes for SEO
+        run: node scripts/prerender.mjs || echo "⚠️ Prerendering failed — continuing with SPA build"
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: false
       
       - name: Run tests
         run: npx vitest run 2>/dev/null || echo "No tests yet — skipping"

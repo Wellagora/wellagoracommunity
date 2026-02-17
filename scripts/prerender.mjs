@@ -6,11 +6,11 @@
  * Runs automatically via: npm run build:prerender
  */
 
-import puppeteer from 'puppeteer';
 import { createServer } from 'http';
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST_DIR = join(__dirname, '..', 'dist');
@@ -82,11 +82,34 @@ async function prerender() {
     process.exit(1);
   }
 
+  // Dynamic import puppeteer (may not be installed in all environments)
+  let puppeteer;
+  try {
+    puppeteer = (await import('puppeteer')).default;
+  } catch {
+    console.warn('⚠️  Puppeteer not available — skipping prerender. Install with: npm i -D puppeteer');
+    process.exit(0);
+  }
+
   const server = await startServer();
-  const browser = await puppeteer.launch({
-    headless: 'new',
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
+  let browser;
+  try {
+    browser = await puppeteer.launch({
+      headless: 'new',
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--single-process',
+      ],
+    });
+  } catch (err) {
+    console.warn(`⚠️  Could not launch Chrome: ${err.message}`);
+    console.warn('   Skipping prerender — site will work as SPA.');
+    server.close();
+    process.exit(0);
+  }
 
   let successCount = 0;
 
