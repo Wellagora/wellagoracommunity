@@ -13,7 +13,7 @@ interface SEOHeadProps {
 const SEOHead = ({
   title = 'WellAgora — Impact Marketplace',
   description = 'Regionális tudásmegosztó közösség. Csatlakozz helyi szakértőkhöz!',
-  image = '/og-image.png',
+  image = 'https://storage.googleapis.com/gpt-engineer-file-uploads/1AaFw6ghtZSwb5UjkSNx5cVropc2/social-images/social-1764365520524-icononly.png',
   url,
   type = 'website',
   sponsorName,

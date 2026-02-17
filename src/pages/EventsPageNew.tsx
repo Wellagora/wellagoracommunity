@@ -99,7 +99,8 @@ const EventsPageNew = () => {
         query = query.select(`
           *,
           user_rsvp:event_rsvps!event_rsvps_event_id_fkey (id, status)
-        `).eq("user_rsvp.user_id", user.id);
+        `) as any;
+        query = query.eq("user_rsvp.user_id", user.id);
       }
 
       const { data, error } = await query;

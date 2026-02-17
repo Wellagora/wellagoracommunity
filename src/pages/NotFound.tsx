@@ -3,6 +3,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Home, AlertTriangle } from "lucide-react";
 import { motion } from "framer-motion";
+import { Helmet } from "react-helmet-async";
 import wellagoraLogo from "@/assets/wellagora-logo.png";
 
 const NotFound = () => {
@@ -10,6 +11,11 @@ const NotFound = () => {
   const { t } = useLanguage();
 
   return (
+    <>
+    <Helmet>
+      <title>404 — {t('error.404_title')} | WellAgora</title>
+      <meta name="robots" content="noindex, nofollow" />
+    </Helmet>
     <div className="min-h-screen bg-[#0A1930] flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -53,6 +59,7 @@ const NotFound = () => {
         </Button>
       </motion.div>
     </div>
+    </>
   );
 };
 

@@ -81,7 +81,7 @@
     {
       "name": "Események",
       "short_name": "Események",
-      "url": "/esemenyek",
+      "url": "/events",
       "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
     },
     {

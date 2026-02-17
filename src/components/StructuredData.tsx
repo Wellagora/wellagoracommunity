@@ -36,7 +36,7 @@ const StructuredData = (props: StructuredDataProps) => {
         '@type': 'Organization',
         name: 'WellAgora',
         url: BASE_URL,
-        logo: `${BASE_URL}/og-image.png`,
+        logo: 'https://storage.googleapis.com/gpt-engineer-file-uploads/1AaFw6ghtZSwb5UjkSNx5cVropc2/social-images/social-1764365520524-icononly.png',
         description:
           'Közösségi platform, ahol helyi szakértők fenntarthatósági workshopokat és programokat kínálnak.',
         sameAs: [
