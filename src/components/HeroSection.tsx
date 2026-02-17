@@ -127,9 +127,9 @@ const HeroSection = () => {
                     <div className={`relative ${path.bgColor} rounded-2xl p-6 min-h-[100px] flex flex-col justify-center border border-slate-200/50 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300`}>
                       <div className="flex items-center gap-3 mb-2">
                         <path.icon className={`w-6 h-6 ${path.iconColor}`} />
-                        <h3 className="text-xl font-semibold text-slate-900">
+                        <h2 className="text-xl font-semibold text-slate-900">
                           {path.title}
-                        </h3>
+                        </h2>
                       </div>
                       <p className="text-slate-500 text-sm leading-snug font-light">
                         {path.description}

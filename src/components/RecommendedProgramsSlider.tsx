@@ -150,9 +150,9 @@ const RecommendedProgramsSlider = () => {
             <div className="w-20 h-20 mb-6 rounded-full bg-emerald-50 flex items-center justify-center">
               <Sprout className="w-10 h-10 text-emerald-500" />
             </div>
-            <h3 className="text-2xl font-bold text-foreground mb-3">
+            <h2 className="text-2xl font-bold text-foreground mb-3">
               {t("home.programs_coming_title")}
-            </h3>
+            </h2>
             <p className="text-muted-foreground max-w-lg mb-6 leading-relaxed">
               {t("home.programs_coming_desc")}
             </p>
