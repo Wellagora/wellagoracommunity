@@ -5915,8 +5915,12 @@
   "seo.marketplace.description": "Fedezd fel a fenntarthatósági programokat és ismerkedj a tapasztalt szakértőkkel.",
   "seo.community.title": "WellAgora Közösség — Megosztott Tudás",
   "seo.community.description": "Csatlakozz ezer tagból álló közösséghez, ossz meg ötleteket és szerezz WellPoints pontokat.",
-  "seo.events.title": "WellAgora Események — Fenntarthatósági Tanulás",
+  "seo.events.title": "WellAgora Események — Közösségi Programok",
   "seo.events.description": "Fedezd fel a fenntarthatósági eseményeket és közösségi programokat a régiódban.",
+  "seo.ai_assistant.title": "WellBot — A WellAgora digitális házigazdája",
+  "seo.ai_assistant.description": "WellBot — a WellAgora digitális házigazdája. Kérdezz bármit a programokról, szakértőkről és a közösségről!",
+  "seo.auth.title": "Bejelentkezés — WellAgora",
+  "seo.auth.description": "Jelentkezz be a WellAgora közösségbe vagy regisztrálj új fiókot.",
 
   "actions.browse": "Böngészés",
   "actions.view_all": "Összes megtekintése",

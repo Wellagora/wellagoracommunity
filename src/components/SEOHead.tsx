@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface SEOHeadProps {
   title?: string;
@@ -17,7 +18,9 @@ const SEOHead = ({
   type = 'website',
   sponsorName,
 }: SEOHeadProps) => {
-  const siteUrl = typeof window !== 'undefined' ? window.location.origin : '';
+  const { language } = useLanguage();
+  const ogLocaleMap: Record<string, string> = { hu: 'hu_HU', en: 'en_US', de: 'de_DE' };
+  const siteUrl = 'https://wellagora.org';
   const fullUrl = url ? `${siteUrl}${url}` : siteUrl;
   const fullImage = image?.startsWith('http') ? image : `${siteUrl}${image}`;
   
@@ -39,7 +42,7 @@ const SEOHead = ({
       <meta property="og:description" content={description?.substring(0, 155) || ''} />
       <meta property="og:image" content={fullImage} />
       <meta property="og:site_name" content="WellAgora" />
-      <meta property="og:locale" content="hu_HU" />
+      <meta property="og:locale" content={ogLocaleMap[language] || 'hu_HU'} />
       
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />

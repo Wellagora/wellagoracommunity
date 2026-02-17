@@ -15,6 +15,7 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { resolveImageUrl } from "@/lib/imageResolver";
 import { CATEGORIES as CATEGORY_LIST } from "@/constants/categories";
+import SEOHead from "@/components/SEOHead";
 
 interface Event {
   id: string;
@@ -220,6 +221,11 @@ const EventsPageNew = () => {
   };
 
   return (
+    <>
+      <SEOHead
+        title={t('seo.events.title')}
+        description={t('seo.events.description')}
+      />
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-black/[0.02] to-white py-12 border-b border-black/5">
@@ -461,6 +467,7 @@ const EventsPageNew = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

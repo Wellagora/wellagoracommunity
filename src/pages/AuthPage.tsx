@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from "framer-motion";
 // Demo accounts removed for production beta
 import { supabase } from "@/integrations/supabase/client";
 import { convertGuestToUser } from "@/services/guestRegistration";
+import SEOHead from "@/components/SEOHead";
 
 // Monochrome accent colors
 const ACCENT_BLACK = "#000000";
@@ -264,6 +265,11 @@ const AuthPage = () => {
   }
 
   return (
+    <>
+      <SEOHead
+        title={t('seo.auth.title')}
+        description={t('seo.auth.description')}
+      />
     <div className="min-h-screen relative overflow-hidden bg-white">
       <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
         {/* Back to Home */}
@@ -803,6 +809,7 @@ const AuthPage = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

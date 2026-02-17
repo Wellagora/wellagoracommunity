@@ -47,6 +47,7 @@ import { SponsorContributionBadge } from "@/components/marketplace/SponsorContri
 import { LivePulseToast } from "@/components/marketplace/LivePulseToast";
 import { ProgramGridSkeleton } from "@/components/ui/loading-skeleton";
 import { CATEGORIES as CATEGORY_LIST } from "@/constants/categories";
+import SEOHead from "@/components/SEOHead";
 import { RoleSpecificEmptyState } from "@/components/growth/RoleSpecificEmptyState";
 
 // Icon mapping for categories
@@ -457,6 +458,11 @@ const ProgramsListingPage = () => {
   };
 
   return (
+    <>
+      <SEOHead
+        title={t('seo.marketplace.title')}
+        description={t('seo.marketplace.description')}
+      />
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4 pt-0 pb-12">
         {/* Sticky Header Section - Title, Search, and Categories */}
@@ -738,6 +744,7 @@ const ProgramsListingPage = () => {
       {/* Live Pulse Toast - Real-time activity notifications */}
       <LivePulseToast enabled={true} interval={15000} />
     </div>
+    </>
   );
 };
 
