@@ -6,12 +6,18 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Building2 } from "lucide-react";
+import SEOHead from "@/components/SEOHead";
 
 const ImpressumPage = () => {
   const { t } = useLanguage();
 
 
   return (
+    <>
+      <SEOHead
+        title={t('seo.impressum.title')}
+        description={t('seo.impressum.description')}
+      />
     <div className="min-h-screen bg-background flex flex-col">
       <Navigation />
       
@@ -129,6 +135,7 @@ const ImpressumPage = () => {
 
       <Footer />
     </div>
+    </>
   );
 };
 

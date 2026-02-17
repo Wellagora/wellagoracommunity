@@ -12,6 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import MembershipCard from "@/components/partners/MembershipCard";
+import SEOHead from "@/components/SEOHead";
 
 // All partners data with Hungarian categories
 const ALL_PARTNERS = [
@@ -91,6 +92,11 @@ const PartnersPage = () => {
   });
 
   return (
+    <>
+      <SEOHead
+        title={t('seo.partners.title')}
+        description={t('seo.partners.description')}
+      />
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <Navigation />
 
@@ -251,6 +257,7 @@ const PartnersPage = () => {
 
       <Footer />
     </div>
+    </>
   );
 };
 

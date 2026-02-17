@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Search, HelpCircle, Mail, ArrowRight } from "lucide-react";
+import SEOHead from "@/components/SEOHead";
 
 const HelpPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,6 +27,11 @@ const HelpPage = () => {
     : faqs;
 
   return (
+    <>
+      <SEOHead
+        title={t('seo.help.title')}
+        description={t('seo.help.description')}
+      />
     <div className="min-h-screen bg-white flex flex-col">
       <Navigation />
       <main className="flex-1 pt-14 sm:pt-16">
@@ -74,6 +80,7 @@ const HelpPage = () => {
       </main>
       <Footer />
     </div>
+    </>
   );
 };
 

@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail, Loader2, MessageSquare, MapPin, Building2 } from "lucide-react";
 import { z } from "zod";
+import SEOHead from "@/components/SEOHead";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name max 100 characters"),
@@ -82,6 +83,11 @@ export default function ContactPage() {
   };
 
   return (
+    <>
+      <SEOHead
+        title={t('seo.contact.title')}
+        description={t('seo.contact.description')}
+      />
     <div className="min-h-screen bg-background flex flex-col">
       <Navigation />
       
@@ -222,5 +228,6 @@ export default function ContactPage() {
 
       <Footer />
     </div>
+    </>
   );
 }

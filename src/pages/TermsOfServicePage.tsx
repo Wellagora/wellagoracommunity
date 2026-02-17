@@ -5,11 +5,17 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, FileText, ShieldCheck, CreditCard, Users, AlertTriangle, Scale } from "lucide-react";
+import SEOHead from "@/components/SEOHead";
 
 const TermsOfServicePage = () => {
   const { t } = useLanguage();
 
   return (
+    <>
+      <SEOHead
+        title={t('seo.terms.title')}
+        description={t('seo.terms.description')}
+      />
     <div className="min-h-screen bg-background flex flex-col">
       <Navigation />
 
@@ -207,6 +213,7 @@ const TermsOfServicePage = () => {
 
       <Footer />
     </div>
+    </>
   );
 };
 

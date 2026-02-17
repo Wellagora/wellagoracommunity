@@ -5,11 +5,17 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Shield, Bot, Users, Cookie, Scale, Lock, Database } from "lucide-react";
+import SEOHead from "@/components/SEOHead";
 
 const PrivacyPolicyPage = () => {
   const { t } = useLanguage();
 
   return (
+    <>
+      <SEOHead
+        title={t('seo.privacy.title')}
+        description={t('seo.privacy.description')}
+      />
     <div className="min-h-screen bg-background flex flex-col">
       <Navigation />
       
@@ -316,6 +322,7 @@ const PrivacyPolicyPage = () => {
 
       <Footer />
     </div>
+    </>
   );
 };
 

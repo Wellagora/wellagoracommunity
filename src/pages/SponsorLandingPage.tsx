@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/accordion';
 import { Package, Coins, Heart, Eye, Lightbulb, Sparkles } from 'lucide-react';
 import { SubscriptionPlanSelector } from '@/components/subscription/SubscriptionPlanSelector';
+import SEOHead from '@/components/SEOHead';
 
 const SponsorLandingPage = () => {
   const { t } = useLanguage();
@@ -80,6 +81,11 @@ const SponsorLandingPage = () => {
   ];
 
   return (
+    <>
+      <SEOHead
+        title={t('seo.sponsor.title')}
+        description={t('seo.sponsor.description')}
+      />
     <div className="min-h-screen bg-background">
       <Navigation />
 
@@ -288,6 +294,7 @@ const SponsorLandingPage = () => {
 
       <Footer />
     </div>
+    </>
   );
 };
 
