@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Search, HelpCircle, Mail, ArrowRight } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
+import StructuredData from "@/components/StructuredData";
 
 const HelpPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,6 +33,7 @@ const HelpPage = () => {
         title={t('seo.help.title')}
         description={t('seo.help.description')}
       />
+      <StructuredData type="FAQPage" faqs={faqs.map(f => ({ question: f.q, answer: f.a }))} />
     <div className="min-h-screen bg-white flex flex-col">
       <Navigation />
       <main className="flex-1 pt-14 sm:pt-16">

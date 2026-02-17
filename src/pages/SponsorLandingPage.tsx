@@ -13,6 +13,7 @@ import {
 import { Package, Coins, Heart, Eye, Lightbulb, Sparkles } from 'lucide-react';
 import { SubscriptionPlanSelector } from '@/components/subscription/SubscriptionPlanSelector';
 import SEOHead from '@/components/SEOHead';
+import StructuredData from '@/components/StructuredData';
 
 const SponsorLandingPage = () => {
   const { t } = useLanguage();
@@ -86,6 +87,7 @@ const SponsorLandingPage = () => {
         title={t('seo.sponsor.title')}
         description={t('seo.sponsor.description')}
       />
+      <StructuredData type="FAQPage" faqs={faqItems} />
     <div className="min-h-screen bg-background">
       <Navigation />
 

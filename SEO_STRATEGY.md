@@ -1,6 +1,6 @@
 # WellAgora SEO Stratégia — Átfogó Elemzés és Javaslatok
 
-> Készült: 2026-02-17 | Verzió: 1.0
+> Készült: 2026-02-17 | Verzió: 1.1 | **Fázis: PRELAUNCH** (tartalom fokozatosan bővül)
 > Cél domain: `wellagora.org` | Demo: `demo.wellagora.org`
 > Nyelvek: HU (elsődleges), EN, DE
 
@@ -18,7 +18,7 @@
 | helyi szakértő | 320 | alacsony | nagyon magas |
 | önkéntes programok | 1300 | közepes | közepes |
 | kézműves workshop | 1600 | közepes | magas |
-| wellness programok | 2900 | közepes | magas |
+| jóllét programok | 720 | alacsony | magas |
 | közösségépítés | 480 | alacsony | nagyon magas |
 
 | Kulcsszó (EN) | Havi keresés (becsült) | Nehézség | Relevancia |
@@ -42,7 +42,7 @@
 - `helyi szakértő kézműves workshop`
 - `közösségi programok a közelemben`
 - `ingyenes fenntarthatósági program`
-- `wellness workshop hétvégén`
+- `jólléti workshop hétvégén`
 - `kertészeti workshop kezdőknek`
 - `gasztronómiai workshop [város]`
 - `hogyan legyek fenntarthatóbb`
@@ -121,13 +121,13 @@
 - **Jelenlegi title**: WellAgora — Fenntartható közösségek, megosztott tudás
 - **Javasolt title**: `WellAgora — Helyi Szakértők, Közösségi Workshopok | Fenntartható Közösség`
 - **Jelenlegi desc**: Csatlakozz fenntartható közösségekhez és ismerd meg a helyi szakértőket...
-- **Javasolt desc**: `Fedezd fel a helyi szakértők workshopjait és közösségi programjait. Kézműves, wellness, gasztronómia — szponzorált, ingyenes lehetőségek a közeledben. Csatlakozz!` (155 karakter)
+- **Javasolt desc**: `Fedezd fel a helyi szakértők workshopjait és közösségi programjait. Kézműves, jóllét, gasztronómia — szponzorált, ingyenes lehetőségek a közeledben. Csatlakozz!` (155 karakter)
 
 #### Piactér `/programs`
 - **Jelenlegi title**: WellAgora Piactér — Fenntarthatósági Programok
 - **Javasolt title**: `Programok és Workshopok — Helyi Szakértőktől | WellAgora Piactér`
 - **Jelenlegi desc**: Fedezd fel a fenntarthatósági programokat...
-- **Javasolt desc**: `Böngészd a helyi szakértők workshopjait: kézműves, wellness, kertészeti, gasztronómiai programok. Ingyenes és szponzorált lehetőségek — jelentkezz most!` (154 karakter)
+- **Javasolt desc**: `Böngészd a helyi szakértők workshopjait: kézműves, jólléti, kertészeti, gasztronómiai programok. Ingyenes és szponzorált lehetőségek — jelentkezz most!` (154 karakter)
 
 #### Események `/events`
 - **Jelenlegi title**: WellAgora Események — Közösségi Programok
@@ -165,8 +165,8 @@
 
 | Oldal | Title | Description |
 |---|---|---|
-| Home | `WellAgora — Local Experts, Community Workshops \| Sustainability Platform` | `Discover workshops and programs by local sustainability experts. Craft, wellness, gardening — sponsored and free opportunities near you. Join now!` |
-| Programs | `Programs & Workshops by Local Experts \| WellAgora Marketplace` | `Browse local expert workshops: craft, wellness, gardening, gastronomy. Free and sponsored opportunities — sign up today!` |
+| Home | `WellAgora — Local Experts, Community Workshops \| Sustainability Platform` | `Discover workshops and programs by local sustainability experts. Craft, wellbeing, gardening — sponsored and free opportunities near you. Join now!` |
+| Programs | `Programs & Workshops by Local Experts \| WellAgora Marketplace` | `Browse local expert workshops: craft, wellbeing, gardening, gastronomy. Free and sponsored opportunities — sign up today!` |
 | Events | `Sustainability Events & Community Programs \| WellAgora` | `Upcoming sustainability events, workshops, and community programs in your region. Many events are free — RSVP now!` |
 | Community | `WellAgora Community — Local Knowledge Sharing & Connections` | `Join the WellAgora community: meet local experts, share experiences, and earn WellPoints. Sustainable growth together!` |
 
@@ -174,8 +174,8 @@
 
 | Oldal | Title | Description |
 |---|---|---|
-| Home | `WellAgora — Lokale Experten, Gemeinschafts-Workshops \| Nachhaltigkeitsplattform` | `Entdecken Sie Workshops und Programme lokaler Nachhaltigkeitsexperten. Handwerk, Wellness, Garten — gesponserte und kostenlose Möglichkeiten. Mitmachen!` |
-| Programs | `Programme & Workshops von lokalen Experten \| WellAgora Marktplatz` | `Lokale Experten-Workshops durchstöbern: Handwerk, Wellness, Garten, Gastronomie. Kostenlose und gesponserte Möglichkeiten!` |
+| Home | `WellAgora — Lokale Experten, Gemeinschafts-Workshops \| Nachhaltigkeitsplattform` | `Entdecken Sie Workshops und Programme lokaler Nachhaltigkeitsexperten. Handwerk, Wohlbefinden, Garten — gesponserte und kostenlose Möglichkeiten. Mitmachen!` |
+| Programs | `Programme & Workshops von lokalen Experten \| WellAgora Marktplatz` | `Lokale Experten-Workshops durchstöbern: Handwerk, Wohlbefinden, Garten, Gastronomie. Kostenlose und gesponserte Möglichkeiten!` |
 | Events | `Nachhaltigkeits-Veranstaltungen & Gemeinschaftsprogramme \| WellAgora` | `Nachhaltigkeits-Events, Workshops und Gemeinschaftsprogramme in Ihrer Region. Viele Veranstaltungen kostenlos!` |
 
 ---
@@ -195,7 +195,7 @@
 | `ingyenes workshop` | Transactional | Piactér `/programs` (szűrő: ingyenes) | Regisztráció |
 | `közösség támogatás szponzor` | Commercial Investigation | Szponzor landing `/sponsor` | Szponzori csomag vásárlás |
 | `WellBot` | Navigational/Informational | WellBot `/ai-assistant` | Chatbot használat → regisztráció |
-| `wellness program hétvégén` | Transactional + Local | Események/Piactér | RSVP/jelentkezés |
+| `jólléti program hétvégén` | Transactional + Local | Események/Piactér | RSVP/jelentkezés |
 
 ### 4.2 Content Gap elemzés (Intent vs. Tartalom)
 
@@ -255,7 +255,7 @@
 ```
 "Helyi Szakértők. Közösségi Workshopok. Fenntartható Fejlődés."
 "Fedezd fel a régiód legjobb szakértőinek workshopjait és programjait. 
-Kézműves, wellness, gasztronómia — sok program ingyenes, szponzori támogatással."
+Kézműves, jóllét, gasztronómia — sok program ingyenes, szponzori támogatással."
 ```
 → Kulcsszavak beépítve: "helyi szakértők", "közösségi workshopok", "fenntartható", "programok", "ingyenes"
 
@@ -271,7 +271,7 @@ Kézműves, wellness, gasztronómia — sok program ingyenes, szponzori támogat
 **Javasolt statikus bevezető szöveg a `/programs` oldalra:**
 ```
 Fedezd fel a WellAgora Piactér programjait és workshopjait. Helyi szakértőink 
-kézműves, wellness, gasztronómiai, kertészeti és fenntarthatósági programokat 
+kézműves, jólléti, gasztronómiai, kertészeti és fenntarthatósági programokat 
 kínálnak — sokuk ingyenes, szponzori támogatással. Válassz kategóriát és 
 kezdd el a fejlődést!
 ```
@@ -348,7 +348,7 @@ A jelenlegi szponzor landing (`/sponsor`) már gazdag tartalmú, de a szövegben
    - "Hogyan válj fenntarthatóbbá?" cikksorozat
    - Szakértő interjúk
    - Programbeszámolók
-   - Kategória guide-ok (pl. "A legjobb wellness workshopok")
+   - Kategória guide-ok (pl. "A legjobb jólléti workshopok")
 10. **Régió-alapú landing oldalak** (pl. `/regio/gyor`, `/regio/sopron`)
 11. **Prerendering** implementálása (prerender.io vagy hasonló) az SPA probléma megoldására
 12. **Backlink-építés** stratégia (helyi önkormányzatok, civil szervezetek, szponzorok)
@@ -369,7 +369,7 @@ A jelenlegi szponzor landing (`/sponsor`) már gazdag tartalmú, de a szövegben
 **HU:**
 
 1. **Mi a WellAgora?**
-   A WellAgora egy közösségi platform, ahol helyi szakértők workshopokat és programokat kínálnak fenntarthatósági témákban: kézműves, wellness, gasztronómia, kertészet és még sok más.
+   A WellAgora egy közösségi platform, ahol helyi szakértők workshopokat és programokat kínálnak fenntarthatósági témákban: kézműves, jóllét, gasztronómia, kertészet és még sok más.
 
 2. **Hogyan regisztrálhatok?**
    Kattints a "Csatlakozz" gombra, add meg az e-mail címedet és válaszd ki, hogy tagként, szakértőként vagy szponzorként szeretnél csatlakozni. A regisztráció ingyenes!

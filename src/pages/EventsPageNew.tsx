@@ -242,6 +242,9 @@ const EventsPageNew = () => {
             <p className="text-lg text-black/60">
               {t("events.subtitle")}
             </p>
+            <p className="text-sm text-black/40 mt-3 max-w-2xl mx-auto">
+              {t("seo.events.intro")}
+            </p>
           </motion.div>
         </div>
       </section>

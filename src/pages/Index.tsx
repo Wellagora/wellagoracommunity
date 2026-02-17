@@ -13,6 +13,7 @@ import HowItWorksSection from "@/components/home/HowItWorksSection";
 import FoundersWallSection from "@/components/home/FoundersWallSection";
 import { CommunityImpactCounter } from "@/components/CommunityImpactCounter";
 import SEOHead from "@/components/SEOHead";
+import StructuredData from "@/components/StructuredData";
 import { WhyWellAgoraSection } from "@/components/homepage/WhyWellAgoraSection";
 import { WellBotTeaser } from "@/components/home/WellBotTeaser";
 
@@ -113,6 +114,8 @@ const Index = () => {
         title={t('seo.homepage.title')}
         description={t('seo.homepage.description')}
       />
+      <StructuredData type="Organization" />
+      <StructuredData type="WebSite" />
       <div className="bg-white">
         <main>
           {/* 1. HERO SECTION - Full viewport with integrated registration cards */}

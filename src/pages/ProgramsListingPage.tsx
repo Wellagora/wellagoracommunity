@@ -501,6 +501,7 @@ const ProgramsListingPage = () => {
                 <h1 className="text-3xl md:text-4xl font-bold text-foreground">{t("marketplace.title")}</h1>
               </div>
               <p className="text-black/50 text-base max-w-2xl">{t("marketplace.subtitle")}</p>
+              <p className="text-black/30 text-sm mt-2 max-w-2xl">{t("seo.marketplace.intro")}</p>
             </div>
           )}
 
