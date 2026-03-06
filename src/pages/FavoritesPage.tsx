@@ -78,7 +78,6 @@ const FavoritesPage = () => {
 
         setFavorites(mapped);
       } catch (error) {
-        console.error("Error loading favorites:", error);
         toast.error(t("common.error") || "Hiba történt");
       } finally {
         setLoading(false);
@@ -103,7 +102,6 @@ const FavoritesPage = () => {
       setFavorites((prev) => prev.filter((f) => f.id !== programId));
       toast.success(t("favorites.removed") || "Eltávolítva a kedvencekből");
     } catch (error) {
-      console.error("Error removing favorite:", error);
       toast.error(t("common.error") || "Hiba történt");
     }
   };

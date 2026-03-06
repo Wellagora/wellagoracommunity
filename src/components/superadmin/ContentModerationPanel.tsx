@@ -119,7 +119,6 @@ const ContentModerationPanel = () => {
 
       setContents((data || []) as unknown as ContentItem[]);
     } catch (error) {
-      console.error('Error loading contents:', error);
       toast({
         title: 'Hiba',
         description: 'Nem sikerült betölteni a tartalmakat',

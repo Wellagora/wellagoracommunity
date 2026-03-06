@@ -81,7 +81,6 @@ export const useNearbyStakeholders = ({
       
       setStakeholders(transformedData);
     } catch (e) {
-      console.error('Error fetching nearby stakeholders:', e);
       setError(e as Error);
     } finally {
       setLoading(false);

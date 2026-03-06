@@ -94,7 +94,6 @@ export function ProgramDetailModal(props: {
         .eq("content_id", programId);
       setBookingsCount(count || 0);
     } catch (e: any) {
-      console.error("[ProgramDetailModal] load error", e);
       toast.error(e?.message || "Nem sikerült betölteni a programot");
     } finally {
       setLoading(false);
@@ -132,7 +131,6 @@ export function ProgramDetailModal(props: {
       onSaved?.();
       await load();
     } catch (e: any) {
-      console.error('DB ERROR:', e);
       toast.error(e?.message || "Mentés sikertelen");
     } finally {
       setSaving(false);
@@ -155,7 +153,6 @@ export function ProgramDetailModal(props: {
       onSaved?.();
       await load();
     } catch (e: any) {
-      console.error('DB ERROR:', e);
       toast.error(e?.message || "Jóváhagyás sikertelen");
     } finally {
       setSaving(false);
@@ -178,7 +175,6 @@ export function ProgramDetailModal(props: {
       onSaved?.();
       await load();
     } catch (e: any) {
-      console.error('DB ERROR:', e);
       toast.error(e?.message || "Elutasítás sikertelen");
     } finally {
       setSaving(false);
@@ -201,7 +197,6 @@ export function ProgramDetailModal(props: {
       onSaved?.();
       onOpenChange(false);
     } catch (e: any) {
-      console.error('DB ERROR:', e);
       toast.error(e?.message || "Törlés sikertelen");
     } finally {
       setSaving(false);
@@ -224,7 +219,6 @@ export function ProgramDetailModal(props: {
       toast.success(program.is_featured ? "Kiemelt státusz eltávolítva" : "Kiemeltté téve!");
       await load();
     } catch (e: any) {
-      console.error('DB ERROR:', e);
       toast.error(e?.message || "Művelet sikertelen");
     } finally {
       setSaving(false);

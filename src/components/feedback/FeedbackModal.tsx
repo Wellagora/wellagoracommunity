@@ -69,7 +69,6 @@ const FeedbackModal = ({ open, onClose }: FeedbackModalProps) => {
       setFeedbackType('bug');
       onClose();
     } catch (error) {
-      console.error('Feedback error:', error);
       toast.error(t('feedback.error_submit'));
     } finally {
       setIsSubmitting(false);

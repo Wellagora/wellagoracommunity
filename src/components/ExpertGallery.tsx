@@ -66,7 +66,6 @@ const ExpertGallery = () => {
         .limit(8);
       
       if (error) {
-        console.error('Error fetching experts:', error);
         return [];
       }
       

@@ -183,7 +183,6 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
 
       setPrograms(programsWithStats);
     } catch (error) {
-      console.error("Error loading programs:", error);
     } finally {
       setIsLoading(false);
     }
@@ -274,7 +273,6 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
       setPrograms(programs.filter(p => p.id !== programToDelete.id));
       toast.success(t("expert_studio.program_deleted") || "Program deleted");
     } catch (error) {
-      console.error("Error deleting program:", error);
       toast.error(t("expert_studio.delete_error") || "Error deleting program");
     } finally {
       setIsDeleting(false);
@@ -309,7 +307,6 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
       toast.success(t("expert_studio.program_duplicated") || "Program duplicated");
       loadPrograms();
     } catch (error) {
-      console.error("Error duplicating program:", error);
       toast.error(t("expert_studio.duplicate_error") || "Error duplicating program");
     }
   };

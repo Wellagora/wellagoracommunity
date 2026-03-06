@@ -197,7 +197,6 @@ const AdminSponsors = () => {
       setCreateEditOpen(false);
       await fetchSponsors();
     } catch (e: any) {
-      console.error('[AdminSponsors] save error', e);
       toast.error(e?.message || 'Hiba a mentés során');
     } finally {
       setSaving(false);

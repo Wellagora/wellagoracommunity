@@ -74,7 +74,6 @@ const TeamMembersSection = () => {
 
         setMembers(membersWithProfiles);
       } catch (error) {
-        console.error('Error fetching members:', error);
       } finally {
         setIsLoading(false);
       }

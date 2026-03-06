@@ -121,7 +121,6 @@ const ActiveImpactDashboard = () => {
         });
       }
     } catch (error) {
-      console.error('Error loading impact data:', error);
     } finally {
       setLoading(false);
     }

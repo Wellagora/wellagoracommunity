@@ -28,7 +28,8 @@ import {
   FolderKanban,
   Wallet,
   History,
-  FolderOpen
+  FolderOpen,
+  Ticket
 } from 'lucide-react';
 
 interface Project {
@@ -89,7 +90,6 @@ const AdminLayout = () => {
           setProjects(data);
         }
       } catch (e) {
-        console.error('[AdminLayout] Failed to fetch projects:', e);
       }
     };
     if (accessChecked) fetchProjects();
@@ -166,6 +166,11 @@ const AdminLayout = () => {
       path: `${adminBasePath}/audit`, 
       icon: History, 
       label: t('admin.nav.audit') || 'System Log'
+    },
+    { 
+      path: `${adminBasePath}/invite-codes`, 
+      icon: Ticket, 
+      label: t('admin.nav.invite_codes') || 'Meghívó kódok'
     },
     { 
       path: `${adminBasePath}/settings`, 

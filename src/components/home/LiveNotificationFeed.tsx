@@ -381,7 +381,6 @@ export const LiveNotificationFeed = () => {
         setNotifications(getMockActivities(language, formatRelativeTime).slice(0, 5));
       }
     } catch (err) {
-      console.error('Error fetching notifications:', err);
       // Fall back to mock data on error
       setNotifications(getMockActivities(language, formatRelativeTime).slice(0, 5));
     } finally {

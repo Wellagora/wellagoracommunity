@@ -67,10 +67,8 @@ class AnalyticsService {
         .insert([eventData]);
 
       if (error) {
-        console.error('[Analytics] Insert error:', error);
       }
     } catch (error) {
-      console.error('[Analytics] Track error:', error);
     }
   }
 

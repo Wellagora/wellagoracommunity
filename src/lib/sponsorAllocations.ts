@@ -35,7 +35,6 @@ export async function reserveSupport(
       .maybeSingle();
 
     if (checkError) {
-      console.error('Error checking existing allocation:', checkError);
       return { allocation: null, error: checkError.message };
     }
 
@@ -59,7 +58,6 @@ export async function reserveSupport(
       .maybeSingle();
 
     if (ruleError) {
-      console.error('Error finding support rule:', ruleError);
       return { allocation: null, error: ruleError.message };
     }
 
@@ -98,7 +96,6 @@ export async function reserveSupport(
         .single();
 
       if (updateError) {
-        console.error('Error updating allocation:', updateError);
         return { allocation: null, error: updateError.message };
       }
 
@@ -112,14 +109,12 @@ export async function reserveSupport(
         .single();
 
       if (createError) {
-        console.error('Error creating allocation:', createError);
         return { allocation: null, error: createError.message };
       }
 
       return { allocation: created as SponsorAllocation, error: null };
     }
   } catch (err) {
-    console.error('Unexpected error in reserveSupport:', err);
     return { allocation: null, error: String(err) };
   }
 }
@@ -142,13 +137,11 @@ export async function captureSupport(
       .eq('status', 'reserved'); // Only capture if currently reserved
 
     if (error) {
-      console.error('Error capturing allocation:', error);
       return { success: false, error: error.message };
     }
 
     return { success: true, error: null };
   } catch (err) {
-    console.error('Unexpected error in captureSupport:', err);
     return { success: false, error: String(err) };
   }
 }
@@ -172,13 +165,11 @@ export async function releaseSupport(
       .eq('status', 'reserved'); // Only release if currently reserved
 
     if (error) {
-      console.error('Error releasing allocation:', error);
       return { success: false, error: error.message };
     }
 
     return { success: true, error: null };
   } catch (err) {
-    console.error('Unexpected error in releaseSupport:', err);
     return { success: false, error: String(err) };
   }
 }
@@ -198,13 +189,11 @@ export async function getUserAllocations(
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching user allocations:', error);
       return { allocations: [], error: error.message };
     }
 
     return { allocations: (data || []) as SponsorAllocation[], error: null };
   } catch (err) {
-    console.error('Unexpected error in getUserAllocations:', err);
     return { allocations: [], error: String(err) };
   }
 }
@@ -236,13 +225,11 @@ export async function getSponsorAllocations(
     const { data, error } = await query;
 
     if (error) {
-      console.error('Error fetching sponsor allocations:', error);
       return { allocations: [], error: error.message };
     }
 
     return { allocations: (data || []) as SponsorAllocation[], error: null };
   } catch (err) {
-    console.error('Unexpected error in getSponsorAllocations:', err);
     return { allocations: [], error: String(err) };
   }
 }
@@ -262,13 +249,11 @@ export async function getContentAllocations(
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching content allocations:', error);
       return { allocations: [], error: error.message };
     }
 
     return { allocations: (data || []) as SponsorAllocation[], error: null };
   } catch (err) {
-    console.error('Unexpected error in getContentAllocations:', err);
     return { allocations: [], error: String(err) };
   }
 }

@@ -112,7 +112,6 @@ const RegionalProgramsHighlight = () => {
 
         setPrograms(programList.slice(0, 3));
       } catch (error) {
-        console.error('Error fetching regional programs:', error);
       } finally {
         setIsLoading(false);
       }

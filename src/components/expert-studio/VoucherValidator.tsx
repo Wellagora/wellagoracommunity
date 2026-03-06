@@ -162,7 +162,6 @@ const VoucherValidator = ({ userId, onBalanceUpdate, balance }: VoucherValidator
 
       scannerRef.current = scanner;
     } catch (error) {
-      console.error('Error starting QR scanner:', error);
       toast.error(t("expert_studio.camera_error") || "Kamera hiba");
       setScannerActive(false);
     }

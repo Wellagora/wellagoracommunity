@@ -72,7 +72,6 @@ const SponsorOnboardingPage = () => {
       .upload(fileName, logoFile, { upsert: true });
 
     if (uploadError) {
-      console.error('Logo upload error:', uploadError);
       throw new Error('Failed to upload logo');
     }
 
@@ -111,7 +110,6 @@ const SponsorOnboardingPage = () => {
       toast.success(t('sponsor.onboarding_complete') || 'Szponzor profil sikeresen létrehozva!');
       navigate('/sponsor-dashboard');
     } catch (error) {
-      console.error('Onboarding error:', error);
       toast.error(t('common.error') || 'Hiba történt');
     } finally {
       setIsLoading(false);

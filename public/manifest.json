@@ -1,14 +1,14 @@
 {
-  "name": "WellAgora Impact Marketplace",
+  "name": "WellAgora — Fenntartható közösségek",
   "short_name": "WellAgora",
-  "description": "Regionális tudásmegosztó ökoszisztéma",
+  "description": "Helyi szakértők, közösségi programok, fenntartható hatás. A Közép-Európai fenntarthatósági közösségi platform.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f8fafc",
-  "theme_color": "#1e293b",
+  "theme_color": "#059669",
   "orientation": "portrait-primary",
   "scope": "/",
-  "lang": "en",
+  "lang": "hu",
   "icons": [
     {
       "src": "/icons/icon-72.png",

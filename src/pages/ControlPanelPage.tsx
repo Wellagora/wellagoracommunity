@@ -223,7 +223,6 @@ const ControlPanelPage = () => {
 
         setNews(combined);
       } catch (error) {
-        console.error('Error loading control panel data:', error);
       } finally {
         setLoadingData(false);
       }

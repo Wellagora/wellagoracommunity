@@ -110,7 +110,6 @@ const AdminAudit = () => {
       setEntries(data || []);
       setTotalCount(count || 0);
     } catch (error) {
-      console.error('Error fetching audit log:', error);
     } finally {
       setLoading(false);
     }

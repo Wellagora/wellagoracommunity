@@ -297,7 +297,6 @@ const ExpertProfileEditor = () => {
       if (error) throw error;
       toast.success(t('expert_studio.save_success'));
     } catch (error) {
-      console.error('Error saving profile:', error);
       toast.error(t('expert_studio.save_error'));
     } finally {
       setIsSaving(false);
@@ -331,7 +330,6 @@ const ExpertProfileEditor = () => {
       setFormData({ ...formData, avatar_url: urlData.publicUrl });
       toast.success(t('expert_studio.avatar_uploaded'));
     } catch (error) {
-      console.error('Avatar upload error:', error);
       toast.error(t('expert_studio.avatar_error'));
     }
   };

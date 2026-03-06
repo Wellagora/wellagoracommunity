@@ -117,7 +117,6 @@ export function ProjectDetailModal(props: {
         setStats({ program_count: 0, event_count: 0, sponsor_count: 0 });
       }
     } catch (e: any) {
-      console.error("[ProjectDetailModal] load error", e);
       toast.error(e?.message || "Nem sikerült betölteni a projektet");
     } finally {
       setLoading(false);
@@ -151,7 +150,6 @@ export function ProjectDetailModal(props: {
       onSaved?.();
       await load();
     } catch (e: any) {
-      console.error('DB ERROR:', e);
       toast.error(e?.message || "Mentés sikertelen");
     } finally {
       setSaving(false);
@@ -174,7 +172,6 @@ export function ProjectDetailModal(props: {
       onSaved?.();
       onOpenChange(false);
     } catch (e: any) {
-      console.error('DB ERROR:', e);
       toast.error(e?.message || "Törlés sikertelen");
     } finally {
       setSaving(false);

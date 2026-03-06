@@ -153,7 +153,6 @@ const ProgramEditor = ({ programId, mode }: ProgramEditorProps) => {
         setExistingStatus("draft");
       }
     } catch (error) {
-      console.error("Error loading program:", error);
       toast.error("Failed to load program");
       navigate("/creator/dashboard");
     } finally {
@@ -223,7 +222,6 @@ const ProgramEditor = ({ programId, mode }: ProgramEditorProps) => {
       .upload(filePath, thumbnailFile);
 
     if (uploadError) {
-      console.error("Upload error:", uploadError);
       throw new Error(t("creator.upload_error"));
     }
 
@@ -294,7 +292,6 @@ const ProgramEditor = ({ programId, mode }: ProgramEditorProps) => {
       toast.success(t("creator.program_saved"));
       navigate("/creator/dashboard");
     } catch (error) {
-      console.error("Save error:", error);
       toast.error("Failed to save program");
     } finally {
       setIsSaving(false);
@@ -382,7 +379,6 @@ const ProgramEditor = ({ programId, mode }: ProgramEditorProps) => {
 
       navigate("/creator/dashboard");
     } catch (error) {
-      console.error("Submit error:", error);
       toast.error("Failed to submit program");
     } finally {
       setIsSubmitting(false);

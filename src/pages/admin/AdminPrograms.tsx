@@ -207,7 +207,6 @@ const AdminPrograms = () => {
         };
       }) || []);
     } catch (error) {
-      console.error('Error fetching programs:', error);
       toast.error('Hiba a programok betöltésekor');
     } finally {
       setLoading(false);
@@ -273,7 +272,6 @@ const AdminPrograms = () => {
       ));
       toast.success('Program jóváhagyva!');
     } catch (error) {
-      console.error('Error approving program:', error);
       toast.error('Hiba a jóváhagyás során');
     }
   };
@@ -327,7 +325,6 @@ const AdminPrograms = () => {
       toast.success('Program elutasítva');
       setRejectDialogProgramId(null);
     } catch (error) {
-      console.error('Error rejecting program:', error);
       toast.error('Hiba az elutasítás során');
     }
   };
@@ -358,7 +355,6 @@ const AdminPrograms = () => {
       ));
       toast.success(!currentState ? 'Kiemelt program' : 'Kiemelés visszavonva');
     } catch (error) {
-      console.error('Error toggling featured:', error);
       toast.error('Hiba a kiemelés során');
     }
   };

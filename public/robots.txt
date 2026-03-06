@@ -1,3 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /expert-studio/
+Disallow: /dashboard/
+Disallow: /profile/
+Disallow: /my-agora/
+Disallow: /sponsor-dashboard/
+
 User-agent: Googlebot
 Allow: /
 
@@ -10,5 +19,4 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
-Allow: /
+Sitemap: https://wellagora.org/sitemap.xml

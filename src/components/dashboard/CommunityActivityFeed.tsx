@@ -136,7 +136,6 @@ const CommunityActivityFeed = () => {
 
         setActivities(activityItems.slice(0, 10));
       } catch (error) {
-        console.error('Error fetching activities:', error);
       } finally {
         setIsLoading(false);
       }

@@ -83,7 +83,6 @@ const SponsorFinances = () => {
         availableCredits: Math.max(0, purchases - deductions),
       });
     } catch (error) {
-      console.error("Error loading financial data:", error);
       setLoadError(language === 'hu'
         ? 'Nem sikerült betölteni a pénzügyeket.'
         : language === 'de'

@@ -89,7 +89,6 @@ const RevenueMixChart = () => {
       setRevenueData(data);
       setTotalRevenue(transactionFees + sponsorshipPackages + affiliateCommissions);
     } catch (error) {
-      console.error('Error loading revenue data:', error);
     } finally {
       setIsLoading(false);
     }

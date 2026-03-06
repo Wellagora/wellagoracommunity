@@ -118,7 +118,6 @@ const AdminUsers = () => {
 
       setRoleStats(stats);
     } catch (error) {
-      console.error('Error fetching role stats:', error);
     }
   };
 
@@ -179,7 +178,6 @@ const AdminUsers = () => {
         setUsers(prev => prev.slice(0, -1));
       }
     } catch (error) {
-      console.error('Error fetching users:', error);
       toast.error('Hiba a felhasználók betöltésekor');
     } finally {
       setLoading(false);

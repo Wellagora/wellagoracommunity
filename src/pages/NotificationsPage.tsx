@@ -49,7 +49,6 @@ const NotificationsPage = () => {
       if (error) throw error;
       setNotifications(data || []);
     } catch (error) {
-      console.error("Error loading notifications:", error);
     } finally {
       setLoading(false);
     }
@@ -66,7 +65,6 @@ const NotificationsPage = () => {
         prev.map(n => n.id === id ? { ...n, read: true } : n)
       );
     } catch (error) {
-      console.error("Error marking notification as read:", error);
     }
   };
 
@@ -84,7 +82,6 @@ const NotificationsPage = () => {
         description: t("notifications.all_marked_read_desc"),
       });
     } catch (error) {
-      console.error("Error marking all as read:", error);
     }
   };
 
@@ -97,7 +94,6 @@ const NotificationsPage = () => {
       
       setNotifications(prev => prev.filter(n => n.id !== id));
     } catch (error) {
-      console.error("Error deleting notification:", error);
     }
   };
 

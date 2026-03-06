@@ -191,7 +191,6 @@ const ProgramCreatorWizard = () => {
 
       setContentId(id);
     } catch (error) {
-      console.error("Error loading content:", error);
       toast.error(t("wizard.load_error"));
     } finally {
       setIsLoading(false);
@@ -200,8 +199,8 @@ const ProgramCreatorWizard = () => {
 
   const isStepValid = (step: number): boolean => {
     switch (step) {
-      case 0: // Media
-        return !!formData.mediaUrl || !!formData.mediaFile;
+      case 0: // Media (optional - can skip)
+        return true;
       case 1: // Details
         return formData.title_hu.trim().length >= 3 && !!formData.category;
       case 2: // Localization
@@ -371,7 +370,6 @@ const ProgramCreatorWizard = () => {
         setFormData(prev => ({ ...prev, mediaUrl: imageUrl, mediaFile: null }));
       }
     } catch (error) {
-      console.error("Auto-save error:", error);
     } finally {
       setIsSaving(false);
     }
@@ -416,7 +414,6 @@ const ProgramCreatorWizard = () => {
       toast.success(t("program_creator.published_success"));
       navigate("/szakertoi-studio");
     } catch (error) {
-      console.error("Publish error:", error);
       toast.error(t("program_creator.publish_error"));
     } finally {
       setIsPublishing(false);

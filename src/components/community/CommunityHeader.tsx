@@ -66,7 +66,6 @@ export const CommunityHeader = () => {
         setExperts(expertData);
       }
     } catch (error) {
-      console.error('Error fetching community data:', error);
     } finally {
       setLoading(false);
     }

@@ -213,7 +213,6 @@ const SponsorDashboardPage = () => {
       setAvailableEvents((eventsData || []).map((e: any) => ({ id: e.id, name: e.title })));
     } catch (e) {
       // If permissions are missing, keep lists empty but don't crash.
-      console.error('[SponsorDashboard] Failed to load sponsor targets', e);
       setAvailablePrograms([]);
       setAvailableEvents([]);
     }
@@ -302,7 +301,6 @@ const SponsorDashboardPage = () => {
       setShowSponsorModal(false);
       await queryClient.invalidateQueries({ queryKey: ['sponsorDashboard'] });
     } catch (e: any) {
-      console.error('[SponsorDashboard] sponsor spend failed', e);
       toast.error(e?.message || t('common.error'));
       await queryClient.invalidateQueries({ queryKey: ['sponsorDashboard'] });
     } finally {

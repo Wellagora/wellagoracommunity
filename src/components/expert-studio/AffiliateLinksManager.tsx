@@ -68,7 +68,6 @@ const AffiliateLinksManager = ({ contentId }: AffiliateLinksManagerProps) => {
       if (error) throw error;
       setLinks(data || []);
     } catch (error) {
-      console.error('Error loading affiliate links:', error);
     } finally {
       setIsLoading(false);
     }
@@ -118,7 +117,6 @@ const AffiliateLinksManager = ({ contentId }: AffiliateLinksManagerProps) => {
       setFormData({ product_name: '', product_url: '', partner_name: '', commission_rate: 0 });
       loadLinks();
     } catch (error) {
-      console.error('Error saving affiliate link:', error);
       toast.error(language === 'hu' ? 'Hiba történt' : 'Error occurred');
     }
   };
@@ -134,7 +132,6 @@ const AffiliateLinksManager = ({ contentId }: AffiliateLinksManagerProps) => {
       toast.success(language === 'hu' ? 'Link törölve!' : 'Link deleted!');
       loadLinks();
     } catch (error) {
-      console.error('Error deleting affiliate link:', error);
       toast.error(language === 'hu' ? 'Hiba történt' : 'Error occurred');
     }
   };
@@ -149,7 +146,6 @@ const AffiliateLinksManager = ({ contentId }: AffiliateLinksManagerProps) => {
       if (error) throw error;
       loadLinks();
     } catch (error) {
-      console.error('Error toggling affiliate link:', error);
     }
   };
 

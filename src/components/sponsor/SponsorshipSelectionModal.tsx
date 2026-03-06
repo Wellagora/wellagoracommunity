@@ -118,7 +118,6 @@ const SponsorshipSelectionModal = ({ open, onOpenChange, onSuccess }: Sponsorshi
       onSuccess?.();
       onOpenChange(false);
     } catch (error: any) {
-      console.error('Error saving sponsorship selection:', error);
       toast.error(language === 'hu' ? 'Hiba történt' : 'An error occurred');
     } finally {
       setIsSaving(false);

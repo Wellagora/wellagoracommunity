@@ -1,0 +1,93 @@
+# WellAgora — Automatikus deploy a Nethely.hu-ra
+# Minden push a main branch-re → build → FTP upload → wellagora.org frissül
+#
+# Szükséges GitHub Secrets (Settings → Secrets and variables → Actions):
+#   FTP_SERVER: ftp.nethely.hu
+#   FTP_USERNAME: (az egyik FTP felhasználó neve)
+#   FTP_PASSWORD: (az FTP felhasználó jelszava)
+#   VITE_SUPABASE_URL: https://vvunxewylcifwphxgqab.supabase.co
+#   VITE_SUPABASE_ANON_KEY: (a Supabase anon key)
+
+name: Deploy to Nethely
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:  # Kézzel is indítható
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build production
+        run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_STRIPE_ENABLED: 'false'
+          VITE_APP_ENV: 'production'
+
+      # SPA routing fix: a Nethely Apache szervere .htaccess-szel kezeli
+      # hogy minden route az index.html-re mutasson
+      - name: Create .htaccess for SPA routing
+        run: |
+          cat > dist/.htaccess << 'EOF'
+          RewriteEngine On
+          RewriteBase /
+
+          # HTTPS + www redirectek a Nethely admin-ban vannak beallitva (301)
+          # Itt NEM duplikaljuk oket
+
+          # SPA routing: ha a fajl nem letezik, iranyitsd az index.html-re
+          RewriteCond %{REQUEST_FILENAME} !-f
+          RewriteCond %{REQUEST_FILENAME} !-d
+          RewriteRule ^(.*)$ /index.html [L]
+
+          # Cache control
+          <IfModule mod_expires.c>
+            ExpiresActive On
+            ExpiresByType text/html "access plus 0 seconds"
+            ExpiresByType text/css "access plus 1 year"
+            ExpiresByType application/javascript "access plus 1 year"
+            ExpiresByType image/png "access plus 1 year"
+            ExpiresByType image/jpeg "access plus 1 year"
+            ExpiresByType image/svg+xml "access plus 1 year"
+            ExpiresByType font/woff2 "access plus 1 year"
+          </IfModule>
+
+          # Gzip compression
+          <IfModule mod_deflate.c>
+            AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+          </IfModule>
+
+          # Security headers
+          <IfModule mod_headers.c>
+            Header set X-Content-Type-Options "nosniff"
+            Header set X-Frame-Options "SAMEORIGIN"
+            Header set X-XSS-Protection "1; mode=block"
+            Header set Referrer-Policy "strict-origin-when-cross-origin"
+          </IfModule>
+          EOF
+
+      - name: Deploy to Nethely via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: /public/
+          dangerous-clean-slate: false  # Első alkalommal true-ra állítható a régi fájlok törléséhez

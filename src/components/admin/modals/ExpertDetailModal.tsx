@@ -144,13 +144,11 @@ export function ExpertDetailModal(props: {
         .eq("expert_id", expertId)
         .order("created_at", { ascending: false })
         .limit(10);
-      if (payoutErr) console.error("Payout fetch error:", payoutErr);
 
       setProfile((p as ExpertProfile) || null);
       setPrograms((progs as ExpertProgram[]) || []);
       setPayouts((payoutData as PayoutRecord[]) || []);
     } catch (e: any) {
-      console.error("[ExpertDetailModal] load error", e);
       toast.error(e?.message || "Nem sikerült betölteni a szakértőt");
     } finally {
       setLoading(false);

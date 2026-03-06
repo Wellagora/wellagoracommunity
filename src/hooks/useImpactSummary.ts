@@ -56,7 +56,6 @@ export const useImpactSummary = (userId?: string) => {
       if (rpcError) throw rpcError;
       setSummary(data as unknown as ImpactSummary);
     } catch (e) {
-      console.error('Error fetching impact summary:', e);
       setError(e as Error);
       setSummary({
         total_co2_kg: 0,
@@ -92,7 +91,6 @@ export const useCommunityImpact = (projectId?: string) => {
         if (rpcError) throw rpcError;
         setImpact(data as unknown as CommunityImpact);
       } catch (e) {
-        console.error('Error fetching community impact:', e);
         setError(e as Error);
         setImpact({
           total_co2_kg: 0,

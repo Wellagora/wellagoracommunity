@@ -70,7 +70,6 @@ const NoShowManager = () => {
         toast.error(result.error || (language === 'hu' ? 'Hiba történt' : 'An error occurred'));
       }
     } catch (error: any) {
-      console.error('Error processing no-show:', error);
       toast.error(error.message || (language === 'hu' ? 'Hiba történt' : 'An error occurred'));
     } finally {
       setIsProcessing(false);

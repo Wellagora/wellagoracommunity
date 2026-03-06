@@ -63,8 +63,7 @@ const Navigation = () => {
   
   // Determine user's role from profile
   const effectiveRole = getEffectiveRole(profile?.user_role);
-  const isSuperAdmin = profile?.is_super_admin === true || 
-    profile?.email === 'attila.kelemen@proself.org';
+  const isSuperAdmin = profile?.is_super_admin === true;
   
   // The role to use for routing/navigation (viewAsRole takes precedence for super admins)
   const displayRole = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
@@ -688,6 +687,22 @@ const Navigation = () => {
                       );
                     })}
                   </div>
+
+                  {/* WellBot Link - Mobile Menu */}
+                  <Link
+                    to="/ai-assistant"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                      isActive('/ai-assistant')
+                        ? "bg-gradient-to-r from-indigo-100 to-sky-100 text-indigo-700"
+                        : "hover:bg-accent/50"
+                    }`}
+                  >
+                    <div style={{ transform: 'scaleX(-1)' }}>
+                      <WellBotAvatar size="xs" mood="neutral" />
+                    </div>
+                    <span className="font-medium">{t('nav.wellbot')}</span>
+                  </Link>
 
                   {/* Super Admin View Switcher - Mobile iOS Segmented Control */}
                   {isSuperAdmin && (

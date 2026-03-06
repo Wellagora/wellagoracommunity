@@ -118,7 +118,6 @@ const FeaturedExpertSection = () => {
           setExpert(DEMO_FEATURED_EXPERT);
         }
       } catch (error) {
-        console.error("Error fetching featured expert:", error);
         setExpert(DEMO_FEATURED_EXPERT);
       } finally {
         setLoading(false);

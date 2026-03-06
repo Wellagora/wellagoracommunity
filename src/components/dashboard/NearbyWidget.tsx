@@ -105,7 +105,6 @@ export const NearbyWidget = () => {
           setEvents(eventData);
         }
       } catch (error) {
-        console.error('Error fetching nearby data:', error);
       } finally {
         setLoading(false);
       }

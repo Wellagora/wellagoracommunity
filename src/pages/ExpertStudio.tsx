@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { formatPrice } from "@/lib/pricing";
+import { isStripeEnabled } from "@/lib/stripe";
 import { format } from "date-fns";
 import { hu, de, enUS } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
@@ -236,7 +237,8 @@ const ExpertStudio = () => {
 
         {/* Üzlet Tab - Business Overview with Revenue + Stats + Transactions + Impact Report */}
         <TabsContent value="business" className="space-y-6">
-          {/* Stripe Connect Onboarding Section */}
+          {/* Stripe Connect Onboarding Section - hidden when VITE_STRIPE_ENABLED=false */}
+          {isStripeEnabled() && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <Card className={`border-l-4 ${(profile as any)?.stripe_onboarding_complete ? 'border-l-emerald-500' : 'border-l-amber-500'}`}>
               <CardHeader>
@@ -324,6 +326,7 @@ const ExpertStudio = () => {
               </CardContent>
             </Card>
           </motion.div>
+          )}
 
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

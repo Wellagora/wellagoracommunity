@@ -104,7 +104,6 @@ const EventsPageNew = () => {
       const { data, error } = await query;
 
       if (error) {
-        console.error("Error fetching events:", error);
         throw error;
       }
 
@@ -220,7 +219,7 @@ const EventsPageNew = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-slate-50">
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-black/[0.02] to-white py-12 border-b border-black/5">
         <div className="container mx-auto px-4">

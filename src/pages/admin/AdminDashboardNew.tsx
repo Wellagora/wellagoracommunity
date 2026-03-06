@@ -232,7 +232,6 @@ const AdminDashboardNew = () => {
         loadCreditTx30d(),
       ]);
     } catch (error) {
-      console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
     }

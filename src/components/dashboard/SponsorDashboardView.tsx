@@ -99,7 +99,6 @@ const SponsorDashboardView = () => {
           .limit(20);
 
         if (error) {
-          console.error('Error loading sponsorships:', error);
         } else if (sponsorships) {
           // Transform the data to match our interface
           const transformedData: Campaign[] = sponsorships.map((s: any) => ({
@@ -119,7 +118,6 @@ const SponsorDashboardView = () => {
           calculateStats(transformedData);
         }
       } catch (error) {
-        console.error('Error:', error);
       } finally {
         setIsLoading(false);
       }

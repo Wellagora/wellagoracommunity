@@ -171,7 +171,6 @@ const SponsorCampaigns = () => {
         seatsUsed: usedSeats,
       });
     } catch (error) {
-      console.error("Error loading campaigns:", error);
     } finally {
       setIsLoading(false);
     }
@@ -189,7 +188,6 @@ const SponsorCampaigns = () => {
       toast.success(currentlyActive ? t("sponsor.campaign_paused") : t("sponsor.campaign_activated"));
       loadCampaigns();
     } catch (error) {
-      console.error("Error toggling campaign:", error);
       toast.error(t("sponsor.error_occurred"));
     }
   };

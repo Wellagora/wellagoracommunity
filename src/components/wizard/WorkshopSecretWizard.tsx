@@ -147,7 +147,6 @@ const WorkshopSecretWizard = () => {
 
       setContentId(id);
     } catch (error) {
-      console.error("Error loading content:", error);
       toast.error(t("wizard.load_error"));
     } finally {
       setIsLoading(false);
@@ -175,7 +174,6 @@ const WorkshopSecretWizard = () => {
         }
       }
     } catch (error) {
-      console.error("Error checking draft:", error);
     }
   };
 
@@ -212,7 +210,6 @@ const WorkshopSecretWizard = () => {
         }
       }
     } catch (error) {
-      console.error("Auto-save error:", error);
     } finally {
       setIsSaving(false);
     }
@@ -287,7 +284,6 @@ const WorkshopSecretWizard = () => {
       toast.success(t("wizard.published_success"));
       navigate("/szakertoi-studio");
     } catch (error) {
-      console.error("Publish error:", error);
       toast.error(t("wizard.publish_error"));
     } finally {
       setIsPublishing(false);

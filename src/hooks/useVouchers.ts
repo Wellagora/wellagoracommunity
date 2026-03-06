@@ -136,7 +136,6 @@ export const useVouchers = (): UseVouchersReturn => {
 
       setVouchers(transformedVouchers);
     } catch (err) {
-      console.error('Error fetching vouchers:', err);
       setError(err as Error);
     } finally {
       setIsLoading(false);
@@ -170,7 +169,6 @@ export const useVouchers = (): UseVouchersReturn => {
         .maybeSingle();
 
       if (sponsorError) {
-        console.error('[useVouchers] Error checking sponsorship:', sponsorError);
       }
 
       // Use atomic RPC function to check and reserve seat (prevents race conditions)
@@ -183,7 +181,6 @@ export const useVouchers = (): UseVouchersReturn => {
           });
 
         if (rpcError) {
-          console.error('[useVouchers] RPC error:', rpcError);
           // Fall back to manual check if RPC fails - check quota manually
           const maxSeats = sponsorship.max_sponsored_seats || sponsorship.total_licenses || 10;
           const usedSeats = sponsorship.sponsored_seats_used || sponsorship.used_licenses || 0;
@@ -283,7 +280,6 @@ export const useVouchers = (): UseVouchersReturn => {
 
       return { success: true, voucher: newVoucher };
     } catch (err) {
-      console.error('Error claiming voucher:', err);
       toast.error(t('voucher.claim_error') || 'Hiba történt a csatlakozás során');
       return { success: false, error: 'unknown' };
     }

@@ -103,7 +103,6 @@ const CommunityFeed = () => {
       if (error) throw error;
       setPosts(data || []);
     } catch (error) {
-      console.error('Error fetching posts:', error);
       toast.error('Failed to load posts');
     } finally {
       setLoading(false);
@@ -137,7 +136,6 @@ const CommunityFeed = () => {
         .upload(filePath, file);
 
       if (uploadError) {
-        console.error('Upload error:', uploadError);
         toast.error('Failed to upload image');
         throw uploadError;
       }
@@ -148,7 +146,6 @@ const CommunityFeed = () => {
 
       return publicUrl;
     } catch (error) {
-      console.error('Error uploading image:', error);
       return null;
     }
   };
@@ -206,7 +203,6 @@ const CommunityFeed = () => {
       setShowPostCreator(false);
       toast.success('+5 WellPont! 🪙', { description: 'Köszönjük az aktivitásod!' });
     } catch (error) {
-      console.error('Error creating post:', error);
       toast.error('Failed to create post');
     } finally {
       setSubmitting(false);
@@ -268,7 +264,6 @@ const CommunityFeed = () => {
         toast.success('+1 WellPont! 🪙', { description: 'Köszönjük az aktivitásod!' });
       }
     } catch (error) {
-      console.error('Error toggling like:', error);
       setPosts(prev => prev.map(p => p.id === postId ? post : p));
       toast.error('Failed to update like');
     }
@@ -314,7 +309,6 @@ const CommunityFeed = () => {
 
       toast.success('+3 WellPont! 🪙', { description: 'Köszönjük az aktivitásod!' });
     } catch (error) {
-      console.error('Error adding comment:', error);
       toast.error('Failed to add comment');
     }
   };
@@ -585,7 +579,6 @@ const PostCard = ({
                 alt="Post image"
                 className="w-full max-h-96 object-contain bg-gray-50 rounded-lg"
                 onError={(e) => {
-                  console.error('Image load error:', post.image_url);
                   e.currentTarget.style.display = 'none';
                 }}
                 loading="lazy"

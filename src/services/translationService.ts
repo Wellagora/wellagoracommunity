@@ -22,7 +22,6 @@ export async function translateText(hungarianText: string): Promise<TranslationR
     });
 
     if (error) {
-      console.error('Translation function error:', error);
       return { en: hungarianText, de: hungarianText };
     }
 
@@ -31,7 +30,6 @@ export async function translateText(hungarianText: string): Promise<TranslationR
       de: data?.de || hungarianText
     };
   } catch (error) {
-    console.error('Translation error:', error);
     return { en: hungarianText, de: hungarianText };
   }
 }
@@ -61,10 +59,8 @@ export async function translateContent(
       .eq('id', contentId);
 
     if (error) {
-      console.error('Failed to save content translations:', error);
     }
   } catch (error) {
-    console.error('Content translation error:', error);
   }
 }
 
@@ -98,11 +94,9 @@ export async function translateExpertProfile(
         .eq('id', profileId);
 
       if (error) {
-        console.error('Failed to save profile translations:', error);
       }
     }
   } catch (error) {
-    console.error('Profile translation error:', error);
   }
 }
 

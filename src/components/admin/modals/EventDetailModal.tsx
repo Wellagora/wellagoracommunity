@@ -83,7 +83,6 @@ export function EventDetailModal(props: {
       }
 
     } catch (e: any) {
-      console.error("[EventDetailModal] load error", e);
       toast.error(e?.message || "Nem sikerült betölteni az eseményt");
     } finally {
       setLoading(false);
@@ -122,7 +121,6 @@ export function EventDetailModal(props: {
       onSaved?.();
       await load();
     } catch (e: any) {
-      console.error('DB ERROR:', e);
       toast.error(e?.message || "Mentés sikertelen");
     } finally {
       setSaving(false);
@@ -145,7 +143,6 @@ export function EventDetailModal(props: {
       onSaved?.();
       onOpenChange(false);
     } catch (e: any) {
-      console.error('DB ERROR:', e);
       toast.error(e?.message || "Törlés sikertelen");
     } finally {
       setSaving(false);

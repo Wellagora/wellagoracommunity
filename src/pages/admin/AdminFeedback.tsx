@@ -118,7 +118,6 @@ const AdminFeedback = () => {
       if (error) throw error;
       setFeedback((data || []) as Feedback[]);
     } catch (error) {
-      console.error('Error fetching feedback:', error);
       toast.error('Hiba a visszajelzések betöltésekor');
     } finally {
       setLoading(false);
@@ -173,7 +172,6 @@ const AdminFeedback = () => {
         });
       }
     } catch (error) {
-      console.error('Error fetching counts:', error);
     }
   };
 
@@ -210,7 +208,6 @@ const AdminFeedback = () => {
       fetchFeedback();
       fetchCounts();
     } catch (error) {
-      console.error('Error updating feedback:', error);
       toast.error('Hiba a frissítés során');
     } finally {
       setIsSaving(false);

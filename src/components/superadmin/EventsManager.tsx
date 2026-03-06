@@ -61,7 +61,6 @@ const EventsManager = () => {
       toast.success('Esemény sikeresen törölve');
     },
     onError: (error) => {
-      console.error('Error deleting event:', error);
       toast.error('Hiba történt az esemény törlésekor');
     },
   });

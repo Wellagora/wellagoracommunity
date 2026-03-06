@@ -126,7 +126,6 @@ export const useExpertVouchers = (): UseExpertVouchersReturn => {
 
       setVouchers(transformedVouchers);
     } catch (err) {
-      console.error('Error fetching expert vouchers:', err);
       setError(err as Error);
     } finally {
       setIsLoading(false);
@@ -180,7 +179,6 @@ export const useExpertVouchers = (): UseExpertVouchersReturn => {
           ? { ...v, status: 'active' as VoucherStatus, redeemed_at: null }
           : v
       ));
-      console.error('Error redeeming voucher:', err);
       toast.error(t('expert_studio.validation_error') || 'Beváltási hiba történt');
       return false;
     }

@@ -67,7 +67,6 @@ export function UserDetailModal(props: {
       if (error) throw error;
       setProfile((data as UserProfile) || null);
     } catch (e: any) {
-      console.error("[UserDetailModal] load error", e);
       toast.error(t("admin.modal.load_error"));
     } finally {
       setLoading(false);

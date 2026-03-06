@@ -308,7 +308,6 @@ const MilestoneCard = ({ milestone, index, onUpdate, onRemove }: MilestoneCardPr
       onUpdate(milestone.id, "image_url", urlData.publicUrl);
       toast.success(t("wizard.image_uploaded"));
     } catch (error) {
-      console.error("Upload error:", error);
       toast.error(t("wizard.image_upload_error"));
     } finally {
       setIsUploadingImage(false);

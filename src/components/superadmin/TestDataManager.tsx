@@ -80,7 +80,6 @@ const TestDataManager = () => {
         throw new Error(response.data?.error || 'Unknown error');
       }
     } catch (error) {
-      console.error('Seed error:', error);
       toast.error(
         language === 'hu' 
           ? 'Hiba történt az adatok létrehozása során' 
@@ -119,7 +118,6 @@ const TestDataManager = () => {
         throw new Error(response.data?.error || 'Unknown error');
       }
     } catch (error) {
-      console.error('Wipe error:', error);
       toast.error(
         language === 'hu' 
           ? 'Hiba történt az adatok törlése során' 
@@ -158,7 +156,6 @@ const TestDataManager = () => {
         throw new Error(response.data?.error || 'Unknown error');
       }
     } catch (error) {
-      console.error('Wipe admin error:', error);
       toast.error(
         language === 'hu' 
           ? 'Hiba történt az admin teszt adatok törlése során' 

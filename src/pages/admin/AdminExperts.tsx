@@ -154,7 +154,6 @@ const AdminExperts = () => {
         setExperts(expertsWithCounts);
       }
     } catch (error) {
-      console.error('Error fetching experts:', error);
       toast.error('Hiba a szakértők betöltésekor');
     } finally {
       setLoading(false);

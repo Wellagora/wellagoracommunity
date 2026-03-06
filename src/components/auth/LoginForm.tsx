@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-import { Mail, Lock } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Mail, Lock, AlertCircle } from "lucide-react";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -24,8 +24,8 @@ interface LoginFormProps {
 }
 
 const LoginForm = ({ onSuccess, onSwitchToRegister, onForgotPassword }: LoginFormProps) => {
-  const { toast } = useToast();
   const { t } = useLanguage();
+  const [loginError, setLoginError] = useState<string | null>(null);
   
   const {
     register,
@@ -36,6 +36,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, onForgotPassword }: LoginFor
   });
 
   const onSubmit = async (data: LoginFormData) => {
+    setLoginError(null);
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email: data.email,
@@ -46,19 +47,10 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, onForgotPassword }: LoginFor
         throw error;
       }
       
-      toast({
-        title: t('auth.welcome_back'),
-        description: t('auth.login_success_desc'),
-      });
-      
       onSuccess?.();
     } catch (error: unknown) {
       const errorObj = error as { message?: string };
-      toast({
-        title: t('auth.login_failed'),
-        description: errorObj.message || t('auth.invalid_credentials'),
-        variant: "destructive",
-      });
+      setLoginError(errorObj.message || t('auth.invalid_credentials'));
     }
   };
 
@@ -117,6 +109,13 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, onForgotPassword }: LoginFor
               <p className="text-sm text-destructive">{errors.password.message}</p>
             )}
           </div>
+
+          {loginError && (
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-destructive/10 border border-destructive/30 text-destructive text-sm">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{loginError}</span>
+            </div>
+          )}
 
           <Button 
             type="submit" 

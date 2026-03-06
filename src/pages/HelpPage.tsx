@@ -1,479 +1,182 @@
-import { useState } from "react";
+import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  Search, 
-  Book, 
-  MessageCircle, 
-  Mail, 
-  Phone, 
-  Clock,
-  CheckCircle,
-  AlertCircle,
   HelpCircle,
-  Zap,
-  Target,
+  BookOpen,
+  UserCog,
+  Star,
   Users,
   Award,
-  Settings,
-  Smartphone,
-  Globe
+  Mail
 } from "lucide-react";
 
 const HelpPage = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const { t } = useLanguage();
+  const { language } = useLanguage();
 
-  const faqCategories = [
+  const faqs = language === 'hu' ? [
     {
-      id: "getting-started",
-      title: "Getting Started",
-      icon: Book,
-      faqs: [
-        {
-          question: "How do I create an account?",
-          answer: "Click 'Sign Up' on the homepage, choose your account type (Individual, Business, Government, or NGO), and complete the registration form. You'll receive a confirmation email to verify your account."
-        },
-        {
-          question: "What types of challenges are available?",
-          answer: "We offer challenges in 5 main categories: Energy (reducing electricity usage), Transport (sustainable commuting), Food (sustainable eating), Waste (reducing and recycling), and Community (group activities and local initiatives)."
-        },
-        {
-          question: "How do I join a challenge?",
-          answer: "Browse challenges on the Dashboard or Challenges page, read the details, and click 'Join Challenge'. You can track your progress and see community leaderboards once you've joined."
-        },
-        {
-          question: "Are the challenges suitable for beginners?",
-          answer: "Absolutely! Challenges are categorized by difficulty: Beginner (simple daily actions), Intermediate (weekly commitments), and Advanced (lifestyle changes). Start with beginner challenges and work your way up."
-        }
-      ]
+      q: "Hogyan hozok létre programot?",
+      a: "Menj az Expert Studio-ba, kattints az \"Új Program\" gombra. A varázsló végigvezet a lépéseken: média feltöltés (opcionális), program részletek kitöltése, lokalizáció, majd előnézet és publikálás. A piszkozatot bármikor mentheted."
     },
     {
-      id: "challenges-rewards",
-      title: "Challenges & Rewards",
-      icon: Target,
-      faqs: [
-        {
-          question: "How does the points system work?",
-          answer: "You earn points for completing challenge milestones, participating in community discussions, and achieving sustainability goals. Points contribute to your level and unlock new badges and features."
-        },
-        {
-          question: "What are badges and how do I earn them?",
-          answer: "Badges are achievements that recognize your progress in different areas. You can earn them by completing challenge streaks, reaching milestones, helping community members, or achieving specific sustainability goals."
-        },
-        {
-          question: "Can I create my own challenges?",
-          answer: "Yes! Once you reach Level 5, you can create custom challenges for your community. These can be reviewed and potentially featured platform-wide if they meet our quality guidelines."
-        },
-        {
-          question: "How is environmental impact calculated?",
-          answer: "We use peer-reviewed research and established calculation methods to estimate CO2 savings, energy reductions, and other environmental benefits. Sources include EPA guidelines and academic sustainability research."
-        }
-      ]
+      q: "Hogyan szerkesztem a profilomat?",
+      a: "Kattints a jobb felső sarokban lévő profilképedre, majd válaszd a \"Profil\" menüpontot. Itt módosíthatod a neved, szakterületed, bio-dat, profilképed és a többi adatot. Ne felejtsd el menteni a változtatásokat!"
     },
     {
-      id: "community",
-      title: "Community Features", 
-      icon: Users,
-      faqs: [
-        {
-          question: "How do I connect with other users?",
-          answer: "Visit the Community page to find local groups, join forums by interest, and participate in group challenges. You can also follow other users and share your achievements."
-        },
-        {
-          question: "What are community groups?",
-          answer: "Groups are collections of users focused on specific topics (local sustainability, workplace initiatives, etc.) or geographic areas. You can join existing groups or create your own."
-        },
-        {
-          question: "How do I report inappropriate content?",
-          answer: "Use the flag icon on any post or message to report inappropriate content. Our moderation team reviews all reports within 24 hours and takes appropriate action."
-        },
-        {
-          question: "Can I organize local events through the platform?",
-          answer: "Yes! Community leaders can create local events and meetups. These appear in your area's community feed and can include cleanup drives, workshops, or sustainability fairs."
-        }
-      ]
+      q: "Mi az a WellPoints?",
+      a: "A WellPoints a platform belső pont rendszere, amivel jutalmazunk a közösségi aktivitásodért. Pontot kapsz regisztrációkor (+50), profil kitöltésért (+100), első program részvételért (+200) és más tevékenységekért. A pontok hamarosan felhasználhatók lesznek különböző jutalmakra."
     },
     {
-      id: "account-settings",
-      title: "Account & Settings",
-      icon: Settings,
-      faqs: [
-        {
-          question: "How do I change my sustainability goals?",
-          answer: "Go to Settings > Goals to update your carbon reduction targets, challenge frequency, and focus areas. Changes take effect immediately and update your personalized recommendations."
-        },
-        {
-          question: "Can I switch between account types?",
-          answer: "Yes, you can upgrade from Individual to Business/Organization accounts in Settings > Profile. Note that some features and data may need to be migrated when switching types."
-        },
-        {
-          question: "How do I manage notifications?",
-          answer: "Visit Settings > Notifications to customize email alerts, push notifications, and frequency preferences. You can turn off specific types while keeping others enabled."
-        },
-        {
-          question: "Is my data secure and private?",
-          answer: "Yes, we use industry-standard encryption and never sell your data. You can review our privacy policy and export or delete your data at any time from Settings > Privacy."
-        }
-      ]
+      q: "Hogyan hívok meg tagokat?",
+      a: "A zárt béta időszakban meghívó kóddal lehet csatlakozni a platformhoz. Kérj meghívó kódot az admin csapattól, és oszd meg az ismerőseiddel. A meghívottak a regisztráció során adhatják meg a kódot."
     },
     {
-      id: "technical",
-      title: "Technical Support",
-      icon: Smartphone,
-      faqs: [
-        {
-          question: "Which browsers are supported?",
-          answer: "We support all modern browsers including Chrome, Firefox, Safari, and Edge. For the best experience, please use the latest version of your preferred browser."
-        },
-        {
-          question: "Is there a mobile app?",
-          answer: "Currently we offer a web-based platform optimized for mobile browsers. Native iOS and Android apps are in development and will be available in 2024."
-        },
-        {
-          question: "What should I do if I encounter a bug?",
-          answer: "Please report bugs through the 'Contact Support' form below, including your browser type, device info, and steps to reproduce the issue. Screenshots are also helpful!"
-        },
-        {
-          question: "How do I sync data across devices?",
-          answer: "Your account data automatically syncs across all devices when you're logged in. Progress, challenges, and community activity are available wherever you access the platform."
-        }
-      ]
-    }
+      q: "Ki a Founding Expert?",
+      a: "A Founding Expert a platform első szakértői, akik a zárt béta időszakban csatlakoztak. Különleges arany badge-et kapnak, ami a profiljukon és programjaikon is megjelenik. A zárt béta alatt 0% platform díjjal hozhatnak létre programokat."
+    },
+    {
+      q: "Hogyan lépek kapcsolatba a támogatással?",
+      a: "Írj nekünk az info@wellagora.org email címre, vagy használd a platform beépített AI asszisztensét (WellBot) a gyors válaszokért. A csapatunk 24 órán belül válaszol."
+    },
+  ] : [
+    {
+      q: "How do I create a program?",
+      a: "Go to Expert Studio, click 'New Program'. The wizard guides you through: media upload (optional), program details, localization, then preview and publish. You can save drafts at any time."
+    },
+    {
+      q: "How do I edit my profile?",
+      a: "Click your profile picture in the top right corner, then select 'Profile'. Here you can modify your name, expertise, bio, profile picture and other details. Don't forget to save your changes!"
+    },
+    {
+      q: "What is WellPoints?",
+      a: "WellPoints is the platform's internal points system that rewards your community activity. You earn points for registration (+50), profile completion (+100), first program participation (+200) and other activities."
+    },
+    {
+      q: "How do I invite members?",
+      a: "During the closed beta, members can join with an invite code. Request invite codes from the admin team and share them with your contacts. Invitees enter the code during registration."
+    },
+    {
+      q: "What is a Founding Expert?",
+      a: "Founding Experts are the platform's first experts who joined during the closed beta. They receive a special gold badge displayed on their profile and programs. During closed beta, they create programs with 0% platform fee."
+    },
+    {
+      q: "How do I contact support?",
+      a: "Email us at info@wellagora.org, or use the platform's built-in AI assistant (WellBot) for quick answers. Our team responds within 24 hours."
+    },
   ];
 
-  const contactMethods = [
-    {
-      icon: Mail,
-      title: "Email Support",
-      description: "Get detailed help via email",
-      contact: "support@sustainhub.com",
-      responseTime: "Within 24 hours"
-    },
-    {
-      icon: MessageCircle,
-      title: "Live Chat",
-      description: "Instant help during business hours",
-      contact: "Available 9 AM - 6 PM PST",
-      responseTime: "Within minutes"
-    },
-    {
-      icon: Phone,
-      title: "Phone Support",
-      description: "Speak with our team directly",
-      contact: "+1 (555) 123-4567",
-      responseTime: "Mon-Fri, 9 AM - 6 PM PST"
-    }
+  const sidebarLinks = [
+    { label: language === 'hu' ? 'Expert Studio' : 'Expert Studio', href: '/expert-studio', icon: BookOpen },
+    { label: language === 'hu' ? 'Profilom' : 'My Profile', href: '/profile', icon: UserCog },
+    { label: language === 'hu' ? 'Piactér' : 'Marketplace', href: '/piacer', icon: Star },
+    { label: language === 'hu' ? 'Közösség' : 'Community', href: '/community', icon: Users },
+    { label: language === 'hu' ? 'Kapcsolat' : 'Contact', href: '/contact', icon: Mail },
   ];
-
-  const quickLinks = [
-    { title: "Platform Overview", url: "/about", icon: Globe },
-    { title: "Getting Started Guide", url: "#getting-started", icon: Book },
-    { title: "Challenge Categories", url: "#challenges-rewards", icon: Target },
-    { title: "Community Guidelines", url: "#community", icon: Users },
-    { title: "Account Settings", url: "/settings", icon: Settings },
-    { title: "Privacy Policy", url: "#privacy", icon: AlertCircle }
-  ];
-
-  const filteredFaqs = searchQuery
-    ? faqCategories.map(category => ({
-        ...category,
-        faqs: category.faqs.filter(
-          faq =>
-            faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      })).filter(category => category.faqs.length > 0)
-    : faqCategories;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen bg-background flex flex-col">
       <Navigation />
       
-      <main className="pt-14 sm:pt-16">
-        {/* Hero Section */}
-        <section className="bg-gradient-secondary text-secondary-foreground py-8 sm:py-12 lg:py-16 xl:py-20">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <HelpCircle className="w-12 h-12 sm:w-16 sm:h-16 xl:w-20 xl:h-20 mx-auto mb-4 sm:mb-6 xl:mb-8 opacity-80" />
-            <h1 className="text-2xl sm:text-3xl md:text-5xl xl:text-6xl font-bold mb-3 sm:mb-4 xl:mb-6">
-              {t('help.title')}
+      <main className="flex-1 pt-4">
+        <div className="container mx-auto px-4 py-8 max-w-6xl">
+          {/* Header */}
+          <div className="text-center mb-10">
+            <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4">
+              <HelpCircle className="w-7 h-7" />
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
+              {language === 'hu' ? 'Segítség & GYIK' : 'Help & FAQ'}
             </h1>
-            <p className="text-sm sm:text-base md:text-xl xl:text-2xl max-w-2xl xl:max-w-3xl mx-auto opacity-90 mb-6 sm:mb-8 xl:mb-10 px-4">
-              {t('help.subtitle')}
+            <p className="text-muted-foreground max-w-xl mx-auto">
+              {language === 'hu'
+                ? 'Válaszok a leggyakoribb kérdésekre Founding Experteknek és tagoknak.'
+                : 'Answers to the most common questions for Founding Experts and members.'}
             </p>
-            
-            {/* Search Bar */}
-            <div className="max-w-2xl mx-auto relative">
-              <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 sm:w-5 sm:h-5" />
-              <Input
-                type="text"
-                placeholder={t('help.search_placeholder')}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 sm:pl-12 py-4 sm:py-6 text-sm sm:text-base lg:text-lg bg-background text-foreground"
-              />
-            </div>
           </div>
-        </section>
 
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12 xl:py-16">
-          {/* Quick Links */}
-          <section className="mb-8 sm:mb-12 xl:mb-16">
-            <h2 className="text-xl sm:text-2xl xl:text-3xl font-bold mb-4 sm:mb-6 xl:mb-8 text-center">{t('help.quick_links')}</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 xl:gap-6">
-              {quickLinks.map((link, index) => (
-                <Card key={index} className="hover:bg-muted/50 transition-colors cursor-pointer group">
-                  <CardContent className="p-4 text-center">
-                    <link.icon className="w-8 h-8 text-primary mx-auto mb-2 group-hover:scale-110 transition-transform" />
-                    <p className="text-sm font-medium">{link.title}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </section>
-
-          <Tabs defaultValue="faq" className="space-y-6 sm:space-y-8">
-            <TabsList className="grid w-full grid-cols-3 h-auto">
-              <TabsTrigger value="faq" className="text-xs sm:text-sm">FAQ</TabsTrigger>
-              <TabsTrigger value="guides" className="text-xs sm:text-sm">Guides</TabsTrigger>
-              <TabsTrigger value="contact" className="text-xs sm:text-sm">Contact</TabsTrigger>
-            </TabsList>
-
-            {/* FAQ Section */}
-            <TabsContent value="faq" className="space-y-6">
-              {searchQuery && (
-                <div className="bg-muted/30 p-4 rounded-lg">
-                  <p className="text-sm text-muted-foreground">
-                    Showing results for "{searchQuery}" • {filteredFaqs.reduce((total, cat) => total + cat.faqs.length, 0)} found
-                  </p>
-                </div>
-              )}
-
-              <div className="grid gap-6">
-                {filteredFaqs.map((category) => (
-                  <Card key={category.id}>
-                    <CardHeader>
-                      <div className="flex items-center gap-3">
-                        <category.icon className="w-6 h-6 text-primary" />
-                        <CardTitle>{category.title}</CardTitle>
-                        <Badge variant="secondary">{category.faqs.length}</Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <Accordion type="single" collapsible className="w-full">
-                        {category.faqs.map((faq, index) => (
-                          <AccordionItem key={index} value={`${category.id}-${index}`}>
-                            <AccordionTrigger className="text-left">
-                              {faq.question}
-                            </AccordionTrigger>
-                            <AccordionContent className="text-muted-foreground leading-relaxed">
-                              {faq.answer}
-                            </AccordionContent>
-                          </AccordionItem>
-                        ))}
-                      </Accordion>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
-
-            {/* Guides Section */}
-            <TabsContent value="guides" className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <Card className="border-l-4 border-l-primary">
-                  <CardHeader>
-                    <Book className="w-8 h-8 text-primary mb-2" />
-                    <CardTitle>Getting Started Guide</CardTitle>
-                    <CardDescription>Complete walkthrough for new users</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-success" />
-                        Setting up your profile and goals
-                      </div>
-                      <div className="flex items-center gap-2">
-                         <CheckCircle className="w-4 h-4 text-success" />
-                        Joining your first challenge
-                      </div>
-                      <div className="flex items-center gap-2">
-                         <CheckCircle className="w-4 h-4 text-success" />
-                        Understanding the points system
-                      </div>
-                      <div className="flex items-center gap-2">
-                         <CheckCircle className="w-4 h-4 text-success" />
-                        Connecting with the community
-                      </div>
-                    </div>
-                    <Button className="mt-4 w-full">View Complete Guide</Button>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-l-4 border-l-secondary">
-                  <CardHeader>
-                    <Target className="w-8 h-8 text-secondary mb-2" />
-                    <CardTitle>Challenge Mastery</CardTitle>
-                    <CardDescription>Advanced tips for sustainability challenges</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-2">
-                         <CheckCircle className="w-4 h-4 text-success" />
-                        Choosing the right difficulty level
-                      </div>
-                      <div className="flex items-center gap-2">
-                         <CheckCircle className="w-4 h-4 text-success" />
-                        Building sustainable habits
-                      </div>
-                      <div className="flex items-center gap-2">
-                         <CheckCircle className="w-4 h-4 text-success" />
-                        Tracking and measuring impact
-                      </div>
-                      <div className="flex items-center gap-2">
-                         <CheckCircle className="w-4 h-4 text-success" />
-                        Creating custom challenges
-                      </div>
-                    </div>
-                    <Button variant="secondary" className="mt-4 w-full">Learn More</Button>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-l-4 border-l-accent">
-                  <CardHeader>
-                    <Users className="w-8 h-8 text-accent mb-2" />
-                    <CardTitle>Community Building</CardTitle>
-                    <CardDescription>Growing and leading sustainable communities</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-2">
-                         <CheckCircle className="w-4 h-4 text-success" />
-                        Starting local sustainability groups
-                      </div>
-                      <div className="flex items-center gap-2">
-                         <CheckCircle className="w-4 h-4 text-success" />
-                        Organizing community events
-                      </div>
-                      <div className="flex items-center gap-2">
-                         <CheckCircle className="w-4 h-4 text-success" />
-                        Engaging and motivating members
-                      </div>
-                      <div className="flex items-center gap-2">
-                         <CheckCircle className="w-4 h-4 text-success" />
-                        Measuring group impact
-                      </div>
-                    </div>
-                    <Button variant="outline" className="mt-4 w-full">Explore Guide</Button>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-l-4 border-l-muted">
-                  <CardHeader>
-                    <Award className="w-8 h-8 text-muted-foreground mb-2" />
-                    <CardTitle>Business Integration</CardTitle>
-                    <CardDescription>Implementing sustainability in organizations</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-2">
-                         <CheckCircle className="w-4 h-4 text-success" />
-                        Employee engagement strategies
-                      </div>
-                      <div className="flex items-center gap-2">
-                         <CheckCircle className="w-4 h-4 text-success" />
-                        Corporate challenge programs
-                      </div>
-                      <div className="flex items-center gap-2">
-                         <CheckCircle className="w-4 h-4 text-success" />
-                        ROI measurement and reporting
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-success" />
-                        Integration with existing systems
-                      </div>
-                    </div>
-                    <Button variant="outline" className="mt-4 w-full">Download Guide</Button>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-
-            {/* Contact Section */}
-            <TabsContent value="contact" className="space-y-6">
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold mb-4">Get In Touch</h2>
-                <p className="text-muted-foreground max-w-2xl mx-auto">
-                  Can't find what you're looking for? Our support team is here to help you succeed on your sustainability journey.
-                </p>
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-6 mb-8">
-                {contactMethods.map((method, index) => (
-                  <Card key={index} className="text-center">
-                    <CardHeader>
-                      <method.icon className="w-12 h-12 text-primary mx-auto mb-4" />
-                      <CardTitle className="text-lg">{method.title}</CardTitle>
-                      <CardDescription>{method.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="font-medium mb-2">{method.contact}</p>
-                      <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
-                        <Clock className="w-3 h-3" />
-                        {method.responseTime}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-
-              {/* Contact Form */}
-              <Card className="max-w-2xl mx-auto">
-                <CardHeader>
-                  <CardTitle>Send us a Message</CardTitle>
-                  <CardDescription>
-                    Fill out the form below and we'll get back to you as soon as possible
-                  </CardDescription>
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Sidebar */}
+            <aside className="lg:col-span-1">
+              <Card className="sticky top-24">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base">
+                    {language === 'hu' ? 'Hasznos linkek' : 'Useful Links'}
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Name</label>
-                      <Input placeholder="Your full name" />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Email</label>
-                      <Input type="email" placeholder="your@email.com" />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Subject</label>
-                    <Input placeholder="What's this about?" />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Message</label>
-                    <textarea 
-                      className="w-full p-3 border rounded-md bg-background resize-none"
-                      rows={5}
-                      placeholder="Please describe your question or issue in detail..."
-                    />
-                  </div>
-                  
-                  <Button className="w-full">Send Message</Button>
+                <CardContent className="pt-0">
+                  <nav className="space-y-1">
+                    {sidebarLinks.map((link) => (
+                      <Link
+                        key={link.href}
+                        to={link.href}
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+                      >
+                        <link.icon className="w-4 h-4" />
+                        {link.label}
+                      </Link>
+                    ))}
+                  </nav>
                 </CardContent>
               </Card>
-            </TabsContent>
-          </Tabs>
+            </aside>
+
+            {/* FAQ */}
+            <div className="lg:col-span-3">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Award className="w-5 h-5 text-emerald-600" />
+                    {language === 'hu' ? 'Gyakran Ismételt Kérdések' : 'Frequently Asked Questions'}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Accordion type="single" collapsible className="w-full">
+                    {faqs.map((faq, i) => (
+                      <AccordionItem key={i} value={`faq-${i}`}>
+                        <AccordionTrigger className="text-left font-medium">
+                          {faq.q}
+                        </AccordionTrigger>
+                        <AccordionContent className="text-muted-foreground leading-relaxed">
+                          {faq.a}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </CardContent>
+              </Card>
+
+              {/* Contact CTA */}
+              <Card className="mt-6 bg-emerald-50 border-emerald-100">
+                <CardContent className="p-6 text-center">
+                  <p className="text-emerald-800 font-medium mb-2">
+                    {language === 'hu'
+                      ? 'Nem találtad meg a választ?'
+                      : "Didn't find your answer?"}
+                  </p>
+                  <p className="text-emerald-600 text-sm mb-4">
+                    {language === 'hu'
+                      ? 'Írj nekünk és 24 órán belül válaszolunk!'
+                      : "Write to us and we'll respond within 24 hours!"}
+                  </p>
+                  <a
+                    href="mailto:info@wellagora.org"
+                    className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-emerald-600 text-white hover:bg-emerald-700 transition-colors font-medium text-sm"
+                  >
+                    <Mail className="w-4 h-4" />
+                    info@wellagora.org
+                  </a>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };

@@ -103,7 +103,6 @@ export async function convertCurrency(
     // No exchange rate found
     return amount;
   } catch (error) {
-    console.error('Currency conversion error:', error);
     return amount;
   }
 }

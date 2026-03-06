@@ -30,7 +30,6 @@ export default function SponsoredParticipations() {
       if (!user) return [];
       const { allocations, error } = await getUserAllocations(user.id);
       if (error) {
-        console.error('Failed to fetch allocations:', error);
         return [];
       }
       return allocations;
@@ -51,7 +50,6 @@ export default function SponsoredParticipations() {
         .in('id', contentIds);
 
       if (error) {
-        console.error('Failed to fetch programs:', error);
         return {};
       }
 
@@ -76,7 +74,6 @@ export default function SponsoredParticipations() {
         .in('id', sponsorIds);
 
       if (error) {
-        console.error('Failed to fetch sponsors:', error);
         return {};
       }
 

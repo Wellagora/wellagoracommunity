@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { isStripeEnabled } from "@/lib/stripe";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -433,7 +434,7 @@ const ProfilePage = () => {
                     id="bio"
                     value={profileForm.bio}
                     onChange={(e) => setProfileForm(prev => ({ ...prev, bio: e.target.value }))}
-                    placeholder="Rövid bemutatkozás..."
+                    placeholder="Pl: 10 éve foglalkozom permakultúrával a Káli-medencében. Szenvedélyem a fenntartható gazdálkodás és a helyi közösségek erősítése."
                     className="min-h-[100px]"
                   />
                 </div>
@@ -495,7 +496,7 @@ const ProfilePage = () => {
                         id="expert_title"
                         value={profileForm.expert_title}
                         onChange={(e) => setProfileForm(prev => ({ ...prev, expert_title: e.target.value }))}
-                        placeholder="pl. Fenntarthatósági tanácsadó"
+                        placeholder="Pl: Permakultúra tervező, fenntarthatósági tanácsadó"
                       />
                     </div>
                     <div className="space-y-2">
@@ -523,8 +524,8 @@ const ProfilePage = () => {
                   </CardContent>
                 </Card>
 
-                {/* Payout Settings */}
-                <Card>
+                {/* Payout Settings - hidden when Stripe disabled */}
+                {isStripeEnabled() && <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Wallet className="w-5 h-5 text-green-500" />
@@ -580,7 +581,7 @@ const ProfilePage = () => {
                       </div>
                     )}
                   </CardContent>
-                </Card>
+                </Card>}
               </>
             )}
 

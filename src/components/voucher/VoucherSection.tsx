@@ -109,7 +109,6 @@ export const VoucherSection = ({
       // Navigate to dashboard after successful claim
       navigate('/iranyitopult');
     } catch (error) {
-      console.error('Error generating voucher:', error);
       toast.error(t('voucher.generate_error'));
     } finally {
       setIsGenerating(false);

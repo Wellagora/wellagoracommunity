@@ -28,7 +28,6 @@ export const AffiliateTrackingService = {
         timestamp: new Date().toISOString()
       });
     } catch (error) {
-      console.error('Error tracking affiliate click:', error);
     }
   },
 
@@ -43,7 +42,6 @@ export const AffiliateTrackingService = {
         timestamp: new Date().toISOString()
       });
     } catch (error) {
-      console.error('Error tracking offer view:', error);
     }
   },
 
@@ -58,7 +56,6 @@ export const AffiliateTrackingService = {
         timestamp: new Date().toISOString()
       });
     } catch (error) {
-      console.error('Error tracking membership scan:', error);
     }
   },
 
@@ -84,7 +81,6 @@ export const AffiliateTrackingService = {
 
       return { totalClicks, activeLinks, totalCommission };
     } catch (error) {
-      console.error('Error fetching affiliate stats:', error);
       return { totalClicks: 0, activeLinks: 0, totalCommission: 0 };
     }
   },

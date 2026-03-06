@@ -29,9 +29,7 @@ export async function writeAuditLog(entry: AuditLogEntry): Promise<void> {
     });
 
     if (error) {
-      console.error('[auditLog] Failed to write audit log:', error);
     }
   } catch (err) {
-    console.error('[auditLog] Exception writing audit log:', err);
   }
 }

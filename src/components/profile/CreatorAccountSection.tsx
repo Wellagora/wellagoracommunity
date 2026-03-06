@@ -58,7 +58,6 @@ export const CreatorAccountSection = ({ userId, profile, onUpdate }: CreatorAcco
 
       onUpdate?.();
     } catch (error) {
-      console.error('Error saving creator settings:', error);
       toast({
         title: t('common.error') || 'Hiba',
         description: t('creator.save_error') || 'Nem sikerült menteni a beállításokat.',

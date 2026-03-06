@@ -154,7 +154,6 @@ const CreatorManager = () => {
 
       setCreators(creatorsWithCounts);
     } catch (error) {
-      console.error('Error loading creators:', error);
       toast({
         title: t('admin.error'),
         description: t('admin.load_error'),

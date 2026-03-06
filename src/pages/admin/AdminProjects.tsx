@@ -146,7 +146,6 @@ const AdminProjects = () => {
 
       setProjects(projectsWithCounts);
     } catch (error) {
-      console.error('Error fetching projects:', error);
       toast.error(t('admin.projects.fetch_error'));
     } finally {
       setLoading(false);
@@ -282,7 +281,6 @@ const AdminProjects = () => {
       await fetchProjects();
       setIsModalOpen(false);
     } catch (error) {
-      console.error('Error saving project:', error);
       toast.error(t('admin.projects.error'));
     } finally {
       setIsSaving(false);
@@ -302,7 +300,6 @@ const AdminProjects = () => {
       toast.success(t('admin.projects.delete_success'));
       await fetchProjects();
     } catch (error) {
-      console.error('Error deleting project:', error);
       toast.error(t('admin.projects.error'));
     } finally {
       setIsDeleteDialogOpen(false);
@@ -324,7 +321,6 @@ const AdminProjects = () => {
       ));
       toast.success(project.is_active ? t('admin.projects.suspended') : t('admin.projects.activated'));
     } catch (error) {
-      console.error('Error updating project:', error);
       toast.error(t('admin.projects.update_error'));
     }
   };

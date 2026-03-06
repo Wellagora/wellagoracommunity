@@ -110,7 +110,6 @@ export const useCommunityStats = (projectId?: string): UseCommunityStatsResult =
         });
       }
     } catch (e) {
-      console.error('Failed to fetch community stats:', e);
       setError(e as Error);
       // Fallback to demo stats on error
       setStats(DEMO_STATS);

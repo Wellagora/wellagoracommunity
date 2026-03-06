@@ -152,7 +152,6 @@ const MyHubPage = () => {
         })));
 
       } catch (error) {
-        console.error('Error fetching hub data:', error);
       } finally {
         setLoadingData(false);
       }

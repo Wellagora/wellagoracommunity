@@ -76,7 +76,6 @@ const ExpertDashboardStats = ({ userId }: ExpertDashboardStatsProps) => {
         platformFee,
       });
     } catch (error) {
-      console.error("Error loading stats:", error);
     } finally {
       setIsLoading(false);
     }

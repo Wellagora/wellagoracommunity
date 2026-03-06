@@ -54,7 +54,6 @@ export const WaitlistSection = () => {
         // Only show contents with waitlist
         setWaitlistData(results.filter(r => r.waitlist_count > 0));
       } catch (error) {
-        console.error('Error loading waitlist:', error);
       } finally {
         setIsLoading(false);
       }

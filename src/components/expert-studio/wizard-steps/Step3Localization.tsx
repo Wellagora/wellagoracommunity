@@ -68,7 +68,6 @@ const Step3Localization = ({ formData, setFormData }: Step3LocalizationProps) =>
         toast.success(t("program_creator.translation_complete"));
       }
     } catch (error) {
-      console.error("Translation error:", error);
       toast.error(t("program_creator.translation_error"));
     } finally {
       setIsTranslating(false);

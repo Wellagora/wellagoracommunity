@@ -65,7 +65,6 @@ export const useReferral = () => {
         setStats({ pending, joined, completed, totalPoints });
       }
     } catch (error) {
-      console.error('Error fetching referral data:', error);
     } finally {
       setLoading(false);
     }

@@ -171,7 +171,6 @@ export function SponsorDetailModal(props: {
       setTransactions((txData as Transaction[]) || []);
 
     } catch (e: any) {
-      console.error("[SponsorDetailModal] load error", e);
       toast.error(e?.message || "Nem sikerült betölteni a szponzort");
     } finally {
       setLoading(false);

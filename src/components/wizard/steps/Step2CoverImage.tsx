@@ -49,7 +49,6 @@ export const Step2CoverImage = ({ formData, setFormData }: Step2CoverImageProps)
       setFormData({ ...formData, image_url: urlData.publicUrl });
       toast.success(t("wizard.image_uploaded"));
     } catch (error) {
-      console.error("Upload error:", error);
       toast.error(t("wizard.image_upload_error"));
     } finally {
       setIsUploading(false);

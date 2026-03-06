@@ -105,7 +105,6 @@ export const VoucherRedemptionTab = () => {
         setRecentVouchers(vouchersWithUsers);
       }
     } catch (error) {
-      console.error('Error loading voucher data:', error);
     } finally {
       setIsLoading(false);
     }
@@ -167,7 +166,6 @@ export const VoucherRedemptionTab = () => {
       setCode('');
       loadData();
     } catch (error) {
-      console.error('Error redeeming voucher:', error);
       toast.error(t('common.error'));
     } finally {
       setIsRedeeming(false);

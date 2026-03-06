@@ -58,7 +58,6 @@ export async function createTransaction(params: CreateTransactionParams): Promis
     .single();
 
   if (error) {
-    console.error('Error creating transaction:', error);
     throw new Error(`Failed to create transaction: ${error.message}`);
   }
 
@@ -77,12 +76,10 @@ export async function completeTransaction(transactionId: string): Promise<void> 
     .single();
 
   if (fetchError) {
-    console.error('❌ Error fetching transaction:', fetchError);
     throw new Error(`Failed to fetch transaction: ${fetchError.message}`);
   }
 
   if (!transaction) {
-    console.error('❌ Transaction not found');
     throw new Error('Transaction not found');
   }
 
@@ -96,7 +93,6 @@ export async function completeTransaction(transactionId: string): Promise<void> 
     .select();
 
   if (updateError) {
-    console.error('❌ Error updating transaction:', updateError);
     throw new Error(`Failed to update transaction: ${updateError.message}`);
   }
 
@@ -112,7 +108,6 @@ export async function completeTransaction(transactionId: string): Promise<void> 
     .select();
 
   if (participationError) {
-    console.error('❌ Error creating participation:', participationError);
     throw new Error(`Failed to create participation: ${participationError.message}`);
   }
 }
@@ -128,7 +123,6 @@ export async function getTransactionsByUser(userId: string): Promise<Transaction
     .order('created_at', { ascending: false });
 
   if (error) {
-    console.error('Error fetching user transactions:', error);
     throw new Error(`Failed to fetch transactions: ${error.message}`);
   }
 
@@ -146,7 +140,6 @@ export async function getTransactionById(transactionId: string): Promise<Transac
     .single();
 
   if (error) {
-    console.error('Error fetching transaction:', error);
     return null;
   }
 

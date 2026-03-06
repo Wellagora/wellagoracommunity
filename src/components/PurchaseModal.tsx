@@ -60,7 +60,6 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
         );
         
         if (error) {
-          console.error('Failed to reserve allocation:', error);
           toast({
             title: t("purchase.allocation_error"),
             description: error,
@@ -79,9 +78,7 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
   useEffect(() => {
     return () => {
       if (allocationId && !isComplete) {
-        releaseSupport(allocationId).catch(err => 
-          console.error('Failed to release allocation:', err)
-        );
+        releaseSupport(allocationId).catch(() => { /* silent */ });
       }
     };
   }, [allocationId, isComplete]);
@@ -158,7 +155,6 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
       if (allocationId) {
         const { success, error: captureError } = await captureSupport(allocationId);
         if (!success) {
-          console.error('Failed to capture allocation:', captureError);
           // Don't fail the purchase, just log the error
         }
       }
@@ -185,8 +181,8 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
         finalPrice: memberPays,
         sponsorName: content.sponsor_name,
         sponsorContribution: sponsorContribution,
-        isSponsored: !!isSponsored
-      }).catch(err => console.error('Failed to send purchase notification:', err));
+        isSponsored: !!isSponsored,
+      }).catch(() => { /* silent */ });
 
       // Invalidate queries
       queryClient.invalidateQueries({ queryKey: ["contentAccess"] });
@@ -205,18 +201,11 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
         onClose();
         navigate('/kurzusaim');
       }, 2000);
-    } catch (error: any) {
-      console.error("Purchase error:", error);
-      console.error("Error details:", {
-        message: error?.message,
-        code: error?.code,
-        details: error?.details,
-        hint: error?.hint,
-        stack: error?.stack
-      });
+    } catch (error: unknown) {
+      const err = error as { message?: string; toString?: () => string };
       toast({
         title: t("purchase.error"),
-        description: error?.message || error?.toString() || t("purchase.error_description"),
+        description: err?.message || err?.toString?.() || t("purchase.error_description"),
         variant: "destructive",
       });
     } finally {

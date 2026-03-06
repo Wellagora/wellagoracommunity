@@ -81,7 +81,6 @@ export const useExpertMedia = () => {
         setMedia(typedData || []);
       }
     } catch (error) {
-      console.error('Error fetching media:', error);
     } finally {
       setLoading(false);
     }
@@ -122,7 +121,6 @@ export const useExpertMedia = () => {
       
       return null;
     } catch (error) {
-      console.error('Error analyzing media:', error);
       toast.error('Hiba az AI elemzés során');
       return null;
     } finally {
@@ -200,7 +198,6 @@ export const useExpertMedia = () => {
       
       return newMedia;
     } catch (error) {
-      console.error('Error uploading media:', error);
       toast.error('Hiba a feltöltés során');
       return null;
     } finally {
@@ -236,7 +233,6 @@ export const useExpertMedia = () => {
       toast.success('Média hozzáadva a programhoz!');
       return true;
     } catch (error) {
-      console.error('Error linking media to program:', error);
       toast.error('Hiba a média hozzáadása során');
       return false;
     }
@@ -261,7 +257,6 @@ export const useExpertMedia = () => {
         m.id === mediaId ? { ...m, status, program_id: programId || m.program_id } : m
       ));
     } catch (error) {
-      console.error('Error updating media status:', error);
       toast.error('Hiba a státusz frissítése során');
     }
   };
@@ -291,7 +286,6 @@ export const useExpertMedia = () => {
       setMedia(prev => prev.filter(m => m.id !== mediaId));
       toast.success('Média törölve');
     } catch (error) {
-      console.error('Error deleting media:', error);
       toast.error('Hiba a törlés során');
     }
   };
@@ -309,7 +303,6 @@ export const useExpertMedia = () => {
         m.id === mediaId ? { ...m, ai_suggestion: null } : m
       ));
     } catch (error) {
-      console.error('Error dismissing suggestion:', error);
     }
   };
 

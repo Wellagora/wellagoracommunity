@@ -91,7 +91,6 @@ export function CreateEventDialog({ trigger }: CreateEventDialogProps) {
       });
     },
     onError: (error) => {
-      console.error('Error creating event:', error);
       toast.error(t('events.create_error') || 'Hiba történt az esemény létrehozásakor');
     },
   });

@@ -345,8 +345,6 @@ const ProgramsListingPage = () => {
         // DEV DIAGNOSTICS: Log query results and errors
         if (import.meta.env.DEV) {
           if (contentsError) {
-            console.error('  ❌ Query error:', contentsError.message);
-            console.error('  Error details:', contentsError);
           }
         }
 
@@ -487,7 +485,6 @@ const ProgramsListingPage = () => {
           setFilteredCreator(profilesMap[creatorFilter]);
         }
       } catch (err) {
-        console.error("Error fetching programs:", err);
         // Fallback to mock data on any error
         setUsingMockData(true);
         const mockPrograms = MOCK_PROGRAMS

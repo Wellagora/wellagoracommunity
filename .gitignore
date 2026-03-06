@@ -29,3 +29,13 @@ test-results/
 
 # Supabase temp
 supabase/.temp/
+
+# Environment variables (NEVER commit secrets)
+.env
+.env.local
+.env.production
+.env.*.local
+
+# AI agent working files
+.claude/
+vite.config.ts.timestamp-*

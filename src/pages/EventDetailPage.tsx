@@ -156,7 +156,6 @@ const EventDetailPage = () => {
           });
           // RSVP confirmation email sent
         } catch (emailError) {
-          console.error("Failed to send confirmation email:", emailError);
           // Don't fail the RSVP if email fails
         }
       }

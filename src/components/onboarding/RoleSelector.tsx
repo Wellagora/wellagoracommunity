@@ -109,7 +109,6 @@ const RoleSelector = ({ onComplete }: RoleSelectorProps) => {
         navigate('/dashboard');
       }
     } catch (error) {
-      console.error('Error updating role:', error);
       toast.error(t('common.error'));
     } finally {
       setIsLoading(false);

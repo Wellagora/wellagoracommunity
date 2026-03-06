@@ -99,6 +99,9 @@ const AuthPage = () => {
   const [resetLoading, setResetLoading] = useState(false);
   const [resetSuccess, setResetSuccess] = useState(false);
 
+  const [inviteCode, setInviteCode] = useState(refCodeFromUrl || "");
+  const [inviteCodeError, setInviteCodeError] = useState<string | null>(null);
+
   const [signupForm, setSignupForm] = useState({
     email: "",
     password: "",
@@ -162,11 +165,64 @@ const AuthPage = () => {
     setIsLoading(false);
   };
 
+  const validateInviteCode = async (code: string): Promise<boolean> => {
+    if (!code.trim()) {
+      setInviteCodeError(t('auth.invite_code_required') || 'Meghívó kód szükséges a zárt bétában való regisztrációhoz.');
+      return false;
+    }
+    try {
+      const { data, error } = await supabase
+        .from('invite_codes')
+        .select('id, code, is_active, max_uses, use_count')
+        .eq('code', code.trim().toUpperCase())
+        .eq('is_active', true)
+        .maybeSingle();
+
+      if (error || !data) {
+        setInviteCodeError(t('auth.invite_code_invalid') || 'Ez egy zárt béta, meghívó kóddal csatlakozhatsz.');
+        return false;
+      }
+      if (data.max_uses && data.use_count >= data.max_uses) {
+        setInviteCodeError(t('auth.invite_code_exhausted') || 'Ez a meghívó kód már elérte a felhasználási limitet.');
+        return false;
+      }
+      setInviteCodeError(null);
+      return true;
+    } catch {
+      setInviteCodeError(t('auth.invite_code_invalid') || 'Érvénytelen meghívó kód.');
+      return false;
+    }
+  };
+
+  const incrementInviteCodeUsage = async (code: string) => {
+    try {
+      const { data } = await supabase
+        .from('invite_codes')
+        .select('id, use_count')
+        .eq('code', code.trim().toUpperCase())
+        .maybeSingle();
+      if (data) {
+        await supabase
+          .from('invite_codes')
+          .update({ use_count: (data.use_count || 0) + 1, used_at: new Date().toISOString() })
+          .eq('id', data.id);
+      }
+    } catch { /* silent */ }
+  };
+
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
     setSuccess(null);
+    setInviteCodeError(null);
+
+    // Validate invite code first
+    const isValidCode = await validateInviteCode(inviteCode);
+    if (!isValidCode) {
+      setIsLoading(false);
+      return;
+    }
 
     const formData = {
       ...signupForm,
@@ -206,6 +262,9 @@ const AuthPage = () => {
       }
     } else {
       setSuccess(t('auth.account_created'));
+
+      // Increment invite code usage on successful signup
+      await incrementInviteCodeUsage(inviteCode);
 
       const storedRefCode = localStorage.getItem('referral_code');
       if (storedRefCode) {
@@ -697,6 +756,27 @@ const AuthPage = () => {
                             />
                           </motion.div>
                         )}
+
+                        {/* Invite Code - Required for closed beta */}
+                        <div className="space-y-2">
+                          <Label htmlFor="inviteCode" className="text-black/70 text-sm font-semibold">
+                            {t('auth.invite_code') || 'Meghívó kód'} <span className="text-red-500">*</span>
+                          </Label>
+                          <Input
+                            id="inviteCode"
+                            placeholder={t('auth.invite_code_placeholder') || 'pl. WELL-XXXX'}
+                            value={inviteCode}
+                            onChange={(e) => { setInviteCode(e.target.value.toUpperCase()); setInviteCodeError(null); }}
+                            className={`h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent uppercase tracking-wider ${inviteCodeError ? 'border-red-500 ring-1 ring-red-500' : ''}`}
+                            required
+                          />
+                          {inviteCodeError && (
+                            <p className="text-sm text-red-500">{inviteCodeError}</p>
+                          )}
+                          <p className="text-xs text-black/40">
+                            {t('auth.invite_code_hint') || 'A zárt béta időszakban meghívó kóddal csatlakozhatsz.'}
+                          </p>
+                        </div>
 
                         {/* Password Fields */}
                         <div className="grid grid-cols-2 gap-4">

@@ -11,9 +11,8 @@ export const RoleSwitcher = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
 
-  // Only show for super admins or specific email
-  const isSuperAdmin = profile?.is_super_admin === true || 
-    profile?.email === 'attila.kelemen@proself.org';
+  // Only show for super admins (DB flag)
+  const isSuperAdmin = profile?.is_super_admin === true;
 
   if (!isSuperAdmin || !profile) return null;
 

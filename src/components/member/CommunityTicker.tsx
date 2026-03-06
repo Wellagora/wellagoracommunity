@@ -95,7 +95,6 @@ const CommunityTicker = () => {
         setActivities(mapped);
       }
     } catch (error) {
-      console.error('Error loading activities:', error);
     }
   };
 
@@ -129,7 +128,6 @@ const CommunityTicker = () => {
         setCurrentIndex(0);
       }
     } catch (error) {
-      console.error('Error fetching new activity:', error);
     }
   };
 

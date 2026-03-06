@@ -54,7 +54,6 @@ const MobileBottomNav = () => {
           setUnreadCount(count);
         }
       } catch (error) {
-        console.error("Error loading notification count:", error);
       }
     };
 

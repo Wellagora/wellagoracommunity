@@ -54,7 +54,6 @@ const ActiveNowStats = () => {
           liveNow: Math.min((activeCount || 0) + baseActive, 28)
         });
       } catch (error) {
-        console.error('Error fetching active stats:', error);
       } finally {
         setIsLoading(false);
       }

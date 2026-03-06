@@ -104,7 +104,6 @@ const AdminEvents = () => {
       if (error) throw error;
       setEvents(data || []);
     } catch (error) {
-      console.error('Error fetching events:', error);
       toast.error('Hiba az események betöltésekor');
     } finally {
       setLoading(false);

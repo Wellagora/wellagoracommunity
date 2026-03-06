@@ -89,7 +89,6 @@ const CommunityCalendarPreview = () => {
           setEvents(DEMO_EVENTS);
         }
       } catch (error) {
-        console.error("Error fetching events:", error);
         setEvents(DEMO_EVENTS);
       } finally {
         setLoading(false);

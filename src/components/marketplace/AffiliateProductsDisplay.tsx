@@ -35,7 +35,6 @@ const AffiliateProductsDisplay = ({ contentId }: AffiliateProductsDisplayProps) 
         if (error) throw error;
         setProducts(data || []);
       } catch (error) {
-        console.error('Error loading affiliate products:', error);
       } finally {
         setIsLoading(false);
       }

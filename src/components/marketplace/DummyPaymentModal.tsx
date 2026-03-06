@@ -91,7 +91,6 @@ const DummyPaymentModal = ({ content, open, onOpenChange, onSuccess }: DummyPaym
       onSuccess();
       onOpenChange(false);
     } catch (error) {
-      console.error('Payment error:', error);
       toast.error(t('common.error'));
     } finally {
       setIsProcessing(false);

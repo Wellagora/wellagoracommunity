@@ -1,5 +1,5 @@
 import { useEffect, lazy, Suspense } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
@@ -18,6 +18,16 @@ import AppLayout from "@/components/layout/AppLayout";
 import TermsCheckWrapper from "@/components/wrappers/TermsCheckWrapper";
 import AnalyticsTracker from "@/components/analytics/AnalyticsTracker";
 import "./index.css";
+
+// Helper component for param-aware redirects
+const RedirectWithParams = ({ to }: { to: string }) => {
+  const params = useParams();
+  let path = to;
+  Object.entries(params).forEach(([key, value]) => {
+    if (value) path = path.replace(`:${key}`, value);
+  });
+  return <Navigate to={path} replace />;
+};
 
 // Lazy load all pages for better performance
 const RegionalHub = lazy(() => import("./pages/RegionalHub"));
@@ -73,6 +83,7 @@ const AdminAnalytics = lazy(() => import("@/pages/admin/AdminAnalytics"));
 const AdminFinancials = lazy(() => import("@/pages/admin/AdminFinancials"));
 const AdminAudit = lazy(() => import("@/pages/admin/AdminAudit"));
 const AdminProjectHub = lazy(() => import("@/pages/admin/AdminProjectHub"));
+const AdminInviteCodes = lazy(() => import("@/pages/admin/AdminInviteCodes"));
 const SponsorLandingPage = lazy(() => import("@/pages/SponsorLandingPage"));
 const SponsorOnboardingPage = lazy(() => import("@/pages/SponsorOnboardingPage"));
 const SponsorPublicProfilePage = lazy(() => import("@/pages/SponsorPublicProfilePage"));
@@ -352,13 +363,13 @@ function App() {
                           {/* Expert Studio - Hungarian legacy routes (redirect to English) */}
                           <Route path="/szakertoi-studio" element={<Navigate to="/expert-studio" replace />} />
                           <Route path="/szakertoi-studio/uj" element={<Navigate to="/expert-studio/new" replace />} />
-                          <Route path="/szakertoi-studio/:id/szerkesztes" element={<Navigate to="/expert-studio/:id/edit" replace />} />
+                          <Route path="/szakertoi-studio/:id/szerkesztes" element={<RedirectWithParams to="/expert-studio/:id/edit" />} />
                           <Route path="/szakertoi-studio/uj-utmutato" element={<Navigate to="/expert-studio/new" replace />} />
                           
                           {/* Redirects from old creator routes */}
                           <Route path="/creator/dashboard" element={<Navigate to="/expert-studio" replace />} />
                           <Route path="/creator/programs/new" element={<Navigate to="/expert-studio/new" replace />} />
-                          <Route path="/creator/programs/:id/edit" element={<Navigate to="/expert-studio/:id/edit" replace />} />
+                          <Route path="/creator/programs/:id/edit" element={<RedirectWithParams to="/expert-studio/:id/edit" />} />
                           
                           {/* Marketplace (Piactér) - new Hungarian routes */}
                           <Route path="/piacer" element={<ProgramsListingPage />} />
@@ -488,6 +499,7 @@ function App() {
                           <Route path="analytics" element={<AdminAnalytics />} />
                           <Route path="financials" element={<AdminFinancials />} />
                           <Route path="audit" element={<AdminAudit />} />
+                          <Route path="invite-codes" element={<AdminInviteCodes />} />
                           <Route path="settings" element={<AdminSettings />} />
                         </Route>
                       </Routes>

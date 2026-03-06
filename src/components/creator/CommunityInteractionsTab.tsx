@@ -123,7 +123,6 @@ const CommunityInteractionsTab = ({ onUnreadCountChange }: CommunityInteractions
         onUnreadCountChange?.(0);
       }
     } catch (error) {
-      console.error('Error loading interactions:', error);
     } finally {
       setIsLoading(false);
     }
@@ -273,7 +272,6 @@ const QuestionCardWithAnswer = ({ question, onAnswered }: QuestionCardWithAnswer
       setIsAnswering(false);
       onAnswered();
     } catch (error) {
-      console.error('Error submitting answer:', error);
       toast.error(t('expert_studio.answer_error'));
     } finally {
       setIsSubmitting(false);

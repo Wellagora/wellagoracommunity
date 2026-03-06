@@ -49,7 +49,6 @@ export async function findEligibleSupportRule(
 
     return data;
   } catch (error) {
-    console.error("Error finding eligible support rule:", error);
     return null;
   }
 }
@@ -119,7 +118,6 @@ export async function reserveAllocation(
 
     return { success: true, allocationId: data.id };
   } catch (error: any) {
-    console.error("Error reserving allocation:", error);
     return { success: false, error: error.message };
   }
 }
@@ -144,7 +142,6 @@ export async function captureAllocation(
 
     return { success: true };
   } catch (error: any) {
-    console.error("Error capturing allocation:", error);
     return { success: false, error: error.message };
   }
 }
@@ -169,7 +166,6 @@ export async function releaseAllocation(
 
     return { success: true };
   } catch (error: any) {
-    console.error("Error releasing allocation:", error);
     return { success: false, error: error.message };
   }
 }
@@ -189,7 +185,6 @@ export async function getSponsorName(sponsorId: string): Promise<string | undefi
 
     return data.full_name || `${data.first_name || ""} ${data.last_name || ""}`.trim() || undefined;
   } catch (error) {
-    console.error("Error fetching sponsor name:", error);
     return undefined;
   }
 }

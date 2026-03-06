@@ -153,7 +153,6 @@ export function SponsorSupportWizard({ onComplete, onCancel }: SponsorSupportWiz
 
       onComplete?.();
     } catch (error) {
-      console.error("Error creating support rule:", error);
       toast({
         title: t("common.error"),
         description: t("sponsor_support.create_error"),

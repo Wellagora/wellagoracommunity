@@ -90,7 +90,6 @@ const SponsorshipModal = ({ content, open, onOpenChange, onSuccess }: Sponsorshi
       onSuccess();
       onOpenChange(false);
     } catch (error) {
-      console.error('Sponsorship error:', error);
       toast.error(t('common.error'));
     } finally {
       setIsProcessing(false);

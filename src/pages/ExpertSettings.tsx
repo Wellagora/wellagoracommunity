@@ -68,7 +68,6 @@ const ExpertSettings = () => {
       await refreshProfile();
       toast.success(language === 'hu' ? 'Beállítások mentve!' : 'Settings saved!');
     } catch (error) {
-      console.error("Error saving settings:", error);
       toast.error(language === 'hu' ? 'Hiba a mentés során' : 'Error saving settings');
     } finally {
       setSaving(false);

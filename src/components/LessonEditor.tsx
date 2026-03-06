@@ -67,7 +67,6 @@ export function LessonEditor({ programId }: LessonEditorProps) {
       if (error) throw error;
       setLessons(data || []);
     } catch (error) {
-      console.error('Error fetching lessons:', error);
       toast.error(t('lessons.error_loading'));
     } finally {
       setLoading(false);
@@ -147,7 +146,6 @@ export function LessonEditor({ programId }: LessonEditorProps) {
       handleCloseDialog();
       fetchLessons();
     } catch (error) {
-      console.error('Error saving lesson:', error);
       toast.error(t('lessons.error_saving'));
     }
   };
@@ -166,7 +164,6 @@ export function LessonEditor({ programId }: LessonEditorProps) {
       toast.success(t('lessons.lesson_deleted'));
       fetchLessons();
     } catch (error) {
-      console.error('Error deleting lesson:', error);
       toast.error(t('lessons.error_deleting'));
     }
   };
@@ -197,7 +194,6 @@ export function LessonEditor({ programId }: LessonEditorProps) {
 
       setLessons(newLessons);
     } catch (error) {
-      console.error('Error reordering lessons:', error);
       toast.error(t('lessons.error_saving'));
     }
   };

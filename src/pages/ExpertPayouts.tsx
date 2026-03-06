@@ -67,7 +67,6 @@ const ExpertPayouts = () => {
 
       setStats({ totalEarnings, pendingAmount, lastPayout });
     } catch (error) {
-      console.error("Error loading payouts:", error);
     } finally {
       setIsLoading(false);
     }

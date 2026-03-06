@@ -150,7 +150,6 @@ const AdminEventsPage = () => {
       if (error) throw error;
       setEvents((data || []) as Event[]);
     } catch (error: any) {
-      console.error('Error fetching events:', error);
       toast.error('Hiba történt az események betöltésekor');
     } finally {
       setLoading(false);
@@ -301,7 +300,6 @@ const AdminEventsPage = () => {
       setFormOpen(false);
       fetchEvents();
     } catch (error: any) {
-      console.error('Error saving event:', error);
       toast.error('Hiba történt az esemény mentésekor');
     } finally {
       setFormSubmitting(false);
@@ -322,7 +320,6 @@ const AdminEventsPage = () => {
       toast.success('Esemény sikeresen törölve');
       fetchEvents();
     } catch (error: any) {
-      console.error('Error deleting event:', error);
       toast.error('Hiba történt az esemény törlésekor');
     }
   };
@@ -353,7 +350,6 @@ const AdminEventsPage = () => {
       if (error) throw error;
       setSelectedEventRSVPs(data || []);
     } catch (error: any) {
-      console.error('Error fetching RSVPs:', error);
       toast.error('Hiba történt a jelentkezések betöltésekor');
     } finally {
       setLoadingRSVPs(false);

@@ -36,7 +36,6 @@ export const useFavorites = (): UseFavoritesReturn => {
 
       setFavorites(data?.map(f => f.content_id) || []);
     } catch (err) {
-      console.error('[useFavorites] Error fetching favorites:', err);
     } finally {
       setIsLoading(false);
     }
@@ -68,7 +67,6 @@ export const useFavorites = (): UseFavoritesReturn => {
           .eq('content_id', contentId);
 
         if (error) {
-          console.error('[useFavorites] DELETE error:', error);
           throw error;
         }
 
@@ -89,7 +87,6 @@ export const useFavorites = (): UseFavoritesReturn => {
           if (error.code === '23505') {
             return;
           }
-          console.error('[useFavorites] INSERT error:', error);
           throw error;
         }
 
@@ -97,7 +94,6 @@ export const useFavorites = (): UseFavoritesReturn => {
         toast.success(t('favorites.added') || 'Hozzáadva a kedvencekhez ❤️');
       }
     } catch (err) {
-      console.error('[useFavorites] Error toggling favorite:', err);
       toast.error(t('common.error') || 'Hiba történt');
     }
   }, [user, favorites, t]);

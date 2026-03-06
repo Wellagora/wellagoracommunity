@@ -246,7 +246,6 @@ const ExpertAnalyticsDashboard = ({ userId }: ExpertAnalyticsDashboardProps) => 
         recentReviews: reviews.slice(0, 5),
       });
     } catch (error) {
-      console.error("Error loading analytics:", error);
     } finally {
       setIsLoading(false);
     }

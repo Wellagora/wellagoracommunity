@@ -121,7 +121,6 @@ const AdminFinancials = () => {
         fetchSettings(),
       ]);
     } catch (error) {
-      console.error('Error fetching financial data:', error);
       toast.error('Hiba az adatok betöltésekor');
     } finally {
       setLoading(false);

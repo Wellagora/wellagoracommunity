@@ -110,7 +110,6 @@ const EventDetailPageNew = () => {
       const { data, error } = await query;
 
       if (error) {
-        console.error("Error fetching event:", error);
         throw error;
       }
 

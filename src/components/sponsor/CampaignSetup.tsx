@@ -91,7 +91,6 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
         setPrograms(mapped);
       }
     } catch (error) {
-      console.error('Error loading programs:', error);
     } finally {
       setLoading(false);
     }
@@ -116,7 +115,6 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
         .maybeSingle();
 
       if (creditsCheckError) {
-        console.error('Error checking sponsor credits:', creditsCheckError);
       }
 
       const availableCredits = sponsorCredits?.available_credits || 0;
@@ -168,7 +166,6 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
           .eq('sponsor_user_id', user.id);
 
         if (creditDeductError) {
-          console.error('Error deducting credits:', creditDeductError);
         }
       }
 
@@ -192,7 +189,6 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
       resetForm();
       onCampaignCreated?.();
     } catch (error) {
-      console.error('Error creating campaign:', error);
       toast.error(
         language === 'hu'
           ? 'Hiba a kampány létrehozásakor'

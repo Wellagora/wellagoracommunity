@@ -121,7 +121,6 @@ const SponsorPublicProfilePage = () => {
 
       setSponsoredPrograms(programs);
     } catch (error) {
-      console.error('Error fetching sponsor data:', error);
     } finally {
       setIsLoading(false);
     }

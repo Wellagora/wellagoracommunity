@@ -87,7 +87,6 @@ const AIAssistantChat = ({ embedded = false }: AIAssistantChatProps) => {
           }
         }
       } catch (error) {
-        console.error('Error loading conversation history:', error);
         setError(t('wellbot.error_message'));
       } finally {
         setIsLoading(false);
@@ -192,7 +191,6 @@ const AIAssistantChat = ({ embedded = false }: AIAssistantChatProps) => {
       setMessages(prev => [...prev, aiResponse]);
       setAvatarMood("happy");
     } catch (error) {
-      console.error('WellBot error:', error);
       setError(t('wellbot.error_message'));
       toast({
         title: t('error'),

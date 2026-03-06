@@ -98,7 +98,6 @@ const MyCoursesPage = () => {
 
       setEnrolledPrograms(validPrograms);
     } catch (error) {
-      console.error("Error loading enrolled programs:", error);
     } finally {
       setLoading(false);
     }
@@ -109,7 +108,7 @@ const MyCoursesPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-slate-50">
       <div className="container mx-auto px-4 py-6">
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">

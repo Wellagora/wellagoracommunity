@@ -173,7 +173,6 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
       onPurchaseComplete?.(pkg.id, pkg.totalCredits);
       onClose?.();
     } catch (error) {
-      console.error('Purchase error:', error);
       toast.error('Hiba történt a vásárlás során');
     } finally {
       setPurchasing(false);

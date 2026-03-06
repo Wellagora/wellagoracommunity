@@ -46,7 +46,6 @@ export function RegionProvider({ children }: { children: ReactNode }) {
           .eq('is_active', true);
 
         if (error) {
-          console.error('Error loading regions:', error);
           return;
         }
 
@@ -71,7 +70,6 @@ export function RegionProvider({ children }: { children: ReactNode }) {
           }
         }
       } catch (error) {
-        console.error('Error loading regions:', error);
       } finally {
         setIsLoading(false);
       }

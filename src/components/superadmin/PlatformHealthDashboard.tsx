@@ -130,7 +130,6 @@ const PlatformHealthDashboard = () => {
         setPackages(packagesData);
       }
     } catch (error) {
-      console.error('Error loading platform health data:', error);
     } finally {
       setLoading(false);
     }

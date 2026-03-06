@@ -128,7 +128,6 @@ export const ExpertServicesManager = () => {
       setIsDialogOpen(false);
       loadServices();
     } catch (error) {
-      console.error('Error saving service:', error);
       toast.error(t('services.save_error'));
     } finally {
       setIsSaving(false);
@@ -148,7 +147,6 @@ export const ExpertServicesManager = () => {
       toast.success(t('services.deleted'));
       loadServices();
     } catch (error) {
-      console.error('Error deleting service:', error);
       toast.error(t('services.delete_error'));
     }
   };

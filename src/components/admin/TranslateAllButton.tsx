@@ -28,7 +28,6 @@ const TranslateAllButton = () => {
           .replace('{{profiles}}', String(res.profilesTranslated))
       );
     } catch (error) {
-      console.error('Translation error:', error);
       toast.error(t('admin.translation_error'));
     }
     setLoading(false);

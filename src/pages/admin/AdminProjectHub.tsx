@@ -826,7 +826,6 @@ const AdminProjectHub = () => {
       setSponsorCredits(10000);
       fetchProjectData();
     } catch (error: any) {
-      console.error('DB ERROR:', error);
       toast.error(error?.message || 'Hiba a szponzor csatolásakor');
     } finally {
       setSaving(false);

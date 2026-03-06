@@ -83,7 +83,6 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
         .eq("status", "completed");
 
       if (txError) {
-        console.error('❌ Error fetching transactions:', txError);
       }
 
       // Fetch vouchers for this expert's programs (sponsored access)
@@ -103,7 +102,6 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
         .eq("status", "active");
 
       if (voucherError) {
-        console.error('❌ Error fetching vouchers:', voucherError);
       }
 
       // Calculate metrics
@@ -237,7 +235,6 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
 
       setMetrics(finalMetrics);
     } catch (error) {
-      console.error("Error loading impact data:", error);
     } finally {
       setLoading(false);
     }
