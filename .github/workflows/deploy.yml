@@ -6,7 +6,7 @@
 #   FTP_USERNAME: (az egyik FTP felhasználó neve)
 #   FTP_PASSWORD: (az FTP felhasználó jelszava)
 #   VITE_SUPABASE_URL: https://vvunxewylcifwphxgqab.supabase.co
-#   VITE_SUPABASE_ANON_KEY: (a Supabase anon key)
+#   VITE_SUPABASE_ANON_KEY (a Supabase anon key)
 
 name: Deploy to Nethely
 
@@ -89,7 +89,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
-          server-dir: /wellagora/public/
+          server-dir: /
           protocol: ftps
           security: loose
           timeout: 120000
