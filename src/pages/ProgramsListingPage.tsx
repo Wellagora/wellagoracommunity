@@ -46,13 +46,7 @@ import { VerifiedExpertBadge } from "@/components/marketplace/VerifiedExpertBadg
 import { SponsorContributionBadge } from "@/components/marketplace/SponsorContributionBadge";
 import { LivePulseToast } from "@/components/marketplace/LivePulseToast";
 import { ProgramGridSkeleton } from "@/components/ui/loading-skeleton";
-import { 
-  MOCK_PROGRAMS, 
-  getMockExpertById, 
-  getLocalizedExpertName, 
-  getLocalizedSponsorName, 
-  MockProgram 
-} from "@/data/mockData";
+// Mock data imports removed — using only real Supabase data
 import { CATEGORIES as CATEGORY_LIST } from "@/constants/categories";
 
 // Icon mapping for categories
@@ -245,47 +239,7 @@ const ProgramsListingPage = () => {
     return title.replace(/^\[DEV\]\s*/i, '').trim();
   };
 
-  // Convert mock program to Program interface
-  const convertMockToProgram = (mp: MockProgram, idx: number): Program => {
-    const creator = getMockExpertById(mp.creator_id);
-    const localizedCreatorName = creator ? getLocalizedExpertName(creator, language) : null;
-    const localizedSponsorName = getLocalizedSponsorName(mp, language);
-    
-    // Calculate sponsorship details - 80% sponsor contribution
-    const sponsorContribution = mp.is_sponsored ? Math.round(mp.price_huf * 0.8) : 0;
-    const maxSeats = mp.is_sponsored ? (mp.max_sponsored_seats || 10) : 0;
-    const usedSeats = mp.is_sponsored ? Math.min(maxSeats - 2, 2 + idx) : 0; // Deterministic usage
-    
-    return {
-      id: mp.id,
-      title: mp.title,
-      description: mp.description,
-      image_url: mp.image_url,
-      thumbnail_url: mp.thumbnail_url,
-      access_type: mp.access_type,
-      access_level: mp.access_level || 'one_time_purchase',
-      price_huf: mp.price_huf,
-      category: mp.category,
-      is_featured: mp.is_featured,
-      is_sponsored: mp.is_sponsored,
-      sponsor_name: localizedSponsorName || (mp.is_sponsored ? FALLBACK_SPONSOR[language as keyof typeof FALLBACK_SPONSOR] : null),
-      sponsor_logo_url: mp.sponsor_logo_url || null,
-      fixed_sponsor_amount: (mp.fixed_sponsor_amount as number) || sponsorContribution || null,
-      sponsor_contribution: sponsorContribution,
-      max_seats: maxSeats,
-      used_seats: usedSeats,
-      // Pass content type for quota-specific labels
-      content_type: mp.content_type || 'in_person',
-      max_capacity: mp.max_capacity,
-      creator_id: mp.creator_id,
-      creator: creator && localizedCreatorName ? {
-        id: creator.id,
-        first_name: localizedCreatorName.firstName,
-        last_name: localizedCreatorName.lastName,
-        avatar_url: creator.avatar_url,
-      } : null,
-    };
-  };
+
 
   // Fetch programs from Supabase with mock data fallback
   useEffect(() => {
@@ -348,15 +302,10 @@ const ProgramsListingPage = () => {
           }
         }
 
-        // FALLBACK: If DB is empty or error, use mock data
+        // If DB is empty or error, show empty state (no mock data in production)
         if (contentsError || !contentsData || contentsData.length === 0) {
-          setUsingMockData(true);
-          
-          const mockPrograms = MOCK_PROGRAMS
-            .filter(mp => mp.is_published)
-            .map((mp, idx) => convertMockToProgram(mp, idx));
-          
-          setPrograms(mockPrograms);
+          setUsingMockData(false);
+          setPrograms([]);
           setIsLoading(false);
           return;
         }
@@ -485,12 +434,9 @@ const ProgramsListingPage = () => {
           setFilteredCreator(profilesMap[creatorFilter]);
         }
       } catch (err) {
-        // Fallback to mock data on any error
-        setUsingMockData(true);
-        const mockPrograms = MOCK_PROGRAMS
-          .filter(mp => mp.is_published)
-          .map((mp, idx) => convertMockToProgram(mp, idx));
-        setPrograms(mockPrograms);
+        // On error, show empty state
+        setUsingMockData(false);
+        setPrograms([]);
       } finally {
         setIsLoading(false);
       }

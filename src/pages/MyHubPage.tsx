@@ -3,13 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { 
-  MOCK_VOUCHERS, 
-  MOCK_PROGRAMS, 
-  MOCK_MEMBERS,
-  getMockExpertById,
-  formatPriceByLanguage 
-} from "@/data/mockData";
+// Mock data imports removed — using only real Supabase data
 import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -100,58 +94,54 @@ const MyHubPage = () => {
       setLoadingData(true);
 
       try {
-        // For demo, use member-1 (Tóth Eszter) as default demo member
-        const demoMemberId = "member-1";
-        
-        // Get member's vouchers from mock data
-        const memberVouchers = MOCK_VOUCHERS.filter(v => v.member_id === demoMemberId);
-        
-        // Enrich vouchers with program and expert data
-        const enrichedVouchers: Voucher[] = memberVouchers.map(v => {
-          const program = MOCK_PROGRAMS.find(p => p.id === v.content_id);
-          const expert = program ? getMockExpertById(program.creator_id) : undefined;
-          
-          return {
-            id: v.id,
-            code: v.code,
-            content_id: v.content_id,
-            content_title: v.content_title,
-            status: v.status,
-            pickup_location: v.pickup_location,
-            created_at: v.created_at,
-            expert_name: expert ? `${expert.first_name} ${expert.last_name}` : undefined,
-            expert_avatar: expert?.avatar_url,
-            program_image: program?.thumbnail_url,
-            sponsor_name: v.sponsor_name,
-            value_huf: v.value_huf,
-            expires_at: v.expires_at
-          };
-        });
-        
-        setVouchers(enrichedVouchers);
+        // Fetch real vouchers from Supabase
+        const { data: userVouchers } = await supabase
+          .from('content_access')
+          .select(`
+            id, content_id, created_at, access_type, voucher_code,
+            expert_contents (
+              title, thumbnail_url, creator_id,
+              creator:profiles!expert_contents_creator_id_fkey (
+                first_name, last_name, avatar_url
+              )
+            )
+          `)
+          .eq('user_id', user.id)
+          .eq('access_type', 'voucher')
+          .order('created_at', { ascending: false });
 
-        // Mock registrations
-        setRegistrations([
-          {
-            id: 'reg-1',
-            program_title: 'Kemenceépítés Workshop',
-            program_image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
-            event_date: '2026-01-20T10:00:00Z',
-            location: 'Köveskál',
-            expert_name: language === 'hu' ? 'Kovács István' : language === 'de' ? 'Hans Schmidt' : 'Stephen Smith'
-          }
-        ]);
+        if (userVouchers && userVouchers.length > 0) {
+          const enrichedVouchers: Voucher[] = userVouchers.map((v: any) => {
+            const creator = v.expert_contents?.creator;
+            return {
+              id: v.id,
+              code: v.voucher_code || `WA-${new Date(v.created_at).getFullYear()}-${v.id.slice(0, 4).toUpperCase()}`,
+              content_id: v.content_id,
+              content_title: v.expert_contents?.title || 'Program',
+              status: 'active' as const,
+              pickup_location: 'A Szakértőnél',
+              created_at: v.created_at,
+              expert_name: creator ? `${creator.first_name} ${creator.last_name}` : undefined,
+              expert_avatar: creator?.avatar_url,
+              program_image: v.expert_contents?.thumbnail_url,
+            };
+          });
+          setVouchers(enrichedVouchers);
+        } else {
+          setVouchers([]);
+        }
 
-        // Mock past participations from redeemed vouchers
-        const redeemedVouchers = MOCK_VOUCHERS.filter(v => v.status === 'redeemed');
-        setPastParticipations(redeemedVouchers.map(v => ({
-          id: v.id,
-          program_title: v.content_title,
-          completed_at: v.redeemed_at || v.created_at,
-          voucher_code: v.code
-        })));
+        // No registrations yet — will come from events system
+        setRegistrations([]);
+
+        // No past participations yet — will come from real tracking
+        setPastParticipations([]);
 
       } catch (error) {
+        // On error, show empty states
+        setVouchers([]);
+        setRegistrations([]);
+        setPastParticipations([]);
       } finally {
         setLoadingData(false);
       }
@@ -162,9 +152,8 @@ const MyHubPage = () => {
     }
   }, [user, loading, language]);
 
-  // Calculate total savings from member's vouchers
-  const memberData = MOCK_MEMBERS.find(m => m.id === "member-1");
-  const totalSavings = memberData?.total_savings || 0;
+  // Real savings will be calculated from actual voucher data
+  const totalSavings = vouchers.reduce((sum, v) => sum + (v.value_huf || 0), 0);
   const activeVouchersCount = vouchers.filter(v => v.status === 'active').length;
 
   if (loading) {

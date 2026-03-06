@@ -32,12 +32,18 @@ import {
 import WellBotAvatar from "@/components/ai/WellBotAvatar";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import {
-  MOCK_FEED_POSTS,
-  FeedPost,
-  MOCK_PROGRAMS,
-  getLocalizedProgramTitle,
-} from "@/data/mockData";
+// Mock data imports removed — feed uses real Supabase data
+// FeedPost type defined locally for now
+interface FeedPost {
+  id: string;
+  author: { name: string; avatar: string; role: string };
+  content: string;
+  timestamp: string;
+  likes: number;
+  comments: number;
+  type: string;
+  relatedProgramId?: string;
+}
 
 // Animation variants
 const containerVariants = {
@@ -290,41 +296,16 @@ const PostTypeBadge = ({ type }: { type: FeedPost["type"] }) => {
   );
 };
 
-// Related Program Card Component
+// Related Program Card Component - placeholder for future Supabase integration
 const RelatedProgramCard = ({ programId }: { programId: string }) => {
-  const { t, language } = useLanguage();
   const navigate = useNavigate();
-
-  const program = MOCK_PROGRAMS.find((p) => p.id === programId);
-  if (!program) return null;
-
+  // Will fetch from Supabase when social feed is active
   return (
     <div
-      onClick={() => navigate(`/piacter/${programId}`)}
-      className="mt-3 p-3 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-200 cursor-pointer hover:shadow-md transition-all group"
+      onClick={() => navigate(`/piacer/${programId}`)}
+      className="mt-3 p-3 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-200 cursor-pointer hover:shadow-md transition-all"
     >
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
-          <Bookmark className="w-5 h-5 text-indigo-600" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-xs text-indigo-600 font-medium">
-            {t("feed.related_program")}
-          </p>
-          <p className="font-semibold text-sm truncate group-hover:text-indigo-700">
-            {getLocalizedProgramTitle(program, language)}
-          </p>
-        </div>
-        <ChevronRight className="w-5 h-5 text-indigo-400 group-hover:translate-x-1 transition-transform" />
-      </div>
-
-      {/* Sponsor Attribution */}
-      {program.sponsor_name && (
-        <p className="mt-2 text-xs text-indigo-600/70 flex items-center gap-1">
-          <Gift className="w-3 h-3" />
-          {t("feed.sponsored_by")}: {program.sponsor_name}
-        </p>
-      )}
+      <p className="text-sm text-indigo-600">Kapcsolódó program</p>
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { MOCK_VOUCHERS } from "@/data/mockData";
+// Mock data imports removed — using only real Supabase data
 import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -151,14 +151,8 @@ const DashboardPage = () => {
             pickup_location: 'A Szakértőnél'
           })));
         } else {
-          // Use mock vouchers for demo
-          setVouchers(MOCK_VOUCHERS.map(v => ({
-            id: v.id,
-            code: v.code,
-            content_title: v.content_title,
-            status: v.status,
-            pickup_location: v.pickup_location
-          })));
+          // No vouchers yet - show empty state
+          setVouchers([]);
         }
       } catch (error) {
         logger.error('Error fetching dashboard data', error, 'Dashboard');
