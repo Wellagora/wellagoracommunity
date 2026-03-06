@@ -90,4 +90,6 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
           server-dir: /public/
-          dangerous-clean-slate: false  # Első alkalommal true-ra állítható a régi fájlok törléséhez
+          protocol: ftps
+          security: loose
+          dangerous-clean-slate: false
