@@ -90,14 +90,14 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-/* ===== CLEAN SOLID WHITE BACKGROUNDS ===== */
+/* ===== OFF-WHITE BACKGROUND ===== */
 .clean-background {
-  background-color: #FFFFFF;
+  background-color: hsl(var(--background));
 }
 
-/* Solid white background - no gray grids or dots */
+/* Off-white background for the whole app */
 body {
-  background-color: #FFFFFF;
+  background-color: hsl(var(--background));
 }
 
 /* ===== ULTRA-THIN SEPARATORS ===== */

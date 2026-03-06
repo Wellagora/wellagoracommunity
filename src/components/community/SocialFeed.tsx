@@ -68,13 +68,9 @@ const SocialFeed = () => {
   const [filter, setFilter] = useState<string>("all");
 
   useEffect(() => {
-    if (isDemoMode) {
-      setPosts(MOCK_FEED_POSTS);
-    } else {
-      // For now, use mock data even in non-demo mode
-      setPosts(MOCK_FEED_POSTS);
-    }
-  }, [isDemoMode]);
+    // In closed beta, show empty feed - real posts will come from Supabase
+    setPosts([]);
+  }, []);
 
   const filteredPosts =
     filter === "all"
@@ -225,8 +221,24 @@ const SocialFeed = () => {
       </motion.div>
 
       {filteredPosts.length === 0 && (
-        <Card className="p-8 text-center">
-          <p className="text-muted-foreground">{t("feed.no_posts")}</p>
+        <Card className="p-10 text-center bg-gradient-to-br from-emerald-50/50 to-teal-50/30 border-emerald-100/50">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center">
+              <Sparkles className="w-8 h-8 text-emerald-600" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">
+                {language === 'hu' ? 'Üdvözlünk a közösségben!' : language === 'de' ? 'Willkommen in der Gemeinschaft!' : 'Welcome to the community!'}
+              </h3>
+              <p className="text-muted-foreground text-sm max-w-md mx-auto">
+                {language === 'hu'
+                  ? 'A Founding Expertek hamarosan megosztják első tartalmaikat. Légy az elsők között, akik reagálnak!'
+                  : language === 'de'
+                  ? 'Unsere Gründungsexperten teilen bald ihre ersten Inhalte. Seien Sie unter den Ersten!'
+                  : 'Our Founding Experts will share their first content soon. Be among the first to engage!'}
+              </p>
+            </div>
+          </div>
         </Card>
       )}
     </div>

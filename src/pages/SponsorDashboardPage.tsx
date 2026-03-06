@@ -327,7 +327,7 @@ const SponsorDashboardPage = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center p-6">
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-black mb-4">{t('auth.login_required')}</h2>
           <Button
@@ -344,7 +344,7 @@ const SponsorDashboardPage = () => {
   // Super Admins can always access
   if (!isSponsor && !isSuperAdmin) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center p-6">
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-black mb-4">{t('sponsor.access_denied')}</h2>
           <p className="text-black/60 mb-4">{t('sponsor.sponsor_only')}</p>

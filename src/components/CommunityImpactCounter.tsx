@@ -9,7 +9,8 @@ import { motion, useInView } from "framer-motion";
 import { Link } from "react-router-dom";
 import { StaggerContainer, StaggerItem } from "@/components/ui/StaggerAnimation";
 import { LiveNotificationFeed } from "@/components/home/LiveNotificationFeed";
-import { DEMO_STATS } from "@/data/mockData";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 // Story card config - only static data, text comes from translations
 const STORY_CARD_CONFIG: Array<{
@@ -60,13 +61,26 @@ export const CommunityImpactCounter = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
-  // Social proof count with localization - Using 'Tag/Tagunk' instead of 'tanuló'
-  const memberCount = DEMO_STATS.members + 1073; // 1200+ members
-  const socialProofText = language === 'hu' 
-    ? `Csatlakozz ${memberCount.toLocaleString('hu-HU')}+ Tagunkhoz!`
-    : language === 'de'
-    ? `Schließe dich ${memberCount.toLocaleString('de-DE')}+ Mitgliedern an!`
-    : `Join ${memberCount.toLocaleString()}+ Members!`;
+  // Fetch real member count from Supabase
+  const { data: realMemberCount } = useQuery({
+    queryKey: ['real-member-count'],
+    queryFn: async () => {
+      const { count } = await supabase
+        .from('profiles')
+        .select('id', { count: 'exact', head: true });
+      return count || 0;
+    },
+    staleTime: 10 * 60 * 1000,
+  });
+
+  const memberCount = realMemberCount || 0;
+  const socialProofText = memberCount > 0
+    ? (language === 'hu'
+      ? `Csatlakozz közösségünkhöz!`
+      : language === 'de'
+      ? `Werde Teil unserer Gemeinschaft!`
+      : `Join our community!`)
+    : '';
 
   return (
     <section 

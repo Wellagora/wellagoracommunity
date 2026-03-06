@@ -1171,6 +1171,7 @@
   "marketplace.showing_creator_contents": "{{count}} program ettől a Szakértőtől",
   "marketplace.all_results": "Minden találat",
   "marketplace.filters": "Szűrők",
+  "marketplace.no_programs_desc": "Az első programok hamarosan megjelennek. Founding Expertjeink már dolgoznak rajtuk!",
   "marketplace.free_via_sponsor": "Ingyenes a Szponzor jóvoltából",
   "marketplace.value_label": "Értéke",
   "marketplace.featured_offers": "Kiemelt Ajánlatok",

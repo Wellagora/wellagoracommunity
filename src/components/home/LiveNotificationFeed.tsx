@@ -373,16 +373,11 @@ export const LiveNotificationFeed = () => {
         .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
         .slice(0, 5);
 
-      // If we have real data, use it; otherwise fall back to mock
-      if (sortedActivities.length > 0) {
-        setNotifications(sortedActivities);
-      } else {
-        // Fall back to mock data if no real data available
-        setNotifications(getMockActivities(language, formatRelativeTime).slice(0, 5));
-      }
+      // Use only real data — no mock fallback in production
+      setNotifications(sortedActivities);
     } catch (err) {
-      // Fall back to mock data on error
-      setNotifications(getMockActivities(language, formatRelativeTime).slice(0, 5));
+      // On error, show empty state instead of mock data
+      setNotifications([]);
     } finally {
       setIsLoading(false);
     }

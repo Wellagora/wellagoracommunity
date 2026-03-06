@@ -517,7 +517,7 @@ const ProgramsListingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 pt-0 pb-12">
         {/* Sticky Header Section - Title, Search, and Categories */}
         <div className="sticky top-0 z-30 -mx-4 px-4 pt-6 pb-6 bg-white/95 backdrop-blur-sm border-b border-border/50 shadow-sm">

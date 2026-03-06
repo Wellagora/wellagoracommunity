@@ -9,7 +9,7 @@ export default function AppLayout() {
   const { isDemoMode } = useAuth();
   
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <header>
         <Navigation />
       </header>

@@ -227,7 +227,7 @@ const EventDetailPageNew = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
           <Skeleton className="h-8 w-48 mb-6" />
           <Skeleton className="h-96 w-full rounded-lg mb-6" />
@@ -240,7 +240,7 @@ const EventDetailPageNew = () => {
 
   if (!event) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-black mb-4">Esemény nem található</h2>
           <Button onClick={() => navigate("/esemenyek")}>
@@ -255,7 +255,7 @@ const EventDetailPageNew = () => {
   const isSponsored = event.event_sponsors && event.event_sponsors.length > 0;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Back Link */}
         <Link

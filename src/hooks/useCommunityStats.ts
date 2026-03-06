@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { DEMO_STATS as GLOBAL_DEMO_STATS } from '@/data/mockData';
 
 interface CommunityStats {
   members: number;
@@ -22,67 +21,44 @@ interface UseCommunityStatsResult {
   refetch: () => void;
 }
 
-// Demo stats with realistic fallback numbers
-export const DEMO_STATS: CommunityStats = {
-  members: GLOBAL_DEMO_STATS.members,
-  experts: GLOBAL_DEMO_STATS.experts,
-  sponsors: GLOBAL_DEMO_STATS.sponsors,
-  programs: GLOBAL_DEMO_STATS.programs,
-  events: GLOBAL_DEMO_STATS.events,
-  // Legacy fields
-  sharedIdeas: GLOBAL_DEMO_STATS.programs,
-  collaborations: 89,
-  eventsCount: GLOBAL_DEMO_STATS.events,
+const EMPTY_STATS: CommunityStats = {
+  members: 0,
+  experts: 0,
+  sponsors: 0,
+  programs: 0,
+  events: 0,
+  sharedIdeas: 0,
+  collaborations: 0,
+  eventsCount: 0,
 };
 
-// Demo sponsors count from central source
-export const DEMO_SPONSORS_COUNT = GLOBAL_DEMO_STATS.sponsors;
+// Keep export for backward compatibility but no longer use mock data
+export const DEMO_STATS = EMPTY_STATS;
+export const DEMO_SPONSORS_COUNT = 0;
 
 /**
  * Hook to fetch community impact statistics from Supabase
- * Returns mock data when in demo mode or database is empty
+ * Returns real data from database, zeros if empty
  * @param projectId - Optional project ID to filter stats
  */
 export const useCommunityStats = (projectId?: string): UseCommunityStatsResult => {
   const { isDemoMode } = useAuth();
-  const [stats, setStats] = useState<CommunityStats>({
-    members: 0,
-    experts: 0,
-    sponsors: 0,
-    programs: 0,
-    events: 0,
-    sharedIdeas: 0,
-    collaborations: 0,
-    eventsCount: 0,
-  });
+  const [stats, setStats] = useState<CommunityStats>(EMPTY_STATS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   const fetchStats = useCallback(async () => {
-    // In demo mode, use mock stats immediately
-    if (isDemoMode) {
-      setStats(DEMO_STATS);
-      setLoading(false);
-      return;
-    }
-
     try {
       setLoading(true);
       setError(null);
-      
-      // Fetch all counts in parallel
+
+      // Fetch all counts in parallel from real database
       const [profilesResult, expertsResult, sponsorsResult, programsResult, vouchersResult, eventsResult] = await Promise.all([
-        // Total members count from profiles
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
-        // Experts count (stored as 'creator' in database)
         supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('user_role', 'creator'),
-        // Sponsors count (business, government, ngo, sponsor roles)
         supabase.from('profiles').select('id', { count: 'exact', head: true }).in('user_role', ['sponsor', 'business', 'government', 'ngo']),
-        // Programs from expert_contents
         supabase.from('expert_contents').select('id', { count: 'exact', head: true }).eq('is_published', true),
-        // Collaborations from content_access (voucher redemptions)
         supabase.from('content_access').select('id', { count: 'exact', head: true }),
-        // Events count
         supabase.from('events').select('id', { count: 'exact', head: true }),
       ]);
 
@@ -93,30 +69,24 @@ export const useCommunityStats = (projectId?: string): UseCommunityStatsResult =
       const collaborationsCount = vouchersResult.count ?? 0;
       const eventsCount = eventsResult.count ?? 0;
 
-      // If database is empty, use demo data
-      if (membersCount === 0 && programsCount === 0 && eventsCount === 0) {
-        setStats(DEMO_STATS);
-      } else {
-        setStats({
-          members: membersCount,
-          experts: expertsCount,
-          sponsors: sponsorsCount,
-          programs: programsCount,
-          events: eventsCount,
-          // Legacy fields
-          sharedIdeas: programsCount,
-          collaborations: collaborationsCount,
-          eventsCount: eventsCount,
-        });
-      }
+      setStats({
+        members: membersCount,
+        experts: expertsCount,
+        sponsors: sponsorsCount,
+        programs: programsCount,
+        events: eventsCount,
+        sharedIdeas: programsCount,
+        collaborations: collaborationsCount,
+        eventsCount: eventsCount,
+      });
     } catch (e) {
       setError(e as Error);
-      // Fallback to demo stats on error
-      setStats(DEMO_STATS);
+      // On error, show zeros instead of fake data
+      setStats(EMPTY_STATS);
     } finally {
       setLoading(false);
     }
-  }, [projectId, isDemoMode]);
+  }, [projectId]);
 
   useEffect(() => {
     fetchStats();

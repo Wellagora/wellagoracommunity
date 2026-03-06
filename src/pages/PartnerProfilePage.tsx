@@ -278,7 +278,7 @@ const PartnerProfilePage = () => {
   const locations = staticPartner?.locations || (sponsorProfile?.location_city ? [sponsorProfile.location_city] : []);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* JSON-LD Schema for AI/GEO optimization */}
       {slug && (
         <PartnerJsonLd 
