@@ -89,7 +89,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
-                    server-dir: /wellagora/public/
+          server-dir: /wellagora/public/
           protocol: ftps
           security: loose
           timeout: 120000
