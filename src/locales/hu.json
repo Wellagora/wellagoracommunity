@@ -1142,6 +1142,7 @@
   "marketplace.all_categories": "Összes",
   "marketplace.all_guides": "Összes program",
   "marketplace.workshop_secrets": "Programok",
+  "marketplace.no_programs": "Még nincsenek programok",
   "marketplace.no_results": "Nem találtunk programot",
   "marketplace.no_results_desc": "Próbálj más kulcsszavakat vagy kategóriát",
   "marketplace.filter_by": "Szűrés",
