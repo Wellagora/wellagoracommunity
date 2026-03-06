@@ -92,4 +92,5 @@ jobs:
           server-dir: /public/
           protocol: ftps
           security: loose
+          timeout: 120000
           dangerous-clean-slate: false
