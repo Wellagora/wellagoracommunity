@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PressableButton } from "@/components/ui/PressableButton";
 import { Sparkles, Heart, Users, LucideIcon, TrendingUp, Zap } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -19,7 +18,6 @@ const STORY_CARD_CONFIG: Array<{
   quoteKey: string;
   authorKey: string;
   roleKey: string;
-  avatar: string;
   icon: LucideIcon;
   borderColor: string;
 }> = [
@@ -29,7 +27,6 @@ const STORY_CARD_CONFIG: Array<{
     quoteKey: 'community_pulse.story_active_quote',
     authorKey: 'community_pulse.story_active_author',
     roleKey: 'community_pulse.story_active_role',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100',
     icon: Users,
     borderColor: 'border-l-black/20',
   },
@@ -39,7 +36,6 @@ const STORY_CARD_CONFIG: Array<{
     quoteKey: 'community_pulse.story_experiences_quote',
     authorKey: 'community_pulse.story_experiences_author',
     roleKey: 'community_pulse.story_experiences_role',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100',
     icon: Sparkles,
     borderColor: 'border-l-black/15',
   },
@@ -49,7 +45,6 @@ const STORY_CARD_CONFIG: Array<{
     quoteKey: 'community_pulse.story_connections_quote',
     authorKey: 'community_pulse.story_connections_author',
     roleKey: 'community_pulse.story_connections_role',
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100',
     icon: Heart,
     borderColor: 'border-l-black/10',
   },
@@ -130,12 +125,11 @@ export const CommunityImpactCounter = () => {
                       "{t(story.quoteKey)}"
                     </p>
                     <div className="flex items-center gap-2 mt-4">
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage src={story.avatar} />
-                        <AvatarFallback className="bg-black/10 text-black/70 text-xs">
+                      <div className="w-8 h-8 rounded-full bg-black/5 flex items-center justify-center">
+                        <span className="text-xs font-semibold text-black/50">
                           {author.split(' ').map(n => n[0]).join('')}
-                        </AvatarFallback>
-                      </Avatar>
+                        </span>
+                      </div>
                       <div>
                         <p className="text-sm font-medium text-black">{author}</p>
                         <p className="text-xs text-black/40">{t(story.roleKey)}</p>
@@ -196,17 +190,14 @@ export const CommunityImpactCounter = () => {
             transition={{ duration: 0.6, delay: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             {/* Social proof badge */}
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <div className="flex -space-x-2">
-                {['photo-1494790108377-be9c29b29330', 'photo-1507003211169-0a1dd7228f2d', 'photo-1438761681033-6461ffad8d80', 'photo-1500648767791-00dcc994a43e'].map((photo, i) => (
-                  <Avatar key={i} className="w-7 h-7 ring-2 ring-white">
-                    <AvatarImage src={`https://images.unsplash.com/${photo}?w=50&h=50&fit=crop&crop=face`} />
-                    <AvatarFallback className="bg-black/10 text-xs">U</AvatarFallback>
-                  </Avatar>
-                ))}
+            {memberCount > 0 && (
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                  <Users className="w-4 h-4 text-emerald-600" />
+                </div>
+                <span className="text-sm text-black/60 font-medium">{socialProofText}</span>
               </div>
-              <span className="text-sm text-black/60 font-medium">{socialProofText}</span>
-            </div>
+            )}
             
             {/* CTA Button with glow effect */}
             <div className="relative inline-block">

@@ -140,23 +140,9 @@ const RecommendedProgramsSlider = () => {
     );
   }
 
-  // Empty state
+  // Empty state — inspiring CTA instead of boring placeholder
   if (!programs || programs.length === 0) {
-    return (
-      <section className="py-10 bg-gradient-to-b from-background via-black/[0.01] to-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center py-12">
-            <BookOpen className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-            <h3 className="text-xl font-semibold text-foreground mb-2">
-              {t("marketplace.no_programs")}
-            </h3>
-            <p className="text-muted-foreground">
-              {t("marketplace.no_programs_desc")}
-            </p>
-          </div>
-        </div>
-      </section>
-    );
+    return null;
   }
 
   return (

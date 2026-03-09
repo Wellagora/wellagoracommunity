@@ -22,7 +22,7 @@ interface Event {
 
 // Hardcoded translations for seed events (until DB has title_en/title_de columns)
 const EVENT_TITLE_TRANSLATIONS: Record<string, { en: string; de: string }> = {
-  "Wellness Hétvége": { en: "Wellness Weekend", de: "Wellness-Wochenende" },
+  "Jól-lét Hétvége": { en: "Well-Being Weekend", de: "Well-Being-Wochenende" },
   "Közösségi Főzés": { en: "Community Cooking", de: "Gemeinschaftskochen" },
   "Tavaszi Kertészkedés": { en: "Spring Gardening", de: "Frühlingsgärtnerei" },
 };

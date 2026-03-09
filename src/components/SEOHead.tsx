@@ -20,7 +20,30 @@ const SEOHead = ({
   const siteUrl = typeof window !== 'undefined' ? window.location.origin : '';
   const fullUrl = url ? `${siteUrl}${url}` : siteUrl;
   const fullImage = image?.startsWith('http') ? image : `${siteUrl}${image}`;
-  
+
+  // Organization JSON-LD structured data
+  const organizationSchema = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "WellAgora",
+    "url": siteUrl || "https://wellagora.hu",
+    "logo": `${siteUrl || "https://wellagora.hu"}/og-image.png`,
+    "description": "Regionális tudásmegosztó közösség — Impact Marketplace a fenntarthatóságért.",
+    "sameAs": [],
+    "foundingDate": "2024",
+    "areaServed": {
+      "@type": "Place",
+      "name": "Hungary"
+    },
+    "knowsAbout": [
+      "Sustainability",
+      "Community Building",
+      "Well-Being",
+      "Local Expertise",
+      "Circular Economy"
+    ]
+  });
+
   // Generate SEO title with sponsor if available
   const seoTitle = sponsorName 
     ? `${title} • Támogató: ${sponsorName} | WellAgora`
@@ -50,6 +73,9 @@ const SEOHead = ({
       
       {/* Canonical URL */}
       <link rel="canonical" href={fullUrl} />
+
+      {/* Organization JSON-LD */}
+      <script type="application/ld+json">{organizationSchema}</script>
 
       {/* Hreflang tags for multilingual SEO */}
       <link rel="alternate" hrefLang="hu" href={fullUrl} />
