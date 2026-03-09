@@ -60,18 +60,21 @@ const Step4Preview = ({ formData, onPublish, onSaveDraft, isPublishing, hasPayou
 
   const CategoryIcon = CATEGORY_ICONS[formData.category] || MoreHorizontal;
 
+  const isFreeProgram = formData.pricingMode !== "purchasable" || formData.price_huf === 0;
+
   const checklist = [
     { key: "media", done: !!formData.mediaUrl, label: t("program_creator.checklist_media") },
     { key: "title", done: formData.title_hu.length >= 3, label: t("program_creator.checklist_title") },
     { key: "category", done: !!formData.category, label: t("program_creator.checklist_category") },
     { key: "description", done: formData.description_hu.length >= 20, label: t("program_creator.checklist_description") },
     { key: "translations", done: !!formData.title_en && !!formData.title_de, label: t("program_creator.checklist_translations") },
-    { key: "payout", done: hasPayoutMethod, label: language === "hu" ? "Kifizetési mód beállítva" : "Payout method set" },
+    // Payout only shown for paid programs, and even then it's not blocking (Stripe not yet integrated)
+    ...(!isFreeProgram ? [{ key: "payout", done: hasPayoutMethod, label: language === "hu" ? "Kifizetési mód beállítva" : "Payout method set" }] : []),
   ];
 
-  // Payout method is required for publishing
-  const allDone = checklist.filter(c => c.key !== "translations").every(c => c.done);
-  const canPublish = allDone && hasPayoutMethod;
+  // Payout is NOT blocking — programs can be published without it (Stripe integration pending)
+  const allDone = checklist.filter(c => c.key !== "translations" && c.key !== "payout").every(c => c.done);
+  const canPublish = allDone;
 
   // Publish check validation
 
@@ -224,18 +227,20 @@ const Step4Preview = ({ formData, onPublish, onSaveDraft, isPublishing, hasPayou
         </CardContent>
       </Card>
 
-      {/* Payout Warning */}
-      {!hasPayoutMethod && (
-        <Alert variant="destructive" className="border-amber-200 bg-amber-50">
+      {/* Payout Info — informational, not blocking */}
+      {!hasPayoutMethod && !isFreeProgram && (
+        <Alert className="border-amber-200 bg-amber-50">
           <AlertTriangle className="h-4 w-4 text-amber-600" />
           <AlertDescription className="text-amber-800">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <span>
-                {language === "hu" 
-                  ? "A közzétételhez állítsd be a kifizetési módot a profilodban."
-                  : "Set up your payout method in your profile to publish."}
+                {language === "hu"
+                  ? "A fizetős programokhoz később állítsd be a kifizetési módot. Most is közzéteheted a programot."
+                  : language === "de"
+                  ? "Für kostenpflichtige Programme richten Sie später Ihre Auszahlungsmethode ein. Sie können das Programm jetzt veröffentlichen."
+                  : "Set up your payout method later for paid programs. You can publish now."}
               </span>
-              <Link to="/settings/payout">
+              <Link to="/expert-studio/settings">
                 <Button size="sm" variant="outline" className="gap-2 border-amber-300 text-amber-800 hover:bg-amber-100">
                   <CreditCard className="w-4 h-4" />
                   {language === "hu" ? "Beállítás" : "Set up"}
@@ -261,7 +266,7 @@ const Step4Preview = ({ formData, onPublish, onSaveDraft, isPublishing, hasPayou
           onClick={onPublish}
           disabled={!canPublish || isPublishing}
           className="flex-1 h-14 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 disabled:opacity-50"
-          title={!hasPayoutMethod ? (language === "hu" ? "Állítsd be a kifizetési módot" : "Set up payout method first") : ""}
+          title={!canPublish ? (language === "hu" ? "Töltsd ki az összes mezőt" : "Complete all required fields") : ""}
         >
           {isPublishing ? (
             <Loader2 className="w-5 h-5 mr-2 animate-spin" />
