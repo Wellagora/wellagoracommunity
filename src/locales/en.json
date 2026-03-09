@@ -5051,5 +5051,25 @@
     "a7": "Yes, WellAgora uses the Supabase platform for secure authentication and data storage. Your data is stored in the EU.",
     "q8": "How can I contact the team?",
     "a8": "Write to us through the Contact page, or send an email to info@wellagora.hu."
+  },
+  "founding_expert": {
+    "hero_title": "Become a Founding Expert!",
+    "hero_subtitle": "Join the first 20 experts shaping the future of WellAgora. Free premium access, featured profile, and community impact.",
+    "cta_apply": "Apply as Founding Expert",
+    "benefits_title": "What do you get as a Founding Expert?",
+    "benefit_1_title": "Free Premium Access",
+    "benefit_1_desc": "Unlimited program uploads, advanced analytics, and premium tools — free for life.",
+    "benefit_2_title": "Featured Profile & Visibility",
+    "benefit_2_desc": "Founding Expert badge, featured placement on the homepage and search results.",
+    "benefit_3_title": "Knowledge Sharing Platform",
+    "benefit_3_desc": "Share your workshops, courses, and experiences on a modern, multilingual platform.",
+    "benefit_4_title": "Community Impact",
+    "benefit_4_desc": "Be part of a sustainable community building movement in the Káli Basin and beyond.",
+    "how_to_apply_title": "How to apply?",
+    "step_1": "Register on WellAgora and complete your profile (expertise, bio, photo).",
+    "step_2": "Email us at info@wellagora.hu to express your interest — tell us about your field of expertise!",
+    "step_3": "Our team reviews your application and responds within 48 hours. Once accepted, your Founding Expert status is immediately active.",
+    "final_cta_title": "The community is waiting for you!",
+    "final_cta_desc": "Don't miss out — the first 20 spots fill up fast. Become a WellAgora Founding Expert!"
   }
 }

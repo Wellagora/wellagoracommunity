@@ -43,8 +43,13 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/events" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">
+                <Link to="/esemenyek" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">
                   {t('nav.events')}
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">
+                  {t('nav.blog')}
                 </Link>
               </li>
               <li>
@@ -55,22 +60,27 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Support */}
+          {/* Community */}
           <div>
-            <h3 className="font-bold text-white mb-3">{t('footer.support_title')}</h3>
+            <h3 className="font-bold text-white mb-3">{t('nav.community')}</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/ai-assistant" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">
-                  {t('footer.link_ai_assistant')}
+                <Link to="/founding-expert" className="text-sm text-slate-400 hover:text-amber-400 transition-colors">
+                  Founding Expert
                 </Link>
               </li>
               <li>
-                <Link to="/help" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">
-                  {t('footer.link_help')}
+                <Link to="/sponsors" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">
+                  {t('nav.sponsors') || 'Sponsors'}
                 </Link>
               </li>
               <li>
-                <a href="mailto:info@wellagora.org" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">
+                <Link to="/gyik" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">
+                  {t('nav.faq')}
+                </Link>
+              </li>
+              <li>
+                <a href="mailto:info@wellagora.hu" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">
                   {t('footer.link_email')}
                 </a>
               </li>

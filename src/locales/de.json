@@ -5018,5 +5018,25 @@
     "a7": "Ja, WellAgora nutzt die Supabase-Plattform für sichere Authentifizierung und Datenspeicherung. Ihre Daten werden in der EU gespeichert.",
     "q8": "Wie kann ich das Team kontaktieren?",
     "a8": "Schreiben Sie uns über die Kontaktseite oder senden Sie eine E-Mail an info@wellagora.hu."
+  },
+  "founding_expert": {
+    "hero_title": "Werden Sie Founding Expert!",
+    "hero_subtitle": "Treten Sie den ersten 20 Experten bei, die die Zukunft von WellAgora gestalten. Kostenloser Premium-Zugang und hervorgehobenes Profil.",
+    "cta_apply": "Als Founding Expert bewerben",
+    "benefits_title": "Was erhalten Sie als Founding Expert?",
+    "benefit_1_title": "Kostenloser Premium-Zugang",
+    "benefit_1_desc": "Unbegrenzte Programmveröffentlichungen, erweiterte Analysen und Premium-Tools — lebenslang kostenlos.",
+    "benefit_2_title": "Hervorgehobenes Profil & Sichtbarkeit",
+    "benefit_2_desc": "Founding Expert Badge, hervorgehobene Platzierung auf der Startseite und in den Suchergebnissen.",
+    "benefit_3_title": "Wissensaustausch-Plattform",
+    "benefit_3_desc": "Teilen Sie Ihre Workshops, Kurse und Erfahrungen auf einer modernen, mehrsprachigen Plattform.",
+    "benefit_4_title": "Gemeinschaftliche Wirkung",
+    "benefit_4_desc": "Werden Sie Teil einer nachhaltigen Gemeinschaftsbewegung im Káli-Becken und darüber hinaus.",
+    "how_to_apply_title": "Wie bewerbe ich mich?",
+    "step_1": "Registrieren Sie sich bei WellAgora und vervollständigen Sie Ihr Profil (Expertise, Bio, Foto).",
+    "step_2": "Schreiben Sie uns an info@wellagora.hu — erzählen Sie uns von Ihrem Fachgebiet!",
+    "step_3": "Unser Team prüft Ihre Bewerbung und antwortet innerhalb von 48 Stunden. Nach Annahme ist Ihr Founding Expert Status sofort aktiv.",
+    "final_cta_title": "Die Gemeinschaft wartet auf Sie!",
+    "final_cta_desc": "Verpassen Sie nicht — die ersten 20 Plätze füllen sich schnell. Werden Sie WellAgora Founding Expert!"
   }
 }

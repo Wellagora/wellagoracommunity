@@ -109,6 +109,7 @@ const MyAgoraPage = lazy(() => import("@/pages/MyAgoraPage"));
 const PointsHistoryPage = lazy(() => import("@/pages/PointsHistoryPage"));
 const BlogPage = lazy(() => import("@/pages/BlogPage"));
 const FAQPage = lazy(() => import("@/pages/FAQPage"));
+const FoundingExpertPage = lazy(() => import("@/pages/FoundingExpertPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -221,6 +222,7 @@ function App() {
                           <Route path="/tudastar" element={<BlogPage />} />
                           <Route path="/gyik" element={<FAQPage />} />
                           <Route path="/faq" element={<FAQPage />} />
+                          <Route path="/founding-expert" element={<FoundingExpertPage />} />
                           <Route
                             path="/inbox"
                             element={
