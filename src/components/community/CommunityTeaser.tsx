@@ -9,7 +9,6 @@ import {
   Users,
   Star,
   Calendar,
-  Lock,
   ArrowRight,
   Sparkles,
   Heart,
@@ -181,43 +180,48 @@ const CommunityTeaser = () => {
           </Card>
         </div>
 
-        {/* CTA Section */}
+        {/* CTA Section — light, modern design */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
           className="mt-12 text-center"
         >
-          <Card className="max-w-2xl mx-auto bg-gradient-to-br from-slate-900 to-slate-800 border-0 text-white overflow-hidden">
-            <CardContent className="p-8 relative">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/20 rounded-full blur-2xl" />
+          <div className="max-w-2xl mx-auto relative">
+            {/* Soft gradient glow behind */}
+            <div className="absolute -inset-4 bg-gradient-to-r from-emerald-200/40 via-amber-100/30 to-emerald-200/40 rounded-3xl blur-2xl" />
 
-              <Lock className="h-12 w-12 mx-auto mb-4 text-emerald-400" />
-              <h2 className="text-2xl font-bold mb-3">{t('community.teaser.cta_title')}</h2>
-              <p className="text-slate-300 mb-6 max-w-md mx-auto">
-                {t('community.teaser.cta_description')}
-              </p>
+            <Card className="relative bg-white/90 backdrop-blur-sm border border-emerald-200/60 shadow-lg overflow-hidden">
+              <CardContent className="p-8">
+                <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-emerald-100 to-amber-50 flex items-center justify-center">
+                  <Users className="h-7 w-7 text-emerald-600" />
+                </div>
+                <h2 className="text-2xl font-bold mb-3 text-foreground">{t('community.teaser.cta_title')}</h2>
+                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                  {t('community.teaser.cta_description')}
+                </p>
 
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Button
-                  size="lg"
-                  onClick={() => navigate('/auth?tab=register')}
-                  className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-8"
-                >
-                  {t('community.teaser.cta_register')}
-                  <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => navigate('/auth')}
-                  className="border-white/30 text-white hover:bg-white/10"
-                >
-                  {t('community.teaser.cta_login')}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Button
+                    size="lg"
+                    onClick={() => navigate('/auth?tab=register')}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 shadow-md"
+                  >
+                    {t('community.teaser.cta_register')}
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={() => navigate('/auth')}
+                    className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                  >
+                    {t('community.teaser.cta_login')}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </motion.div>
       </div>
     </div>
