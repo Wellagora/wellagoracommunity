@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useReferral } from "@/hooks/useReferral";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
-import { Copy, Check, Gift, Users, UserPlus, Trophy, MessageCircle, Mail, Share2 } from "lucide-react";
+import { Copy, Check, Gift, Users, UserPlus, Trophy, MessageCircle, Mail, Share2, Facebook } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const ReferralWidget = memo(() => {
@@ -50,6 +50,14 @@ export const ReferralWidget = memo(() => {
     const subject = t('referral.email_subject') || 'Join me on a sustainability journey!';
     const body = `${t('referral.share_message') || 'Join me!'}\n\n${shareLink}`;
     window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
+  const handleShareFacebook = () => {
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareLink)}`,
+      '_blank',
+      'noopener,noreferrer,width=600,height=400'
+    );
   };
 
   if (loading) {
@@ -98,7 +106,7 @@ export const ReferralWidget = memo(() => {
         </div>
 
         {/* Share Buttons */}
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-4 gap-2">
           <Button
             onClick={handleCopyLink}
             variant="outline"
@@ -111,6 +119,15 @@ export const ReferralWidget = memo(() => {
               <Share2 className="w-4 h-4 mb-1" />
             )}
             <span className="text-xs">{t('referral.copy_link')}</span>
+          </Button>
+          <Button
+            onClick={handleShareFacebook}
+            variant="outline"
+            size="sm"
+            className="flex-col h-auto py-2 border-[#1877F2]/30 hover:bg-[#1877F2]/10 hover:text-[#1877F2]"
+          >
+            <Facebook className="w-4 h-4 mb-1" />
+            <span className="text-xs">Facebook</span>
           </Button>
           <Button
             onClick={handleShareWhatsApp}

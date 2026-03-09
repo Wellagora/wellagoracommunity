@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronLeft, ChevronRight, Sparkles, Gift, ShoppingCart, BookOpen, Leaf, Plus, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ShareButton } from "@/components/ui/ShareButton";
 
 interface Program {
   id: string;
@@ -287,10 +288,17 @@ const RecommendedProgramsSlider = () => {
                         </span>
                       )}
                       
-                      {/* Title - Serif */}
-                      <h3 className="text-lg font-medium text-foreground leading-snug line-clamp-2 group-hover:text-emerald-700 transition-colors duration-300">
-                        {program.title}
-                      </h3>
+                      {/* Title + Share */}
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="text-lg font-medium text-foreground leading-snug line-clamp-2 group-hover:text-emerald-700 transition-colors duration-300 flex-1">
+                          {program.title}
+                        </h3>
+                        <ShareButton
+                          url={`/piacer/${program.id}`}
+                          title={program.title}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-0.5"
+                        />
+                      </div>
                     </CardContent>
                   </Card>
                 </Link>

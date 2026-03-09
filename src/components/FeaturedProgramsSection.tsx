@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveImageUrl } from "@/lib/imageResolver";
 import { VerifiedExpertBadge } from "@/components/marketplace/VerifiedExpertBadge";
+import { ShareButton } from "@/components/ui/ShareButton";
 
 // Category translations
 const CATEGORY_LABELS: Record<string, { hu: string; en: string; de: string }> = {
@@ -241,9 +242,14 @@ const FeaturedProgramsSection = () => {
                           </div>
                         )}
 
-                        {/* Access badge */}
-                        <div className="mt-4">
+                        {/* Access badge + Share */}
+                        <div className="mt-4 flex items-center justify-between">
                           {getAccessBadge(program)}
+                          <ShareButton
+                            url={`/piacer/${program.id}`}
+                            title={typeof program.title === "string" ? program.title : ""}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                          />
                         </div>
                       </div>
                     </CardContent>

@@ -234,11 +234,16 @@ const ProgramCreatorWizard = () => {
     try {
       let imageUrl = formData.mediaUrl;
 
-      // Upload media file if exists
+      // Upload media file ONLY if a new file is selected (not yet uploaded)
       if (formData.mediaFile) {
+        const isLargeFile = formData.mediaFile.size > 5 * 1024 * 1024; // 5MB
+        if (isLargeFile) {
+          toast.info("Média feltöltése folyamatban...", { duration: 10000, id: 'upload-progress' });
+        }
+
         const fileExt = formData.mediaFile.name.split(".").pop();
         const fileName = `${user.id}/${Date.now()}.${fileExt}`;
-        
+
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from("expert-content")
           .upload(fileName, formData.mediaFile, { upsert: true });
@@ -248,15 +253,24 @@ const ProgramCreatorWizard = () => {
             .from("expert-content")
             .getPublicUrl(uploadData.path);
           imageUrl = urlData.publicUrl;
+          // Clear file immediately so it won't re-upload on next step change
+          setFormData(prev => ({ ...prev, mediaUrl: imageUrl, mediaFile: null }));
+        }
+
+        if (isLargeFile) {
+          toast.dismiss('upload-progress');
         }
       }
 
       // Prepare content URL based on content type
-      const contentUrl = formData.contentType === 'recorded' 
-        ? formData.videoUrl 
-        : formData.contentType === 'online_live' 
-        ? formData.meetingLink 
+      const contentUrl = formData.contentType === 'recorded'
+        ? formData.videoUrl
+        : formData.contentType === 'online_live'
+        ? formData.meetingLink
         : formData.locationMapUrl;
+
+      // Merge translation_status into main content data (avoids second UPDATE)
+      const allApproved = formData.isApproved.hu && formData.isApproved.en && formData.isApproved.de;
 
       const contentData = {
         title: formData.title_hu || "Névtelen program",
@@ -275,7 +289,8 @@ const ProgramCreatorWizard = () => {
         max_capacity: formData.contentType !== 'recorded' ? formData.maxParticipants : null,
         is_published: false,
         updated_at: new Date().toISOString(),
-        // Add problem_solution metadata for AI indexing
+        master_locale: formData.masterLocale,
+        translation_status: allApproved ? 'approved' : 'needs_review',
         problem_solution: {
           problem: formData.problemStatement || null,
           solution: formData.solutionStatement || null,
@@ -299,6 +314,7 @@ const ProgramCreatorWizard = () => {
         }
       }
 
+      // Run localizations + media library update in PARALLEL (not sequential)
       if (savedContentId) {
         const now = new Date().toISOString();
 
@@ -340,34 +356,23 @@ const ProgramCreatorWizard = () => {
           },
         ];
 
-        await supabase
-          .from('content_localizations')
-          .upsert(rows as any, { onConflict: 'content_id,locale' });
+        const parallelOps: Promise<any>[] = [
+          supabase
+            .from('content_localizations')
+            .upsert(rows as any, { onConflict: 'content_id,locale' }),
+        ];
 
-        const allApproved = formData.isApproved.hu && formData.isApproved.en && formData.isApproved.de;
-        await supabase
-          .from('expert_contents')
-          .update({
-            master_locale: formData.masterLocale,
-            translation_status: allApproved ? 'approved' : 'needs_review',
-          })
-          .eq('id', savedContentId);
-      }
+        // Media library update runs in parallel too
+        if (formData.mediaLibraryId) {
+          parallelOps.push(
+            supabase
+              .from('expert_media')
+              .update({ status: 'in_draft', program_id: savedContentId })
+              .eq('id', formData.mediaLibraryId)
+          );
+        }
 
-      // Update media library item status if from media library
-      if (formData.mediaLibraryId && savedContentId) {
-        await supabase
-          .from('expert_media')
-          .update({ 
-            status: 'in_draft',
-            program_id: savedContentId 
-          })
-          .eq('id', formData.mediaLibraryId);
-      }
-
-      // Update form with uploaded URL
-      if (imageUrl !== formData.mediaUrl) {
-        setFormData(prev => ({ ...prev, mediaUrl: imageUrl, mediaFile: null }));
+        await Promise.all(parallelOps);
       }
     } catch (error) {
     } finally {
