@@ -99,15 +99,54 @@ const ExpertGallery = () => {
     return null;
   }
 
+  // Render a single expert card (helper)
+  const renderExpertCard = (expert: ExpertProfile, className?: string) => (
+    <SmartTiltCard>
+      <Link
+        to={`/szakertok/${expert.id}`}
+        className="block group"
+      >
+        <div className={`relative aspect-[3/4] rounded-2xl overflow-hidden bg-muted ${className || ''}`}>
+          {expert.avatar_url ? (
+            <img
+              src={resolveAvatarUrl(expert.avatar_url)}
+              alt={`${expert.first_name || ''} ${expert.last_name || ''}`}
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-100 to-amber-50 flex items-center justify-center">
+              <span className="text-5xl font-bold text-emerald-600/40">
+                {(expert.first_name?.[0] || '')}{(expert.last_name?.[0] || '')}
+              </span>
+            </div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-5">
+            <p className="text-xs uppercase tracking-[0.2em] text-white/60 font-medium mb-1">
+              {translateLocation(expert.location) || t('roles.expert')}
+            </p>
+            <h3 className="text-xl font-serif font-semibold text-white leading-tight">
+              {expert.first_name} {expert.last_name}
+            </h3>
+            <p className="text-white/70 text-sm mt-2 line-clamp-2">
+              {expert.expert_title || expert.bio}
+            </p>
+          </div>
+          <div className="absolute inset-0 rounded-2xl border border-white/0 group-hover:border-white/20 transition-colors duration-300" />
+        </div>
+      </Link>
+    </SmartTiltCard>
+  );
+
   return (
     <section className="py-12 bg-muted/30 relative overflow-hidden">
       {/* Ultra-thin top separator */}
       <div className="absolute top-0 left-0 right-0 h-[0.5px] bg-foreground/5" />
-      
+
       <div className="container mx-auto px-4">
         {/* Header - Editorial style */}
         <div className="text-center mb-8">
-          <motion.span 
+          <motion.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -115,7 +154,7 @@ const ExpertGallery = () => {
           >
             {t('home.experts_subtitle')}
           </motion.span>
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
@@ -125,84 +164,74 @@ const ExpertGallery = () => {
           </motion.h2>
         </div>
 
-        {/* Swipeable Carousel */}
+        {/* Layout: centered cards for few experts, carousel for many */}
         <div className="max-w-6xl mx-auto">
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-            }}
-            className="w-full"
-          >
-            <CarouselContent className="-ml-4">
+          {experts.length <= 3 ? (
+            /* Centered grid for 1-3 experts — no empty carousel space */
+            <div className={`grid gap-6 justify-center mx-auto ${
+              experts.length === 1 ? 'grid-cols-1 max-w-xs' :
+              experts.length === 2 ? 'grid-cols-1 sm:grid-cols-2 max-w-2xl' :
+              'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-4xl'
+            }`}>
               {experts.map((expert) => (
-                <CarouselItem key={expert.id} className="pl-4 basis-[280px] md:basis-[320px]">
-                  <SmartTiltCard>
-                    <Link 
-                      to={`/szakertok/${expert.id}`} 
-                      className="block group"
-                    >
-                      {/* Portrait Card - 3:4 Aspect Ratio */}
-                      <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-muted">
-                        {/* Full-bleed Photo */}
-                        <img
-                          src={resolveAvatarUrl(expert.avatar_url) || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=533&fit=crop'}
-                          alt={`${expert.first_name || ''} ${expert.last_name || ''}`}
-                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                        
-                        {/* Gradient Overlay - Dark to transparent at bottom */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                        
-                        {/* Content Overlay at Bottom */}
-                        <div className="absolute bottom-0 left-0 right-0 p-5">
-                          <p className="text-xs uppercase tracking-[0.2em] text-white/60 font-medium mb-1">
-                            {translateLocation(expert.location) || t('roles.expert')}
-                          </p>
-                          <h3 className="text-xl font-serif font-semibold text-white leading-tight">
-                            {expert.first_name} {expert.last_name}
-                          </h3>
-                          <p className="text-white/70 text-sm mt-2 line-clamp-2">
-                            {expert.expert_title || expert.bio}
-                          </p>
-                        </div>
-
-                        {/* Subtle hover border glow */}
-                        <div className="absolute inset-0 rounded-2xl border border-white/0 group-hover:border-white/20 transition-colors duration-300" />
-                      </div>
-                    </Link>
-                  </SmartTiltCard>
-                </CarouselItem>
+                <motion.div
+                  key={expert.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  viewport={{ once: true }}
+                >
+                  {renderExpertCard(expert)}
+                </motion.div>
               ))}
-            </CarouselContent>
-            
-            {/* Navigation Arrows - Premium Black Style */}
-            <CarouselPrevious className="hidden md:flex -left-12 bg-foreground text-background border-0 hover:bg-foreground/80 w-10 h-10" />
-            <CarouselNext className="hidden md:flex -right-12 bg-foreground text-background border-0 hover:bg-foreground/80 w-10 h-10" />
-          </Carousel>
-          
-          {/* Mobile scroll hint */}
-          <p className="text-center text-xs text-muted-foreground mt-4 md:hidden uppercase tracking-widest">
-            ← Swipe →
-          </p>
+            </div>
+          ) : (
+            /* Carousel for 4+ experts */
+            <>
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                className="w-full"
+              >
+                <CarouselContent className="-ml-4">
+                  {experts.map((expert) => (
+                    <CarouselItem key={expert.id} className="pl-4 basis-[280px] md:basis-[320px]">
+                      {renderExpertCard(expert)}
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+
+                {/* Navigation Arrows */}
+                <CarouselPrevious className="hidden md:flex -left-12 bg-foreground text-background border-0 hover:bg-foreground/80 w-10 h-10" />
+                <CarouselNext className="hidden md:flex -right-12 bg-foreground text-background border-0 hover:bg-foreground/80 w-10 h-10" />
+              </Carousel>
+
+              {/* Mobile scroll hint */}
+              <p className="text-center text-xs text-muted-foreground mt-4 md:hidden uppercase tracking-widest">
+                ← Swipe →
+              </p>
+            </>
+          )}
         </div>
 
         {/* View All Link */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
           className="text-center mt-8"
         >
-          <Link 
-            to="/piacer" 
+          <Link
+            to="/piacer"
             className="inline-flex items-center gap-3 text-muted-foreground hover:text-foreground text-sm uppercase tracking-[0.2em] font-medium transition-colors group"
           >
             <span>{t('home.view_all')}</span>
-            <svg 
-              className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" 
-              fill="none" 
-              stroke="currentColor" 
+            <svg
+              className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+              fill="none"
+              stroke="currentColor"
               viewBox="0 0 24 24"
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -210,7 +239,7 @@ const ExpertGallery = () => {
           </Link>
         </motion.div>
       </div>
-      
+
       {/* Ultra-thin bottom separator */}
       <div className="absolute bottom-0 left-0 right-0 h-[0.5px] bg-foreground/5" />
     </section>

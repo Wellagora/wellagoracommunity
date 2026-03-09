@@ -4474,20 +4474,14 @@
   "community_pulse": {
     "title": "Együtt többre megyünk",
     "subtitle": "Csatlakozz te is a növekvő közösségünkhöz",
-    "story_active_title": "Aktív közösség",
-    "story_active_quote": "Végre találtam egy helyet, ahol a szomszédaim igazi barátokká váltak.",
-    "story_active_author": "Tóth Anna",
-    "story_active_role": "közösségi tag",
-    "story_experiences_title": "Felfedezésre váró élmények",
-    "story_experiences_quote": "A kovászkenyér kurzuson megtanultam, amit a nagyanyám már elfelejtett.",
-    "story_experiences_author": "Kovács Péter",
-    "story_experiences_role": "lelkes résztvevő",
-    "story_connections_title": "Megvalósult találkozások",
-    "story_connections_quote": "A gyógynövénytúrán ismertem meg a legjobb barátnőmet.",
-    "story_connections_author": "Nagy Eszter",
-    "story_connections_role": "új barátságok",
     "feed_title": "Friss a közösségből",
-    "cta_button": "Csatlakozom a közösséghez"
+    "cta_button": "Csatlakozom a közösséghez",
+    "value_community_title": "Aktív közösség",
+    "value_community_desc": "Helyi szakértők és közösségi tagok, akik megosztják tudásukat és tapasztalataikat a fenntartható életmódról.",
+    "value_experiences_title": "Egyedi élmények",
+    "value_experiences_desc": "Workshopok, kurzusok és események, amelyek közelebb hoznak a természetes életmódhoz és a helyi hagyományokhoz.",
+    "value_connections_title": "Valódi kapcsolatok",
+    "value_connections_desc": "Hasonló értékeket valló emberek közössége, ahol inspirációt és támogatást találsz a mindennapokhoz."
   },
   "activity_feed": {
     "kata_joined": "Kata épp most csatlakozott",
@@ -4699,5 +4693,15 @@
   "founding_expert.step_2": "Írj nekünk az info@wellagora.hu címre, hogy szeretnél Founding Expert lenni — mesélj a szakterületedről!",
   "founding_expert.step_3": "A csapat átnézi a jelentkezésedet, és 48 órán belül visszajelez. Ha elfogadjuk, azonnal aktív lesz a Founding Expert státuszod.",
   "founding_expert.final_cta_title": "A közösség rád vár!",
-  "founding_expert.final_cta_desc": "Ne hagyd ki a lehetőséget — az első 20 hely gyorsan betelik. Legyél a WellAgora alapító szakértője!"
+  "founding_expert.final_cta_desc": "Ne hagyd ki a lehetőséget — az első 20 hely gyorsan betelik. Legyél a WellAgora alapító szakértője!",
+  "community_pulse.value_community_title": "Aktív közösség",
+  "community_pulse.value_community_desc": "Helyi szakértők és közösségi tagok, akik megosztják tudásukat és tapasztalataikat a fenntartható életmódról.",
+  "community_pulse.value_experiences_title": "Egyedi élmények",
+  "community_pulse.value_experiences_desc": "Workshopok, kurzusok és események, amelyek közelebb hoznak a természetes életmódhoz és a helyi hagyományokhoz.",
+  "community_pulse.value_connections_title": "Valódi kapcsolatok",
+  "community_pulse.value_connections_desc": "Hasonló értékeket valló emberek közössége, ahol inspirációt és támogatást találsz a mindennapokhoz.",
+  "community.teaser.community_values": "Közösségi értékek",
+  "community.teaser.value_local": "Helyi tudás és hagyományok megőrzése",
+  "community.teaser.value_sustainable": "Fenntartható életmód a mindennapokban",
+  "community.teaser.value_support": "Kölcsönös támogatás és inspiráció"
 }

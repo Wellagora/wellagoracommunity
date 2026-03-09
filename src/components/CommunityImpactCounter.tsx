@@ -11,42 +11,34 @@ import { LiveNotificationFeed } from "@/components/home/LiveNotificationFeed";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-// Story card config - only static data, text comes from translations
-const STORY_CARD_CONFIG: Array<{
+// Value proposition cards - no fake testimonials, real community features
+const VALUE_CARD_CONFIG: Array<{
   id: string;
   titleKey: string;
-  quoteKey: string;
-  authorKey: string;
-  roleKey: string;
+  descKey: string;
   icon: LucideIcon;
   borderColor: string;
 }> = [
   {
     id: 'community',
-    titleKey: 'community_pulse.story_active_title',
-    quoteKey: 'community_pulse.story_active_quote',
-    authorKey: 'community_pulse.story_active_author',
-    roleKey: 'community_pulse.story_active_role',
+    titleKey: 'community_pulse.value_community_title',
+    descKey: 'community_pulse.value_community_desc',
     icon: Users,
-    borderColor: 'border-l-black/20',
+    borderColor: 'border-l-emerald-500/40',
   },
   {
     id: 'experiences',
-    titleKey: 'community_pulse.story_experiences_title',
-    quoteKey: 'community_pulse.story_experiences_quote',
-    authorKey: 'community_pulse.story_experiences_author',
-    roleKey: 'community_pulse.story_experiences_role',
+    titleKey: 'community_pulse.value_experiences_title',
+    descKey: 'community_pulse.value_experiences_desc',
     icon: Sparkles,
-    borderColor: 'border-l-black/15',
+    borderColor: 'border-l-amber-500/40',
   },
   {
     id: 'connections',
-    titleKey: 'community_pulse.story_connections_title',
-    quoteKey: 'community_pulse.story_connections_quote',
-    authorKey: 'community_pulse.story_connections_author',
-    roleKey: 'community_pulse.story_connections_role',
+    titleKey: 'community_pulse.value_connections_title',
+    descKey: 'community_pulse.value_connections_desc',
     icon: Heart,
-    borderColor: 'border-l-black/10',
+    borderColor: 'border-l-rose-400/40',
   },
 ];
 
@@ -109,37 +101,23 @@ export const CommunityImpactCounter = () => {
           </p>
         </motion.div>
 
-        {/* Story Cards - Monochrome with left border + Stagger */}
+        {/* Value Proposition Cards - No fake testimonials */}
         <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          {STORY_CARD_CONFIG.map((story) => {
-            const author = t(story.authorKey);
-            return (
-              <StaggerItem key={story.id}>
-                <Card className={`h-full bg-white/90 backdrop-blur-xl border-[0.5px] border-black/5 border-l-4 ${story.borderColor} hover:shadow-lg hover:scale-[1.02] transition-all duration-300`}>
-                  <CardContent className="p-5">
-                    <div className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center mb-4">
-                      <story.icon className="w-5 h-5 text-black/70" />
-                    </div>
-                    <h3 className="font-bold text-black">{t(story.titleKey)}</h3>
-                    <p className="text-black/60 mt-2 text-sm italic line-clamp-3">
-                      "{t(story.quoteKey)}"
-                    </p>
-                    <div className="flex items-center gap-2 mt-4">
-                      <div className="w-8 h-8 rounded-full bg-black/5 flex items-center justify-center">
-                        <span className="text-xs font-semibold text-black/50">
-                          {author.split(' ').map(n => n[0]).join('')}
-                        </span>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-black">{author}</p>
-                        <p className="text-xs text-black/40">{t(story.roleKey)}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </StaggerItem>
-            );
-          })}
+          {VALUE_CARD_CONFIG.map((card) => (
+            <StaggerItem key={card.id}>
+              <Card className={`h-full bg-white/90 backdrop-blur-xl border-[0.5px] border-black/5 border-l-4 ${card.borderColor} hover:shadow-lg hover:scale-[1.02] transition-all duration-300`}>
+                <CardContent className="p-5">
+                  <div className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center mb-4">
+                    <card.icon className="w-5 h-5 text-black/70" />
+                  </div>
+                  <h3 className="font-bold text-black">{t(card.titleKey)}</h3>
+                  <p className="text-black/60 mt-2 text-sm leading-relaxed">
+                    {t(card.descKey)}
+                  </p>
+                </CardContent>
+              </Card>
+            </StaggerItem>
+          ))}
         </StaggerContainer>
 
         {/* Live Notification Feed - Enhanced with warm background */}

@@ -151,14 +151,14 @@ const CommunityTeaser = () => {
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Heart className="h-5 w-5 text-emerald-500" />
-                <h3 className="font-semibold text-foreground">{t('community.teaser.live_activity')}</h3>
+                <h3 className="font-semibold text-foreground">{t('community.teaser.community_values')}</h3>
               </div>
 
               <div className="space-y-3">
                 {[
-                  { icon: Sparkles, text: t('community.teaser.feature_experts') },
-                  { icon: Star, text: t('community.teaser.feature_ratings') },
-                  { icon: Calendar, text: t('community.teaser.feature_events') },
+                  { icon: Sparkles, text: t('community.teaser.value_local') },
+                  { icon: Heart, text: t('community.teaser.value_sustainable') },
+                  { icon: Star, text: t('community.teaser.value_support') },
                 ].map((feature, index) => {
                   const Icon = feature.icon;
                   return (

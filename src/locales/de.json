@@ -496,7 +496,13 @@
     "which_program_inspired": "Welches Programm hat dich inspiriert?",
     "like": "Gefällt mir",
     "related_program": "Verwandtes Programm",
-    "sponsored_by": "Gesponsert von"
+    "sponsored_by": "Gesponsert von",
+    "teaser": {
+      "community_values": "Gemeinschaftswerte",
+      "value_local": "Bewahrung lokaler Kenntnisse und Traditionen",
+      "value_sustainable": "Nachhaltiger Lebensstil im Alltag",
+      "value_support": "Gegenseitige Unterstützung und Inspiration"
+    }
   },
   "referral": {
     "invite_friends": "Freunde einladen",
@@ -1551,20 +1557,14 @@
     "compared_to_last_week": "Im Vergleich zu den letzten 7 Tagen",
     "knowledge_minutes": "Wissensminuten",
     "connections": "Verbindungen",
-    "story_active_title": "Aktive Gemeinschaft",
-    "story_active_quote": "Endlich habe ich einen Ort gefunden, an dem meine Nachbarn zu echten Freunden wurden.",
-    "story_active_author": "Anna Tóth",
-    "story_active_role": "Gemeinschaftsmitglied",
-    "story_experiences_title": "Erlebnisse, die auf dich warten",
-    "story_experiences_quote": "Im Sauerteigbrot-Kurs lernte ich, was meine Großmutter mir nie erzählt hat.",
-    "story_experiences_author": "Péter Kovács",
-    "story_experiences_role": "begeisterter Teilnehmer",
-    "story_connections_title": "Verwirklichte Begegnungen",
-    "story_connections_quote": "Bei der Kräuterwanderung lernte ich meine beste Freundin kennen.",
-    "story_connections_author": "Eszter Nagy",
-    "story_connections_role": "neue Freundschaften",
     "feed_title": "Aktuelles aus der Gemeinschaft",
-    "cta_button": "Der Gemeinschaft beitreten"
+    "cta_button": "Der Gemeinschaft beitreten",
+    "value_community_title": "Aktive Gemeinschaft",
+    "value_community_desc": "Lokale Experten und Community-Mitglieder, die ihr Wissen und ihre Erfahrung über nachhaltiges Leben teilen.",
+    "value_experiences_title": "Einzigartige Erlebnisse",
+    "value_experiences_desc": "Workshops, Kurse und Veranstaltungen, die Sie näher an natürliches Leben und lokale Traditionen bringen.",
+    "value_connections_title": "Echte Verbindungen",
+    "value_connections_desc": "Eine Gemeinschaft gleichgesinnter Menschen, in der Sie Inspiration und Unterstützung für den Alltag finden."
   },
   "sponsor_dashboard": {
     "title": "Wirkungszentrum",
