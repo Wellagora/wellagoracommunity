@@ -183,20 +183,42 @@
     "browse_programs": "Programme durchsuchen"
   },
   "points": {
-    "post_created": "Beitrag erstellt",
-    "comment_added": "Kommentar hinzugefügt",
-    "like_given": "Gefällt mir gegeben",
-    "like_received": "Gefällt mir erhalten",
-    "program_completed": "Programm abgeschlossen",
-    "lesson_completed": "Lektion abgeschlossen",
-    "review_submitted": "Bewertung eingereicht",
-    "daily_login": "Tägliche Anmeldung",
-    "referral_bonus": "Empfehlungsbonus",
-    "voucher_redeemed": "Gutschein eingelöst",
-    "event_attended": "Veranstaltung besucht",
-    "profile_completed": "Profil vervollständigt",
-    "first_post": "Erster Beitrag",
-    "streak_bonus": "Serienbonus"
+    "total_points": "Gesamtpunkte",
+    "level": "Stufe",
+    "points_to_level": "Punkte bis Stufe",
+    "challenges_completed": "Abgeschlossene Herausforderungen",
+    "current_streak": "Aktuelle Serie",
+    "days": "Tage",
+    "your_badges": "Deine Abzeichen",
+    "your_badges_desc": "Erfolge, die du auf deiner Nachhaltigkeitsreise freigeschaltet hast",
+    "available_badges": "Verfügbare Abzeichen",
+    "available_badges_desc": "Schalte diese Abzeichen frei, indem du bestimmte Herausforderungen und Meilensteine abschließt",
+    "earned_on": "Erhalten am",
+    "leaderboard": "Bestenliste",
+    "leaderboard_desc": "Sehen Sie, wie Sie im Vergleich zu anderen Nachhaltigkeits-Champions abschneiden",
+    "you": "Du",
+    "challenges": "Herausforderungen",
+    "points": "Punkte",
+    "rarity": {
+      "common": "häufig",
+      "rare": "selten",
+      "epic": "episch",
+      "legendary": "legendär"
+    },
+    "badge": {
+      "first_steps": "Erste Schritte",
+      "first_steps_desc": "Erste Herausforderung abgeschlossen",
+      "plastic_warrior": "Plastik-Krieger",
+      "plastic_warrior_desc": "5 Abfallreduktions-Herausforderungen abgeschlossen",
+      "energy_saver": "Energiesparer",
+      "energy_saver_desc": "Energieverbrauch um 30% reduziert",
+      "transport_hero": "Transport-Held",
+      "transport_hero_desc": "3 nachhaltige Transport-Herausforderungen abschließen",
+      "community_leader": "Community-Leiter",
+      "community_leader_desc": "Ein gemeinschaftliches Umweltprojekt organisieren",
+      "green_streak": "Grüne Serie",
+      "green_streak_desc": "Eine 30-tägige Aktivitätsserie aufrechterhalten"
+    }
   },
   "lessons": {
     "title": "Lektionen",
@@ -477,222 +499,149 @@
     "sponsored_by": "Gesponsert von"
   },
   "referral": {
-    "grow_community": "Erweitere die Gemeinschaft!",
-    "invite_bonus": "Lade einen Freund ein und erhalte 100 WellPunkte",
-    "copy_link": "Einladungslink kopieren",
-    "link_copied": "Link kopiert!"
+    "invite_friends": "Freunde einladen",
+    "your_code": "Dein Empfehlungscode",
+    "copy_link": "Link kopieren",
+    "share_link": "Teilen",
+    "stats_invited": "Eingeladen",
+    "stats_joined": "Beigetreten",
+    "stats_completed": "Abgeschlossen",
+    "stats_points": "Punkte",
+    "reward_hint": "Verdiene 100 Punkte, wenn dein Freund seine erste Challenge abschließt!",
+    "link_copied": "Link kopiert!",
+    "share_message": "Begleite mich auf dieser Nachhaltigkeitsreise!",
+    "email_subject": "Tritt unserer Nachhaltigkeits-Community bei!"
   },
   "gamification": {
-    "welcome": "Willkommen, {{name}}!",
-    "your_points": "WellPunkte",
-    "today_earned": "+{{points}} heute",
-    "streak": "Tage Serie",
-    "start_streak": "Starte eine neue Serie!",
-    "how_to_earn": "So verdienst du Punkte",
-    "what_to_spend": "Wofür kannst du deine Punkte ausgeben?",
-    "level": {
-      "beginner": "Anfänger",
-      "explorer": "Entdecker",
-      "active": "Aktives Mitglied",
-      "builder": "Gemeinschaftsbauer",
-      "master": "Meister",
-      "legend": "Legende"
-    },
-    "points_to_next": "{{points}} WP bis zum nächsten Level",
-    "active_programs": "Deine aktiven Programme",
-    "your_vouchers": "Deine Gutscheine"
-  },
-  "feed": {
-    "teaser": {
-      "badge": "Lebende Gemeinschaft",
-      "title": "Tritt unserer Gemeinschaft bei",
-      "subtitle": "Entdecke die inspirierende Welt des nachhaltigen Lebens mit Experten, Veranstaltungen und aktiven Mitgliedern.",
-      "members": "Mitglieder",
-      "experts": "Experten",
-      "events_monthly": "Events/Monat",
-      "live_activity": "Gemeinschaftsaktivität",
-      "activity_joined": "ist der Gemeinschaft beigetreten",
-      "activity_rated": "gab eine 5-Sterne-Bewertung",
-      "activity_shared": "hat ihre Kreation geteilt",
-      "exclusive_features": "Exklusive Funktionen",
-      "feature_experts": "Verbinde dich mit Experten und hole dir Rat",
-      "feature_events": "Melde dich für Veranstaltungen und Workshops an",
-      "feature_gallery": "Teile deine Kreationen mit der Gemeinschaft",
-      "feature_ratings": "Bewerte und rezensiere Programme",
-      "cta_title": "Tritt der Gemeinschaft bei",
-      "cta_description": "Registriere dich kostenlos und entdecke das volle Gemeinschaftserlebnis!",
-      "cta_register": "Registrieren",
-      "cta_login": "Bereits Mitglied"
-    },
-    "join_movement": "Mach mit und hinterlasse einen positiven Eindruck in unserer Umwelt!",
-    "pilot_participation_prompt": "Mach eine kleine Sache: frage einen Creator, teile ein kleines Ergebnis oder nimm an einem kommenden Event teil.",
-    "pilot_cta_ask": "Eine Frage stellen",
-    "pilot_cta_share": "Ein Ergebnis teilen",
-    "search_placeholder": "Foren, Beiträge durchsuchen...",
+    "impact_forest": "Wirkungswald",
     "events": {
       "_value": "Veranstaltungen",
-      "tree_planting": {
-        "title": "Gemeinschafts-Baumpflanztag",
-        "location": "Zentralpark",
-        "organizer": "Green Future NGO"
+      "earth_month": {
+        "name": "Earth Month Mega-Challenge",
+        "description": "Schließen Sie sich 10.000+ Teilnehmern in der größten Nachhaltigkeits-Challenge aller Zeiten an!",
+        "reward": "Exklusives Earth Guardian Badge + Baumpflanzungszertifikat"
       },
-      "workshop": {
-        "title": "Workshop für nachhaltiges Leben",
-        "location": "Gemeindezentrum",
-        "organizer": "EcoTech Solutions"
-      },
-      "bike_challenge": {
-        "title": "Fahrrad-zur-Arbeit Challenge Auftakt",
-        "location": "Rathaus",
-        "organizer": "Städtische Verkehrsbehörde"
+      "solar_sprint": {
+        "name": "Sommersonnenwende Solar-Sprint",
+        "description": "Wechseln Sie zu erneuerbaren Energien und gewinnen Sie solarbetriebene Belohnungen",
+        "reward": "Solar-Powerbank + Nachhaltigkeits-Toolkit"
       }
     },
-    "new_post": "Neuer Beitrag",
-    "post": "Beitrag",
-    "tabs": {
-      "forums": "Foren",
-      "events": "Veranstaltungen",
-      "members": "Mitglieder",
-      "groups": "Gruppen",
-      "discussions": "Diskussionen",
-      "success_stories": "Erfolgsgeschichten",
-      "stories_short": "Erfolge"
+    "teams": "Teams",
+    "rewards": "Belohnungen",
+    "your_impact_forest": "Ihr Wirkungswald",
+    "forest_description": "Beobachten Sie, wie Ihre Nachhaltigkeitsaktionen zu einem blühenden digitalen Wald heranwachsen. Jede Aktionskategorie wächst als eigener Baum!",
+    "tree": {
+      "1": "Energiespar-Eiche",
+      "2": "Transport-Effizienz-Kiefer",
+      "3": "Abfallreduktions-Weide",
+      "4": "Gemeinschafts-Aktion-Zeder"
     },
-    "discussion_forums": "Diskussionsforen",
+    "stage": {
+      "seed": "Samen",
+      "sprout": "Keim",
+      "sapling": "Setzling",
+      "tree": "Baum",
+      "forest": "Wald"
+    },
+    "co2_absorbed": "CO₂ Absorbiert",
+    "actions": "Aktionen",
+    "days_active": "Aktive Tage",
+    "forest_health_score": "Waldgesundheits-Score",
+    "overall_ecosystem": "Ihr gesamter Ökosystem-Einfluss",
+    "thriving": "Blühend",
     "active": "Aktiv",
-    "gallery_title": "Geschafft! – Gemeinschaftsgalerie",
-    "gallery_subtitle": "Kreationen der Gemeinschaft",
-    "share_creation": "Meine Kreation teilen",
-    "gallery_empty_title": "Die Galerie ist leer",
-    "gallery_empty_hint": "Sei der Erste!",
-    "based_on": "Basiert auf:",
-    "share_your_creation": "Teile deine Kreation",
-    "share_modal_subtitle": "Zeige der Gemeinschaft, was du gemacht hast!",
-    "photo_label": "Foto deiner Kreation",
-    "click_to_upload": "Klicke zum Hochladen (max 5MB)",
-    "based_on_which": "Auf welchem Werkstattgeheimnis basiert es?",
-    "select_workshop_secret": "Wähle ein Werkstattgeheimnis...",
-    "rate_workshop_secret": "Bewerte das Werkstattgeheimnis",
-    "rating_selected": "{{count}} Sterne",
-    "rating_hint": "Klicke auf die Sterne",
-    "caption_label": "Beschreibung (optional)",
-    "caption_placeholder": "Erzähle von deiner Kreation...",
-    "share": "Teilen",
-    "creation_shared": "Kreation geteilt!",
-    "image_required": "Bitte lade ein Foto hoch",
-    "image_too_large": "Bild zu groß (max 5MB)",
-    "upload_error": "Fehler beim Hochladen",
-    "share_error": "Fehler beim Teilen",
-    "qa_title": "Fragen & Antworten mit den Experten",
-    "qa_subtitle": "Frage die Experten",
-    "ask_question": "Eine Frage stellen",
-    "qa_empty_title": "Noch keine Fragen",
-    "qa_empty_hint": "Sei der Erste!",
-    "about": "Über:",
-    "expert": "Experte",
-    "waiting_for_answer": "Warte auf Antwort...",
-    "your_question": "Deine Frage",
-    "question_placeholder": "Schreibe deine Frage...",
-    "related_to": "Zugehöriges Werkstattgeheimnis",
-    "submit_question": "Frage absenden",
-    "question_submitted": "Frage gesendet!",
-    "question_error": "Fehler",
-    "partners_title": "Unsere lokalen Partner",
-    "partners_subtitle": "Regionale Unternehmen",
-    "visit_website": "Webseite besuchen",
-    "view_programs": "Programme ansehen",
-    "top_contributors": "Top-Beitragende",
-    "posts": "Beiträge",
-    "rep": "Rep",
-    "community_stats": "Community-Statistiken",
-    "total_members": "Gesamte Mitglieder",
-    "posts_today": "Beiträge heute",
-    "active_forums": "Aktive Foren",
-    "online_now": "Jetzt online",
-    "join_event": "An Veranstaltung teilnehmen",
-    "organized_by": "Organisiert von",
-    "at": "um",
-    "attending": "Teilnehmend",
-    "member_directory": "Mitgliederverzeichnis",
-    "member_directory_desc": "Verbinden Sie sich mit Nachhaltigkeits-Champions in Ihrer Region",
-    "browse_members": "Mitglieder durchsuchen",
-    "interest_groups": "Interessengruppen",
-    "interest_groups_desc": "Treten Sie spezialisierten Gruppen basierend auf Ihren Nachhaltigkeitsinteressen bei",
-    "explore_groups": "Gruppen erkunden",
-    "active_members": "Aktive Mitglieder",
-    "completed_challenges": "Abgeschlossene Programme",
-    "posts_count": "Beiträge",
-    "members_count": "Mitglieder",
-    "recent_posts": "Kürzliche Beiträge",
-    "by": "von",
-    "view_forum": "Forum Ansehen",
-    "forums": {
-      "general": {
-        "name": "Allgemeine Nachhaltigkeit",
-        "description": "Diskutieren Sie alles rund um Nachhaltigkeit, teilen Sie Tipps und stellen Sie Fragen"
+    "participants": "Teilnehmer",
+    "event_progress": "Event-Fortschritt",
+    "reward": "Belohnung",
+    "join_event": "Am Event teilnehmen",
+    "coming_soon": "Bald verfügbar",
+    "members": "Mitglieder",
+    "remaining": "verbleibend",
+    "team_progress": "Team-Fortschritt",
+    "invite_friends": "Freunde Einladen",
+    "join_team": "Team Beitreten",
+    "team_challenges": {
+      "green_squad": {
+        "name": "Nachbarschafts-Grün-Squad",
+        "time_left": "5 Tage",
+        "reward": "Community-Garten-Starterset"
       },
-      "transport": {
-        "name": "Nachhaltiger Transport",
-        "description": "Elektrofahrzeuge, Radfahren, öffentliche Verkehrsmittel und grüne Mobilitätslösungen"
-      },
-      "business": {
-        "name": "Business & Unternehmen",
-        "description": "ESG-Initiativen, Unternehmens-Nachhaltigkeit und grüne Geschäftspraktiken"
+      "eco_warriors": {
+        "name": "Büro-Öko-Krieger",
+        "time_left": "12 Tage",
+        "reward": "Unternehmens-Nachhaltigkeitsaudit"
       }
     },
-    "hero": {
-      "subtitle": "Verbinden Sie sich, teilen Sie Erfahrungen und arbeiten Sie mit Nachhaltigkeits-Champions weltweit zusammen",
-      "active_members": "aktive Mitglieder",
-      "completed_challenges": "abgeschlossene Herausforderungen"
+    "redeem": "Einlösen",
+    "donate": "Spenden",
+    "rewards_catalog": {
+      "plant_tree": {
+        "name": "Einen echten Baum pflanzen",
+        "points": "1.000 Punkte"
+      },
+      "eco_bundle": {
+        "name": "Öko-Produktpaket",
+        "points": "1.500 Punkte"
+      },
+      "charity": {
+        "name": "Wohltätigkeitsspende",
+        "points": "500 Punkte"
+      }
     },
-    "share_thoughts": "Teilen Sie Ihre Gedanken mit der Community...",
-    "image": "Bild",
-    "result": "Ergebnis",
-    "send": "Senden",
-    "replies": "Antworten",
-    "likes": "Gefällt mir",
-    "active_members_stat": "Aktive Mitglieder",
-    "completed_challenges_stat": "Abgeschlossene Herausforderungen",
-    "co2_saved": "CO₂ Einsparung (Tonnen)",
-    "participating_cities": "Teilnehmende Städte",
-    "top_contributors_title": "Top-Beitragende",
+    "my_garden": "Mein Wirkungsgarten",
+    "level": "Stufe",
+    "seed": "Samen",
+    "seedling": "Setzling",
+    "growing_tree": "Wachsender Baum",
+    "strong_tree": "Starker Baum",
+    "forest": "Wald",
+    "next_level": "Nächste Stufe",
+    "points_to_next": "Punkte bis zur nächsten Stufe",
     "points": "Punkte",
-    "quick_actions": "Schnellaktionen",
-    "start_discussion": "Neue Diskussion starten",
-    "share_success": "Erfolgsgeschichte teilen",
-    "find_groups": "Gruppen suchen",
-    "discussion1": {
-      "title": "Wie wir unseren Büro-CO₂-Fußabdruck um 40% gesenkt haben",
-      "content": "Freue mich, unsere Erfahrungen zu teilen, wie wir mit einfachen aber effektiven Änderungen unsere Umweltauswirkungen deutlich reduziert haben.",
-      "category": "Unternehmen"
-    },
-    "discussion2": {
-      "title": "Neues Kompostierungsprogramm für die Gemeinschaft",
-      "content": "Wir haben ein Kompostierungsprogramm in unserem Bezirk gestartet. Suche Best Practices von anderen Gemeinden.",
-      "category": "Gemeinde"
-    },
-    "discussion3": {
-      "title": "Tipps für Anfänger zur Abfallreduzierung",
-      "content": "Was würden Sie jemandem empfehlen, der gerade seine Zero-Waste-Reise beginnt? Suche einfache erste Schritte.",
-      "category": "Einzelperson"
-    },
-    "story1": {
-      "title": "GreenTech wechselt zu erneuerbaren Energien",
-      "description": "Technologieunternehmen stellte in 6 Monaten auf 100% erneuerbare Energie um.",
-      "impact": "85% Reduktion der CO₂-Emissionen"
-    },
-    "story2": {
-      "title": "Städtische Fahrrad-Revolution",
-      "description": "Lokale NGO überzeugte 2.000+ Menschen, auf Fahrräder umzusteigen.",
-      "impact": "15.000 weniger Autofahrten monatlich"
-    },
-    "story3": {
-      "title": "Urbane Gründach-Initiative",
-      "description": "Kommunales Programm verwandelte 50+ Stadtdächer in Grünflächen.",
-      "impact": "30% Reduktion des Wärmeinsel-Effekts"
-    },
-    "coming_soon": "Demnächst",
-    "forum_detail_coming_soon": "Forum-Details werden bald verfügbar sein."
+    "challenges": "Programme"
+  },
+  "feed": {
+    "title": "Community Feed",
+    "subtitle": "{{members}} Mitglieder • {{experts}} Expert:Innen • Live-Gespräche",
+    "whats_on_your_mind": "Teile deine Gedanken...",
+    "all": "Alle",
+    "questions": "Fragen",
+    "tips": "Tipps",
+    "success": "Erfolge",
+    "expert_tip": "Expert:In Tipp",
+    "question": "Frage",
+    "success_story": "Erfolgsgeschichte",
+    "announcement": "Ankündigung",
+    "expert": "Expert:In",
+    "expert_answer": "Expert:In Antwort",
+    "share": "Teilen",
+    "share_copied": "Link in die Zwischenablage kopiert!",
+    "write_comment": "Kommentar schreiben...",
+    "related_program": "Verwandtes Programm",
+    "sponsored_by": "Unterstützt von",
+    "just_now": "gerade",
+    "mins_ago": "vor {{count}} Min",
+    "hours_ago": "vor {{count}} Std",
+    "days_ago": "vor {{count}} T",
+    "view_all_comments": "Alle {{count}} Kommentare anzeigen",
+    "no_posts": "Noch keine Beiträge in dieser Kategorie.",
+    "coming_soon": "Demnächst verfügbar!",
+    "comment_coming_soon": "Kommentarfunktion kommt bald!",
+    "wellbot_suggestion": "WellBot Empfehlung",
+    "wellbot_replied": "WellBot hat auf diese Frage geantwortet",
+    "ai_assistant": "KI-Assistent",
+    "chat_with_wellbot": "WellBot fragen",
+    "upcoming_events": "[TODO: Közelgő események]",
+    "events_coming_soon": "[TODO: Hamarosan új események!]",
+    "view_all_events": "Alle esemény",
+    "join_title": "[TODO: Csatlakozz közösségünkhöz!]",
+    "join_subtitle": "[TODO: Fedezd fel a helyi tudás erejét]",
+    "register": "[TODO: Regisztrálok]",
+    "explore_programs": "Programmok felfedezése",
+    "write_post": "Neu poszt írása",
+    "share_first_photo": "[TODO: Oszd meg az első fotód!]",
+    "which_program_inspired": "[TODO: Melyik program inspirált?]"
   },
   "wellbot": {
     "knowledge_guide_title": "WellBot",
@@ -1575,7 +1524,9 @@
     "regional_hub_badge": "NEU",
     "sponsors": "Für Sponsoren",
     "project_admin": "Projekt-Admin",
-    "help": "Hilfe"
+    "help": "Hilfe",
+    "blog": "Wissensbasis",
+    "faq": "FAQ"
   },
   "impact_counter": {
     "badge": "Live-Auswirkung",
@@ -2553,95 +2504,6 @@
     "error_loading_stakeholders": "Fehler történt az érdeklődők betöltésekor",
     "no_stakeholders": "Keineenek érdeklődők",
     "no_stakeholders_desc": "Noch keineenek regisztrált érdeklődők ebben a programban"
-  },
-  "gamification": {
-    "impact_forest": "Wirkungswald",
-    "events": {
-      "_value": "Veranstaltungen",
-      "earth_month": {
-        "name": "Earth Month Mega-Challenge",
-        "description": "Schließen Sie sich 10.000+ Teilnehmern in der größten Nachhaltigkeits-Challenge aller Zeiten an!",
-        "reward": "Exklusives Earth Guardian Badge + Baumpflanzungszertifikat"
-      },
-      "solar_sprint": {
-        "name": "Sommersonnenwende Solar-Sprint",
-        "description": "Wechseln Sie zu erneuerbaren Energien und gewinnen Sie solarbetriebene Belohnungen",
-        "reward": "Solar-Powerbank + Nachhaltigkeits-Toolkit"
-      }
-    },
-    "teams": "Teams",
-    "rewards": "Belohnungen",
-    "your_impact_forest": "Ihr Wirkungswald",
-    "forest_description": "Beobachten Sie, wie Ihre Nachhaltigkeitsaktionen zu einem blühenden digitalen Wald heranwachsen. Jede Aktionskategorie wächst als eigener Baum!",
-    "tree": {
-      "1": "Energiespar-Eiche",
-      "2": "Transport-Effizienz-Kiefer",
-      "3": "Abfallreduktions-Weide",
-      "4": "Gemeinschafts-Aktion-Zeder"
-    },
-    "stage": {
-      "seed": "Samen",
-      "sprout": "Keim",
-      "sapling": "Setzling",
-      "tree": "Baum",
-      "forest": "Wald"
-    },
-    "co2_absorbed": "CO₂ Absorbiert",
-    "actions": "Aktionen",
-    "days_active": "Aktive Tage",
-    "forest_health_score": "Waldgesundheits-Score",
-    "overall_ecosystem": "Ihr gesamter Ökosystem-Einfluss",
-    "thriving": "Blühend",
-    "active": "Aktiv",
-    "participants": "Teilnehmer",
-    "event_progress": "Event-Fortschritt",
-    "reward": "Belohnung",
-    "join_event": "Am Event teilnehmen",
-    "coming_soon": "Bald verfügbar",
-    "members": "Mitglieder",
-    "remaining": "verbleibend",
-    "team_progress": "Team-Fortschritt",
-    "invite_friends": "Freunde Einladen",
-    "join_team": "Team Beitreten",
-    "team_challenges": {
-      "green_squad": {
-        "name": "Nachbarschafts-Grün-Squad",
-        "time_left": "5 Tage",
-        "reward": "Community-Garten-Starterset"
-      },
-      "eco_warriors": {
-        "name": "Büro-Öko-Krieger",
-        "time_left": "12 Tage",
-        "reward": "Unternehmens-Nachhaltigkeitsaudit"
-      }
-    },
-    "redeem": "Einlösen",
-    "donate": "Spenden",
-    "rewards_catalog": {
-      "plant_tree": {
-        "name": "Einen echten Baum pflanzen",
-        "points": "1.000 Punkte"
-      },
-      "eco_bundle": {
-        "name": "Öko-Produktpaket",
-        "points": "1.500 Punkte"
-      },
-      "charity": {
-        "name": "Wohltätigkeitsspende",
-        "points": "500 Punkte"
-      }
-    },
-    "my_garden": "Mein Wirkungsgarten",
-    "level": "Stufe",
-    "seed": "Samen",
-    "seedling": "Setzling",
-    "growing_tree": "Wachsender Baum",
-    "strong_tree": "Starker Baum",
-    "forest": "Wald",
-    "next_level": "Nächste Stufe",
-    "points_to_next": "Punkte bis zur nächsten Stufe",
-    "points": "Punkte",
-    "challenges": "Programme"
   },
   "dashboard": {
     "title": "Mein Hub",
@@ -3886,44 +3748,6 @@
     "budget_progress": "Budget",
     "seats_progress": "Plätze"
   },
-  "points": {
-    "total_points": "Gesamtpunkte",
-    "level": "Stufe",
-    "points_to_level": "Punkte bis Stufe",
-    "challenges_completed": "Abgeschlossene Herausforderungen",
-    "current_streak": "Aktuelle Serie",
-    "days": "Tage",
-    "your_badges": "Deine Abzeichen",
-    "your_badges_desc": "Erfolge, die du auf deiner Nachhaltigkeitsreise freigeschaltet hast",
-    "available_badges": "Verfügbare Abzeichen",
-    "available_badges_desc": "Schalte diese Abzeichen frei, indem du bestimmte Herausforderungen und Meilensteine abschließt",
-    "earned_on": "Erhalten am",
-    "leaderboard": "Bestenliste",
-    "leaderboard_desc": "Sehen Sie, wie Sie im Vergleich zu anderen Nachhaltigkeits-Champions abschneiden",
-    "you": "Du",
-    "challenges": "Herausforderungen",
-    "points": "Punkte",
-    "rarity": {
-      "common": "häufig",
-      "rare": "selten",
-      "epic": "episch",
-      "legendary": "legendär"
-    },
-    "badge": {
-      "first_steps": "Erste Schritte",
-      "first_steps_desc": "Erste Herausforderung abgeschlossen",
-      "plastic_warrior": "Plastik-Krieger",
-      "plastic_warrior_desc": "5 Abfallreduktions-Herausforderungen abgeschlossen",
-      "energy_saver": "Energiesparer",
-      "energy_saver_desc": "Energieverbrauch um 30% reduziert",
-      "transport_hero": "Transport-Held",
-      "transport_hero_desc": "3 nachhaltige Transport-Herausforderungen abschließen",
-      "community_leader": "Community-Leiter",
-      "community_leader_desc": "Ein gemeinschaftliches Umweltprojekt organisieren",
-      "green_streak": "Grüne Serie",
-      "green_streak_desc": "Eine 30-tägige Aktivitätsserie aufrechterhalten"
-    }
-  },
   "celebration": {
     "achievement_unlocked": "Erfolg freigeschaltet!",
     "points_earned": "Punkte erhalten",
@@ -4762,20 +4586,6 @@
     "success_message": "Organisation erfolgreich registriert!",
     "error_message": "Bei der Registrierung ist ein Fehler aufgetreten"
   },
-  "referral": {
-    "invite_friends": "Freunde einladen",
-    "your_code": "Dein Empfehlungscode",
-    "copy_link": "Link kopieren",
-    "share_link": "Teilen",
-    "stats_invited": "Eingeladen",
-    "stats_joined": "Beigetreten",
-    "stats_completed": "Abgeschlossen",
-    "stats_points": "Punkte",
-    "reward_hint": "Verdiene 100 Punkte, wenn dein Freund seine erste Challenge abschließt!",
-    "link_copied": "Link kopiert!",
-    "share_message": "Begleite mich auf dieser Nachhaltigkeitsreise!",
-    "email_subject": "Tritt unserer Nachhaltigkeits-Community bei!"
-  },
   "nearby": {
     "title": "In der Nähe suchen",
     "partners": "Partner in der Nähe",
@@ -4883,48 +4693,6 @@
     "back": "Zurück",
     "fill_required": "[TODO: Kérjük, töltsd ki a kötelező mezőket!]",
     "publish_error": "Fehler történt a közzététel során"
-  },
-  "feed": {
-    "title": "Community Feed",
-    "subtitle": "{{members}} Mitglieder • {{experts}} Expert:Innen • Live-Gespräche",
-    "whats_on_your_mind": "Teile deine Gedanken...",
-    "all": "Alle",
-    "questions": "Fragen",
-    "tips": "Tipps",
-    "success": "Erfolge",
-    "expert_tip": "Expert:In Tipp",
-    "question": "Frage",
-    "success_story": "Erfolgsgeschichte",
-    "announcement": "Ankündigung",
-    "expert": "Expert:In",
-    "expert_answer": "Expert:In Antwort",
-    "share": "Teilen",
-    "share_copied": "Link in die Zwischenablage kopiert!",
-    "write_comment": "Kommentar schreiben...",
-    "related_program": "Verwandtes Programm",
-    "sponsored_by": "Unterstützt von",
-    "just_now": "gerade",
-    "mins_ago": "vor {{count}} Min",
-    "hours_ago": "vor {{count}} Std",
-    "days_ago": "vor {{count}} T",
-    "view_all_comments": "Alle {{count}} Kommentare anzeigen",
-    "no_posts": "Noch keine Beiträge in dieser Kategorie.",
-    "coming_soon": "Demnächst verfügbar!",
-    "comment_coming_soon": "Kommentarfunktion kommt bald!",
-    "wellbot_suggestion": "WellBot Empfehlung",
-    "wellbot_replied": "WellBot hat auf diese Frage geantwortet",
-    "ai_assistant": "KI-Assistent",
-    "chat_with_wellbot": "WellBot fragen",
-    "upcoming_events": "[TODO: Közelgő események]",
-    "events_coming_soon": "[TODO: Hamarosan új események!]",
-    "view_all_events": "Alle esemény",
-    "join_title": "[TODO: Csatlakozz közösségünkhöz!]",
-    "join_subtitle": "[TODO: Fedezd fel a helyi tudás erejét]",
-    "register": "[TODO: Regisztrálok]",
-    "explore_programs": "Programmok felfedezése",
-    "write_post": "Neu poszt írása",
-    "share_first_photo": "[TODO: Oszd meg az első fotód!]",
-    "which_program_inspired": "[TODO: Melyik program inspirált?]"
   },
   "sponsor_hub": {
     "title": "Sponsor Hub",
@@ -5220,5 +4988,35 @@
   "cancel.confirm": "Bist du sicher?",
   "cancel.refund_full": "100% Erstattung (als Plattformguthaben)",
   "cancel.refund_half": "50% Erstattung (als Plattformguthaben)",
-  "cancel.refund_none": "Keine Erstattung"
+  "cancel.refund_none": "Keine Erstattung",
+  "blog": {
+    "article_1_title": "Was ist eine nachhaltige Gemeinschaft?",
+    "article_1_excerpt": "Wie man eine lokale Gemeinschaft aufbaut, in der Wissensaustausch, Zusammenarbeit und Nachhaltigkeit Hand in Hand gehen.",
+    "article_2_title": "Die Kraft des lokalen Wissensaustauschs",
+    "article_2_excerpt": "Warum ist es wichtig, das Wissen lokaler Experten zu bewahren und weiterzugeben? Wie hilft WellAgora dabei?",
+    "article_3_title": "Nachhaltigkeit im Káli-Becken",
+    "article_3_excerpt": "Das Experiment zum nachhaltigen Gemeinschaftsaufbau im Káli-Becken — wie das Pilotprojekt von WellAgora begann.",
+    "article_4_title": "Founding Expert Programm: Sei der Erste!",
+    "article_4_excerpt": "Tritt dem Founding Expert Programm bei und teile dein Wissen als einer der ersten 20 Experten.",
+    "article_5_title": "Wohlbefinden und Resilienz: Ein neuer Ansatz",
+    "article_5_excerpt": "Statt Wellness sprechen wir über Wohlbefinden und Resilienz — warum ist das beim Gemeinschaftsaufbau wichtig?"
+  },
+  "faq": {
+    "q1": "Was ist WellAgora?",
+    "a1": "WellAgora ist eine regionale Wissensaustausch-Gemeinschaftsplattform, auf der lokale Experten ihr Wissen, Workshops und Erfahrungen zu Nachhaltigkeit, Wohlbefinden und Gemeinschaftsaufbau teilen können.",
+    "q2": "Wie kann ich Experte werden?",
+    "a2": "Bewerben Sie sich für das Founding Expert Programm! Die ersten 20 Experten erhalten kostenlosen Premium-Zugang. Registrieren Sie sich und bewerben Sie sich über Ihr Profil.",
+    "q3": "Was kostet WellAgora?",
+    "a3": "Registrierung und Durchsuchen sind kostenlos. Experten legen ihre eigenen Programmpreise fest. Es gibt auch kostenlose und gesponserte Programme.",
+    "q4": "Wie kann ich die Gemeinschaft unterstützen?",
+    "a4": "Als Sponsor können Sie lokale Programme und Experten unterstützen. Besuchen Sie die Partner-Seite für Details zu Sponsoring-Paketen.",
+    "q5": "Welche Programme finde ich auf dem Marktplatz?",
+    "a5": "Workshops, Kurse und Erlebnisse zu Nachhaltigkeit, Handwerk, Gastronomie, Gartenarbeit, Wohlbefinden und vielen weiteren Themen.",
+    "q6": "Wie funktioniert der Veranstaltungskalender?",
+    "a6": "Im Veranstaltungskalender finden Sie lokale Gemeinschaftsveranstaltungen — Kochen, Gartenarbeit, Wandern. Melden Sie sich an und nehmen Sie teil!",
+    "q7": "Ist mein Konto sicher?",
+    "a7": "Ja, WellAgora nutzt die Supabase-Plattform für sichere Authentifizierung und Datenspeicherung. Ihre Daten werden in der EU gespeichert.",
+    "q8": "Wie kann ich das Team kontaktieren?",
+    "a8": "Schreiben Sie uns über die Kontaktseite oder senden Sie eine E-Mail an info@wellagora.hu."
+  }
 }

@@ -19,4 +19,4 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-Sitemap: https://wellagora.org/sitemap.xml
+Sitemap: https://wellagora.hu/sitemap.xml

@@ -20,6 +20,7 @@ import {
   BarChart3,
   Coins,
   Star,
+  BookOpen,
 } from "lucide-react";
 import { WellBotAvatar } from "@/components/ai/WellBotAvatar";
 import { MagneticButton } from "@/components/ui/MagneticButton";
@@ -254,18 +255,20 @@ const Navigation = () => {
         { path: "/programs", label: t("nav.marketplace"), icon: Store },
         { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
         { path: "/community", label: t("nav.community"), icon: UsersIcon },
+        { path: "/blog", label: t("nav.blog"), icon: BookOpen },
       ];
     }
 
     // Role-specific navigation
     const roleToUse = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
 
-    // MEMBER: Piactér, Események, Közösség, Agórám
+    // MEMBER: Piactér, Események, Közösség, Tudástár, Agórám
     if (roleToUse === 'member') {
       return [
         { path: "/programs", label: t("nav.marketplace"), icon: Store },
         { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
         { path: "/community", label: t("nav.community"), icon: UsersIcon },
+        { path: "/blog", label: t("nav.blog"), icon: BookOpen },
         { path: "/my-agora", label: t("nav.my_agora"), icon: LayoutDashboard },
       ];
     }

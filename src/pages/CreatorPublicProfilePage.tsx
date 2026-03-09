@@ -26,6 +26,7 @@ import { format } from "date-fns";
 import { hu, enUS, de } from "date-fns/locale";
 import StarRating from "@/components/reviews/StarRating";
 import GracefulPlaceholder from "@/components/GracefulPlaceholder";
+import PersonJsonLd from "@/components/seo/PersonJsonLd";
 
 const CreatorPublicProfilePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -190,9 +191,22 @@ const CreatorPublicProfilePage = () => {
   }
 
   const expertTitle = getLocalizedField(creator, 'expert_title');
+  const creatorName = `${creator.first_name || ''} ${creator.last_name || ''}`.trim();
+  const creatorBio = getLocalizedField(creator, 'bio') || creator.expert_bio_long || '';
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Person Schema for SEO */}
+      <PersonJsonLd
+        name={creatorName}
+        description={creatorBio}
+        image={creator.avatar_url || undefined}
+        url={`/szakertok/${creator.id}`}
+        jobTitle={expertTitle || undefined}
+        knowsAbout={creator.expertise_areas || undefined}
+        locationCity={creator.location_city || undefined}
+        socialLinks={creator.social_links ? Object.values(creator.social_links).filter(Boolean) as string[] : undefined}
+      />
       {/* Hero Section with Blurred Background */}
       <div className="relative">
         {/* Blurred Background Cover */}

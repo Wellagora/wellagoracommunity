@@ -1,42 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://wellagora.org/</loc>
+    <loc>https://wellagora.hu/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://wellagora.org/piacer</loc>
+    <loc>https://wellagora.hu/piacer</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://wellagora.org/esemenyek</loc>
+    <loc>https://wellagora.hu/programs</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://wellagora.org/community</loc>
+    <loc>https://wellagora.hu/esemenyek</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://wellagora.hu/community</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://wellagora.org/contact</loc>
+    <loc>https://wellagora.hu/blog</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://wellagora.hu/gyik</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://wellagora.hu/partners</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://wellagora.hu/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://wellagora.org/privacy-policy</loc>
+    <loc>https://wellagora.hu/privacy-policy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://wellagora.org/impressum</loc>
+    <loc>https://wellagora.hu/impressum</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://wellagora.org/terms</loc>
+    <loc>https://wellagora.hu/terms</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

@@ -1,0 +1,35 @@
+# WellAgora — Impact Marketplace
+> Regional knowledge-sharing community platform for sustainability, well-being, and resilience.
+
+## About
+WellAgora is a community platform connecting local experts with people interested in sustainability, crafts, gastronomy, gardening, well-being, and community building. Based in the Káli Basin, Hungary, WellAgora enables experts to share workshops, courses, and experiences while sponsors support local programs.
+
+## Key Features
+- **Marketplace**: Browse workshops, courses, and experiences from local experts
+- **Events**: Community events including cooking, gardening, hiking, and more
+- **Expert Profiles**: Verified local experts sharing their knowledge
+- **Sponsorship**: Organizations can sponsor programs and experts
+- **Multilingual**: Available in Hungarian (hu), English (en), and German (de)
+
+## Content Categories
+Lifestyle, Craft, Gastronomy, Well-Being & Resilience, Hiking, Gardening, Heritage, Volunteering, Market, Community, Sport, Culture, Family
+
+## URLs
+- Homepage: https://wellagora.hu/
+- Marketplace: https://wellagora.hu/piacer
+- Events: https://wellagora.hu/esemenyek
+- Community: https://wellagora.hu/community
+- Knowledge Base: https://wellagora.hu/blog
+- FAQ: https://wellagora.hu/gyik
+- Partners: https://wellagora.hu/partners
+- Contact: https://wellagora.hu/contact
+
+## Technical
+- Built with React, TypeScript, Vite, TailwindCSS
+- Backend: Supabase (PostgreSQL, Auth, Storage)
+- Hosting: Nethely.hu (Hungary)
+- Domain: wellagora.hu
+
+## Contact
+- Email: info@wellagora.hu
+- Location: Káli Basin, Hungary

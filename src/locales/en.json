@@ -183,20 +183,42 @@
     "browse_programs": "Browse Programs"
   },
   "points": {
-    "post_created": "Post created",
-    "comment_added": "Comment added",
-    "like_given": "Like given",
-    "like_received": "Like received",
-    "program_completed": "Program completed",
-    "lesson_completed": "Lesson completed",
-    "review_submitted": "Review submitted",
-    "daily_login": "Daily login",
-    "referral_bonus": "Referral bonus",
-    "voucher_redeemed": "Voucher redeemed",
-    "event_attended": "Event attended",
-    "profile_completed": "Profile completed",
-    "first_post": "First post",
-    "streak_bonus": "Streak bonus"
+    "total_points": "Total Points",
+    "level": "Level",
+    "points_to_level": "points to level",
+    "challenges_completed": "Challenges Completed",
+    "current_streak": "Current Streak",
+    "days": "days",
+    "your_badges": "Your Badges",
+    "your_badges_desc": "Achievements you've unlocked through your sustainability journey",
+    "available_badges": "Available Badges",
+    "available_badges_desc": "Unlock these badges by completing specific challenges and milestones",
+    "earned_on": "Earned on",
+    "leaderboard": "Leaderboard",
+    "leaderboard_desc": "See how you rank among other sustainability champions",
+    "you": "You",
+    "challenges": "challenges",
+    "points": "points",
+    "rarity": {
+      "common": "common",
+      "rare": "rare",
+      "epic": "epic",
+      "legendary": "legendary"
+    },
+    "badge": {
+      "first_steps": "First Steps",
+      "first_steps_desc": "Completed your first challenge",
+      "plastic_warrior": "Plastic Warrior",
+      "plastic_warrior_desc": "Completed 5 waste reduction challenges",
+      "energy_saver": "Energy Saver",
+      "energy_saver_desc": "Reduced energy consumption by 30%",
+      "transport_hero": "Transport Hero",
+      "transport_hero_desc": "Complete 3 sustainable transport challenges",
+      "community_leader": "Community Leader",
+      "community_leader_desc": "Organize a community environmental project",
+      "green_streak": "Green Streak",
+      "green_streak_desc": "Maintain a 30-day activity streak"
+    }
   },
   "lessons": {
     "title": "Lessons",
@@ -2021,7 +2043,9 @@
     "handprint_calculator": "Handprint Calculator",
     "sponsor_dashboard": "Credit Dashboard",
     "sponsor_center": "Sponsori Központ",
-    "project_admin": "[TODO: Projekt admin]"
+    "project_admin": "[TODO: Projekt admin]",
+    "blog": "Knowledge Base",
+    "faq": "FAQ"
   },
   "impact_counter": {
     "badge": "Live Impact",
@@ -3281,93 +3305,24 @@
     "propose_collaboration": "Propose Collaboration"
   },
   "gamification": {
-    "impact_forest": "Impact Forest",
-    "events": {
-      "_value": "Events",
-      "earth_month": {
-        "name": "Earth Month Mega Challenge",
-        "description": "Join 10,000+ participants in the largest sustainability challenge ever!",
-        "reward": "Exclusive Earth Guardian Badge + Tree Planting Certificate"
-      },
-      "solar_sprint": {
-        "name": "Summer Solstice Solar Sprint",
-        "description": "Switch to renewable energy and win solar-powered rewards",
-        "reward": "Solar Power Bank + Sustainability Toolkit"
-      }
+    "welcome": "Welcome, {{name}}!",
+    "your_points": "WellPoints",
+    "today_earned": "+{{points}} today",
+    "streak": "day streak",
+    "start_streak": "Start a new streak!",
+    "how_to_earn": "How to earn points",
+    "what_to_spend": "What can you spend your points on?",
+    "level": {
+      "beginner": "Beginner",
+      "explorer": "Explorer",
+      "active": "Active Member",
+      "builder": "Community Builder",
+      "master": "Master",
+      "legend": "Legend"
     },
-    "teams": "Teams",
-    "rewards": "Rewards",
-    "your_impact_forest": "Your Impact Forest",
-    "forest_description": "Watch your sustainability actions grow into a thriving digital forest. Each category of actions grows its own tree!",
-    "tree": {
-      "1": "Energy Conservation Oak",
-      "2": "Transport Efficiency Pine",
-      "3": "Waste Reduction Willow",
-      "4": "Community Action Cedar"
-    },
-    "stage": {
-      "seed": "seed",
-      "sprout": "sprout",
-      "sapling": "sapling",
-      "tree": "tree",
-      "forest": "forest"
-    },
-    "co2_absorbed": "CO₂ Absorbed",
-    "actions": "Actions",
-    "days_active": "Days Active",
-    "forest_health_score": "Forest Health Score",
-    "overall_ecosystem": "Your overall ecosystem impact",
-    "thriving": "Thriving",
-    "active": "Active",
-    "participants": "participants",
-    "event_progress": "Event Progress",
-    "reward": "Reward",
-    "join_event": "Join Event",
-    "coming_soon": "Coming Soon",
-    "members": "members",
-    "remaining": "remaining",
-    "team_progress": "Team Progress",
-    "invite_friends": "Invite Friends",
-    "join_team": "Join Team",
-    "team_challenges": {
-      "green_squad": {
-        "name": "Neighborhood Green Squad",
-        "time_left": "5 days",
-        "reward": "Community Garden Startup Kit"
-      },
-      "eco_warriors": {
-        "name": "Office Eco Warriors",
-        "time_left": "12 days",
-        "reward": "Company Sustainability Audit"
-      }
-    },
-    "redeem": "Redeem",
-    "donate": "Donate",
-    "rewards_catalog": {
-      "plant_tree": {
-        "name": "Plant a Real Tree",
-        "points": "1,000 points"
-      },
-      "eco_bundle": {
-        "name": "Eco Product Bundle",
-        "points": "1,500 points"
-      },
-      "charity": {
-        "name": "Charity Donation",
-        "points": "[TODO: 500 pont]"
-      }
-    },
-    "my_garden": "My Impact Garden",
-    "level": "Level",
-    "seed": "Seed",
-    "seedling": "Seedling",
-    "growing_tree": "Growing Tree",
-    "strong_tree": "Strong Tree",
-    "forest": "Forest",
-    "next_level": "Next level",
-    "points_to_next": "points to next level",
-    "points": "Points",
-    "challenges": "Programs"
+    "points_to_next": "{{points}} WP to next level",
+    "active_programs": "Your active programs",
+    "your_vouchers": "Your vouchers"
   },
   "dashboard": {
     "hello": "Hello",
@@ -3975,44 +3930,6 @@
     "ready_to_start": "Ready to get started?",
     "join_champions": "Join more than 1,500 sustainability champions who are already building the future!",
     "start_now": "Start Now"
-  },
-  "points": {
-    "total_points": "Total Points",
-    "level": "Level",
-    "points_to_level": "points to level",
-    "challenges_completed": "Challenges Completed",
-    "current_streak": "Current Streak",
-    "days": "days",
-    "your_badges": "Your Badges",
-    "your_badges_desc": "Achievements you've unlocked through your sustainability journey",
-    "available_badges": "Available Badges",
-    "available_badges_desc": "Unlock these badges by completing specific challenges and milestones",
-    "earned_on": "Earned on",
-    "leaderboard": "Leaderboard",
-    "leaderboard_desc": "See how you rank among other sustainability champions",
-    "you": "You",
-    "challenges": "challenges",
-    "points": "points",
-    "rarity": {
-      "common": "common",
-      "rare": "rare",
-      "epic": "epic",
-      "legendary": "legendary"
-    },
-    "badge": {
-      "first_steps": "First Steps",
-      "first_steps_desc": "Completed your first challenge",
-      "plastic_warrior": "Plastic Warrior",
-      "plastic_warrior_desc": "Completed 5 waste reduction challenges",
-      "energy_saver": "Energy Saver",
-      "energy_saver_desc": "Reduced energy consumption by 30%",
-      "transport_hero": "Transport Hero",
-      "transport_hero_desc": "Complete 3 sustainable transport challenges",
-      "community_leader": "Community Leader",
-      "community_leader_desc": "Organize a community environmental project",
-      "green_streak": "Green Streak",
-      "green_streak_desc": "Maintain a 30-day activity streak"
-    }
   },
   "celebration": {
     "achievement_unlocked": "Achievement Unlocked!",
@@ -4744,18 +4661,10 @@
     "final_cta_button": "Get Started Now"
   },
   "referral": {
-    "invite_friends": "Invite Friends",
-    "your_code": "Your referral code",
-    "copy_link": "Copy link",
-    "share_link": "Share",
-    "stats_invited": "Invited",
-    "stats_joined": "Joined",
-    "stats_completed": "Completed",
-    "stats_points": "Points",
-    "reward_hint": "Earn 100 points when your friend completes their first challenge!",
-    "link_copied": "Link copied!",
-    "share_message": "Join me on this sustainability journey!",
-    "email_subject": "Join our sustainability community!"
+    "grow_community": "Grow the community!",
+    "invite_bonus": "Invite a friend and get 100 WellPoints",
+    "copy_link": "Copy invite link",
+    "link_copied": "Link copied!"
   },
   "nearby": {
     "title": "Search nearby",
@@ -4905,32 +4814,6 @@
     "wellbot_replied": "WellBot replied to this question",
     "ai_assistant": "AI Assistant",
     "chat_with_wellbot": "Ask WellBot"
-  },
-  "referral": {
-    "grow_community": "Grow the community!",
-    "invite_bonus": "Invite a friend and get 100 WellPoints",
-    "copy_link": "Copy invite link",
-    "link_copied": "Link copied!"
-  },
-  "gamification": {
-    "welcome": "Welcome, {{name}}!",
-    "your_points": "WellPoints",
-    "today_earned": "+{{points}} today",
-    "streak": "day streak",
-    "start_streak": "Start a new streak!",
-    "how_to_earn": "How to earn points",
-    "what_to_spend": "What can you spend your points on?",
-    "level": {
-      "beginner": "Beginner",
-      "explorer": "Explorer",
-      "active": "Active Member",
-      "builder": "Community Builder",
-      "master": "Master",
-      "legend": "Legend"
-    },
-    "points_to_next": "{{points}} WP to next level",
-    "active_programs": "Your active programs",
-    "your_vouchers": "Your vouchers"
   },
   "sponsor_hub": {
     "title": "Sponsor Hub",
@@ -5138,5 +5021,35 @@
   "cancel.confirm": "Are you sure?",
   "cancel.refund_full": "100% refund (as platform credit)",
   "cancel.refund_half": "50% refund (as platform credit)",
-  "cancel.refund_none": "No refund"
+  "cancel.refund_none": "No refund",
+  "blog": {
+    "article_1_title": "What is a Sustainable Community?",
+    "article_1_excerpt": "How to build a local community where knowledge sharing, collaboration, and sustainability go hand in hand.",
+    "article_2_title": "The Power of Local Knowledge Sharing",
+    "article_2_excerpt": "Why is it important to preserve and pass on the knowledge of local experts? How does WellAgora help?",
+    "article_3_title": "Sustainability in the Káli Basin",
+    "article_3_excerpt": "The sustainable community building experiment of the Káli Basin — how WellAgora's pilot project started.",
+    "article_4_title": "Founding Expert Program: Be the First!",
+    "article_4_excerpt": "Join the Founding Expert program and share your knowledge as one of the first 20 experts.",
+    "article_5_title": "Well-Being and Resilience: A New Approach",
+    "article_5_excerpt": "Instead of wellness, we talk about well-being and resilience — why is this important in community building?"
+  },
+  "faq": {
+    "q1": "What is WellAgora?",
+    "a1": "WellAgora is a regional knowledge-sharing community platform where local experts can share their knowledge, workshops, and experiences on sustainability, well-being, and community building.",
+    "q2": "How can I become an Expert?",
+    "a2": "Apply for the Founding Expert program! The first 20 experts get free premium access. Register and apply through your profile.",
+    "q3": "How much does WellAgora cost?",
+    "a3": "Registration and browsing are free. Experts set their own program prices. There are also free and sponsored programs.",
+    "q4": "How can I support the community?",
+    "a4": "As a sponsor, you can support local programs and experts. Visit the Partners page for sponsor package details.",
+    "q5": "What programs can I find on the marketplace?",
+    "a5": "Workshops, courses, and experiences on sustainability, crafts, gastronomy, gardening, well-being, and many more topics.",
+    "q6": "How does the event calendar work?",
+    "a6": "In the event calendar, you can find local community events — cooking, gardening, hiking. RSVP and participate!",
+    "q7": "Is my account secure?",
+    "a7": "Yes, WellAgora uses the Supabase platform for secure authentication and data storage. Your data is stored in the EU.",
+    "q8": "How can I contact the team?",
+    "a8": "Write to us through the Contact page, or send an email to info@wellagora.hu."
+  }
 }

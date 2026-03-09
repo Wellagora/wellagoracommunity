@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Calendar, MapPin, Users, Gift } from "lucide-react";
 import { motion } from "framer-motion";
 import { resolveImageUrl, resolveAvatarUrl } from "@/lib/imageResolver";
+import EventJsonLd from "@/components/seo/EventJsonLd";
 
 interface EventDetail {
   id: string;
@@ -253,9 +254,27 @@ const EventDetailPageNew = () => {
   }
 
   const isSponsored = event.event_sponsors && event.event_sponsors.length > 0;
+  const organizerName = event.creator
+    ? `${event.creator.first_name || ''} ${event.creator.last_name || ''}`.trim()
+    : undefined;
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Event Schema for SEO */}
+      <EventJsonLd
+        name={getLocalizedTitle()}
+        description={getLocalizedDescription() || undefined}
+        startDate={event.start_date}
+        endDate={event.end_date || undefined}
+        locationName={event.location_name || undefined}
+        locationAddress={event.location_address || undefined}
+        image={event.image_url ? resolveImageUrl(event.image_url) || undefined : undefined}
+        url={`/esemenyek/${event.id}`}
+        organizerName={organizerName}
+        isFree={event.is_free}
+        maxAttendees={event.max_participants || undefined}
+        currentAttendees={event.current_participants}
+      />
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Back Link */}
         <Link
