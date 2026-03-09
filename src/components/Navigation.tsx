@@ -597,9 +597,9 @@ const Navigation = () => {
                 to="/profile"
                 className="flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px]"
               >
-                <Avatar className="h-8 w-8 ring-2 ring-black/5">
+                <Avatar className="h-8 w-8 ring-2 ring-emerald-200">
                   <AvatarImage src={profile.avatar_url || undefined} />
-                  <AvatarFallback className="bg-black text-white text-xs">
+                  <AvatarFallback className="bg-emerald-600 text-white text-xs">
                     {profile.first_name?.[0]}{profile.last_name?.[0]}
                   </AvatarFallback>
                 </Avatar>

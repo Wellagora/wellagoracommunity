@@ -5,25 +5,25 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 /**
- * Salesforce AI-Inspired Button Component
- * Magnetic hover feel with scale and press effects
+ * Modern Community Creator Platform Button
+ * Emerald-based design system with subtle hover effects
  */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 transition-all duration-300 ease-out",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 transition-all duration-300 ease-out",
   {
     variants: {
       variant: {
-        // Primary: Pitch Black premium CTA with liquid hover
-        default: "bg-[#000000] text-white border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.15)] hover:scale-[1.03] active:scale-[0.97]",
-        destructive: "bg-[#333333] text-white hover:bg-[#222222] active:scale-[0.97]",
-        outline: "border border-black/[0.15] bg-transparent text-[#111111] hover:bg-[#111111] hover:text-white hover:border-transparent active:scale-[0.97]",
-        secondary: "bg-[#F5F5F7] text-[#111111] hover:bg-[#E8E8EA] active:scale-[0.97]",
-        ghost: "text-[#111111] hover:bg-black/[0.04]",
-        link: "text-[#111111] underline-offset-4 hover:underline",
-        // Premium: Extra polish with inner glow
-        premium: "bg-[#000000] text-white border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_4px_16px_rgba(0,0,0,0.2)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_12px_40px_rgba(0,0,0,0.35)] hover:scale-[1.04] active:scale-[0.96] font-bold",
+        // Primary: Emerald CTA
+        default: "bg-emerald-600 text-white shadow-md shadow-emerald-600/20 hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-600/25 hover:scale-[1.02] active:scale-[0.97]",
+        destructive: "bg-red-600 text-white hover:bg-red-700 active:scale-[0.97]",
+        outline: "border border-emerald-200 bg-transparent text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300 active:scale-[0.97]",
+        secondary: "bg-gray-100 text-foreground hover:bg-gray-200 active:scale-[0.97]",
+        ghost: "text-foreground hover:bg-gray-100",
+        link: "text-emerald-700 underline-offset-4 hover:underline",
+        // Premium: Extra polish
+        premium: "bg-emerald-600 text-white shadow-lg shadow-emerald-600/25 hover:bg-emerald-700 hover:shadow-xl hover:shadow-emerald-600/30 hover:scale-[1.03] active:scale-[0.96] font-bold",
         // Glass: Clean glass effect
-        glass: "bg-white/90 backdrop-blur-xl border border-black/[0.05] text-[#111111] hover:bg-white hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] active:scale-[0.97]",
+        glass: "bg-white/90 backdrop-blur-xl border border-emerald-100 text-foreground hover:bg-white hover:shadow-md hover:border-emerald-200 active:scale-[0.97]",
       },
       size: {
         default: "h-11 px-7 py-2",

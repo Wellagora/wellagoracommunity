@@ -58,7 +58,7 @@ const Index = () => {
                       whileTap={{ scale: 0.95 }}
                       transition={{ type: "spring", stiffness: 400, damping: 17 }}
                     >
-                      <Button size="lg" className="min-w-[200px] gap-2 bg-black hover:bg-black/90 text-white">
+                      <Button size="lg" className="min-w-[200px] gap-2">
                         {t("index.post_login_primary_cta")}
                         <ChevronRight className="w-5 h-5" />
                       </Button>
