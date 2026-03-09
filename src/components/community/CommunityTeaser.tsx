@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Users,
   Star,
@@ -12,6 +10,8 @@ import {
   ArrowRight,
   Sparkles,
   Heart,
+  Leaf,
+  MessageCircle,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -42,30 +42,33 @@ const CommunityTeaser = () => {
     fetchStats();
   }, []);
 
-  const previewStats = [
-    { label: t('community.teaser.members'), value: memberCount > 0 ? `${memberCount}` : '—', icon: Users },
-    { label: t('community.teaser.experts'), value: expertCount > 0 ? `${expertCount}` : '—', icon: Star },
-    { label: t('community.teaser.events_monthly'), value: programCount > 0 ? `${programCount}` : '—', icon: Calendar },
-  ];
+  const hasStats = memberCount > 0 || expertCount > 0 || programCount > 0;
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
+    <div className="min-h-screen bg-white">
+      {/* Hero */}
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/80 via-background to-amber-50/50" />
-        <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-200/30 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-amber-200/20 rounded-full blur-3xl" />
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-emerald-100/50 rounded-full blur-[100px]" />
+          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-amber-100/30 rounded-full blur-[80px]" />
+        </div>
 
-        <div className="relative container mx-auto px-4 py-16 md:py-24 text-center">
-          <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 mb-6">
-            <Users className="h-4 w-4 mr-1" />
-            {t('community.teaser.badge')}
-          </Badge>
+        <div className="relative container mx-auto px-4 pt-16 pb-12 md:pt-24 md:pb-16 text-center">
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200/60 mb-8"
+          >
+            <Users className="h-4 w-4 text-emerald-600" />
+            <span className="text-sm font-medium text-emerald-700">{t('community.teaser.badge')}</span>
+          </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-foreground"
+            transition={{ delay: 0.1 }}
+            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-foreground tracking-tight"
           >
             {t('community.teaser.title')}
           </motion.h1>
@@ -73,156 +76,181 @@ const CommunityTeaser = () => {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8"
+            transition={{ delay: 0.2 }}
+            className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10"
           >
             {t('community.teaser.subtitle')}
           </motion.p>
 
-          {/* Stats Preview - only show if there are any real stats */}
-          {(memberCount > 0 || expertCount > 0 || programCount > 0) && (
+          {/* Stats inline */}
+          {hasStats && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="flex flex-wrap justify-center gap-6 mb-12"
+              transition={{ delay: 0.3 }}
+              className="flex flex-wrap justify-center gap-8 md:gap-12 mb-10"
             >
-              {previewStats.map((stat, index) => {
-                const Icon = stat.icon;
-                if (stat.value === '—') return null;
-                return (
-                  <div key={index} className="flex items-center gap-3 px-6 py-3 bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-border/50">
-                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                      <Icon className="h-5 w-5 text-emerald-600" />
-                    </div>
-                    <div className="text-left">
-                      <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-                      <p className="text-sm text-muted-foreground">{stat.label}</p>
-                    </div>
+              {memberCount > 0 && (
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                    <Users className="h-4 w-4 text-emerald-600" />
                   </div>
-                );
-              })}
+                  <span className="text-xl font-bold text-foreground">{memberCount}</span>
+                  <span className="text-sm text-muted-foreground">{t('community.teaser.members')}</span>
+                </div>
+              )}
+              {expertCount > 0 && (
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
+                    <Star className="h-4 w-4 text-amber-600" />
+                  </div>
+                  <span className="text-xl font-bold text-foreground">{expertCount}</span>
+                  <span className="text-sm text-muted-foreground">{t('community.teaser.experts')}</span>
+                </div>
+              )}
+              {programCount > 0 && (
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center">
+                    <Calendar className="h-4 w-4 text-teal-600" />
+                  </div>
+                  <span className="text-xl font-bold text-foreground">{programCount}</span>
+                  <span className="text-sm text-muted-foreground">{t('community.teaser.events_monthly')}</span>
+                </div>
+              )}
             </motion.div>
           )}
+
+          {/* CTA inline */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="flex flex-col sm:flex-row gap-3 justify-center"
+          >
+            <Button
+              size="lg"
+              onClick={() => navigate('/auth?tab=register')}
+              className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 shadow-lg shadow-emerald-600/25"
+            >
+              {t('community.teaser.cta_register')}
+              <ArrowRight className="h-4 w-4 ml-2" />
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => navigate('/auth')}
+              className="rounded-full border-foreground/20 text-foreground hover:bg-foreground/5 font-semibold px-8"
+            >
+              {t('community.teaser.cta_login')}
+            </Button>
+          </motion.div>
         </div>
       </div>
 
-      {/* Features Preview */}
-      <div className="container mx-auto px-4 pb-16">
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {/* Features List */}
-          <Card className="relative overflow-hidden border-border/50 bg-white/80 backdrop-blur-sm">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Sparkles className="h-5 w-5 text-amber-500" />
-                <h3 className="font-semibold text-foreground">{t('community.teaser.exclusive_features')}</h3>
+      {/* Bento Grid Features */}
+      <div className="container mx-auto px-4 pb-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto">
+          {/* Feature: Experts — spans 2 cols */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="md:col-span-2 group relative rounded-2xl border border-border/50 bg-white hover:border-emerald-200/60 hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/0 to-amber-50/0 group-hover:from-emerald-50/40 group-hover:to-amber-50/20 transition-all duration-300 rounded-2xl" />
+            <div className="relative flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+                <Users className="h-6 w-6 text-emerald-600" />
               </div>
+              <div>
+                <h3 className="font-semibold text-foreground text-lg mb-1">{t('community.teaser.exclusive_features')}</h3>
+                <p className="text-sm text-muted-foreground">{t('community.teaser.feature_experts')}</p>
+              </div>
+            </div>
+          </motion.div>
 
-              <div className="space-y-3">
-                {[
-                  { icon: Users, text: t('community.teaser.feature_experts') },
-                  { icon: Calendar, text: t('community.teaser.feature_events') },
-                  { icon: Heart, text: t('community.teaser.feature_gallery') },
-                  { icon: Star, text: t('community.teaser.feature_ratings') },
-                ].map((feature, index) => {
-                  const Icon = feature.icon;
-                  return (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.4 + index * 0.1 }}
-                      className="flex items-center gap-3 p-3 rounded-xl bg-muted/50"
-                    >
-                      <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
-                        <Icon className="h-4 w-4 text-amber-600" />
-                      </div>
-                      <p className="text-sm text-foreground">{feature.text}</p>
-                    </motion.div>
-                  );
-                })}
+          {/* Feature: Events — single col */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="group relative rounded-2xl border border-border/50 bg-white hover:border-amber-200/60 hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-50/0 to-orange-50/0 group-hover:from-amber-50/40 group-hover:to-orange-50/20 transition-all duration-300 rounded-2xl" />
+            <div className="relative">
+              <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center mb-3">
+                <Calendar className="h-6 w-6 text-amber-600" />
               </div>
-            </CardContent>
-          </Card>
+              <h3 className="font-semibold text-foreground mb-1">{t('community.teaser.feature_events')}</h3>
+            </div>
+          </motion.div>
 
-          {/* Community Values */}
-          <Card className="relative overflow-hidden border-border/50 bg-white/80 backdrop-blur-sm">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Heart className="h-5 w-5 text-emerald-500" />
-                <h3 className="font-semibold text-foreground">{t('community.teaser.community_values')}</h3>
+          {/* Feature: Gallery — single col */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.65 }}
+            className="group relative rounded-2xl border border-border/50 bg-white hover:border-rose-200/60 hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-rose-50/0 to-pink-50/0 group-hover:from-rose-50/40 group-hover:to-pink-50/20 transition-all duration-300 rounded-2xl" />
+            <div className="relative">
+              <div className="w-12 h-12 rounded-xl bg-rose-50 flex items-center justify-center mb-3">
+                <Heart className="h-6 w-6 text-rose-500" />
               </div>
+              <h3 className="font-semibold text-foreground mb-1">{t('community.teaser.feature_gallery')}</h3>
+            </div>
+          </motion.div>
 
-              <div className="space-y-3">
-                {[
-                  { icon: Sparkles, text: t('community.teaser.value_local') },
-                  { icon: Heart, text: t('community.teaser.value_sustainable') },
-                  { icon: Star, text: t('community.teaser.value_support') },
-                ].map((feature, index) => {
-                  const Icon = feature.icon;
-                  return (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.3 + index * 0.1 }}
-                      className="flex items-center gap-3 p-3 rounded-xl bg-muted/50"
-                    >
-                      <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                        <Icon className="h-4 w-4 text-emerald-600" />
-                      </div>
-                      <p className="text-sm text-foreground">{feature.text}</p>
-                    </motion.div>
-                  );
-                })}
+          {/* Feature: Ratings — single col */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+            className="group relative rounded-2xl border border-border/50 bg-white hover:border-teal-200/60 hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-teal-50/0 to-emerald-50/0 group-hover:from-teal-50/40 group-hover:to-emerald-50/20 transition-all duration-300 rounded-2xl" />
+            <div className="relative">
+              <div className="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center mb-3">
+                <Star className="h-6 w-6 text-teal-600" />
               </div>
-            </CardContent>
-          </Card>
+              <h3 className="font-semibold text-foreground mb-1">{t('community.teaser.feature_ratings')}</h3>
+            </div>
+          </motion.div>
+
+          {/* Values — spans 2 cols + 1 col */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.75 }}
+            className="group relative rounded-2xl border border-border/50 bg-gradient-to-br from-emerald-50/30 to-white hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
+          >
+            <div className="relative flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
+                <Leaf className="h-6 w-6 text-emerald-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground mb-1">{t('community.teaser.value_sustainable')}</h3>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="md:col-span-2 group relative rounded-2xl border border-border/50 bg-gradient-to-br from-amber-50/30 to-white hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
+          >
+            <div className="relative flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
+                <MessageCircle className="h-6 w-6 text-amber-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground text-lg mb-1">{t('community.teaser.value_support')}</h3>
+                <p className="text-sm text-muted-foreground">{t('community.teaser.value_local')}</p>
+              </div>
+            </div>
+          </motion.div>
         </div>
-
-        {/* CTA Section — light, modern design */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mt-12 text-center"
-        >
-          <div className="max-w-2xl mx-auto relative">
-            {/* Soft gradient glow behind */}
-            <div className="absolute -inset-4 bg-gradient-to-r from-emerald-200/40 via-amber-100/30 to-emerald-200/40 rounded-3xl blur-2xl" />
-
-            <Card className="relative bg-white/90 backdrop-blur-sm border border-emerald-200/60 shadow-lg overflow-hidden">
-              <CardContent className="p-8">
-                <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-emerald-100 to-amber-50 flex items-center justify-center">
-                  <Users className="h-7 w-7 text-emerald-600" />
-                </div>
-                <h2 className="text-2xl font-bold mb-3 text-foreground">{t('community.teaser.cta_title')}</h2>
-                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                  {t('community.teaser.cta_description')}
-                </p>
-
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <Button
-                    size="lg"
-                    onClick={() => navigate('/auth?tab=register')}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 shadow-md"
-                  >
-                    {t('community.teaser.cta_register')}
-                    <ArrowRight className="h-4 w-4 ml-2" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    onClick={() => navigate('/auth')}
-                    className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"
-                  >
-                    {t('community.teaser.cta_login')}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </motion.div>
       </div>
     </div>
   );

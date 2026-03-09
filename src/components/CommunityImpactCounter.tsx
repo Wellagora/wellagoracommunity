@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { PressableButton } from "@/components/ui/PressableButton";
-import { Sparkles, Heart, Users, LucideIcon, TrendingUp, Zap } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sparkles, Heart, Users, LucideIcon, ArrowRight, Zap } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion, useInView } from "framer-motion";
@@ -72,7 +72,7 @@ export const CommunityImpactCounter = () => {
   return (
     <section 
       ref={sectionRef} 
-      className="py-16 bg-gradient-to-b from-white via-amber-50/30 to-white"
+      className="py-16 bg-gradient-to-b from-gray-50/80 to-white"
     >
       <div className="container mx-auto px-4 max-w-5xl">
         {/* Header with animated badge */}
@@ -93,29 +93,34 @@ export const CommunityImpactCounter = () => {
             </span>
           </div>
           
-          <h2 className="text-3xl md:text-4xl font-bold text-black mb-3">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3 tracking-tight">
             {t('community_pulse.title')}
           </h2>
-          <p className="text-black/50 max-w-xl mx-auto">
+          <p className="text-muted-foreground max-w-xl mx-auto">
             {t('community_pulse.subtitle')}
           </p>
         </motion.div>
 
-        {/* Value Proposition Cards - No fake testimonials */}
-        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        {/* Value Proposition Cards */}
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
           {VALUE_CARD_CONFIG.map((card) => (
             <StaggerItem key={card.id}>
-              <Card className={`h-full bg-white/90 backdrop-blur-xl border-[0.5px] border-black/5 border-l-4 ${card.borderColor} hover:shadow-lg hover:scale-[1.02] transition-all duration-300`}>
-                <CardContent className="p-5">
-                  <div className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center mb-4">
-                    <card.icon className="w-5 h-5 text-black/70" />
+              <div className={`h-full group relative rounded-2xl border border-border/50 bg-white hover:shadow-lg transition-all duration-300 p-6 overflow-hidden`}>
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/0 to-amber-50/0 group-hover:from-emerald-50/40 group-hover:to-amber-50/20 transition-all duration-300 rounded-2xl" />
+                <div className="relative">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${
+                    card.id === 'community' ? 'bg-emerald-50 text-emerald-600' :
+                    card.id === 'experiences' ? 'bg-amber-50 text-amber-600' :
+                    'bg-rose-50 text-rose-500'
+                  } group-hover:scale-110 transition-transform`}>
+                    <card.icon className="w-6 h-6" />
                   </div>
-                  <h3 className="font-bold text-black">{t(card.titleKey)}</h3>
-                  <p className="text-black/60 mt-2 text-sm leading-relaxed">
+                  <h3 className="font-semibold text-foreground text-lg mb-2">{t(card.titleKey)}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
                     {t(card.descKey)}
                   </p>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </StaggerItem>
           ))}
         </StaggerContainer>
@@ -126,7 +131,7 @@ export const CommunityImpactCounter = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
-          <Card className="p-6 md:p-8 bg-white/95 backdrop-blur-xl border-[0.5px] border-black/5 shadow-[0_8px_32px_rgba(0,0,0,0.06)]">
+          <Card className="p-6 md:p-8 bg-white rounded-2xl border border-border/50 shadow-sm">
             {/* Feed Header */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
@@ -136,10 +141,10 @@ export const CommunityImpactCounter = () => {
                   <div className="absolute w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
                 </div>
                 <div>
-                  <span className="font-semibold text-black">
+                  <span className="font-semibold text-foreground">
                     {t('community_pulse.feed_title')}
                   </span>
-                  <p className="text-xs text-black/40">
+                  <p className="text-xs text-muted-foreground">
                     {language === 'hu' ? 'Valós idejű frissítések' : language === 'de' ? 'Echtzeit-Updates' : 'Real-time updates'}
                   </p>
                 </div>
@@ -159,40 +164,33 @@ export const CommunityImpactCounter = () => {
           </Card>
         </motion.div>
 
-        {/* CTA with Social Proof - Only show for non-authenticated users */}
+        {/* CTA - Only show for non-authenticated users */}
         {!user && (
-          <motion.div 
+          <motion.div
             className="text-center mt-12"
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
-            {/* Social proof badge */}
             {memberCount > 0 && (
               <div className="flex items-center justify-center gap-2 mb-4">
                 <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
                   <Users className="w-4 h-4 text-emerald-600" />
                 </div>
-                <span className="text-sm text-black/60 font-medium">{socialProofText}</span>
+                <span className="text-sm text-muted-foreground font-medium">{socialProofText}</span>
               </div>
             )}
-            
-            {/* CTA Button with glow effect */}
-            <div className="relative inline-block">
-              {/* Subtle glow behind button */}
-              <div className="absolute inset-0 bg-black/20 blur-xl rounded-full scale-75 opacity-50" />
-              
-              <PressableButton 
-                asChild 
-                size="lg" 
-                className="relative bg-black hover:bg-black/90 text-white px-10 py-6 text-base font-semibold shadow-[0_4px_20px_rgba(0,0,0,0.25)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.35)] transition-all duration-300"
-              >
-                <Link to="/auth" className="flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5" />
-                  {t('community_pulse.cta_button')}
-                </Link>
-              </PressableButton>
-            </div>
+
+            <Button
+              asChild
+              size="lg"
+              className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white px-10 py-6 text-base font-semibold shadow-lg shadow-emerald-600/25 hover:shadow-xl hover:shadow-emerald-600/30 transition-all duration-300"
+            >
+              <Link to="/auth" className="flex items-center gap-2">
+                {t('community_pulse.cta_button')}
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </Button>
           </motion.div>
         )}
       </div>
