@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveImageUrl } from "@/lib/imageResolver";
@@ -8,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ChevronLeft, ChevronRight, Sparkles, Gift, ShoppingCart, BookOpen, Leaf } from "lucide-react";
+import { ChevronLeft, ChevronRight, Sparkles, Gift, ShoppingCart, BookOpen, Leaf, Plus, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -33,7 +34,9 @@ interface Program {
 
 const RecommendedProgramsSlider = () => {
   const { t, language } = useLanguage();
+  const { user, profile } = useAuth();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const isExpert = profile?.user_role === 'creator' || profile?.user_role === 'expert';
 
   // Fetch real published programs from database
   const { data: programs = [], isLoading } = useQuery({
@@ -124,7 +127,7 @@ const RecommendedProgramsSlider = () => {
   // Loading skeleton
   if (isLoading) {
     return (
-      <section className="py-10 bg-gradient-to-b from-background via-black/[0.01] to-background">
+      <section className="py-10 bg-gradient-to-b from-background via-emerald-50/30 to-background">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-6">
             <Skeleton className="h-10 w-64" />
@@ -140,13 +143,62 @@ const RecommendedProgramsSlider = () => {
     );
   }
 
-  // Empty state — inspiring CTA instead of boring placeholder
+  // Empty state — role-aware CTA
   if (!programs || programs.length === 0) {
-    return null;
+    return (
+      <section className="py-10 bg-gradient-to-b from-background via-emerald-50/30 to-background">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="max-w-2xl mx-auto text-center"
+          >
+            <div className="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-5">
+              <Sparkles className="w-8 h-8 text-emerald-600" />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+              {language === 'hu' ? 'Hamarosan érkeznek a programok!' :
+               language === 'de' ? 'Programme kommen bald!' :
+               'Programs coming soon!'}
+            </h2>
+            <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
+              {isExpert
+                ? (language === 'hu' ? 'Hozd létre az első programodat, és jelenj meg itt a közösség számára!' :
+                   language === 'de' ? 'Erstelle dein erstes Programm und erscheine hier für die Community!' :
+                   'Create your first program and appear here for the community!')
+                : (language === 'hu' ? 'Szakértőink éppen készítik az első programokat. Nézz vissza hamarosan!' :
+                   language === 'de' ? 'Unsere Experten bereiten die ersten Programme vor. Schau bald wieder vorbei!' :
+                   'Our experts are preparing the first programs. Check back soon!')}
+            </p>
+            {isExpert ? (
+              <Link to="/szakertoi-studio">
+                <Button className="gap-2">
+                  <Plus className="w-4 h-4" />
+                  {language === 'hu' ? 'Program létrehozása' :
+                   language === 'de' ? 'Programm erstellen' :
+                   'Create Program'}
+                </Button>
+              </Link>
+            ) : (
+              <Link to="/piacer">
+                <Button variant="outline" className="gap-2">
+                  {language === 'hu' ? 'Piactér felfedezése' :
+                   language === 'de' ? 'Marktplatz entdecken' :
+                   'Explore Marketplace'}
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </Link>
+            )}
+          </motion.div>
+        </div>
+      </section>
+    );
   }
 
   return (
-    <section className="py-10 bg-gradient-to-b from-background via-black/[0.01] to-background">
+    <section className="py-10 bg-gradient-to-b from-background via-emerald-50/30 to-background">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -157,7 +209,7 @@ const RecommendedProgramsSlider = () => {
           {/* Header - Monochrome */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground">{t("index.workshop_secrets_title")}</h2>
@@ -209,7 +261,7 @@ const RecommendedProgramsSlider = () => {
                 <Link to={`/piacer/${program.id}`} className="block group">
                   <Card className="h-full overflow-hidden">
                     {/* Image with smooth zoom */}
-                    <div className="aspect-[4/3] bg-gradient-to-br from-black/[0.02] to-black/[0.06] relative overflow-hidden">
+                    <div className="aspect-[4/3] bg-gradient-to-br from-emerald-50/50 to-amber-50/30 relative overflow-hidden">
                       {program.image_url || program.thumbnail_url ? (
                         <img
                           src={program.image_url || program.thumbnail_url || ''}
@@ -230,13 +282,13 @@ const RecommendedProgramsSlider = () => {
                     <CardContent className="p-6">
                       {/* Category */}
                       {program.category && (
-                        <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-black/40 mb-3 block">
+                        <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-muted-foreground mb-3 block">
                           {t(`categories.${program.category}`)}
                         </span>
                       )}
                       
                       {/* Title - Serif */}
-                      <h3 className="text-lg font-medium text-foreground leading-snug line-clamp-2 group-hover:text-black transition-colors duration-300">
+                      <h3 className="text-lg font-medium text-foreground leading-snug line-clamp-2 group-hover:text-emerald-700 transition-colors duration-300">
                         {program.title}
                       </h3>
                     </CardContent>

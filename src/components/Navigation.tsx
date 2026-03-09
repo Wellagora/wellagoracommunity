@@ -273,19 +273,23 @@ const Navigation = () => {
       ];
     }
 
-    // EXPERT: Szakértői Stúdió, Események
+    // EXPERT: Szakértői Stúdió, Piactér, Események, Közösség
     if (roleToUse === 'expert') {
       return [
         { path: "/expert-studio", label: t("nav.expert_studio"), icon: Sparkles, iconColor: "text-amber-500" },
+        { path: "/programs", label: t("nav.marketplace"), icon: Store },
         { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
+        { path: "/community", label: t("nav.community"), icon: UsersIcon },
       ];
     }
 
-    // SPONSOR: Támogatói Központ, Események, Pénzügyek
+    // SPONSOR: Támogatói Központ, Piactér, Események, Közösség
     if (roleToUse === 'sponsor') {
       return [
         { path: "/sponsor-dashboard", label: t("nav.sponsor_hub"), icon: Building2, iconColor: "text-blue-500" },
+        { path: "/programs", label: t("nav.marketplace"), icon: Store },
         { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
+        { path: "/community", label: t("nav.community"), icon: UsersIcon },
         { path: "/sponsor-dashboard/finances", label: t("nav.finances"), icon: BarChart3 },
       ];
     }

@@ -4,7 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Calendar, MapPin, Clock, Star, ChevronRight } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Calendar, MapPin, Clock, Star, ChevronRight, Plus } from "lucide-react";
 import { format } from "date-fns";
 import { hu, de, enUS } from "date-fns/locale";
 import { Link } from "react-router-dom";
@@ -29,6 +30,8 @@ const EVENT_TITLE_TRANSLATIONS: Record<string, { en: string; de: string }> = {
 
 const FeaturedEventsGrid = () => {
   const { t, language } = useLanguage();
+  const { profile } = useAuth();
+  const isExpert = profile?.user_role === 'creator' || profile?.user_role === 'expert';
   const dateLocale = language === "hu" ? hu : language === "de" ? de : enUS;
 
   const { data: events, isLoading } = useQuery({
@@ -92,7 +95,47 @@ const FeaturedEventsGrid = () => {
   }
 
   if (!events || events.length === 0) {
-    return null;
+    return (
+      <section className="py-10 bg-background">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="max-w-2xl mx-auto text-center"
+          >
+            <div className="w-16 h-16 rounded-2xl bg-amber-50 flex items-center justify-center mx-auto mb-5">
+              <Calendar className="w-8 h-8 text-amber-500" />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+              {language === 'hu' ? 'Események hamarosan!' :
+               language === 'de' ? 'Veranstaltungen kommen bald!' :
+               'Events coming soon!'}
+            </h2>
+            <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
+              {isExpert
+                ? (language === 'hu' ? 'Hozd létre az első eseményedet, és építsd a közösségedet!' :
+                   language === 'de' ? 'Erstelle dein erstes Event und baue deine Community auf!' :
+                   'Create your first event and build your community!')
+                : (language === 'hu' ? 'Közösségünk hamarosan életre kel izgalmas eseményekkel. Nézz vissza!' :
+                   language === 'de' ? 'Unsere Community erwacht bald mit spannenden Events zum Leben. Schau wieder vorbei!' :
+                   'Our community will soon come alive with exciting events. Check back!')}
+            </p>
+            {isExpert && (
+              <Link to="/szakertoi-studio">
+                <Button className="gap-2">
+                  <Plus className="w-4 h-4" />
+                  {language === 'hu' ? 'Esemény létrehozása' :
+                   language === 'de' ? 'Event erstellen' :
+                   'Create Event'}
+                </Button>
+              </Link>
+            )}
+          </motion.div>
+        </div>
+      </section>
+    );
   }
 
   return (
