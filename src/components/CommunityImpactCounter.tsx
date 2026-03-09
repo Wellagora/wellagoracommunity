@@ -105,7 +105,7 @@ export const CommunityImpactCounter = () => {
         <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
           {VALUE_CARD_CONFIG.map((card) => (
             <StaggerItem key={card.id}>
-              <div className={`h-full group relative rounded-2xl border border-border/50 bg-white hover:shadow-lg transition-all duration-300 p-6 overflow-hidden`}>
+              <div className={`h-full group relative rounded-2xl border border-white/40 bg-white/60 backdrop-blur-xl hover:bg-white/80 hover:shadow-lg transition-all duration-300 p-6 overflow-hidden`}>
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/0 to-amber-50/0 group-hover:from-emerald-50/40 group-hover:to-amber-50/20 transition-all duration-300 rounded-2xl" />
                 <div className="relative">
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${
@@ -131,7 +131,7 @@ export const CommunityImpactCounter = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
-          <Card className="p-6 md:p-8 bg-white rounded-2xl border border-border/50 shadow-sm">
+          <Card variant="glass" className="p-6 md:p-8 rounded-2xl shadow-sm">
             {/* Feed Header */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">

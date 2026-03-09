@@ -1,22 +1,40 @@
 import { Link } from "react-router-dom";
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef, useMemo } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Users, Sparkles, ArrowRight, Leaf, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+/** Generate deterministic floating leaf positions */
+const generateLeaves = (count: number) =>
+  Array.from({ length: count }, (_, i) => ({
+    id: i,
+    left: `${(i * 17 + 7) % 100}%`,
+    size: 8 + (i % 3) * 4,
+    duration: 12 + (i % 5) * 3,
+    delay: (i * 2.3) % 10,
+    opacity: 0.15 + (i % 4) * 0.08,
+  }));
+
 const HeroSection = () => {
   const { t, language } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
+  const leaves = useMemo(() => generateLeaves(8), []);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"]
   });
 
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0.3]);
+  // Multi-layer parallax with spring physics
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+  const textY = useTransform(smoothProgress, [0, 1], [0, 80]);
+  const bgY = useTransform(smoothProgress, [0, 1], [0, 40]);
+  const opacity = useTransform(smoothProgress, [0, 0.5], [1, 0.2]);
+  const scale = useTransform(smoothProgress, [0, 0.5], [1, 0.97]);
+  const badgeY = useTransform(smoothProgress, [0, 1], [0, -30]);
 
   // Real stats from Supabase for social proof
   const { data: stats } = useQuery({
@@ -91,30 +109,48 @@ const HeroSection = () => {
 
   return (
     <>
-      {/* HERO — Modern, light with bold typography */}
+      {/* HERO — Multi-layer parallax with floating particles */}
       <section
         ref={sectionRef}
         className="relative overflow-hidden bg-white"
       >
-        {/* Subtle ambient gradient */}
-        <div className="absolute inset-0">
+        {/* Floating leaf particles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
+          {leaves.map((leaf) => (
+            <div
+              key={leaf.id}
+              className="floating-leaf"
+              style={{
+                left: leaf.left,
+                bottom: '-20px',
+                animationDuration: `${leaf.duration}s`,
+                animationDelay: `${leaf.delay}s`,
+                opacity: leaf.opacity,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Ambient gradient blurs — parallax layer (slower) */}
+        <motion.div className="absolute inset-0" style={{ y: bgY }}>
           <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-emerald-100/60 rounded-full blur-[120px]" />
           <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-amber-100/40 rounded-full blur-[100px]" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-teal-50/50 rounded-full blur-[80px]" />
-        </div>
+        </motion.div>
 
         <motion.div
-          style={{ opacity }}
+          style={{ opacity, scale }}
           className="relative z-10 container mx-auto px-4 pt-24 pb-20 md:pt-32 md:pb-28"
         >
-          {/* Badge */}
+          {/* Badge — faster parallax layer */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
+            style={{ y: badgeY }}
             className="flex justify-center mb-8"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200/60">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50/80 backdrop-blur-sm border border-emerald-200/60">
               <Sparkles className="w-4 h-4 text-emerald-600" />
               <span className="text-sm font-medium text-emerald-700">
                 {language === 'hu' ? 'Közösségi creator platform' : language === 'de' ? 'Community Creator Plattform' : 'Community Creator Platform'}
@@ -122,31 +158,33 @@ const HeroSection = () => {
             </div>
           </motion.div>
 
-          {/* Headline — Large, bold, one clear message */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-[1.1] tracking-tight max-w-4xl mx-auto"
-          >
-            {h.line1}{' '}
-            <span className="bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
-              {h.accent}
-            </span>{' '}
-            {h.line2}
-          </motion.h1>
+          {/* Headline — parallax text layer */}
+          <motion.div style={{ y: textY }}>
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-[1.1] tracking-tight max-w-4xl mx-auto"
+            >
+              {h.line1}{' '}
+              <span className="bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
+                {h.accent}
+              </span>{' '}
+              {h.line2}
+            </motion.h1>
 
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto text-center leading-relaxed"
-          >
-            {h.subtitle}
-          </motion.p>
+            {/* Subtitle */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto text-center leading-relaxed"
+            >
+              {h.subtitle}
+            </motion.p>
+          </motion.div>
 
-          {/* CTA Buttons */}
+          {/* CTA Buttons with pulse glow */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -156,7 +194,7 @@ const HeroSection = () => {
             <Link to="/auth?role=member">
               <Button
                 size="lg"
-                className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 min-w-[200px] shadow-lg shadow-emerald-600/25 transition-all hover:shadow-xl hover:shadow-emerald-600/30"
+                className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 min-w-[200px] shadow-lg shadow-emerald-600/25 transition-all hover:shadow-xl hover:shadow-emerald-600/30 pulse-glow"
               >
                 {language === 'hu' ? 'Csatlakozom ingyen' : language === 'de' ? 'Kostenlos beitreten' : 'Join for Free'}
                 <ArrowRight className="w-4 h-4 ml-2" />
@@ -225,7 +263,7 @@ const HeroSection = () => {
         </motion.div>
       </section>
 
-      {/* VALUE PROPOSITION — Bento-style cards */}
+      {/* VALUE PROPOSITION — Glass bento cards */}
       <section className="py-16 md:py-20 bg-gradient-to-b from-white to-gray-50/80">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
@@ -236,7 +274,7 @@ const HeroSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="relative group bg-white rounded-2xl p-6 border border-border/50 hover:border-emerald-200/60 hover:shadow-lg transition-all duration-300"
+                className="relative group bg-white/60 backdrop-blur-xl rounded-2xl p-6 border border-white/40 hover:bg-white/80 hover:shadow-[0_8px_40px_rgba(0,0,0,0.08)] hover:scale-[1.02] transition-all duration-300"
               >
                 {/* Subtle gradient on hover */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-50/0 to-amber-50/0 group-hover:from-emerald-50/50 group-hover:to-amber-50/30 transition-all duration-300" />

@@ -42,6 +42,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { getUserBalance, WELLPOINTS_QUERY_KEY } from "@/lib/wellpoints";
 import { getExpertMetrics, getSponsorMetrics, type RoleMetrics } from "@/lib/roleMetrics";
+import { getRoleColors } from "@/lib/roleColors";
 import wellagoraLogo from "@/assets/wellagora-logo.png";
 import LanguageSelector from "./LanguageSelector";
 import { RoleSwitcher } from "./admin/RoleSwitcher";
@@ -301,18 +302,26 @@ const Navigation = () => {
   }, [user, profile, t, isSuperAdmin, viewAsRole, effectiveRole]);
 
   // Role-based accent color for header - Admin gets Indigo
+  const roleColors = getRoleColors(profile?.user_role);
   const getRoleAccentColor = (): string => {
     if (!user || !profile) return "border-slate-200";
-    
+
     // Super Admin always gets Indigo regardless of viewAsRole
     if (isSuperAdmin) return "border-indigo-600";
-    
-    const roleToUse = effectiveRole;
-    switch (roleToUse) {
-      case 'member': return "border-emerald-500";
-      case 'expert': return "border-amber-500";
-      case 'sponsor': return "border-blue-500";
-      default: return "border-slate-200";
+
+    return roleColors.border.replace('border-', 'border-b-') || "border-slate-200";
+  };
+
+  // Active nav item classes based on role
+  const getActiveNavClasses = (): string => {
+    if (!user || !profile) return "bg-[#111111] text-white";
+    if (isSuperAdmin) return "bg-indigo-600 text-white";
+    const role = effectiveRole;
+    switch (role) {
+      case 'expert': return "bg-amber-500 text-white";
+      case 'sponsor': return "bg-blue-500 text-white";
+      case 'member':
+      default: return "bg-emerald-600 text-white";
     }
   };
 
@@ -356,8 +365,8 @@ const Navigation = () => {
                       key={item.path}
                       to={item.path}
                       className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-full transition-all duration-300 whitespace-nowrap ${
-                        active 
-                          ? "bg-[#111111] text-white" 
+                        active
+                          ? getActiveNavClasses()
                           : "text-[#6E6E73] hover:text-[#111111] hover:bg-[#F5F5F7]"
                       }`}
                     >

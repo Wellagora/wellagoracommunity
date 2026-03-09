@@ -155,7 +155,7 @@ const CommunityTeaser = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="md:col-span-2 group relative rounded-2xl border border-border/50 bg-white hover:border-emerald-200/60 hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
+            className="md:col-span-2 group relative rounded-2xl border border-white/40 bg-white/60 backdrop-blur-xl hover:bg-white/80 hover:border-emerald-200/60 hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/0 to-amber-50/0 group-hover:from-emerald-50/40 group-hover:to-amber-50/20 transition-all duration-300 rounded-2xl" />
             <div className="relative flex items-start gap-4">
@@ -174,7 +174,7 @@ const CommunityTeaser = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="group relative rounded-2xl border border-border/50 bg-white hover:border-amber-200/60 hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
+            className="group relative rounded-2xl border border-white/40 bg-white/60 backdrop-blur-xl hover:bg-white/80 hover:border-amber-200/60 hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-amber-50/0 to-orange-50/0 group-hover:from-amber-50/40 group-hover:to-orange-50/20 transition-all duration-300 rounded-2xl" />
             <div className="relative">
@@ -190,7 +190,7 @@ const CommunityTeaser = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.65 }}
-            className="group relative rounded-2xl border border-border/50 bg-white hover:border-rose-200/60 hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
+            className="group relative rounded-2xl border border-white/40 bg-white/60 backdrop-blur-xl hover:bg-white/80 hover:border-rose-200/60 hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-rose-50/0 to-pink-50/0 group-hover:from-rose-50/40 group-hover:to-pink-50/20 transition-all duration-300 rounded-2xl" />
             <div className="relative">
@@ -206,7 +206,7 @@ const CommunityTeaser = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="group relative rounded-2xl border border-border/50 bg-white hover:border-teal-200/60 hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
+            className="group relative rounded-2xl border border-white/40 bg-white/60 backdrop-blur-xl hover:bg-white/80 hover:border-teal-200/60 hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-teal-50/0 to-emerald-50/0 group-hover:from-teal-50/40 group-hover:to-emerald-50/20 transition-all duration-300 rounded-2xl" />
             <div className="relative">
@@ -222,7 +222,7 @@ const CommunityTeaser = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.75 }}
-            className="group relative rounded-2xl border border-border/50 bg-gradient-to-br from-emerald-50/30 to-white hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
+            className="group relative rounded-2xl border border-white/40 bg-gradient-to-br from-emerald-50/30 to-white/60 backdrop-blur-xl hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
           >
             <div className="relative flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
@@ -238,7 +238,7 @@ const CommunityTeaser = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
-            className="md:col-span-2 group relative rounded-2xl border border-border/50 bg-gradient-to-br from-amber-50/30 to-white hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
+            className="md:col-span-2 group relative rounded-2xl border border-white/40 bg-gradient-to-br from-amber-50/30 to-white/60 backdrop-blur-xl hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
           >
             <div className="relative flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">

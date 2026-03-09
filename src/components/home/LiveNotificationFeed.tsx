@@ -300,10 +300,13 @@ export const LiveNotificationFeed = () => {
     fetchRealNotifications();
   }, [fetchRealNotifications]);
 
-  // Subscribe to real-time voucher claims
+  // Subscribe to real-time events: voucher claims, new members, new programs
   useEffect(() => {
+    const nowLabel = language === 'hu' ? 'Most' : language === 'de' ? 'Jetzt' : 'Now';
+
     const channel = supabase
-      .channel('voucher-claims-realtime-v2')
+      .channel('activity-feed-realtime')
+      // Voucher claims
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'vouchers' },
@@ -312,14 +315,14 @@ export const LiveNotificationFeed = () => {
             supabase.from('profiles').select('first_name, last_name, avatar_url').eq('id', payload.new.user_id).single(),
             supabase.from('expert_contents').select('title, thumbnail_url').eq('id', payload.new.content_id).single()
           ]);
-          
+
           const profile = profileRes.data;
           const content = contentRes.data;
 
           const newNotification: ActivityNotification = {
             id: payload.new.id,
             type: 'signup',
-            userName: profile?.first_name 
+            userName: profile?.first_name
               ? `${profile.first_name} ${profile.last_name?.[0] || ''}.`
               : 'Egy Tag',
             userAvatar: profile?.avatar_url || null,
@@ -327,9 +330,67 @@ export const LiveNotificationFeed = () => {
             programTitle: content?.title || 'programhoz',
             programThumbnail: content?.thumbnail_url || null,
             time: new Date().toISOString(),
-            timeAgo: language === 'hu' ? 'Most' : language === 'de' ? 'Jetzt' : 'Now',
+            timeAgo: nowLabel,
           };
-          
+
+          setNotifications(prev => [newNotification, ...prev.slice(0, 4)]);
+        }
+      )
+      // New member signups
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'profiles' },
+        (payload) => {
+          const p = payload.new as any;
+          const isExpertRole = p.user_role === 'creator' || p.user_role === 'expert';
+          const newNotification: ActivityNotification = {
+            id: `member-${p.id}`,
+            type: isExpertRole ? 'expert_join' : 'signup',
+            userName: p.first_name
+              ? `${p.first_name} ${p.last_name?.[0] || ''}.`
+              : (language === 'hu' ? 'Új tag' : 'New member'),
+            userAvatar: p.avatar_url || null,
+            userInitials: getInitials(p.first_name, p.last_name),
+            programTitle: isExpertRole ? (p.expert_title || undefined) : (language === 'hu' ? 'a közösséghez' : language === 'de' ? 'der Gemeinschaft' : 'the community'),
+            time: new Date().toISOString(),
+            timeAgo: nowLabel,
+          };
+
+          setNotifications(prev => [newNotification, ...prev.slice(0, 4)]);
+        }
+      )
+      // New published programs
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'expert_contents' },
+        async (payload) => {
+          const content = payload.new as any;
+          if (!content.is_published) return;
+
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('first_name, last_name, avatar_url')
+            .eq('id', content.creator_id)
+            .single();
+
+          const localizedTitle = language === 'en' ? (content.title_en || content.title) :
+                                language === 'de' ? (content.title_de || content.title) :
+                                content.title;
+
+          const newNotification: ActivityNotification = {
+            id: `program-rt-${content.id}`,
+            type: 'program_published',
+            userName: profile?.first_name
+              ? `${profile.first_name} ${profile.last_name || ''}`
+              : 'Szakértő',
+            userAvatar: profile?.avatar_url || null,
+            userInitials: getInitials(profile?.first_name, profile?.last_name),
+            programTitle: localizedTitle || 'új program',
+            programThumbnail: content.thumbnail_url || null,
+            time: new Date().toISOString(),
+            timeAgo: nowLabel,
+          };
+
           setNotifications(prev => [newNotification, ...prev.slice(0, 4)]);
         }
       )

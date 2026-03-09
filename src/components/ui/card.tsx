@@ -1,34 +1,54 @@
 import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
 /**
- * Salesforce AI-Inspired Glassmorphism Card Component
- * Glass effect with depth, interactive hover, border glow
+ * Card Component with Glass Variant
+ * Default: Clean solid white | Glass: Frosted glassmorphism effect
  */
-const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+const cardVariants = cva(
+  // Base styles shared by all variants
+  "rounded-[20px] text-card-foreground transition-all duration-300 ease-out",
+  {
+    variants: {
+      variant: {
+        // Default: Clean solid white card
+        default: [
+          "bg-white",
+          "shadow-[0_1px_3px_rgba(0,0,0,0.04)]",
+          "border border-black/[0.05]",
+          "hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)]",
+          "hover:scale-[1.02]",
+          "hover:border-black/[0.1]",
+        ].join(" "),
+        // Glass: Frosted glassmorphism
+        glass: [
+          "bg-white/60 backdrop-blur-xl",
+          "shadow-[0_4px_24px_rgba(0,0,0,0.04)]",
+          "border border-white/40",
+          "hover:bg-white/75",
+          "hover:shadow-[0_8px_40px_rgba(0,0,0,0.08)]",
+          "hover:scale-[1.02]",
+          "hover:border-white/60",
+        ].join(" "),
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+);
+
+export interface CardProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof cardVariants> {}
+
+const Card = React.forwardRef<HTMLDivElement, CardProps>(
+  ({ className, variant, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn(
-        // Clean solid white background
-        "bg-white",
-        // Rounded corners: 20px for editorial look
-        "rounded-[20px]",
-        // Very light default shadow (grounded)
-        "shadow-[0_1px_3px_rgba(0,0,0,0.04)]",
-        // Border for definition
-        "border border-black/[0.05]",
-        // Text color
-        "text-card-foreground",
-        // Smooth transition
-        "transition-all duration-300 ease-out",
-        // Hover: subtle lift with shadow
-        "hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)]",
-        "hover:scale-[1.02]",
-        "hover:border-black/[0.1]",
-        className
-      )}
+      className={cn(cardVariants({ variant }), className)}
       {...props}
     />
   )
@@ -68,4 +88,4 @@ const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
 );
 CardFooter.displayName = "CardFooter";
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent };
+export { Card, cardVariants, CardHeader, CardFooter, CardTitle, CardDescription, CardContent };
