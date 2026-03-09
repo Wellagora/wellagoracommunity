@@ -4712,7 +4712,7 @@
     "drag_media": "Drag your video or photo here, or use your camera!",
     "record_video": "Record Video",
     "take_photo": "Take Photo",
-    "file_limits": "Video: max 100MB • Photo: max 10MB",
+    "file_limits": "Video: max 250MB • Photo: max 10MB",
     "video_added": "Video added!",
     "photo_added": "Photo added!",
     "invalid_format": "Invalid file format",

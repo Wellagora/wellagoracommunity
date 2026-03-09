@@ -12,7 +12,7 @@ interface Step1MediaProps {
   setFormData: React.Dispatch<React.SetStateAction<ProgramFormData>>;
 }
 
-const MAX_VIDEO_SIZE = 100 * 1024 * 1024; // 100MB
+const MAX_VIDEO_SIZE = 250 * 1024 * 1024; // 250MB
 const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
 
 const Step1Media = ({ formData, setFormData }: Step1MediaProps) => {

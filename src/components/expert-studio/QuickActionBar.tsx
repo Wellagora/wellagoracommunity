@@ -20,7 +20,7 @@ const QuickActionBar = ({ onVideoCapture, onPhotoCapture, uploading = false }: Q
   const handleVideoCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const maxSize = 100 * 1024 * 1024; // 100MB
+      const maxSize = 250 * 1024 * 1024; // 250MB
       if (file.size > maxSize) {
         toast.error(t("expert_studio.file_too_large"));
         return;

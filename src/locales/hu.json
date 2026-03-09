@@ -4277,7 +4277,7 @@
     "drag_media": "Húzd ide a videót vagy fotót, vagy használd a kamerád!",
     "record_video": "Videó felvétele",
     "take_photo": "Fotó készítése",
-    "file_limits": "Videó: max 100MB • Fotó: max 10MB",
+    "file_limits": "Videó: max 250MB • Fotó: max 10MB",
     "video_added": "Videó hozzáadva!",
     "photo_added": "Fotó hozzáadva!",
     "invalid_format": "Érvénytelen fájlformátum",
