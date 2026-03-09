@@ -41,10 +41,8 @@ import {
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveImageUrl, resolveAvatarUrl } from "@/lib/imageResolver";
-import { SocialProofBadge } from "@/components/marketplace/SocialProofBadge";
 import { VerifiedExpertBadge } from "@/components/marketplace/VerifiedExpertBadge";
 import { SponsorContributionBadge } from "@/components/marketplace/SponsorContributionBadge";
-import { LivePulseToast } from "@/components/marketplace/LivePulseToast";
 import { ProgramGridSkeleton } from "@/components/ui/loading-skeleton";
 // Mock data imports removed — using only real Supabase data
 import { CATEGORIES as CATEGORY_LIST } from "@/constants/categories";
@@ -870,8 +868,6 @@ const ProgramsListingPage = () => {
         )}
       </div>
 
-      {/* Live Pulse Toast - Real-time activity notifications */}
-      <LivePulseToast enabled={true} interval={15000} />
     </div>
   );
 };
