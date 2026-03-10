@@ -143,50 +143,15 @@ const Index = () => {
           </AnimatePresence>
 
           <main className="pt-2 md:pt-4 flex-1">
-            {/* 1. SIMPLIFIED HERO - Welcome + Single CTA */}
-            <section className="relative overflow-hidden bg-background/80 backdrop-blur-xl border-b border-border/50">
-              <div className="container mx-auto px-4 py-6 sm:py-10 relative z-10">
-                <motion.div
-                  className="max-w-4xl mx-auto text-center"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ type: "spring", stiffness: 100, damping: 20 }}
-                >
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3 tracking-tight">
-                    {t("index.welcome_back")}, {profile.first_name}! 👋
+            {/* 1. CLEAN HERO — Welcome + Progress only */}
+            <section className="bg-background border-b border-border/50">
+              <div className="container mx-auto px-4 py-8 sm:py-12">
+                <div className="max-w-2xl mx-auto text-center">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
+                    {t("index.welcome_back")}, {profile.first_name}!
                   </h1>
-                  <p className="text-base sm:text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
-                    {t("index.post_login_headline")}
-                  </p>
-                  <Link to="/community">
-                    <motion.div
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.95 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                    >
-                      <Button size="lg" className="min-w-[200px] gap-2">
-                        {t("index.post_login_primary_cta")}
-                        <ChevronRight className="w-5 h-5" />
-                      </Button>
-                    </motion.div>
-                  </Link>
-
-                  <div className="mt-4 flex flex-col sm:flex-row gap-2 justify-center">
-                    <Link to="/community">
-                      <Button variant="outline" size="sm" className="min-w-[200px]">
-                        {t("index.post_login_secondary_ask")}
-                      </Button>
-                    </Link>
-                    <Link to="/piacer">
-                      <Button variant="outline" size="sm" className="min-w-[200px]">
-                        {t("index.post_login_secondary_browse")}
-                      </Button>
-                    </Link>
-                  </div>
-                </motion.div>
-
-                {/* Progress card — below welcome text */}
-                <div className="max-w-md mx-auto mt-6">
+                </div>
+                <div className="max-w-md mx-auto mt-5">
                   <UserProgressBar />
                 </div>
               </div>
