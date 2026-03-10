@@ -45,44 +45,6 @@ async function translateWithAnthropic(text: string, lang: string, apiKey: string
   }
 }
 
-async function translateWithLovable(text: string, lang: string, apiKey: string): Promise<string> {
-  const langName = lang === 'en' ? 'English' : lang === 'de' ? 'German' : lang;
-
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 25000);
-
-  try {
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          {
-            role: "system",
-            content: `You are a professional translator. Translate the following Hungarian text to ${langName}. Return ONLY the translation, nothing else.`
-          },
-          { role: "user", content: text }
-        ],
-        stream: false,
-      }),
-      signal: controller.signal,
-    });
-
-    if (!response.ok) {
-      throw new Error(`Lovable gateway error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data.choices?.[0]?.message?.content?.trim() || text;
-  } finally {
-    clearTimeout(timeout);
-  }
-}
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -99,12 +61,11 @@ serve(async (req) => {
     }
 
     const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
-    if (!ANTHROPIC_API_KEY && !LOVABLE_API_KEY) {
-      console.error("No translation API key configured (ANTHROPIC_API_KEY or LOVABLE_API_KEY)");
+    if (!ANTHROPIC_API_KEY) {
+      console.error("ANTHROPIC_API_KEY is not configured");
       return new Response(
-        JSON.stringify({ error: "NO_API_KEY", message: "Translation service not configured. Set ANTHROPIC_API_KEY or LOVABLE_API_KEY in Supabase secrets." }),
+        JSON.stringify({ error: "NO_API_KEY", message: "Translation service not configured. Set ANTHROPIC_API_KEY in Supabase secrets." }),
         { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -113,23 +74,10 @@ serve(async (req) => {
 
     for (const lang of targetLanguages) {
       try {
-        if (ANTHROPIC_API_KEY) {
-          translations[lang] = await translateWithAnthropic(text, lang, ANTHROPIC_API_KEY);
-        } else if (LOVABLE_API_KEY) {
-          translations[lang] = await translateWithLovable(text, lang, LOVABLE_API_KEY);
-        }
+        translations[lang] = await translateWithAnthropic(text, lang, ANTHROPIC_API_KEY);
       } catch (err) {
         console.error(`Translation failed for ${lang}:`, err);
-        // Try fallback if primary fails
-        if (ANTHROPIC_API_KEY && LOVABLE_API_KEY) {
-          try {
-            translations[lang] = await translateWithLovable(text, lang, LOVABLE_API_KEY);
-          } catch {
-            translations[lang] = text; // Last resort: return original
-          }
-        } else {
-          translations[lang] = text;
-        }
+        translations[lang] = text; // Fallback: return original
       }
     }
 

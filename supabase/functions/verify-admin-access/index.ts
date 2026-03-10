@@ -2,7 +2,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
 
 // Allowed origins for CORS
 const ALLOWED_ORIGINS = [
-  'https://e2836cce-2bbf-4c42-8c46-419545d375c8.lovableproject.com',
+  'https://wellagora.org',
   Deno.env.get('PRODUCTION_DOMAIN'), // e.g., https://yourdomain.com
   'http://localhost:5173', // Local development
 ].filter(Boolean); // Remove undefined values

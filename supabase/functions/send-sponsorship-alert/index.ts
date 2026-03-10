@@ -142,7 +142,7 @@ const handler = async (req: Request): Promise<Response> => {
                       <table role="presentation" style="margin: 0 auto;">
                         <tr>
                           <td style="border-radius: 8px; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-                            <a href="https://wellagoracommunity.lovable.app/expert-studio?tab=impact" 
+                            <a href="https://wellagora.org/expert-studio?tab=impact" 
                                style="display: inline-block; padding: 16px 32px; color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px;">
                               📊 Hatásjelentés megtekintése
                             </a>

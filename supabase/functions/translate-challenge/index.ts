@@ -4,7 +4,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 // Allowed origins for CORS
 const ALLOWED_ORIGINS = [
-  'https://e2836cce-2bbf-4c42-8c46-419545d375c8.lovableproject.com',
+  'https://wellagora.org',
   Deno.env.get('PRODUCTION_DOMAIN'), // e.g., https://yourdomain.com
   'http://localhost:5173', // Local development
 ].filter(Boolean); // Remove undefined values
@@ -95,9 +95,9 @@ serve(async (req) => {
 
     const { title, description } = validation.data!;
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      console.error('LOVABLE_API_KEY not configured');
+    const ANTHROPIC_API_KEY = Deno.env.get('ANTHROPIC_API_KEY');
+    if (!ANTHROPIC_API_KEY) {
+      console.error('ANTHROPIC_API_KEY not configured');
       return new Response(
         JSON.stringify({ error: 'Translation service not configured' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -119,27 +119,31 @@ serve(async (req) => {
 Title: ${title}
 Description: ${description}`;
 
-        const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 25000);
+
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+            'x-api-key': ANTHROPIC_API_KEY,
+            'anthropic-version': '2023-06-01',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'google/gemini-2.5-flash',
+            model: 'claude-haiku-4-5-20251001',
+            max_tokens: 2048,
+            system: 'You are a professional translator specializing in sustainability and environmental content. Always respond with valid JSON only.',
             messages: [
-              {
-                role: 'system',
-                content: 'You are a professional translator specializing in sustainability and environmental content. Always respond with valid JSON only.'
-              },
               {
                 role: 'user',
                 content: prompt
               }
             ],
-            temperature: 0.3,
           }),
+          signal: controller.signal,
         });
+
+        clearTimeout(timeout);
 
         if (!response.ok) {
           console.error(`Translation failed for ${lang}:`, response.status);
@@ -159,7 +163,7 @@ Description: ${description}`;
         }
 
         const data = await response.json();
-        const content = data.choices?.[0]?.message?.content;
+        const content = data.content?.[0]?.text?.trim() || "";
         
         if (!content) {
           console.error(`No content in response for ${lang}`);

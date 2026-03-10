@@ -88,7 +88,7 @@ const handler = async (req: Request): Promise<Response> => {
             <p style="font-size: 14px; color: #6b7280;">
               Töltse fel kreditjét, hogy továbbra is támogathassa a közösséget és fenntartsa a folyamatos hatást.
             </p>
-            <a href="https://wellagoracommunity.lovable.app/sponsor-dashboard" 
+            <a href="https://wellagora.org/sponsor-dashboard" 
                style="display: inline-block; background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin-top: 16px; font-weight: 600;">
               Kredit Feltöltés →
             </a>
@@ -129,7 +129,7 @@ const handler = async (req: Request): Promise<Response> => {
             <p style="font-size: 14px; color: #6b7280;">
               Top up your credits to continue supporting the community and maintaining your impact.
             </p>
-            <a href="https://wellagoracommunity.lovable.app/sponsor-dashboard" 
+            <a href="https://wellagora.org/sponsor-dashboard" 
                style="display: inline-block; background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin-top: 16px; font-weight: 600;">
               Top Up Credits →
             </a>

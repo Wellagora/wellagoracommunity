@@ -113,7 +113,7 @@ const handler = async (req: Request): Promise<Response> => {
     const t = templates[language];
     const displayName = user_name || (language === "hu" ? "Tagunk" : language === "de" ? "Mitglied" : "Member");
     const formattedDate = formatEventDate(event_date, language);
-    const eventUrl = `https://wellagoracommunity.lovable.app/esemenyek/${event_id}`;
+    const eventUrl = `https://wellagora.org/esemenyek/${event_id}`;
 
     // Build location/meeting section
     let locationSection = "";

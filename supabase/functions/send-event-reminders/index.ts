@@ -156,7 +156,7 @@ const handler = async (req: Request): Promise<Response> => {
         const displayName = profile.first_name || (lang === "hu" ? "Tagunk" : lang === "de" ? "Mitglied" : "Member");
         const formattedDate = formatEventDate(event.start_date, lang);
         const eventTime = formatTime(event.start_date);
-        const eventUrl = `https://wellagoracommunity.lovable.app/esemenyek/${event.id}`;
+        const eventUrl = `https://wellagora.org/esemenyek/${event.id}`;
         const isOnline = !event.location_name && !event.location_address;
 
         const locationSection = event.location_name

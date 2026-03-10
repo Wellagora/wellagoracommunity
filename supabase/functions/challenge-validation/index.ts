@@ -6,7 +6,7 @@ import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 // Allowed origins for CORS
 const ALLOWED_ORIGINS = [
-  'https://e2836cce-2bbf-4c42-8c46-419545d375c8.lovableproject.com',
+  'https://wellagora.org',
   Deno.env.get('PRODUCTION_DOMAIN'), // e.g., https://yourdomain.com
   'http://localhost:5173', // Local development
 ].filter(Boolean); // Remove undefined values
@@ -78,7 +78,7 @@ serve(async (req) => {
     // Get environment variables
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY')!;
+    const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY')!;
     
     // Get the authorization header with Bearer prefix
     const authHeader = req.headers.get('Authorization');
@@ -143,9 +143,9 @@ serve(async (req) => {
 
       // Impact számítás és validálás
       const result = await calculateImpactAndValidate(
-        challengeDef, 
-        completion, 
-        lovableApiKey
+        challengeDef,
+        completion,
+        anthropicApiKey
       );
 
       // Challenge completion létrehozása
@@ -257,9 +257,9 @@ serve(async (req) => {
 });
 
 async function calculateImpactAndValidate(
-  challengeDef: any, 
+  challengeDef: any,
   completion: ChallengeCompletion,
-  lovableApiKey: string
+  anthropicApiKey: string
 ) {
   const baseImpact = challengeDef.base_impact;
   const validationReqs = challengeDef.validation_requirements;
@@ -339,20 +339,22 @@ async function calculateImpactAndValidate(
   // AI-alapú intelligens visszajelzés
   if (completion.notes || completion.evidenceData) {
     try {
-      const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 25000);
+
+      const aiResponse = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${lovableApiKey}`,
+          'x-api-key': anthropicApiKey,
+          'anthropic-version': '2023-06-01',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'google/gemini-2.5-flash',
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 2048,
+          system: `Te egy fenntarthatósági szakértő vagy. Adj pozitív, motiváló visszajelzést a felhasználó challenge teljesítéséhez.
+              Legyen rövid (max 50 szó), magyar nyelven, és tartalmazzon egy praktikus tippet a további fejlődéshez.`,
           messages: [
-            {
-              role: 'system',
-              content: `Te egy fenntarthatósági szakértő vagy. Adj pozitív, motiváló visszajelzést a felhasználó challenge teljesítéséhez. 
-              Legyen rövid (max 50 szó), magyar nyelven, és tartalmazzon egy praktikus tippet a további fejlődéshez.`
-            },
             {
               role: 'user',
               content: `Challenge: ${challengeDef.title?.substring(0, 200) || 'N/A'}
@@ -363,11 +365,14 @@ async function calculateImpactAndValidate(
             }
           ],
         }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeout);
 
       if (aiResponse.ok) {
         const aiData = await aiResponse.json();
-        const aiTip = aiData.choices?.[0]?.message?.content;
+        const aiTip = aiData.content?.[0]?.text?.trim();
         if (aiTip) {
           feedback += `💡 ${aiTip}`;
         }
