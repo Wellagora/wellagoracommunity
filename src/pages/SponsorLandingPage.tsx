@@ -11,7 +11,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Package, Coins, Heart, Eye, Lightbulb, Sparkles } from 'lucide-react';
-import { SubscriptionPlanSelector } from '@/components/subscription/SubscriptionPlanSelector';
+import SponsorPackageSelector from '@/components/sponsor/SponsorPackageSelector';
 
 const SponsorLandingPage = () => {
   const { t } = useLanguage();
@@ -19,10 +19,6 @@ const SponsorLandingPage = () => {
 
   const scrollToPricing = () => {
     document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const handleSelectPlan = (planId: string) => {
-    navigate(`/register/organization?plan=${planId}`);
   };
 
   const steps = [
@@ -227,7 +223,7 @@ const SponsorLandingPage = () => {
             </p>
           </div>
 
-          <SubscriptionPlanSelector onSelectPlan={handleSelectPlan} />
+          <SponsorPackageSelector />
         </div>
       </section>
 
