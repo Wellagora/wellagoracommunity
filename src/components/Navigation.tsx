@@ -362,7 +362,7 @@ const Navigation = () => {
         </div>
       )}
 
-      <nav className={`fixed left-0 right-0 z-[100] w-full transition-all duration-300 ${
+      <nav className={`fixed left-0 right-0 z-[100] w-full pointer-events-auto transition-all duration-300 ${
         !isTransparentHero
           ? `bg-white/95 backdrop-blur-md border-b-2 ${getRoleAccentColor()}`
           : 'bg-transparent border-b border-white/10'
@@ -565,12 +565,31 @@ const Navigation = () => {
               </>
             ) : (
               <div className="flex items-center gap-4">
-                <MagneticButton variant="outline" size="sm" strength={0.2} className={`shrink-0 ${isTransparentHero ? 'border-white/40 text-white hover:bg-white/10 hover:border-white/60' : ''}`} asChild>
-                  <Link to="/auth">{t("nav.sign_in")}</Link>
-                </MagneticButton>
-                <MagneticButton size="sm" strength={0.3} className={`shrink-0 ${isTransparentHero ? 'bg-white text-[#0F0F35] hover:bg-white/90' : ''}`} asChild>
-                  <Link to="/auth">{t("nav.join_community")}</Link>
-                </MagneticButton>
+                {isTransparentHero ? (
+                  <>
+                    <Link
+                      to="/auth"
+                      className="shrink-0 inline-flex items-center justify-center h-9 px-5 text-xs font-semibold rounded-full border border-white/40 text-white bg-transparent hover:bg-white/10 hover:border-white/60 transition-all duration-300"
+                    >
+                      {t("nav.sign_in")}
+                    </Link>
+                    <Link
+                      to="/auth"
+                      className="shrink-0 inline-flex items-center justify-center h-9 px-5 text-xs font-semibold rounded-full bg-white text-[#0F0F35] hover:bg-white/90 shadow-[0_2px_12px_rgba(255,255,255,0.25)] transition-all duration-300"
+                    >
+                      {t("nav.join_community")}
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <MagneticButton variant="outline" size="sm" strength={0.2} className="shrink-0" asChild>
+                      <Link to="/auth">{t("nav.sign_in")}</Link>
+                    </MagneticButton>
+                    <MagneticButton size="sm" strength={0.3} className="shrink-0" asChild>
+                      <Link to="/auth">{t("nav.join_community")}</Link>
+                    </MagneticButton>
+                  </>
+                )}
               </div>
             )}
           </div>
