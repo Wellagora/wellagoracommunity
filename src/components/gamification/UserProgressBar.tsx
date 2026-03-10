@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { updateStreak } from '@/lib/wellpoints';
+import { updateStreak, awardPoints } from '@/lib/wellpoints';
 import { getRoleColors } from '@/lib/roleColors';
 
 const POINTS_PER_LEVEL = 100;
@@ -27,13 +27,13 @@ export const UserProgressBar = () => {
       if (!user) return null;
       const { data, error } = await supabase
         .from('profiles')
-        .select('wellpoints, current_streak, longest_streak, last_activity_date')
+        .select('wellpoints_balance, current_streak, longest_streak, last_activity_date')
         .eq('id', user.id)
         .single();
 
       if (error || !data) return null;
       return {
-        wellpoints: (data as any).wellpoints ?? 0,
+        wellpoints: (data as any).wellpoints_balance ?? 0,
         currentStreak: (data as any).current_streak ?? 0,
         longestStreak: (data as any).longest_streak ?? 0,
         lastActivity: (data as any).last_activity_date,
@@ -50,6 +50,7 @@ export const UserProgressBar = () => {
     const lastActivity = progressData?.lastActivity;
     if (lastActivity !== today) {
       updateStreak(user.id).catch(() => {});
+      awardPoints(user.id, 'daily_login', 'Napi belépés').catch(() => {});
     }
   }, [user, progressData?.lastActivity]);
 

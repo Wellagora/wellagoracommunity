@@ -158,6 +158,12 @@ const EventDetailPage = () => {
         } catch (emailError) {
           // Don't fail the RSVP if email fails
         }
+
+        // Award WellPoints for event RSVP "going"
+        try {
+          const { awardPoints } = await import('@/lib/wellpoints');
+          await awardPoints(user.id, 'event_attended', 'Eseményre jelentkezés', id, 'event');
+        } catch (_) { /* non-critical */ }
       }
     },
     onSuccess: () => {

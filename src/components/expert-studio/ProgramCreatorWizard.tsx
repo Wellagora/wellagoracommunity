@@ -21,17 +21,17 @@ export interface ProgramFormData {
   mediaUrl: string;
   mediaType: "video" | "image" | null;
   mediaLibraryId?: string | null; // Track if from media library
-  
+
   // Details
   title_hu: string;
   category: string;
   pricingMode: "sponsor_only" | "purchasable";
   price_huf: number;
-  
+
   // Problem-Solution for AI indexing
   problemStatement: string;
   solutionStatement: string;
-  
+
   // Program Type & Conditional Fields
   contentType: ContentType;
   eventDate: string; // ISO date string
@@ -41,7 +41,7 @@ export interface ProgramFormData {
   locationMapUrl: string; // Google Maps link
   meetingLink: string; // Zoom/Teams link for online_live
   videoUrl: string; // Vimeo/YouTube link for recorded
-  
+
   // Localization
   description_hu: string;
   title_en: string;
@@ -160,7 +160,7 @@ const ProgramCreatorWizard = () => {
           ai.de = !!row.is_ai_generated;
         }
       }
-      
+
       setFormData({
         mediaFile: null,
         mediaUrl: data.image_url || data.thumbnail_url || "",
@@ -213,13 +213,31 @@ const ProgramCreatorWizard = () => {
   };
 
   const handleNext = async () => {
+    if (isSaving) return; // Prevent double-click
+
+    // Show specific validation errors instead of generic message
     if (!isStepValid(currentStep)) {
-      toast.error(t("program_creator.fill_required"));
+      if (currentStep === 1) {
+        if (formData.title_hu.trim().length < 3) {
+          toast.error("Add meg a program címét! (min. 3 karakter)");
+        } else if (!formData.category) {
+          toast.error("Válassz kategóriát!");
+        }
+      } else if (currentStep === 2) {
+        if (formData.description_hu.trim().length < 20) {
+          toast.error("Írd meg a program leírását! (min. 20 karakter)");
+        }
+      } else {
+        toast.error(t("program_creator.fill_required"));
+      }
       return;
     }
-    
-    // Auto-save on step change
-    await autoSaveDraft();
+
+    // Auto-save on step change (only if we have enough data)
+    if (currentStep >= 1) {
+      const success = await autoSaveDraft();
+      if (!success) return; // Don't advance if save failed
+    }
     setCurrentStep((prev) => Math.min(STEPS.length - 1, prev + 1));
   };
 
@@ -227,8 +245,12 @@ const ProgramCreatorWizard = () => {
     setCurrentStep((prev) => Math.max(0, prev - 1));
   };
 
-  const autoSaveDraft = async () => {
-    if (!user) return;
+  /**
+   * Auto-save draft to Supabase.
+   * Returns true on success, false on failure.
+   */
+  const autoSaveDraft = async (): Promise<boolean> => {
+    if (!user) return false;
     setIsSaving(true);
 
     try {
@@ -247,6 +269,11 @@ const ProgramCreatorWizard = () => {
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from("expert-content")
           .upload(fileName, formData.mediaFile, { upsert: true });
+
+        if (uploadError) {
+          console.error('[Studio] Storage upload error:', uploadError);
+          // Continue without media — don't block the save
+        }
 
         if (!uploadError && uploadData) {
           const { data: urlData } = supabase.storage
@@ -269,7 +296,7 @@ const ProgramCreatorWizard = () => {
         ? formData.meetingLink
         : formData.locationMapUrl;
 
-      // Merge translation_status into main content data (avoids second UPDATE)
+      // Translation status: only require master locale approval for draft
       const allApproved = formData.isApproved.hu && formData.isApproved.en && formData.isApproved.de;
 
       const contentData = {
@@ -279,11 +306,11 @@ const ProgramCreatorWizard = () => {
         description: formData.description_hu,
         description_en: formData.description_en || null,
         description_de: formData.description_de || null,
-        category: formData.category,
+        category: formData.category || null,
         content_type: formData.contentType,
         content_url: contentUrl || null,
-        image_url: imageUrl,
-        thumbnail_url: imageUrl,
+        image_url: imageUrl || null,
+        thumbnail_url: imageUrl || null,
         price_huf: formData.pricingMode === "purchasable" ? formData.price_huf : 0,
         access_type: formData.pricingMode === "purchasable" ? "paid" : "sponsored",
         max_capacity: formData.contentType !== 'recorded' ? formData.maxParticipants : null,
@@ -300,15 +327,29 @@ const ProgramCreatorWizard = () => {
       let savedContentId = contentId;
 
       if (contentId) {
-        await supabase.from("expert_contents").update(contentData).eq("id", contentId);
+        // UPDATE existing draft
+        const { error: updateError } = await supabase
+          .from("expert_contents")
+          .update(contentData)
+          .eq("id", contentId);
+
+        if (updateError) {
+          console.error('[Studio] Update expert_contents error:', updateError);
+          throw new Error(updateError.message);
+        }
       } else {
+        // INSERT new draft
         const { data, error } = await supabase
           .from("expert_contents")
           .insert({ ...contentData, creator_id: user.id })
           .select()
           .single();
 
-        if (!error && data) {
+        if (error) {
+          console.error('[Studio] Insert expert_contents error:', error);
+          throw new Error(error.message);
+        }
+        if (data) {
           savedContentId = data.id;
           setContentId(data.id);
         }
@@ -374,7 +415,12 @@ const ProgramCreatorWizard = () => {
 
         await Promise.all(parallelOps);
       }
-    } catch (error) {
+
+      return true; // SUCCESS
+    } catch (error: any) {
+      console.error('[Studio] autoSaveDraft error:', error);
+      toast.error("Mentési hiba: " + (error?.message || "Ismeretlen hiba. Próbáld újra!"));
+      return false; // FAILURE
     } finally {
       setIsSaving(false);
     }
@@ -385,28 +431,48 @@ const ProgramCreatorWizard = () => {
     setIsPublishing(true);
 
     try {
-      const { data: locs, error: locError } = await supabase
-        .from('content_localizations')
-        .select('locale, is_approved')
-        .eq('content_id', contentId);
-      if (locError) throw locError;
-      const approvedByLocale = (locs || []).reduce((acc: any, row: any) => {
-        acc[row.locale] = !!row.is_approved;
-        return acc;
-      }, {} as Record<string, boolean>);
-      const allApproved = approvedByLocale.hu && approvedByLocale.en && approvedByLocale.de;
-      if (!allApproved) {
-        toast.error(t('creator.translation.needs_review'));
+      // First do a final save
+      const saveOk = await autoSaveDraft();
+      if (!saveOk) {
+        toast.error("A mentés sikertelen. Próbáld újra!");
         return;
       }
 
-      await supabase
+      // Only require master locale to have content — NOT all 3 locales approved
+      // This allows publishing in a single language (e.g. Hungarian only)
+      const masterLocale = formData.masterLocale || 'hu';
+      const masterTitle = masterLocale === 'hu' ? formData.title_hu
+                        : masterLocale === 'en' ? formData.title_en
+                        : formData.title_de;
+      const masterDesc = masterLocale === 'hu' ? formData.description_hu
+                       : masterLocale === 'en' ? formData.description_en
+                       : formData.description_de;
+
+      if (!masterTitle || masterTitle.trim().length < 3) {
+        toast.error("A cím hiányzik vagy túl rövid!");
+        return;
+      }
+      if (!masterDesc || masterDesc.trim().length < 20) {
+        toast.error("A leírás hiányzik vagy túl rövid! (min. 20 karakter)");
+        return;
+      }
+      if (!formData.category) {
+        toast.error("Válassz kategóriát a publikáláshoz!");
+        return;
+      }
+
+      const { error: publishError } = await supabase
         .from("expert_contents")
         .update({
           is_published: true,
           updated_at: new Date().toISOString(),
         })
         .eq("id", contentId);
+
+      if (publishError) {
+        console.error('[Studio] Publish error:', publishError);
+        throw new Error(publishError.message);
+      }
 
       // Update media library item status to published
       if (formData.mediaLibraryId) {
@@ -416,19 +482,23 @@ const ProgramCreatorWizard = () => {
           .eq('id', formData.mediaLibraryId);
       }
 
-      toast.success(t("program_creator.published_success"));
+      toast.success(t("program_creator.published_success") || "Program sikeresen közzétéve!");
       navigate("/szakertoi-studio");
-    } catch (error) {
-      toast.error(t("program_creator.publish_error"));
+    } catch (error: any) {
+      console.error('[Studio] handlePublish error:', error);
+      toast.error("Közzétételi hiba: " + (error?.message || "Ismeretlen hiba"));
     } finally {
       setIsPublishing(false);
     }
   };
 
   const handleSaveDraft = async () => {
-    await autoSaveDraft();
-    toast.success(t("program_creator.draft_saved"));
-    navigate("/szakertoi-studio");
+    const success = await autoSaveDraft();
+    if (success) {
+      toast.success(t("program_creator.draft_saved") || "Piszkozat mentve!");
+      navigate("/szakertoi-studio");
+    }
+    // If failed, autoSaveDraft already showed error toast — stay on page
   };
 
   if (isLoading) {
@@ -465,9 +535,9 @@ const ProgramCreatorWizard = () => {
                   disabled={index > currentStep}
                   className={`
                     flex items-center justify-center w-10 h-10 rounded-full font-medium transition-all
-                    ${index === currentStep 
-                      ? "bg-gradient-to-r from-emerald-500 to-green-500 text-white shadow-lg" 
-                      : index < currentStep 
+                    ${index === currentStep
+                      ? "bg-gradient-to-r from-emerald-500 to-green-500 text-white shadow-lg"
+                      : index < currentStep
                         ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200 cursor-pointer"
                         : "bg-muted text-muted-foreground"
                     }
@@ -525,8 +595,8 @@ const ProgramCreatorWizard = () => {
                 <p className="text-sm text-muted-foreground mb-4">
                   {t("program_creator.marketplace_visibility_hint")}
                 </p>
-                <Step4Preview 
-                  formData={formData} 
+                <Step4Preview
+                  formData={formData}
                   onPublish={handlePublish}
                   onSaveDraft={handleSaveDraft}
                   isPublishing={isPublishing}
@@ -568,11 +638,17 @@ const ProgramCreatorWizard = () => {
             </Button>
             <Button
               onClick={handleNext}
-              disabled={!isStepValid(currentStep)}
+              disabled={isSaving}
               className="gap-2 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600"
             >
-              {t("program_creator.next")}
-              <ArrowRight className="w-4 h-4" />
+              {isSaving ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <>
+                  {t("program_creator.next")}
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
             </Button>
           </div>
         </div>

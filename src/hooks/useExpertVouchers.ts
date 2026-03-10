@@ -170,6 +170,12 @@ export const useExpertVouchers = (): UseExpertVouchersReturn => {
 
       if (updateError) throw updateError;
 
+      // Award WellPoints for voucher redemption
+      try {
+        const { awardPoints } = await import('@/lib/wellpoints');
+        await awardPoints(user.id, 'voucher_redeemed', 'Kupon beváltva', voucherId, 'voucher');
+      } catch (_) { /* non-critical */ }
+
       toast.success(t('expert_studio.voucher_success') || 'Kupon sikeresen beváltva! 🎉');
       return true;
     } catch (err) {

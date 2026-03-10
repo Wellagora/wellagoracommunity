@@ -116,9 +116,21 @@ const OnboardingWizard = ({ onComplete, onSkip }: OnboardingWizardProps) => {
     }
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     toast.success("Welcome to your sustainability journey!");
     onComplete(userData);
+
+    // Award WellPoints for completing onboarding / profile
+    try {
+      const { awardPoints } = await import('@/lib/wellpoints');
+      const authModule = await import('@/contexts/AuthContext');
+      // Get current user from supabase directly
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (currentUser) {
+        await awardPoints(currentUser.id, 'profile_completed', 'Profil kitöltve', undefined, 'onboarding');
+      }
+    } catch (_) { /* non-critical */ }
   };
 
   const updateProfile = (field: string, value: any) => {
