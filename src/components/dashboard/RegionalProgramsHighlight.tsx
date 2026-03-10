@@ -133,7 +133,7 @@ const RegionalProgramsHighlight = () => {
 
   if (isLoading) {
     return (
-      <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm">
+      <Card className="bg-card/80 backdrop-blur-xl border-[0.5px] border-border/50 rounded-2xl shadow-sm">
         <CardContent className="flex items-center justify-center py-8">
           <Loader2 className="w-6 h-6 animate-spin text-emerald-600" />
         </CardContent>
@@ -142,17 +142,17 @@ const RegionalProgramsHighlight = () => {
   }
 
   return (
-    <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm overflow-hidden">
-      <CardHeader className="pb-3 bg-gradient-to-r from-violet-50/50 to-fuchsia-50/50">
-        <CardTitle className="flex items-center justify-between text-base text-black">
+    <Card className="bg-card/80 backdrop-blur-xl border-[0.5px] border-border/50 rounded-2xl shadow-sm overflow-hidden">
+      <CardHeader className="pb-3 bg-gradient-to-r from-primary/5 to-emerald-50/50">
+        <CardTitle className="flex items-center justify-between text-base text-foreground">
           <div className="flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-violet-600" />
+            <MapPin className="w-5 h-5 text-primary" />
             <span>
               {language === 'hu' ? 'Közelgő programok' : 'Upcoming in'}{' '}
-              <span className="text-violet-600">{userRegion}</span>
+              <span className="text-primary">{userRegion}</span>
             </span>
           </div>
-          <Badge variant="outline" className="text-xs border-violet-200 text-violet-700 bg-violet-50">
+          <Badge variant="outline" className="text-xs border-primary/20 text-primary bg-primary/10">
             <Sparkles className="w-3 h-3 mr-1" />
             {language === 'hu' ? 'Regionális' : 'Regional'}
           </Badge>
@@ -161,8 +161,8 @@ const RegionalProgramsHighlight = () => {
       <CardContent className="pt-3">
         {programs.length === 0 ? (
           <div className="text-center py-6">
-            <MapPin className="w-10 h-10 mx-auto text-black/20 mb-2" />
-            <p className="text-sm text-black/50">
+            <MapPin className="w-10 h-10 mx-auto text-muted-foreground/40 mb-2" />
+            <p className="text-sm text-muted-foreground">
               {language === 'hu' 
                 ? 'Még nincsenek programok a közeledben'
                 : 'No programs nearby yet'}
@@ -185,11 +185,11 @@ const RegionalProgramsHighlight = () => {
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: idx * 0.1 }}
-                className="flex items-center gap-3 p-2 rounded-xl hover:bg-black/[0.02] transition-colors cursor-pointer group"
+                className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 transition-colors cursor-pointer group"
                 onClick={() => navigate(`/program/${program.id}`)}
               >
                 {/* Thumbnail */}
-                <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-black/5">
+                <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
                   {program.image_url ? (
                     <img 
                       src={program.image_url} 
@@ -198,25 +198,25 @@ const RegionalProgramsHighlight = () => {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <Calendar className="w-6 h-6 text-black/30" />
+                      <Calendar className="w-6 h-6 text-muted-foreground/50" />
                     </div>
                   )}
                 </div>
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm text-black truncate group-hover:text-violet-700 transition-colors">
+                  <p className="font-medium text-sm text-foreground truncate group-hover:text-primary transition-colors">
                     {program.title}
                   </p>
                   <div className="flex items-center gap-2 mt-0.5">
                     {program.start_date && (
-                      <span className="text-xs text-black/50 flex items-center gap-1">
+                      <span className="text-xs text-muted-foreground flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {format(new Date(program.start_date), 'MMM d', { locale: getDateLocale() })}
                       </span>
                     )}
                     {program.location && (
-                      <span className="text-xs text-black/50 flex items-center gap-1">
+                      <span className="text-xs text-muted-foreground flex items-center gap-1">
                         <MapPin className="w-3 h-3" />
                         {program.location}
                       </span>
@@ -233,7 +233,7 @@ const RegionalProgramsHighlight = () => {
                 </div>
 
                 {/* Arrow */}
-                <ArrowRight className="w-4 h-4 text-black/30 group-hover:text-violet-600 transition-colors flex-shrink-0" />
+                <ArrowRight className="w-4 h-4 text-muted-foreground/50 group-hover:text-primary transition-colors flex-shrink-0" />
               </motion.div>
             ))}
 
@@ -241,7 +241,7 @@ const RegionalProgramsHighlight = () => {
             <Button
               variant="ghost"
               size="sm"
-              className="w-full mt-2 text-violet-600 hover:text-violet-700 hover:bg-violet-50"
+              className="w-full mt-2 text-primary hover:text-primary hover:bg-primary/10"
               onClick={() => navigate('/piacer')}
             >
               {language === 'hu' ? 'Összes program megtekintése' : 'View all programs'}

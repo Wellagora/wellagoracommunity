@@ -65,7 +65,7 @@ const Index = () => {
   // Show loading state while checking authentication
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">{t("common.loading")}</p>
@@ -81,7 +81,7 @@ const Index = () => {
 
     return (
       <>
-        <div className="min-h-screen bg-white flex flex-col">
+        <div className="min-h-screen bg-background flex flex-col">
           <Navigation />
 
           {/* Welcome overlay for new users */}
@@ -97,7 +97,7 @@ const Index = () => {
                 <div className={`relative max-w-lg w-full bg-white/90 backdrop-blur-2xl rounded-2xl border ${roleColors.border} shadow-[0_16px_64px_rgba(0,0,0,0.12)] p-6`}>
                   <button
                     onClick={() => setShowWelcome(false)}
-                    className="absolute top-3 right-3 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                    className="absolute top-3 right-3 p-1 rounded-full hover:bg-muted transition-colors"
                   >
                     <X className="w-4 h-4 text-muted-foreground" />
                   </button>
@@ -130,7 +130,7 @@ const Index = () => {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.3 + i * 0.1 }}
-                        className="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50/80"
+                        className="flex items-center gap-3 p-2.5 rounded-xl bg-muted/60"
                       >
                         <tip.icon className={`w-4 h-4 ${roleColors.text} flex-shrink-0`} />
                         <span className="text-sm text-foreground">{tip.text}</span>
@@ -144,7 +144,7 @@ const Index = () => {
 
           <main className="pt-2 md:pt-4 flex-1">
             {/* 1. SIMPLIFIED HERO - Welcome + Single CTA */}
-            <section className="relative overflow-hidden bg-white/80 backdrop-blur-xl border-b border-black/5">
+            <section className="relative overflow-hidden bg-background/80 backdrop-blur-xl border-b border-border/50">
               <div className="container mx-auto px-4 py-6 sm:py-10 relative z-10">
                 <motion.div
                   className="max-w-4xl mx-auto text-center"
@@ -152,10 +152,10 @@ const Index = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ type: "spring", stiffness: 100, damping: 20 }}
                 >
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black mb-3 tracking-tight">
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3 tracking-tight">
                     {t("index.welcome_back")}, {profile.first_name}! 👋
                   </h1>
-                  <p className="text-base sm:text-lg text-black/50 mb-6 max-w-2xl mx-auto">
+                  <p className="text-base sm:text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
                     {t("index.post_login_headline")}
                   </p>
                   <Link to="/community">
@@ -218,7 +218,7 @@ const Index = () => {
   return (
     <>
       <SEOHead />
-      <div className="min-h-screen bg-white flex flex-col">
+      <div className="min-h-screen bg-background flex flex-col">
         <Navigation />
         <main className="flex-1">
           {/* 1. HERO SECTION - Full viewport with integrated registration cards */}

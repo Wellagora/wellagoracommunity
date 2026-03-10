@@ -24,7 +24,8 @@ export interface ProgramFormData {
 
   // Details
   title_hu: string;
-  category: string;
+  category: string; // kept for backward compat (primary category, derived from categories[0])
+  categories: string[]; // multi-category support
   pricingMode: "sponsor_only" | "purchasable";
   price_huf: number;
 
@@ -60,6 +61,7 @@ const initialFormData: ProgramFormData = {
   mediaLibraryId: null,
   title_hu: "",
   category: "",
+  categories: [],
   pricingMode: "sponsor_only",
   price_huf: 0,
   problemStatement: "",
@@ -167,6 +169,7 @@ const ProgramCreatorWizard = () => {
         mediaType: data.image_url?.includes("video") ? "video" : "image",
         title_hu: data.title || "",
         category: data.category || "",
+        categories: data.category ? data.category.split(',').map((c: string) => c.trim()).filter(Boolean) : [],
         pricingMode: data.price_huf && data.price_huf > 0 ? "purchasable" : "sponsor_only",
         price_huf: data.price_huf || 0,
         problemStatement: problemSolution?.problem || "",
@@ -202,7 +205,7 @@ const ProgramCreatorWizard = () => {
       case 0: // Media (optional - can skip)
         return true;
       case 1: // Details
-        return formData.title_hu.trim().length >= 3 && !!formData.category;
+        return formData.title_hu.trim().length >= 3 && (formData.categories?.length > 0 || !!formData.category);
       case 2: // Localization
         return formData.description_hu.trim().length >= 20;
       case 3: // Preview
@@ -220,8 +223,8 @@ const ProgramCreatorWizard = () => {
       if (currentStep === 1) {
         if (formData.title_hu.trim().length < 3) {
           toast.error("Add meg a program címét! (min. 3 karakter)");
-        } else if (!formData.category) {
-          toast.error("Válassz kategóriát!");
+        } else if (!formData.categories?.length && !formData.category) {
+          toast.error("Válassz legalább egy kategóriát!");
         }
       } else if (currentStep === 2) {
         if (formData.description_hu.trim().length < 20) {
@@ -306,7 +309,9 @@ const ProgramCreatorWizard = () => {
         description: formData.description_hu,
         description_en: formData.description_en || null,
         description_de: formData.description_de || null,
-        category: formData.category || null,
+        category: formData.categories?.length > 0
+          ? formData.categories.join(',')
+          : formData.category || null,
         content_type: formData.contentType,
         content_url: contentUrl || null,
         image_url: imageUrl || null,
@@ -456,8 +461,8 @@ const ProgramCreatorWizard = () => {
         toast.error("A leírás hiányzik vagy túl rövid! (min. 20 karakter)");
         return;
       }
-      if (!formData.category) {
-        toast.error("Válassz kategóriát a publikáláshoz!");
+      if (!formData.categories?.length && !formData.category) {
+        toast.error("Válassz legalább egy kategóriát a publikáláshoz!");
         return;
       }
 

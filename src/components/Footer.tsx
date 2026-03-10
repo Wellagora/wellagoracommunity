@@ -10,7 +10,7 @@ const Footer = () => {
   const linkClasses = "text-sm text-white/60 hover:text-emerald-400 transition-colors duration-200";
 
   return (
-    <footer className="bg-gray-950 text-white/70 mt-auto">
+    <footer className="text-white/70 mt-auto" style={{ background: 'linear-gradient(180deg, #022c22 0%, #021a13 100%)' }}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
           {/* About Section */}

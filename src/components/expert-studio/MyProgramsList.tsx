@@ -79,15 +79,17 @@ interface MyProgramsListProps {
 type ViewMode = "grid" | "list";
 type FilterMode = "all" | "published" | "drafts" | "completed";
 
-const CATEGORY_LABELS: Record<string, { hu: string; en: string; de: string }> = {
-  wellness: { hu: "Wellness", en: "Wellness", de: "Wellness" },
+// Category labels — use translation keys from locale files (categories.*)
+// Legacy mapping kept as fallback for old category values not in the unified list
+const CATEGORY_LABELS_LEGACY: Record<string, { hu: string; en: string; de: string }> = {
   cooking: { hu: "Főzés", en: "Cooking", de: "Kochen" },
-  gardening: { hu: "Kertészet", en: "Gardening", de: "Gärtnern" },
   crafts: { hu: "Kézművesség", en: "Crafts", de: "Handwerk" },
   sustainability: { hu: "Fenntarthatóság", en: "Sustainability", de: "Nachhaltigkeit" },
   health: { hu: "Egészség", en: "Health", de: "Gesundheit" },
   education: { hu: "Oktatás", en: "Education", de: "Bildung" },
   nature: { hu: "Természet", en: "Nature", de: "Natur" },
+  art: { hu: "Művészet", en: "Art", de: "Kunst" },
+  other: { hu: "Egyéb", en: "Other", de: "Sonstiges" },
 };
 
 const CONTENT_TYPE_LABELS: Record<string, { hu: string; en: string; de: string; icon: typeof Video }> = {
@@ -198,8 +200,11 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
       if (capacity === 0 || (p.used_licenses || 0) < capacity) return false;
     }
     
-    // Category filter
-    if (categoryFilter && p.category !== categoryFilter) return false;
+    // Category filter — supports comma-separated multi-categories
+    if (categoryFilter) {
+      const programCats = (p.category || '').split(',').map(c => c.trim());
+      if (!programCats.includes(categoryFilter)) return false;
+    }
     
     return true;
   });
@@ -235,8 +240,18 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
 
   const getCategoryLabel = (category: string | null) => {
     if (!category) return null;
-    const labels = CATEGORY_LABELS[category];
-    return labels?.[language as keyof typeof labels] || category;
+    // Handle comma-separated multi-categories
+    const cats = category.split(',').map(c => c.trim()).filter(Boolean);
+    const labels = cats.map(cat => {
+      // Try unified translation key first
+      const translated = t(`categories.${cat}`);
+      if (translated && translated !== `categories.${cat}`) return translated;
+      // Fallback to legacy labels
+      const legacy = CATEGORY_LABELS_LEGACY[cat];
+      if (legacy) return legacy[language as keyof typeof legacy] || cat;
+      return cat.charAt(0).toUpperCase() + cat.slice(1);
+    });
+    return labels.join(', ');
   };
 
   const calculateRevenue = (program: Program) => {

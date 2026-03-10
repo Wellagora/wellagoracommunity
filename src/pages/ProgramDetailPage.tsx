@@ -721,13 +721,15 @@ const ProgramDetailPage = () => {
 
                     {/* Program Metadata */}
                     <div className="space-y-3 pt-4 border-t border-border">
-                      {/* Category Badge */}
+                      {/* Category Badges — supports multi-category */}
                       {program.category && (
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-muted-foreground">Kategória:</span>
-                          <Badge variant="outline">
-                            {t(`categories.${program.category}`)}
-                          </Badge>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-xs text-muted-foreground">{language === 'hu' ? 'Kategória:' : 'Category:'}</span>
+                          {program.category.split(',').map((cat: string) => cat.trim()).filter(Boolean).map((cat: string) => (
+                            <Badge key={cat} variant="outline">
+                              {t(`categories.${cat}`)}
+                            </Badge>
+                          ))}
                         </div>
                       )}
                       

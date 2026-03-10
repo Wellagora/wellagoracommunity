@@ -196,11 +196,11 @@ const CommunityActivityFeed = () => {
 
   if (isLoading) {
     return (
-      <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm h-full">
+      <Card className="bg-card/80 backdrop-blur-xl border-[0.5px] border-border/50 rounded-2xl shadow-sm h-full">
         <CardContent className="flex items-center justify-center py-8">
           <div className="animate-pulse flex items-center gap-2">
-            <Activity className="w-5 h-5 text-black/30" />
-            <span className="text-black/40 text-sm">
+            <Activity className="w-5 h-5 text-muted-foreground/50" />
+            <span className="text-muted-foreground text-sm">
               {language === 'hu' ? 'Betöltés...' : 'Loading...'}
             </span>
           </div>
@@ -210,9 +210,9 @@ const CommunityActivityFeed = () => {
   }
 
   return (
-    <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm h-full overflow-hidden">
-      <CardHeader className="pb-3 bg-gradient-to-r from-emerald-50/50 to-teal-50/50">
-        <CardTitle className="flex items-center justify-between text-base text-black">
+    <Card className="bg-card/80 backdrop-blur-xl border-[0.5px] border-border/50 rounded-2xl shadow-sm h-full overflow-hidden">
+      <CardHeader className="pb-3 bg-gradient-to-r from-primary/5 to-emerald-50/50">
+        <CardTitle className="flex items-center justify-between text-base text-foreground">
           <div className="flex items-center gap-2">
             <div className="relative">
               <Activity className="w-5 h-5 text-emerald-600" />
@@ -228,7 +228,7 @@ const CommunityActivityFeed = () => {
       </CardHeader>
       <CardContent className="pt-3 space-y-2">
         {activities.length === 0 ? (
-          <p className="text-center text-black/50 text-sm py-4">
+          <p className="text-center text-muted-foreground text-sm py-4">
             {language === 'hu' ? 'Még nincs aktivitás' : 'No activity yet'}
           </p>
         ) : (
@@ -253,15 +253,15 @@ const CommunityActivityFeed = () => {
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-black">
+                        <p className="text-sm text-foreground">
                           <span className="font-semibold">{activities[currentIndex].user_name}</span>
                           {' '}
-                          <span className="text-black/60">{activities[currentIndex].action_text}</span>
+                          <span className="text-muted-foreground">{activities[currentIndex].action_text}</span>
                         </p>
-                        <p className="text-sm font-medium text-black truncate">
+                        <p className="text-sm font-medium text-foreground truncate">
                           {activities[currentIndex].target_name}
                         </p>
-                        <p className="text-xs text-black/40 mt-0.5">
+                        <p className="text-xs text-muted-foreground mt-0.5">
                           {formatDistanceToNow(new Date(activities[currentIndex].created_at), { 
                             addSuffix: true, 
                             locale: getDateLocale() 
@@ -286,7 +286,7 @@ const CommunityActivityFeed = () => {
                   className={`w-1.5 h-1.5 rounded-full transition-all ${
                     idx === currentIndex % 5 
                       ? 'bg-emerald-500 w-3' 
-                      : 'bg-black/20 hover:bg-black/40'
+                      : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
                   }`}
                 />
               ))}
@@ -298,14 +298,14 @@ const CommunityActivityFeed = () => {
                 <div 
                   key={activity.id}
                   className={`flex items-center gap-2 p-2 rounded-lg text-xs ${
-                    idx === currentIndex % activities.length ? 'bg-black/[0.03]' : ''
+                    idx === currentIndex % activities.length ? 'bg-muted/50' : ''
                   }`}
                 >
                   {getActivityIcon(activity.type)}
-                  <span className="truncate text-black/70">
-                    <span className="font-medium text-black">{activity.user_name}</span>
+                  <span className="truncate text-foreground/70">
+                    <span className="font-medium text-foreground">{activity.user_name}</span>
                     {' '}{activity.action_text}{' '}
-                    <span className="text-black/60">{activity.target_name}</span>
+                    <span className="text-muted-foreground">{activity.target_name}</span>
                   </span>
                 </div>
               ))}

@@ -69,20 +69,20 @@ const MemberDashboard = () => {
 
   const getStatusIcon = (status: VoucherStatus) => {
     switch (status) {
-      case 'active': return <CheckCircle className="w-4 h-4 text-emerald-500" />;
-      case 'used': return <Clock className="w-4 h-4 text-blue-500" />;
-      case 'expired': return <XCircle className="w-4 h-4 text-red-400" />;
+      case 'active': return <CheckCircle className="w-4 h-4 text-primary" />;
+      case 'used': return <Clock className="w-4 h-4 text-muted-foreground" />;
+      case 'expired': return <XCircle className="w-4 h-4 text-destructive" />;
     }
   };
 
   const getStatusBadge = (status: VoucherStatus) => {
     switch (status) {
-      case 'active': 
-        return <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200">{t('voucher.status_active') || 'Aktív'}</Badge>;
-      case 'used': 
-        return <Badge className="bg-blue-100 text-blue-700 border-blue-200">{t('voucher.status_used') || 'Felhasznált'}</Badge>;
-      case 'expired': 
-        return <Badge className="bg-red-100 text-red-700 border-red-200">{t('voucher.status_expired') || 'Lejárt'}</Badge>;
+      case 'active':
+        return <Badge className="bg-primary/10 text-primary border-primary/20">{t('voucher.status_active') || 'Aktív'}</Badge>;
+      case 'used':
+        return <Badge className="bg-muted text-muted-foreground border-border">{t('voucher.status_used') || 'Felhasznált'}</Badge>;
+      case 'expired':
+        return <Badge className="bg-destructive/10 text-destructive border-destructive/20">{t('voucher.status_expired') || 'Lejárt'}</Badge>;
     }
   };
 
@@ -110,7 +110,7 @@ const MemberDashboard = () => {
       title={t('member_dashboard.title') || 'Saját Központ'}
       subtitle={t('member_dashboard.welcome')}
       icon={Home}
-      iconColor="text-black"
+      iconColor="text-foreground"
       backUrl="/"
     >
 
@@ -140,14 +140,14 @@ const MemberDashboard = () => {
               value={stats.active}
               icon={Ticket}
               subtitle={t('member_dashboard.redeemable')}
-              iconColor="text-emerald-600"
+              iconColor="text-primary"
             />
             <KPICard
               title={t('member_dashboard.opened_contents')}
               value={vouchers.length}
               icon={BookOpen}
               subtitle={t('member_dashboard.workshop_secrets')}
-              iconColor="text-black/70"
+              iconColor="text-muted-foreground"
             />
           </div>
         </DashboardCard>
@@ -167,29 +167,29 @@ const MemberDashboard = () => {
       <DashboardCard delay={0.3} className="mb-6">
         <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-0 pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
-            <Ticket className="w-5 h-5 text-black/60" />
+            <Ticket className="w-5 h-5 text-muted-foreground" />
             {t('member_dashboard.my_vouchers') || 'Kuponjaim'}
           </CardTitle>
           <div className="flex items-center gap-3">
             {/* Status Filter Tabs */}
             <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as VoucherStatus | 'all')}>
-              <TabsList className="bg-black/5 h-9">
-                <TabsTrigger value="all" className="text-xs px-3 data-[state=active]:bg-white">
+              <TabsList className="bg-muted h-9">
+                <TabsTrigger value="all" className="text-xs px-3 data-[state=active]:bg-background">
                   {t('common.all') || 'Mind'} ({vouchers.length})
                 </TabsTrigger>
-                <TabsTrigger value="active" className="text-xs px-3 data-[state=active]:bg-white">
+                <TabsTrigger value="active" className="text-xs px-3 data-[state=active]:bg-background">
                   {t('voucher.status_active') || 'Aktív'} ({stats.active})
                 </TabsTrigger>
-                <TabsTrigger value="used" className="text-xs px-3 data-[state=active]:bg-white">
+                <TabsTrigger value="used" className="text-xs px-3 data-[state=active]:bg-background">
                   {t('voucher.status_used') || 'Felhasznált'} ({stats.used})
                 </TabsTrigger>
-                <TabsTrigger value="expired" className="text-xs px-3 data-[state=active]:bg-white">
+                <TabsTrigger value="expired" className="text-xs px-3 data-[state=active]:bg-background">
                   {t('voucher.status_expired') || 'Lejárt'} ({stats.expired})
                 </TabsTrigger>
               </TabsList>
             </Tabs>
             <Link to="/piacer">
-              <Button variant="ghost" size="sm" className="text-black/60 hover:text-black">
+              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
                 {t('member_dashboard.new_voucher')} <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
             </Link>
@@ -211,10 +211,10 @@ const MemberDashboard = () => {
                   className="block"
                 >
                   <div
-                    className="flex items-center justify-between p-4 rounded-xl bg-black/[0.02] border border-black/5 hover:bg-black/[0.04] transition-colors"
+                    className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border hover:bg-muted/50 transition-colors"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="p-2 rounded-lg bg-black/5 relative">
+                      <div className="p-2 rounded-lg bg-muted relative">
                         {voucher.content_image ? (
                           <img 
                             src={voucher.content_image} 
@@ -222,29 +222,29 @@ const MemberDashboard = () => {
                             className="w-12 h-12 object-cover rounded-lg"
                           />
                         ) : (
-                          <QrCode className="w-8 h-8 text-black/60" />
+                          <QrCode className="w-8 h-8 text-muted-foreground" />
                         )}
                         <div className="absolute -top-1 -right-1">
                           {getStatusIcon(voucher.status)}
                         </div>
                       </div>
                       <div>
-                        <p className="font-medium text-black">{voucher.content_title}</p>
-                        <p className="text-sm text-black/50">
+                        <p className="font-medium text-foreground">{voucher.content_title}</p>
+                        <p className="text-sm text-muted-foreground">
                           {voucher.expert_name}
                           {voucher.sponsor_name && (
                             <span> • {t('member_dashboard.sponsor_label')}: {voucher.sponsor_name}</span>
                           )}
                         </p>
                         <div className="flex items-center gap-2 mt-1">
-                          <Badge variant="outline" className="text-xs border-black/10 font-mono">
+                          <Badge variant="outline" className="text-xs border-border font-mono">
                             {voucher.code}
                           </Badge>
                           {getStatusBadge(voucher.status)}
                         </div>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm" className="border-black/10">
+                    <Button variant="outline" size="sm" className="border-border">
                       {t('member_dashboard.show_qr')}
                     </Button>
                   </div>
@@ -253,14 +253,14 @@ const MemberDashboard = () => {
             </div>
           ) : (
             <div className="text-center py-8">
-              <Ticket className="w-12 h-12 mx-auto text-black/30 mb-4" />
-              <p className="text-black/50 mb-4">
+              <Ticket className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
+              <p className="text-muted-foreground mb-4">
                 {statusFilter === 'all' 
                   ? (t('member_dashboard.no_vouchers'))
                   : (t('member_dashboard.no_vouchers_in_category') || 'Nincs ilyen kuponod')}
               </p>
               <Link to="/piacer">
-                <Button className="bg-black hover:bg-black/90 text-white">
+                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
                   <Sparkles className="w-4 h-4 mr-2" />
                   {t('member_dashboard.explore_marketplace')}
                 </Button>
@@ -274,7 +274,7 @@ const MemberDashboard = () => {
       <DashboardCard delay={0.4} className="mb-6">
         <CardHeader className="p-0 pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
-            <Sparkles className="w-5 h-5 text-black/60" />
+            <Sparkles className="w-5 h-5 text-muted-foreground" />
             {t("member_dashboard.sponsored_contents") || "Támogatott Műhelytitkok"}
           </CardTitle>
         </CardHeader>
@@ -294,9 +294,9 @@ const MemberDashboard = () => {
                     to={`/piacer/${content.id}`}
                     className="flex-shrink-0 w-64"
                   >
-                    <div className="rounded-xl overflow-hidden border border-black/5 bg-white hover:shadow-lg transition-shadow">
+                    <div className="rounded-xl overflow-hidden border border-border bg-card hover:shadow-lg transition-shadow">
                       <div 
-                        className="h-32 bg-black/5"
+                        className="h-32 bg-muted"
                         style={{
                           backgroundImage: content.image_url ? `url(${content.image_url})` : undefined,
                           backgroundSize: 'cover',
@@ -304,13 +304,13 @@ const MemberDashboard = () => {
                         }}
                       />
                       <div className="p-4">
-                        <Badge variant="secondary" className="mb-2 text-xs bg-black/5 text-black/60">
+                        <Badge variant="secondary" className="mb-2 text-xs bg-muted text-muted-foreground">
                           {content.category || t('member_dashboard.workshop_secrets')}
                         </Badge>
-                        <p className="font-medium text-black truncate">
+                        <p className="font-medium text-foreground truncate">
                           {content.title}
                         </p>
-                        <p className="text-sm text-black/50 truncate">
+                        <p className="text-sm text-muted-foreground truncate">
                           {t('member_dashboard.sponsor_label')}: {content.sponsor_name}
                         </p>
                       </div>
@@ -322,8 +322,8 @@ const MemberDashboard = () => {
             </ScrollArea>
           ) : (
             <div className="text-center py-8">
-              <BookOpen className="w-12 h-12 mx-auto text-black/30 mb-4" />
-              <p className="text-black/50">
+              <BookOpen className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
+              <p className="text-muted-foreground">
                 {t('member_dashboard.coming_soon')}
               </p>
             </div>
@@ -335,18 +335,18 @@ const MemberDashboard = () => {
       <DashboardCard delay={0.5}>
         <CardHeader className="p-0 pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
-            <Users className="w-5 h-5 text-black/60" />
+            <Users className="w-5 h-5 text-muted-foreground" />
             {t('member_dashboard.community_news')}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <div className="text-center py-8">
-            <Users className="w-12 h-12 mx-auto text-black/30 mb-4" />
-            <p className="text-black/50 mb-4">
+            <Users className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
+            <p className="text-muted-foreground mb-4">
               {t('member_dashboard.join_community')}
             </p>
             <Link to="/kozosseg">
-              <Button variant="outline" className="border-black/10 text-black">
+              <Button variant="outline" className="border-border text-foreground">
                 {t('member_dashboard.explore_community')}
               </Button>
             </Link>

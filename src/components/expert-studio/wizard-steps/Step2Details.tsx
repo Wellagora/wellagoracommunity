@@ -10,22 +10,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Leaf, ChefHat, Hammer, Heart, Palette, MoreHorizontal, MapPin, Monitor, Video, Calendar, Clock, Link as LinkIcon, Users } from "lucide-react";
+import {
+  Leaf, ChefHat, Hammer, Heart, Palette, MapPin, Monitor, Video, Calendar, Clock,
+  Link as LinkIcon, Users, Mountain, Sprout, Landmark, HandHeart, Store, Trophy, Baby, Apple
+} from "lucide-react";
 import type { ProgramFormData, ContentType } from "../ProgramCreatorWizard";
+import { CATEGORIES as CATEGORY_LIST } from "@/constants/categories";
 
 interface Step2DetailsProps {
   formData: ProgramFormData;
   setFormData: React.Dispatch<React.SetStateAction<ProgramFormData>>;
 }
 
-const CATEGORIES = [
-  { value: "gardening", icon: Leaf, color: "text-green-500" },
-  { value: "gastronomy", icon: ChefHat, color: "text-orange-500" },
-  { value: "crafts", icon: Hammer, color: "text-amber-600" },
-  { value: "health", icon: Heart, color: "text-red-500" },
-  { value: "art", icon: Palette, color: "text-purple-500" },
-  { value: "other", icon: MoreHorizontal, color: "text-gray-500" },
-];
+// Icon & color mapping for all 13 unified categories
+const CATEGORY_META: Record<string, { icon: typeof Leaf; color: string }> = {
+  lifestyle: { icon: Leaf, color: "text-green-500" },
+  craft: { icon: Hammer, color: "text-amber-600" },
+  gastronomy: { icon: Apple, color: "text-orange-500" },
+  wellness: { icon: Heart, color: "text-red-500" },
+  hiking: { icon: Mountain, color: "text-sky-500" },
+  gardening: { icon: Sprout, color: "text-emerald-500" },
+  heritage: { icon: Landmark, color: "text-stone-500" },
+  volunteering: { icon: HandHeart, color: "text-pink-500" },
+  market: { icon: Store, color: "text-indigo-500" },
+  community: { icon: Users, color: "text-blue-500" },
+  sport: { icon: Trophy, color: "text-yellow-500" },
+  culture: { icon: Palette, color: "text-purple-500" },
+  family: { icon: Baby, color: "text-rose-400" },
+};
 
 const CONTENT_TYPES: { value: ContentType; label: string; icon: typeof MapPin; description: string }[] = [
   { 
@@ -367,31 +379,50 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
         </CardContent>
       </Card>
 
-      {/* Category */}
+      {/* Category — multi-select */}
       <div className="space-y-3">
         <Label className="text-base font-medium">
           {t("program_creator.category")} *
         </Label>
-        <div className="grid grid-cols-3 gap-3">
-          {CATEGORIES.map((cat) => {
-            const Icon = cat.icon;
-            const isSelected = formData.category === cat.value;
+        <p className="text-sm text-muted-foreground">
+          {language === 'hu'
+            ? 'Válassz egy vagy több kategóriát (max. 3)'
+            : language === 'de'
+            ? 'Wähle eine oder mehrere Kategorien (max. 3)'
+            : 'Select one or more categories (max. 3)'}
+        </p>
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-3">
+          {CATEGORY_LIST.map((catValue) => {
+            const meta = CATEGORY_META[catValue] || { icon: Leaf, color: "text-gray-500" };
+            const Icon = meta.icon;
+            const selectedCategories = formData.categories || [];
+            const isSelected = selectedCategories.includes(catValue);
             return (
               <button
-                key={cat.value}
+                key={catValue}
                 type="button"
-                onClick={() => setFormData(prev => ({ ...prev, category: cat.value }))}
+                onClick={() => {
+                  setFormData(prev => {
+                    const current = prev.categories || [];
+                    if (isSelected) {
+                      return { ...prev, categories: current.filter(c => c !== catValue) };
+                    }
+                    if (current.length >= 3) return prev; // max 3
+                    return { ...prev, categories: [...current, catValue] };
+                  });
+                }}
                 className={`
-                  p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2
-                  ${isSelected 
-                    ? "border-emerald-500 bg-emerald-500/10 shadow-md" 
+                  p-3 sm:p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-1.5
+                  ${isSelected
+                    ? "border-emerald-500 bg-emerald-500/10 shadow-md"
                     : "border-border hover:border-emerald-300 hover:bg-muted/50"
                   }
+                  ${!isSelected && selectedCategories.length >= 3 ? "opacity-40 cursor-not-allowed" : ""}
                 `}
               >
-                <Icon className={`w-6 h-6 ${isSelected ? "text-emerald-500" : cat.color}`} />
-                <span className={`text-sm font-medium ${isSelected ? "text-emerald-700" : "text-foreground"}`}>
-                  {t(`categories.${cat.value}`)}
+                <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${isSelected ? "text-emerald-500" : meta.color}`} />
+                <span className={`text-xs sm:text-sm font-medium text-center leading-tight ${isSelected ? "text-emerald-700 dark:text-emerald-400" : "text-foreground"}`}>
+                  {t(`categories.${catValue}`)}
                 </span>
               </button>
             );

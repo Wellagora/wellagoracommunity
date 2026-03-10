@@ -38,8 +38,20 @@ interface Step4PreviewProps {
 }
 
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
-  gardening: Leaf,
+  lifestyle: Leaf,
+  craft: Hammer,
   gastronomy: ChefHat,
+  wellness: Heart,
+  hiking: MoreHorizontal,
+  gardening: Leaf,
+  heritage: MoreHorizontal,
+  volunteering: Heart,
+  market: MoreHorizontal,
+  community: MoreHorizontal,
+  sport: MoreHorizontal,
+  culture: Palette,
+  family: Heart,
+  // Legacy keys
   crafts: Hammer,
   health: Heart,
   art: Palette,
@@ -58,14 +70,15 @@ const Step4Preview = ({ formData, onPublish, onSaveDraft, isPublishing, hasPayou
     );
   };
 
-  const CategoryIcon = CATEGORY_ICONS[formData.category] || MoreHorizontal;
+  const primaryCategory = formData.categories?.[0] || formData.category || '';
+  const CategoryIcon = CATEGORY_ICONS[primaryCategory] || MoreHorizontal;
 
   const isFreeProgram = formData.pricingMode !== "purchasable" || formData.price_huf === 0;
 
   const checklist = [
     { key: "media", done: !!formData.mediaUrl, label: t("program_creator.checklist_media") },
     { key: "title", done: formData.title_hu.length >= 3, label: t("program_creator.checklist_title") },
-    { key: "category", done: !!formData.category, label: t("program_creator.checklist_category") },
+    { key: "category", done: (formData.categories?.length > 0) || !!formData.category, label: t("program_creator.checklist_category") },
     { key: "description", done: formData.description_hu.length >= 20, label: t("program_creator.checklist_description") },
     { key: "translations", done: !!formData.title_en && !!formData.title_de, label: t("program_creator.checklist_translations") },
     // Payout only shown for paid programs, and even then it's not blocking (Stripe not yet integrated)
@@ -111,11 +124,16 @@ const Step4Preview = ({ formData, onPublish, onSaveDraft, isPublishing, hasPayou
                   className="w-full h-full object-cover"
                 />
               )}
-              <div className="absolute top-4 left-4 flex gap-2">
-                <Badge className="bg-primary/90 text-white">
-                  <CategoryIcon className="w-3 h-3 mr-1" />
-                  {t(`categories.${formData.category}`)}
-                </Badge>
+              <div className="absolute top-4 left-4 flex flex-wrap gap-1.5">
+                {(formData.categories?.length > 0 ? formData.categories : [formData.category].filter(Boolean)).map((cat) => {
+                  const CatIcon = CATEGORY_ICONS[cat] || MoreHorizontal;
+                  return (
+                    <Badge key={cat} className="bg-primary/90 text-white">
+                      <CatIcon className="w-3 h-3 mr-1" />
+                      {t(`categories.${cat}`)}
+                    </Badge>
+                  );
+                })}
               </div>
               <div className="absolute top-4 right-4">
                 {formData.pricingMode === "sponsor_only" ? (

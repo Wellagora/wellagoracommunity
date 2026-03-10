@@ -110,20 +110,20 @@ const ActiveNowStats = () => {
               </div>
               {isLoading ? (
                 <div className="animate-pulse">
-                  <div className="h-8 bg-black/10 rounded w-12 mx-auto mb-1" />
-                  <div className="h-3 bg-black/5 rounded w-16 mx-auto" />
+                  <div className="h-8 bg-muted rounded w-12 mx-auto mb-1" />
+                  <div className="h-3 bg-muted/60 rounded w-16 mx-auto" />
                 </div>
               ) : (
                 <>
                   <motion.p 
-                    className="text-2xl font-bold text-black"
+                    className="text-2xl font-bold text-foreground"
                     initial={{ scale: 0.5 }}
                     animate={{ scale: 1 }}
                     transition={{ type: 'spring', stiffness: 300 }}
                   >
                     {item.value}
                   </motion.p>
-                  <p className="text-xs text-black/50 leading-tight">
+                  <p className="text-xs text-muted-foreground leading-tight">
                     {item.label}
                   </p>
                 </>

@@ -4265,7 +4265,11 @@
     "community": "Közösségi",
     "sport": "Sport",
     "culture": "Kultúra",
-    "family": "Család"
+    "family": "Család",
+    "crafts": "Kézműves",
+    "health": "Egészség",
+    "art": "Művészet",
+    "other": "Egyéb"
   },
   "program_creator": {
     "step_media": "Média",

@@ -8,10 +8,21 @@ const CTABanner = () => {
   const { t } = useLanguage();
 
   return (
-    <section className="relative py-16 bg-white/60 backdrop-blur-sm overflow-hidden z-0">
-      {/* Subtle monochrome decorative blurs - no grid patterns */}
-      <div className="absolute top-0 left-1/4 w-64 h-64 bg-slate-200/30 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-slate-100/40 rounded-full blur-3xl pointer-events-none" />
+    <section
+      className="relative py-20 md:py-24 overflow-hidden"
+      style={{
+        background: 'linear-gradient(135deg, #022c22 0%, #064e3b 40%, #065f46 60%, #134e4a 100%)',
+      }}
+    >
+      {/* Subtle radial glow */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-emerald-500/8 rounded-full blur-[100px]" />
+      </div>
+
+      {/* Decorative ring — echoes hero orbital style */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden>
+        <div className="w-[600px] h-[600px] rounded-full border border-white/[0.04]" />
+      </div>
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
@@ -22,30 +33,37 @@ const CTABanner = () => {
           viewport={{ once: true }}
         >
           <div className="flex items-center justify-center gap-2 mb-6">
-            <Sparkles className="w-6 h-6 text-primary" />
-            <span className="text-sm font-medium text-primary uppercase tracking-wide">
+            <Sparkles className="w-5 h-5 text-emerald-300/70" />
+            <span className="text-sm font-medium text-emerald-300/80 uppercase tracking-widest">
               {t("index.cta_badge")}
             </span>
-            <Sparkles className="w-6 h-6 text-primary" />
+            <Sparkles className="w-5 h-5 text-emerald-300/70" />
           </div>
 
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-6 leading-tight">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-6 leading-tight">
             {t("index.cta_headline")}
           </h2>
 
-          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+          <p className="text-lg text-white/50 mb-10 max-w-2xl mx-auto">
             {t("index.cta_subheadline")}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/piacer">
-              <Button size="lg" className="min-w-[200px] gap-2">
+              <Button
+                size="lg"
+                className="rounded-full bg-white text-emerald-900 font-semibold px-8 min-w-[220px] shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:bg-white/95 transition-all duration-300 gap-2"
+              >
                 {t("index.cta_explore_marketplace")}
                 <ChevronRight className="w-5 h-5" />
               </Button>
             </Link>
             <Link to="/auth">
-              <Button size="lg" variant="outline" className="min-w-[200px]">
+              <Button
+                size="lg"
+                variant="outline"
+                className="rounded-full border-white/25 text-white hover:bg-white/10 hover:border-white/40 font-semibold px-8 min-w-[220px] transition-all duration-300"
+              >
                 {t("index.cta_become_expert")}
               </Button>
             </Link>

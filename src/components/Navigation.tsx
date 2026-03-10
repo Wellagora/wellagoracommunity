@@ -58,10 +58,24 @@ const getEffectiveRole = (userRole: string | undefined): 'member' | 'expert' | '
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { user, profile, signOut, isDemoMode, viewAsRole, setViewAsRole } = useAuth();
   const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Scroll detection for transparent → solid nav on homepage
+  const isHomePage = location.pathname === '/';
+  useEffect(() => {
+    if (!isHomePage) {
+      setIsScrolled(true);
+      return;
+    }
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isHomePage]);
   
   // Determine user's role from profile
   const effectiveRole = getEffectiveRole(profile?.user_role);
@@ -345,13 +359,17 @@ const Navigation = () => {
         </div>
       )}
       
-      <nav className={`fixed left-0 right-0 z-[100] w-full bg-white/95 backdrop-blur-md border-b-2 ${getRoleAccentColor()} ${isDemoMode ? 'top-8' : 'top-0'}`}>
+      <nav className={`fixed left-0 right-0 z-[100] w-full transition-all duration-300 ${
+        isScrolled || !isHomePage || user
+          ? `bg-white/95 backdrop-blur-md border-b-2 ${getRoleAccentColor()}`
+          : 'bg-transparent border-b border-white/10'
+      } ${isDemoMode ? 'top-8' : 'top-0'}`}>
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="flex items-center justify-between h-16">
             {/* Logo - Left */}
             <Link to="/" className="flex items-center gap-2 shrink-0 z-10">
               <img src={wellagoraLogo} alt="WellAgora" className="h-9 sm:h-10 w-auto object-contain" />
-              <span className="text-sm font-medium text-gray-500 hidden sm:inline">WellAgora</span>
+              <span className={`text-sm font-medium hidden sm:inline transition-colors duration-300 ${isScrolled || !isHomePage || user ? 'text-gray-500' : 'text-white/70'}`}>WellAgora</span>
             </Link>
 
             {/* Desktop Navigation - Center */}
@@ -360,6 +378,7 @@ const Navigation = () => {
                 {navItems.map((item) => {
                   const Icon = item.icon;
                   const active = isActive(item.path);
+                  const isTransparent = !isScrolled && isHomePage && !user;
                   return (
                     <Link
                       key={item.path}
@@ -367,7 +386,9 @@ const Navigation = () => {
                       className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-full transition-all duration-300 whitespace-nowrap ${
                         active
                           ? getActiveNavClasses()
-                          : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                          : isTransparent
+                            ? "text-white/70 hover:text-white hover:bg-white/10"
+                            : "text-muted-foreground hover:text-foreground hover:bg-accent"
                       }`}
                     >
                       {Icon && <Icon className="h-4 w-4" />}

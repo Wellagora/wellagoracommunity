@@ -128,7 +128,7 @@ const RecommendedProgramsSlider = () => {
   // Loading skeleton
   if (isLoading) {
     return (
-      <section className="py-10 bg-gradient-to-b from-background via-emerald-50/30 to-background">
+      <section className="py-10 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-6">
             <Skeleton className="h-10 w-64" />
@@ -147,7 +147,7 @@ const RecommendedProgramsSlider = () => {
   // Empty state — role-aware CTA
   if (!programs || programs.length === 0) {
     return (
-      <section className="py-10 bg-gradient-to-b from-background via-emerald-50/30 to-background">
+      <section className="py-10 bg-muted/30">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -199,7 +199,7 @@ const RecommendedProgramsSlider = () => {
   }
 
   return (
-    <section className="py-10 bg-gradient-to-b from-background via-emerald-50/30 to-background">
+    <section className="py-10 bg-muted/30">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
