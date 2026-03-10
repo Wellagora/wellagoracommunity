@@ -11,12 +11,12 @@ const CTABanner = () => {
     <section
       className="relative py-20 md:py-24 overflow-hidden"
       style={{
-        background: 'linear-gradient(135deg, #022c22 0%, #064e3b 40%, #065f46 60%, #134e4a 100%)',
+        background: 'linear-gradient(135deg, #0f0f35 0%, #1a1a4e 40%, #2e1065 60%, #1e1b4b 100%)',
       }}
     >
       {/* Subtle radial glow */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-emerald-500/8 rounded-full blur-[100px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-indigo-500/8 rounded-full blur-[100px]" />
       </div>
 
       {/* Decorative ring — echoes hero orbital style */}
@@ -33,11 +33,11 @@ const CTABanner = () => {
           viewport={{ once: true }}
         >
           <div className="flex items-center justify-center gap-2 mb-6">
-            <Sparkles className="w-5 h-5 text-emerald-300/70" />
-            <span className="text-sm font-medium text-emerald-300/80 uppercase tracking-widest">
+            <Sparkles className="w-5 h-5 text-blue-300/70" />
+            <span className="text-sm font-medium text-blue-300/80 uppercase tracking-widest">
               {t("index.cta_badge")}
             </span>
-            <Sparkles className="w-5 h-5 text-emerald-300/70" />
+            <Sparkles className="w-5 h-5 text-blue-300/70" />
           </div>
 
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-6 leading-tight">
@@ -52,7 +52,7 @@ const CTABanner = () => {
             <Link to="/piacer">
               <Button
                 size="lg"
-                className="rounded-full bg-white text-emerald-900 font-semibold px-8 min-w-[220px] shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:bg-white/95 transition-all duration-300 gap-2"
+                className="rounded-full bg-[#6c5ce7] hover:bg-[#7c6cf7] text-white font-semibold px-8 min-w-[220px] shadow-[0_0_30px_rgba(108,92,231,0.35)] hover:shadow-[0_0_40px_rgba(108,92,231,0.5)] transition-all duration-300 gap-2"
               >
                 {t("index.cta_explore_marketplace")}
                 <ChevronRight className="w-5 h-5" />
