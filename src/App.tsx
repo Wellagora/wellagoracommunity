@@ -254,6 +254,7 @@ function App() {
                           
                           {/* Sponsor routes */}
                           <Route path="/sponsor" element={<SponsorLandingPage />} />
+                          <Route path="/sponsors" element={<SponsorLandingPage />} />
                           <Route path="/register/organization" element={<OrganizationRegisterPage />} />
                           <Route path="/join/org/:inviteCode" element={<JoinOrganizationPage />} />
                           <Route

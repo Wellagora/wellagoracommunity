@@ -14,6 +14,27 @@ import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ShareButton } from "@/components/ui/ShareButton";
 
+// Category-based fallback images (matching Piactér/ProgramsListingPage)
+const FALLBACK_IMAGES: Record<string, string> = {
+  'sustainability': 'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=800&h=600&fit=crop',
+  'gastronomy': 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&h=600&fit=crop',
+  'wellness': 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=800&h=600&fit=crop',
+  'workshop': 'https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=800&h=600&fit=crop',
+  'community': 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&h=600&fit=crop',
+  'business': 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop',
+  'gardening': 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&h=600&fit=crop',
+  'default': 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&h=600&fit=crop'
+};
+
+const getCategoryFallbackImage = (category: string | null): string => {
+  if (!category) return FALLBACK_IMAGES.default;
+  const cats = category.split(',').map(c => c.trim().toLowerCase());
+  for (const cat of cats) {
+    if (FALLBACK_IMAGES[cat]) return FALLBACK_IMAGES[cat];
+  }
+  return FALLBACK_IMAGES.default;
+};
+
 interface Program {
   id: string;
   title: string;
@@ -116,12 +137,15 @@ const RecommendedProgramsSlider = () => {
     }
   };
 
-  // Placeholder for missing images
-  const ImagePlaceholder = () => (
-    <div className="w-full h-full flex items-center justify-center bg-muted">
-      <div className="w-16 h-16 rounded-2xl bg-background/60 backdrop-blur flex items-center justify-center shadow-sm border border-border/50">
-        <Leaf className="w-10 h-10 text-muted-foreground" />
-      </div>
+  // Category-based placeholder with Unsplash fallback (matching Piactér)
+  const ImagePlaceholder = ({ category }: { category?: string | null }) => (
+    <div className="w-full h-full relative">
+      <img
+        src={getCategoryFallbackImage(category || null)}
+        alt="Program preview"
+        className="w-full h-full object-cover"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
     </div>
   );
 
@@ -261,7 +285,7 @@ const RecommendedProgramsSlider = () => {
               >
                 <Link to={`/piacer/${program.id}`} className="block group">
                   <Card className="h-full overflow-hidden">
-                    {/* Image with smooth zoom */}
+                    {/* Image with smooth zoom + category fallback */}
                     <div className="aspect-[4/3] bg-gradient-to-br from-blue-50/50 to-amber-50/30 relative overflow-hidden">
                       {program.image_url || program.thumbnail_url ? (
                         <img
@@ -269,14 +293,14 @@ const RecommendedProgramsSlider = () => {
                           alt={program.title}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                           onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                            e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                            const fallbackUrl = getCategoryFallbackImage(program.category);
+                            e.currentTarget.src = fallbackUrl;
+                            e.currentTarget.onerror = null;
                           }}
                         />
-                      ) : null}
-                      <div className={program.image_url || program.thumbnail_url ? 'hidden' : ''}>
-                        <ImagePlaceholder />
-                      </div>
+                      ) : (
+                        <ImagePlaceholder category={program.category} />
+                      )}
                     </div>
                     
                     {/* Ultra-Minimal Content */}

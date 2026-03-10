@@ -73,6 +73,27 @@ interface Program {
   views_count?: number;
 }
 
+// Category-based fallback images (matching Piactér/ProgramsListingPage)
+const FALLBACK_IMAGES: Record<string, string> = {
+  'sustainability': 'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=800&h=600&fit=crop',
+  'gastronomy': 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&h=600&fit=crop',
+  'wellness': 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=800&h=600&fit=crop',
+  'workshop': 'https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=800&h=600&fit=crop',
+  'community': 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&h=600&fit=crop',
+  'business': 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop',
+  'gardening': 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&h=600&fit=crop',
+  'default': 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&h=600&fit=crop'
+};
+
+const getCategoryFallbackImage = (category: string | null): string => {
+  if (!category) return FALLBACK_IMAGES.default;
+  const cats = category.split(',').map(c => c.trim().toLowerCase());
+  for (const cat of cats) {
+    if (FALLBACK_IMAGES[cat]) return FALLBACK_IMAGES[cat];
+  }
+  return FALLBACK_IMAGES.default;
+};
+
 // Get valid image URL: filter blob URLs, prefer image_url then thumbnail_url
 const getValidImageUrl = (program: Program): string | null => {
   const img = program.image_url;
@@ -516,18 +537,27 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                     transition={{ delay: index * 0.05 }}
                   >
                     <Card className="overflow-hidden hover:shadow-lg transition-shadow group">
-                      {/* Thumbnail */}
+                      {/* Thumbnail with category fallback */}
                       <div className="aspect-video bg-muted relative">
                         {getValidImageUrl(program) ? (
                           <img
                             src={getValidImageUrl(program)!}
                             alt={program.title}
                             className="w-full h-full object-cover"
-                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                            onError={(e) => {
+                              const fallbackUrl = getCategoryFallbackImage(program.category);
+                              e.currentTarget.src = fallbackUrl;
+                              e.currentTarget.onerror = null;
+                            }}
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-blue-500/10">
-                            <Leaf className="w-12 h-12 text-primary/30" />
+                          <div className="w-full h-full relative">
+                            <img
+                              src={getCategoryFallbackImage(program.category)}
+                              alt="Program preview"
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                           </div>
                         )}
                         <div className="absolute top-2 left-2 flex flex-wrap gap-1">
@@ -664,12 +694,18 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                         src={getValidImageUrl(program)!}
                         alt={program.title}
                         className="w-full h-full object-cover"
-                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        onError={(e) => {
+                          const fallbackUrl = getCategoryFallbackImage(program.category);
+                          e.currentTarget.src = fallbackUrl;
+                          e.currentTarget.onerror = null;
+                        }}
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-blue-500/10">
-                        <Leaf className="w-6 h-6 text-primary/30" />
-                      </div>
+                      <img
+                        src={getCategoryFallbackImage(program.category)}
+                        alt="Program preview"
+                        className="w-full h-full object-cover"
+                      />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
