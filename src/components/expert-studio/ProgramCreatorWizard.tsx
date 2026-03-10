@@ -319,6 +319,9 @@ const ProgramCreatorWizard = () => {
         thumbnail_url: imageUrl || null,
         price_huf: formData.pricingMode === "purchasable" ? formData.price_huf : 0,
         access_type: formData.pricingMode === "purchasable" ? "paid" : "sponsored",
+        // access_level controls the RPC get_content_access_status — MUST be set correctly
+        // 'free' = open to all, 'registered' = logged-in users, 'premium' = premium subscribers, 'one_time_purchase' = paid
+        access_level: formData.pricingMode === "purchasable" ? "one_time_purchase" : "free",
         max_capacity: formData.contentType !== 'recorded' ? formData.maxParticipants : null,
         is_published: false,
         updated_at: new Date().toISOString(),
