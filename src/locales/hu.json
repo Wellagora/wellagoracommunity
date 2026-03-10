@@ -4338,7 +4338,13 @@
     "fill_required": "Kérjük, töltsd ki a kötelező mezőket!",
     "draft_saved": "Piszkozat mentve!",
     "published_success": "Program sikeresen közzétéve! 🎉",
-    "publish_error": "Hiba történt a közzététel során"
+    "publish_error": "Hiba történt a közzététel során",
+    "cover_image": "Borítókép (automatikus)",
+    "cover_image_hint": "Ez a kép jelenik meg a piactéren.",
+    "generating_thumbnail": "Borítókép generálása...",
+    "thumbnail_generated": "Borítókép létrehozva!",
+    "master_locale": "Fő nyelv",
+    "master_locale_hint": "A tartalom elsődleges nyelve"
   },
   "feed": {
     "title": "Közösségi Fal",

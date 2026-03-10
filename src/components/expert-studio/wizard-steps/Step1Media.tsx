@@ -236,10 +236,14 @@ const Step1Media = ({ formData, setFormData }: Step1MediaProps) => {
           </Card>
 
           {/* Show auto-generated thumbnail for video uploads */}
+          {/* Only show if thumbnailUrl is a valid image (blob: or ends with image extension or _thumb) */}
           {formData.mediaType === "video" && formData.thumbnailUrl && (
+            formData.thumbnailUrl.startsWith('blob:') ||
+            /(_thumb\.(jpg|jpeg|png|webp))|(\.(jpg|jpeg|png|webp)(\?|$))/i.test(formData.thumbnailUrl)
+          ) && (
             <div className="mt-4 p-4 bg-muted/50 rounded-lg">
               <p className="text-sm font-medium text-foreground mb-2">
-                {t("program_creator.cover_image") || "Borítókép (automatikus)"}
+                {t("program_creator.cover_image")}
               </p>
               <img
                 src={formData.thumbnailUrl}
@@ -247,7 +251,18 @@ const Step1Media = ({ formData, setFormData }: Step1MediaProps) => {
                 className="w-48 aspect-video object-cover rounded-lg border border-border"
               />
               <p className="text-xs text-muted-foreground mt-1">
-                {t("program_creator.cover_image_hint") || "Ez a kép jelenik meg a piactéren."}
+                {t("program_creator.cover_image_hint")}
+              </p>
+            </div>
+          )}
+          {/* If video has no thumbnail yet, show hint */}
+          {formData.mediaType === "video" && (!formData.thumbnailUrl || (
+            !formData.thumbnailUrl.startsWith('blob:') &&
+            !/(_thumb\.(jpg|jpeg|png|webp))|(\.(jpg|jpeg|png|webp)(\?|$))/i.test(formData.thumbnailUrl)
+          )) && (
+            <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+              <p className="text-sm text-amber-700">
+                {t("program_creator.no_thumbnail_hint") || "A borítókép automatikusan generálódik új videó feltöltésekor. Töröld és töltsd fel újra a videót a borítókép létrehozásához."}
               </p>
             </div>
           )}

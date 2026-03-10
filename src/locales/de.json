@@ -4692,7 +4692,13 @@
     "publish": "[TODO: Közzététel]",
     "back": "Zurück",
     "fill_required": "[TODO: Kérjük, töltsd ki a kötelező mezőket!]",
-    "publish_error": "Fehler történt a közzététel során"
+    "publish_error": "Fehler beim Veröffentlichen",
+    "cover_image": "Titelbild (automatisch)",
+    "cover_image_hint": "Dieses Bild wird auf dem Marktplatz angezeigt.",
+    "generating_thumbnail": "Titelbild wird generiert...",
+    "thumbnail_generated": "Titelbild erstellt!",
+    "master_locale": "Hauptsprache",
+    "master_locale_hint": "Die Hauptsprache des Inhalts"
   },
   "sponsor_hub": {
     "title": "Sponsor Hub",

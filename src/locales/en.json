@@ -4769,7 +4769,13 @@
     "description_placeholder_hu": "[TODO: Írd le részletesen, mit kapnak a tagok a programodból...]",
     "description_placeholder_en": "[TODO: Describe in detail what members will get from your program...]",
     "description_placeholder_de": "[TODO: Beschreiben Sie ausführlich, was die Mitglieder von Ihrem Programm bekommen...]",
-    "no_description": "No leírás"
+    "no_description": "No description",
+    "cover_image": "Cover image (auto-generated)",
+    "cover_image_hint": "This image will appear on the marketplace.",
+    "generating_thumbnail": "Generating cover image...",
+    "thumbnail_generated": "Cover image created!",
+    "master_locale": "Primary language",
+    "master_locale_hint": "The primary language of the content"
   },
   "feed": {
     "title": "Community Feed",

@@ -167,12 +167,21 @@ const ProgramCreatorWizard = () => {
         }
       }
 
+      // Determine if thumbnail_url is actually a valid image (not the video itself)
+      const rawThumbUrl = data.thumbnail_url || "";
+      const isThumbAnImage = rawThumbUrl && (
+        /(_thumb\.(jpg|jpeg|png|webp))|(\.(jpg|jpeg|png|webp)(\?|$))/i.test(rawThumbUrl)
+      );
+      // For media URL: prefer image_url (which should be the thumbnail for video programs)
+      // Fall back to thumbnail_url only if it's an image
+      const resolvedMediaUrl = data.image_url || data.thumbnail_url || "";
+
       setFormData({
         mediaFile: null,
-        mediaUrl: data.image_url || data.thumbnail_url || "",
-        mediaType: data.content_type === "recorded" || data.image_url?.includes("video") ? "video" : "image",
+        mediaUrl: resolvedMediaUrl,
+        mediaType: data.content_type === "recorded" || (resolvedMediaUrl && !isThumbAnImage && data.content_type !== "in_person") ? "video" : "image",
         thumbnailFile: null,
-        thumbnailUrl: data.thumbnail_url || "",
+        thumbnailUrl: isThumbAnImage ? rawThumbUrl : "",
         title_hu: data.title || "",
         category: data.category || "",
         categories: data.category ? data.category.split(',').map((c: string) => c.trim()).filter(Boolean) : [],
