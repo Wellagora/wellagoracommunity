@@ -59,7 +59,7 @@ const SponsoredPriceBadge = ({
     return (
       <div className="flex items-baseline gap-1">
         <span className={`font-bold text-black ${classes.price}`}>
-          {originalPrice > 0 ? formatPrice(originalPrice) : (language === 'hu' ? 'Ingyenes' : 'Free')}
+          {originalPrice > 0 ? formatPrice(originalPrice) : (language === 'hu' ? 'Támogatott' : 'Supported')}
         </span>
       </div>
     );

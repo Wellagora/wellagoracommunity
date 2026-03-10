@@ -317,7 +317,7 @@ const ContentModerationPanel = () => {
 
   const getAccessLevelBadge = (level: string | null) => {
     const levels: Record<string, { label: string; className: string }> = {
-      free: { label: t('admin.access_free') || 'Ingyenes', className: 'bg-green-500/20 text-green-400' },
+      free: { label: t('admin.access_free') || 'Támogatott', className: 'bg-green-500/20 text-green-400' },
       registered: { label: t('admin.access_registered') || 'Regisztrált', className: 'bg-blue-500/20 text-blue-400' },
       premium: { label: t('admin.access_premium') || 'Prémium', className: 'bg-amber-500/20 text-amber-400' },
       one_time_purchase: { label: t('admin.access_purchase') || 'Egyszeri', className: 'bg-purple-500/20 text-purple-400' },
@@ -521,7 +521,7 @@ const ContentModerationPanel = () => {
                       <Badge variant="outline">
                         {content.price_huf && content.price_huf > 0 
                           ? `${content.price_huf} Ft` 
-                          : (t('admin.access_free') || 'Ingyenes')
+                          : (t('admin.access_free') || 'Támogatott')
                         }
                       </Badge>
                     </div>
@@ -708,7 +708,7 @@ const ContentModerationPanel = () => {
                 <Badge variant="outline">
                   {selectedContent.price_huf && selectedContent.price_huf > 0 
                     ? `${selectedContent.price_huf} Ft` 
-                    : (t('admin.access_free') || 'Ingyenes')
+                    : (t('admin.access_free') || 'Támogatott')
                   }
                 </Badge>
                 <Badge variant="outline">

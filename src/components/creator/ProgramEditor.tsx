@@ -578,7 +578,7 @@ const ProgramEditor = ({ programId, mode }: ProgramEditorProps) => {
                 <div className="flex items-center space-x-3 p-3 rounded-lg bg-[#0A1930]/50 hover:bg-[#0A1930] transition-colors">
                   <RadioGroupItem value="free" id="free" className="border-[#00E5FF] text-[#00E5FF]" />
                   <Label htmlFor="free" className="text-white cursor-pointer flex-1">
-                    <span className="font-medium">Ingyenes</span>
+                    <span className="font-medium">Támogatott</span>
                     <span className="text-white/60 text-sm ml-2">- Mindenki számára elérhető</span>
                   </Label>
                 </div>

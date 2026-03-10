@@ -66,7 +66,7 @@ const PARTNERS_DATA: Record<string, {
         id: "p2",
         partnerName: "Praktiker",
         partnerSlug: "praktiker",
-        offerTitle: "Ingyenes palántacsomag",
+        offerTitle: "Ajándék palántacsomag",
         offerDescription: "5000 Ft feletti vásárlás esetén ajándék bio palánta csomag.",
         discountType: "gift",
         discountValue: "Ajándék",

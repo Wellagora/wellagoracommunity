@@ -66,10 +66,10 @@ const FoundingExpertPage = () => {
   ];
 
   const seoDescription = language === 'hu'
-    ? 'Legyél a WellAgora első 20 Founding Expert-je! Ingyenes prémium hozzáférés, kiemelt profil és közösségi hatás.'
+    ? 'Legyél a WellAgora első 20 Founding Expert-je! Prémium hozzáférés, kiemelt profil és közösségi hatás.'
     : language === 'de'
-    ? 'Werden Sie einer der ersten 20 Founding Experts von WellAgora! Kostenloser Premium-Zugang und hervorgehobenes Profil.'
-    : 'Be one of WellAgora\'s first 20 Founding Experts! Free premium access, featured profile, and community impact.';
+    ? 'Werden Sie einer der ersten 20 Founding Experts von WellAgora! Premium-Zugang und hervorgehobenes Profil.'
+    : 'Be one of WellAgora\'s first 20 Founding Experts! Premium access, featured profile, and community impact.';
 
   return (
     <>

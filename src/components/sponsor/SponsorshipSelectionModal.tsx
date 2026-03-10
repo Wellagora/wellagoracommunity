@@ -306,8 +306,8 @@ const SponsorshipSelectionModal = ({ open, onOpenChange, onSuccess }: Sponsorshi
             <p className="text-sm text-black/70">
               {sponsorshipType === 'category' 
                 ? (language === 'hu' 
-                    ? '💡 A kategória támogatásával a kiválasztott témakör ÖSSZES programját támogatja. A felhasználók ingyen férhetnek hozzá ezekhez a tartalmakhoz.'
-                    : '💡 By sponsoring a category, you support ALL programs in that topic. Users can access these contents for free.')
+                    ? '💡 A kategória támogatásával a kiválasztott témakör ÖSSZES programját támogatja. A felhasználók támogatottan férhetnek hozzá ezekhez a tartalmakhoz.'
+                    : '💡 By sponsoring a category, you support ALL programs in that topic. Users can access these supported contents.')
                 : (language === 'hu'
                     ? '💡 A szakértő támogatásával a kiválasztott szakértő ÖSSZES programját támogatja. Ez segít a szakértőnek nagyobb közönséget elérni.'
                     : '💡 By sponsoring an expert, you support ALL programs by that expert. This helps the expert reach a wider audience.')}

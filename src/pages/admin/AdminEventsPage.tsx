@@ -662,7 +662,7 @@ const AdminEventsPage = () => {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Ingyenes</Label>
+                <Label>Díjmentes</Label>
                 <div className="flex items-center space-x-2 pt-2">
                   <Checkbox
                     id="is_free"
@@ -670,7 +670,7 @@ const AdminEventsPage = () => {
                     onCheckedChange={(checked) => setFormData({ ...formData, is_free: checked as boolean })}
                   />
                   <label htmlFor="is_free" className="text-sm text-gray-600">
-                    Az esemény ingyenes
+                    Az esemény díjmentes
                   </label>
                 </div>
               </div>

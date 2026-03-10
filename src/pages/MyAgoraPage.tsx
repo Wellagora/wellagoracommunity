@@ -58,7 +58,7 @@ const EARNING_METHODS = [
 // Rewards
 const REWARDS = [
   { points: 500, reward: '10% kedvezmény bármely programra', icon: '🏷️' },
-  { points: 1000, reward: 'Ingyenes esemény belépő', icon: '🎟️' },
+  { points: 1000, reward: 'Támogatott esemény belépő', icon: '🎟️' },
   { points: 2000, reward: 'Exkluzív szakértői konzultáció', icon: '💎' },
 ];
 

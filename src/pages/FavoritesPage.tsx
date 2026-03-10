@@ -129,7 +129,7 @@ const FavoritesPage = () => {
     if (!program.price_huf || program.price_huf === 0) {
       return (
         <Badge variant="secondary" className="text-xs">
-          {t("common.free") || "Ingyenes"}
+          {t("common.free") || "Támogatott"}
         </Badge>
       );
     }
