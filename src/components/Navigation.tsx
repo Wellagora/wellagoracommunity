@@ -369,7 +369,7 @@ const Navigation = () => {
             {/* Logo - Left */}
             <Link to="/" className="flex items-center gap-2 shrink-0 z-10">
               <img src={wellagoraLogo} alt="WellAgora" className="h-9 sm:h-10 w-auto object-contain" />
-              <span className={`text-sm font-medium hidden sm:inline transition-colors duration-300 ${isScrolled || !isHomePage || user ? 'text-gray-500' : 'text-white/70'}`}>WellAgora</span>
+              <span className={`text-sm font-medium hidden sm:inline transition-colors duration-300 ${isScrolled || !isHomePage || user ? 'text-gray-700' : 'text-white/90'}`}>WellAgora</span>
             </Link>
 
             {/* Desktop Navigation - Center */}
@@ -387,8 +387,8 @@ const Navigation = () => {
                         active
                           ? getActiveNavClasses()
                           : isTransparent
-                            ? "text-white/70 hover:text-white hover:bg-white/10"
-                            : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                            ? "text-white/90 hover:text-white hover:bg-white/15"
+                            : "text-gray-700 hover:text-gray-900 hover:bg-gray-100"
                       }`}
                     >
                       {Icon && <Icon className="h-4 w-4" />}

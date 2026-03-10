@@ -203,37 +203,37 @@ Deep Slate navigation, Soft Slate backgrounds, pure organic feel
 
 @layer base {
   :root {
-    /* WellAgora Design System — Emerald/Teal Palette */
-    --background: 60 20% 97%;                   /* Off-white/cream #FAFAF5 */
+    /* WellAgora Design System — Blue/White Clean Palette */
+    --background: 0 0% 100%;                    /* Pure white #FFFFFF */
     --foreground: 222 47% 11%;                  /* Slate-900 #1E293B */
 
     /* Secondary Background */
-    --secondary-bg: 60 14% 95%;                 /* Warm cream */
+    --secondary-bg: 210 20% 97%;                /* Cool light grey */
 
-    /* Card: Warm white */
-    --card: 60 20% 99%;
+    /* Card: Pure white */
+    --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    /* Primary: Emerald-600 */
-    --primary: 160 84% 39%;                     /* Emerald-600 #059669 */
+    /* Primary: Blue-600 */
+    --primary: 217 91% 60%;                     /* Blue-600 #2563EB */
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 160 70% 45%;
-    --primary-dark: 160 84% 30%;
+    --primary-glow: 217 91% 65%;
+    --primary-dark: 217 91% 50%;
 
     /* Accent: Amber-500 */
-    --accent: 38 92% 50%;                       /* Amber-500 #F59E0B */
-    --accent-foreground: 0 0% 100%;
+    --accent: 210 20% 96%;                      /* Light blue-grey */
+    --accent-foreground: 222 47% 11%;
     --accent-light: 38 92% 60%;
 
-    /* Secondary: Teal-500 */
-    --secondary: 174 72% 40%;                   /* Teal-500 #14B8A6 */
-    --secondary-foreground: 0 0% 100%;
+    /* Secondary: Blue-500 */
+    --secondary: 210 20% 96%;                   /* Neutral light */
+    --secondary-foreground: 222 47% 11%;
 
     /* Muted */
-    --muted: 60 14% 95%;
+    --muted: 210 20% 96%;
     --muted-foreground: 215 16% 47%;            /* Slate-600 */
 
     /* Success - Emerald */
@@ -254,29 +254,29 @@ Deep Slate navigation, Soft Slate backgrounds, pure organic feel
     --destructive-foreground: 0 0% 100%;
 
     /* Border and Input */
-    --border: 220 13% 91%;
-    --input: 60 14% 95%;
-    --ring: 160 84% 39%;                        /* Emerald ring */
+    --border: 214 32% 91%;
+    --input: 210 20% 96%;
+    --ring: 217 91% 60%;                        /* Blue ring */
 
     --radius: 0.75rem;                          /* 12px for rounded-xl */
 
-    /* Emerald/Teal Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(160 84% 39%), hsl(174 72% 40%));
-    --gradient-vibrant: linear-gradient(135deg, hsl(160 84% 39%), hsl(174 72% 40%));
-    --gradient-hero-mesh: linear-gradient(135deg, hsl(160 84% 39%) 0%, hsl(174 72% 40%) 100%);
-    --gradient-nature: linear-gradient(180deg, hsl(60 20% 97%) 0%, hsl(60 14% 95%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(160 84% 39%) 0%, hsl(174 72% 40%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(60 20% 97%) 0%, hsl(60 14% 95%) 100%);
-    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.95) 0%, hsl(60 14% 98% / 0.9) 100%);
-    --gradient-button: linear-gradient(135deg, hsl(160 84% 39%), hsl(160 84% 30%));
+    /* Blue/White Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(199 89% 48%));
+    --gradient-vibrant: linear-gradient(135deg, hsl(217 91% 60%), hsl(199 89% 48%));
+    --gradient-hero-mesh: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(199 89% 48%) 100%);
+    --gradient-nature: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 20% 97%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(199 89% 48%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 20% 97%) 100%);
+    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.95) 0%, hsl(210 20% 98% / 0.9) 100%);
+    --gradient-button: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 50%));
 
     /* Shadows */
     --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     --shadow-premium: 0 4px 16px -4px rgba(0, 0, 0, 0.08);
     --shadow-float: 0 8px 30px -8px rgba(0, 0, 0, 0.1);
-    --shadow-button: 0 2px 8px -2px rgba(5, 150, 105, 0.25);
-    --shadow-glow: 0 0 20px rgba(5, 150, 105, 0.15);
-    --shadow-eco: 0 4px 16px rgba(5, 150, 105, 0.1);
+    --shadow-button: 0 2px 8px -2px rgba(37, 99, 235, 0.25);
+    --shadow-glow: 0 0 20px rgba(37, 99, 235, 0.15);
+    --shadow-eco: 0 4px 16px rgba(37, 99, 235, 0.1);
     --shadow-3d: 0 8px 32px rgba(30, 41, 59, 0.08);
     --shadow-luxury: 0 8px 32px rgba(30, 41, 59, 0.08);
 

@@ -136,7 +136,7 @@ const HeroSection = () => {
         ref={sectionRef}
         className="relative overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, #0a1628 0%, #0f2440 25%, #0d2847 45%, #102e52 65%, #0d2847 85%, #0a1628 100%)',
+          background: 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 25%, #1e40af 50%, #1e3a5f 75%, #0f172a 100%)',
         }}
       >
         {/* Orbital rings animation */}
@@ -177,7 +177,7 @@ const HeroSection = () => {
 
         <motion.div
           style={{ opacity, scale }}
-          className="relative z-10 container mx-auto px-4 pt-28 pb-24 md:pt-36 md:pb-32"
+          className="relative z-10 container mx-auto px-5 pt-24 pb-20 md:pt-36 md:pb-32"
         >
           {/* Badge */}
           <motion.div
@@ -201,7 +201,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight max-w-4xl mx-auto"
+              className="text-center text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white leading-[1.15] tracking-tight max-w-4xl mx-auto"
             >
               {h.line1}{' '}
               <span className="bg-gradient-to-r from-blue-300 to-cyan-300 bg-clip-text text-transparent">
@@ -215,7 +215,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="mt-6 text-lg md:text-xl text-white/60 max-w-2xl mx-auto text-center leading-relaxed"
+              className="mt-5 text-base md:text-xl text-white/90 max-w-2xl mx-auto text-center leading-relaxed px-2"
             >
               {h.subtitle}
             </motion.p>
@@ -226,12 +226,12 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-10 flex flex-col sm:flex-row gap-4 justify-center"
+            className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0"
           >
             <Link to="/auth?role=member">
               <Button
                 size="lg"
-                className="rounded-full bg-[#2563eb] hover:bg-[#3b82f6] text-white font-semibold px-8 min-w-[220px] shadow-[0_0_30px_rgba(37,99,235,0.35)] hover:shadow-[0_0_40px_rgba(37,99,235,0.5)] transition-all duration-300"
+                className="rounded-full bg-white hover:bg-white/90 text-[#1e3a5f] font-semibold px-8 w-full sm:w-auto sm:min-w-[220px] shadow-[0_4px_20px_rgba(255,255,255,0.25)] hover:shadow-[0_4px_30px_rgba(255,255,255,0.35)] transition-all duration-300"
               >
                 {language === 'hu' ? 'Csatlakozom' : language === 'de' ? 'Jetzt beitreten' : 'Join Now'}
                 <ArrowRight className="w-4 h-4 ml-2" />
@@ -241,7 +241,7 @@ const HeroSection = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="rounded-full border-white/25 text-white hover:bg-white/10 hover:border-white/40 font-semibold px-8 min-w-[220px] transition-all duration-300"
+                className="rounded-full border-white/25 text-white hover:bg-white/10 hover:border-white/40 font-semibold px-8 w-full sm:w-auto sm:min-w-[220px] transition-all duration-300"
               >
                 {language === 'hu' ? 'Szakértő vagyok' : language === 'de' ? 'Ich bin Experte' : "I'm an Expert"}
               </Button>
@@ -263,7 +263,7 @@ const HeroSection = () => {
                   </div>
                   <div>
                     <span className="text-xl font-bold text-white">{stats.members}</span>
-                    <span className="text-sm text-white/50 ml-1.5">
+                    <span className="text-sm text-white/80 ml-1.5">
                       {language === 'hu' ? 'tag' : language === 'de' ? 'Mitglieder' : 'members'}
                     </span>
                   </div>
@@ -276,7 +276,7 @@ const HeroSection = () => {
                   </div>
                   <div>
                     <span className="text-xl font-bold text-white">{stats.experts}</span>
-                    <span className="text-sm text-white/50 ml-1.5">
+                    <span className="text-sm text-white/80 ml-1.5">
                       {language === 'hu' ? 'szakértő' : language === 'de' ? 'Experten' : 'experts'}
                     </span>
                   </div>
@@ -289,7 +289,7 @@ const HeroSection = () => {
                   </div>
                   <div>
                     <span className="text-xl font-bold text-white">{stats.programs}</span>
-                    <span className="text-sm text-white/50 ml-1.5">
+                    <span className="text-sm text-white/80 ml-1.5">
                       {language === 'hu' ? 'program' : language === 'de' ? 'Programme' : 'programs'}
                     </span>
                   </div>

@@ -11,7 +11,7 @@ const CTABanner = () => {
     <section
       className="relative py-20 md:py-24 overflow-hidden"
       style={{
-        background: 'linear-gradient(135deg, #0a1628 0%, #0f2440 40%, #102e52 60%, #0d2847 100%)',
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 40%, #1e40af 60%, #1e3a5f 100%)',
       }}
     >
       {/* Subtle radial glow */}
@@ -52,7 +52,7 @@ const CTABanner = () => {
             <Link to="/piacer">
               <Button
                 size="lg"
-                className="rounded-full bg-[#2563eb] hover:bg-[#3b82f6] text-white font-semibold px-8 min-w-[220px] shadow-[0_0_30px_rgba(37,99,235,0.35)] hover:shadow-[0_0_40px_rgba(37,99,235,0.5)] transition-all duration-300 gap-2"
+                className="rounded-full bg-white hover:bg-white/90 text-[#1e3a5f] font-semibold px-8 min-w-[220px] shadow-[0_4px_20px_rgba(255,255,255,0.25)] hover:shadow-[0_4px_30px_rgba(255,255,255,0.35)] transition-all duration-300 gap-2"
               >
                 {t("index.cta_explore_marketplace")}
                 <ChevronRight className="w-5 h-5" />
