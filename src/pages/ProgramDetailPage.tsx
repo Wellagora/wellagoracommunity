@@ -591,33 +591,57 @@ const ProgramDetailPage = () => {
               {/* Hero Image/Video - Max 400px height */}
               <div className="relative max-h-[400px] rounded-2xl overflow-hidden mb-6 bg-gradient-to-br from-primary/10 to-accent/10">
                 {(() => {
-                  const mediaUrl = program.thumbnail_url || program.image_url;
-                  if (!mediaUrl) {
+                  // Filter out blob: URLs (invalid — only exist in browser memory)
+                  const rawUrl = program.thumbnail_url || program.image_url;
+                  const mediaUrl = rawUrl?.startsWith('blob:') ? null : rawUrl;
+                  const contentUrl = program.content_url;
+
+                  if (!mediaUrl && !contentUrl) {
+                    // No media at all — show placeholder with content type icon
                     return (
-                      <div className="w-full h-64 flex items-center justify-center">
-                        <div className="text-6xl opacity-30">📚</div>
+                      <div className="w-full h-64 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-blue-50 to-blue-100">
+                        {program.content_type === 'recorded' ? (
+                          <Video className="w-16 h-16 text-blue-400" />
+                        ) : (
+                          <PlayCircle className="w-16 h-16 text-blue-400" />
+                        )}
+                        <p className="text-sm text-blue-500 font-medium">
+                          {program.content_type === 'recorded' ? 'Videókurzus' : 'Program'}
+                        </p>
                       </div>
                     );
                   }
-                  // Check if URL is a video (not an image)
-                  const isVideoUrl = /\.(mp4|mov|webm|avi|mkv)(\?|$)/i.test(mediaUrl);
-                  if (isVideoUrl || program.content_type === 'recorded') {
+
+                  // If we have a valid video URL (content_url or media URL with video extension)
+                  const isVideoUrl = mediaUrl && /\.(mp4|mov|webm|avi|mkv)(\?|$)/i.test(mediaUrl);
+                  if (isVideoUrl || (program.content_type === 'recorded' && contentUrl)) {
+                    const videoSrc = isVideoUrl ? mediaUrl : contentUrl;
                     return (
                       <video
-                        src={mediaUrl}
+                        src={videoSrc!}
                         className="w-full h-full max-h-[400px] object-cover"
                         controls
                         preload="metadata"
-                        poster={!isVideoUrl ? mediaUrl : undefined}
+                        poster={mediaUrl && !isVideoUrl ? mediaUrl : undefined}
                       />
                     );
                   }
+
+                  // Image
+                  if (mediaUrl) {
+                    return (
+                      <img
+                        src={mediaUrl}
+                        alt={localizedTitle}
+                        className="w-full h-full max-h-[400px] object-cover"
+                      />
+                    );
+                  }
+
                   return (
-                    <img
-                      src={mediaUrl}
-                      alt={localizedTitle}
-                      className="w-full h-full max-h-[400px] object-cover"
-                    />
+                    <div className="w-full h-64 flex items-center justify-center">
+                      <div className="text-6xl opacity-30">📚</div>
+                    </div>
                   );
                 })()}
               </div>

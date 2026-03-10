@@ -272,8 +272,9 @@ const ProgramCreatorWizard = () => {
     setIsSaving(true);
 
     try {
-      let imageUrl = formData.mediaUrl;
-      let thumbnailUrl = formData.thumbnailUrl;
+      // CRITICAL: Never save blob: URLs to the database — they only exist in the browser session
+      let imageUrl = formData.mediaUrl?.startsWith('blob:') ? '' : formData.mediaUrl;
+      let thumbnailUrl = formData.thumbnailUrl?.startsWith('blob:') ? '' : formData.thumbnailUrl;
 
       // Upload media file ONLY if a new file is selected (not yet uploaded)
       if (formData.mediaFile) {
@@ -359,8 +360,15 @@ const ProgramCreatorWizard = () => {
         content_url: contentUrl || null,
         // For videos: image_url = thumbnail (for marketplace cards), thumbnail_url = thumbnail
         // For images: image_url = the image itself
-        image_url: (formData.mediaType === 'video' && thumbnailUrl) ? thumbnailUrl : (imageUrl || null),
-        thumbnail_url: thumbnailUrl || imageUrl || null,
+        // SAFETY: Never store blob: URLs — they don't persist across sessions
+        image_url: (() => {
+          const url = (formData.mediaType === 'video' && thumbnailUrl) ? thumbnailUrl : (imageUrl || null);
+          return url?.startsWith('blob:') ? null : url;
+        })(),
+        thumbnail_url: (() => {
+          const url = thumbnailUrl || imageUrl || null;
+          return url?.startsWith('blob:') ? null : url;
+        })(),
         price_huf: formData.pricingMode === "purchasable" ? formData.price_huf : 0,
         access_type: formData.pricingMode === "purchasable" ? "paid" : "sponsored",
         // access_level controls the RPC get_content_access_status — MUST be set correctly

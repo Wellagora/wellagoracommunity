@@ -749,9 +749,9 @@ const ProgramsListingPage = () => {
                         <CardContent className="p-0">
                           {/* Image with overlay */}
                           <div className="aspect-[4/3] bg-muted relative overflow-hidden">
-                            {program.thumbnail_url || program.image_url ? (
+                            {((program.thumbnail_url && !program.thumbnail_url.startsWith('blob:')) || (program.image_url && !program.image_url.startsWith('blob:'))) ? (
                               <img
-                                src={program.thumbnail_url || program.image_url || ""}
+                                src={(program.thumbnail_url?.startsWith('blob:') ? null : program.thumbnail_url) || (program.image_url?.startsWith('blob:') ? null : program.image_url) || ""}
                                 alt={String(program.title)}
                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                                 onError={(e) => {
