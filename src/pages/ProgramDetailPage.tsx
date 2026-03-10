@@ -540,8 +540,15 @@ const ProgramDetailPage = () => {
   const memberPaymentForSeo = Math.max(0, (program?.price_huf || 0) - sponsorContributionForSeo);
   
   // Extract problem_solution from program (cast as extended type since DB was updated)
-  const programWithExtras = program as typeof program & { 
-    problem_solution?: { problem?: string; solution?: string } | null 
+  const programWithExtras = program as typeof program & {
+    problem_solution?: {
+      problem?: string;
+      solution?: string;
+      event_date?: string;
+      event_time?: string;
+      location_address?: string;
+      location_map_url?: string;
+    } | null
   };
 
   return (
@@ -830,10 +837,29 @@ const ProgramDetailPage = () => {
                         </div>
                       )}
                       
+                      {/* Event Date/Time if available */}
+                      {programWithExtras.problem_solution?.event_date && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-muted-foreground">{language === 'hu' ? 'Időpont:' : 'Date:'}</span>
+                          <span className="text-sm font-medium">
+                            {new Date(programWithExtras.problem_solution.event_date).toLocaleDateString(language === 'hu' ? 'hu-HU' : 'en-US')}
+                            {programWithExtras.problem_solution.event_time && ` ${programWithExtras.problem_solution.event_time}`}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Location Address if available */}
+                      {programWithExtras.problem_solution?.location_address && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-muted-foreground">{language === 'hu' ? 'Helyszín:' : 'Location:'}</span>
+                          <span className="text-sm font-medium">{programWithExtras.problem_solution.location_address}</span>
+                        </div>
+                      )}
+
                       {/* Participants count if available */}
                       {(program as any).participant_count && (
                         <div className="flex items-center gap-2">
-                          <span className="text-xs text-muted-foreground">Résztvevők:</span>
+                          <span className="text-xs text-muted-foreground">{language === 'hu' ? 'Résztvevők:' : 'Participants:'}</span>
                           <span className="text-sm font-medium">{(program as any).participant_count}</span>
                         </div>
                       )}

@@ -145,8 +145,15 @@ const ProgramCreatorWizard = () => {
         return;
       }
 
-      // Parse problem_solution JSON if exists
-      const problemSolution = data.problem_solution as { problem?: string; solution?: string } | null;
+      // Parse problem_solution JSON if exists (also contains event metadata)
+      const problemSolution = data.problem_solution as {
+        problem?: string;
+        solution?: string;
+        event_date?: string;
+        event_time?: string;
+        location_address?: string;
+        location_map_url?: string;
+      } | null;
 
       const { data: locs } = await supabase
         .from('content_localizations')
@@ -176,6 +183,10 @@ const ProgramCreatorWizard = () => {
       // Fall back to thumbnail_url only if it's an image
       const resolvedMediaUrl = data.image_url || data.thumbnail_url || "";
 
+      // Load content_url into the CORRECT field based on content_type (not both!)
+      const cType = (data.content_type as ContentType) || "in_person";
+      const contentUrlValue = data.content_url || "";
+
       setFormData({
         mediaFile: null,
         mediaUrl: resolvedMediaUrl,
@@ -189,14 +200,16 @@ const ProgramCreatorWizard = () => {
         price_huf: data.price_huf || 0,
         problemStatement: problemSolution?.problem || "",
         solutionStatement: problemSolution?.solution || "",
-        contentType: (data.content_type as ContentType) || "in_person",
-        eventDate: "",
-        eventTime: "",
+        contentType: cType,
+        // Load event metadata from problem_solution JSON
+        eventDate: problemSolution?.event_date || "",
+        eventTime: problemSolution?.event_time || "",
         maxParticipants: data.max_capacity || 10,
-        locationAddress: "",
-        locationMapUrl: "",
-        meetingLink: data.content_url || "",
-        videoUrl: data.content_url || "",
+        locationAddress: problemSolution?.location_address || "",
+        locationMapUrl: cType === 'in_person' ? contentUrlValue : (problemSolution?.location_map_url || ""),
+        // Only set the correct URL field based on content_type
+        meetingLink: cType === 'online_live' ? contentUrlValue : "",
+        videoUrl: cType === 'recorded' ? contentUrlValue : "",
         description_hu: data.description || "",
         title_en: data.title_en || "",
         description_en: data.description_en || "",
@@ -208,6 +221,11 @@ const ProgramCreatorWizard = () => {
       });
 
       setContentId(id);
+
+      // Skip to Details step if media already loaded (no need to re-upload)
+      if (resolvedMediaUrl) {
+        setCurrentStep(1);
+      }
     } catch (error) {
       toast.error(t("wizard.load_error"));
     } finally {
@@ -375,11 +393,19 @@ const ProgramCreatorWizard = () => {
         // 'free' = open to all, 'registered' = logged-in users, 'premium' = premium subscribers, 'one_time_purchase' = paid
         access_level: formData.pricingMode === "purchasable" ? "one_time_purchase" : "free",
         max_capacity: formData.contentType !== 'recorded' ? formData.maxParticipants : null,
-        is_published: false,
+        // CRITICAL: Do NOT set is_published:false on UPDATE — it would unpublish live programs!
+        // Only set is_published on INSERT (new programs start as draft)
+        ...(contentId ? {} : { is_published: false }),
         updated_at: new Date().toISOString(),
+        // Store problem/solution AND event metadata in the same JSON field
         problem_solution: {
           problem: formData.problemStatement || null,
           solution: formData.solutionStatement || null,
+          // Event metadata (date, time, location) — no dedicated DB columns yet
+          event_date: formData.eventDate || null,
+          event_time: formData.eventTime || null,
+          location_address: formData.locationAddress || null,
+          location_map_url: formData.locationMapUrl || null,
         },
       };
 

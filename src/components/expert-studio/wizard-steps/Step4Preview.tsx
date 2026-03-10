@@ -9,21 +9,26 @@ import {
   CollapsibleContent, 
   CollapsibleTrigger 
 } from "@/components/ui/collapsible";
-import { 
-  Save, 
-  Rocket, 
-  Check, 
-  ChevronDown, 
-  Leaf, 
-  ChefHat, 
-  Hammer, 
-  Heart, 
-  Palette, 
+import {
+  Save,
+  Rocket,
+  Check,
+  ChevronDown,
+  Leaf,
+  ChefHat,
+  Hammer,
+  Heart,
+  Palette,
   MoreHorizontal,
   Loader2,
   Bot,
   AlertTriangle,
-  CreditCard
+  CreditCard,
+  Calendar,
+  Clock,
+  MapPin,
+  Monitor,
+  Video
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -173,9 +178,38 @@ const Step4Preview = ({ formData, onPublish, onSaveDraft, isPublishing, hasPayou
             <h3 className="text-xl font-bold text-foreground mb-3">
               {formData.title_hu || t("program_creator.untitled")}
             </h3>
-            <p className="text-muted-foreground line-clamp-3">
+            <p className="text-muted-foreground line-clamp-3 mb-4">
               {formData.description_hu || t("program_creator.no_description")}
             </p>
+
+            {/* Event metadata summary */}
+            <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
+              {formData.contentType === 'in_person' && (
+                <>
+                  <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> Élő esemény</span>
+                  {formData.locationAddress && (
+                    <span className="flex items-center gap-1">{formData.locationAddress}</span>
+                  )}
+                </>
+              )}
+              {formData.contentType === 'online_live' && (
+                <span className="flex items-center gap-1"><Monitor className="w-3.5 h-3.5" /> Online élő</span>
+              )}
+              {formData.contentType === 'recorded' && (
+                <span className="flex items-center gap-1"><Video className="w-3.5 h-3.5" /> Videókurzus</span>
+              )}
+              {formData.eventDate && (
+                <span className="flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5" />
+                  {new Date(formData.eventDate).toLocaleDateString(language === 'hu' ? 'hu-HU' : 'en-US')}
+                </span>
+              )}
+              {formData.eventTime && (
+                <span className="flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5" /> {formData.eventTime}
+                </span>
+              )}
+            </div>
           </CardContent>
         </Card>
       </motion.div>
