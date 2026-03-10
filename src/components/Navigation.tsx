@@ -339,6 +339,9 @@ const Navigation = () => {
     }
   };
 
+  // Transparent hero state — shared across desktop & mobile
+  const isTransparentHero = !isScrolled && isHomePage && !user;
+
   return (
     <>
       {/* Demo Mode Banner */}
@@ -358,9 +361,9 @@ const Navigation = () => {
           </button>
         </div>
       )}
-      
+
       <nav className={`fixed left-0 right-0 z-[100] w-full transition-all duration-300 ${
-        isScrolled || !isHomePage || user
+        !isTransparentHero
           ? `bg-white/95 backdrop-blur-md border-b-2 ${getRoleAccentColor()}`
           : 'bg-transparent border-b border-white/10'
       } ${isDemoMode ? 'top-8' : 'top-0'}`}>
@@ -369,7 +372,7 @@ const Navigation = () => {
             {/* Logo - Left */}
             <Link to="/" className="flex items-center gap-2 shrink-0 z-10">
               <img src={wellagoraLogo} alt="WellAgora" className="h-9 sm:h-10 w-auto object-contain" />
-              <span className={`text-sm font-medium hidden sm:inline transition-colors duration-300 ${isScrolled || !isHomePage || user ? 'text-gray-700' : 'text-white/90'}`}>WellAgora</span>
+              <span className={`text-sm font-medium hidden sm:inline transition-colors duration-300 ${isTransparentHero ? 'text-white/90' : 'text-gray-700'}`}>WellAgora</span>
             </Link>
 
             {/* Desktop Navigation - Center */}
@@ -378,7 +381,6 @@ const Navigation = () => {
                 {navItems.map((item) => {
                   const Icon = item.icon;
                   const active = isActive(item.path);
-                  const isTransparent = !isScrolled && isHomePage && !user;
                   return (
                     <Link
                       key={item.path}
@@ -386,7 +388,7 @@ const Navigation = () => {
                       className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-full transition-all duration-300 whitespace-nowrap ${
                         active
                           ? getActiveNavClasses()
-                          : isTransparent
+                          : isTransparentHero
                             ? "text-white/90 hover:text-white hover:bg-white/15"
                             : "text-gray-700 hover:text-gray-900 hover:bg-gray-100"
                       }`}
@@ -410,7 +412,9 @@ const Navigation = () => {
                 className={`flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-full transition-all duration-300 shrink-0 ${
                   isActive('/ai-assistant')
                     ? "bg-foreground text-background"
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                    : isTransparentHero
+                      ? "text-white/80 hover:text-white hover:bg-white/10"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
                 }`}
               >
                 <div style={{ transform: 'scaleX(-1)' }}>
@@ -561,10 +565,10 @@ const Navigation = () => {
               </>
             ) : (
               <div className="flex items-center gap-4">
-                <MagneticButton variant="outline" size="sm" strength={0.2} className="shrink-0" asChild>
+                <MagneticButton variant="outline" size="sm" strength={0.2} className={`shrink-0 ${isTransparentHero ? 'border-white/40 text-white hover:bg-white/10 hover:border-white/60' : ''}`} asChild>
                   <Link to="/auth">{t("nav.sign_in")}</Link>
                 </MagneticButton>
-                <MagneticButton size="sm" strength={0.3} className="shrink-0" asChild>
+                <MagneticButton size="sm" strength={0.3} className={`shrink-0 ${isTransparentHero ? 'bg-white text-[#0F0F35] hover:bg-white/90' : ''}`} asChild>
                   <Link to="/auth">{t("nav.join_community")}</Link>
                 </MagneticButton>
               </div>

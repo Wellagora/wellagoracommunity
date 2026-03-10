@@ -81,19 +81,19 @@ const HeroSection = () => {
       line1: "Ahol a helyi tudás",
       accent: "közösséggé",
       line2: "válik.",
-      subtitle: "Szakértők, alkotók és közösségi tagok platformja — a fenntartható életmód és tudásmegosztás új formája.",
+      subtitle: "Szakértők, közösségek fóruma — a fenntartható életmód és tudásmegosztás új formája.",
     },
     en: {
       line1: "Where local knowledge",
       accent: "becomes",
       line2: "community.",
-      subtitle: "A platform for experts, creators and community members — a new form of sustainable living and knowledge sharing.",
+      subtitle: "A forum for experts and communities — a new form of sustainable living and knowledge sharing.",
     },
     de: {
       line1: "Wo lokales Wissen",
       accent: "zur Gemeinschaft",
       line2: "wird.",
-      subtitle: "Eine Plattform für Experten, Kreative und Community-Mitglieder — eine neue Form nachhaltigen Lebens und Wissensaustauschs.",
+      subtitle: "Ein Forum für Experten und Gemeinschaften — eine neue Form nachhaltigen Lebens und Wissensaustauschs.",
     },
   };
 
@@ -190,7 +190,7 @@ const HeroSection = () => {
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/15">
               <Sparkles className="w-4 h-4 text-blue-300" />
               <span className="text-sm font-medium text-white/90">
-                {language === 'hu' ? 'Közösségi creator platform' : language === 'de' ? 'Community Creator Plattform' : 'Community Creator Platform'}
+                {language === 'hu' ? 'Közösségi fenntarthatósági platform' : language === 'de' ? 'Gemeinschaftliche Nachhaltigkeitsplattform' : 'Community Sustainability Platform'}
               </span>
             </div>
           </motion.div>
@@ -204,7 +204,7 @@ const HeroSection = () => {
               className="text-center text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white leading-[1.15] tracking-tight max-w-4xl mx-auto"
             >
               {h.line1}{' '}
-              <span className="bg-gradient-to-r from-blue-300 to-cyan-300 bg-clip-text text-transparent">
+              <span className="text-white">
                 {h.accent}
               </span>{' '}
               {h.line2}
