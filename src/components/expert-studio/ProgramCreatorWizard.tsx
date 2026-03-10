@@ -189,7 +189,7 @@ const ProgramCreatorWizard = () => {
         description_de: data.description_de || "",
         isAITranslated: ai,
         isApproved: approved,
-        masterLocale: (data.master_locale as 'hu' | 'en' | 'de') || 'hu',
+        masterLocale: ((data as any).master_locale as 'hu' | 'en' | 'de') || 'hu',
       });
 
       setContentId(id);
@@ -302,7 +302,8 @@ const ProgramCreatorWizard = () => {
       // Translation status: only require master locale approval for draft
       const allApproved = formData.isApproved.hu && formData.isApproved.en && formData.isApproved.de;
 
-      const contentData = {
+      // Base content data — only columns that exist in the DB
+      const contentData: Record<string, any> = {
         title: formData.title_hu || "Névtelen program",
         title_en: formData.title_en || null,
         title_de: formData.title_de || null,
@@ -321,92 +322,120 @@ const ProgramCreatorWizard = () => {
         max_capacity: formData.contentType !== 'recorded' ? formData.maxParticipants : null,
         is_published: false,
         updated_at: new Date().toISOString(),
-        master_locale: formData.masterLocale,
-        translation_status: allApproved ? 'approved' : 'needs_review',
         problem_solution: {
           problem: formData.problemStatement || null,
           solution: formData.solutionStatement || null,
         },
       };
 
+      // Add localization columns only if they exist in DB (migration may not be applied yet)
+      // These are safe to include — Supabase will ignore unknown columns on insert but
+      // the PostgREST schema cache will reject them if the columns don't exist.
+      // We try with them first; if it fails, we retry without them.
+      const localizationFields = {
+        master_locale: formData.masterLocale,
+        translation_status: allApproved ? 'approved' : 'needs_review',
+      };
+
       let savedContentId = contentId;
 
-      if (contentId) {
-        // UPDATE existing draft
-        const { error: updateError } = await supabase
-          .from("expert_contents")
-          .update(contentData)
-          .eq("id", contentId);
+      // Helper: attempt save, retry without localization fields if schema mismatch
+      const attemptSave = async (includeLocFields: boolean) => {
+        const dataToSave = includeLocFields
+          ? { ...contentData, ...localizationFields }
+          : contentData;
 
-        if (updateError) {
-          console.error('[Studio] Update expert_contents error:', updateError);
-          throw new Error(updateError.message);
+        if (contentId) {
+          const { error: updateError } = await supabase
+            .from("expert_contents")
+            .update(dataToSave)
+            .eq("id", contentId);
+          return { data: null, error: updateError };
+        } else {
+          const { data, error } = await supabase
+            .from("expert_contents")
+            .insert({ ...dataToSave, creator_id: user.id })
+            .select()
+            .single();
+          return { data, error };
         }
-      } else {
-        // INSERT new draft
-        const { data, error } = await supabase
-          .from("expert_contents")
-          .insert({ ...contentData, creator_id: user.id })
-          .select()
-          .single();
+      };
 
-        if (error) {
-          console.error('[Studio] Insert expert_contents error:', error);
-          throw new Error(error.message);
-        }
-        if (data) {
-          savedContentId = data.id;
-          setContentId(data.id);
-        }
+      // Try with localization fields first, fallback without them
+      let result = await attemptSave(true);
+      if (result.error && result.error.message?.includes('schema cache')) {
+        console.warn('[Studio] master_locale/translation_status columns not found, retrying without them');
+        result = await attemptSave(false);
+      }
+
+      if (result.error) {
+        console.error('[Studio] expert_contents save error:', result.error);
+        throw new Error(result.error.message);
+      }
+
+      if (!contentId && result.data) {
+        savedContentId = result.data.id;
+        setContentId(result.data.id);
       }
 
       // Run localizations + media library update in PARALLEL (not sequential)
+      // Localizations are optional — if the table doesn't exist yet, don't block save
       if (savedContentId) {
         const now = new Date().toISOString();
 
-        const rows = [
-          {
-            content_id: savedContentId,
-            locale: 'hu',
-            title: formData.title_hu,
-            description: formData.description_hu,
-            is_ai_generated: false,
-            is_approved: formData.isApproved.hu,
-            source_locale: null,
-            edited_at: now,
-            approved_at: formData.isApproved.hu ? now : null,
-          },
-          {
-            content_id: savedContentId,
-            locale: 'en',
-            title: formData.title_en || null,
-            description: formData.description_en || null,
-            is_ai_generated: formData.isAITranslated.en,
-            is_approved: formData.isApproved.en,
-            source_locale: 'hu',
-            translated_at: formData.isAITranslated.en ? now : null,
-            edited_at: now,
-            approved_at: formData.isApproved.en ? now : null,
-          },
-          {
-            content_id: savedContentId,
-            locale: 'de',
-            title: formData.title_de || null,
-            description: formData.description_de || null,
-            is_ai_generated: formData.isAITranslated.de,
-            is_approved: formData.isApproved.de,
-            source_locale: 'hu',
-            translated_at: formData.isAITranslated.de ? now : null,
-            edited_at: now,
-            approved_at: formData.isApproved.de ? now : null,
-          },
-        ];
+        const parallelOps: Promise<any>[] = [];
 
-        const parallelOps: Promise<any>[] = [
-          supabase
-            .from('content_localizations')
-            .upsert(rows as any, { onConflict: 'content_id,locale' }),
-        ];
+        // Localizations upsert (graceful — won't block save if table missing)
+        try {
+          const rows = [
+            {
+              content_id: savedContentId,
+              locale: 'hu',
+              title: formData.title_hu,
+              description: formData.description_hu,
+              is_ai_generated: false,
+              is_approved: formData.isApproved.hu,
+              source_locale: null,
+              edited_at: now,
+              approved_at: formData.isApproved.hu ? now : null,
+            },
+            {
+              content_id: savedContentId,
+              locale: 'en',
+              title: formData.title_en || null,
+              description: formData.description_en || null,
+              is_ai_generated: formData.isAITranslated.en,
+              is_approved: formData.isApproved.en,
+              source_locale: 'hu',
+              translated_at: formData.isAITranslated.en ? now : null,
+              edited_at: now,
+              approved_at: formData.isApproved.en ? now : null,
+            },
+            {
+              content_id: savedContentId,
+              locale: 'de',
+              title: formData.title_de || null,
+              description: formData.description_de || null,
+              is_ai_generated: formData.isAITranslated.de,
+              is_approved: formData.isApproved.de,
+              source_locale: 'hu',
+              translated_at: formData.isAITranslated.de ? now : null,
+              edited_at: now,
+              approved_at: formData.isApproved.de ? now : null,
+            },
+          ];
+
+          parallelOps.push(
+            supabase
+              .from('content_localizations')
+              .upsert(rows as any, { onConflict: 'content_id,locale' })
+              .then(({ error }) => {
+                if (error) console.warn('[Studio] Localizations upsert skipped (table may not exist):', error.message);
+              })
+          );
+        } catch (e) {
+          console.warn('[Studio] Localizations upsert failed gracefully:', e);
+        }
 
         // Media library update runs in parallel too
         if (formData.mediaLibraryId) {
