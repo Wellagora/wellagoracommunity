@@ -36,9 +36,15 @@ const Step3Localization = ({ formData, setFormData }: Step3LocalizationProps) =>
     }
 
     setIsTranslating(true);
+    toast.info("Fordítás folyamatban...", { id: 'translate-progress', duration: 30000 });
+
     try {
       // Combine title and description for translation
       const textToTranslate = `${formData.title_hu}\n---SEPARATOR---\n${formData.description_hu}`;
+
+      // Add timeout — 30 seconds max
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 30000);
 
       const { data, error } = await supabase.functions.invoke("translate-content", {
         body: {
@@ -47,11 +53,32 @@ const Step3Localization = ({ formData, setFormData }: Step3LocalizationProps) =>
         },
       });
 
-      if (error) throw error;
+      clearTimeout(timeout);
+      toast.dismiss('translate-progress');
+
+      if (error) {
+        console.error("Translation error:", error);
+        const errorMsg = typeof error === 'object' && error.message
+          ? error.message
+          : "Fordítási hiba";
+        toast.error(errorMsg);
+        return;
+      }
+
+      // Check for error in response body (non-2xx status returns data with error)
+      if (data?.error) {
+        console.error("Translation service error:", data.error, data.message);
+        if (data.error === "NO_API_KEY") {
+          toast.error("A fordítási szolgáltatás nincs konfigurálva. Kérd az adminisztrátort az API kulcs beállítására.");
+        } else {
+          toast.error(data.message || "Fordítási hiba történt. Próbáld újra később.");
+        }
+        return;
+      }
 
       // Parse translations
       const translations = data?.translations ?? data;
-      if (translations) {
+      if (translations?.en || translations?.de) {
         const enParts = translations.en?.split("\n---SEPARATOR---\n") || [];
         const deParts = translations.de?.split("\n---SEPARATOR---\n") || [];
 
@@ -66,9 +93,17 @@ const Step3Localization = ({ formData, setFormData }: Step3LocalizationProps) =>
         }));
 
         toast.success(t("program_creator.translation_complete"));
+      } else {
+        toast.error("Nem sikerült a fordítás. Próbáld újra.");
       }
-    } catch (error) {
-      toast.error(t("program_creator.translation_error"));
+    } catch (error: any) {
+      toast.dismiss('translate-progress');
+      if (error?.name === 'AbortError') {
+        toast.error("A fordítás túl sokáig tartott. Próbáld újra.");
+      } else {
+        toast.error("Fordítási hiba. Ellenőrizd az internetkapcsolatot és próbáld újra.");
+      }
+      console.error("Translation error:", error);
     } finally {
       setIsTranslating(false);
     }

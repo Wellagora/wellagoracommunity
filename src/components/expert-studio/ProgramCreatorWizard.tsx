@@ -453,12 +453,7 @@ const ProgramCreatorWizard = () => {
               <ArrowLeft className="w-4 h-4" />
               {t("common.back")}
             </Button>
-            {isSaving && (
-              <span className="text-sm text-muted-foreground flex items-center gap-2">
-                <Loader2 className="w-3 h-3 animate-spin" />
-                {t("common.saving")}
-              </span>
-            )}
+            {/* Save indicator moved to fixed bottom-right */}
           </div>
 
           {/* Step Indicator */}
@@ -542,6 +537,21 @@ const ProgramCreatorWizard = () => {
           </motion.div>
         </AnimatePresence>
       </div>
+
+      {/* Save Indicator — fixed bottom-right, always visible */}
+      <AnimatePresence>
+        {isSaving && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="fixed bottom-20 right-6 z-50 bg-white/90 backdrop-blur-md shadow-lg border border-border/50 rounded-full px-4 py-2 flex items-center gap-2"
+          >
+            <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
+            <span className="text-sm font-medium text-foreground">{t("common.saving")}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Footer Navigation */}
       {currentStep < STEPS.length - 1 && (
