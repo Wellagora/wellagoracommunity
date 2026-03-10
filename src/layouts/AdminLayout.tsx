@@ -54,13 +54,7 @@ const AdminLayout = () => {
   // Security Check: Verify super admin access
   useEffect(() => {
     const checkAccess = () => {
-      // Allow demo mode admin
-      if (isDemoMode && profile?.user_role === 'admin') {
-        setAccessChecked(true);
-        return;
-      }
-
-      // Check real super admin status from profile
+      // Check real super admin status from profile — demo mode also requires is_super_admin
       if (!profile?.is_super_admin) {
         toast.error(t('admin.access_denied'), {
           description: t('admin.access_denied_description'),
@@ -145,7 +139,7 @@ const AdminLayout = () => {
     { 
       path: `${adminBasePath}/financials`, 
       icon: Wallet, 
-      label: t('admin.nav.financials') || 'Finances'
+      label: t('admin.nav.financials') || 'Pénzügyek'
     },
     { 
       path: `${adminBasePath}/users`, 
@@ -165,7 +159,7 @@ const AdminLayout = () => {
     { 
       path: `${adminBasePath}/audit`, 
       icon: History, 
-      label: t('admin.nav.audit') || 'System Log'
+      label: t('admin.nav.audit') || 'Rendszernapló'
     },
     { 
       path: `${adminBasePath}/invite-codes`, 
@@ -229,7 +223,7 @@ const AdminLayout = () => {
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-slate-800 border-b border-slate-700 flex items-center justify-between px-4 z-50">
         <div className="flex items-center gap-2">
           <Shield className="h-6 w-6 text-blue-500" />
-          <span className="font-semibold text-white">Super Admin</span>
+          <span className="font-semibold text-white">Admin</span>
         </div>
         <Button
           variant="ghost"
@@ -264,7 +258,7 @@ const AdminLayout = () => {
           {!sidebarCollapsed && (
             <div className="flex items-center gap-2">
               <Shield className="h-6 w-6 text-blue-500" />
-              <span className="font-semibold text-white">Super Admin</span>
+              <span className="font-semibold text-white">Admin</span>
             </div>
           )}
           {sidebarCollapsed && (

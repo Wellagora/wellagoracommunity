@@ -157,7 +157,7 @@ const ProgramDetailPage = () => {
     queryFn: async () => {
       const { data } = await supabase
         .from('expert_contents')
-        .select('id, thumbnail_url, access_level, price_huf')
+        .select('id, thumbnail_url, access_level, access_type, price_huf')
         .eq('creator_id', program?.creator_id)
         .eq('is_published', true)
         .neq('id', id)
@@ -208,18 +208,21 @@ const ProgramDetailPage = () => {
     enabled: !!id,
   });
 
-  const getAccessBadge = (accessLevel: string | null) => {
-    switch (accessLevel) {
+  const getAccessBadge = (accessLevel: string | null, accessType?: string | null) => {
+    // Normalize: use access_level first, fall back to access_type
+    const level = accessLevel || accessType;
+    switch (level) {
       case 'free':
-        return <Badge className="bg-blue-500/20 text-blue-600 border-blue-500/30">{t('program.free_access')}</Badge>;
+        return <Badge className="bg-primary/20 text-primary border-primary/30">{t('common.supported') || 'Támogatott'}</Badge>;
       case 'registered':
-        return <Badge className="bg-blue-500/20 text-blue-600 border-blue-500/30">{t('common.registered')}</Badge>;
+        return <Badge className="bg-blue-500/20 text-blue-600 border-blue-500/30">{t('common.registered') || 'Regisztrált'}</Badge>;
       case 'premium':
         return <Badge className="bg-amber-500/20 text-amber-600 border-amber-500/30"><Crown className="w-3 h-3 mr-1" />Premium</Badge>;
       case 'one_time_purchase':
-        return <Badge className="bg-purple-500/20 text-purple-600 border-purple-500/30"><ShoppingCart className="w-3 h-3 mr-1" />{t('program.purchase')}</Badge>;
+      case 'paid':
+        return <Badge className="bg-purple-500/20 text-purple-600 border-purple-500/30"><ShoppingCart className="w-3 h-3 mr-1" />{t('program.purchase') || 'Megvásárolható'}</Badge>;
       case 'sponsored':
-        return <Badge className="bg-primary/20 text-primary border-primary/30"><Ticket className="w-3 h-3 mr-1" />{t('common.sponsor')}</Badge>;
+        return <Badge className="bg-primary/20 text-primary border-primary/30"><Ticket className="w-3 h-3 mr-1" />{t('common.supported') || 'Támogatott'}</Badge>;
       default:
         return null;
     }
@@ -698,7 +701,7 @@ const ProgramDetailPage = () => {
                   </Badge>
                 )}
                 
-                {getAccessBadge(program.access_level)}
+                {getAccessBadge(program.access_level, program.access_type)}
                 {program.is_sponsored && (
                   <Badge className="bg-primary/20 text-primary border-primary/30">
                     <Sparkles className="w-3 h-3 mr-1" />
@@ -936,8 +939,8 @@ const ProgramDetailPage = () => {
                             {(relProgram as any)?.title || ''}
                           </h3>
                           <div className="flex items-center gap-2">
-                            {getAccessBadge(relProgram.access_level)}
-                            {relProgram.access_level === 'one_time_purchase' && relProgram.price_huf && (
+                            {getAccessBadge(relProgram.access_level, (relProgram as any).access_type)}
+                            {(relProgram.access_level === 'one_time_purchase' || (relProgram as any).access_type === 'paid') && relProgram.price_huf && (
                               <span className="text-sm text-muted-foreground">
                                 {relProgram.price_huf.toLocaleString()} Ft
                               </span>

@@ -80,8 +80,12 @@ const Step4Preview = ({ formData, onPublish, onSaveDraft, isPublishing, hasPayou
 
   const isFreeProgram = formData.pricingMode !== "purchasable" || formData.price_huf === 0;
 
+  // Media is considered "done" if there's an image/thumbnail, video URL, meeting link, or it's an in_person/online_live type
+  const hasMedia = !!formData.mediaUrl || !!formData.videoUrl || !!formData.meetingLink
+    || formData.contentType === 'in_person' || formData.contentType === 'online_live';
+
   const checklist = [
-    { key: "media", done: !!formData.mediaUrl, label: t("program_creator.checklist_media") },
+    { key: "media", done: hasMedia, label: t("program_creator.checklist_media") },
     { key: "title", done: formData.title_hu.length >= 3, label: t("program_creator.checklist_title") },
     { key: "category", done: (formData.categories?.length > 0) || !!formData.category, label: t("program_creator.checklist_category") },
     { key: "description", done: formData.description_hu.length >= 20, label: t("program_creator.checklist_description") },

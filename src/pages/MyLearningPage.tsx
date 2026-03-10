@@ -83,7 +83,7 @@ const MyLearningPage = () => {
           )
         `)
         .eq("is_published", true)
-        .in("access_level", ["free", "registered"]);
+        .or("access_level.in.(free,registered),access_type.eq.sponsored,access_type.eq.free");
 
       if (error) throw error;
       return data || [];
@@ -98,18 +98,20 @@ const MyLearningPage = () => {
     ) || []),
   ];
 
-  const getAccessBadge = (accessLevel: string | null) => {
-    switch (accessLevel) {
+  const getAccessBadge = (accessLevel: string | null, accessType?: string | null) => {
+    const level = accessLevel || accessType;
+    switch (level) {
       case "free":
+      case "sponsored":
         return (
-          <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
-            {t("program.free_access")}
+          <Badge className="bg-primary/20 text-primary border-primary/30">
+            {t("common.supported") || "Támogatott"}
           </Badge>
         );
       case "registered":
         return (
           <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
-            {t("common.registered")}
+            {t("common.registered") || "Regisztrált"}
           </Badge>
         );
       case "premium":
@@ -120,10 +122,11 @@ const MyLearningPage = () => {
           </Badge>
         );
       case "one_time_purchase":
+      case "paid":
         return (
           <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">
             <ShoppingCart className="w-3 h-3 mr-1" />
-            {t("learning.purchased")}
+            {t("learning.purchased") || "Megvásárolható"}
           </Badge>
         );
       default:

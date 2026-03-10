@@ -72,7 +72,7 @@ const SponsorOnboardingPage = () => {
       .upload(fileName, logoFile, { upsert: true });
 
     if (uploadError) {
-      throw new Error('Failed to upload logo');
+      throw new Error('Nem sikerült feltölteni a logót');
     }
 
     const { data: urlData } = supabase.storage

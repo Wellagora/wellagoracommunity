@@ -115,6 +115,10 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
         .maybeSingle();
 
       if (creditsCheckError) {
+        console.error('Credit check error:', creditsCheckError);
+        toast.error(language === 'hu' ? 'Hiba a kredit ellenőrzéskor' : 'Error checking credits');
+        setCreating(false);
+        return;
       }
 
       const availableCredits = sponsorCredits?.available_credits || 0;
@@ -166,6 +170,8 @@ const CampaignSetup = ({ onCampaignCreated }: CampaignSetupProps) => {
           .eq('sponsor_user_id', user.id);
 
         if (creditDeductError) {
+          console.error('Credit deduction error:', creditDeductError);
+          toast.error(language === 'hu' ? 'Hiba a kredit levonáskor — kérjük próbáld újra' : 'Error deducting credits');
         }
       }
 

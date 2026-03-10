@@ -48,16 +48,18 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
 
   useEffect(() => {
     loadPackages();
-  }, []);
+  }, [language]);
 
   const loadPackages = async () => {
-    // Use hardcoded packages with new simplified structure
+    // Credit packages — 1 credit = 1 HUF
+    const isHu = language === 'hu';
+    const isDe = language === 'de';
     setPackages([
       {
         id: 'starter',
-        name: 'Kezdő',
+        name: isHu ? 'Kezdő' : isDe ? 'Starter' : 'Starter',
         emoji: '🌱',
-        period: '1 hónap',
+        period: isHu ? '1 hónap' : isDe ? '1 Monat' : '1 month',
         periodMonths: 1,
         price: 30000,
         baseCredits: 30000,
@@ -69,30 +71,30 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
       },
       {
         id: 'supporter',
-        name: 'Támogató',
+        name: isHu ? 'Támogató' : isDe ? 'Unterstützer' : 'Supporter',
         emoji: '⭐',
-        period: '3 hónap',
+        period: isHu ? '3 hónap' : isDe ? '3 Monate' : '3 months',
         periodMonths: 3,
         price: 100000,
         baseCredits: 100000,
         bonusCredits: 15000,
         totalCredits: 115000,
         bonusPercent: 15,
-        badge: 'NÉPSZERŰ',
+        badge: isHu ? 'NÉPSZERŰ' : isDe ? 'BELIEBT' : 'POPULAR',
         highlighted: true
       },
       {
         id: 'partner',
         name: 'Partner',
         emoji: '💎',
-        period: '12 hónap',
+        period: isHu ? '12 hónap' : isDe ? '12 Monate' : '12 months',
         periodMonths: 12,
         price: 400000,
         baseCredits: 400000,
         bonusCredits: 100000,
         totalCredits: 500000,
         bonusPercent: 25,
-        badge: 'LEGJOBB ÉRTÉK',
+        badge: isHu ? 'LEGJOBB ÉRTÉK' : isDe ? 'BESTER WERT' : 'BEST VALUE',
         highlighted: false
       }
     ]);
@@ -202,10 +204,10 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
       {/* Header */}
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold text-black mb-2">
-          Válassz Támogatói Csomagot
+          {language === 'hu' ? 'Válassz Támogatói Csomagot' : language === 'de' ? 'Wählen Sie ein Sponsoring-Paket' : 'Choose a Sponsorship Package'}
         </h2>
         <p className="text-black/60">
-          1 Kredit = 1 Ft értékű támogatás. A kreditekkel programokat és eseményeket szponzorálhatsz.
+          {language === 'hu' ? '1 Kredit = 1 Ft értékű támogatás. A kreditekkel programokat és eseményeket szponzorálhatsz.' : language === 'de' ? '1 Kredit = 1 Ft Unterstützung. Mit Credits können Sie Programme und Events sponsern.' : '1 Credit = 1 HUF support. Use credits to sponsor programs and events.'}
         </p>
       </div>
 
@@ -263,7 +265,7 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
                   <div className="space-y-2 p-4 bg-gray-50 rounded-lg text-sm">
                     {/* Base credit row */}
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Kredit</span>
+                      <span className="text-gray-600">{language === 'hu' ? 'Kredit' : 'Credits'}</span>
                       <span className="font-medium">{pkg.baseCredits.toLocaleString('hu-HU')}</span>
                     </div>
                     
@@ -277,7 +279,7 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
                     
                     {/* Total row with border */}
                     <div className="flex justify-between items-center border-t border-gray-200 pt-2">
-                      <span className="font-semibold">Összesen</span>
+                      <span className="font-semibold">{language === 'hu' ? 'Összesen' : language === 'de' ? 'Gesamt' : 'Total'}</span>
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-blue-600">{pkg.totalCredits.toLocaleString('hu-HU')}</span>
                         {pkg.bonusPercent > 0 && (
@@ -304,12 +306,12 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
                     {isSelected && purchasing ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Feldolgozás...
+                        {language === 'hu' ? 'Feldolgozás...' : 'Processing...'}
                       </>
                     ) : (
                       <>
                         <CreditCard className="w-4 h-4 mr-2" />
-                        Csomag Aktiválása
+                        {language === 'hu' ? 'Csomag Aktiválása' : language === 'de' ? 'Paket Aktivieren' : 'Activate Package'}
                       </>
                     )}
                   </Button>
@@ -322,23 +324,25 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
 
       {/* Shared Features Section */}
       <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-        <p className="text-center text-sm text-gray-500 mb-3">Minden csomaggal jár:</p>
+        <p className="text-center text-sm text-gray-500 mb-3">
+          {language === 'hu' ? 'Minden csomaggal jár:' : language === 'de' ? 'Bei jedem Paket inklusive:' : 'Included with every package:'}
+        </p>
         <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-700">
           <span className="flex items-center gap-1">
-            <span className="text-blue-500">✓</span> Logód megjelenik a támogatott programokon
+            <span className="text-blue-500">✓</span> {language === 'hu' ? 'Logód megjelenik a támogatott programokon' : language === 'de' ? 'Ihr Logo auf gesponserten Programmen' : 'Your logo on sponsored programs'}
           </span>
           <span className="flex items-center gap-1">
-            <span className="text-blue-500">✓</span> Láthatóság a közösség számára
+            <span className="text-blue-500">✓</span> {language === 'hu' ? 'Láthatóság a közösség számára' : language === 'de' ? 'Sichtbarkeit in der Community' : 'Community visibility'}
           </span>
           <span className="flex items-center gap-1">
-            <span className="text-blue-500">✓</span> Kredit átgörgetés megújításkor
+            <span className="text-blue-500">✓</span> {language === 'hu' ? 'Kredit átgörgetés megújításkor' : language === 'de' ? 'Kredit-Übertragung bei Verlängerung' : 'Credit rollover on renewal'}
           </span>
         </div>
       </div>
 
       {/* Info Note */}
       <p className="text-center text-sm text-black/50 mt-4">
-        A vásárlással elfogadod az Általános Szerződési Feltételeket. A kreditek a lejárati időn belül felhasználhatók.
+        {language === 'hu' ? 'A vásárlással elfogadod az Általános Szerződési Feltételeket. A kreditek a lejárati időn belül felhasználhatók.' : language === 'de' ? 'Mit dem Kauf akzeptieren Sie die AGB. Credits sind innerhalb der Laufzeit verwendbar.' : 'By purchasing, you accept the Terms of Service. Credits can be used within the validity period.'}
       </p>
     </div>
   );

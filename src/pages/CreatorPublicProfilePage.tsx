@@ -113,15 +113,17 @@ const CreatorPublicProfilePage = () => {
   const getAccessBadge = (accessLevel: string | null) => {
     switch (accessLevel) {
       case "free":
+      case "sponsored":
         return (
-          <Badge className="bg-blue-500/20 text-blue-600 border-blue-500/30">
-            {t("program.free_access")}
+          <Badge className="bg-primary/20 text-primary border-primary/30">
+            <Sparkles className="w-3 h-3 mr-1" />
+            {t("common.supported") || "Támogatott"}
           </Badge>
         );
       case "registered":
         return (
           <Badge className="bg-blue-500/20 text-blue-600 border-blue-500/30">
-            {t("common.registered")}
+            {t("common.registered") || "Regisztrált"}
           </Badge>
         );
       case "premium":
@@ -132,17 +134,11 @@ const CreatorPublicProfilePage = () => {
           </Badge>
         );
       case "one_time_purchase":
+      case "paid":
         return (
           <Badge className="bg-purple-500/20 text-purple-600 border-purple-500/30">
             <ShoppingCart className="w-3 h-3 mr-1" />
-            {t("program.purchase")}
-          </Badge>
-        );
-      case "sponsored":
-        return (
-          <Badge className="bg-primary/20 text-primary border-primary/30">
-            <Sparkles className="w-3 h-3 mr-1" />
-            {t("common.sponsor")}
+            {t("program.purchase") || "Megvásárolható"}
           </Badge>
         );
       default:

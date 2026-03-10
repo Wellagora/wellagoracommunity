@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { writeAuditLog } from '@/lib/auditLog';
@@ -104,6 +105,7 @@ const formatPrice = (price: number): string => {
 };
 
 const AdminPrograms = () => {
+  const navigate = useNavigate();
   const { isDemoMode, user: adminUser } = useAuth();
   const { selectedProjectId } = useOutletContext<AdminOutletContext>();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -429,7 +431,7 @@ const AdminPrograms = () => {
           <Button onClick={fetchPrograms} variant="outline" size="icon">
             <RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />
           </Button>
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={() => navigate('/expert-studio/new')}>
             <Plus className="h-4 w-4" />
             Új program
           </Button>

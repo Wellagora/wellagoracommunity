@@ -791,7 +791,7 @@ const ProgramsListingPage = () => {
                               )}
                               
                               {/* Free badge - ONLY if truly free */}
-                              {(program.access_level === 'free' || program.price_huf === 0) && (
+                              {(program.access_level === 'free' || program.access_type === 'sponsored' || program.access_type === 'free' || program.price_huf === 0) && (
                                 <motion.span 
                                   initial={{ opacity: 0, scale: 0.9 }}
                                   animate={{ opacity: 1, scale: 1 }}

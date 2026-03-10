@@ -102,8 +102,15 @@ const CommunityFeed = () => {
 
       if (error) throw error;
       setPosts(data || []);
-    } catch (error) {
-      toast.error('Failed to load posts');
+    } catch (error: any) {
+      // If the table doesn't exist yet, show a friendly "coming soon" state instead of crashing
+      const msg = error?.message || '';
+      if (msg.includes('relation') || msg.includes('does not exist') || msg.includes('42P01')) {
+        console.warn('Community posts table not yet created:', msg);
+        setPosts([]);
+      } else {
+        toast.error('Nem sikerült betölteni a posztokat');
+      }
     } finally {
       setLoading(false);
     }
@@ -136,7 +143,7 @@ const CommunityFeed = () => {
         .upload(filePath, file);
 
       if (uploadError) {
-        toast.error('Failed to upload image');
+        toast.error('Nem sikerült feltölteni a képet');
         throw uploadError;
       }
 
@@ -202,8 +209,13 @@ const CommunityFeed = () => {
       setImagePreview(null);
       setShowPostCreator(false);
       toast.success('+5 WellPont! 🪙', { description: 'Köszönjük az aktivitásod!' });
-    } catch (error) {
-      toast.error('Failed to create post');
+    } catch (error: any) {
+      const msg = error?.message || '';
+      if (msg.includes('relation') || msg.includes('does not exist') || msg.includes('42P01')) {
+        toast.error('A közösségi funkció hamarosan elérhető!');
+      } else {
+        toast.error('Nem sikerült létrehozni a posztot');
+      }
     } finally {
       setSubmitting(false);
     }
@@ -211,7 +223,7 @@ const CommunityFeed = () => {
 
   const handleLike = async (postId: string) => {
     if (!user) {
-      toast.error('Please login to like posts');
+      toast.error('Kérjük, jelentkezz be a kedveléshez');
       return;
     }
 
@@ -263,9 +275,14 @@ const CommunityFeed = () => {
         
         toast.success('+1 WellPont! 🪙', { description: 'Köszönjük az aktivitásod!' });
       }
-    } catch (error) {
+    } catch (error: any) {
       setPosts(prev => prev.map(p => p.id === postId ? post : p));
-      toast.error('Failed to update like');
+      const msg = error?.message || '';
+      if (msg.includes('relation') || msg.includes('does not exist')) {
+        toast.error('A közösségi funkció hamarosan elérhető!');
+      } else {
+        toast.error('Nem sikerült frissíteni a kedvelést');
+      }
     }
   };
 
@@ -308,8 +325,13 @@ const CommunityFeed = () => {
       } : p));
 
       toast.success('+3 WellPont! 🪙', { description: 'Köszönjük az aktivitásod!' });
-    } catch (error) {
-      toast.error('Failed to add comment');
+    } catch (error: any) {
+      const msg = error?.message || '';
+      if (msg.includes('relation') || msg.includes('does not exist')) {
+        toast.error('A közösségi funkció hamarosan elérhető!');
+      } else {
+        toast.error('Nem sikerült hozzáadni a kommentet');
+      }
     }
   };
 
@@ -430,7 +452,7 @@ const CommunityFeed = () => {
                     <Button variant="ghost" size="sm" className="gap-2" asChild>
                       <span>
                         <ImagePlus className="w-4 h-4" />
-                        Add Image
+                        Kép hozzáadása
                       </span>
                     </Button>
                   </label>
@@ -479,7 +501,7 @@ const CommunityFeed = () => {
         <Card className="p-12 text-center">
           <Sparkles className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
           <p className="text-lg font-medium text-foreground mb-2">{t('community.be_first')}</p>
-          <p className="text-sm text-muted-foreground">Share your thoughts with the community</p>
+          <p className="text-sm text-muted-foreground">Oszd meg gondolataid a közösséggel</p>
         </Card>
       )}
     </div>
