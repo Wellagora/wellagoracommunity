@@ -19,7 +19,7 @@ const OrbitalRings = () => (
     </div>
     {/* Middle ring */}
     <div className="absolute w-[500px] h-[500px] md:w-[650px] md:h-[650px] rounded-full border border-white/[0.05]">
-      <div className="absolute w-2 h-2 rounded-full bg-violet-300/50 shadow-[0_0_10px_rgba(196,181,253,0.4)] animate-orbit-medium" />
+      <div className="absolute w-2 h-2 rounded-full bg-blue-200/50 shadow-[0_0_10px_rgba(191,219,254,0.4)] animate-orbit-medium" />
     </div>
     {/* Inner ring */}
     <div className="absolute w-[300px] h-[300px] md:w-[400px] md:h-[400px] rounded-full border border-white/[0.04]">
@@ -136,7 +136,7 @@ const HeroSection = () => {
         ref={sectionRef}
         className="relative overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, #0f0f35 0%, #1a1a4e 25%, #1e1b4b 45%, #2e1065 65%, #1e1b4b 85%, #0f0f35 100%)',
+          background: 'linear-gradient(135deg, #0a1628 0%, #0f2440 25%, #0d2847 45%, #102e52 65%, #0d2847 85%, #0a1628 100%)',
         }}
       >
         {/* Orbital rings animation */}
@@ -171,8 +171,8 @@ const HeroSection = () => {
 
         {/* Radial glow at center — depth effect */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[120px]" />
-          <div className="absolute top-1/3 right-1/4 w-[300px] h-[300px] bg-violet-400/8 rounded-full blur-[80px]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[120px]" />
+          <div className="absolute top-1/3 right-1/4 w-[300px] h-[300px] bg-blue-400/8 rounded-full blur-[80px]" />
         </div>
 
         <motion.div
@@ -204,7 +204,7 @@ const HeroSection = () => {
               className="text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight max-w-4xl mx-auto"
             >
               {h.line1}{' '}
-              <span className="bg-gradient-to-r from-blue-300 to-violet-300 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-blue-300 to-cyan-300 bg-clip-text text-transparent">
                 {h.accent}
               </span>{' '}
               {h.line2}
@@ -231,7 +231,7 @@ const HeroSection = () => {
             <Link to="/auth?role=member">
               <Button
                 size="lg"
-                className="rounded-full bg-[#6c5ce7] hover:bg-[#7c6cf7] text-white font-semibold px-8 min-w-[220px] shadow-[0_0_30px_rgba(108,92,231,0.35)] hover:shadow-[0_0_40px_rgba(108,92,231,0.5)] transition-all duration-300"
+                className="rounded-full bg-[#2563eb] hover:bg-[#3b82f6] text-white font-semibold px-8 min-w-[220px] shadow-[0_0_30px_rgba(37,99,235,0.35)] hover:shadow-[0_0_40px_rgba(37,99,235,0.5)] transition-all duration-300"
               >
                 {language === 'hu' ? 'Csatlakozom' : language === 'de' ? 'Jetzt beitreten' : 'Join Now'}
                 <ArrowRight className="w-4 h-4 ml-2" />
@@ -285,7 +285,7 @@ const HeroSection = () => {
               {stats.programs > 0 && (
                 <div className="flex items-center gap-2.5">
                   <div className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
-                    <Sparkles className="w-4 h-4 text-violet-300" />
+                    <Sparkles className="w-4 h-4 text-blue-300" />
                   </div>
                   <div>
                     <span className="text-xl font-bold text-white">{stats.programs}</span>
@@ -314,9 +314,9 @@ const HeroSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="relative group bg-card rounded-2xl p-7 border border-border/50 hover:border-indigo-300/30 hover:shadow-[0_8px_40px_rgba(99,102,241,0.08)] hover:scale-[1.02] transition-all duration-300"
+                className="relative group bg-card rounded-2xl p-7 border border-border/50 hover:border-blue-300/30 hover:shadow-[0_8px_40px_rgba(37,99,235,0.08)] hover:scale-[1.02] transition-all duration-300"
               >
-                <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-5 group-hover:bg-indigo-100 transition-colors">
+                <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-5 group-hover:bg-blue-100 transition-colors">
                   <vp.icon className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-semibold text-foreground mb-2">{vp.title}</h3>

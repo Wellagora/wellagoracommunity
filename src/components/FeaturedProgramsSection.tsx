@@ -130,7 +130,7 @@ const FeaturedProgramsSection = () => {
         );
       case "one_time_purchase":
         return (
-          <Badge className="bg-purple-500/20 text-purple-600 border-purple-500/30 text-xs">
+          <Badge className="bg-blue-500/20 text-blue-600 border-blue-500/30 text-xs">
             <ShoppingCart className="w-3 h-3 mr-1" />
             {t("program.purchase")}
           </Badge>

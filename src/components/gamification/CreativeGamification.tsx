@@ -391,8 +391,8 @@ const CreativeGamification = () => {
           <Card>
             <CardContent className="p-6">
               <div className="text-center space-y-4">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto">
-                  <Heart className="w-8 h-8 text-purple-600" />
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
+                  <Heart className="w-8 h-8 text-blue-600" />
                 </div>
                 <div>
                   <h3 className="font-medium">{t('gamification.rewards_catalog.charity.name')}</h3>

@@ -104,8 +104,8 @@ export const LiveNotificationFeed = () => {
     switch (type) {
       case 'signup': return 'bg-emerald-100 text-emerald-600 ring-emerald-200';
       case 'review': return 'bg-amber-100 text-amber-600 ring-amber-200';
-      case 'expert_join': return 'bg-purple-100 text-purple-600 ring-purple-200';
-      case 'program_published': return 'bg-indigo-100 text-indigo-600 ring-indigo-200';
+      case 'expert_join': return 'bg-blue-100 text-blue-600 ring-blue-200';
+      case 'program_published': return 'bg-sky-100 text-sky-600 ring-sky-200';
       case 'sponsor_impact': return 'bg-blue-100 text-blue-600 ring-blue-200';
       case 'milestone': return 'bg-rose-100 text-rose-600 ring-rose-200';
       default: return 'bg-slate-100 text-slate-600 ring-slate-200';

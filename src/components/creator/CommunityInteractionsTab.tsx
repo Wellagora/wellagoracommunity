@@ -149,14 +149,14 @@ const CommunityInteractionsTab = ({ onUnreadCountChange }: CommunityInteractions
         <Card
           className={`p-4 cursor-pointer transition-all ${
             activeSection === 'questions'
-              ? 'border-purple-500 bg-purple-500/10'
-              : 'border-border hover:border-purple-500/50'
+              ? 'border-blue-500 bg-blue-500/10'
+              : 'border-border hover:border-blue-500/50'
           }`}
           onClick={() => setActiveSection('questions')}
         >
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center">
-              <HelpCircle className="h-6 w-6 text-purple-500" />
+            <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+              <HelpCircle className="h-6 w-6 text-blue-500" />
             </div>
             <div>
               <p className="text-2xl font-bold">{questions.length}</p>
@@ -224,7 +224,7 @@ const QuestionsSection = ({ questions, onAnswered }: QuestionsSectionProps) => {
   return (
     <div className="space-y-4">
       <h3 className="font-semibold text-lg flex items-center gap-2">
-        <HelpCircle className="h-5 w-5 text-purple-500" />
+        <HelpCircle className="h-5 w-5 text-blue-500" />
         {t('expert_studio.questions_from_community')}
       </h3>
 
@@ -279,13 +279,13 @@ const QuestionCardWithAnswer = ({ question, onAnswered }: QuestionCardWithAnswer
   };
 
   return (
-    <Card className={`overflow-hidden ${!question.hasAnswer ? 'border-purple-500/50' : ''}`}>
+    <Card className={`overflow-hidden ${!question.hasAnswer ? 'border-blue-500/50' : ''}`}>
       <div className="p-5">
         {/* User info */}
         <div className="flex items-start gap-3 mb-4">
           <Avatar className="h-10 w-10">
             <AvatarImage src={question.user?.avatar_url || undefined} />
-            <AvatarFallback className="bg-purple-500/20 text-purple-500">
+            <AvatarFallback className="bg-blue-500/20 text-blue-500">
               {question.user?.first_name?.[0]}
             </AvatarFallback>
           </Avatar>
@@ -333,7 +333,7 @@ const QuestionCardWithAnswer = ({ question, onAnswered }: QuestionCardWithAnswer
               <Button
                 onClick={handleSubmitAnswer}
                 disabled={!answer.trim() || isSubmitting}
-                className="bg-purple-500 hover:bg-purple-600"
+                className="bg-blue-600 hover:bg-blue-700"
               >
                 {isSubmitting && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
                 <Send className="h-4 w-4 mr-2" />
@@ -354,7 +354,7 @@ const QuestionCardWithAnswer = ({ question, onAnswered }: QuestionCardWithAnswer
           <Button
             onClick={() => setIsAnswering(true)}
             variant="outline"
-            className="border-purple-500/50 text-purple-500 hover:bg-purple-500/10"
+            className="border-blue-500/50 text-blue-500 hover:bg-blue-500/10"
           >
             <MessageCircle className="h-4 w-4 mr-2" />
             {t('expert_studio.answer_this')}

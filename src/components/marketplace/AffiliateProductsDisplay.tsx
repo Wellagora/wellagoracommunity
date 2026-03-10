@@ -71,7 +71,7 @@ const AffiliateProductsDisplay = ({ contentId }: AffiliateProductsDisplayProps) 
   }
 
   return (
-    <Card className="bg-gradient-to-br from-indigo-50/50 to-purple-50/50 border-indigo-100">
+    <Card className="bg-gradient-to-br from-blue-50/50 to-sky-50/50 border-blue-100">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg text-black">
           <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
@@ -86,16 +86,16 @@ const AffiliateProductsDisplay = ({ contentId }: AffiliateProductsDisplayProps) 
                 key={product.id}
                 variant="outline"
                 onClick={() => handleProductClick(product)}
-                className="flex-shrink-0 h-auto py-3 px-4 border-indigo-200 bg-white hover:bg-indigo-50 hover:border-indigo-300 transition-all"
+                className="flex-shrink-0 h-auto py-3 px-4 border-blue-200 bg-white hover:bg-blue-50 hover:border-blue-300 transition-all"
               >
                 <div className="flex items-center gap-3">
-                  <ShoppingBag className="w-5 h-5 text-indigo-600" />
+                  <ShoppingBag className="w-5 h-5 text-blue-600" />
                   <div className="text-left">
                     <p className="font-medium text-black text-sm whitespace-normal max-w-[150px]">
                       {product.product_name}
                     </p>
                     {product.partner_name && (
-                      <Badge variant="secondary" className="text-xs mt-1 bg-indigo-100 text-indigo-700">
+                      <Badge variant="secondary" className="text-xs mt-1 bg-blue-100 text-blue-700">
                         {product.partner_name}
                       </Badge>
                     )}

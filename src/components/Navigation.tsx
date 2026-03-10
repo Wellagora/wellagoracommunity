@@ -321,7 +321,7 @@ const Navigation = () => {
     if (!user || !profile) return "border-slate-200";
 
     // Super Admin always gets Indigo regardless of viewAsRole
-    if (isSuperAdmin) return "border-indigo-600";
+    if (isSuperAdmin) return "border-blue-600";
 
     return roleColors.border.replace('border-', 'border-b-') || "border-slate-200";
   };
@@ -329,7 +329,7 @@ const Navigation = () => {
   // Active nav item classes based on role
   const getActiveNavClasses = (): string => {
     if (!user || !profile) return "bg-foreground text-background";
-    if (isSuperAdmin) return "bg-indigo-600 text-white";
+    if (isSuperAdmin) return "bg-blue-600 text-white";
     const role = effectiveRole;
     switch (role) {
       case 'expert': return "bg-amber-500 text-white";
@@ -449,11 +449,11 @@ const Navigation = () => {
                       <TooltipTrigger asChild>
                         <Link 
                           to="/expert-studio" 
-                          className="flex items-center gap-2 px-3 py-1 bg-purple-50 hover:bg-purple-100 rounded-full transition-colors"
+                          className="flex items-center gap-2 px-3 py-1 bg-blue-50 hover:bg-blue-100 rounded-full transition-colors"
                         >
-                          <Star className="h-4 w-4 text-purple-500 fill-purple-500" />
-                          <span className="text-sm font-semibold text-purple-700">{roleMetrics.avgRating} ({roleMetrics.reviewCount})</span>
-                          <span className="text-purple-300">|</span>
+                          <Star className="h-4 w-4 text-blue-500 fill-blue-500" />
+                          <span className="text-sm font-semibold text-blue-700">{roleMetrics.avgRating} ({roleMetrics.reviewCount})</span>
+                          <span className="text-blue-300">|</span>
                           <span className="text-sm font-semibold text-emerald-600">{roleMetrics.monthlyRevenue.toLocaleString('hu-HU')} Ft</span>
                         </Link>
                       </TooltipTrigger>
@@ -507,7 +507,7 @@ const Navigation = () => {
                         </Avatar>
                         {/* Admin Badge - Elegant indicator */}
                         {isSuperAdmin && (
-                          <span className="absolute -bottom-1 -right-1 px-1 py-0.5 text-[8px] font-bold bg-indigo-600 text-white rounded-sm leading-none">
+                          <span className="absolute -bottom-1 -right-1 px-1 py-0.5 text-[8px] font-bold bg-blue-600 text-white rounded-sm leading-none">
                             ADMIN
                           </span>
                         )}
@@ -609,8 +609,8 @@ const Navigation = () => {
                     to="/expert-studio" 
                     className="flex items-center gap-1"
                   >
-                    <Star className="h-3 w-3 text-purple-500 fill-purple-500" />
-                    <span className="text-xs font-semibold text-purple-700">{roleMetrics.avgRating}</span>
+                    <Star className="h-3 w-3 text-blue-500 fill-blue-500" />
+                    <span className="text-xs font-semibold text-blue-700">{roleMetrics.avgRating}</span>
                   </Link>
                 )}
                 {roleMetrics.type === 'sponsor' && (
@@ -702,9 +702,9 @@ const Navigation = () => {
                           className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
                             active
                               ? hasCustomColor
-                                ? "bg-indigo-100 text-indigo-700"
+                                ? "bg-blue-100 text-blue-700"
                                 : isWellBot
-                                  ? "bg-gradient-to-r from-indigo-100 to-sky-100 text-indigo-700"
+                                  ? "bg-gradient-to-r from-blue-100 to-sky-100 text-blue-700"
                                   : "bg-primary text-primary-foreground"
                               : "hover:bg-accent/50"
                           }`}
@@ -731,7 +731,7 @@ const Navigation = () => {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
                       isActive('/ai-assistant')
-                        ? "bg-gradient-to-r from-indigo-100 to-sky-100 text-indigo-700"
+                        ? "bg-gradient-to-r from-blue-100 to-sky-100 text-blue-700"
                         : "hover:bg-accent/50"
                     }`}
                   >
@@ -785,7 +785,7 @@ const Navigation = () => {
                     <Link
                       to="/admin"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2 rounded-lg text-indigo-600 hover:bg-indigo-50 transition-colors"
+                      className="flex items-center gap-3 px-3 py-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
                     >
                       <ShieldCheck className="h-5 w-5" />
                       <span className="font-medium">Super Admin</span>

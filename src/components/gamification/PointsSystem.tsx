@@ -178,7 +178,7 @@ const PointsSystem = () => {
     switch (rarity) {
       case "common": return "bg-muted text-muted-foreground";
       case "rare": return "bg-blue-500 text-blue-50";
-      case "epic": return "bg-purple-500 text-purple-50";
+      case "epic": return "bg-blue-500 text-blue-50";
       case "legendary": return "bg-gradient-to-r from-amber-500 to-yellow-400 text-white";
       default: return "bg-muted text-muted-foreground";
     }
@@ -255,7 +255,7 @@ const PointsSystem = () => {
                   / {allBadges.length} {language === 'hu' ? 'összesen' : language === 'de' ? 'gesamt' : 'total'}
                 </p>
               </div>
-              <Award className="w-8 h-8 text-purple-500" />
+              <Award className="w-8 h-8 text-blue-500" />
             </div>
           </CardContent>
         </Card>
@@ -302,7 +302,7 @@ const PointsSystem = () => {
                   <div key={ub.id} className="flex items-center space-x-3 p-3 rounded-lg border bg-card">
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                       badge.rarity === 'legendary' ? 'bg-amber-100 text-amber-600' :
-                      badge.rarity === 'epic' ? 'bg-purple-100 text-purple-600' :
+                      badge.rarity === 'epic' ? 'bg-blue-100 text-blue-600' :
                       badge.rarity === 'rare' ? 'bg-blue-100 text-blue-600' :
                       'bg-gray-100 text-gray-600'
                     }`}>

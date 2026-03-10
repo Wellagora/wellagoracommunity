@@ -54,7 +54,7 @@ const SmartOnboarding = ({ onComplete, userType = "citizen" }: SmartOnboardingPr
     { id: "transport", label: "Green Transport", icon: "🚲", color: "bg-blue-100 text-blue-800" },
     { id: "waste", label: "Zero Waste", icon: "♻️", color: "bg-success/10 text-success" },
     { id: "food", label: "Sustainable Food", icon: "🌿", color: "bg-emerald-100 text-emerald-800" },
-    { id: "community", label: "Community Action", icon: "👥", color: "bg-purple-100 text-purple-800" },
+    { id: "community", label: "Community Action", icon: "👥", color: "bg-blue-100 text-blue-800" },
     { id: "water", label: "Water Conservation", icon: "💧", color: "bg-cyan-100 text-cyan-800" },
     { id: "biodiversity", label: "Wildlife Protection", icon: "🦋", color: "bg-pink-100 text-pink-800" },
     { id: "education", label: "Environmental Education", icon: "📚", color: "bg-orange-100 text-orange-800" }
