@@ -135,7 +135,7 @@ const SponsorPublicProfilePage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
         <div className="container max-w-4xl mx-auto px-4 py-8">
           <Skeleton className="h-64 w-full rounded-2xl mb-6" />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -168,7 +168,7 @@ const SponsorPublicProfilePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
       <div className="container max-w-4xl mx-auto px-4 py-8">
         {/* Back Button */}
         <Button
@@ -182,12 +182,12 @@ const SponsorPublicProfilePage = () => {
 
         {/* Hero Card */}
         <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-xl overflow-hidden mb-6">
-          <div className="h-32 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600" />
+          <div className="h-32 bg-gradient-to-r from-blue-500 via-blue-500 to-blue-600" />
           <CardContent className="relative pt-0 pb-6">
             <div className="flex flex-col md:flex-row items-center md:items-end gap-4 -mt-16">
               <Avatar className="w-32 h-32 border-4 border-white shadow-xl">
                 <AvatarImage src={sponsor.organization_logo_url || ''} />
-                <AvatarFallback className="bg-emerald-100 text-emerald-600 text-3xl font-bold">
+                <AvatarFallback className="bg-blue-100 text-blue-600 text-3xl font-bold">
                   {companyInitials}
                 </AvatarFallback>
               </Avatar>
@@ -196,7 +196,7 @@ const SponsorPublicProfilePage = () => {
                   {sponsor.organization_name || `${sponsor.first_name} ${sponsor.last_name}`}
                 </h1>
                 <div className="flex flex-wrap justify-center md:justify-start gap-2 mt-2">
-                  <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
+                  <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
                     <Award className="w-3 h-3 mr-1" />
                     {t('sponsor.verified_sponsor') || 'Ellenőrzött szponzor'}
                   </Badge>
@@ -228,8 +228,8 @@ const SponsorPublicProfilePage = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <Card className="bg-white/80 backdrop-blur-xl border-0 shadow-md">
             <CardContent className="p-4 text-center">
-              <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-2">
-                <Ticket className="w-6 h-6 text-emerald-600" />
+              <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-2">
+                <Ticket className="w-6 h-6 text-blue-600" />
               </div>
               <p className="text-2xl font-bold text-foreground">{impact.programsSupported}</p>
               <p className="text-sm text-muted-foreground">
@@ -264,8 +264,8 @@ const SponsorPublicProfilePage = () => {
 
           <Card className="bg-white/80 backdrop-blur-xl border-0 shadow-md">
             <CardContent className="p-4 text-center">
-              <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-2">
-                <Leaf className="w-6 h-6 text-green-600" />
+              <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-2">
+                <Leaf className="w-6 h-6 text-blue-600" />
               </div>
               <p className="text-2xl font-bold text-foreground">{impact.co2Saved} kg</p>
               <p className="text-sm text-muted-foreground">
@@ -280,7 +280,7 @@ const SponsorPublicProfilePage = () => {
           <Card className="bg-white/80 backdrop-blur-xl border-0 shadow-xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Ticket className="w-5 h-5 text-emerald-600" />
+                <Ticket className="w-5 h-5 text-blue-600" />
                 {t('sponsor.supported_programs') || 'Támogatott programok'}
               </CardTitle>
             </CardHeader>
@@ -301,8 +301,8 @@ const SponsorPublicProfilePage = () => {
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-emerald-100">
-                            <Ticket className="w-8 h-8 text-emerald-600" />
+                          <div className="w-full h-full flex items-center justify-center bg-blue-100">
+                            <Ticket className="w-8 h-8 text-blue-600" />
                           </div>
                         )}
                       </div>

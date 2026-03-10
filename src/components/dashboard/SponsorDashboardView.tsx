@@ -211,7 +211,7 @@ const SponsorDashboardView = () => {
         </Card>
 
         {/* Active Users */}
-        <Card className="bg-gradient-to-br from-green-500/10 to-green-600/5 border-green-500/20">
+        <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-500/20">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -222,8 +222,8 @@ const SponsorDashboardView = () => {
                   {stats?.usedLicenses || 0}
                 </p>
               </div>
-              <div className="p-3 rounded-full bg-green-500/20">
-                <Users className="w-6 h-6 text-green-500" />
+              <div className="p-3 rounded-full bg-blue-500/20">
+                <Users className="w-6 h-6 text-blue-500" />
               </div>
             </div>
           </CardContent>
@@ -321,7 +321,7 @@ const SponsorDashboardView = () => {
                       </div>
                       <Badge 
                         variant={campaign.is_active ? "default" : "secondary"}
-                        className={campaign.is_active ? "bg-green-600" : ""}
+                        className={campaign.is_active ? "bg-blue-600" : ""}
                       >
                         {campaign.is_active ? 'Aktív' : 'Keret betelt'}
                       </Badge>

@@ -36,15 +36,15 @@ const getCategoryColor = (category: string) => {
     'közlekedés': 'bg-blue-500',
     'transport': 'bg-blue-500',
     'verkehr': 'bg-blue-500',
-    'hulladék': 'bg-green-500',
-    'waste': 'bg-green-500',
-    'abfall': 'bg-green-500',
+    'hulladék': 'bg-blue-500',
+    'waste': 'bg-blue-500',
+    'abfall': 'bg-blue-500',
     'víz': 'bg-cyan-500',
     'water': 'bg-cyan-500',
     'wasser': 'bg-cyan-500',
-    'biodiverzitás': 'bg-emerald-500',
-    'biodiversity': 'bg-emerald-500',
-    'biodiversität': 'bg-emerald-500',
+    'biodiverzitás': 'bg-blue-500',
+    'biodiversity': 'bg-blue-500',
+    'biodiversität': 'bg-blue-500',
     'közösség': 'bg-purple-500',
     'community': 'bg-purple-500',
     'gemeinschaft': 'bg-purple-500',
@@ -57,7 +57,7 @@ const getCategoryColor = (category: string) => {
 
 const getDifficultyColor = (difficulty: string) => {
   const colors: Record<string, string> = {
-    'beginner': 'bg-green-100 text-green-800 border-green-300',
+    'beginner': 'bg-blue-100 text-blue-800 border-blue-300',
     'intermediate': 'bg-yellow-100 text-yellow-800 border-yellow-300',
     'advanced': 'bg-red-100 text-red-800 border-red-300',
   };
@@ -353,7 +353,7 @@ export default function ProjectDetailView({
                             </Badge>
                             </div>
                           </div>
-                          <Badge variant="default" className="bg-green-500 shrink-0 text-xs sm:text-sm self-start">
+                          <Badge variant="default" className="bg-blue-500 shrink-0 text-xs sm:text-sm self-start">
                             {t('project.active')}
                           </Badge>
                         </div>

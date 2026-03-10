@@ -228,7 +228,7 @@ export function ProgramDetailModal(props: {
   const getStatusBadge = () => {
     if (!program) return null;
     if (program.is_published) {
-      return <Badge className="bg-emerald-100 text-emerald-700">Publikált</Badge>;
+      return <Badge className="bg-blue-100 text-blue-700">Publikált</Badge>;
     }
     return <Badge variant="secondary">Vázlat</Badge>;
   };
@@ -250,7 +250,7 @@ export function ProgramDetailModal(props: {
             <div>Hiányzó azonosító</div>
           ) : loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
             </div>
           ) : !program ? (
             <div>Nincs találat</div>
@@ -387,7 +387,7 @@ export function ProgramDetailModal(props: {
                 <Button variant="outline" onClick={() => onOpenChange(false)}>Bezárás</Button>
                 <Button variant="outline" onClick={() => setIsEditing(true)}>Szerkesztés</Button>
                 {!program?.is_published && (
-                  <Button onClick={approve} disabled={saving} className="bg-emerald-600 hover:bg-emerald-700">
+                  <Button onClick={approve} disabled={saving} className="bg-blue-600 hover:bg-blue-700">
                     <CheckCircle className="h-4 w-4 mr-1" /> Jóváhagyás
                   </Button>
                 )}

@@ -37,9 +37,9 @@ const RevenueOverview = ({
     <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg text-black">
-          <DollarSign className="w-5 h-5 text-emerald-600" />
+          <DollarSign className="w-5 h-5 text-blue-600" />
           {language === 'hu' ? 'Bevétel Áttekintés' : 'Revenue Overview'}
-          <Badge className="ml-auto bg-emerald-100 text-emerald-700 text-xs">
+          <Badge className="ml-auto bg-blue-100 text-blue-700 text-xs">
             {isFoundingExpert ? (language === 'hu' ? 'Founding Expert — 0% díj' : 'Founding Expert — 0% fee') : `${earningsPercent}/${platformFeePercent} Split`}
           </Badge>
         </CardTitle>
@@ -51,7 +51,7 @@ const RevenueOverview = ({
             <span className="text-sm text-black/60">
               {language === 'hu' ? 'Bruttó Értékesítés' : 'Gross Sales'}
             </span>
-            <TrendingUp className="w-4 h-4 text-emerald-500" />
+            <TrendingUp className="w-4 h-4 text-blue-500" />
           </div>
           <p className="text-3xl font-bold text-black">
             {formatCurrency(grossSales)}
@@ -67,7 +67,7 @@ const RevenueOverview = ({
           {/* Visual Bar */}
           <div className="relative h-12 rounded-xl overflow-hidden flex">
             <motion.div
-              className="bg-gradient-to-r from-emerald-500 to-emerald-600 flex items-center justify-center"
+              className="bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center"
               initial={{ width: 0 }}
               animate={{ width: `${expertPercent}%` }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
@@ -90,14 +90,14 @@ const RevenueOverview = ({
 
           {/* Breakdown */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-100">
+            <div className="p-3 rounded-xl bg-blue-50 border border-blue-100">
               <div className="flex items-center gap-2 mb-1">
-                <Wallet className="w-4 h-4 text-emerald-600" />
-                <span className="text-xs text-emerald-700">
+                <Wallet className="w-4 h-4 text-blue-600" />
+                <span className="text-xs text-blue-700">
                   {language === 'hu' ? `A Te ${earningsPercent}%-od` : `Your ${earningsPercent}%`}
                 </span>
               </div>
-              <p className="text-xl font-bold text-emerald-700">
+              <p className="text-xl font-bold text-blue-700">
                 {formatCurrency(expertShare)}
               </p>
             </div>

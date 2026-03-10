@@ -99,7 +99,7 @@ const SponsorFinances = () => {
 
   const getTransactionIcon = (type: string) => {
     if (['purchase', 'subscription', 'initial', 'bonus', 'rollover'].includes(type)) {
-      return <ArrowUpRight className="w-4 h-4 text-emerald-500" />;
+      return <ArrowUpRight className="w-4 h-4 text-blue-500" />;
     }
     return <ArrowDownRight className="w-4 h-4 text-red-500" />;
   };
@@ -207,7 +207,7 @@ const SponsorFinances = () => {
                           <TableCell className="text-sm text-muted-foreground">
                             {tx.description || '-'}
                           </TableCell>
-                          <TableCell className={`text-right font-semibold ${isIncome ? 'text-emerald-600' : 'text-red-500'}`}>
+                          <TableCell className={`text-right font-semibold ${isIncome ? 'text-blue-600' : 'text-red-500'}`}>
                             {isIncome ? '+' : '-'}{formatCurrency(Math.abs(tx.credits))}
                           </TableCell>
                         </TableRow>
@@ -302,9 +302,9 @@ const SponsorFinances = () => {
                   <p className="text-sm text-muted-foreground">{language === 'hu' ? 'Összes költés' : language === 'de' ? 'Gesamt ausgegeben' : 'Total spent'}</p>
                   <p className="text-2xl font-bold text-foreground">{formatCurrency(creditInfo.usedCredits)}</p>
                 </div>
-                <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-500/10">
-                  <p className="text-sm text-emerald-700">{language === 'hu' ? 'Aktuális egyenleg' : language === 'de' ? 'Aktuelles Guthaben' : 'Current balance'}</p>
-                  <p className="text-2xl font-bold text-emerald-700">{formatCurrency(creditInfo.availableCredits)}</p>
+                <div className="bg-blue-50 rounded-xl p-4 border border-blue-500/10">
+                  <p className="text-sm text-blue-700">{language === 'hu' ? 'Aktuális egyenleg' : language === 'de' ? 'Aktuelles Guthaben' : 'Current balance'}</p>
+                  <p className="text-2xl font-bold text-blue-700">{formatCurrency(creditInfo.availableCredits)}</p>
                 </div>
               </div>
             )}

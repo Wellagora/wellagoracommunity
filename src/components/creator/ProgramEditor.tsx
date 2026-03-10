@@ -392,7 +392,7 @@ const ProgramEditor = ({ programId, mode }: ProgramEditorProps) => {
       case "pending":
         return <Badge variant="secondary" className="bg-orange-500/20 text-orange-400">{t("creator.status_pending")}</Badge>;
       case "published":
-        return <Badge variant="secondary" className="bg-green-500/20 text-green-400">{t("creator.status_published")}</Badge>;
+        return <Badge variant="secondary" className="bg-blue-500/20 text-blue-400">{t("creator.status_published")}</Badge>;
       case "rejected":
         return <Badge variant="secondary" className="bg-red-500/20 text-red-400">{t("creator.status_rejected")}</Badge>;
       default:

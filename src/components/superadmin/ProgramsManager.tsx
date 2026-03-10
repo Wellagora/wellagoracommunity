@@ -304,7 +304,7 @@ const ProgramsManager = () => {
         <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Aktív programok</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-500" />
+            <CheckCircle className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.activePrograms}</div>
@@ -411,7 +411,7 @@ const ProgramsManager = () => {
                   <TableCell>{program.points_base}</TableCell>
                   <TableCell>
                     {program.is_active ? (
-                      <Badge className="bg-green-500/10 text-green-600 border-green-500/20">
+                      <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">
                         Aktív
                       </Badge>
                     ) : (
@@ -440,7 +440,7 @@ const ProgramsManager = () => {
                         onClick={() => handleToggleActive(program.id, program.is_active)}
                       >
                         {program.is_active ? (
-                          <CheckCircle className="h-4 w-4 text-green-500" />
+                          <CheckCircle className="h-4 w-4 text-blue-500" />
                         ) : (
                           <CheckCircle className="h-4 w-4" />
                         )}

@@ -80,7 +80,7 @@ export const CreatorAccountSection = ({ userId, profile, onUpdate }: CreatorAcco
               <CardTitle className="text-lg flex items-center gap-2">
                 {t('creator.title') || 'Kreátor Fiók'}
                 {stripeConnected && (
-                  <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                  <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
                     <Check className="w-3 h-3 mr-1" />
                     {t('creator.active_badge') || 'Aktív Kreátor'}
                   </Badge>
@@ -189,11 +189,11 @@ export const CreatorAccountSection = ({ userId, profile, onUpdate }: CreatorAcco
           <div className="p-4 rounded-lg bg-background/20 border border-border/30">
             {stripeConnected ? (
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-full bg-green-500/20">
-                  <Check className="w-5 h-5 text-green-400" />
+                <div className="p-2 rounded-full bg-blue-500/20">
+                  <Check className="w-5 h-5 text-blue-400" />
                 </div>
                 <div>
-                  <p className="font-medium text-green-400">
+                  <p className="font-medium text-blue-400">
                     {t('creator.stripe_connected') || 'Összekapcsolva'}
                   </p>
                   <p className="text-sm text-muted-foreground">

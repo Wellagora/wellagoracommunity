@@ -123,7 +123,7 @@ const CreatorDashboardPage = () => {
       case "pending":
         return <Badge variant="secondary" className="bg-orange-500/20 text-orange-400">{t("creator.status_pending")}</Badge>;
       case "published":
-        return <Badge variant="secondary" className="bg-green-500/20 text-green-400">{t("creator.status_published")}</Badge>;
+        return <Badge variant="secondary" className="bg-blue-500/20 text-blue-400">{t("creator.status_published")}</Badge>;
       case "rejected":
         return <Badge variant="secondary" className="bg-red-500/20 text-red-400">{t("creator.status_rejected")}</Badge>;
       default:
@@ -188,8 +188,8 @@ const CreatorDashboardPage = () => {
           <Card className="bg-[#112240] border-[#1E3A5F] backdrop-blur-sm">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
-                <div className="p-3 rounded-lg bg-green-500/10">
-                  <DollarSign className="h-6 w-6 text-green-400" />
+                <div className="p-3 rounded-lg bg-blue-500/10">
+                  <DollarSign className="h-6 w-6 text-blue-400" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-white">{totalEarnings.toLocaleString()} Ft</p>
@@ -294,7 +294,7 @@ const CreatorDashboardPage = () => {
               <Ticket className="h-4 w-4 mr-2" />
               <span className="hidden sm:inline">{t("expert_studio.vouchers_tab")}</span>
             </TabsTrigger>
-            <TabsTrigger value="profile" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400">
+            <TabsTrigger value="profile" className="data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-400">
               <UserCog className="h-4 w-4 mr-2" />
               <span className="hidden sm:inline">{t("expert_studio.profile_tab")}</span>
             </TabsTrigger>
@@ -452,7 +452,7 @@ const CreatorDashboardPage = () => {
                               ) : (
                                 <div className="p-3 rounded-lg bg-[#00E5FF]/10">
                                   {status === "published" ? (
-                                    <CheckCircle className="h-6 w-6 text-green-400" />
+                                    <CheckCircle className="h-6 w-6 text-blue-400" />
                                   ) : status === "pending" ? (
                                     <Clock className="h-6 w-6 text-orange-400" />
                                   ) : status === "rejected" ? (

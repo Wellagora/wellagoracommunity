@@ -99,7 +99,7 @@ const NotificationsPage = () => {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case "success": return "bg-emerald-500/20 text-emerald-600";
+      case "success": return "bg-blue-500/20 text-blue-600";
       case "warning": return "bg-amber-500/20 text-amber-600";
       case "error": return "bg-red-500/20 text-red-600";
       default: return "bg-blue-500/20 text-blue-600";

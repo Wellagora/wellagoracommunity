@@ -453,10 +453,10 @@ const AuthPage = () => {
                           
                           {resetSuccess ? (
                             <div className="text-center py-4">
-                              <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Check className="w-6 h-6 text-emerald-600" />
+                              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Check className="w-6 h-6 text-blue-600" />
                               </div>
-                              <p className="text-emerald-700 font-medium">
+                              <p className="text-blue-700 font-medium">
                                 {t('auth.reset_email_sent') || 'Elküldtük a visszaállító linket!'}
                               </p>
                               <Button

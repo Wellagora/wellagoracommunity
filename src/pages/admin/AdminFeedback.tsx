@@ -226,7 +226,7 @@ const AdminFeedback = () => {
       case 'complaint':
         return { icon: AlertCircle, color: 'text-orange-500', bg: 'bg-orange-50 dark:bg-orange-950', label: 'Panasz' };
       case 'praise':
-        return { icon: CheckCircle2, color: 'text-green-500', bg: 'bg-green-50 dark:bg-green-950', label: 'Dicséret' };
+        return { icon: CheckCircle2, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-950', label: 'Dicséret' };
       default:
         return { icon: MessageSquare, color: 'text-slate-500', bg: 'bg-slate-50 dark:bg-slate-800', label: 'Általános' };
     }
@@ -240,7 +240,7 @@ const AdminFeedback = () => {
       case 'reviewed':
         return <Badge variant="secondary" className="gap-1 bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"><Clock className="h-3 w-3" />Átnézett</Badge>;
       case 'resolved':
-        return <Badge variant="secondary" className="gap-1 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"><CheckCircle2 className="h-3 w-3" />Megoldott</Badge>;
+        return <Badge variant="secondary" className="gap-1 bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"><CheckCircle2 className="h-3 w-3" />Megoldott</Badge>;
       case 'archived':
         return <Badge variant="outline" className="gap-1"><XCircle className="h-3 w-3" />Archivált</Badge>;
       default:
@@ -295,9 +295,9 @@ const AdminFeedback = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Megoldott</p>
-                <p className="text-2xl font-bold text-green-600">{counts.resolved}</p>
+                <p className="text-2xl font-bold text-blue-600">{counts.resolved}</p>
               </div>
-              <CheckCircle2 className="h-8 w-8 text-green-500" />
+              <CheckCircle2 className="h-8 w-8 text-blue-500" />
             </div>
           </CardContent>
         </Card>
@@ -439,7 +439,7 @@ const AdminFeedback = () => {
                           {getUserName(item)}
                         </span>
                         {item.admin_notes && (
-                          <span className="flex items-center gap-1 text-emerald-600">
+                          <span className="flex items-center gap-1 text-blue-600">
                             <StickyNote className="h-3 w-3" />
                             Jegyzet
                           </span>

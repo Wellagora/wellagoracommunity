@@ -139,15 +139,15 @@ export const VoucherSection = ({
 
       {/* Discount highlight */}
       {sponsorship?.discount_description && (
-        <div className="bg-gradient-to-r from-green-500/20 to-emerald-500/10 border border-green-500/30 rounded-lg p-4 mb-4">
+        <div className="bg-gradient-to-r from-blue-500/20 to-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-4">
           <div className="flex items-center gap-2 mb-2">
-            <Percent className="h-5 w-5 text-green-600" />
-            <span className="font-bold text-green-700">{t('voucher.exclusive_discount')}</span>
+            <Percent className="h-5 w-5 text-blue-600" />
+            <span className="font-bold text-blue-700">{t('voucher.exclusive_discount')}</span>
           </div>
-          <p className="text-lg font-semibold text-green-700">
+          <p className="text-lg font-semibold text-blue-700">
             {sponsorship.discount_description}
           </p>
-          <p className="text-xs text-green-600/80 mt-1">
+          <p className="text-xs text-blue-600/80 mt-1">
             {t('voucher.only_wellagora')}
           </p>
         </div>
@@ -189,7 +189,7 @@ export const VoucherSection = ({
                 <Tag className="h-4 w-4 text-amber-600 mt-0.5" />
                 <div>
                   <p className="font-medium text-sm">{t('voucher.discount_amount')}</p>
-                  <p className="text-sm font-bold text-green-600">{sponsorship.discount_value}</p>
+                  <p className="text-sm font-bold text-blue-600">{sponsorship.discount_value}</p>
                 </div>
               </div>
             )}
@@ -201,7 +201,7 @@ export const VoucherSection = ({
           </div>
 
           {voucher.status === 'used' ? (
-            <Badge className="w-full justify-center bg-green-500/20 text-green-600 border-green-500/30">
+            <Badge className="w-full justify-center bg-blue-500/20 text-blue-600 border-blue-500/30">
               ✓ {t('voucher.redeemed')}
             </Badge>
           ) : (

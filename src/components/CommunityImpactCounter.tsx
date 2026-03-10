@@ -24,7 +24,7 @@ const VALUE_CARD_CONFIG: Array<{
     titleKey: 'community_pulse.value_community_title',
     descKey: 'community_pulse.value_community_desc',
     icon: Users,
-    borderColor: 'border-l-emerald-500/40',
+    borderColor: 'border-l-blue-500/40',
   },
   {
     id: 'experiences',
@@ -85,10 +85,10 @@ export const CommunityImpactCounter = () => {
           {/* Section label */}
           <div className="flex items-center justify-center gap-2 mb-4">
             <div className="relative">
-              <div className="w-2 h-2 rounded-full bg-emerald-500" />
-              <div className="absolute inset-0 w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+              <div className="w-2 h-2 rounded-full bg-blue-500" />
+              <div className="absolute inset-0 w-2 h-2 rounded-full bg-blue-500 animate-ping" />
             </div>
-            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-emerald-600">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-blue-600">
               {language === 'hu' ? 'ÉLŐ KÖZÖSSÉG' : language === 'de' ? 'LIVE COMMUNITY' : 'LIVE COMMUNITY'}
             </span>
           </div>
@@ -106,10 +106,10 @@ export const CommunityImpactCounter = () => {
           {VALUE_CARD_CONFIG.map((card) => (
             <StaggerItem key={card.id}>
               <div className={`h-full group relative rounded-2xl border border-white/40 bg-white/60 backdrop-blur-xl hover:bg-white/80 hover:shadow-lg transition-all duration-300 p-6 overflow-hidden`}>
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/0 to-amber-50/0 group-hover:from-emerald-50/40 group-hover:to-amber-50/20 transition-all duration-300 rounded-2xl" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-50/0 to-amber-50/0 group-hover:from-blue-50/40 group-hover:to-amber-50/20 transition-all duration-300 rounded-2xl" />
                 <div className="relative">
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${
-                    card.id === 'community' ? 'bg-emerald-50 text-emerald-600' :
+                    card.id === 'community' ? 'bg-blue-50 text-blue-600' :
                     card.id === 'experiences' ? 'bg-amber-50 text-amber-600' :
                     'bg-rose-50 text-rose-500'
                   } group-hover:scale-110 transition-transform`}>
@@ -137,8 +137,8 @@ export const CommunityImpactCounter = () => {
               <div className="flex items-center gap-3">
                 {/* Pulsing live indicator - Emerald */}
                 <div className="relative flex items-center justify-center">
-                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                  <div className="absolute w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+                  <div className="absolute w-2.5 h-2.5 rounded-full bg-blue-500 animate-ping" />
                 </div>
                 <div>
                   <span className="font-semibold text-foreground">
@@ -151,7 +151,7 @@ export const CommunityImpactCounter = () => {
               </div>
               
               {/* Activity indicator */}
-              <div className="flex items-center gap-1.5 text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
+              <div className="flex items-center gap-1.5 text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">
                 <Zap className="w-3 h-3" />
                 <span className="text-xs font-medium">
                   {language === 'hu' ? 'Aktív' : 'Active'}
@@ -174,8 +174,8 @@ export const CommunityImpactCounter = () => {
           >
             {memberCount > 0 && (
               <div className="flex items-center justify-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
-                  <Users className="w-4 h-4 text-emerald-600" />
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                  <Users className="w-4 h-4 text-blue-600" />
                 </div>
                 <span className="text-sm text-muted-foreground font-medium">{socialProofText}</span>
               </div>
@@ -184,7 +184,7 @@ export const CommunityImpactCounter = () => {
             <Button
               asChild
               size="lg"
-              className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white px-10 py-6 text-base font-semibold shadow-lg shadow-emerald-600/25 hover:shadow-xl hover:shadow-emerald-600/30 transition-all duration-300"
+              className="rounded-full bg-blue-600 hover:bg-blue-700 text-white px-10 py-6 text-base font-semibold shadow-lg shadow-blue-600/25 hover:shadow-xl hover:shadow-blue-600/30 transition-all duration-300"
             >
               <Link to="/auth" className="flex items-center gap-2">
                 {t('community_pulse.cta_button')}

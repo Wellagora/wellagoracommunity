@@ -317,7 +317,7 @@ const ContentModerationPanel = () => {
 
   const getAccessLevelBadge = (level: string | null) => {
     const levels: Record<string, { label: string; className: string }> = {
-      free: { label: t('admin.access_free') || 'Támogatott', className: 'bg-green-500/20 text-green-400' },
+      free: { label: t('admin.access_free') || 'Támogatott', className: 'bg-blue-500/20 text-blue-400' },
       registered: { label: t('admin.access_registered') || 'Regisztrált', className: 'bg-blue-500/20 text-blue-400' },
       premium: { label: t('admin.access_premium') || 'Prémium', className: 'bg-amber-500/20 text-amber-400' },
       one_time_purchase: { label: t('admin.access_purchase') || 'Egyszeri', className: 'bg-purple-500/20 text-purple-400' },
@@ -393,10 +393,10 @@ const ContentModerationPanel = () => {
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-emerald-500/10 border-emerald-500/20">
+        <Card className="bg-blue-500/10 border-blue-500/20">
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
-              <CheckCircle2 className="h-8 w-8 text-emerald-500" />
+              <CheckCircle2 className="h-8 w-8 text-blue-500" />
               <div>
                 <p className="text-2xl font-bold">{publishedContents.length}</p>
                 <p className="text-sm text-muted-foreground">{t('admin.published_tab') || 'Közzétett'}</p>
@@ -429,7 +429,7 @@ const ContentModerationPanel = () => {
           </TabsTrigger>
           <TabsTrigger 
             value="published" 
-            className="data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-400 data-[state=active]:border-b-2 data-[state=active]:border-emerald-400"
+            className="data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-400 data-[state=active]:border-b-2 data-[state=active]:border-blue-400"
           >
             <CheckCircle className="h-4 w-4 mr-2" />
             {t('admin.published_tab') || 'Közzétett'} ({publishedContents.length})
@@ -482,7 +482,7 @@ const ContentModerationPanel = () => {
                         content.rejected_at 
                           ? 'bg-red-500/90' 
                           : content.is_published 
-                            ? 'bg-emerald-500/90' 
+                            ? 'bg-blue-500/90' 
                             : 'bg-amber-500/90'
                       }`}
                     >
@@ -569,7 +569,7 @@ const ContentModerationPanel = () => {
                         <>
                           <Button
                             size="sm"
-                            className="bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white"
+                            className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white"
                             onClick={() => handleApproveClick(content)}
                           >
                             <CheckCircle className="h-4 w-4 mr-1" />
@@ -736,7 +736,7 @@ const ContentModerationPanel = () => {
               {!selectedContent.is_published && !selectedContent.rejected_at && (
                 <DialogFooter className="gap-2">
                   <Button
-                    className="bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600"
+                    className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600"
                     onClick={() => {
                       setPreviewOpen(false);
                       handleApproveClick(selectedContent);
@@ -814,7 +814,7 @@ const ContentModerationPanel = () => {
           <AlertDialogFooter>
             <AlertDialogCancel>Mégse</AlertDialogCancel>
             <AlertDialogAction
-              className="bg-emerald-600 hover:bg-emerald-700"
+              className="bg-blue-600 hover:bg-blue-700"
               onClick={() => contentToAction && approveContent(contentToAction.id)}
             >
               <CheckCircle className="h-4 w-4 mr-2" />

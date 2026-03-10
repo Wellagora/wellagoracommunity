@@ -43,10 +43,10 @@ const ProblemSolutionSection = ({ problem, solution }: ProblemSolutionSectionPro
   const t = translations[language as keyof typeof translations] || translations.hu;
 
   return (
-    <Card className="mb-8 overflow-hidden border-emerald-200/50 bg-gradient-to-br from-emerald-50/50 via-white to-amber-50/30">
+    <Card className="mb-8 overflow-hidden border-blue-200/50 bg-gradient-to-br from-blue-50/50 via-white to-amber-50/30">
       <CardContent className="p-6">
         <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
-          <span className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
+          <span className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
             💡
           </span>
           {t.sectionTitle}
@@ -89,8 +89,8 @@ const ProblemSolutionSection = ({ problem, solution }: ProblemSolutionSectionPro
               className="space-y-3"
             >
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
-                  <CheckCircle className="w-4 h-4 text-emerald-600" />
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                  <CheckCircle className="w-4 h-4 text-blue-600" />
                 </div>
                 <h3 className="font-medium text-foreground">
                   {t.solutionTitle}

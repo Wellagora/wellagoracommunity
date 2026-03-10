@@ -189,8 +189,8 @@ export const VoucherRedemptionTab = () => {
           <p className="text-3xl font-bold">{stats.active}</p>
           <p className="text-sm text-muted-foreground">{t('voucher.active_count')}</p>
         </Card>
-        <Card className="p-5 bg-gradient-to-br from-green-500/10 to-emerald-500/5 border-green-500/30">
-          <CheckCircle className="h-6 w-6 text-green-500 mb-2" />
+        <Card className="p-5 bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/30">
+          <CheckCircle className="h-6 w-6 text-blue-500 mb-2" />
           <p className="text-3xl font-bold">{stats.used}</p>
           <p className="text-sm text-muted-foreground">{t('voucher.used_count')}</p>
         </Card>
@@ -239,7 +239,7 @@ export const VoucherRedemptionTab = () => {
               >
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={v.user?.avatar_url || ''} />
-                  <AvatarFallback className="bg-green-500/20 text-green-600 text-xs">
+                  <AvatarFallback className="bg-blue-500/20 text-blue-600 text-xs">
                     {v.user?.first_name?.[0]}{v.user?.last_name?.[0]}
                   </AvatarFallback>
                 </Avatar>

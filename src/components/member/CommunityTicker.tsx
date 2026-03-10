@@ -138,10 +138,10 @@ const CommunityTicker = () => {
   const currentActivity = activities[currentIndex];
 
   return (
-    <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200/50 rounded-xl p-3 overflow-hidden">
+    <div className="bg-gradient-to-r from-blue-50 to-blue-50 border border-blue-200/50 rounded-xl p-3 overflow-hidden">
       <div className="flex items-center gap-2">
-        <div className="flex-shrink-0 p-1.5 rounded-full bg-emerald-100">
-          <Users className="w-3.5 h-3.5 text-emerald-600" />
+        <div className="flex-shrink-0 p-1.5 rounded-full bg-blue-100">
+          <Users className="w-3.5 h-3.5 text-blue-600" />
         </div>
         
         <AnimatePresence mode="wait">
@@ -153,13 +153,13 @@ const CommunityTicker = () => {
             transition={{ duration: 0.3 }}
             className="flex items-center gap-2 text-sm min-w-0 flex-1"
           >
-            <span className="font-medium text-emerald-800 truncate">
+            <span className="font-medium text-blue-800 truncate">
               {currentActivity.userName}
             </span>
-            <span className="text-emerald-600/70 flex-shrink-0">
+            <span className="text-blue-600/70 flex-shrink-0">
               {language === 'hu' ? 'csatlakozott:' : 'joined'}
             </span>
-            <span className="font-medium text-emerald-700 truncate">
+            <span className="font-medium text-blue-700 truncate">
               {currentActivity.programTitle}
             </span>
           </motion.div>
@@ -167,7 +167,7 @@ const CommunityTicker = () => {
 
         <Badge 
           variant="outline" 
-          className="flex-shrink-0 border-emerald-200 bg-emerald-50 text-emerald-600 text-xs ml-auto"
+          className="flex-shrink-0 border-blue-200 bg-blue-50 text-blue-600 text-xs ml-auto"
         >
           <Sparkles className="w-3 h-3 mr-1" />
           {language === 'hu' ? 'Élőben' : 'Live'}
@@ -182,8 +182,8 @@ const CommunityTicker = () => {
               key={index}
               className={`w-1.5 h-1.5 rounded-full transition-all ${
                 index === currentIndex 
-                  ? 'bg-emerald-500 w-3' 
-                  : 'bg-emerald-200'
+                  ? 'bg-blue-500 w-3' 
+                  : 'bg-blue-200'
               }`}
             />
           ))}

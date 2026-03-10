@@ -118,7 +118,7 @@ export const UserProgressBar = () => {
         </div>
         <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
           <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400"
+            className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-400"
             initial={{ width: 0 }}
             animate={{ width: `${progressPercent}%` }}
             transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}

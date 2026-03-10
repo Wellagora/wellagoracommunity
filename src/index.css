@@ -292,12 +292,12 @@ Deep Slate navigation, Soft Slate backgrounds, pure organic feel
     /* Sidebar */
     --sidebar-background: 222 47% 11%;          /* Slate-900 */
     --sidebar-foreground: 210 20% 98%;
-    --sidebar-primary: 160 84% 39%;             /* Emerald active */
+    --sidebar-primary: 217 91% 60%;             /* Blue active */
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 222 40% 15%;
     --sidebar-accent-foreground: 210 20% 98%;
     --sidebar-border: 222 40% 18%;
-    --sidebar-ring: 160 84% 39%;
+    --sidebar-ring: 217 91% 60%;
   }
 
   /* Dark mode - Inverted organic */
@@ -320,7 +320,7 @@ Deep Slate navigation, Soft Slate backgrounds, pure organic feel
     --muted: 222 40% 15%;
     --muted-foreground: 215 16% 60%;
 
-    --accent: 160 84% 39%;
+    --accent: 217 91% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;

@@ -200,12 +200,12 @@ const MyHubPage = () => {
             <div className="hidden md:flex items-center gap-4">
               <div className="text-right">
                 <p className="text-xs text-muted-foreground">{t("my_hub.total_savings") || "Megtakarításod"}</p>
-                <p className="text-xl font-bold text-emerald-600">
+                <p className="text-xl font-bold text-blue-600">
                   {language === 'hu' ? `${totalSavings.toLocaleString('hu-HU')} Ft` : `${Math.round(totalSavings / 400)} €`}
                 </p>
               </div>
-              <div className="p-3 rounded-xl bg-emerald-500/10">
-                <PiggyBank className="w-6 h-6 text-emerald-600" />
+              <div className="p-3 rounded-xl bg-blue-500/10">
+                <PiggyBank className="w-6 h-6 text-blue-600" />
               </div>
             </div>
           </div>

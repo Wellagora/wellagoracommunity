@@ -194,7 +194,7 @@ const AdminLayout = () => {
   if (!accessChecked) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
+        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
       </div>
     );
   }
@@ -210,7 +210,7 @@ const AdminLayout = () => {
         className={cn(
           "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all",
           "hover:bg-slate-700",
-          active && "bg-emerald-600 text-white",
+          active && "bg-blue-600 text-white",
           !active && "text-slate-300",
           sidebarCollapsed && "justify-center px-2"
         )}
@@ -228,7 +228,7 @@ const AdminLayout = () => {
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-slate-800 border-b border-slate-700 flex items-center justify-between px-4 z-50">
         <div className="flex items-center gap-2">
-          <Shield className="h-6 w-6 text-emerald-500" />
+          <Shield className="h-6 w-6 text-blue-500" />
           <span className="font-semibold text-white">Super Admin</span>
         </div>
         <Button
@@ -263,12 +263,12 @@ const AdminLayout = () => {
         <div className="h-16 flex items-center justify-between px-4 border-b border-slate-700 flex-shrink-0">
           {!sidebarCollapsed && (
             <div className="flex items-center gap-2">
-              <Shield className="h-6 w-6 text-emerald-500" />
+              <Shield className="h-6 w-6 text-blue-500" />
               <span className="font-semibold text-white">Super Admin</span>
             </div>
           )}
           {sidebarCollapsed && (
-            <Shield className="h-6 w-6 text-emerald-500 mx-auto" />
+            <Shield className="h-6 w-6 text-blue-500 mx-auto" />
           )}
           <Button
             variant="ghost"
@@ -323,23 +323,23 @@ const AdminLayout = () => {
           <div className={cn(
             "sticky top-0 z-10 border-b px-6 py-2.5 flex items-center gap-3 transition-colors",
             selectedProjectId !== 'all'
-              ? "bg-emerald-50 dark:bg-emerald-950 border-emerald-300 dark:border-emerald-700"
+              ? "bg-blue-50 dark:bg-blue-950 border-blue-300 dark:border-blue-700"
               : "bg-white dark:bg-slate-900"
           )}>
             <FolderOpen className={cn(
               "h-4 w-4 flex-shrink-0",
-              selectedProjectId !== 'all' ? "text-emerald-600" : "text-muted-foreground"
+              selectedProjectId !== 'all' ? "text-blue-600" : "text-muted-foreground"
             )} />
             <span className={cn(
               "text-sm font-medium whitespace-nowrap",
-              selectedProjectId !== 'all' ? "text-emerald-700 dark:text-emerald-300" : "text-muted-foreground"
+              selectedProjectId !== 'all' ? "text-blue-700 dark:text-blue-300" : "text-muted-foreground"
             )}>
               {t('admin.filter_by_project') || 'Aktív projekt'}:
             </span>
             <Select value={selectedProjectId} onValueChange={handleProjectChange}>
               <SelectTrigger className={cn(
                 "w-[260px] h-9 text-sm font-medium",
-                selectedProjectId !== 'all' && "border-emerald-400 ring-1 ring-emerald-300 dark:ring-emerald-700"
+                selectedProjectId !== 'all' && "border-blue-400 ring-1 ring-blue-300 dark:ring-blue-700"
               )}>
                 <SelectValue placeholder={t('admin.all_projects') || 'Minden projekt'} />
               </SelectTrigger>

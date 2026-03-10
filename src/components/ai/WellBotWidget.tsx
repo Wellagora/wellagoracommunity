@@ -21,7 +21,7 @@ export function WellBotWidget({ children }: WellBotWidgetProps) {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full shadow-lg transition-all hover:scale-105"
+        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg transition-all hover:scale-105"
         aria-label="Open WellBot"
       >
         <Bot className="h-6 w-6" />
@@ -42,7 +42,7 @@ export function WellBotWidget({ children }: WellBotWidgetProps) {
       )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b bg-emerald-600 text-white rounded-t-2xl">
+      <div className="flex items-center justify-between px-4 py-3 border-b bg-blue-600 text-white rounded-t-2xl">
         <div className="flex items-center gap-2">
           <Bot className="h-5 w-5" />
           <span className="font-semibold">WellBot</span>
@@ -50,21 +50,21 @@ export function WellBotWidget({ children }: WellBotWidgetProps) {
         <div className="flex items-center gap-1">
           <button
             onClick={() => setIsMinimized(!isMinimized)}
-            className="p-1.5 hover:bg-emerald-700 rounded"
+            className="p-1.5 hover:bg-blue-700 rounded"
             aria-label={isMinimized ? "Restore" : "Minimize"}
           >
             <Minimize2 className="h-4 w-4" />
           </button>
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
-            className="p-1.5 hover:bg-emerald-700 rounded"
+            className="p-1.5 hover:bg-blue-700 rounded"
             aria-label={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
           >
             <Maximize2 className="h-4 w-4" />
           </button>
           <button
             onClick={() => setIsOpen(false)}
-            className="p-1.5 hover:bg-emerald-700 rounded"
+            className="p-1.5 hover:bg-blue-700 rounded"
             aria-label="Close"
           >
             <X className="h-4 w-4" />

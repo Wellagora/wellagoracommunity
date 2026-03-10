@@ -979,8 +979,8 @@ const AdminProjectHub = () => {
             <Card>
               <CardContent className="pt-6">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
-                    <UserCheck className="h-5 w-5 text-emerald-600" />
+                  <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
+                    <UserCheck className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
                     <p className="text-2xl font-bold">{stats.totalExperts}</p>
@@ -1019,7 +1019,7 @@ const AdminProjectHub = () => {
             <CardContent>
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="text-center p-4 rounded-lg bg-muted/50">
-                  <p className="text-3xl font-bold text-emerald-600">
+                  <p className="text-3xl font-bold text-blue-600">
                     {stats.totalSponsorBudget.toLocaleString('hu-HU')} {getCurrencySymbol()}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
@@ -1145,7 +1145,7 @@ const AdminProjectHub = () => {
                     </div>
                     <span className="font-medium">{expert.first_name} {expert.last_name}</span>
                     {expert.green_pass && (
-                      <Badge variant="outline" className="text-xs bg-emerald-50 text-emerald-700 border-emerald-200">
+                      <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
                         🟢 Auto
                       </Badge>
                     )}
@@ -1198,7 +1198,7 @@ const AdminProjectHub = () => {
                               onClick={() => handleApproveProgram(program.id)}
                               title="Jóváhagyás"
                             >
-                              <Check className="h-4 w-4 text-emerald-600" />
+                              <Check className="h-4 w-4 text-blue-600" />
                             </Button>
                           )}
                           {program.is_published && (

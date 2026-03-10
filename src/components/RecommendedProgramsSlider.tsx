@@ -156,8 +156,8 @@ const RecommendedProgramsSlider = () => {
             viewport={{ once: true }}
             className="max-w-2xl mx-auto text-center"
           >
-            <div className="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-5">
-              <Sparkles className="w-8 h-8 text-emerald-600" />
+            <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mx-auto mb-5">
+              <Sparkles className="w-8 h-8 text-blue-600" />
             </div>
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
               {language === 'hu' ? 'Hamarosan érkeznek a programok!' :
@@ -210,7 +210,7 @@ const RecommendedProgramsSlider = () => {
           {/* Header - Monochrome */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground">{t("index.workshop_secrets_title")}</h2>
@@ -262,7 +262,7 @@ const RecommendedProgramsSlider = () => {
                 <Link to={`/piacer/${program.id}`} className="block group">
                   <Card className="h-full overflow-hidden">
                     {/* Image with smooth zoom */}
-                    <div className="aspect-[4/3] bg-gradient-to-br from-emerald-50/50 to-amber-50/30 relative overflow-hidden">
+                    <div className="aspect-[4/3] bg-gradient-to-br from-blue-50/50 to-amber-50/30 relative overflow-hidden">
                       {program.image_url || program.thumbnail_url ? (
                         <img
                           src={program.image_url || program.thumbnail_url || ''}
@@ -290,7 +290,7 @@ const RecommendedProgramsSlider = () => {
                       
                       {/* Title + Share */}
                       <div className="flex items-start justify-between gap-2">
-                        <h3 className="text-lg font-medium text-foreground leading-snug line-clamp-2 group-hover:text-emerald-700 transition-colors duration-300 flex-1">
+                        <h3 className="text-lg font-medium text-foreground leading-snug line-clamp-2 group-hover:text-blue-700 transition-colors duration-300 flex-1">
                           {program.title}
                         </h3>
                         <ShareButton

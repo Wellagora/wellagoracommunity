@@ -117,7 +117,7 @@ const FeaturedProgramsSection = () => {
     switch (program.access_type) {
       case "free":
         return (
-          <Badge className="bg-emerald-500/20 text-emerald-600 border-emerald-500/30 text-xs">
+          <Badge className="bg-blue-500/20 text-blue-600 border-blue-500/30 text-xs">
             {t("program.free_access")}
           </Badge>
         );
@@ -137,7 +137,7 @@ const FeaturedProgramsSection = () => {
         );
       default:
         return (
-          <Badge className="bg-emerald-500/20 text-emerald-600 border-emerald-500/30 text-xs">
+          <Badge className="bg-blue-500/20 text-blue-600 border-blue-500/30 text-xs">
             {t("program.free_access")}
           </Badge>
         );

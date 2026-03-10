@@ -105,7 +105,7 @@ const InteractiveMap = () => {
 
   const getStakeholderColor = (type: string) => {
     switch (type) {
-      case 'citizen': return 'from-emerald-400 to-green-600';
+      case 'citizen': return 'from-blue-400 to-blue-600';
       case 'business': return 'from-blue-400 to-indigo-600';
       case 'government': return 'from-orange-400 to-red-500';
       case 'ngo': return 'from-purple-400 to-pink-600';

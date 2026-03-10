@@ -154,7 +154,7 @@ export const WorldMap = ({ projects, onProjectClick }: WorldMapProps) => {
   };
 
   return (
-    <div className="relative w-full aspect-[2/1] bg-gradient-to-br from-blue-50 to-emerald-50 dark:from-blue-950/20 dark:to-emerald-950/20 rounded-xl border border-border overflow-hidden">
+    <div className="relative w-full aspect-[2/1] bg-gradient-to-br from-blue-50 to-blue-50 dark:from-blue-950/20 dark:to-blue-950/20 rounded-xl border border-border overflow-hidden">
       {/* SVG World Map Background */}
       <svg
         viewBox="0 0 100 50"
@@ -215,7 +215,7 @@ export const WorldMap = ({ projects, onProjectClick }: WorldMapProps) => {
               <div
                 className={cn(
                   "relative w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-200",
-                  "bg-gradient-to-br from-emerald-500 to-blue-500 hover:scale-110",
+                  "bg-gradient-to-br from-blue-500 to-blue-500 hover:scale-110",
                   hoveredProject === item.id && "scale-125 ring-4 ring-primary/30"
                 )}
               >
@@ -225,7 +225,7 @@ export const WorldMap = ({ projects, onProjectClick }: WorldMapProps) => {
                 <div className="absolute top-12 left-1/2 transform -translate-x-1/2 bg-popover text-popover-foreground px-3 py-2 rounded-lg shadow-xl z-20 whitespace-nowrap border border-border animate-in fade-in zoom-in-95 duration-200">
                   <p className="font-semibold text-sm">{item.name}</p>
                   <p className="text-xs text-muted-foreground">{item.count} projekt</p>
-                  <p className="text-xs text-emerald-600">{item.activeCount} aktív</p>
+                  <p className="text-xs text-blue-600">{item.activeCount} aktív</p>
                 </div>
               )}
             </>
@@ -233,13 +233,13 @@ export const WorldMap = ({ projects, onProjectClick }: WorldMapProps) => {
             // Project marker
             <>
               {'is_active' in item && item.is_active && (
-                <div className="absolute inset-0 w-8 h-8 -m-2 rounded-full bg-emerald-500/30 animate-ping" />
+                <div className="absolute inset-0 w-8 h-8 -m-2 rounded-full bg-blue-500/30 animate-ping" />
               )}
               <div
                 className={cn(
                   "relative w-8 h-8 rounded-full flex items-center justify-center shadow-lg transition-all duration-200",
                   'is_active' in item && item.is_active
-                    ? "bg-emerald-500 hover:bg-emerald-600"
+                    ? "bg-blue-500 hover:bg-blue-600"
                     : "bg-gray-400 hover:bg-gray-500",
                   "hover:scale-125",
                   hoveredProject === item.id && "scale-125 ring-4 ring-primary/30"
@@ -292,7 +292,7 @@ export const WorldMap = ({ projects, onProjectClick }: WorldMapProps) => {
       <div className="absolute bottom-4 left-4 bg-background/80 backdrop-blur-sm rounded-lg p-3 border border-border">
         <div className="flex items-center gap-4 text-xs">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-emerald-500" />
+            <div className="w-3 h-3 rounded-full bg-blue-500" />
             <span>Aktív</span>
           </div>
           <div className="flex items-center gap-2">
@@ -300,7 +300,7 @@ export const WorldMap = ({ projects, onProjectClick }: WorldMapProps) => {
             <span>Inaktív</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center">
+            <div className="w-4 h-4 rounded-full bg-gradient-to-br from-blue-500 to-blue-500 flex items-center justify-center">
               <span className="text-[8px] text-white font-bold">N</span>
             </div>
             <span>Klaszter</span>

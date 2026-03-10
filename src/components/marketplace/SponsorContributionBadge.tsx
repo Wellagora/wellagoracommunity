@@ -148,13 +148,13 @@ export const SponsorContributionBadge = ({
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`${classes.container} rounded-xl bg-gradient-to-br from-emerald-500/10 via-emerald-500/15 to-emerald-500/10 border border-emerald-500/30`}
+        className={`${classes.container} rounded-xl bg-gradient-to-br from-blue-500/10 via-blue-500/15 to-blue-500/10 border border-blue-500/30`}
       >
         <div className="flex items-start gap-3">
           {/* Icon with glow */}
           <div className="relative flex-shrink-0">
-            <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-md" />
-            <div className="relative w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/25">
+            <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-md" />
+            <div className="relative w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/25">
               <Trophy className={`${classes.icon} text-white`} />
             </div>
           </div>
@@ -162,8 +162,8 @@ export const SponsorContributionBadge = ({
           {/* Content */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 mb-1">
-              <Heart className="w-3 h-3 text-emerald-600 fill-emerald-600" />
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-600">
+              <Heart className="w-3 h-3 text-blue-600 fill-blue-600" />
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-blue-600">
                 {language === 'hu' ? 'KÖZÖSSÉGI HATÁS' : language === 'de' ? 'GEMEINSCHAFTSWIRKUNG' : 'COMMUNITY IMPACT'}
               </span>
             </div>
@@ -175,10 +175,10 @@ export const SponsorContributionBadge = ({
             {/* Progress bar showing all seats used */}
             <div className="mt-2">
               <div className="flex items-center gap-2">
-                <Users className="w-3 h-3 text-emerald-600" />
-                <span className="text-xs text-emerald-700 font-medium">{getSeatStatusText()}</span>
+                <Users className="w-3 h-3 text-blue-600" />
+                <span className="text-xs text-blue-700 font-medium">{getSeatStatusText()}</span>
               </div>
-              <Progress value={100} className="h-1.5 mt-1 bg-emerald-100" />
+              <Progress value={100} className="h-1.5 mt-1 bg-blue-100" />
             </div>
           </div>
         </div>
@@ -271,7 +271,7 @@ export const SponsorContributionBadge = ({
             </span>
             {/* Line 2: Professional green badge for FREE, or bold price */}
             {memberPayment === 0 ? (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 font-semibold text-sm mt-1">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/15 border border-blue-500/30 text-blue-600 font-semibold text-sm mt-1">
                 <Sparkles className="w-3.5 h-3.5" />
                 {language === 'hu' ? 'TÁMOGATOTT / INGYENES' : language === 'de' ? 'GEFÖRDERT / KOSTENLOS' : 'SPONSORED / FREE'}
               </span>

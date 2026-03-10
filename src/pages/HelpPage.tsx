@@ -85,7 +85,7 @@ const HelpPage = () => {
         <div className="container mx-auto px-4 py-8 max-w-6xl">
           {/* Header */}
           <div className="text-center mb-10">
-            <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4">
+            <div className="w-14 h-14 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mx-auto mb-4">
               <HelpCircle className="w-7 h-7" />
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
@@ -113,7 +113,7 @@ const HelpPage = () => {
                       <Link
                         key={link.href}
                         to={link.href}
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-blue-600 hover:bg-blue-50 transition-colors"
                       >
                         <link.icon className="w-4 h-4" />
                         {link.label}
@@ -129,7 +129,7 @@ const HelpPage = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Award className="w-5 h-5 text-emerald-600" />
+                    <Award className="w-5 h-5 text-blue-600" />
                     {language === 'hu' ? 'Gyakran Ismételt Kérdések' : 'Frequently Asked Questions'}
                   </CardTitle>
                 </CardHeader>
@@ -150,21 +150,21 @@ const HelpPage = () => {
               </Card>
 
               {/* Contact CTA */}
-              <Card className="mt-6 bg-emerald-50 border-emerald-100">
+              <Card className="mt-6 bg-blue-50 border-blue-100">
                 <CardContent className="p-6 text-center">
-                  <p className="text-emerald-800 font-medium mb-2">
+                  <p className="text-blue-800 font-medium mb-2">
                     {language === 'hu'
                       ? 'Nem találtad meg a választ?'
                       : "Didn't find your answer?"}
                   </p>
-                  <p className="text-emerald-600 text-sm mb-4">
+                  <p className="text-blue-600 text-sm mb-4">
                     {language === 'hu'
                       ? 'Írj nekünk és 24 órán belül válaszolunk!'
                       : "Write to us and we'll respond within 24 hours!"}
                   </p>
                   <a
                     href="mailto:info@wellagora.org"
-                    className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-emerald-600 text-white hover:bg-emerald-700 transition-colors font-medium text-sm"
+                    className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors font-medium text-sm"
                   >
                     <Mail className="w-4 h-4" />
                     info@wellagora.org

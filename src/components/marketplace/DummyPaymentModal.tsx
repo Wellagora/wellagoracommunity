@@ -122,8 +122,8 @@ const DummyPaymentModal = ({ content, open, onOpenChange, onSuccess }: DummyPaym
           </div>
 
           {/* Transparency message */}
-          <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
-            <p className="text-sm text-emerald-400 flex items-start gap-2">
+          <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+            <p className="text-sm text-blue-400 flex items-start gap-2">
               <Heart className="h-4 w-4 mt-0.5 flex-shrink-0" />
               <span>{t('payment.transparency')}</span>
             </p>

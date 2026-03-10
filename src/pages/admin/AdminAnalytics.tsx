@@ -284,7 +284,7 @@ const AdminAnalytics = () => {
                   <p className="text-2xl font-bold">{analytics.totalUsers.toLocaleString()}</p>
                   <p className={cn(
                     "text-sm flex items-center gap-1",
-                    analytics.userGrowthTrend >= 0 ? "text-emerald-600" : "text-red-600"
+                    analytics.userGrowthTrend >= 0 ? "text-blue-600" : "text-red-600"
                   )}>
                     {analytics.userGrowthTrend >= 0 ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
                     {Math.abs(analytics.userGrowthTrend)}% ez hónapban
@@ -347,8 +347,8 @@ const AdminAnalytics = () => {
                   <p className="text-2xl font-bold">{analytics.redemptionRate}%</p>
                   <p className="text-sm text-muted-foreground">{analytics.vouchersRedeemed} / {analytics.vouchersIssued}</p>
                 </div>
-                <div className="h-12 w-12 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center">
-                  <Ticket className="h-6 w-6 text-emerald-600" />
+                <div className="h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                  <Ticket className="h-6 w-6 text-blue-600" />
                 </div>
               </div>
             )}

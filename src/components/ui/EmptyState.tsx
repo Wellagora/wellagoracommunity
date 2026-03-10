@@ -24,7 +24,7 @@ const EmptyState = ({
   return (
     <div className={`flex flex-col items-center justify-center py-16 px-6 text-center ${className}`}>
       {Icon && (
-        <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center mb-5">
+        <div className="w-16 h-16 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center mb-5">
           <Icon className="w-8 h-8" />
         </div>
       )}
@@ -32,7 +32,7 @@ const EmptyState = ({
       <p className="text-sm text-muted-foreground max-w-md leading-relaxed mb-6">{description}</p>
       {ctaLabel && ctaLink && (
         <Link to={ctaLink}>
-          <Button className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white px-6">
+          <Button className="rounded-full bg-blue-600 hover:bg-blue-700 text-white px-6">
             {ctaLabel}
           </Button>
         </Link>
@@ -40,7 +40,7 @@ const EmptyState = ({
       {ctaLabel && onCtaClick && !ctaLink && (
         <Button
           onClick={onCtaClick}
-          className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white px-6"
+          className="rounded-full bg-blue-600 hover:bg-blue-700 text-white px-6"
         >
           {ctaLabel}
         </Button>

@@ -60,12 +60,12 @@ const STATIC_ARTICLES: Array<{
 ];
 
 const CATEGORY_COLORS: Record<string, string> = {
-  community: "bg-emerald-100 text-emerald-700",
+  community: "bg-blue-100 text-blue-700",
   lifestyle: "bg-amber-100 text-amber-700",
   heritage: "bg-purple-100 text-purple-700",
   craft: "bg-blue-100 text-blue-700",
-  wellness: "bg-teal-100 text-teal-700",
-  gardening: "bg-green-100 text-green-700",
+  wellness: "bg-blue-100 text-blue-700",
+  gardening: "bg-blue-100 text-blue-700",
   gastronomy: "bg-orange-100 text-orange-700",
 };
 
@@ -92,7 +92,7 @@ const BlogPage = () => {
       />
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
-        <section className="pt-12 pb-8 bg-gradient-to-b from-emerald-50/50 to-background">
+        <section className="pt-12 pb-8 bg-gradient-to-b from-blue-50/50 to-background">
           <div className="container mx-auto px-4 max-w-5xl">
             <motion.div
               className="text-center"
@@ -101,8 +101,8 @@ const BlogPage = () => {
               transition={{ duration: 0.6 }}
             >
               <div className="flex items-center justify-center gap-2 mb-4">
-                <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                  <BookOpen className="w-5 h-5 text-emerald-600" />
+                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                  <BookOpen className="w-5 h-5 text-blue-600" />
                 </div>
               </div>
               <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
@@ -136,13 +136,13 @@ const BlogPage = () => {
                     <Card
                       className={`h-full transition-all duration-300 overflow-hidden cursor-pointer ${
                         isExpanded
-                          ? 'shadow-xl ring-1 ring-emerald-200'
+                          ? 'shadow-xl ring-1 ring-blue-200'
                           : 'hover:shadow-lg group'
                       }`}
                       onClick={() => toggleArticle(article.id)}
                     >
                       {/* Decorative top bar */}
-                      <div className="h-1.5 bg-gradient-to-r from-emerald-400 to-teal-400" />
+                      <div className="h-1.5 bg-gradient-to-r from-blue-400 to-blue-400" />
                       <CardContent className="p-6">
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-2">
@@ -164,7 +164,7 @@ const BlogPage = () => {
                         </div>
 
                         <h3 className={`text-lg font-semibold text-foreground mb-2 transition-colors ${
-                          !isExpanded ? 'group-hover:text-emerald-600' : ''
+                          !isExpanded ? 'group-hover:text-blue-600' : ''
                         }`}>
                           {t(article.titleKey)}
                         </h3>
@@ -181,7 +181,7 @@ const BlogPage = () => {
                                   { year: 'numeric', month: 'short', day: 'numeric' }
                                 )}
                               </span>
-                              <span className="text-emerald-600 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+                              <span className="text-blue-600 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
                                 {language === 'hu' ? 'Olvasd el' : language === 'de' ? 'Weiterlesen' : 'Read more'}
                                 <ChevronDown className="w-3.5 h-3.5" />
                               </span>
@@ -211,7 +211,7 @@ const BlogPage = () => {
                                 </span>
                                 <button
                                   onClick={(e) => { e.stopPropagation(); setExpandedArticle(null); }}
-                                  className="text-emerald-600 text-sm font-medium flex items-center gap-1 hover:gap-2 transition-all"
+                                  className="text-blue-600 text-sm font-medium flex items-center gap-1 hover:gap-2 transition-all"
                                 >
                                   {language === 'hu' ? 'Bezárás' : language === 'de' ? 'Schließen' : 'Close'}
                                   <ChevronUp className="w-3.5 h-3.5" />
@@ -234,8 +234,8 @@ const BlogPage = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
             >
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-50 flex items-center justify-center">
-                <Leaf className="w-8 h-8 text-emerald-500" />
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-50 flex items-center justify-center">
+                <Leaf className="w-8 h-8 text-blue-500" />
               </div>
               <p className="text-muted-foreground max-w-md mx-auto">
                 {language === 'hu'

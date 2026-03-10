@@ -46,7 +46,7 @@ const RegionalStakeholderMap = ({
 
   const getStakeholderColor = (type: string) => {
     switch (type) {
-      case 'citizen': return 'rgba(16, 185, 129, 1)'; // emerald green
+      case 'citizen': return 'rgba(59, 130, 246, 1)'; // blue
       case 'business': return 'rgba(59, 130, 246, 1)'; // bright blue
       case 'government': return 'rgba(239, 68, 68, 1)'; // vibrant red
       case 'ngo': return 'rgba(245, 158, 11, 1)'; // golden yellow
@@ -204,7 +204,7 @@ const RegionalStakeholderMap = ({
         <div className="bg-background/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 p-4 min-w-[200px]">
           <div className="space-y-3">
             <div className="flex items-center gap-3 group cursor-pointer hover:translate-x-1 transition-transform">
-              <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'rgba(16, 185, 129, 1)' }}>
+              <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'rgba(59, 130, 246, 1)' }}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
                   <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"/>
                 </svg>

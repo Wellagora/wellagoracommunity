@@ -66,8 +66,8 @@ const CommunityStatsSection = () => {
       icon: Users,
       value: stats.members,
       label: t("community.stats_members") || "Tagok",
-      colorClass: "text-emerald-600",
-      bgClass: "bg-emerald-100",
+      colorClass: "text-blue-600",
+      bgClass: "bg-blue-100",
     },
     {
       icon: Award,

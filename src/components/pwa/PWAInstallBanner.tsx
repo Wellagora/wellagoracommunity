@@ -102,7 +102,7 @@ export default function PWAInstallBanner() {
             {/* Android Install */}
             {isAndroid && deferredPrompt && (
               <div className="flex items-center gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+                <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
                   <Download className="w-6 h-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0 pr-6">

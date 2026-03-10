@@ -342,7 +342,7 @@ const AdminProjects = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <FolderOpen className="h-6 w-6 text-emerald-600" />
+            <FolderOpen className="h-6 w-6 text-blue-600" />
             {t('admin.projects.title')}
           </h1>
           <p className="text-muted-foreground">
@@ -425,7 +425,7 @@ const AdminProjects = () => {
                       key={project.id}
                       className={cn(
                         "cursor-pointer",
-                        selectedProjectId === project.id && "bg-emerald-50 dark:bg-emerald-950"
+                        selectedProjectId === project.id && "bg-blue-50 dark:bg-blue-950"
                       )}
                       onClick={() => {
                         const newParams = new URLSearchParams(searchParams);
@@ -437,7 +437,7 @@ const AdminProjects = () => {
                       <TableCell className="font-medium">
                         <div className="flex items-center gap-2 truncate">
                           {selectedProjectId === project.id && (
-                            <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0" />
+                            <CheckCircle2 className="h-4 w-4 text-blue-600 flex-shrink-0" />
                           )}
                           {project.name || '—'}
                         </div>

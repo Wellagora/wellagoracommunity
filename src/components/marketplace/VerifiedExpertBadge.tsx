@@ -44,10 +44,10 @@ export const VerifiedExpertBadge = ({
         <TooltipTrigger asChild>
           <div className={`inline-flex items-center gap-1 ${className}`}>
             <div className="relative">
-              <BadgeCheck className={`${sizeClasses[size]} text-emerald-500 fill-emerald-500/20`} />
+              <BadgeCheck className={`${sizeClasses[size]} text-blue-500 fill-blue-500/20`} />
             </div>
             {showLabel && (
-              <span className="text-xs font-medium text-emerald-600">{labelText}</span>
+              <span className="text-xs font-medium text-blue-600">{labelText}</span>
             )}
           </div>
         </TooltipTrigger>

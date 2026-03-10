@@ -21,7 +21,7 @@ const categoryColors: Record<string, string> = {
   community: "bg-primary/10 text-primary",
   transport: "bg-blue-500/10 text-blue-600",
   energy: "bg-yellow-500/10 text-yellow-600",
-  food: "bg-green-500/10 text-green-600",
+  food: "bg-blue-500/10 text-blue-600",
   waste: "bg-orange-500/10 text-orange-600",
   other: "bg-muted text-muted-foreground"
 };

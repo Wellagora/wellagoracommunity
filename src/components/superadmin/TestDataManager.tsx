@@ -190,19 +190,19 @@ const TestDataManager = () => {
           </h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+              <CheckCircle2 className="w-4 h-4 text-blue-500" />
               <span><strong>3</strong> {language === 'hu' ? 'Szponzor' : 'Sponsors'} (150k/480k {language === 'hu' ? 'csomagokkal' : 'packages'})</span>
             </li>
             <li className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+              <CheckCircle2 className="w-4 h-4 text-blue-500" />
               <span><strong>5</strong> {language === 'hu' ? 'Szakértő' : 'Experts'} (2-3 {language === 'hu' ? 'programmal' : 'programs each'})</span>
             </li>
             <li className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+              <CheckCircle2 className="w-4 h-4 text-blue-500" />
               <span><strong>10</strong> {language === 'hu' ? 'Tag' : 'Members'} ({language === 'hu' ? 'megtakarításokkal' : 'with savings'})</span>
             </li>
             <li className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+              <CheckCircle2 className="w-4 h-4 text-blue-500" />
               <span><strong>50</strong> {language === 'hu' ? 'Tranzakció' : 'Transactions'} (80/20 split, 30 {language === 'hu' ? 'nap' : 'days'})</span>
             </li>
             <li className="flex items-center gap-2">
@@ -214,8 +214,8 @@ const TestDataManager = () => {
 
         {/* Last Result */}
         {lastResult && (
-          <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200">
-            <h4 className="font-semibold text-emerald-700 mb-2 flex items-center gap-2">
+          <div className="p-4 rounded-xl bg-blue-50 border border-blue-200">
+            <h4 className="font-semibold text-blue-700 mb-2 flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4" />
               {language === 'hu' ? 'Utolsó generálás eredménye:' : 'Last seed result:'}
             </h4>
@@ -245,7 +245,7 @@ const TestDataManager = () => {
           <Button
             onClick={handleSeedData}
             disabled={seeding || wiping || wipingAdmin}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+            className="bg-blue-600 hover:bg-blue-700 text-white"
           >
             {seeding ? (
               <>

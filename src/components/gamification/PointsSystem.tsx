@@ -217,7 +217,7 @@ const PointsSystem = () => {
     <div className="max-w-6xl mx-auto space-y-6">
       {/* User Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="bg-gradient-to-br from-emerald-600 to-teal-600 text-white border-0">
+        <Card className="bg-gradient-to-br from-blue-600 to-blue-600 text-white border-0">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -316,7 +316,7 @@ const PointsSystem = () => {
                         </Badge>
                       </div>
                       {badge.points_reward > 0 && (
-                        <p className="text-xs text-emerald-600 font-medium">+{badge.points_reward} WellPoint</p>
+                        <p className="text-xs text-blue-600 font-medium">+{badge.points_reward} WellPoint</p>
                       )}
                       <p className="text-xs text-muted-foreground mt-0.5">
                         {new Date(ub.earned_at).toLocaleDateString(language === 'hu' ? 'hu-HU' : language === 'de' ? 'de-DE' : 'en-US')}
@@ -413,7 +413,7 @@ const PointsSystem = () => {
                   <div
                     key={entry.id}
                     className={`flex items-center space-x-4 p-4 rounded-lg border transition-all ${
-                      isCurrentUser ? "bg-emerald-50 border-emerald-300 dark:bg-emerald-950/30" : "bg-card"
+                      isCurrentUser ? "bg-blue-50 border-blue-300 dark:bg-blue-950/30" : "bg-card"
                     }`}
                   >
                     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-muted text-sm font-bold">

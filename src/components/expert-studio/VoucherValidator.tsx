@@ -80,7 +80,7 @@ const VoucherValidator = ({ userId, onBalanceUpdate, balance }: VoucherValidator
       particleCount: 100,
       spread: 70,
       origin: { y: 0.6 },
-      colors: ['#10B981', '#34D399', '#6EE7B7']
+      colors: ['#3B82F6', '#60A5FA', '#93C5FD']
     });
 
     setTimeout(() => setShowSuccess(false), 2000);
@@ -185,14 +185,14 @@ const VoucherValidator = ({ userId, onBalanceUpdate, balance }: VoucherValidator
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              className="absolute inset-0 bg-emerald-500/20 backdrop-blur-sm flex items-center justify-center z-10"
+              className="absolute inset-0 bg-blue-500/20 backdrop-blur-sm flex items-center justify-center z-10"
             >
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 className="bg-white rounded-full p-6 shadow-xl"
               >
-                <PartyPopper className="w-16 h-16 text-emerald-500" />
+                <PartyPopper className="w-16 h-16 text-blue-500" />
               </motion.div>
             </motion.div>
           )}
@@ -267,7 +267,7 @@ const VoucherValidator = ({ userId, onBalanceUpdate, balance }: VoucherValidator
                 {t("expert_studio.recent_redemptions")}
               </h4>
               {todayCount > 0 && (
-                <span className="text-sm font-medium text-emerald-600 bg-emerald-100 px-3 py-1 rounded-full">
+                <span className="text-sm font-medium text-blue-600 bg-blue-100 px-3 py-1 rounded-full">
                   🎉 {t("expert_studio.today_count")?.replace("{{count}}", todayCount.toString()) || `Ma: ${todayCount}`}
                 </span>
               )}
@@ -285,7 +285,7 @@ const VoucherValidator = ({ userId, onBalanceUpdate, balance }: VoucherValidator
                     <span className="text-sm font-medium text-black truncate flex-1">
                       {r.programTitle}
                     </span>
-                    <span className="text-sm font-bold text-emerald-600 mx-3">
+                    <span className="text-sm font-bold text-blue-600 mx-3">
                       +{r.amount.toLocaleString()} Ft
                     </span>
                     <span className="text-xs text-black/40 whitespace-nowrap">

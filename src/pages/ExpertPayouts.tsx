@@ -88,7 +88,7 @@ const ExpertPayouts = () => {
     switch (status) {
       case 'paid':
         return (
-          <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
+          <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">
             <CheckCircle2 className="w-3 h-3 mr-1" />
             {language === 'hu' ? 'Kifizetve' : 'Paid'}
           </Badge>
@@ -166,8 +166,8 @@ const ExpertPayouts = () => {
                     {formatCurrency(stats.totalEarnings)}
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-emerald-600" />
+                <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center">
+                  <TrendingUp className="w-6 h-6 text-blue-600" />
                 </div>
               </div>
             </CardContent>
@@ -224,9 +224,9 @@ const ExpertPayouts = () => {
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-4">
-              <div className="flex-1 bg-emerald-500/20 rounded-lg p-4 text-center">
-                <p className="text-3xl font-bold text-emerald-700">80%</p>
-                <p className="text-sm text-emerald-600">
+              <div className="flex-1 bg-blue-500/20 rounded-lg p-4 text-center">
+                <p className="text-3xl font-bold text-blue-700">80%</p>
+                <p className="text-sm text-blue-600">
                   {language === 'hu' ? 'Szakértő' : 'Expert'}
                 </p>
               </div>

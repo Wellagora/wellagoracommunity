@@ -135,7 +135,7 @@ const RegionalProgramsHighlight = () => {
     return (
       <Card className="bg-card/80 backdrop-blur-xl border-[0.5px] border-border/50 rounded-2xl shadow-sm">
         <CardContent className="flex items-center justify-center py-8">
-          <Loader2 className="w-6 h-6 animate-spin text-emerald-600" />
+          <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
         </CardContent>
       </Card>
     );
@@ -143,7 +143,7 @@ const RegionalProgramsHighlight = () => {
 
   return (
     <Card className="bg-card/80 backdrop-blur-xl border-[0.5px] border-border/50 rounded-2xl shadow-sm overflow-hidden">
-      <CardHeader className="pb-3 bg-gradient-to-r from-primary/5 to-emerald-50/50">
+      <CardHeader className="pb-3 bg-gradient-to-r from-primary/5 to-blue-50/50">
         <CardTitle className="flex items-center justify-between text-base text-foreground">
           <div className="flex items-center gap-2">
             <MapPin className="w-5 h-5 text-primary" />
@@ -225,7 +225,7 @@ const RegionalProgramsHighlight = () => {
                   {program.is_sponsored && (
                     <Badge 
                       variant="outline" 
-                      className="mt-1 text-xs border-emerald-200 bg-emerald-50 text-emerald-700"
+                      className="mt-1 text-xs border-blue-200 bg-blue-50 text-blue-700"
                     >
                       {language === 'hu' ? 'Támogatott' : 'Sponsored'}
                     </Badge>

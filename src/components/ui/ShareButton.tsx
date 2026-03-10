@@ -101,7 +101,7 @@ export const ShareButton = memo(({
       >
         {typeof navigator.share === "function" && (
           <DropdownMenuItem onClick={handleNativeShare} className="gap-3 cursor-pointer">
-            <Share2 className="w-4 h-4 text-emerald-600" />
+            <Share2 className="w-4 h-4 text-blue-600" />
             <span>{shareLabel}</span>
           </DropdownMenuItem>
         )}
@@ -115,7 +115,7 @@ export const ShareButton = memo(({
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleCopy} className="gap-3 cursor-pointer">
           {copied ? (
-            <Check className="w-4 h-4 text-emerald-600" />
+            <Check className="w-4 h-4 text-blue-600" />
           ) : (
             <Link2 className="w-4 h-4 text-muted-foreground" />
           )}

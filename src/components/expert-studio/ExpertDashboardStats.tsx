@@ -119,8 +119,8 @@ const ExpertDashboardStats = ({ userId }: ExpertDashboardStatsProps) => {
       label: language === 'hu' ? 'Az Ön részesedése' : 'Your Payout',
       value: formatCurrency(stats.expertPayout),
       sublabel: '80%',
-      color: 'from-emerald-500 to-green-500',
-      bgColor: 'bg-emerald-50',
+      color: 'from-blue-500 to-blue-500',
+      bgColor: 'bg-blue-50',
       highlight: true,
     },
   ];
@@ -151,14 +151,14 @@ const ExpertDashboardStats = ({ userId }: ExpertDashboardStatsProps) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className={`${stat.highlight ? 'ring-2 ring-emerald-500/50' : ''} ${stat.bgColor} border-0 shadow-sm`}>
+              <Card className={`${stat.highlight ? 'ring-2 ring-blue-500/50' : ''} ${stat.bgColor} border-0 shadow-sm`}>
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between mb-2">
                     <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg`}>
                       <Icon className="w-5 h-5 text-white" />
                     </div>
                     {stat.highlight && (
-                      <span className="text-xs font-medium text-emerald-600 bg-emerald-100 px-2 py-1 rounded-full">
+                      <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
                         80%
                       </span>
                     )}
@@ -174,17 +174,17 @@ const ExpertDashboardStats = ({ userId }: ExpertDashboardStatsProps) => {
       </div>
 
       {/* 80/20 Split Info Bar */}
-      <Card className="bg-gradient-to-r from-emerald-50 to-indigo-50 border-0">
+      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-0">
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Percent className="w-5 h-5 text-emerald-600" />
+              <Percent className="w-5 h-5 text-blue-600" />
               <span className="text-sm font-medium">
                 {language === 'hu' ? '80/20 Bevétel Megosztás' : '80/20 Revenue Split'}
               </span>
             </div>
             <div className="flex items-center gap-4 text-sm">
-              <span className="text-emerald-600 font-medium">
+              <span className="text-blue-600 font-medium">
                 {language === 'hu' ? 'Ön:' : 'You:'} {formatCurrency(stats.expertPayout)}
               </span>
               <span className="text-muted-foreground">|</span>

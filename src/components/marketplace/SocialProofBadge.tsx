@@ -60,8 +60,8 @@ export const SocialProofBadge = ({
       {/* Attendee count */}
       <div className="flex items-center gap-2">
         <div className="flex items-center">
-          <div className={`${avatarSize} rounded-full bg-emerald-100 flex items-center justify-center`}>
-            <Users className="w-3 h-3 text-emerald-600" />
+          <div className={`${avatarSize} rounded-full bg-blue-100 flex items-center justify-center`}>
+            <Users className="w-3 h-3 text-blue-600" />
           </div>
         </div>
         <span className="text-xs text-muted-foreground font-medium">

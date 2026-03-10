@@ -42,7 +42,7 @@ export const WizardHeader = ({
                 </>
               ) : contentId ? (
                 <>
-                  <Check className="h-3 w-3 text-green-500" />
+                  <Check className="h-3 w-3 text-blue-500" />
                   <span>{t("wizard.draft_saved")}</span>
                 </>
               ) : null}

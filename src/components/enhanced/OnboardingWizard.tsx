@@ -91,7 +91,7 @@ const OnboardingWizard = ({ onComplete, onSkip }: OnboardingWizardProps) => {
   const focusAreas = [
     { id: "energy", title: "Energy Conservation", icon: Zap, color: "bg-yellow-500" },
     { id: "transport", title: "Sustainable Transport", icon: Car, color: "bg-blue-500" },
-    { id: "food", title: "Sustainable Food", icon: Utensils, color: "bg-green-500" },
+    { id: "food", title: "Sustainable Food", icon: Utensils, color: "bg-blue-500" },
     { id: "waste", title: "Waste Reduction", icon: Trash2, color: "bg-purple-500" },
     { id: "community", title: "Community Action", icon: Users, color: "bg-pink-500" }
   ];

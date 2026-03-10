@@ -72,7 +72,7 @@ const HandprintWidget = () => {
     switch (rank) {
       case 'Fenntarthatósági Hős': return 'from-purple-500 to-pink-500';
       case 'Környezeti Bajnok': return 'from-blue-500 to-cyan-500';
-      case 'Zöld Aktivista': return 'from-green-500 to-emerald-500';
+      case 'Zöld Aktivista': return 'from-blue-500 to-blue-500';
       case 'Öko Harcos': return 'from-yellow-500 to-orange-500';
       default: return 'from-gray-400 to-gray-600';
     }
@@ -90,12 +90,12 @@ const HandprintWidget = () => {
 
   if (loading) {
     return (
-      <Card className="bg-gradient-to-br from-green-50 to-blue-50 border-green-200">
+      <Card className="bg-gradient-to-br from-blue-50 to-blue-50 border-blue-200">
         <CardContent className="p-6">
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-green-200 rounded w-1/2"></div>
-            <div className="h-8 bg-green-200 rounded w-3/4"></div>
-            <div className="h-4 bg-green-200 rounded w-2/3"></div>
+            <div className="h-4 bg-blue-200 rounded w-1/2"></div>
+            <div className="h-8 bg-blue-200 rounded w-3/4"></div>
+            <div className="h-4 bg-blue-200 rounded w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -181,12 +181,12 @@ const HandprintWidget = () => {
 
   // Personal handprint view for citizens
   return (
-    <Card className="bg-gradient-to-br from-green-50 to-blue-50 border-green-200 hover:shadow-lg transition-all duration-300 cursor-pointer"
+    <Card className="bg-gradient-to-br from-blue-50 to-blue-50 border-blue-200 hover:shadow-lg transition-all duration-300 cursor-pointer"
           onClick={() => navigate('/dashboard/handprint')}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-bold text-green-800 flex items-center gap-2">
-            <Leaf className="w-5 h-5 text-green-600" />
+          <CardTitle className="text-lg font-bold text-blue-800 flex items-center gap-2">
+            <Leaf className="w-5 h-5 text-blue-600" />
             {t('handprint.title')}
           </CardTitle>
           <Badge className={`bg-gradient-to-r ${getRankColor(handprint.rank)} text-white border-0`}>
@@ -199,8 +199,8 @@ const HandprintWidget = () => {
         {/* Main Metrics */}
         <div className="grid grid-cols-3 gap-4">
           <div className="text-center bg-white/60 rounded-lg p-3">
-            <div className="text-2xl font-bold text-green-700">{handprint.totalCo2Saved.toFixed(1)}</div>
-            <div className="text-xs text-green-600">kg CO₂</div>
+            <div className="text-2xl font-bold text-blue-700">{handprint.totalCo2Saved.toFixed(1)}</div>
+            <div className="text-xs text-blue-600">kg CO₂</div>
           </div>
           
           <div className="text-center bg-white/60 rounded-lg p-3">
@@ -227,7 +227,7 @@ const HandprintWidget = () => {
           {[
             { key: 'transport', label: `🚲 ${t('handprint.category.transport')}`, value: handprint.transport, color: 'bg-blue-500' },
             { key: 'energy', label: `⚡ ${t('handprint.category.energy')}`, value: handprint.energy, color: 'bg-yellow-500' },
-            { key: 'waste', label: `♻️ ${t('handprint.category.waste')}`, value: handprint.waste, color: 'bg-green-500' },
+            { key: 'waste', label: `♻️ ${t('handprint.category.waste')}`, value: handprint.waste, color: 'bg-blue-500' },
             { key: 'water', label: `💧 ${t('handprint.category.water')}`, value: handprint.water, color: 'bg-cyan-500' },
             { key: 'community', label: `🤝 ${t('handprint.category.community')}`, value: handprint.community, color: 'bg-purple-500' }
           ].filter(cat => cat.value > 0).map((category) => (
@@ -239,11 +239,11 @@ const HandprintWidget = () => {
         </div>
 
         {/* Call to Action */}
-        <div className="pt-2 border-t border-green-200">
+        <div className="pt-2 border-t border-blue-200">
           <Button 
             variant="outline" 
             size="sm" 
-            className="w-full bg-white/80 border-green-300 text-green-700 hover:bg-green-50"
+            className="w-full bg-white/80 border-blue-300 text-blue-700 hover:bg-blue-50"
             onClick={(e) => {
               e.stopPropagation();
               navigate('/dashboard/handprint');

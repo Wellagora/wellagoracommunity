@@ -279,8 +279,8 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/20">
-          <BarChart3 className="w-6 h-6 text-emerald-600" />
+        <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-500/10 border border-blue-500/20">
+          <BarChart3 className="w-6 h-6 text-blue-600" />
         </div>
         <div>
           <h2 className="text-xl font-semibold text-foreground">{t('expert_studio.impact_report.title')}</h2>
@@ -295,11 +295,11 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-4 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200"
+          className="p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-blue-50 border border-blue-200"
         >
           <div className="flex items-center gap-3">
-            <Sparkles className="w-5 h-5 text-emerald-600" />
-            <p className="text-emerald-800 font-medium">
+            <Sparkles className="w-5 h-5 text-blue-600" />
+            <p className="text-blue-800 font-medium">
               {t('expert_studio.impact_report.top_sponsor_message_prefix')} <strong>{metrics.topSponsor.name}</strong> {t('expert_studio.impact_report.top_sponsor_message_middle')} <strong>{metrics.extraReachPercentage}%</strong> {t('expert_studio.impact_report.top_sponsor_message_suffix')}
             </p>
           </div>
@@ -352,8 +352,8 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
                     {t('expert_studio.impact_report.sponsor_contribution_desc')}
                   </p>
                 </div>
-                <div className="p-3 rounded-xl bg-gradient-to-br from-emerald-500/10 to-green-500/10">
-                  <HandCoins className="w-6 h-6 text-emerald-600" />
+                <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500/10 to-blue-500/10">
+                  <HandCoins className="w-6 h-6 text-blue-600" />
                 </div>
               </div>
             </CardContent>
@@ -524,7 +524,7 @@ const ExpertImpactReport = ({ userId }: ExpertImpactReportProps) => {
                 <p className="text-xs text-muted-foreground">{t('expert_studio.impact_report.organic_sales_label')}</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-emerald-600">{metrics.sponsoredSales}</p>
+                <p className="text-2xl font-bold text-blue-600">{metrics.sponsoredSales}</p>
                 <p className="text-xs text-muted-foreground">{t('expert_studio.impact_report.sponsored_sales_label')}</p>
               </div>
               <div>

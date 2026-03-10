@@ -64,7 +64,7 @@ const ProgramValueBreakdown = ({
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="text-lg text-black flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-emerald-600" />
+              <TrendingUp className="w-5 h-5 text-blue-600" />
               {language === 'hu' ? 'Program Érték Bontás' : 'Program Value Breakdown'}
             </CardTitle>
             <CardDescription className="mt-1">
@@ -90,16 +90,16 @@ const ProgramValueBreakdown = ({
 
       <CardContent className="space-y-6">
         {/* Expert Price Header */}
-        <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-50 to-emerald-100/50 border border-emerald-200">
+        <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50 to-blue-100/50 border border-blue-200">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-emerald-700">
+            <span className="text-sm font-medium text-blue-700">
               {language === 'hu' ? 'Szakértői ár / fő' : 'Expert price / person'}
             </span>
-            <Badge variant="outline" className="border-emerald-300 bg-white text-emerald-700">
+            <Badge variant="outline" className="border-blue-300 bg-white text-blue-700">
               {language === 'hu' ? 'Mester érték' : 'Master value'}
             </Badge>
           </div>
-          <p className="text-3xl font-bold text-emerald-700">{formatCurrency(expertPriceHuf)}</p>
+          <p className="text-3xl font-bold text-blue-700">{formatCurrency(expertPriceHuf)}</p>
         </div>
 
         {/* Enrollments Breakdown */}
@@ -111,10 +111,10 @@ const ProgramValueBreakdown = ({
               {language === 'hu' ? 'Összes' : 'Total'}
             </p>
           </div>
-          <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-100 text-center">
-            <Wallet className="w-5 h-5 text-emerald-600 mx-auto mb-1" />
-            <p className="text-2xl font-bold text-emerald-700">{sponsoredEnrollments}</p>
-            <p className="text-xs text-emerald-600">
+          <div className="p-3 rounded-xl bg-blue-50 border border-blue-100 text-center">
+            <Wallet className="w-5 h-5 text-blue-600 mx-auto mb-1" />
+            <p className="text-2xl font-bold text-blue-700">{sponsoredEnrollments}</p>
+            <p className="text-xs text-blue-600">
               {language === 'hu' ? 'Szponzorált' : 'Sponsored'}
             </p>
           </div>
@@ -136,7 +136,7 @@ const ProgramValueBreakdown = ({
           {/* Visual Bar */}
           <div className="relative h-8 rounded-full overflow-hidden bg-black/5">
             <motion.div
-              className="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-emerald-500 to-emerald-600 flex items-center justify-center"
+              className="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center"
               initial={{ width: 0 }}
               animate={{ width: '80%' }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
@@ -155,15 +155,15 @@ const ProgramValueBreakdown = ({
 
           {/* Amount Breakdown */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-100">
+            <div className="p-4 rounded-xl bg-blue-50 border border-blue-100">
               <div className="flex items-center gap-2 mb-2">
-                <Wallet className="w-4 h-4 text-emerald-600" />
-                <span className="text-sm font-medium text-emerald-700">
+                <Wallet className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-700">
                   {language === 'hu' ? 'Szakértői részesedés' : 'Expert payout'}
                 </span>
               </div>
-              <p className="text-2xl font-bold text-emerald-700">{formatCurrency(expertPayout)}</p>
-              <p className="text-xs text-emerald-600/70 mt-1">
+              <p className="text-2xl font-bold text-blue-700">{formatCurrency(expertPayout)}</p>
+              <p className="text-xs text-blue-600/70 mt-1">
                 {formatCurrency(perEnrollmentExpertPayout)} / {language === 'hu' ? 'fő' : 'person'}
               </p>
             </div>

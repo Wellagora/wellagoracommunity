@@ -380,7 +380,7 @@ const ToolsSection = ({ tools }: { tools: string }) => {
               key={index}
               className="flex items-center gap-2 p-3 bg-muted rounded-lg"
             >
-              <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+              <CheckCircle className="h-4 w-4 text-blue-500 flex-shrink-0" />
               <span className="text-sm">{tool}</span>
             </div>
           ))}
@@ -569,8 +569,8 @@ const CompletionSection = ({ creatorName }: { creatorName: string }) => {
 
   return (
     <Card className="bg-gradient-to-br from-primary/10 to-secondary/10 border-primary/30 p-8 mt-12 text-center">
-      <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-500/20 flex items-center justify-center">
-        <Trophy className="h-10 w-10 text-green-500" />
+      <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-blue-500/20 flex items-center justify-center">
+        <Trophy className="h-10 w-10 text-blue-500" />
       </div>
       <h2 className="text-2xl font-bold mb-3">
         {t("workshop.completion_title")}

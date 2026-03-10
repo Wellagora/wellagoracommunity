@@ -353,8 +353,8 @@ const ProfilePage = () => {
             </Alert>
           )}
           {success && (
-            <Alert className="mb-6 bg-green-500/10 border-green-500/30">
-              <AlertDescription className="text-green-600">{success}</AlertDescription>
+            <Alert className="mb-6 bg-blue-500/10 border-blue-500/30">
+              <AlertDescription className="text-blue-600">{success}</AlertDescription>
             </Alert>
           )}
 
@@ -528,7 +528,7 @@ const ProfilePage = () => {
                 {isStripeEnabled() && <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Wallet className="w-5 h-5 text-green-500" />
+                      <Wallet className="w-5 h-5 text-blue-500" />
                       Kifizetési beállítások
                     </CardTitle>
                   </CardHeader>

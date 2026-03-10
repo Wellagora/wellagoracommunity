@@ -294,7 +294,7 @@ const MyAgoraPage = () => {
 
   if (authLoading) {
     return (
-      <DashboardLayout title={t("my_agora.title")} icon={Star} iconColor="text-emerald-500">
+      <DashboardLayout title={t("my_agora.title")} icon={Star} iconColor="text-blue-500">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <Skeleton className="h-80 w-full" />
           <Skeleton className="h-80 w-full" />
@@ -314,7 +314,7 @@ const MyAgoraPage = () => {
       title={t("my_agora.title")}
       subtitle={t("my_agora.pilot_subtitle")}
       icon={Star}
-      iconColor="text-emerald-500"
+      iconColor="text-blue-500"
     >
       <div className="space-y-8">
         {/* SECTION 1: Welcome + Stats Row */}
@@ -327,7 +327,7 @@ const MyAgoraPage = () => {
                 <div className="text-4xl font-bold text-amber-700 mb-1">{wellPointsBalance}</div>
                 <div className="text-sm text-amber-600">{t('gamification.your_points')}</div>
                 {todayPoints > 0 && (
-                  <div className="text-xs text-emerald-600 mt-1">+{todayPoints} ma</div>
+                  <div className="text-xs text-blue-600 mt-1">+{todayPoints} ma</div>
                 )}
               </CardContent>
             </Card>
@@ -373,7 +373,7 @@ const MyAgoraPage = () => {
                 <CardContent className="p-4 text-center">
                   <div className="text-3xl mb-2">{method.icon}</div>
                   <div className="text-sm font-medium mb-1">{method.action}</div>
-                  <Badge variant="secondary" className="bg-emerald-100 text-emerald-700">
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-700">
                     +{method.points} WP
                   </Badge>
                 </CardContent>
@@ -458,7 +458,7 @@ const MyAgoraPage = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5 text-emerald-600" />
+                <BookOpen className="h-5 w-5 text-blue-600" />
                 {t("gamification.active_programs")}
               </CardTitle>
             </CardHeader>
@@ -485,7 +485,7 @@ const MyAgoraPage = () => {
                     className="flex items-center gap-3 p-2 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer"
                     onClick={() => navigate(`/programs/${program.id}`)}
                   >
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center overflow-hidden flex-shrink-0">
+                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-400 to-blue-500 flex items-center justify-center overflow-hidden flex-shrink-0">
                       {program.image_url ? (
                         <img src={program.image_url} alt={program.title} className="w-full h-full object-cover" />
                       ) : (

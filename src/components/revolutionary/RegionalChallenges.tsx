@@ -79,7 +79,7 @@ const RegionalChallenges: React.FC = () => {
       members: 89,
       totalScore: 18900,
       avatar: '/placeholder-avatar.jpg',
-      color: '#10B981'
+      color: '#3B82F6'
     },
     {
       id: 'citizen-champions',

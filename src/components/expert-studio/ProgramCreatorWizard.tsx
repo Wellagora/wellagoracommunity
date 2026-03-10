@@ -541,9 +541,9 @@ const ProgramCreatorWizard = () => {
                   className={`
                     flex items-center justify-center w-10 h-10 rounded-full font-medium transition-all
                     ${index === currentStep
-                      ? "bg-gradient-to-r from-emerald-500 to-green-500 text-white shadow-lg"
+                      ? "bg-gradient-to-r from-blue-500 to-blue-500 text-white shadow-lg"
                       : index < currentStep
-                        ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200 cursor-pointer"
+                        ? "bg-blue-100 text-blue-700 hover:bg-blue-200 cursor-pointer"
                         : "bg-muted text-muted-foreground"
                     }
                   `}
@@ -557,7 +557,7 @@ const ProgramCreatorWizard = () => {
                 </span>
                 {index < STEPS.length - 1 && (
                   <div className={`w-8 h-0.5 mx-2 rounded ${
-                    index < currentStep ? "bg-emerald-500" : "bg-muted"
+                    index < currentStep ? "bg-blue-500" : "bg-muted"
                   }`} />
                 )}
               </div>
@@ -622,7 +622,7 @@ const ProgramCreatorWizard = () => {
             exit={{ opacity: 0, y: 10 }}
             className="fixed bottom-20 right-6 z-50 bg-white/90 backdrop-blur-md shadow-lg border border-border/50 rounded-full px-4 py-2 flex items-center gap-2"
           >
-            <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
+            <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
             <span className="text-sm font-medium text-foreground">{t("common.saving")}</span>
           </motion.div>
         )}
@@ -644,7 +644,7 @@ const ProgramCreatorWizard = () => {
             <Button
               onClick={handleNext}
               disabled={isSaving}
-              className="gap-2 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600"
+              className="gap-2 bg-gradient-to-r from-blue-500 to-blue-500 hover:from-blue-600 hover:to-blue-600"
             >
               {isSaving ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

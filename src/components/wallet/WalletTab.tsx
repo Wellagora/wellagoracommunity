@@ -305,7 +305,7 @@ export function WalletTab() {
                       </p>
                     </div>
                   </div>
-                  <Badge variant="secondary" className="text-green-600 bg-green-50">
+                  <Badge variant="secondary" className="text-blue-600 bg-blue-50">
                     +{transaction.amount}
                   </Badge>
                 </div>

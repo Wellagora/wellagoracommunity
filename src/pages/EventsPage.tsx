@@ -201,7 +201,7 @@ const EventsPage = () => {
                   descKey: "events.coming_soon_market_desc",
                   image: "https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800&q=80",
                   icon: "🥕",
-                  color: "from-emerald-500/20 to-green-500/20",
+                  color: "from-blue-500/20 to-blue-500/20",
                 },
                 {
                   title: "Közösségi Reggeli",

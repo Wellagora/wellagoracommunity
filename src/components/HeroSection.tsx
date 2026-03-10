@@ -136,7 +136,7 @@ const HeroSection = () => {
         ref={sectionRef}
         className="relative overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 25%, #1e40af 50%, #1e3a5f 75%, #0f172a 100%)',
+          background: 'linear-gradient(135deg, #0F0F35 0%, #131347 25%, #1a1a5e 50%, #131347 75%, #0F0F35 100%)',
         }}
       >
         {/* Orbital rings animation */}
@@ -231,7 +231,7 @@ const HeroSection = () => {
             <Link to="/auth?role=member">
               <Button
                 size="lg"
-                className="rounded-full bg-white hover:bg-white/90 text-[#1e3a5f] font-semibold px-8 w-full sm:w-auto sm:min-w-[220px] shadow-[0_4px_20px_rgba(255,255,255,0.25)] hover:shadow-[0_4px_30px_rgba(255,255,255,0.35)] transition-all duration-300"
+                className="rounded-full bg-white hover:bg-white/90 text-[#0F0F35] font-semibold px-8 w-full sm:w-auto sm:min-w-[220px] shadow-[0_4px_20px_rgba(255,255,255,0.25)] hover:shadow-[0_4px_30px_rgba(255,255,255,0.35)] transition-all duration-300"
               >
                 {language === 'hu' ? 'Csatlakozom' : language === 'de' ? 'Jetzt beitreten' : 'Join Now'}
                 <ArrowRight className="w-4 h-4 ml-2" />

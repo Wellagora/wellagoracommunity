@@ -340,7 +340,7 @@ const PartnerProfilePage = () => {
                   <p className="text-muted-foreground mb-5 max-w-2xl leading-relaxed">{description}</p>
                   
                   <div className="flex flex-wrap gap-3">
-                    <Button size="lg" asChild className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-xl text-base px-8">
+                    <Button size="lg" asChild className="bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-xl text-base px-8">
                       <a href={websiteUrl} target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="w-5 h-5 mr-2" />
                         {language === "hu" ? "Irány a webshop" : language === "de" ? "Zum Webshop" : "Visit Webshop"}

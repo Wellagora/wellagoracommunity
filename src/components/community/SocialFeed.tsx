@@ -171,7 +171,7 @@ const SocialFeed = () => {
               >
                 {t("feed.whats_on_your_mind")}
               </div>
-              <Button variant="ghost" size="icon" className="text-emerald-600">
+              <Button variant="ghost" size="icon" className="text-blue-600">
                 <ImagePlus className="w-5 h-5" />
               </Button>
             </div>
@@ -227,10 +227,10 @@ const SocialFeed = () => {
       </motion.div>
 
       {filteredPosts.length === 0 && (
-        <Card className="p-10 text-center bg-gradient-to-br from-emerald-50/50 to-teal-50/30 border-emerald-100/50">
+        <Card className="p-10 text-center bg-gradient-to-br from-blue-50/50 to-blue-50/30 border-blue-100/50">
           <div className="flex flex-col items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center">
-              <Sparkles className="w-8 h-8 text-emerald-600" />
+            <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
+              <Sparkles className="w-8 h-8 text-blue-600" />
             </div>
             <div>
               <h3 className="text-lg font-semibold text-foreground mb-2">
@@ -272,7 +272,7 @@ const PostTypeBadge = ({ type }: { type: FeedPost["type"] }) => {
     success_story: {
       icon: Trophy,
       label: t("feed.success_story"),
-      className: "bg-green-100 text-green-700",
+      className: "bg-blue-100 text-blue-700",
     },
     announcement: {
       icon: Megaphone,
@@ -327,7 +327,7 @@ const CommentCard = ({
       className={cn(
         "p-3 rounded-lg",
         comment.isExpertAnswer
-          ? "bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200"
+          ? "bg-gradient-to-r from-blue-50 to-blue-50 border border-blue-200"
           : "bg-muted/50"
       )}
     >
@@ -336,7 +336,7 @@ const CommentCard = ({
           <AvatarFallback
             className={cn(
               "text-xs",
-              comment.isExpertAnswer && "bg-emerald-200 text-emerald-700"
+              comment.isExpertAnswer && "bg-blue-200 text-blue-700"
             )}
           >
             {getInitials(comment.authorName)}
@@ -346,7 +346,7 @@ const CommentCard = ({
         <span className="font-medium text-sm">{comment.authorName}</span>
 
         {comment.isExpertAnswer && (
-          <Badge className="bg-emerald-600 text-white text-xs gap-1">
+          <Badge className="bg-blue-600 text-white text-xs gap-1">
             <CheckCircle className="w-3 h-3" />
             {t("feed.expert_answer")}
           </Badge>

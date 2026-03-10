@@ -282,7 +282,7 @@ const OrganizationsManager = () => {
     }
     switch (status) {
       case "active":
-        return <Badge variant="default" className="bg-green-500/10 text-green-600 border-green-500/20">Aktív</Badge>;
+        return <Badge variant="default" className="bg-blue-500/10 text-blue-600 border-blue-500/20">Aktív</Badge>;
       case "pending":
         return <Badge variant="secondary">Függőben</Badge>;
       case "expired":

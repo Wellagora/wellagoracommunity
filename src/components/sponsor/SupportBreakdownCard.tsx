@@ -30,9 +30,9 @@ export function SupportBreakdownCard({ breakdown, sponsorLogoUrl, className }: S
 
         {/* Line 2: Támogatás with sponsor name/logo */}
         <div className="flex justify-between items-center text-sm border-t pt-3">
-          <span className="text-emerald-600 font-medium">{t("sponsor_support.support_amount")}</span>
+          <span className="text-blue-600 font-medium">{t("sponsor_support.support_amount")}</span>
           <div className="text-right flex items-center gap-2">
-            <div className="text-emerald-600 font-semibold">
+            <div className="text-blue-600 font-semibold">
               {formatPrice(breakdown.support_amount, breakdown.currency)}
             </div>
             <span className="text-muted-foreground">–</span>
@@ -49,7 +49,7 @@ export function SupportBreakdownCard({ breakdown, sponsorLogoUrl, className }: S
         {/* Line 3: Fizetendő */}
         <div className="flex justify-between items-center text-lg font-bold border-t pt-3">
           <span>{t("sponsor_support.payable")}</span>
-          <span className="text-emerald-600">{formatPrice(breakdown.user_pays, breakdown.currency)}</span>
+          <span className="text-blue-600">{formatPrice(breakdown.user_pays, breakdown.currency)}</span>
         </div>
       </CardContent>
     </Card>
@@ -64,7 +64,7 @@ export function SponsoredBadge({ className }: SponsoredBadgeProps) {
   const { t } = useLanguage();
 
   return (
-    <Badge variant="secondary" className={`${className} bg-emerald-100 text-emerald-700 hover:bg-emerald-200 font-semibold`}>
+    <Badge variant="secondary" className={`${className} bg-blue-100 text-blue-700 hover:bg-blue-200 font-semibold`}>
       {t("sponsor_support.sponsored")}
     </Badge>
   );

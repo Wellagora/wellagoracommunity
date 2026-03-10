@@ -102,7 +102,7 @@ const MyLearningPage = () => {
     switch (accessLevel) {
       case "free":
         return (
-          <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+          <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
             {t("program.free_access")}
           </Badge>
         );

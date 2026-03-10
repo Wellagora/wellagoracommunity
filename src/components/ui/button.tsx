@@ -9,21 +9,21 @@ import { cn } from "@/lib/utils";
  * Emerald-based design system with subtle hover effects
  */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 transition-all duration-300 ease-out",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 transition-all duration-300 ease-out",
   {
     variants: {
       variant: {
         // Primary: Emerald CTA
-        default: "bg-emerald-600 text-white shadow-md shadow-emerald-600/20 hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-600/25 hover:scale-[1.02] active:scale-[0.97]",
+        default: "bg-blue-600 text-white shadow-md shadow-blue-600/20 hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/25 hover:scale-[1.02] active:scale-[0.97]",
         destructive: "bg-red-600 text-white hover:bg-red-700 active:scale-[0.97]",
-        outline: "border border-emerald-200 bg-transparent text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300 active:scale-[0.97]",
+        outline: "border border-blue-200 bg-transparent text-blue-700 hover:bg-blue-50 hover:border-blue-300 active:scale-[0.97]",
         secondary: "bg-gray-100 text-foreground hover:bg-gray-200 active:scale-[0.97]",
         ghost: "text-foreground hover:bg-gray-100",
-        link: "text-emerald-700 underline-offset-4 hover:underline",
+        link: "text-blue-700 underline-offset-4 hover:underline",
         // Premium: Extra polish
-        premium: "bg-emerald-600 text-white shadow-lg shadow-emerald-600/25 hover:bg-emerald-700 hover:shadow-xl hover:shadow-emerald-600/30 hover:scale-[1.03] active:scale-[0.96] font-bold",
+        premium: "bg-blue-600 text-white shadow-lg shadow-blue-600/25 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-600/30 hover:scale-[1.03] active:scale-[0.96] font-bold",
         // Glass: Clean glass effect
-        glass: "bg-white/90 backdrop-blur-xl border border-emerald-100 text-foreground hover:bg-white hover:shadow-md hover:border-emerald-200 active:scale-[0.97]",
+        glass: "bg-white/90 backdrop-blur-xl border border-blue-100 text-foreground hover:bg-white hover:shadow-md hover:border-blue-200 active:scale-[0.97]",
       },
       size: {
         default: "h-11 px-7 py-2",

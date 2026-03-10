@@ -66,7 +66,7 @@ const CookieConsentBanner = () => {
                   <Button onClick={handleEssentialOnly} variant="outline" size="sm">
                     {t("cookie.essential_only") || "Csak szükségesek"}
                   </Button>
-                  <Button onClick={handleAcceptAll} size="sm" className="bg-teal-600 hover:bg-teal-700 text-white">
+                  <Button onClick={handleAcceptAll} size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
                     {t("cookie.accept_all") || "Mindent elfogadok"}
                   </Button>
                 </div>

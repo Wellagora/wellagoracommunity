@@ -24,12 +24,12 @@ interface Step2DetailsProps {
 
 // Icon & color mapping for all 13 unified categories
 const CATEGORY_META: Record<string, { icon: typeof Leaf; color: string }> = {
-  lifestyle: { icon: Leaf, color: "text-green-500" },
+  lifestyle: { icon: Leaf, color: "text-blue-500" },
   craft: { icon: Hammer, color: "text-amber-600" },
   gastronomy: { icon: Apple, color: "text-orange-500" },
   wellness: { icon: Heart, color: "text-red-500" },
   hiking: { icon: Mountain, color: "text-sky-500" },
-  gardening: { icon: Sprout, color: "text-emerald-500" },
+  gardening: { icon: Sprout, color: "text-blue-500" },
   heritage: { icon: Landmark, color: "text-stone-500" },
   volunteering: { icon: HandHeart, color: "text-pink-500" },
   market: { icon: Store, color: "text-indigo-500" },
@@ -414,14 +414,14 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
                 className={`
                   p-3 sm:p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-1.5
                   ${isSelected
-                    ? "border-emerald-500 bg-emerald-500/10 shadow-md"
-                    : "border-border hover:border-emerald-300 hover:bg-muted/50"
+                    ? "border-blue-500 bg-blue-500/10 shadow-md"
+                    : "border-border hover:border-blue-300 hover:bg-muted/50"
                   }
                   ${!isSelected && selectedCategories.length >= 3 ? "opacity-40 cursor-not-allowed" : ""}
                 `}
               >
-                <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${isSelected ? "text-emerald-500" : meta.color}`} />
-                <span className={`text-xs sm:text-sm font-medium text-center leading-tight ${isSelected ? "text-emerald-700 dark:text-emerald-400" : "text-foreground"}`}>
+                <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${isSelected ? "text-blue-500" : meta.color}`} />
+                <span className={`text-xs sm:text-sm font-medium text-center leading-tight ${isSelected ? "text-blue-700 dark:text-blue-400" : "text-foreground"}`}>
                   {t(`categories.${catValue}`)}
                 </span>
               </button>
@@ -431,7 +431,7 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
       </div>
 
       {/* Pricing Mode */}
-      <Card className="border-emerald-200 bg-gradient-to-br from-emerald-50/50 to-green-50/50">
+      <Card className="border-blue-200 bg-gradient-to-br from-blue-50/50 to-blue-50/50">
         <CardContent className="p-6">
           <Label className="text-base font-medium mb-4 block">
             {t("program_creator.pricing_mode")}
@@ -453,8 +453,8 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
             <div className={`
               flex items-start space-x-3 p-4 rounded-xl border-2 cursor-pointer transition-all
               ${formData.pricingMode === "sponsor_only" 
-                ? "border-emerald-500 bg-emerald-500/10" 
-                : "border-border hover:border-emerald-300"
+                ? "border-blue-500 bg-blue-500/10" 
+                : "border-border hover:border-blue-300"
               }
             `}>
               <RadioGroupItem value="sponsor_only" id="sponsor" className="mt-1" />
@@ -471,8 +471,8 @@ const Step2Details = ({ formData, setFormData }: Step2DetailsProps) => {
             <div className={`
               flex items-start space-x-3 p-4 rounded-xl border-2 cursor-pointer transition-all
               ${formData.pricingMode === "purchasable" 
-                ? "border-emerald-500 bg-emerald-500/10" 
-                : "border-border hover:border-emerald-300"
+                ? "border-blue-500 bg-blue-500/10" 
+                : "border-border hover:border-blue-300"
               }
             `}>
               <RadioGroupItem value="purchasable" id="purchase" className="mt-1" />

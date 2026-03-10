@@ -96,12 +96,12 @@ const BalanceCard = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        <Card className="bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-green-500/10 border-emerald-500/20 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+        <Card className="bg-gradient-to-br from-blue-500/10 via-blue-500/5 to-blue-500/10 border-blue-500/20 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
           <CardContent className="p-6">
             {/* Main Balance */}
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center shadow-lg">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-500 flex items-center justify-center shadow-lg">
                   <Wallet className="w-7 h-7 text-white" />
                 </div>
                 <div>
@@ -121,7 +121,7 @@ const BalanceCard = ({
               <Button
                 onClick={() => setShowPayoutModal(true)}
                 disabled={!canRequestPayout}
-                className="bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 shadow-lg disabled:opacity-50"
+                className="bg-gradient-to-r from-blue-500 to-blue-500 hover:from-blue-600 hover:to-blue-600 shadow-lg disabled:opacity-50"
               >
                 <ArrowUpRight className="w-4 h-4 mr-2" />
                 {t("expert_studio.request_payout")}
@@ -129,7 +129,7 @@ const BalanceCard = ({
             </div>
 
             {/* 80/20 Revenue Split Visualization */}
-            <div className="mb-6 p-4 rounded-xl bg-white/50 border border-emerald-200/50">
+            <div className="mb-6 p-4 rounded-xl bg-white/50 border border-blue-200/50">
               <div className="flex items-center justify-between mb-3">
                 <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
                   {language === 'hu' ? '80/20 Bevétel Megosztás' : '80/20 Revenue Split'}
@@ -161,7 +161,7 @@ const BalanceCard = ({
               {/* Visual Split Bar */}
               <div className="relative h-6 rounded-full overflow-hidden bg-muted/50 mb-3">
                 <motion.div
-                  className="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-emerald-500 to-emerald-600 flex items-center justify-center"
+                  className="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center"
                   initial={{ width: 0 }}
                   animate={{ width: '80%' }}
                   transition={{ duration: 0.8, ease: 'easeOut' }}
@@ -196,7 +196,7 @@ const BalanceCard = ({
                   <p className="text-xs text-muted-foreground">
                     {language === 'hu' ? 'Ön kapja (80%)' : 'You get (80%)'}
                   </p>
-                  <p className="font-semibold text-emerald-600 text-sm">{formatCurrency(expertPayout)}</p>
+                  <p className="font-semibold text-blue-600 text-sm">{formatCurrency(expertPayout)}</p>
                 </div>
               </div>
             </div>
@@ -220,7 +220,7 @@ const BalanceCard = ({
             )}
 
             {/* Earnings Breakdown */}
-            <div className="grid grid-cols-3 gap-4 pt-4 border-t border-emerald-500/20">
+            <div className="grid grid-cols-3 gap-4 pt-4 border-t border-blue-500/20">
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1 text-muted-foreground mb-1">
                   <Calendar className="w-3.5 h-3.5" />
@@ -281,7 +281,7 @@ const BalanceCard = ({
             <Button 
               onClick={handleRequestPayout}
               disabled={isRequesting || !bankAccount.trim()}
-              className="bg-emerald-500 hover:bg-emerald-600"
+              className="bg-blue-500 hover:bg-blue-600"
             >
               {isRequesting ? t("common.processing") : t("expert_studio.confirm_payout")}
             </Button>
@@ -294,7 +294,7 @@ const BalanceCard = ({
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-emerald-600" />
+              <Building2 className="w-5 h-5 text-blue-600" />
               {language === 'hu' ? '80/20 Bevétel Bontás' : '80/20 Revenue Breakdown'}
             </DialogTitle>
             <DialogDescription>
@@ -323,7 +323,7 @@ const BalanceCard = ({
                   <span className="font-semibold">
                     {language === 'hu' ? 'Az Ön részesedése (80%)' : 'Your payout (80%)'}
                   </span>
-                  <span className="font-bold text-xl text-emerald-600">{formatCurrency(expertPayout)}</span>
+                  <span className="font-bold text-xl text-blue-600">{formatCurrency(expertPayout)}</span>
                 </div>
               </div>
             </div>

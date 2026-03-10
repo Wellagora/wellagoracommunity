@@ -335,7 +335,7 @@ const Navigation = () => {
       case 'expert': return "bg-amber-500 text-white";
       case 'sponsor': return "bg-blue-500 text-white";
       case 'member':
-      default: return "bg-emerald-600 text-white";
+      default: return "bg-blue-600 text-white";
     }
   };
 
@@ -454,7 +454,7 @@ const Navigation = () => {
                           <Star className="h-4 w-4 text-blue-500 fill-blue-500" />
                           <span className="text-sm font-semibold text-blue-700">{roleMetrics.avgRating} ({roleMetrics.reviewCount})</span>
                           <span className="text-blue-300">|</span>
-                          <span className="text-sm font-semibold text-emerald-600">{roleMetrics.monthlyRevenue.toLocaleString('hu-HU')} Ft</span>
+                          <span className="text-sm font-semibold text-blue-600">{roleMetrics.monthlyRevenue.toLocaleString('hu-HU')} Ft</span>
                         </Link>
                       </TooltipTrigger>
                       <TooltipContent>
@@ -631,9 +631,9 @@ const Navigation = () => {
                 to="/profile"
                 className="flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px]"
               >
-                <Avatar className="h-8 w-8 ring-2 ring-emerald-200">
+                <Avatar className="h-8 w-8 ring-2 ring-blue-200">
                   <AvatarImage src={profile.avatar_url || undefined} />
-                  <AvatarFallback className="bg-emerald-600 text-white text-xs">
+                  <AvatarFallback className="bg-blue-600 text-white text-xs">
                     {profile.first_name?.[0]}{profile.last_name?.[0]}
                   </AvatarFallback>
                 </Avatar>

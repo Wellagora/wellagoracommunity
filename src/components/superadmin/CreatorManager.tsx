@@ -308,8 +308,8 @@ const CreatorManager = () => {
           size="sm"
           onClick={() => { setVerificationFilter('verified'); setStripeFilter('all'); setContentFilter('all'); }}
           className={verificationFilter === 'verified' 
-            ? 'bg-emerald-500 hover:bg-emerald-600 border-2 border-emerald-500' 
-            : 'border-border hover:border-emerald-500/50'}
+            ? 'bg-blue-500 hover:bg-blue-600 border-2 border-blue-500' 
+            : 'border-border hover:border-blue-500/50'}
         >
           <CheckCircle className="h-3 w-3 mr-1" />
           {t('admin.verified_only')}
@@ -436,7 +436,7 @@ const CreatorManager = () => {
                   </TableCell>
                   <TableCell>
                     {creator.is_verified_expert ? (
-                      <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                      <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
                         <CheckCircle className="h-3 w-3 mr-1" />
                         {t('admin.verified')}
                       </Badge>
@@ -449,7 +449,7 @@ const CreatorManager = () => {
                   </TableCell>
                   <TableCell>
                     {creator.stripe_onboarding_complete ? (
-                      <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                      <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
                         <CreditCard className="h-3 w-3 mr-1" />
                         {t('admin.stripe_connected')}
                       </Badge>
@@ -486,7 +486,7 @@ const CreatorManager = () => {
                       <Switch
                         checked={creator.is_verified_expert}
                         onCheckedChange={() => toggleVerification(creator.id, creator.is_verified_expert)}
-                        className="data-[state=checked]:bg-emerald-500"
+                        className="data-[state=checked]:bg-blue-500"
                       />
                     </div>
                   </TableCell>
@@ -521,7 +521,7 @@ const CreatorManager = () => {
                     <div className="flex items-center gap-2">
                       {selectedCreator.first_name} {selectedCreator.last_name}
                       {selectedCreator.is_verified_expert && (
-                        <Badge className="bg-emerald-500/20 text-emerald-400">
+                        <Badge className="bg-blue-500/20 text-blue-400">
                           <CheckCircle className="h-3 w-3 mr-1" />
                           Hitelesített
                         </Badge>
@@ -602,7 +602,7 @@ const CreatorManager = () => {
                     <Switch
                       checked={selectedCreator.is_verified_expert}
                       onCheckedChange={() => toggleVerification(selectedCreator.id, selectedCreator.is_verified_expert)}
-                      className="data-[state=checked]:bg-emerald-500"
+                      className="data-[state=checked]:bg-blue-500"
                     />
                   </div>
                 </CardContent>
@@ -638,7 +638,7 @@ const CreatorManager = () => {
                           </div>
                           <Badge
                             variant={content.is_published ? 'default' : 'secondary'}
-                            className={content.is_published ? 'bg-emerald-500/20 text-emerald-400' : ''}
+                            className={content.is_published ? 'bg-blue-500/20 text-blue-400' : ''}
                           >
                             {content.is_published ? 'Publikált' : 'Draft'}
                           </Badge>

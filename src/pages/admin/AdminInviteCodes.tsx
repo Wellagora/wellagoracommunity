@@ -147,7 +147,7 @@ const AdminInviteCodes = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Ticket className="w-6 h-6 text-emerald-600" />
+            <Ticket className="w-6 h-6 text-blue-600" />
             {language === 'hu' ? 'Meghívó kódok' : 'Invite Codes'}
           </h1>
           <p className="text-muted-foreground text-sm mt-1">
@@ -174,7 +174,7 @@ const AdminInviteCodes = () => {
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <p className="text-2xl font-bold text-emerald-600">{totalActive}</p>
+            <p className="text-2xl font-bold text-blue-600">{totalActive}</p>
             <p className="text-xs text-muted-foreground">
               {language === 'hu' ? 'Aktív' : 'Active'}
             </p>
@@ -235,7 +235,7 @@ const AdminInviteCodes = () => {
             <Button
               onClick={handleCreate}
               disabled={creating || !newCode.trim()}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
             >
               {creating ? '...' : (language === 'hu' ? 'Létrehozás' : 'Create')}
             </Button>
@@ -283,7 +283,7 @@ const AdminInviteCodes = () => {
                           className="text-muted-foreground hover:text-foreground transition-colors"
                         >
                           {copiedId === code.id ? (
-                            <Check className="w-4 h-4 text-emerald-500" />
+                            <Check className="w-4 h-4 text-blue-500" />
                           ) : (
                             <Copy className="w-4 h-4" />
                           )}
@@ -302,7 +302,7 @@ const AdminInviteCodes = () => {
                             {language === 'hu' ? 'Kimerült' : 'Exhausted'}
                           </Badge>
                         ) : (
-                          <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
+                          <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
                             {language === 'hu' ? 'Aktív' : 'Active'}
                           </Badge>
                         )

@@ -141,22 +141,22 @@ const CreativeGamification = () => {
   const getTreeIcon = (stage: ImpactTree['stage']) => {
     switch (stage) {
       case "seed": return <div className="w-4 h-4 bg-brown-500 rounded-full" />;
-      case "sprout": return <Sprout className="w-6 h-6 text-green-400" />;
-      case "sapling": return <TreePine className="w-8 h-8 text-green-500" />;
-      case "tree": return <TreePine className="w-12 h-12 text-green-600" />;
-      case "forest": return <TreePine className="w-16 h-16 text-green-700" />;
-      default: return <Sprout className="w-6 h-6 text-green-400" />;
+      case "sprout": return <Sprout className="w-6 h-6 text-blue-400" />;
+      case "sapling": return <TreePine className="w-8 h-8 text-blue-500" />;
+      case "tree": return <TreePine className="w-12 h-12 text-blue-600" />;
+      case "forest": return <TreePine className="w-16 h-16 text-blue-700" />;
+      default: return <Sprout className="w-6 h-6 text-blue-400" />;
     }
   };
 
   const getStageColor = (stage: ImpactTree['stage']) => {
     switch (stage) {
       case "seed": return "bg-amber-100 text-amber-800";
-      case "sprout": return "bg-green-100 text-green-800"; 
-      case "sapling": return "bg-emerald-100 text-emerald-800";
+      case "sprout": return "bg-blue-100 text-blue-800"; 
+      case "sapling": return "bg-blue-100 text-blue-800";
       case "tree": return "bg-forest-100 text-forest-800";
-      case "forest": return "bg-green-200 text-green-900";
-      default: return "bg-green-100 text-green-800";
+      case "forest": return "bg-blue-200 text-blue-900";
+      default: return "bg-blue-100 text-blue-800";
     }
   };
 
@@ -201,10 +201,10 @@ const CreativeGamification = () => {
       {/* Impact Forest Tab */}
       {selectedTab === "forest" && (
         <div className="space-y-6">
-          <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+          <Card className="bg-gradient-to-br from-blue-50 to-blue-50 border-blue-200">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
-                <TreePine className="w-6 h-6 text-green-600" />
+                <TreePine className="w-6 h-6 text-blue-600" />
                 <span>{t('gamification.your_impact_forest')}</span>
               </CardTitle>
               <CardDescription>
@@ -244,15 +244,15 @@ const CreativeGamification = () => {
                 ))}
               </div>
               
-              <div className="mt-6 p-4 bg-green-100 rounded-lg">
+              <div className="mt-6 p-4 bg-blue-100 rounded-lg">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-medium text-green-800">{t('gamification.forest_health_score')}</h3>
-                    <p className="text-sm text-green-600">{t('gamification.overall_ecosystem')}</p>
+                    <h3 className="font-medium text-blue-800">{t('gamification.forest_health_score')}</h3>
+                    <p className="text-sm text-blue-600">{t('gamification.overall_ecosystem')}</p>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-green-800">87%</div>
-                    <p className="text-xs text-green-600">{t('gamification.thriving')}</p>
+                    <div className="text-2xl font-bold text-blue-800">87%</div>
+                    <p className="text-xs text-blue-600">{t('gamification.thriving')}</p>
                   </div>
                 </div>
                 <Progress value={87} className="mt-2" />
@@ -361,8 +361,8 @@ const CreativeGamification = () => {
           <Card>
             <CardContent className="p-6">
               <div className="text-center space-y-4">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                  <TreePine className="w-8 h-8 text-green-600" />
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
+                  <TreePine className="w-8 h-8 text-blue-600" />
                 </div>
                 <div>
                   <h3 className="font-medium">{t('gamification.rewards_catalog.plant_tree.name')}</h3>

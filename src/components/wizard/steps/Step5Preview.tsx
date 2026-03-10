@@ -29,8 +29,8 @@ export const Step5Preview = ({ formData, onPublish, onSaveDraft, isPublishing }:
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center mb-8">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-500/20 flex items-center justify-center">
-          <CheckCircle className="h-8 w-8 text-green-500" />
+        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-500/20 flex items-center justify-center">
+          <CheckCircle className="h-8 w-8 text-blue-500" />
         </div>
         <h2 className="text-2xl font-bold mb-2">{t("wizard.step5_title")}</h2>
         <p className="text-muted-foreground">{t("wizard.step5_subtitle")}</p>
@@ -47,7 +47,7 @@ export const Step5Preview = ({ formData, onPublish, onSaveDraft, isPublishing }:
             <Badge
               className={
                 formData.access_type === "free"
-                  ? "bg-green-500/20 text-green-400"
+                  ? "bg-blue-500/20 text-blue-400"
                   : "bg-amber-500/20 text-amber-500"
               }
             >
@@ -70,7 +70,7 @@ export const Step5Preview = ({ formData, onPublish, onSaveDraft, isPublishing }:
       <div className="space-y-2 p-4 bg-card rounded-xl border border-border">
         <div className="flex items-center gap-2 text-sm">
           {formData.title && formData.short_description ? (
-            <CheckCircle className="h-4 w-4 text-green-500" />
+            <CheckCircle className="h-4 w-4 text-blue-500" />
           ) : (
             <AlertCircle className="h-4 w-4 text-yellow-500" />
           )}
@@ -78,7 +78,7 @@ export const Step5Preview = ({ formData, onPublish, onSaveDraft, isPublishing }:
         </div>
         <div className="flex items-center gap-2 text-sm">
           {formData.image_url ? (
-            <CheckCircle className="h-4 w-4 text-green-500" />
+            <CheckCircle className="h-4 w-4 text-blue-500" />
           ) : (
             <AlertCircle className="h-4 w-4 text-yellow-500" />
           )}
@@ -86,7 +86,7 @@ export const Step5Preview = ({ formData, onPublish, onSaveDraft, isPublishing }:
         </div>
         <div className="flex items-center gap-2 text-sm">
           {formData.milestones.length > 0 ? (
-            <CheckCircle className="h-4 w-4 text-green-500" />
+            <CheckCircle className="h-4 w-4 text-blue-500" />
           ) : (
             <AlertCircle className="h-4 w-4 text-yellow-500" />
           )}
@@ -95,7 +95,7 @@ export const Step5Preview = ({ formData, onPublish, onSaveDraft, isPublishing }:
           </span>
         </div>
         <div className="flex items-center gap-2 text-sm">
-          <CheckCircle className="h-4 w-4 text-green-500" />
+          <CheckCircle className="h-4 w-4 text-blue-500" />
           <span>
             {t("wizard.checklist_price")}:{" "}
             {formData.access_type === "free" ? t("wizard.free") : `${formData.price_huf.toLocaleString()} Ft`}

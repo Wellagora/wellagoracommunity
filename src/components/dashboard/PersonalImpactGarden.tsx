@@ -19,9 +19,9 @@ interface LevelInfo {
 const LEVELS: LevelInfo[] = [
   { name: "seed", icon: "🌱", minPoints: 0, maxPoints: 100, color: "text-amber-600" },
   { name: "seedling", icon: "🌿", minPoints: 101, maxPoints: 500, color: "text-lime-600" },
-  { name: "growing_tree", icon: "🌳", minPoints: 501, maxPoints: 1000, color: "text-green-600" },
-  { name: "strong_tree", icon: "🌲", minPoints: 1001, maxPoints: 2500, color: "text-emerald-600" },
-  { name: "forest", icon: "🏞️", minPoints: 2501, maxPoints: Infinity, color: "text-teal-600" },
+  { name: "growing_tree", icon: "🌳", minPoints: 501, maxPoints: 1000, color: "text-blue-600" },
+  { name: "strong_tree", icon: "🌲", minPoints: 1001, maxPoints: 2500, color: "text-blue-600" },
+  { name: "forest", icon: "🏞️", minPoints: 2501, maxPoints: Infinity, color: "text-blue-600" },
 ];
 
 const getLevelForPoints = (points: number): { level: LevelInfo; levelIndex: number } => {

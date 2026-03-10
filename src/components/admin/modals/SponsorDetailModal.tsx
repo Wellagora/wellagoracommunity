@@ -287,7 +287,7 @@ export function SponsorDetailModal(props: {
   const getStatusBadge = () => {
     if (!sponsor) return null;
     return sponsor.is_active 
-      ? <Badge className="bg-emerald-100 text-emerald-700"><CheckCircle2 className="h-3 w-3 mr-1" /> Aktív</Badge>
+      ? <Badge className="bg-blue-100 text-blue-700"><CheckCircle2 className="h-3 w-3 mr-1" /> Aktív</Badge>
       : <Badge variant="secondary"><Clock className="h-3 w-3 mr-1" /> Inaktív</Badge>;
   };
 
@@ -342,7 +342,7 @@ export function SponsorDetailModal(props: {
           <div>Hiányzó azonosító</div>
         ) : loading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
           </div>
         ) : !sponsor ? (
           <div>Nincs találat</div>
@@ -450,11 +450,11 @@ export function SponsorDetailModal(props: {
                 {getCreditStatusBanner()}
 
                 <div className="grid gap-4 sm:grid-cols-3">
-                  <Card className="border-2 border-emerald-400">
+                  <Card className="border-2 border-blue-400">
                     <CardContent className="p-4 text-center">
-                      <Wallet className="h-8 w-8 mx-auto text-emerald-600 mb-2" />
+                      <Wallet className="h-8 w-8 mx-auto text-blue-600 mb-2" />
                       <p className="text-sm text-muted-foreground">Elérhető Kredit</p>
-                      <p className="text-3xl font-bold text-emerald-600">{formatCurrency(credits?.available_credits || 0)}</p>
+                      <p className="text-3xl font-bold text-blue-600">{formatCurrency(credits?.available_credits || 0)}</p>
                     </CardContent>
                   </Card>
                   <Card>
@@ -581,7 +581,7 @@ export function SponsorDetailModal(props: {
                       <div key={tx.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                         <div className="flex items-center gap-3">
                           {tx.transaction_type === 'purchase' ? (
-                            <TrendingUp className="h-5 w-5 text-emerald-600" />
+                            <TrendingUp className="h-5 w-5 text-blue-600" />
                           ) : (
                             <TrendingDown className="h-5 w-5 text-red-600" />
                           )}

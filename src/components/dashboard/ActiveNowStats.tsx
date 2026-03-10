@@ -72,9 +72,9 @@ const ActiveNowStats = () => {
       icon: Users,
       value: stats.learningToday,
       label: language === 'hu' ? 'tag tanul ma' : 'members learning today',
-      color: 'text-emerald-600',
-      bgColor: 'bg-emerald-50',
-      borderColor: 'border-emerald-200'
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50',
+      borderColor: 'border-blue-200'
     },
     {
       icon: BookOpen,

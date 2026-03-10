@@ -219,7 +219,7 @@ const AIAssistantChat = ({ embedded = false }: AIAssistantChatProps) => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
       </div>
     );
   }
@@ -235,7 +235,7 @@ const AIAssistantChat = ({ embedded = false }: AIAssistantChatProps) => {
         <div className={embedded ? "flex items-center gap-2 mb-0" : "flex items-center gap-4 mb-5"}>
           <div className="relative flex-shrink-0">
             <WellBotAvatar size={embedded ? "sm" : "lg"} mood={avatarMood} />
-            <div className="absolute -bottom-1 -right-1 bg-emerald-500 rounded-full w-5 h-5 flex items-center justify-center shadow-md border-2 border-white">
+            <div className="absolute -bottom-1 -right-1 bg-blue-500 rounded-full w-5 h-5 flex items-center justify-center shadow-md border-2 border-white">
               <motion.div
                 className="w-2 h-2 bg-white rounded-full"
                 animate={{ opacity: [1, 0.5, 1] }}
@@ -301,11 +301,11 @@ const AIAssistantChat = ({ embedded = false }: AIAssistantChatProps) => {
             >
               <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${
                 message.sender === 'user' 
-                  ? 'bg-emerald-600 text-white rounded-br-md' 
+                  ? 'bg-blue-600 text-white rounded-br-md' 
                   : 'bg-gray-100 text-gray-900 rounded-bl-md'
               }`}>
                 <div className="whitespace-pre-wrap break-words">{message.content}</div>
-                <div className={`text-xs mt-1 ${message.sender === 'user' ? 'text-emerald-100' : 'text-gray-500'}`}>
+                <div className={`text-xs mt-1 ${message.sender === 'user' ? 'text-blue-100' : 'text-gray-500'}`}>
                   {format(message.timestamp, 'HH:mm')}
                 </div>
               </div>
@@ -376,7 +376,7 @@ const AIAssistantChat = ({ embedded = false }: AIAssistantChatProps) => {
           <Button
             onClick={() => handleSendMessage(inputValue)}
             disabled={!inputValue.trim() || isTyping}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-4"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4"
           >
             {isTyping ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
           </Button>

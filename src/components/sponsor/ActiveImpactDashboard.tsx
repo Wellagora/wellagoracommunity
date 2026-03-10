@@ -134,7 +134,7 @@ const ActiveImpactDashboard = () => {
     return (
       <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl">
         <CardContent className="flex items-center justify-center py-12">
-          <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+          <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
         </CardContent>
       </Card>
     );
@@ -149,16 +149,16 @@ const ActiveImpactDashboard = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0 }}
         >
-          <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 border-emerald-200">
+          <Card className="bg-gradient-to-br from-blue-50 to-blue-100/50 border-blue-200">
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-2">
-                <Users className="w-5 h-5 text-emerald-600" />
-                <Badge variant="outline" className="border-emerald-300 text-emerald-700 text-xs">
+                <Users className="w-5 h-5 text-blue-600" />
+                <Badge variant="outline" className="border-blue-300 text-blue-700 text-xs">
                   {language === 'hu' ? 'Aktív' : 'Active'}
                 </Badge>
               </div>
-              <p className="text-3xl font-bold text-emerald-700">{summary.totalSeatsSupported}</p>
-              <p className="text-sm text-emerald-600/80">
+              <p className="text-3xl font-bold text-blue-700">{summary.totalSeatsSupported}</p>
+              <p className="text-sm text-blue-600/80">
                 {language === 'hu' ? 'Támogatott hely' : 'Seats supported'}
               </p>
             </CardContent>
@@ -229,7 +229,7 @@ const ActiveImpactDashboard = () => {
       <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl">
         <CardHeader>
           <CardTitle className="text-lg text-black flex items-center gap-2">
-            <Target className="w-5 h-5 text-emerald-600" />
+            <Target className="w-5 h-5 text-blue-600" />
             {language === 'hu' ? 'Aktív Támogatások' : 'Active Sponsorships'}
           </CardTitle>
           <CardDescription>
@@ -270,7 +270,7 @@ const ActiveImpactDashboard = () => {
                     <Badge 
                       variant="outline" 
                       className={sponsorship.status === 'active' 
-                        ? 'border-emerald-200 bg-emerald-50 text-emerald-700' 
+                        ? 'border-blue-200 bg-blue-50 text-blue-700' 
                         : 'border-black/20 bg-black/5 text-black/60'
                       }
                     >
@@ -310,7 +310,7 @@ const ActiveImpactDashboard = () => {
                       <p className="text-xs text-black/50">
                         {language === 'hu' ? 'Összes költés' : 'Total spent'}
                       </p>
-                      <p className="font-semibold text-emerald-600">
+                      <p className="font-semibold text-blue-600">
                         {formatCredits(sponsorship.totalSpent)}
                       </p>
                     </div>

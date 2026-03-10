@@ -651,7 +651,7 @@ export default function ProjectAdminPage() {
                   <div className="flex items-end justify-between">
                     <span className="text-3xl font-bold">{stats?.activeMembers || 0}</span>
                     {(stats?.membersTrend || 0) > 0 ? (
-                      <span className="text-green-500 flex items-center text-sm">
+                      <span className="text-blue-500 flex items-center text-sm">
                         <TrendingUp className="h-4 w-4 mr-1" />
                         +{stats?.membersTrend}%
                       </span>

@@ -176,7 +176,7 @@ const CommunityActivityFeed = () => {
 
   const getActivityIcon = (type: ActivityItem['type']) => {
     switch (type) {
-      case 'join': return <UserPlus className="w-4 h-4 text-emerald-600" />;
+      case 'join': return <UserPlus className="w-4 h-4 text-blue-600" />;
       case 'complete': return <Trophy className="w-4 h-4 text-amber-600" />;
       case 'event': return <Calendar className="w-4 h-4 text-blue-600" />;
       case 'new_program': return <BookOpen className="w-4 h-4 text-violet-600" />;
@@ -186,7 +186,7 @@ const CommunityActivityFeed = () => {
 
   const getActivityColor = (type: ActivityItem['type']) => {
     switch (type) {
-      case 'join': return 'bg-emerald-50 border-emerald-200';
+      case 'join': return 'bg-blue-50 border-blue-200';
       case 'complete': return 'bg-amber-50 border-amber-200';
       case 'event': return 'bg-blue-50 border-blue-200';
       case 'new_program': return 'bg-violet-50 border-violet-200';
@@ -211,16 +211,16 @@ const CommunityActivityFeed = () => {
 
   return (
     <Card className="bg-card/80 backdrop-blur-xl border-[0.5px] border-border/50 rounded-2xl shadow-sm h-full overflow-hidden">
-      <CardHeader className="pb-3 bg-gradient-to-r from-primary/5 to-emerald-50/50">
+      <CardHeader className="pb-3 bg-gradient-to-r from-primary/5 to-blue-50/50">
         <CardTitle className="flex items-center justify-between text-base text-foreground">
           <div className="flex items-center gap-2">
             <div className="relative">
-              <Activity className="w-5 h-5 text-emerald-600" />
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+              <Activity className="w-5 h-5 text-blue-600" />
+              <span className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
             </div>
             {language === 'hu' ? 'Közösségi Aktivitás' : 'Community Activity'}
           </div>
-          <Badge variant="outline" className="text-xs border-emerald-200 text-emerald-700 bg-emerald-50">
+          <Badge variant="outline" className="text-xs border-blue-200 text-blue-700 bg-blue-50">
             <Sparkles className="w-3 h-3 mr-1" />
             {language === 'hu' ? 'Élő' : 'Live'}
           </Badge>
@@ -248,7 +248,7 @@ const CommunityActivityFeed = () => {
                     <div className="flex items-start gap-3">
                       <Avatar className="w-10 h-10 flex-shrink-0">
                         <AvatarImage src={activities[currentIndex].user_avatar || undefined} />
-                        <AvatarFallback className="bg-emerald-100 text-emerald-700 text-sm">
+                        <AvatarFallback className="bg-blue-100 text-blue-700 text-sm">
                           {activities[currentIndex].user_name[0]}
                         </AvatarFallback>
                       </Avatar>
@@ -285,7 +285,7 @@ const CommunityActivityFeed = () => {
                   onClick={() => setCurrentIndex(idx)}
                   className={`w-1.5 h-1.5 rounded-full transition-all ${
                     idx === currentIndex % 5 
-                      ? 'bg-emerald-500 w-3' 
+                      ? 'bg-blue-500 w-3' 
                       : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
                   }`}
                 />

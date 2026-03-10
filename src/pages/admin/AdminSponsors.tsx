@@ -222,7 +222,7 @@ const AdminSponsors = () => {
 
   const getStatusBadge = (isActive: boolean) => {
     if (isActive) {
-      return <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200"><CheckCircle2 className="h-3 w-3 mr-1" />Aktív</Badge>;
+      return <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"><CheckCircle2 className="h-3 w-3 mr-1" />Aktív</Badge>;
     }
     return <Badge className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"><AlertTriangle className="h-3 w-3 mr-1" />Inaktív</Badge>;
   };

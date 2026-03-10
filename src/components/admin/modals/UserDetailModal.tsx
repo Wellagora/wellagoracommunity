@@ -301,9 +301,9 @@ export function UserDetailModal(props: {
                 {/* Green Pass toggle */}
                 {(profile.user_role === 'expert' || profile.user_role === 'creator') && (
                   <div className="space-y-2 sm:col-span-2">
-                    <div className="flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50/50 p-3">
+                    <div className="flex items-center justify-between rounded-lg border border-blue-200 bg-blue-50/50 p-3">
                       <div className="min-w-0 flex items-center gap-2">
-                        <Award className="h-4 w-4 text-emerald-600" />
+                        <Award className="h-4 w-4 text-blue-600" />
                         <div>
                           <div className="font-medium">{t("admin.green_pass") || "Green Pass"}</div>
                           <div className="text-sm text-muted-foreground">
@@ -331,7 +331,7 @@ export function UserDetailModal(props: {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">{t("admin.green_pass") || "Green Pass"}</span>
-                      <Badge variant={profile.green_pass ? "default" : "secondary"} className={profile.green_pass ? "bg-emerald-600" : ""}>{profile.green_pass ? "✓" : "✗"}</Badge>
+                      <Badge variant={profile.green_pass ? "default" : "secondary"} className={profile.green_pass ? "bg-blue-600" : ""}>{profile.green_pass ? "✓" : "✗"}</Badge>
                     </div>
                   </>
                 )}
@@ -376,7 +376,7 @@ export function UserDetailModal(props: {
                   {t("admin.suspend") || "Felfüggesztés"}
                 </Button>
               ) : profile?.suspended_at ? (
-                <Button variant="outline" size="sm" className="border-emerald-500 text-emerald-700 hover:bg-emerald-50" onClick={handleRestore}>
+                <Button variant="outline" size="sm" className="border-blue-500 text-blue-700 hover:bg-blue-50" onClick={handleRestore}>
                   <RotateCcw className="h-4 w-4 mr-1" />
                   {t("admin.restore") || "Visszaállítás"}
                 </Button>

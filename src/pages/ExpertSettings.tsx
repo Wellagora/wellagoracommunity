@@ -110,13 +110,13 @@ const ExpertSettings = () => {
               </div>
               <div className="flex gap-2">
                 {isVerified && (
-                  <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
+                  <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">
                     <CheckCircle2 className="w-3 h-3 mr-1" />
                     {language === 'hu' ? 'Ellenőrzött' : 'Verified'}
                   </Badge>
                 )}
                 {hasGreenPass && (
-                  <Badge className="bg-green-500/10 text-green-600 border-green-500/20">
+                  <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">
                     {language === 'hu' ? 'Green Pass' : 'Green Pass'}
                   </Badge>
                 )}

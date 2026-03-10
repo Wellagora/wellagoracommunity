@@ -335,7 +335,7 @@ const ExpertAnalyticsDashboard = ({ userId }: ExpertAnalyticsDashboardProps) => 
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <Card className="bg-gradient-to-br from-emerald-50 to-white border-emerald-100">
+          <Card className="bg-gradient-to-br from-blue-50 to-white border-blue-100">
             <CardContent className="pt-6">
               <div className="flex items-start justify-between">
                 <div>
@@ -347,17 +347,17 @@ const ExpertAnalyticsDashboard = ({ userId }: ExpertAnalyticsDashboardProps) => 
                   </p>
                   <div className="flex items-center gap-1 mt-2">
                     {revenueTrend >= 0 ? (
-                      <TrendingUp className="w-4 h-4 text-emerald-600" />
+                      <TrendingUp className="w-4 h-4 text-blue-600" />
                     ) : (
                       <TrendingDown className="w-4 h-4 text-red-500" />
                     )}
-                    <span className={`text-sm font-medium ${revenueTrend >= 0 ? "text-emerald-600" : "text-red-500"}`}>
+                    <span className={`text-sm font-medium ${revenueTrend >= 0 ? "text-blue-600" : "text-red-500"}`}>
                       {revenueTrend >= 0 ? "+" : ""}{revenueTrend}%
                     </span>
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-emerald-100">
-                  <Wallet className="w-6 h-6 text-emerald-600" />
+                <div className="p-3 rounded-xl bg-blue-100">
+                  <Wallet className="w-6 h-6 text-blue-600" />
                 </div>
               </div>
             </CardContent>
@@ -563,7 +563,7 @@ const ExpertAnalyticsDashboard = ({ userId }: ExpertAnalyticsDashboardProps) => 
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-emerald-500/10">
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-blue-500/10">
                             <Calendar className="w-5 h-5 text-primary/30" />
                           </div>
                         )}

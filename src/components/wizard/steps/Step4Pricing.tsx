@@ -30,13 +30,13 @@ export const Step4Pricing = ({ formData, setFormData }: Step4PricingProps) => {
           onClick={() => setFormData({ ...formData, access_type: "free", price_huf: 0 })}
           className={`p-6 rounded-xl border-2 text-center transition-all ${
             formData.access_type === "free"
-              ? "border-green-500 bg-green-500/10"
+              ? "border-blue-500 bg-blue-500/10"
               : "border-border bg-card"
           }`}
         >
           <Gift
             className={`h-10 w-10 mx-auto mb-3 ${
-              formData.access_type === "free" ? "text-green-500" : "text-muted-foreground"
+              formData.access_type === "free" ? "text-blue-500" : "text-muted-foreground"
             }`}
           />
           <p className="font-semibold text-lg">{t("wizard.free")}</p>

@@ -282,7 +282,7 @@ const AffiliateLinksManager = ({ contentId }: AffiliateLinksManagerProps) => {
                     <div className="flex items-center gap-3 mt-1 text-xs text-black/50">
                       <span>{link.click_count} {language === 'hu' ? 'kattintás' : 'clicks'}</span>
                       {link.commission_rate > 0 && (
-                        <span className="text-emerald-600">{link.commission_rate}% jutalék</span>
+                        <span className="text-blue-600">{link.commission_rate}% jutalék</span>
                       )}
                     </div>
                   </div>

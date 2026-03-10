@@ -75,11 +75,11 @@ const SponsoredPriceBadge = ({
         </span>
         {/* Member Payment - Show "INGYENES / TÁMOGATOTT" instead of "0 Ft" */}
         {memberPayment > 0 ? (
-          <span className={`font-bold text-emerald-600 ${classes.price}`}>
+          <span className={`font-bold text-blue-600 ${classes.price}`}>
             {formatPrice(memberPayment)}
           </span>
         ) : (
-          <span className={`font-bold text-emerald-600 ${classes.price} bg-emerald-500/10 px-2 py-0.5 rounded-md`}>
+          <span className={`font-bold text-blue-600 ${classes.price} bg-blue-500/10 px-2 py-0.5 rounded-md`}>
             {language === 'hu' ? 'INGYENES / TÁMOGATOTT' : 'FREE / SPONSORED'}
           </span>
         )}
@@ -89,7 +89,7 @@ const SponsoredPriceBadge = ({
       {sponsorName && (
         <Badge 
           variant="outline" 
-          className={`border-emerald-200 bg-emerald-50 text-emerald-700 ${classes.badge}`}
+          className={`border-blue-200 bg-blue-50 text-blue-700 ${classes.badge}`}
         >
           <Heart className="w-3 h-3 mr-1 text-rose-500 fill-rose-500" />
           {language === 'hu' ? 'Támogató' : 'Supported by'}: {sponsorName}
@@ -123,14 +123,14 @@ const SponsoredPriceBadge = ({
               <Heart className="w-3 h-3 text-rose-500" />
               {language === 'hu' ? 'Támogatói hozzájárulás' : 'Sponsor contribution'}
             </span>
-            <span className="font-medium text-emerald-600">-{formatPrice(actualSponsorContribution)}</span>
+            <span className="font-medium text-blue-600">-{formatPrice(actualSponsorContribution)}</span>
           </div>
           <div className="border-t border-black/10 pt-2 flex items-center justify-between text-xs">
             <span className="text-black/80 font-semibold flex items-center gap-1">
               <CreditCard className="w-3 h-3" />
               {language === 'hu' ? 'Te fizeted' : 'You pay'}
             </span>
-            <span className="font-bold text-emerald-600">{formatPrice(memberPayment)}</span>
+            <span className="font-bold text-blue-600">{formatPrice(memberPayment)}</span>
           </div>
         </div>
       )}

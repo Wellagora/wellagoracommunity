@@ -219,7 +219,7 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
       return <Badge className="bg-slate-500/10 text-slate-600 border-slate-500/20">{t("expert_studio.status_completed") || "Completed"}</Badge>;
     }
     if (program.is_published) {
-      return <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">{t("expert_studio.status_published")}</Badge>;
+      return <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">{t("expert_studio.status_published")}</Badge>;
     }
     return <Badge variant="secondary">{t("expert_studio.status_draft")}</Badge>;
   };
@@ -515,7 +515,7 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-emerald-500/10">
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-blue-500/10">
                             <Leaf className="w-12 h-12 text-primary/30" />
                           </div>
                         )}
@@ -599,7 +599,7 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                             </div>
                             <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                               <div 
-                                className="h-full bg-emerald-500 rounded-full transition-all"
+                                className="h-full bg-blue-500 rounded-full transition-all"
                                 style={{ width: `${Math.min(percentage, 100)}%` }}
                               />
                             </div>
@@ -624,9 +624,9 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                             <p className="font-semibold text-sm">{program.vouchers_count || 0}</p>
                           </div>
                           <div className="p-2 bg-muted/50 rounded-lg">
-                            <Wallet className="w-4 h-4 mx-auto text-emerald-500 mb-1" />
+                            <Wallet className="w-4 h-4 mx-auto text-blue-500 mb-1" />
                             <p className="text-xs text-muted-foreground">{t("expert_studio.revenue_short")}</p>
-                            <p className="font-semibold text-sm text-emerald-600">
+                            <p className="font-semibold text-sm text-blue-600">
                               {formatPrice(program.revenue || 0, 'HUF')}
                             </p>
                           </div>
@@ -655,7 +655,7 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-emerald-500/10">
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-blue-500/10">
                         <Leaf className="w-6 h-6 text-primary/30" />
                       </div>
                     )}
@@ -688,7 +688,7 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                       {renderRating(program)}
                     </div>
                     <div className="text-center">
-                      <span className="font-medium text-emerald-600">
+                      <span className="font-medium text-blue-600">
                         {formatPrice(program.revenue || 0, 'HUF')}
                       </span>
                     </div>

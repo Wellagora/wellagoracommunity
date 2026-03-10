@@ -151,7 +151,7 @@ const MobileBottomNav = () => {
           const getGlowColor = () => {
             if (!active) return "";
             switch (effectiveRole) {
-              case 'member': return "text-emerald-600";
+              case 'member': return "text-blue-600";
               case 'expert': return "text-amber-500";
               case 'sponsor': return "text-blue-500";
               default: return "text-black";
@@ -200,7 +200,7 @@ const MobileBottomNav = () => {
                   <motion.div
                     layoutId="bottomNavIndicator"
                     className={`absolute bottom-1 w-1.5 h-1.5 rounded-full ${
-                      effectiveRole === 'member' ? 'bg-emerald-500' :
+                      effectiveRole === 'member' ? 'bg-blue-500' :
                       effectiveRole === 'expert' ? 'bg-amber-500' :
                       effectiveRole === 'sponsor' ? 'bg-blue-500' : 'bg-black'
                     }`}

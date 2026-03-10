@@ -149,7 +149,7 @@ export const PartnerOfferCard = memo(({
 
         {/* Discount Badge */}
         <div className="flex items-center gap-2 mb-3">
-          <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-200 hover:bg-emerald-500/20">
+          <Badge className="bg-blue-500/10 text-blue-600 border-blue-200 hover:bg-blue-500/20">
             {getDiscountIcon(offer.discountType)}
             <span className="ml-1 font-semibold">{offer.discountValue}</span>
           </Badge>
@@ -194,7 +194,7 @@ export const PartnerOfferCard = memo(({
           </Button>
         ) : isCouponActivated ? (
           <Button 
-            className="w-full bg-emerald-500 hover:bg-emerald-500 text-white cursor-default"
+            className="w-full bg-blue-500 hover:bg-blue-500 text-white cursor-default"
             disabled
           >
             <Check className="w-4 h-4 mr-2" />

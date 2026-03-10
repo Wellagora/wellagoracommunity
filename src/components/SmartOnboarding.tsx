@@ -53,7 +53,7 @@ const SmartOnboarding = ({ onComplete, userType = "citizen" }: SmartOnboardingPr
     { id: "energy", label: "Renewable Energy", icon: "⚡", color: "bg-yellow-100 text-yellow-800" },
     { id: "transport", label: "Green Transport", icon: "🚲", color: "bg-blue-100 text-blue-800" },
     { id: "waste", label: "Zero Waste", icon: "♻️", color: "bg-success/10 text-success" },
-    { id: "food", label: "Sustainable Food", icon: "🌿", color: "bg-emerald-100 text-emerald-800" },
+    { id: "food", label: "Sustainable Food", icon: "🌿", color: "bg-blue-100 text-blue-800" },
     { id: "community", label: "Community Action", icon: "👥", color: "bg-blue-100 text-blue-800" },
     { id: "water", label: "Water Conservation", icon: "💧", color: "bg-cyan-100 text-cyan-800" },
     { id: "biodiversity", label: "Wildlife Protection", icon: "🦋", color: "bg-pink-100 text-pink-800" },

@@ -394,7 +394,7 @@ const OrganizationDetailView = ({ organizationId, onBack }: OrganizationDetailVi
   const getTypeBadgeColor = (type: string) => {
     const colors = {
       business: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
-      government: 'bg-green-500/10 text-green-500 border-green-500/20',
+      government: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
       ngo: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
       citizen: 'bg-gray-500/10 text-gray-500 border-gray-500/20'
     };
@@ -403,12 +403,12 @@ const OrganizationDetailView = ({ organizationId, onBack }: OrganizationDetailVi
 
   const getStatusBadgeColor = (status: string) => {
     const colors = {
-      active: 'bg-green-500/10 text-green-500 border-green-500/20',
+      active: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
       pending: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
       cancelled: 'bg-red-500/10 text-red-500 border-red-500/20',
       expired: 'bg-gray-500/10 text-gray-500 border-gray-500/20',
       draft: 'bg-gray-500/10 text-gray-500 border-gray-500/20',
-      paid: 'bg-green-500/10 text-green-500 border-green-500/20',
+      paid: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
       overdue: 'bg-red-500/10 text-red-500 border-red-500/20'
     };
     return colors[status as keyof typeof colors] || colors.pending;
@@ -933,7 +933,7 @@ const OrganizationDetailView = ({ organizationId, onBack }: OrganizationDetailVi
                               <Badge 
                                 className={
                                   sponsorship.status === 'active' 
-                                    ? 'bg-green-500/10 text-green-500 border-green-500/20'
+                                    ? 'bg-blue-500/10 text-blue-500 border-blue-500/20'
                                     : sponsorship.status === 'cancelled'
                                     ? 'bg-red-500/10 text-red-500 border-red-500/20'
                                     : 'bg-gray-500/10 text-gray-500 border-gray-500/20'

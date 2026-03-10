@@ -240,7 +240,7 @@ const ExpertStudio = () => {
           {/* Stripe Connect Onboarding Section - hidden when VITE_STRIPE_ENABLED=false */}
           {isStripeEnabled() && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <Card className={`border-l-4 ${(profile as any)?.stripe_onboarding_complete ? 'border-l-emerald-500' : 'border-l-amber-500'}`}>
+            <Card className={`border-l-4 ${(profile as any)?.stripe_onboarding_complete ? 'border-l-blue-500' : 'border-l-amber-500'}`}>
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg flex items-center gap-2">
@@ -253,11 +253,11 @@ const ExpertStudio = () => {
                 {(profile as any)?.stripe_onboarding_complete ? (
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-full bg-emerald-500/20">
-                        <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                      <div className="p-2 rounded-full bg-blue-500/20">
+                        <CheckCircle2 className="w-5 h-5 text-blue-500" />
                       </div>
                       <div>
-                        <p className="font-medium text-emerald-600">
+                        <p className="font-medium text-blue-600">
                           {t('expert.stripe_active') || 'Stripe fiók aktív'}
                         </p>
                         <p className="text-sm text-muted-foreground">
@@ -342,11 +342,11 @@ const ExpertStudio = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Card 1: Bevétel áttekintés */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-                <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-emerald-500">
+                <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-blue-500">
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-lg">{t('expert_studio.cards.revenue.title') || 'Bevétel áttekintés'}</CardTitle>
-                      <Wallet className="w-5 h-5 text-emerald-500" />
+                      <Wallet className="w-5 h-5 text-blue-500" />
                     </div>
                     <CardDescription>{t('expert_studio.cards.revenue.subtitle') || 'Bevételeid (80%)'}</CardDescription>
                   </CardHeader>
@@ -356,7 +356,7 @@ const ExpertStudio = () => {
                     ) : (
                       <div className="space-y-4">
                         <div className="text-center py-4">
-                          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center">
+                          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-blue-500 flex items-center justify-center">
                             <Wallet className="w-8 h-8 text-white" />
                           </div>
                           <p className="text-4xl font-bold text-foreground mb-2">
@@ -424,7 +424,7 @@ const ExpertStudio = () => {
               <Card className="bg-white/80 backdrop-blur-md border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <DollarSign className="w-5 h-5 text-emerald-600" />
+                    <DollarSign className="w-5 h-5 text-blue-600" />
                     {t('expert_studio.recent_transactions') || 'Legutóbbi tranzakciók'}
                   </CardTitle>
                   <CardDescription>
@@ -435,11 +435,11 @@ const ExpertStudio = () => {
                   <div className="space-y-3">
                     {transactionsQuery.data.map((transaction: any) => (
                       <div key={transaction.id} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors">
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-500/10 to-green-500/10 flex items-center justify-center flex-shrink-0">
+                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500/10 to-blue-500/10 flex items-center justify-center flex-shrink-0">
                           {transaction.expert_contents?.image_url ? (
                             <img src={transaction.expert_contents.image_url} alt="" className="w-full h-full object-cover rounded-lg" />
                           ) : (
-                            <BookOpen className="w-5 h-5 text-emerald-600" />
+                            <BookOpen className="w-5 h-5 text-blue-600" />
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -454,7 +454,7 @@ const ExpertStudio = () => {
                           </p>
                         </div>
                         <div className="text-right flex-shrink-0">
-                          <p className="font-semibold text-emerald-600">
+                          <p className="font-semibold text-blue-600">
                             {formatPrice(transaction.creator_revenue, 'HUF')}
                           </p>
                           <p className="text-xs text-muted-foreground">

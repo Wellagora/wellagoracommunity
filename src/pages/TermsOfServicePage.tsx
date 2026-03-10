@@ -89,7 +89,7 @@ const TermsOfServicePage = () => {
           <Card className="mb-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <CreditCard className="w-5 h-5 text-emerald-500" />
+                <CreditCard className="w-5 h-5 text-blue-500" />
                 4. {t("terms.payments_title")}
               </CardTitle>
             </CardHeader>

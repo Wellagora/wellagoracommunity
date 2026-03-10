@@ -80,7 +80,7 @@ const EventRSVPCard = ({
 
         {/* RSVP status indicator */}
         {rsvpStatus === "going" && (
-          <div className="bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 px-4 py-3 rounded-lg flex items-center gap-2">
+          <div className="bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 px-4 py-3 rounded-lg flex items-center gap-2">
             <Check className="w-5 h-5" />
             <span className="font-medium">{t("events.youreGoing") || "You're going!"}</span>
           </div>

@@ -296,7 +296,7 @@ const AdminDashboardNew = () => {
         <div className="flex items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-              <Sparkles className="h-6 w-6 text-emerald-500" />
+              <Sparkles className="h-6 w-6 text-blue-500" />
               {t('admin.dashboard.title')}
             </h1>
             <p className="text-muted-foreground">
@@ -307,7 +307,7 @@ const AdminDashboardNew = () => {
         
         <div className="flex items-center gap-3">
           {selectedProjectId && (
-            <Badge variant="outline" className="text-sm border-emerald-500 text-emerald-700">
+            <Badge variant="outline" className="text-sm border-blue-500 text-blue-700">
               <FolderOpen className="h-3 w-3 mr-1" />
               {projects.find(p => p.id === selectedProjectId)?.name || 'Szűrt projekt'}
             </Badge>
@@ -391,7 +391,7 @@ const AdminDashboardNew = () => {
               className="justify-start gap-2 h-auto py-4"
               onClick={() => navigate(`${adminBasePath}/projects`)}
             >
-              <FolderOpen className="h-5 w-5 text-emerald-600" />
+              <FolderOpen className="h-5 w-5 text-blue-600" />
               <span>{t('admin.actions.manage_projects')}</span>
             </Button>
             <Button 

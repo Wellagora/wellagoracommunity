@@ -257,7 +257,7 @@ export function ExpertDetailModal(props: {
   const getStatusBadge = () => {
     switch (status) {
       case 'verified':
-        return <Badge className="bg-emerald-100 text-emerald-700"><CheckCircle2 className="h-3 w-3 mr-1" /> Hitelesített</Badge>;
+        return <Badge className="bg-blue-100 text-blue-700"><CheckCircle2 className="h-3 w-3 mr-1" /> Hitelesített</Badge>;
       case 'pending':
         return <Badge className="bg-amber-100 text-amber-700"><Clock className="h-3 w-3 mr-1" /> Függőben</Badge>;
       case 'rejected':
@@ -285,7 +285,7 @@ export function ExpertDetailModal(props: {
           <div>Hiányzó azonosító</div>
         ) : loading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
           </div>
         ) : !profile ? (
           <div>Nincs találat</div>
@@ -305,14 +305,14 @@ export function ExpertDetailModal(props: {
                 <div className="flex items-start gap-4">
                   <Avatar className="h-20 w-20">
                     <AvatarImage src={profile.avatar_url || undefined} />
-                    <AvatarFallback className="text-2xl bg-emerald-100 text-emerald-700">{initials}</AvatarFallback>
+                    <AvatarFallback className="text-2xl bg-blue-100 text-blue-700">{initials}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="text-xl font-semibold">{fullName}</h3>
                       {getStatusBadge()}
                       {profile.green_pass && (
-                        <Badge className="bg-emerald-500 text-white">
+                        <Badge className="bg-blue-500 text-white">
                           <Zap className="h-3 w-3 mr-1" /> AUTO-PUBLISH
                         </Badge>
                       )}
@@ -334,18 +334,18 @@ export function ExpertDetailModal(props: {
                 {/* Green Pass Toggle */}
                 <Card className={cn(
                   "border-2",
-                  profile.green_pass ? "border-emerald-400 bg-emerald-50/50" : "border-amber-400 bg-amber-50/50"
+                  profile.green_pass ? "border-blue-400 bg-blue-50/50" : "border-amber-400 bg-amber-50/50"
                 )}>
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className={cn(
                           "p-2 rounded-lg",
-                          profile.green_pass ? "bg-emerald-100" : "bg-amber-100"
+                          profile.green_pass ? "bg-blue-100" : "bg-amber-100"
                         )}>
                           <Zap className={cn(
                             "h-5 w-5",
-                            profile.green_pass ? "text-emerald-600" : "text-amber-600"
+                            profile.green_pass ? "text-blue-600" : "text-amber-600"
                           )} />
                         </div>
                         <div>
@@ -453,8 +453,8 @@ export function ExpertDetailModal(props: {
                   <Card>
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-emerald-100">
-                          <TrendingUp className="h-5 w-5 text-emerald-600" />
+                        <div className="p-2 rounded-lg bg-blue-100">
+                          <TrendingUp className="h-5 w-5 text-blue-600" />
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground">Bruttó Bevétel</p>
@@ -476,15 +476,15 @@ export function ExpertDetailModal(props: {
                       </div>
                     </CardContent>
                   </Card>
-                  <Card className="border-2 border-emerald-400">
+                  <Card className="border-2 border-blue-400">
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-emerald-100">
-                          <DollarSign className="h-5 w-5 text-emerald-600" />
+                        <div className="p-2 rounded-lg bg-blue-100">
+                          <DollarSign className="h-5 w-5 text-blue-600" />
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground">Nettó Kereset</p>
-                          <p className="text-xl font-bold text-emerald-600">{formatCurrency(earnings.netEarnings)}</p>
+                          <p className="text-xl font-bold text-blue-600">{formatCurrency(earnings.netEarnings)}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -557,7 +557,7 @@ export function ExpertDetailModal(props: {
             <div className="flex gap-2">
               <Button
                 variant="outline"
-                className="border-emerald-500 text-emerald-600 hover:bg-emerald-50"
+                className="border-blue-500 text-blue-600 hover:bg-blue-50"
                 onClick={() => setVerification("verified")}
                 disabled={!profile || saving || loading || status === 'verified'}
               >

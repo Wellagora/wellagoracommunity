@@ -23,7 +23,7 @@ const PurchaseSuccessPage = () => {
         particleCount: 120,
         spread: 80,
         origin: { y: 0.5 },
-        colors: ["#00E5FF", "#0066FF", "#00CCFF", "#FFD700", "#10B981"],
+        colors: ["#00E5FF", "#0066FF", "#00CCFF", "#FFD700", "#3B82F6"],
       });
     }
   }, [showConfetti]);
@@ -42,8 +42,8 @@ const PurchaseSuccessPage = () => {
       <div className="flex-1 flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
           <CardContent className="pt-8 pb-8 flex flex-col items-center text-center">
-            <div className="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mb-6">
-              <CheckCircle2 className="w-10 h-10 text-emerald-500" />
+            <div className="w-20 h-20 rounded-full bg-blue-500/20 flex items-center justify-center mb-6">
+              <CheckCircle2 className="w-10 h-10 text-blue-500" />
             </div>
             <h1 className="text-2xl font-bold mb-2">
               {t("checkout.success_title") || "Sikeres jelentkezés!"}
@@ -70,7 +70,7 @@ const PurchaseSuccessPage = () => {
                     title="Másolás"
                   >
                     {copied ? (
-                      <Check className="w-4 h-4 text-emerald-500" />
+                      <Check className="w-4 h-4 text-blue-500" />
                     ) : (
                       <Copy className="w-4 h-4 text-muted-foreground" />
                     )}

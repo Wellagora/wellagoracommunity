@@ -24,12 +24,12 @@ export interface RoleColorSet {
 
 const ROLE_COLORS: Record<string, RoleColorSet> = {
   member: {
-    bg: 'bg-emerald-500',
-    bgLight: 'bg-emerald-50',
-    text: 'text-emerald-600',
-    border: 'border-emerald-200',
-    ring: 'ring-emerald-500',
-    hex: '#059669',
+    bg: 'bg-blue-500',
+    bgLight: 'bg-blue-50',
+    text: 'text-blue-600',
+    border: 'border-blue-200',
+    ring: 'ring-blue-500',
+    hex: '#2563EB',
     labelKey: 'roles.member',
   },
   expert: {

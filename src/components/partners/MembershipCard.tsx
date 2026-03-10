@@ -74,7 +74,7 @@ export const MembershipCard = memo(({ variant = "full", className = "" }: Member
   }
 
   return (
-    <Card className={`overflow-hidden bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 text-white shadow-2xl border-0 ${className}`}>
+    <Card className={`overflow-hidden bg-gradient-to-br from-blue-500 via-blue-500 to-blue-600 text-white shadow-2xl border-0 ${className}`}>
       <MembershipCardContent 
         displayName={displayName}
         memberNumber={memberNumber}

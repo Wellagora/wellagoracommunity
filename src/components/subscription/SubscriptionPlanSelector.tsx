@@ -161,7 +161,7 @@ export const SubscriptionPlanSelector: React.FC<SubscriptionPlanSelectorProps> =
           {t('subscription.yearly')}
         </span>
         {isYearly && (
-          <Badge variant="secondary" className="bg-green-500/20 text-green-400 border-green-500/30">
+          <Badge variant="secondary" className="bg-blue-500/20 text-blue-400 border-blue-500/30">
             {t('subscription.discount')}
           </Badge>
         )}
@@ -244,7 +244,7 @@ export const SubscriptionPlanSelector: React.FC<SubscriptionPlanSelectorProps> =
                     {t('subscription.credits_per_month').replace('{{count}}', String(plan.monthly_credits || 1))}
                   </p>
                   {isYearly && plan.yearly_bonus_credits && plan.yearly_bonus_credits > 0 && (
-                    <p className="text-sm text-green-400 font-medium">
+                    <p className="text-sm text-blue-400 font-medium">
                       {t('subscription.bonus_credits').replace('{{count}}', String(plan.yearly_bonus_credits))}
                     </p>
                   )}

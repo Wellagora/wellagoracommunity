@@ -79,8 +79,8 @@ export const LivePulseToast = ({ enabled = true, interval = 12000 }: LivePulseTo
           <div className="flex items-center gap-3 px-4 py-3 bg-white/95 backdrop-blur-xl rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] border border-black/[0.05]">
             {/* Pulsing Live indicator */}
             <div className="relative flex-shrink-0">
-              <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse" />
-              <Avatar className="h-10 w-10 ring-2 ring-emerald-500/30">
+              <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-blue-500 rounded-full animate-pulse" />
+              <Avatar className="h-10 w-10 ring-2 ring-blue-500/30">
                 <AvatarImage src={currentActivity.avatar} />
                 <AvatarFallback className="bg-primary/10 text-primary text-sm">
                   {currentActivity.name.split(' ').map(n => n[0]).join('')}
@@ -91,8 +91,8 @@ export const LivePulseToast = ({ enabled = true, interval = 12000 }: LivePulseTo
             {/* Content */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5 mb-0.5">
-                <Sparkles className="w-3 h-3 text-emerald-500" />
-                <span className="text-[10px] font-medium uppercase tracking-wider text-emerald-600">
+                <Sparkles className="w-3 h-3 text-blue-500" />
+                <span className="text-[10px] font-medium uppercase tracking-wider text-blue-600">
                   {language === 'hu' ? 'ÉLŐ' : language === 'de' ? 'LIVE' : 'LIVE'}
                 </span>
               </div>
@@ -102,7 +102,7 @@ export const LivePulseToast = ({ enabled = true, interval = 12000 }: LivePulseTo
             </div>
 
             {/* Check icon */}
-            <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+            <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0" />
           </div>
         </motion.div>
       )}

@@ -225,8 +225,8 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
       <DialogContent className="bg-white border-gray-200 max-w-md">
         {isComplete ? (
           <div className="flex flex-col items-center justify-center py-8">
-            <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center mb-4">
-              <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+            <div className="w-16 h-16 rounded-full bg-blue-500/20 flex items-center justify-center mb-4">
+              <CheckCircle2 className="w-8 h-8 text-blue-400" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-2">
               {t("purchase.complete")}
@@ -245,7 +245,7 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2 text-gray-900">
                 {isSponsored ? (
-                  <Gift className="w-5 h-5 text-emerald-600" />
+                  <Gift className="w-5 h-5 text-blue-600" />
                 ) : (
                   <ShoppingCart className="w-5 h-5 text-blue-600" />
                 )}
@@ -273,7 +273,7 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
                     </div>
                     
                     {/* Sponsored contribution */}
-                    <div className="flex items-center justify-between text-emerald-600">
+                    <div className="flex items-center justify-between text-blue-600">
                       <span className="flex items-center gap-1">
                         <Sparkles className="w-4 h-4" />
                         {content.sponsor_name} {language === 'hu' ? 'támogatása' : 'contribution'}

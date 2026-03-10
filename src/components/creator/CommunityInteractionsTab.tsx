@@ -173,14 +173,14 @@ const CommunityInteractionsTab = ({ onUnreadCountChange }: CommunityInteractions
         <Card
           className={`p-4 cursor-pointer transition-all ${
             activeSection === 'creations'
-              ? 'border-green-500 bg-green-500/10'
-              : 'border-border hover:border-green-500/50'
+              ? 'border-blue-500 bg-blue-500/10'
+              : 'border-border hover:border-blue-500/50'
           }`}
           onClick={() => setActiveSection('creations')}
         >
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
-              <Camera className="h-6 w-6 text-green-500" />
+            <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+              <Camera className="h-6 w-6 text-blue-500" />
             </div>
             <div>
               <p className="text-2xl font-bold">{creations.length}</p>
@@ -316,7 +316,7 @@ const QuestionCardWithAnswer = ({ question, onAnswered }: QuestionCardWithAnswer
 
         {/* Answer section */}
         {question.hasAnswer ? (
-          <div className="flex items-center gap-2 text-green-500">
+          <div className="flex items-center gap-2 text-blue-500">
             <CheckCircle className="h-4 w-4" />
             <span className="text-sm">{t('expert_studio.already_answered')}</span>
           </div>
@@ -388,7 +388,7 @@ const CreationsSection = ({ creations }: CreationsSectionProps) => {
   return (
     <div className="space-y-4">
       <h3 className="font-semibold text-lg flex items-center gap-2">
-        <Camera className="h-5 w-5 text-green-500" />
+        <Camera className="h-5 w-5 text-blue-500" />
         {t('expert_studio.creations_from_community')}
       </h3>
 
@@ -410,7 +410,7 @@ const CreationNotificationCard = ({ creation }: CreationNotificationCardProps) =
   const { t, language } = useLanguage();
 
   return (
-    <Card className="overflow-hidden hover:border-green-500/50 transition-all">
+    <Card className="overflow-hidden hover:border-blue-500/50 transition-all">
       {/* Image */}
       <div className="aspect-square overflow-hidden">
         <img
@@ -425,7 +425,7 @@ const CreationNotificationCard = ({ creation }: CreationNotificationCardProps) =
         <div className="flex items-center gap-2 mb-2">
           <Avatar className="h-6 w-6">
             <AvatarImage src={creation.user?.avatar_url || undefined} />
-            <AvatarFallback className="bg-green-500/20 text-green-500 text-xs">
+            <AvatarFallback className="bg-blue-500/20 text-blue-500 text-xs">
               {creation.user?.first_name?.[0]}
             </AvatarFallback>
           </Avatar>

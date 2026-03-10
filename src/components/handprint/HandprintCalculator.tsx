@@ -191,7 +191,7 @@ const HandprintCalculator = () => {
   const getRankColor = (rank: string) => {
     const colors: Record<string, string> = {
       'Kezdő': 'bg-gray-500',
-      'Fejlődő': 'bg-green-500',
+      'Fejlődő': 'bg-blue-500',
       'Tapasztalt': 'bg-blue-500',
       'Haladó': 'bg-purple-500',
       'Mester': 'bg-yellow-500'
@@ -243,12 +243,12 @@ const HandprintCalculator = () => {
         <CardContent className="space-y-6">
           {/* Main Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg">
-              <div className="flex items-center gap-2 text-green-600 dark:text-green-400 mb-2">
+            <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
+              <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 mb-2">
                 <Leaf className="w-5 h-5" />
                 <span className="text-sm font-medium">{t('handprint.co2_saved')}</span>
               </div>
-              <div className="text-3xl font-bold text-green-700 dark:text-green-300">
+              <div className="text-3xl font-bold text-blue-700 dark:text-blue-300">
                 {handprint.totalCo2Saved} kg
               </div>
             </div>

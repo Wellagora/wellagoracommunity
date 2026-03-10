@@ -27,7 +27,7 @@ export const DemoSwitcher = ({ activeView, onViewChange }: DemoSwitcherProps) =>
 
   const getViewColor = (view: 'member' | 'expert' | 'sponsor' | null): string => {
     switch (view) {
-      case 'member': return 'text-emerald-600';
+      case 'member': return 'text-blue-600';
       case 'expert': return 'text-blue-600';
       case 'sponsor': return 'text-amber-600';
       default: return 'text-purple-600';
@@ -52,9 +52,9 @@ export const DemoSwitcher = ({ activeView, onViewChange }: DemoSwitcherProps) =>
         <DropdownMenuContent align="end" className="w-40">
           <DropdownMenuItem 
             onClick={() => onViewChange('member')}
-            className={activeView === 'member' ? 'bg-emerald-50 text-emerald-700' : ''}
+            className={activeView === 'member' ? 'bg-blue-50 text-blue-700' : ''}
           >
-            <span className="w-2 h-2 rounded-full bg-emerald-500 mr-2" />
+            <span className="w-2 h-2 rounded-full bg-blue-500 mr-2" />
             {t('roles.explorer')}
           </DropdownMenuItem>
           <DropdownMenuItem 

@@ -627,14 +627,14 @@ const ProgramsListingPage = () => {
                         <div className="grid grid-cols-4 gap-3 text-xs">
                           <div className="bg-gray-50 p-3 rounded border">
                             <div className="text-gray-600 mb-1">Published</div>
-                            <div className={`text-2xl font-bold ${programs.length === 0 ? 'text-red-600' : 'text-green-600'}`}>
+                            <div className={`text-2xl font-bold ${programs.length === 0 ? 'text-red-600' : 'text-blue-600'}`}>
                               {programs.length}
                             </div>
                             <div className="text-gray-500 mt-1">from DB</div>
                           </div>
                           <div className="bg-gray-50 p-3 rounded border">
                             <div className="text-gray-600 mb-1">Approved {language.toUpperCase()}</div>
-                            <div className={`text-2xl font-bold ${programs.filter(p => p.title).length === 0 ? 'text-red-600' : 'text-green-600'}`}>
+                            <div className={`text-2xl font-bold ${programs.filter(p => p.title).length === 0 ? 'text-red-600' : 'text-blue-600'}`}>
                               {programs.filter(p => p.title).length}
                             </div>
                             <div className="text-gray-500 mt-1">with localization</div>
@@ -646,7 +646,7 @@ const ProgramsListingPage = () => {
                           </div>
                           <div className="bg-gray-50 p-3 rounded border">
                             <div className="text-gray-600 mb-1">Sponsor Rules</div>
-                            <div className={`text-2xl font-bold ${supportMap && Object.keys(supportMap).length > 0 ? 'text-green-600' : 'text-gray-400'}`}>
+                            <div className={`text-2xl font-bold ${supportMap && Object.keys(supportMap).length > 0 ? 'text-blue-600' : 'text-gray-400'}`}>
                               {supportMap ? Object.values(supportMap).filter(s => s?.hasSupport).length : 0}
                             </div>
                             <div className="text-gray-500 mt-1">active</div>
@@ -664,23 +664,23 @@ const ProgramsListingPage = () => {
                       </div>
                       
                       {/* SOLUTION SECTION */}
-                      <div className="bg-green-50 border-2 border-green-300 rounded-lg p-4">
-                        <p className="font-bold text-green-900 mb-3 text-base">✅ SOLUTION: Run seed script</p>
+                      <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-4">
+                        <p className="font-bold text-blue-900 mb-3 text-base">✅ SOLUTION: Run seed script</p>
                         
-                        <div className="space-y-2 text-xs text-green-800">
+                        <div className="space-y-2 text-xs text-blue-800">
                           <p className="font-semibold">📝 EXACT STEPS:</p>
                           <ol className="list-decimal list-inside space-y-1 ml-2">
                             <li>Open <strong>Supabase Dashboard</strong> → SQL Editor</li>
-                            <li>Open file <code className="bg-green-100 px-2 py-1 rounded font-mono">supabase/seed_marketplace_dev.sql</code> in your code editor</li>
+                            <li>Open file <code className="bg-blue-100 px-2 py-1 rounded font-mono">supabase/seed_marketplace_dev.sql</code> in your code editor</li>
                             <li>Copy the <strong>ENTIRE FILE CONTENTS</strong> (not the file path!)</li>
                             <li>Paste into SQL Editor</li>
                             <li>Click <strong>"Run"</strong> or press Cmd+Enter</li>
-                            <li>Verify output: <code className="bg-green-100 px-2 py-1 rounded">"✅ MARKETPLACE SEED COMPLETE"</code></li>
+                            <li>Verify output: <code className="bg-blue-100 px-2 py-1 rounded">"✅ MARKETPLACE SEED COMPLETE"</code></li>
                             <li>Check verification queries show ✅ PASS for all checks</li>
                             <li>Hard refresh this page: <strong>Cmd+Shift+R</strong> (Mac) or <strong>Ctrl+Shift+R</strong> (Windows)</li>
                           </ol>
                           
-                          <div className="bg-green-100 border border-green-200 rounded p-2 mt-3">
+                          <div className="bg-blue-100 border border-blue-200 rounded p-2 mt-3">
                             <p className="font-semibold mb-1">📦 What seed creates:</p>
                             <ul className="list-disc list-inside space-y-0.5 ml-2">
                               <li>2 published programs (1 HUF, 1 EUR)</li>
@@ -690,7 +690,7 @@ const ProgramsListingPage = () => {
                             </ul>
                           </div>
                           
-                          <div className="bg-green-100 border border-green-200 rounded p-2 mt-2">
+                          <div className="bg-blue-100 border border-blue-200 rounded p-2 mt-2">
                             <p className="font-semibold mb-1">✅ Expected result after seed:</p>
                             <ul className="list-disc list-inside space-y-0.5 ml-2">
                               <li>2 programs visible in HU/DE/EN (language switching works)</li>
@@ -699,7 +699,7 @@ const ProgramsListingPage = () => {
                             </ul>
                           </div>
                           
-                          <p className="mt-3 text-xs text-green-700">
+                          <p className="mt-3 text-xs text-blue-700">
                             <strong>Note:</strong> Seed is idempotent (safe to re-run). Uses fixed UUIDs and ON CONFLICT.
                           </p>
                         </div>

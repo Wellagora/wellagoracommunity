@@ -362,7 +362,7 @@ const AdminPrograms = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'published':
-        return <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200"><CheckCircle2 className="h-3 w-3 mr-1" />Publikált</Badge>;
+        return <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"><CheckCircle2 className="h-3 w-3 mr-1" />Publikált</Badge>;
       case 'pending_review':
         return <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200"><Clock className="h-3 w-3 mr-1" />Függőben</Badge>;
       case 'rejected':
@@ -377,7 +377,7 @@ const AdminPrograms = () => {
   const getCategoryBadge = (category: string) => {
     const colors: Record<string, string> = {
       'Gasztronómia': 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-200',
-      'Természet': 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200',
+      'Természet': 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200',
       'Mezőgazdaság': 'bg-lime-100 text-lime-700 dark:bg-lime-900 dark:text-lime-200',
       'Jóllét': 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200',
       'Kézművesség': 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-200',
@@ -541,7 +541,7 @@ const AdminPrograms = () => {
                   <div className="flex items-center gap-2">
                     {/* Green Pass indicator */}
                     {program.expert_green_pass && (
-                      <Badge className="bg-emerald-100 text-emerald-700 border-emerald-300" title="Green Pass — auto-publish">
+                      <Badge className="bg-blue-100 text-blue-700 border-blue-300" title="Green Pass — auto-publish">
                         <Award className="h-3 w-3 mr-1" />
                         GP
                       </Badge>
@@ -560,7 +560,7 @@ const AdminPrograms = () => {
                       <>
                         <Button 
                           size="sm" 
-                          className="bg-emerald-600 hover:bg-emerald-700"
+                          className="bg-blue-600 hover:bg-blue-700"
                           onClick={(e) => approveProgram(program.id, e)}
                         >
                           <ThumbsUp className="h-4 w-4 mr-1" />

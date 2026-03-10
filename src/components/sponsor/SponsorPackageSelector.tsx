@@ -192,7 +192,7 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
       </div>
     );
   }
@@ -225,14 +225,14 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
               <Card 
                 className={`relative overflow-hidden transition-all duration-300 h-full flex flex-col ${
                   pkg.highlighted
-                    ? 'border-2 border-emerald-500 shadow-xl shadow-emerald-100' 
+                    ? 'border-2 border-blue-500 shadow-xl shadow-blue-100' 
                     : 'border border-black/10 hover:border-black/20 shadow-md'
                 }`}
               >
                 {/* Badge */}
                 {pkg.badge && (
                   <div className={`absolute top-3 right-3 px-3 py-1 text-xs font-bold rounded-full z-10 ${
-                    pkg.badge === 'NÉPSZERŰ' ? 'bg-emerald-500 text-white' : 'bg-purple-500 text-white'
+                    pkg.badge === 'NÉPSZERŰ' ? 'bg-blue-500 text-white' : 'bg-purple-500 text-white'
                   }`}>
                     ✦ {pkg.badge}
                   </div>
@@ -269,7 +269,7 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
                     
                     {/* Bonus credit row - only show if has bonus */}
                     {pkg.bonusCredits > 0 && (
-                      <div className="flex justify-between items-center text-emerald-600">
+                      <div className="flex justify-between items-center text-blue-600">
                         <span>🎁 Bónusz</span>
                         <span className="font-medium">+{pkg.bonusCredits.toLocaleString('hu-HU')}</span>
                       </div>
@@ -279,9 +279,9 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
                     <div className="flex justify-between items-center border-t border-gray-200 pt-2">
                       <span className="font-semibold">Összesen</span>
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-emerald-600">{pkg.totalCredits.toLocaleString('hu-HU')}</span>
+                        <span className="font-bold text-blue-600">{pkg.totalCredits.toLocaleString('hu-HU')}</span>
                         {pkg.bonusPercent > 0 && (
-                          <span className="text-xs bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">
+                          <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">
                             +{pkg.bonusPercent}%
                           </span>
                         )}
@@ -294,7 +294,7 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
                   <Button
                     className={`w-full ${
                       pkg.highlighted
-                        ? 'bg-emerald-600 hover:bg-emerald-700 text-white' 
+                        ? 'bg-blue-600 hover:bg-blue-700 text-white' 
                         : 'bg-black hover:bg-black/90 text-white'
                     }`}
                     size="lg"
@@ -325,13 +325,13 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
         <p className="text-center text-sm text-gray-500 mb-3">Minden csomaggal jár:</p>
         <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-700">
           <span className="flex items-center gap-1">
-            <span className="text-emerald-500">✓</span> Logód megjelenik a támogatott programokon
+            <span className="text-blue-500">✓</span> Logód megjelenik a támogatott programokon
           </span>
           <span className="flex items-center gap-1">
-            <span className="text-emerald-500">✓</span> Láthatóság a közösség számára
+            <span className="text-blue-500">✓</span> Láthatóság a közösség számára
           </span>
           <span className="flex items-center gap-1">
-            <span className="text-emerald-500">✓</span> Kredit átgörgetés megújításkor
+            <span className="text-blue-500">✓</span> Kredit átgörgetés megújításkor
           </span>
         </div>
       </div>

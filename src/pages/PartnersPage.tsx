@@ -96,15 +96,15 @@ const PartnersPage = () => {
 
       <main className="flex-1 pt-16">
         {/* Hero Section - Clean Glassmorphism */}
-        <section className="bg-gradient-to-br from-slate-100 via-white to-emerald-50/30 py-16 border-b border-slate-200/60">
+        <section className="bg-gradient-to-br from-slate-100 via-white to-blue-50/30 py-16 border-b border-slate-200/60">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-8">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
               >
-                <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-emerald-200/50 rounded-full px-4 py-2 mb-6 shadow-sm">
-                  <Gift className="w-4 h-4 text-emerald-600" />
+                <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-blue-200/50 rounded-full px-4 py-2 mb-6 shadow-sm">
+                  <Gift className="w-4 h-4 text-blue-600" />
                   <span className="text-sm text-slate-700 font-medium">
                     {t("partners.hero_badge") || "Exkluzív kedvezmények tagjainknak"}
                   </span>
@@ -135,7 +135,7 @@ const PartnersPage = () => {
                   placeholder={t("partners.search_placeholder") || "Partner keresése..."}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-slate-50 border-slate-200 focus:border-emerald-400 focus:ring-emerald-400/20"
+                  className="pl-10 bg-slate-50 border-slate-200 focus:border-blue-400 focus:ring-blue-400/20"
                 />
               </div>
               <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide">
@@ -147,7 +147,7 @@ const PartnersPage = () => {
                     onClick={() => setSelectedCategory(categoryKey)}
                     className={`flex-shrink-0 ${
                       selectedCategory === categoryKey 
-                        ? "bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/25" 
+                        ? "bg-blue-500 hover:bg-blue-600 text-white shadow-lg shadow-blue-500/25" 
                         : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300"
                     }`}
                   >
@@ -163,9 +163,9 @@ const PartnersPage = () => {
         <section className="py-12 bg-slate-50">
           <div className="container mx-auto px-4">
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-slate-900">
-              <Store className="w-6 h-6 text-emerald-600" />
+              <Store className="w-6 h-6 text-blue-600" />
               {t("partners.list_title") || "Partnereink"}
-              <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 border-emerald-200">
+              <Badge variant="secondary" className="bg-blue-100 text-blue-700 border-blue-200">
                 {filteredPartners.length}
               </Badge>
             </h2>
@@ -179,10 +179,10 @@ const PartnersPage = () => {
                   transition={{ delay: index * 0.05 }}
                 >
                   <Link to={`/partners/${partner.slug}`}>
-                    <Card className="h-full hover:shadow-xl transition-all duration-300 group bg-white/80 backdrop-blur-sm border-slate-200/60 hover:border-emerald-300/50 hover:-translate-y-1">
+                    <Card className="h-full hover:shadow-xl transition-all duration-300 group bg-white/80 backdrop-blur-sm border-slate-200/60 hover:border-blue-300/50 hover:-translate-y-1">
                       <CardContent className="p-6">
                         {/* Logo - Premium styling */}
-                        <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-white border border-slate-100 p-3 group-hover:scale-110 transition-transform shadow-sm group-hover:shadow-lg group-hover:shadow-emerald-500/10">
+                        <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-white border border-slate-100 p-3 group-hover:scale-110 transition-transform shadow-sm group-hover:shadow-lg group-hover:shadow-blue-500/10">
                           <img 
                             src={partner.logo} 
                             alt={partner.name} 
@@ -192,7 +192,7 @@ const PartnersPage = () => {
 
                         {/* Info */}
                         <div className="text-center">
-                          <h3 className="font-semibold text-lg mb-1 text-slate-900 group-hover:text-emerald-600 transition-colors">
+                          <h3 className="font-semibold text-lg mb-1 text-slate-900 group-hover:text-blue-600 transition-colors">
                             {partner.name}
                           </h3>
                           <Badge variant="outline" className="text-xs mb-3 bg-slate-50 border-slate-200 text-slate-600">
@@ -200,7 +200,7 @@ const PartnersPage = () => {
                           </Badge>
                           
                           {partner.offerCount > 0 ? (
-                            <div className="flex items-center justify-center gap-1 text-sm text-emerald-600 font-medium">
+                            <div className="flex items-center justify-center gap-1 text-sm text-blue-600 font-medium">
                               <Gift className="w-4 h-4" />
                               <span>
                                 {partner.offerCount} {t("partners.offer_label") || "ajánlat"}
@@ -224,10 +224,10 @@ const PartnersPage = () => {
         {/* Become a Partner CTA */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
-            <Card className="bg-gradient-to-br from-emerald-50/80 to-slate-50 border-emerald-200/50 shadow-lg">
+            <Card className="bg-gradient-to-br from-blue-50/80 to-slate-50 border-blue-200/50 shadow-lg">
               <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-emerald-100 flex items-center justify-center">
-                  <Leaf className="w-8 h-8 text-emerald-600" />
+                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-blue-100 flex items-center justify-center">
+                  <Leaf className="w-8 h-8 text-blue-600" />
                 </div>
                 <h2 className="text-2xl font-bold mb-2 text-slate-900">
                   {t("partners.cta_title") || "Legyél te is partnerünk!"}
@@ -238,7 +238,7 @@ const PartnersPage = () => {
                 <Link to="/contact">
                   <Button 
                     size="lg" 
-                    className="bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/30 transition-all"
+                    className="bg-blue-500 hover:bg-blue-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 transition-all"
                   >
                     {t("partners.cta_button") || "Kapcsolatfelvétel"}
                   </Button>

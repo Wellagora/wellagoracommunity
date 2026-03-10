@@ -20,7 +20,7 @@ const GracefulPlaceholder = ({
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/30 to-cyan-50/20 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-cyan-50/20 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -32,7 +32,7 @@ const GracefulPlaceholder = ({
             {/* Animated Icon */}
             <div className="relative inline-block mb-6">
               <motion.div 
-                className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/30 to-emerald-500/30 blur-xl scale-150"
+                className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/30 to-blue-500/30 blur-xl scale-150"
                 animate={{ 
                   scale: [1.5, 1.7, 1.5],
                   opacity: [0.5, 0.8, 0.5]
@@ -44,7 +44,7 @@ const GracefulPlaceholder = ({
                 }}
               />
               <motion.div 
-                className="relative w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-emerald-500/20 flex items-center justify-center border-2 border-white shadow-lg"
+                className="relative w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-blue-500/20 flex items-center justify-center border-2 border-white shadow-lg"
                 animate={{ rotate: [0, 5, -5, 0] }}
                 transition={{ 
                   duration: 4,

@@ -46,7 +46,7 @@ const CreditTank = ({
   const getTankColor = () => {
     if (isCritical) return 'from-red-500 to-red-600';
     if (isLow) return 'from-amber-500 to-amber-600';
-    return 'from-emerald-500 to-emerald-600';
+    return 'from-blue-500 to-blue-600';
   };
 
   return (
@@ -54,7 +54,7 @@ const CreditTank = ({
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between text-lg text-black">
           <div className="flex items-center gap-2">
-            <Wallet className="w-5 h-5 text-emerald-600" />
+            <Wallet className="w-5 h-5 text-blue-600" />
             {language === 'hu' ? 'Kredit Tank' : 'Credit Tank'}
           </div>
           <Badge variant="outline" className="border-black/10 text-black/60 text-xs">
@@ -125,14 +125,14 @@ const CreditTank = ({
               {usedCredits.toLocaleString()} Ft
             </p>
           </div>
-          <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-100">
+          <div className="p-3 rounded-xl bg-blue-50 border border-blue-100">
             <div className="flex items-center gap-2 mb-1">
-              <Zap className="w-4 h-4 text-emerald-600" />
-              <span className="text-xs text-emerald-700">
+              <Zap className="w-4 h-4 text-blue-600" />
+              <span className="text-xs text-blue-700">
                 {language === 'hu' ? 'Hatékonyság' : 'Efficiency'}
               </span>
             </div>
-            <p className="text-lg font-bold text-emerald-700">
+            <p className="text-lg font-bold text-blue-700">
               {Math.round(remainingPercent)}%
             </p>
           </div>

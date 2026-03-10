@@ -138,7 +138,7 @@ const MyCoursesPage = () => {
             </Card>
             <Card className="border-border/50">
               <CardContent className="p-4 text-center">
-                <p className="text-2xl font-bold text-emerald-600">
+                <p className="text-2xl font-bold text-blue-600">
                   {enrolledPrograms.filter(p => p.progress === 100).length}
                 </p>
                 <p className="text-xs text-muted-foreground">
@@ -220,7 +220,7 @@ const MyCoursesPage = () => {
                               </div>
                             )}
                             {isCompleted && (
-                              <div className="absolute inset-0 bg-emerald-500/90 flex items-center justify-center">
+                              <div className="absolute inset-0 bg-blue-500/90 flex items-center justify-center">
                                 <CheckCircle2 className="w-10 h-10 text-white" />
                               </div>
                             )}

@@ -69,7 +69,7 @@ const RevenueMixChart = () => {
         {
           name: language === 'hu' ? 'Tranzakciós Díjak (20%)' : 'Transaction Fees (20%)',
           value: transactionFees,
-          color: '#10b981', // emerald
+          color: '#3B82F6', // blue
           icon: Ticket
         },
         {
@@ -194,11 +194,11 @@ const RevenueMixChart = () => {
         </div>
 
         {/* 80/20 Rule Reminder */}
-        <div className="mt-6 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-emerald-500/5 border border-emerald-500/20">
+        <div className="mt-6 p-4 rounded-xl bg-gradient-to-r from-blue-500/10 to-blue-500/5 border border-blue-500/20">
           <div className="flex items-center gap-3">
-            <DollarSign className="w-5 h-5 text-emerald-400" />
+            <DollarSign className="w-5 h-5 text-blue-400" />
             <div>
-              <p className="text-sm font-medium text-emerald-400">
+              <p className="text-sm font-medium text-blue-400">
                 {language === 'hu' ? 'Bevétel Megosztás Szabály' : 'Revenue Split Rule'}
               </p>
               <p className="text-xs text-white/60">

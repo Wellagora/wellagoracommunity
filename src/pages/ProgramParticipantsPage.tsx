@@ -258,7 +258,7 @@ const ProgramParticipantsPage = () => {
     }
     if (p.redeemed_at) {
       return (
-        <Badge className="bg-emerald-500/10 text-emerald-700 border-emerald-500/20 gap-1">
+        <Badge className="bg-blue-500/10 text-blue-700 border-blue-500/20 gap-1">
           <CheckCircle2 className="w-3 h-3" />
           {t("participants.attended") || "Megjelent"}
         </Badge>
@@ -310,7 +310,7 @@ const ProgramParticipantsPage = () => {
             </Card>
             <Card>
               <CardContent className="p-4 text-center">
-                <UserCheck className="w-6 h-6 mx-auto mb-2 text-emerald-500" />
+                <UserCheck className="w-6 h-6 mx-auto mb-2 text-blue-500" />
                 <p className="text-2xl font-bold">{attendedCount}</p>
                 <p className="text-xs text-muted-foreground">{t("participants.attended") || "Megjelent"}</p>
               </CardContent>
@@ -472,7 +472,7 @@ const ProgramParticipantsPage = () => {
                             }
                             disabled={attendanceMutation.isPending}
                           >
-                            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                            <CheckCircle2 className="w-4 h-4 text-blue-600" />
                           </Button>
                           <Button
                             variant={participant.is_no_show ? "destructive" : "ghost"}

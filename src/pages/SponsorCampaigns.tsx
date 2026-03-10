@@ -198,7 +198,7 @@ const SponsorCampaigns = () => {
 
   const getStatusBadge = (status: Campaign['status']) => {
     const badges = {
-      active: { className: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20", key: "sponsor.active" },
+      active: { className: "bg-blue-500/10 text-blue-600 border-blue-500/20", key: "sponsor.active" },
       planned: { className: "bg-blue-500/10 text-blue-600 border-blue-500/20", key: "sponsor.planned" },
       completed: { className: "bg-slate-500/10 text-slate-600 border-slate-500/20", key: "sponsor.completed" },
       paused: { className: "bg-amber-500/10 text-amber-600 border-amber-500/20", key: "sponsor.paused" },
@@ -256,7 +256,7 @@ const SponsorCampaigns = () => {
           <Card className="bg-white/80 backdrop-blur-md border-white/40">
             <CardContent className="pt-6">
               <div className="text-center">
-                <p className="text-3xl font-bold text-emerald-600">{stats.activeCampaigns}</p>
+                <p className="text-3xl font-bold text-blue-600">{stats.activeCampaigns}</p>
                 <p className="text-sm text-muted-foreground">{t("sponsor.active")}</p>
               </div>
             </CardContent>
@@ -288,7 +288,7 @@ const SponsorCampaigns = () => {
               <TabsTrigger value="all" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 {language === 'hu' ? 'Mind' : language === 'de' ? 'Alle' : 'All'} ({stats.totalCampaigns})
               </TabsTrigger>
-              <TabsTrigger value="active" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white">
+              <TabsTrigger value="active" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
                 {language === 'hu' ? 'Aktív' : language === 'de' ? 'Aktiv' : 'Active'} ({stats.activeCampaigns})
               </TabsTrigger>
               <TabsTrigger value="planned" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">

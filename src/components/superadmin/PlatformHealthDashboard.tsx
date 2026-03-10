@@ -148,7 +148,7 @@ const PlatformHealthDashboard = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
       </div>
     );
   }
@@ -185,18 +185,18 @@ const PlatformHealthDashboard = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <Card className="bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 border-emerald-200">
+          <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-200">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <TrendingUp className="w-5 h-5 text-emerald-600" />
-                <Badge variant="outline" className="border-emerald-300 text-emerald-700 text-xs">
+                <TrendingUp className="w-5 h-5 text-blue-600" />
+                <Badge variant="outline" className="border-blue-300 text-blue-700 text-xs">
                   20%
                 </Badge>
               </div>
-              <p className="text-3xl font-bold text-emerald-700">
+              <p className="text-3xl font-bold text-blue-700">
                 {formatCurrency(metrics.totalTransactionCommissions)}
               </p>
-              <p className="text-sm text-emerald-600/80 mt-1">
+              <p className="text-sm text-blue-600/80 mt-1">
                 {language === 'hu' ? 'Tranzakciós Jutalék' : 'Transaction Commission'}
               </p>
             </CardContent>
@@ -288,7 +288,7 @@ const PlatformHealthDashboard = () => {
             {packages.map((pkg) => (
               <Card 
                 key={pkg.id} 
-                className={`border ${pkg.billing_period === 'annual' ? 'border-emerald-300 bg-emerald-50/50' : 'border-border'}`}
+                className={`border ${pkg.billing_period === 'annual' ? 'border-blue-300 bg-blue-50/50' : 'border-border'}`}
               >
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-3">
@@ -313,7 +313,7 @@ const PlatformHealthDashboard = () => {
                       <span className="text-muted-foreground">
                         {language === 'hu' ? 'Platform díj' : 'Platform fee'}
                       </span>
-                      <span className="font-medium text-emerald-600">
+                      <span className="font-medium text-blue-600">
                         {formatCurrency(pkg.platform_fee_huf)}
                       </span>
                     </div>
@@ -345,8 +345,8 @@ const PlatformHealthDashboard = () => {
       <Card className="border-dashed bg-muted/30">
         <CardContent className="p-6">
           <div className="flex items-start gap-4">
-            <div className="p-3 rounded-xl bg-emerald-100">
-              <Activity className="w-6 h-6 text-emerald-600" />
+            <div className="p-3 rounded-xl bg-blue-100">
+              <Activity className="w-6 h-6 text-blue-600" />
             </div>
             <div>
               <h4 className="font-semibold text-foreground mb-1">

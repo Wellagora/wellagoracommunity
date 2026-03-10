@@ -99,7 +99,7 @@ const LiveImpactFeed = () => {
 
   const getActivityIcon = (type: string) => {
     switch (type) {
-      case 'claim': return <UserPlus className="w-4 h-4 text-emerald-500" />;
+      case 'claim': return <UserPlus className="w-4 h-4 text-blue-500" />;
       case 'redeem': return <CheckCircle className="w-4 h-4 text-blue-500" />;
       case 'complete': return <Sparkles className="w-4 h-4 text-amber-500" />;
       default: return <Heart className="w-4 h-4 text-rose-500" />;
@@ -146,8 +146,8 @@ const LiveImpactFeed = () => {
         <CardTitle className="flex items-center gap-2 text-lg text-black">
           <Heart className="w-5 h-5 text-rose-500" />
           {language === 'hu' ? 'Élő Hatás Feed' : 'Live Impact Feed'}
-          <Badge variant="outline" className="ml-auto animate-pulse border-emerald-500/30 text-emerald-600 text-xs">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 mr-1.5 animate-pulse" />
+          <Badge variant="outline" className="ml-auto animate-pulse border-blue-500/30 text-blue-600 text-xs">
+            <span className="w-2 h-2 rounded-full bg-blue-500 mr-1.5 animate-pulse" />
             {language === 'hu' ? 'Élő' : 'Live'}
           </Badge>
         </CardTitle>
@@ -191,7 +191,7 @@ const LiveImpactFeed = () => {
                       {activity.content_title}
                     </p>
                     <div className="flex items-center gap-2 mt-1">
-                      <Badge variant="outline" className="text-xs border-emerald-500/20 text-emerald-600">
+                      <Badge variant="outline" className="text-xs border-blue-500/20 text-blue-600">
                         -{activity.credit_amount.toLocaleString()} Ft
                       </Badge>
                       <span className="text-xs text-black/40">

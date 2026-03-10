@@ -111,7 +111,7 @@ const PredictiveImpactDashboard: React.FC = () => {
       {
         label: 'Optimistic Scenario',
         data: [100, 250, 450, 680, 950, 1280, 1650, 2080, 2550, 3080, 3650, 4280],
-        borderColor: '#10B981',
+        borderColor: '#3B82F6',
         backgroundColor: 'rgba(16, 185, 129, 0.1)',
         fill: true,
         tension: 0.4

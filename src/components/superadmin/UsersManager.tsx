@@ -178,7 +178,7 @@ const UsersManager = () => {
       case "government":
         return <Badge className="bg-purple-500/10 text-purple-600 border-purple-500/20">Önkormányzat</Badge>;
       case "ngo":
-        return <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Civil</Badge>;
+        return <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">Civil</Badge>;
       default:
         return <Badge variant="outline">{role}</Badge>;
     }
@@ -326,7 +326,7 @@ const UsersManager = () => {
         <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Új felhasználók (30 nap)</CardTitle>
-            <UserPlus className="h-4 w-4 text-green-500" />
+            <UserPlus className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.newUsers}</div>

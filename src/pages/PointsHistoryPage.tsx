@@ -174,7 +174,7 @@ const PointsHistoryPage = () => {
                     <div className="text-right">
                       <Badge 
                         variant="secondary" 
-                        className="text-lg font-bold text-green-600 bg-green-50 px-4 py-2"
+                        className="text-lg font-bold text-blue-600 bg-blue-50 px-4 py-2"
                       >
                         +{transaction.amount}
                       </Badge>

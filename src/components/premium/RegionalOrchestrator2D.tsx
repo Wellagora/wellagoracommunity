@@ -436,7 +436,7 @@ const RegionalOrchestrator2D = () => {
               {[
                 { type: 'municipality', label: 'Municipality', color: '#2563EB' },
                 { type: 'business', label: 'Business', color: '#FB923C' },
-                { type: 'ngo', label: 'NGO', color: '#10B981' },
+                { type: 'ngo', label: 'NGO', color: '#3B82F6' },
                 { type: 'citizen', label: 'Citizen', color: '#8B5CF6' }
               ].map(({ type, label, color }) => (
                 <div key={type} className="flex items-center space-x-2">

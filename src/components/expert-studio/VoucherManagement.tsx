@@ -44,7 +44,7 @@ const VoucherManagement = () => {
     switch (status) {
       case 'active':
         return (
-          <Badge className="bg-green-100 text-green-700 border-green-200 hover:bg-green-100">
+          <Badge className="bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100">
             {t('voucher.status_active') || 'Aktív'}
           </Badge>
         );
@@ -106,12 +106,12 @@ const VoucherManagement = () => {
             <p className="text-2xl font-bold text-black">{stats.total}</p>
           </div>
           
-          <div className="p-4 rounded-xl bg-green-50 border border-green-100">
+          <div className="p-4 rounded-xl bg-blue-50 border border-blue-100">
             <div className="flex items-center gap-2 mb-2">
-              <Clock className="w-4 h-4 text-green-600" />
-              <span className="text-xs text-green-700">{t('expert_studio.pending_redemption') || 'Beváltásra vár'}</span>
+              <Clock className="w-4 h-4 text-blue-600" />
+              <span className="text-xs text-blue-700">{t('expert_studio.pending_redemption') || 'Beváltásra vár'}</span>
             </div>
-            <p className="text-2xl font-bold text-green-700">{stats.active}</p>
+            <p className="text-2xl font-bold text-blue-700">{stats.active}</p>
           </div>
           
           <div className="p-4 rounded-xl bg-black/[0.02] border border-black/5">

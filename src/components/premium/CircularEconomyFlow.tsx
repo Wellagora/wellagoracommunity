@@ -198,7 +198,7 @@ const CircularEconomyFlow = () => {
     if (resource.includes('Waste') || resource.includes('Recyclables')) return '#EF4444';
     if (resource.includes('Energy') || resource.includes('Power')) return '#F59E0B';
     if (resource.includes('Materials') || resource.includes('Products')) return '#3B82F6';
-    if (resource.includes('Organic') || resource.includes('Compost')) return '#10B981';
+    if (resource.includes('Organic') || resource.includes('Compost')) return '#3B82F6';
     return '#6B7280';
   };
 

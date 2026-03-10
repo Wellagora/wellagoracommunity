@@ -163,7 +163,7 @@ const VideoPreview = ({ url }: { url: string }) => {
         </div>
       </div>
       {/* Success message */}
-      <p className="text-xs text-green-500 mt-1 flex items-center gap-1">
+      <p className="text-xs text-blue-500 mt-1 flex items-center gap-1">
         <CheckCircle className="h-3 w-3" />
         {t("wizard.video_link_recognized")}
       </p>

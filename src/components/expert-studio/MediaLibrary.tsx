@@ -64,7 +64,7 @@ const MediaLibrary = ({
         );
       case 'published':
         return (
-          <Badge className="bg-green-100 text-green-700 border-green-200 text-xs">
+          <Badge className="bg-blue-100 text-blue-700 border-blue-200 text-xs">
             Publikálva
           </Badge>
         );

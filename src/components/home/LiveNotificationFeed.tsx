@@ -102,7 +102,7 @@ export const LiveNotificationFeed = () => {
   // Get activity color
   const getActivityColor = (type: ActivityType) => {
     switch (type) {
-      case 'signup': return 'bg-emerald-100 text-emerald-600 ring-emerald-200';
+      case 'signup': return 'bg-blue-100 text-blue-600 ring-blue-200';
       case 'review': return 'bg-amber-100 text-amber-600 ring-amber-200';
       case 'expert_join': return 'bg-blue-100 text-blue-600 ring-blue-200';
       case 'program_published': return 'bg-sky-100 text-sky-600 ring-sky-200';

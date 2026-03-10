@@ -148,7 +148,7 @@ const SubscriptionsManager = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "active":
-        return <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Aktív</Badge>;
+        return <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">Aktív</Badge>;
       case "pending":
         return <Badge className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">Függőben</Badge>;
       case "expired":
@@ -312,7 +312,7 @@ const SubscriptionsManager = () => {
         <Card className="bg-card/30 backdrop-blur border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Aktív előfizetések</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-500" />
+            <CheckCircle className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.activeCount}</div>
@@ -427,7 +427,7 @@ const SubscriptionsManager = () => {
                   </TableCell>
                   <TableCell>
                     {sub.auto_renew ? (
-                      <CheckSquare className="h-4 w-4 text-green-500" />
+                      <CheckSquare className="h-4 w-4 text-blue-500" />
                     ) : (
                       <Square className="h-4 w-4 text-muted-foreground" />
                     )}

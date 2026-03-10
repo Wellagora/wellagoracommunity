@@ -368,7 +368,7 @@ const SponsorDashboardPage = () => {
         title={t('sponsor_hub.title')}
         subtitle={`${t('sponsor_hub.subtitle')} • ${orgName}`}
         icon={Building2}
-        iconColor="text-emerald-600"
+        iconColor="text-blue-600"
         backUrl="/"
       >
         <SponsorDashboardSkeleton />
@@ -388,7 +388,7 @@ const SponsorDashboardPage = () => {
       title={t('sponsor_hub.title')}
       subtitle={`${t('sponsor_hub.subtitle')} • ${orgName}`}
       icon={Building2}
-      iconColor="text-emerald-600"
+      iconColor="text-blue-600"
       backUrl="/"
     >
       <div className="space-y-4 sm:space-y-6">
@@ -396,7 +396,7 @@ const SponsorDashboardPage = () => {
         <Card className="bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 rounded-2xl shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg sm:text-xl text-black flex items-center gap-2">
-              <Wallet className="w-5 h-5 text-emerald-600" />
+              <Wallet className="w-5 h-5 text-blue-600" />
               {t('sponsor_hub.cards.balance.title')}
             </CardTitle>
           </CardHeader>
@@ -410,7 +410,7 @@ const SponsorDashboardPage = () => {
                 <div className="flex flex-col sm:flex-row gap-2 justify-center">
                   <Button
                     onClick={() => setShowBuyCreditsModal(true)}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     {t('sponsor_hub.buy_credits')}
@@ -428,9 +428,9 @@ const SponsorDashboardPage = () => {
             ) : (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="bg-emerald-50 rounded-xl p-4">
-                    <p className="text-sm text-emerald-700 mb-1">{t('sponsor_hub.cards.balance.available')}</p>
-                    <p className="text-2xl font-bold text-emerald-900">
+                  <div className="bg-blue-50 rounded-xl p-4">
+                    <p className="text-sm text-blue-700 mb-1">{t('sponsor_hub.cards.balance.available')}</p>
+                    <p className="text-2xl font-bold text-blue-900">
                       {creditTotals.currentBalance.toLocaleString()} {t('common.credit')}
                     </p>
                   </div>
@@ -457,7 +457,7 @@ const SponsorDashboardPage = () => {
                 <div className="mt-4 flex flex-col sm:flex-row gap-2">
                   <Button
                     onClick={() => setShowBuyCreditsModal(true)}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     {t('sponsor_hub.buy_credits')}
@@ -509,7 +509,7 @@ const SponsorDashboardPage = () => {
                       variant={item.status === 'active' ? 'default' : 'secondary'}
                       className={
                         item.status === 'active'
-                          ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-100'
+                          ? 'bg-blue-100 text-blue-800 hover:bg-blue-100'
                           : 'bg-black/10 text-black/70'
                       }
                     >
@@ -528,7 +528,7 @@ const SponsorDashboardPage = () => {
         <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto p-6 bg-white">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-black flex items-center gap-2">
-              <CreditCard className="w-5 h-5 text-emerald-600" />
+              <CreditCard className="w-5 h-5 text-blue-600" />
               {t('sponsor_hub.buy_credits')}
             </DialogTitle>
           </DialogHeader>

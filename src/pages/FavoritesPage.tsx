@@ -111,7 +111,7 @@ const FavoritesPage = () => {
     if (program.is_sponsored) {
       return (
         <div className="flex items-center gap-2">
-          <Badge className="bg-emerald-500 text-white text-xs font-semibold px-2 py-0.5 shadow-sm">
+          <Badge className="bg-blue-500 text-white text-xs font-semibold px-2 py-0.5 shadow-sm">
             <Gift className="w-3 h-3 mr-1" />
             {t("program.sponsored") || "TÁMOGATOTT"}
           </Badge>
@@ -239,7 +239,7 @@ const FavoritesPage = () => {
                   </div>
                 )}
                 <CardContent className="p-5">
-                  <h3 className="font-semibold text-lg text-slate-900 line-clamp-2 mb-2 group-hover:text-emerald-700 transition-colors">
+                  <h3 className="font-semibold text-lg text-slate-900 line-clamp-2 mb-2 group-hover:text-blue-700 transition-colors">
                     {program.title}
                   </h3>
                   <p className="text-sm text-slate-500 mb-3">
@@ -257,7 +257,7 @@ const FavoritesPage = () => {
                       asChild 
                       size="sm" 
                       variant="ghost"
-                      className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                      className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                     >
                       <Link to={`/programs/${program.id}`}>
                         {t("common.view") || "Megtekintés"}

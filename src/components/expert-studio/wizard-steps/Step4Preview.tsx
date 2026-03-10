@@ -137,7 +137,7 @@ const Step4Preview = ({ formData, onPublish, onSaveDraft, isPublishing, hasPayou
               </div>
               <div className="absolute top-4 right-4">
                 {formData.pricingMode === "sponsor_only" ? (
-                  <Badge className="bg-emerald-500 text-white">
+                  <Badge className="bg-blue-500 text-white">
                     {t("program_creator.sponsored")}
                   </Badge>
                 ) : (
@@ -232,7 +232,7 @@ const Step4Preview = ({ formData, onPublish, onSaveDraft, isPublishing, hasPayou
               <li key={item.key} className="flex items-center gap-3">
                 <div className={`
                   w-6 h-6 rounded-full flex items-center justify-center
-                  ${item.done ? "bg-emerald-100 text-emerald-600" : "bg-muted text-muted-foreground"}
+                  ${item.done ? "bg-blue-100 text-blue-600" : "bg-muted text-muted-foreground"}
                 `}>
                   {item.done ? <Check className="w-4 h-4" /> : <span className="text-xs">○</span>}
                 </div>
@@ -283,7 +283,7 @@ const Step4Preview = ({ formData, onPublish, onSaveDraft, isPublishing, hasPayou
         <Button
           onClick={onPublish}
           disabled={!canPublish || isPublishing}
-          className="flex-1 h-14 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 disabled:opacity-50"
+          className="flex-1 h-14 bg-gradient-to-r from-blue-500 to-blue-500 hover:from-blue-600 hover:to-blue-600 disabled:opacity-50"
           title={!canPublish ? (language === "hu" ? "Töltsd ki az összes mezőt" : "Complete all required fields") : ""}
         >
           {isPublishing ? (

@@ -44,7 +44,7 @@ export const KPICard = ({
               </div>
             )}
           </div>
-          <div className={cn("p-3 rounded-xl bg-primary/10", iconColor.includes("amber") && "bg-amber-500/10", iconColor.includes("cyan") && "bg-cyan-500/10", iconColor.includes("green") && "bg-green-500/10")}>
+          <div className={cn("p-3 rounded-xl bg-primary/10", iconColor.includes("amber") && "bg-amber-500/10", iconColor.includes("cyan") && "bg-cyan-500/10", iconColor.includes("green") && "bg-blue-500/10")}>
             <Icon className={cn("h-6 w-6", iconColor)} />
           </div>
         </div>

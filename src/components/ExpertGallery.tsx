@@ -114,8 +114,8 @@ const ExpertGallery = () => {
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-100 to-amber-50 flex items-center justify-center">
-              <span className="text-5xl font-bold text-emerald-600/40">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-amber-50 flex items-center justify-center">
+              <span className="text-5xl font-bold text-blue-600/40">
                 {(expert.first_name?.[0] || '')}{(expert.last_name?.[0] || '')}
               </span>
             </div>

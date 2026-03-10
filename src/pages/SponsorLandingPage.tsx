@@ -37,8 +37,8 @@ const SponsorLandingPage = () => {
       icon: Coins,
       title: t('sponsor_landing.step_2_title'),
       description: t('sponsor_landing.step_2_desc'),
-      color: 'text-emerald-500',
-      bgColor: 'bg-emerald-500/10',
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-500/10',
     },
     {
       icon: Heart,
@@ -163,13 +163,13 @@ const SponsorLandingPage = () => {
       </section>
 
       {/* Credit Explanation Section */}
-      <section className="py-16 lg:py-24 bg-emerald-500/5">
+      <section className="py-16 lg:py-24 bg-blue-500/5">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Card className="bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 border-emerald-500/20">
+          <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-500/20">
             <CardContent className="p-8 md:p-10">
               <div className="flex items-start gap-4 mb-6">
-                <div className="p-3 rounded-xl bg-emerald-500/20">
-                  <Lightbulb className="h-6 w-6 text-emerald-500" />
+                <div className="p-3 rounded-xl bg-blue-500/20">
+                  <Lightbulb className="h-6 w-6 text-blue-500" />
                 </div>
                 <h3 className="text-2xl font-bold text-foreground">
                   {t('sponsor_landing.credit_title')}
@@ -207,7 +207,7 @@ const SponsorLandingPage = () => {
                 </div>
               </div>
               
-              <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium">
+              <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">
                 ✓ {t('sponsor_landing.credit_note')}
               </p>
             </CardContent>

@@ -324,7 +324,7 @@ const AdminFinancials = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Wallet className="h-6 w-6 text-emerald-500" />
+            <Wallet className="h-6 w-6 text-blue-500" />
             Pénzügyi Központ
           </h1>
           <p className="text-muted-foreground">Platform bevételek, kifizetések és szponzor kreditek kezelése</p>
@@ -355,7 +355,7 @@ const AdminFinancials = () => {
                   <p className="text-2xl font-bold">{formatCurrency(kpi.totalRevenue)}</p>
                   <p className="text-xs text-muted-foreground mt-1">{kpi.transactionCount} tranzakció</p>
                 </div>
-                <div className="p-3 rounded-full bg-emerald-50"><TrendingUp className="h-6 w-6 text-emerald-600" /></div>
+                <div className="p-3 rounded-full bg-blue-50"><TrendingUp className="h-6 w-6 text-blue-600" /></div>
               </div>
             )}
           </CardContent>
@@ -367,7 +367,7 @@ const AdminFinancials = () => {
                 <div>
                   <p className="text-sm text-muted-foreground">Platform Jutalék ({platformFee}%)</p>
                   <p className="text-2xl font-bold">{formatCurrency(kpi.platformFee)}</p>
-                  <p className="text-xs text-emerald-600 flex items-center gap-1 mt-1"><ArrowUpRight className="h-3 w-3" />Bruttó bevétel része</p>
+                  <p className="text-xs text-blue-600 flex items-center gap-1 mt-1"><ArrowUpRight className="h-3 w-3" />Bruttó bevétel része</p>
                 </div>
                 <div className="p-3 rounded-full bg-purple-50"><Percent className="h-6 w-6 text-purple-600" /></div>
               </div>
@@ -414,7 +414,7 @@ const AdminFinancials = () => {
             <div className="space-y-4">
               <div className="space-y-1">
                 <div className="flex justify-between text-sm"><span>Tag fizetett (Stripe)</span><span className="font-mono font-medium">{formatCurrency(kpi.userPayments)} ({pctUser}%)</span></div>
-                <Progress value={pctUser} className="h-3 [&>div]:bg-emerald-500" />
+                <Progress value={pctUser} className="h-3 [&>div]:bg-blue-500" />
               </div>
               <div className="space-y-1">
                 <div className="flex justify-between text-sm"><span>Szponzor hozzájárulás</span><span className="font-mono font-medium">{formatCurrency(kpi.sponsorContributions)} ({pctSponsor}%)</span></div>
@@ -457,12 +457,12 @@ const AdminFinancials = () => {
                     <TableCell className="text-right">{e.programs_count}</TableCell>
                     <TableCell className="text-right">{e.bookings_count}</TableCell>
                     <TableCell className="text-right font-mono">{formatCurrency(e.total_revenue)}</TableCell>
-                    <TableCell className="text-right font-mono font-semibold text-emerald-600">{formatCurrency(e.expert_payout)}</TableCell>
+                    <TableCell className="text-right font-mono font-semibold text-blue-600">{formatCurrency(e.expert_payout)}</TableCell>
                     <TableCell>
                       {e.settlement_status === 'pending' ? (
                         <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200"><Clock className="h-3 w-3 mr-1" />Függő</Badge>
                       ) : (
-                        <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200"><CheckCircle2 className="h-3 w-3 mr-1" />Rendben</Badge>
+                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200"><CheckCircle2 className="h-3 w-3 mr-1" />Rendben</Badge>
                       )}
                     </TableCell>
                     <TableCell>
@@ -487,7 +487,7 @@ const AdminFinancials = () => {
               <CardDescription>Összesen {formatCurrency(sponsorSummary.total)} kredit a rendszerben</CardDescription>
             </div>
             <div className="flex items-center gap-3">
-              <div className="text-center"><p className="text-2xl font-bold text-emerald-600">{sponsorSummary.active}</p><p className="text-xs text-muted-foreground">Aktív</p></div>
+              <div className="text-center"><p className="text-2xl font-bold text-blue-600">{sponsorSummary.active}</p><p className="text-xs text-muted-foreground">Aktív</p></div>
               <div className="text-center"><p className="text-2xl font-bold text-amber-600">{sponsorSummary.low}</p><p className="text-xs text-muted-foreground">Alacsony</p></div>
               <div className="text-center"><p className="text-2xl font-bold text-red-600">{sponsorSummary.empty}</p><p className="text-xs text-muted-foreground">Kimerült</p></div>
             </div>
@@ -525,7 +525,7 @@ const AdminFinancials = () => {
                       </TableCell>
                       <TableCell className="text-right font-mono font-semibold">{formatCurrency(s.available_credits)}</TableCell>
                       <TableCell>
-                        {s.status === 'active' && <Badge className="bg-emerald-100 text-emerald-700">Aktív</Badge>}
+                        {s.status === 'active' && <Badge className="bg-blue-100 text-blue-700">Aktív</Badge>}
                         {s.status === 'low' && <Badge className="bg-amber-100 text-amber-700">Alacsony</Badge>}
                         {s.status === 'empty' && <Badge variant="destructive">Kimerült</Badge>}
                       </TableCell>
@@ -561,7 +561,7 @@ const AdminFinancials = () => {
               </div>
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Lemondás (7+ nap)</p>
-                <p className="text-xl font-bold text-emerald-600">{noShow.cancel_7plus} db</p>
+                <p className="text-xl font-bold text-blue-600">{noShow.cancel_7plus} db</p>
               </div>
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Lemondás (3-7 nap)</p>

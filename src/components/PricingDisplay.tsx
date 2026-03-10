@@ -17,7 +17,7 @@ export function PricingDisplay({
   
   if (pricing.isFree) {
     return (
-      <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold text-sm">
+      <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full font-bold text-sm">
         INGYENES
       </span>
     );
@@ -29,7 +29,7 @@ export function PricingDisplay({
         <div className="text-sm text-gray-500">
           Alapár: {formatPrice(pricing.basePrice)}
         </div>
-        <div className="text-sm text-emerald-600 font-medium flex items-center gap-1">
+        <div className="text-sm text-blue-600 font-medium flex items-center gap-1">
           <span>Támogatás: {formatPrice(pricing.sponsorAmount)}</span>
           {sponsorLogoUrl ? (
             <img src={sponsorLogoUrl} alt={sponsorName} className="h-4 inline-block" />
@@ -39,7 +39,7 @@ export function PricingDisplay({
         </div>
         <div className={`font-bold text-gray-900 ${variant === 'modal' ? 'text-2xl' : 'text-lg'}`}>
           Fizetendő: {pricing.isFullySponsored ? (
-            <span className="text-green-600">INGYENES</span>
+            <span className="text-blue-600">INGYENES</span>
           ) : (
             formatPrice(pricing.userPays)
           )}

@@ -40,8 +40,8 @@ const FoundingExpertPage = () => {
       icon: Users,
       titleKey: 'founding_expert.benefit_2_title',
       descKey: 'founding_expert.benefit_2_desc',
-      color: 'text-emerald-500',
-      bg: 'bg-emerald-50',
+      color: 'text-blue-500',
+      bg: 'bg-blue-50',
     },
     {
       icon: BookOpen,
@@ -81,7 +81,7 @@ const FoundingExpertPage = () => {
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
         <section className="relative pt-16 pb-12 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-50/60 via-transparent to-emerald-50/40" />
+          <div className="absolute inset-0 bg-gradient-to-br from-amber-50/60 via-transparent to-blue-50/40" />
           <div className="absolute top-20 right-10 w-72 h-72 bg-amber-200/20 rounded-full blur-3xl" />
 
           <div className="relative container mx-auto px-4 max-w-4xl text-center">
@@ -219,7 +219,7 @@ const FoundingExpertPage = () => {
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
             >
-              <Leaf className="w-12 h-12 mx-auto mb-4 text-emerald-500" />
+              <Leaf className="w-12 h-12 mx-auto mb-4 text-blue-500" />
               <h2 className="text-2xl md:text-3xl font-bold mb-3">
                 {t('founding_expert.final_cta_title')}
               </h2>

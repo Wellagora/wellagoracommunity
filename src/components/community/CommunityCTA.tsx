@@ -103,7 +103,7 @@ const CommunityCTA = () => {
       </Card>
 
       {/* Referral Card */}
-      <Card className="relative overflow-hidden bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
+      <Card className="relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 text-white">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMTM0aDEydjEySDM2em0yNCAwaDEydjEySDYwem0yNCAwaDEydjEySDg0em0yNCAwaDEydjEySDEwOHptMjQgMGgxMnYxMkgxMzJ6bTI0IDBoMTJ2MTJIMTU2em0yNCAwaDEydjEySDE4MHptMjQgMGgxMnYxMkgyMDR6bTI0IDBoMTJ2MTJIMjI4em0yNCAwaDEydjEySDI1MnptMjQgMGgxMnYxMkgyNzZ6bTI0IDBoMTJ2MTJIMzAwem0yNCAwaDEydjEySDMyNHptMjQgMGgxMnYxMkgzNDh6bTI0IDBoMTJ2MTJIMzcyem0yNCAwaDEydjEySDM5NnptMjQgMGgxMnYxMkg0MjB6bTI0IDBoMTJ2MTJINDQ0em0yNCAwaDEydjEySDQ2OHptMjQgMGgxMnYxMkg0OTJ6bTI0IDBoMTJ2MTJINTE2em0yNCAwaDEydjEySDU0MHptMjQgMGgxMnYxMkg1NjR6bTI0IDBoMTJ2MTJINTg4eiIvPjwvZz48L2c+PC9zdmc+')] opacity-10" />
         
         <div className="relative p-6">
@@ -119,7 +119,7 @@ const CommunityCTA = () => {
           </p>
 
           <Button
-            className="w-full bg-white text-emerald-600 hover:bg-white/90"
+            className="w-full bg-white text-blue-600 hover:bg-white/90"
             onClick={copyReferralLink}
           >
             {t('referral.copy_link')}

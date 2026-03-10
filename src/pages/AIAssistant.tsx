@@ -42,7 +42,7 @@ const AIAssistant = () => {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 mb-6">
           <div className="p-6 border-b border-gray-100">
             <div className="flex items-start space-x-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-500 rounded-full flex items-center justify-center">
                 <span className="text-white font-bold">AI</span>
               </div>
               <div className="flex-1">
@@ -52,9 +52,9 @@ const AIAssistant = () => {
                   based on your role, suggest relevant challenges, track your progress, and help you connect with others 
                   in your sustainability journey.
                 </p>
-                <div className="mt-4 p-4 bg-emerald-50 rounded-lg">
-                  <p className="text-emerald-800 font-medium mb-2">💡 Quick tip for today:</p>
-                  <p className="text-emerald-700 text-sm">
+                <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                  <p className="text-blue-800 font-medium mb-2">💡 Quick tip for today:</p>
+                  <p className="text-blue-700 text-sm">
                     Switching to LED bulbs can reduce your lighting energy consumption by up to 75%. 
                     A simple change that makes a big difference!
                   </p>
@@ -71,9 +71,9 @@ const AIAssistant = () => {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Ask me anything about sustainability..."
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               />
-              <button className="bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-lg transition-colors">
+              <button className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg transition-colors">
                 <Send className="w-5 h-5" />
               </button>
             </div>
@@ -89,11 +89,11 @@ const AIAssistant = () => {
               return (
                 <button
                   key={index}
-                  className="p-4 bg-white rounded-xl shadow-sm border border-gray-200 text-left hover:border-emerald-300 hover:bg-emerald-50 transition-all group"
+                  className="p-4 bg-white rounded-xl shadow-sm border border-gray-200 text-left hover:border-blue-300 hover:bg-blue-50 transition-all group"
                 >
                   <div className="flex items-start space-x-3">
-                    <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
-                      <Icon className="w-5 h-5 text-emerald-600" />
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                      <Icon className="w-5 h-5 text-blue-600" />
                     </div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-gray-900 mb-1">{suggestion.title}</h3>
@@ -129,7 +129,7 @@ const AIAssistant = () => {
               </p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
                 <span className="text-2xl">🤝</span>
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">Collaboration Opportunities</h3>

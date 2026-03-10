@@ -140,7 +140,7 @@ const UserRoleManager = () => {
     const colors: Record<string, string> = {
       super_admin: 'bg-gradient-to-r from-purple-500 to-pink-500 text-white',
       admin: 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white',
-      government: 'bg-gradient-to-r from-green-500 to-emerald-500 text-white',
+      government: 'bg-gradient-to-r from-blue-500 to-blue-500 text-white',
       business: 'bg-gradient-to-r from-orange-500 to-yellow-500 text-white',
       ngo: 'bg-gradient-to-r from-red-500 to-rose-500 text-white',
       citizen: 'bg-gradient-to-r from-gray-500 to-slate-500 text-white'

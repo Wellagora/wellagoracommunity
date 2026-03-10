@@ -58,7 +58,7 @@ const MobileStickyPurchaseBar = ({
         animate={{ y: 0, opacity: 1 }}
         className="md:hidden fixed bottom-16 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-black/[0.05] shadow-[0_-8px_30px_rgba(0,0,0,0.08)] px-4 py-3 safe-area-inset-bottom"
       >
-        <div className="flex items-center justify-center gap-2 text-emerald-600 font-medium">
+        <div className="flex items-center justify-center gap-2 text-blue-600 font-medium">
           <Check className="w-5 h-5" />
           <span>{t("program.voucher_claimed")}</span>
         </div>
@@ -121,7 +121,7 @@ const MobileStickyPurchaseBar = ({
               <div className="flex items-center gap-2">
                 <span className="text-xl font-bold text-foreground">
                   {finalPrice === 0 ? (
-                    <span className="text-emerald-600">INGYENES</span>
+                    <span className="text-blue-600">INGYENES</span>
                   ) : (
                     formatPrice(finalPrice)
                   )}
@@ -132,7 +132,7 @@ const MobileStickyPurchaseBar = ({
                   </span>
                 )}
               </div>
-              <span className="text-xs text-emerald-600 font-medium">
+              <span className="text-xs text-blue-600 font-medium">
                 {sponsorName} {t("purchase.sponsor_contribution_label")}
               </span>
             </>

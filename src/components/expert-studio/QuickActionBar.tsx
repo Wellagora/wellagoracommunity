@@ -75,9 +75,9 @@ const QuickActionBar = ({ onVideoCapture, onPhotoCapture, uploading = false }: Q
       <Link to="/szakertoi-studio/uj">
         <Button
           variant="outline"
-          className="w-full h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-emerald-500/10 to-green-500/10 border-emerald-500/20 hover:border-emerald-500/40 hover:bg-emerald-500/15 transition-all duration-300"
+          className="w-full h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-blue-500/10 to-blue-500/10 border-blue-500/20 hover:border-blue-500/40 hover:bg-blue-500/15 transition-all duration-300"
         >
-          <Plus className="w-6 h-6 text-emerald-500" />
+          <Plus className="w-6 h-6 text-blue-500" />
           <span className="text-sm font-medium text-foreground">
             {t("expert_studio.new_program")}
           </span>

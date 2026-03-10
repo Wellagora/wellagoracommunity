@@ -114,7 +114,7 @@ const CreatorPublicProfilePage = () => {
     switch (accessLevel) {
       case "free":
         return (
-          <Badge className="bg-emerald-500/20 text-emerald-600 border-emerald-500/30">
+          <Badge className="bg-blue-500/20 text-blue-600 border-blue-500/30">
             {t("program.free_access")}
           </Badge>
         );
@@ -211,7 +211,7 @@ const CreatorPublicProfilePage = () => {
       <div className="relative">
         {/* Blurred Background Cover */}
         <div 
-          className="absolute inset-0 h-80 bg-gradient-to-br from-primary/20 via-emerald-500/10 to-cyan-500/20"
+          className="absolute inset-0 h-80 bg-gradient-to-br from-primary/20 via-blue-500/10 to-cyan-500/20"
           style={{
             backgroundImage: creator.avatar_url 
               ? `url(${creator.avatar_url})`
@@ -244,7 +244,7 @@ const CreatorPublicProfilePage = () => {
             {/* 3D Circular Avatar */}
             <div className="relative mb-6">
               <div 
-                className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/40 to-emerald-500/40 blur-xl scale-110"
+                className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/40 to-blue-500/40 blur-xl scale-110"
               />
               <Avatar 
                 className="w-40 h-40 border-4 border-white shadow-[0_20px_60px_-10px_rgba(0,0,0,0.3)] relative"
@@ -253,7 +253,7 @@ const CreatorPublicProfilePage = () => {
                   src={creator.avatar_url || undefined} 
                   className="object-cover"
                 />
-                <AvatarFallback className="bg-gradient-to-br from-primary to-emerald-500 text-white text-4xl font-bold">
+                <AvatarFallback className="bg-gradient-to-br from-primary to-blue-500 text-white text-4xl font-bold">
                   {creator.first_name?.[0]}
                   {creator.last_name?.[0]}
                 </AvatarFallback>
@@ -398,7 +398,7 @@ const CreatorPublicProfilePage = () => {
                     <Link to={`/piacer/${program.id}`}>
                       <Card className="bg-white/80 backdrop-blur-md border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_60px_rgb(0,0,0,0.1)] hover:-translate-y-2 transition-all duration-300 overflow-hidden group">
                         <CardContent className="p-0">
-                          <div className="aspect-video bg-gradient-to-br from-primary/10 to-emerald-500/10 relative overflow-hidden">
+                          <div className="aspect-video bg-gradient-to-br from-primary/10 to-blue-500/10 relative overflow-hidden">
                             {program.thumbnail_url || program.image_url ? (
                               <img
                                 src={program.thumbnail_url || program.image_url}
@@ -447,11 +447,11 @@ const CreatorPublicProfilePage = () => {
             </div>
           ) : (
             /* Beautiful Placeholder Card */
-            <Card className="bg-gradient-to-br from-primary/5 via-emerald-500/5 to-cyan-500/5 border-dashed border-2 border-primary/20">
+            <Card className="bg-gradient-to-br from-primary/5 via-blue-500/5 to-cyan-500/5 border-dashed border-2 border-primary/20">
               <CardContent className="p-12 text-center">
                 <div className="relative inline-block mb-6">
                   <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl scale-150" />
-                  <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-emerald-500/20 flex items-center justify-center">
+                  <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-blue-500/20 flex items-center justify-center">
                     <Sparkles className="w-12 h-12 text-primary" />
                   </div>
                 </div>

@@ -367,7 +367,7 @@ const CommunityFeed = () => {
                 >
                   {t('community.create_post')}
                 </div>
-                <Button variant="ghost" size="icon" className="text-emerald-600">
+                <Button variant="ghost" size="icon" className="text-blue-600">
                   <ImagePlus className="w-5 h-5" />
                 </Button>
               </div>
@@ -515,7 +515,7 @@ const PostCard = ({
     question: { icon: HelpCircle, label: t('community.post_types.question'), className: 'bg-blue-100 text-blue-700' },
     success_story: { icon: Trophy, label: t('community.post_types.success_story'), className: 'bg-amber-100 text-amber-700' },
     tip: { icon: Lightbulb, label: t('community.post_types.tip'), className: 'bg-purple-100 text-purple-700' },
-    announcement: { icon: Sparkles, label: 'Announcement', className: 'bg-green-100 text-green-700' },
+    announcement: { icon: Sparkles, label: 'Announcement', className: 'bg-blue-100 text-blue-700' },
   };
 
   const badge = postTypeBadges[post.post_type];
@@ -620,7 +620,7 @@ const PostCard = ({
                 <div key={comment.id} className={cn(
                   'p-3 rounded-lg',
                   comment.author.user_role === 'expert'
-                    ? 'bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200'
+                    ? 'bg-gradient-to-r from-blue-50 to-blue-50 border border-blue-200'
                     : 'bg-muted/50'
                 )}>
                   <div className="flex items-center gap-2 mb-1.5">
@@ -628,7 +628,7 @@ const PostCard = ({
                       <AvatarImage src={comment.author.avatar_url || undefined} />
                       <AvatarFallback className={cn(
                         'text-xs',
-                        comment.author.user_role === 'expert' && 'bg-emerald-200 text-emerald-700'
+                        comment.author.user_role === 'expert' && 'bg-blue-200 text-blue-700'
                       )}>
                         {getInitials(comment.author.first_name, comment.author.last_name)}
                       </AvatarFallback>
@@ -639,7 +639,7 @@ const PostCard = ({
                     </span>
 
                     {comment.author.user_role === 'expert' && (
-                      <Badge className="bg-emerald-600 text-white text-xs gap-1">
+                      <Badge className="bg-blue-600 text-white text-xs gap-1">
                         <CheckCircle className="w-3 h-3" />
                         {t('community.expert_answer')}
                       </Badge>

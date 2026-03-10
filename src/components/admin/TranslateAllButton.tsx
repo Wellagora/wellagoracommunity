@@ -63,7 +63,7 @@ const TranslateAllButton = () => {
           )}
         </Button>
         {result && (
-          <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+          <div className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400">
             <CheckCircle className="w-4 h-4" />
             {t('admin.translation_success')
               .replace('{{contents}}', String(result.contentsTranslated))

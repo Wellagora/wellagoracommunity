@@ -100,8 +100,8 @@ const AdminSettings = () => {
 
             <div className="flex items-center justify-between py-2">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-green-100">
-                  <Leaf className="h-5 w-5 text-green-600" />
+                <div className="p-2 rounded-lg bg-blue-100">
+                  <Leaf className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
                   <p className="font-medium">Karbon Kéznyom</p>

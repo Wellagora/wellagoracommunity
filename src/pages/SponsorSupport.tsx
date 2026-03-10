@@ -182,7 +182,7 @@ const SponsorSupport = () => {
                           <div className="grid grid-cols-2 gap-4 text-sm">
                             <div>
                               <span className="text-muted-foreground">{t("sponsor_support.amount_per_participant")}:</span>
-                              <span className="ml-2 font-semibold text-green-600">
+                              <span className="ml-2 font-semibold text-blue-600">
                                 +{formatPrice(rule.amount_per_participant, rule.currency)}
                               </span>
                             </div>

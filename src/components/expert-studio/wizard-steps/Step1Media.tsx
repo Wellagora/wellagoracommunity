@@ -175,8 +175,8 @@ const Step1Media = ({ formData, setFormData }: Step1MediaProps) => {
           className={`
             border-2 border-dashed rounded-2xl p-12 text-center transition-all cursor-pointer
             ${isDragging 
-              ? "border-emerald-500 bg-emerald-500/10" 
-              : "border-emerald-300 hover:border-emerald-500 hover:bg-emerald-500/5"
+              ? "border-blue-500 bg-blue-500/10" 
+              : "border-blue-300 hover:border-blue-500 hover:bg-blue-500/5"
             }
           `}
           onDrop={handleDrop}
@@ -189,8 +189,8 @@ const Step1Media = ({ formData, setFormData }: Step1MediaProps) => {
             animate={{ opacity: 1, y: 0 }}
             className="space-y-4"
           >
-            <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-emerald-500/20 to-green-500/20 flex items-center justify-center">
-              <Upload className="w-10 h-10 text-emerald-500" />
+            <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-blue-500/20 to-blue-500/20 flex items-center justify-center">
+              <Upload className="w-10 h-10 text-blue-500" />
             </div>
             <div>
               <p className="text-lg font-medium text-foreground mb-2">

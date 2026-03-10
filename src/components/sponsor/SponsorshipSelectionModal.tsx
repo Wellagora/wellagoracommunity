@@ -39,7 +39,7 @@ interface Expert {
 }
 
 const CATEGORIES = [
-  { id: 'sustainability', label: { hu: 'Fenntarthatóság', en: 'Sustainability', de: 'Nachhaltigkeit' }, icon: Leaf, color: 'emerald' },
+  { id: 'sustainability', label: { hu: 'Fenntarthatóság', en: 'Sustainability', de: 'Nachhaltigkeit' }, icon: Leaf, color: 'blue' },
   { id: 'food', label: { hu: 'Élelmiszer & Kézműves', en: 'Food & Craft', de: 'Essen & Handwerk' }, icon: Utensils, color: 'amber' },
   { id: 'wellness', label: { hu: 'Egészség & Wellness', en: 'Health & Wellness', de: 'Gesundheit & Wellness' }, icon: Heart, color: 'rose' },
   { id: 'creative', label: { hu: 'Kreatív & Művészet', en: 'Creative & Art', de: 'Kreativ & Kunst' }, icon: Palette, color: 'violet' },
@@ -134,7 +134,7 @@ const SponsorshipSelectionModal = ({ open, onOpenChange, onSuccess }: Sponsorshi
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white/95 backdrop-blur-xl border-[0.5px] border-black/5">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl text-black">
-            <Sparkles className="w-5 h-5 text-emerald-600" />
+            <Sparkles className="w-5 h-5 text-blue-600" />
             {language === 'hu' ? 'Támogatási Típus Kiválasztása' : 'Select Sponsorship Type'}
           </DialogTitle>
           <DialogDescription className="text-black/60">
@@ -155,14 +155,14 @@ const SponsorshipSelectionModal = ({ open, onOpenChange, onSuccess }: Sponsorshi
               htmlFor="type-category"
               className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${
                 sponsorshipType === 'category' 
-                  ? 'border-emerald-500 bg-emerald-50' 
+                  ? 'border-blue-500 bg-blue-50' 
                   : 'border-black/10 hover:border-black/20'
               }`}
             >
               <RadioGroupItem value="category" id="type-category" className="sr-only" />
               <div className="flex flex-col items-center gap-2 text-center">
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                  sponsorshipType === 'category' ? 'bg-emerald-500 text-white' : 'bg-black/5 text-black/60'
+                  sponsorshipType === 'category' ? 'bg-blue-500 text-white' : 'bg-black/5 text-black/60'
                 }`}>
                   <Layers className="w-6 h-6" />
                 </div>
@@ -175,7 +175,7 @@ const SponsorshipSelectionModal = ({ open, onOpenChange, onSuccess }: Sponsorshi
                     : 'All programs in a topic'}
                 </span>
                 {sponsorshipType === 'category' && (
-                  <Check className="w-5 h-5 text-emerald-600 mt-1" />
+                  <Check className="w-5 h-5 text-blue-600 mt-1" />
                 )}
               </div>
             </Label>
@@ -184,14 +184,14 @@ const SponsorshipSelectionModal = ({ open, onOpenChange, onSuccess }: Sponsorshi
               htmlFor="type-expert"
               className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${
                 sponsorshipType === 'expert' 
-                  ? 'border-emerald-500 bg-emerald-50' 
+                  ? 'border-blue-500 bg-blue-50' 
                   : 'border-black/10 hover:border-black/20'
               }`}
             >
               <RadioGroupItem value="expert" id="type-expert" className="sr-only" />
               <div className="flex flex-col items-center gap-2 text-center">
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                  sponsorshipType === 'expert' ? 'bg-emerald-500 text-white' : 'bg-black/5 text-black/60'
+                  sponsorshipType === 'expert' ? 'bg-blue-500 text-white' : 'bg-black/5 text-black/60'
                 }`}>
                   <User className="w-6 h-6" />
                 </div>
@@ -204,7 +204,7 @@ const SponsorshipSelectionModal = ({ open, onOpenChange, onSuccess }: Sponsorshi
                     : 'All programs by one expert'}
                 </span>
                 {sponsorshipType === 'expert' && (
-                  <Check className="w-5 h-5 text-emerald-600 mt-1" />
+                  <Check className="w-5 h-5 text-blue-600 mt-1" />
                 )}
               </div>
             </Label>
@@ -241,7 +241,7 @@ const SponsorshipSelectionModal = ({ open, onOpenChange, onSuccess }: Sponsorshi
                             {category.label[language as keyof typeof category.label] || category.label.en}
                           </p>
                         </div>
-                        {isSelected && <Check className="w-5 h-5 text-emerald-600" />}
+                        {isSelected && <Check className="w-5 h-5 text-blue-600" />}
                       </CardContent>
                     </Card>
                   );
@@ -258,7 +258,7 @@ const SponsorshipSelectionModal = ({ open, onOpenChange, onSuccess }: Sponsorshi
               </Label>
               {isLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-emerald-600" />
+                  <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
                 </div>
               ) : (
                 <div className="grid gap-2 max-h-60 overflow-y-auto">
@@ -269,7 +269,7 @@ const SponsorshipSelectionModal = ({ open, onOpenChange, onSuccess }: Sponsorshi
                         key={expert.id}
                         className={`cursor-pointer transition-all ${
                           isSelected 
-                            ? 'border-2 border-emerald-500 bg-emerald-50' 
+                            ? 'border-2 border-blue-500 bg-blue-50' 
                             : 'border border-black/10 hover:border-black/20'
                         }`}
                         onClick={() => setSelectedExpert(expert.id)}
@@ -277,7 +277,7 @@ const SponsorshipSelectionModal = ({ open, onOpenChange, onSuccess }: Sponsorshi
                         <CardContent className="p-3 flex items-center gap-3">
                           <Avatar className="w-10 h-10">
                             <AvatarImage src={expert.avatar_url || undefined} />
-                            <AvatarFallback className="bg-emerald-100 text-emerald-700">
+                            <AvatarFallback className="bg-blue-100 text-blue-700">
                               {expert.first_name?.[0]}{expert.last_name?.[0]}
                             </AvatarFallback>
                           </Avatar>
@@ -291,7 +291,7 @@ const SponsorshipSelectionModal = ({ open, onOpenChange, onSuccess }: Sponsorshi
                               </p>
                             )}
                           </div>
-                          {isSelected && <Check className="w-5 h-5 text-emerald-600 flex-shrink-0" />}
+                          {isSelected && <Check className="w-5 h-5 text-blue-600 flex-shrink-0" />}
                         </CardContent>
                       </Card>
                     );
@@ -325,7 +325,7 @@ const SponsorshipSelectionModal = ({ open, onOpenChange, onSuccess }: Sponsorshi
             {language === 'hu' ? 'Mégse' : 'Cancel'}
           </Button>
           <Button 
-            className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
             onClick={handleSave}
             disabled={isSaving || (sponsorshipType === 'category' && !selectedCategory) || (sponsorshipType === 'expert' && !selectedExpert)}
           >

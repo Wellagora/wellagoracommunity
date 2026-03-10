@@ -146,7 +146,7 @@ const SponsorOnboardingPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
       <div className="container max-w-2xl mx-auto px-4 py-8">
         {/* Progress Header */}
         <div className="mb-8">
@@ -166,7 +166,7 @@ const SponsorOnboardingPage = () => {
           <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Building2 className="w-5 h-5 text-emerald-600" />
+                <Building2 className="w-5 h-5 text-blue-600" />
                 {t('sponsor.company_info') || 'Cég adatok'}
               </CardTitle>
               <CardDescription>
@@ -229,7 +229,7 @@ const SponsorOnboardingPage = () => {
           <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Camera className="w-5 h-5 text-emerald-600" />
+                <Camera className="w-5 h-5 text-blue-600" />
                 {t('sponsor.logo_upload') || 'Logó feltöltés'}
               </CardTitle>
               <CardDescription>
@@ -242,9 +242,9 @@ const SponsorOnboardingPage = () => {
                   onClick={() => fileInputRef.current?.click()}
                   className="relative cursor-pointer group"
                 >
-                  <Avatar className="w-40 h-40 border-4 border-dashed border-emerald-200 group-hover:border-emerald-400 transition-colors">
+                  <Avatar className="w-40 h-40 border-4 border-dashed border-blue-200 group-hover:border-blue-400 transition-colors">
                     <AvatarImage src={logoPreview || ''} alt="Company logo" />
-                    <AvatarFallback className="bg-emerald-50 text-emerald-600 text-4xl">
+                    <AvatarFallback className="bg-blue-50 text-blue-600 text-4xl">
                       {formData.companyName?.substring(0, 2).toUpperCase() || 'CO'}
                     </AvatarFallback>
                   </Avatar>
@@ -280,7 +280,7 @@ const SponsorOnboardingPage = () => {
           <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-emerald-600" />
+                <Check className="w-5 h-5 text-blue-600" />
                 {t('sponsor.about_company') || 'Bemutatkozás'}
               </CardTitle>
               <CardDescription>
@@ -302,14 +302,14 @@ const SponsorOnboardingPage = () => {
               </div>
 
               {/* Preview Card */}
-              <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100">
-                <p className="text-sm font-medium text-emerald-800 mb-3">
+              <div className="p-4 rounded-xl bg-gradient-to-br from-blue-50 to-blue-50 border border-blue-100">
+                <p className="text-sm font-medium text-blue-800 mb-3">
                   {t('sponsor.preview') || 'Előnézet'}
                 </p>
                 <div className="flex items-center gap-4">
                   <Avatar className="w-16 h-16 border-2 border-white shadow-md">
                     <AvatarImage src={logoPreview || ''} />
-                    <AvatarFallback className="bg-white text-emerald-600">
+                    <AvatarFallback className="bg-white text-blue-600">
                       {formData.companyName?.substring(0, 2).toUpperCase() || 'CO'}
                     </AvatarFallback>
                   </Avatar>
@@ -349,7 +349,7 @@ const SponsorOnboardingPage = () => {
           <Button
             onClick={nextStep}
             disabled={isLoading}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white min-w-[140px]"
+            className="bg-blue-600 hover:bg-blue-700 text-white min-w-[140px]"
           >
             {isLoading ? (
               <Loader2 className="w-4 h-4 animate-spin" />

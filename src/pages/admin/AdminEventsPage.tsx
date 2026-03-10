@@ -170,7 +170,7 @@ const AdminEventsPage = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'published':
-        return <Badge className="bg-green-500 text-white">Publikált</Badge>;
+        return <Badge className="bg-blue-500 text-white">Publikált</Badge>;
       case 'draft':
         return <Badge variant="secondary">Vázlat</Badge>;
       case 'cancelled':
@@ -364,7 +364,7 @@ const AdminEventsPage = () => {
           <h1 className="text-3xl font-bold text-gray-900">Események kezelése</h1>
           <p className="text-gray-500 mt-1">Közösségi események létrehozása és kezelése</p>
         </div>
-        <Button onClick={handleCreate} className="bg-green-600 hover:bg-green-700">
+        <Button onClick={handleCreate} className="bg-blue-600 hover:bg-blue-700">
           <Plus className="w-4 h-4 mr-2" />
           Új esemény
         </Button>

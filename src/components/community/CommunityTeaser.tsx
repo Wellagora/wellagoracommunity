@@ -49,7 +49,7 @@ const CommunityTeaser = () => {
       {/* Hero */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-emerald-100/50 rounded-full blur-[100px]" />
+          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-100/50 rounded-full blur-[100px]" />
           <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-amber-100/30 rounded-full blur-[80px]" />
         </div>
 
@@ -58,10 +58,10 @@ const CommunityTeaser = () => {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200/60 mb-8"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200/60 mb-8"
           >
-            <Users className="h-4 w-4 text-emerald-600" />
-            <span className="text-sm font-medium text-emerald-700">{t('community.teaser.badge')}</span>
+            <Users className="h-4 w-4 text-blue-600" />
+            <span className="text-sm font-medium text-blue-700">{t('community.teaser.badge')}</span>
           </motion.div>
 
           <motion.h1
@@ -92,8 +92,8 @@ const CommunityTeaser = () => {
             >
               {memberCount > 0 && (
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <Users className="h-4 w-4 text-emerald-600" />
+                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                    <Users className="h-4 w-4 text-blue-600" />
                   </div>
                   <span className="text-xl font-bold text-foreground">{memberCount}</span>
                   <span className="text-sm text-muted-foreground">{t('community.teaser.members')}</span>
@@ -110,8 +110,8 @@ const CommunityTeaser = () => {
               )}
               {programCount > 0 && (
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center">
-                    <Calendar className="h-4 w-4 text-teal-600" />
+                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                    <Calendar className="h-4 w-4 text-blue-600" />
                   </div>
                   <span className="text-xl font-bold text-foreground">{programCount}</span>
                   <span className="text-sm text-muted-foreground">{t('community.teaser.events_monthly')}</span>
@@ -130,7 +130,7 @@ const CommunityTeaser = () => {
             <Button
               size="lg"
               onClick={() => navigate('/auth?tab=register')}
-              className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 shadow-lg shadow-emerald-600/25"
+              className="rounded-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 shadow-lg shadow-blue-600/25"
             >
               {t('community.teaser.cta_register')}
               <ArrowRight className="h-4 w-4 ml-2" />
@@ -155,12 +155,12 @@ const CommunityTeaser = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="md:col-span-2 group relative rounded-2xl border border-white/40 bg-white/60 backdrop-blur-xl hover:bg-white/80 hover:border-emerald-200/60 hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
+            className="md:col-span-2 group relative rounded-2xl border border-white/40 bg-white/60 backdrop-blur-xl hover:bg-white/80 hover:border-blue-200/60 hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/0 to-amber-50/0 group-hover:from-emerald-50/40 group-hover:to-amber-50/20 transition-all duration-300 rounded-2xl" />
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-50/0 to-amber-50/0 group-hover:from-blue-50/40 group-hover:to-amber-50/20 transition-all duration-300 rounded-2xl" />
             <div className="relative flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
-                <Users className="h-6 w-6 text-emerald-600" />
+              <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+                <Users className="h-6 w-6 text-blue-600" />
               </div>
               <div>
                 <h3 className="font-semibold text-foreground text-lg mb-1">{t('community.teaser.exclusive_features')}</h3>
@@ -206,12 +206,12 @@ const CommunityTeaser = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="group relative rounded-2xl border border-white/40 bg-white/60 backdrop-blur-xl hover:bg-white/80 hover:border-teal-200/60 hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
+            className="group relative rounded-2xl border border-white/40 bg-white/60 backdrop-blur-xl hover:bg-white/80 hover:border-blue-200/60 hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-teal-50/0 to-emerald-50/0 group-hover:from-teal-50/40 group-hover:to-emerald-50/20 transition-all duration-300 rounded-2xl" />
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-50/0 to-blue-50/0 group-hover:from-blue-50/40 group-hover:to-blue-50/20 transition-all duration-300 rounded-2xl" />
             <div className="relative">
-              <div className="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center mb-3">
-                <Star className="h-6 w-6 text-teal-600" />
+              <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-3">
+                <Star className="h-6 w-6 text-blue-600" />
               </div>
               <h3 className="font-semibold text-foreground mb-1">{t('community.teaser.feature_ratings')}</h3>
             </div>
@@ -222,11 +222,11 @@ const CommunityTeaser = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.75 }}
-            className="group relative rounded-2xl border border-white/40 bg-gradient-to-br from-emerald-50/30 to-white/60 backdrop-blur-xl hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
+            className="group relative rounded-2xl border border-white/40 bg-gradient-to-br from-blue-50/30 to-white/60 backdrop-blur-xl hover:shadow-lg transition-all duration-300 p-6 overflow-hidden"
           >
             <div className="relative flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
-                <Leaf className="h-6 w-6 text-emerald-600" />
+              <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
+                <Leaf className="h-6 w-6 text-blue-600" />
               </div>
               <div>
                 <h3 className="font-semibold text-foreground mb-1">{t('community.teaser.value_sustainable')}</h3>

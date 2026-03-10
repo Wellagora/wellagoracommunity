@@ -57,7 +57,7 @@ export const HungaryMap = ({ projects, onProjectClick }: HungaryMapProps) => {
   });
 
   return (
-    <div className="relative w-full aspect-[16/10] bg-gradient-to-br from-emerald-50 to-blue-50 dark:from-emerald-950/20 dark:to-blue-950/20 rounded-xl border border-border overflow-hidden">
+    <div className="relative w-full aspect-[16/10] bg-gradient-to-br from-blue-50 to-blue-50 dark:from-blue-950/20 dark:to-blue-950/20 rounded-xl border border-border overflow-hidden">
       {/* SVG Hungary Map Outline */}
       <svg
         viewBox="0 0 100 100"
@@ -123,7 +123,7 @@ export const HungaryMap = ({ projects, onProjectClick }: HungaryMapProps) => {
         >
           {/* Pulse ring for active projects */}
           {project.is_active && (
-            <div className="absolute inset-0 w-8 h-8 -m-2 rounded-full bg-emerald-500/30 animate-ping" />
+            <div className="absolute inset-0 w-8 h-8 -m-2 rounded-full bg-blue-500/30 animate-ping" />
           )}
           
           {/* Main marker */}
@@ -131,7 +131,7 @@ export const HungaryMap = ({ projects, onProjectClick }: HungaryMapProps) => {
             className={cn(
               "relative w-8 h-8 rounded-full flex items-center justify-center shadow-lg transition-all duration-200",
               project.is_active 
-                ? "bg-emerald-500 hover:bg-emerald-600 hover:scale-125" 
+                ? "bg-blue-500 hover:bg-blue-600 hover:scale-125" 
                 : "bg-gray-400 hover:bg-gray-500 hover:scale-110",
               hoveredProject === project.id && "scale-125 ring-4 ring-primary/30"
             )}
@@ -154,7 +154,7 @@ export const HungaryMap = ({ projects, onProjectClick }: HungaryMapProps) => {
       <div className="absolute bottom-4 left-4 bg-background/80 backdrop-blur-sm rounded-lg p-3 border border-border">
         <div className="flex items-center gap-4 text-xs">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-emerald-500" />
+            <div className="w-3 h-3 rounded-full bg-blue-500" />
             <span>Aktív projekt</span>
           </div>
           <div className="flex items-center gap-2">

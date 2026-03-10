@@ -324,7 +324,7 @@ const ControlPanelPage = () => {
                               alt={sponsorship.content?.title || ''}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                             />
-                            <Badge className="absolute top-2 right-2 bg-green-600 text-white">
+                            <Badge className="absolute top-2 right-2 bg-blue-600 text-white">
                               <Gift className="h-3 w-3 mr-1" />
                               {t('control_panel.active')}
                             </Badge>

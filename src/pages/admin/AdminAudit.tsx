@@ -127,13 +127,13 @@ const AdminAudit = () => {
   const getActionIcon = (action: string) => {
     switch (action) {
       case 'create':
-        return <Plus className="h-4 w-4 text-emerald-600" />;
+        return <Plus className="h-4 w-4 text-blue-600" />;
       case 'update':
         return <Pencil className="h-4 w-4 text-blue-600" />;
       case 'delete':
         return <Trash2 className="h-4 w-4 text-red-600" />;
       case 'approve':
-        return <CheckCircle className="h-4 w-4 text-emerald-600" />;
+        return <CheckCircle className="h-4 w-4 text-blue-600" />;
       case 'reject':
         return <XCircle className="h-4 w-4 text-red-600" />;
       case 'verify':
@@ -147,10 +147,10 @@ const AdminAudit = () => {
 
   const getActionBadge = (action: string) => {
     const colors: Record<string, string> = {
-      create: 'bg-emerald-100 text-emerald-700',
+      create: 'bg-blue-100 text-blue-700',
       update: 'bg-blue-100 text-blue-700',
       delete: 'bg-red-100 text-red-700',
-      approve: 'bg-emerald-100 text-emerald-700',
+      approve: 'bg-blue-100 text-blue-700',
       reject: 'bg-red-100 text-red-700',
       verify: 'bg-purple-100 text-purple-700',
       suspend: 'bg-amber-100 text-amber-700',
@@ -213,7 +213,7 @@ const AdminAudit = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <FileText className="h-6 w-6 text-emerald-500" />
+            <FileText className="h-6 w-6 text-blue-500" />
             Audit Napló
           </h1>
           <p className="text-muted-foreground">
@@ -436,8 +436,8 @@ const AdminAudit = () => {
                                 {JSON.stringify(change.old, null, 2) || '-'}
                               </pre>
                             </div>
-                            <div className="bg-emerald-50 dark:bg-emerald-950 p-2 rounded">
-                              <span className="text-xs text-emerald-600">Új:</span>
+                            <div className="bg-blue-50 dark:bg-blue-950 p-2 rounded">
+                              <span className="text-xs text-blue-600">Új:</span>
                               <pre className="text-xs mt-1 overflow-auto">
                                 {JSON.stringify(change.new, null, 2) || '-'}
                               </pre>

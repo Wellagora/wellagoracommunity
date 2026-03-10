@@ -201,8 +201,8 @@ const FinancialOverview = ({ onNavigate }: FinancialOverviewProps) => {
         <Card className="bg-[#112240] border-border/50 hover:bg-[#112240]/80 transition-colors">
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-emerald-500/20">
-                <Users className="h-5 w-5 text-emerald-400" />
+              <div className="p-2 rounded-lg bg-blue-500/20">
+                <Users className="h-5 w-5 text-blue-400" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{stats?.verified_creators || 0}</p>
@@ -246,8 +246,8 @@ const FinancialOverview = ({ onNavigate }: FinancialOverviewProps) => {
         <Card className="bg-[#112240] border-border/50 hover:bg-[#112240]/80 transition-colors">
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-emerald-500/20">
-                <FileText className="h-5 w-5 text-emerald-400" />
+              <div className="p-2 rounded-lg bg-blue-500/20">
+                <FileText className="h-5 w-5 text-blue-400" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{stats?.published_content || 0}</p>
@@ -346,21 +346,21 @@ const FinancialOverview = ({ onNavigate }: FinancialOverviewProps) => {
               <p className="text-sm text-muted-foreground mt-1">20% of 10.000 Ft</p>
             </div>
             <p className="text-xs text-muted-foreground text-center mt-2">
-              Szakértő kapott: <span className="font-semibold text-emerald-500">8.000 Ft (80%)</span>
+              Szakértő kapott: <span className="font-semibold text-blue-500">8.000 Ft (80%)</span>
             </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border-emerald-500/20">
+        <Card className="bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/20">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-emerald-400">
+            <CardTitle className="flex items-center gap-2 text-blue-400">
               <TrendingUp className="h-5 w-5" />
               {t('admin.expert_payouts') || 'Szakértői Kifizetések'}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-center py-4">
-              <p className="text-4xl font-bold text-emerald-400">8.000 Ft</p>
+              <p className="text-4xl font-bold text-blue-400">8.000 Ft</p>
               <p className="text-sm text-muted-foreground mt-1">80% részesedés</p>
             </div>
             <div className="flex items-center justify-center gap-2 mt-2">
@@ -478,20 +478,20 @@ const FinancialOverview = ({ onNavigate }: FinancialOverviewProps) => {
         <Card className="bg-[#112240] border-border/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Leaf className="h-5 w-5 text-emerald-400" />
+              <Leaf className="h-5 w-5 text-blue-400" />
               Közösségi Hatás
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between p-3 rounded-lg bg-emerald-500/10">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-blue-500/10">
               <div className="flex items-center gap-3">
-                <Leaf className="h-6 w-6 text-emerald-400" />
+                <Leaf className="h-6 w-6 text-blue-400" />
                 <div>
                   <p className="font-semibold">Carbon Handprint</p>
                   <p className="text-sm text-muted-foreground">Összesített pozitív hatás</p>
                 </div>
               </div>
-              <p className="text-2xl font-bold text-emerald-400">
+              <p className="text-2xl font-bold text-blue-400">
                 {Math.round(stats?.total_carbon_handprint || 0)} kg
               </p>
             </div>

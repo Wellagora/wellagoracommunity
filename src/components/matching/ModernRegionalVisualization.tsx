@@ -50,10 +50,10 @@ const ModernRegionalVisualization = ({
         return {
           icon: Users,
           label: t('matching.type.citizen'),
-          color: 'from-emerald-500 to-teal-500',
-          bgGlow: 'shadow-emerald-500/20',
-          textColor: 'text-emerald-400',
-          borderColor: 'border-emerald-500/30'
+          color: 'from-blue-500 to-blue-500',
+          bgGlow: 'shadow-blue-500/20',
+          textColor: 'text-blue-400',
+          borderColor: 'border-blue-500/30'
         };
       case 'business':
         return {

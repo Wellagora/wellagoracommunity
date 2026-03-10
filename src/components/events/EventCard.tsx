@@ -105,7 +105,7 @@ const EventCard = ({
         
         {/* RSVP indicator - top right */}
         {rsvpStatus === "going" && (
-          <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg">
+          <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center shadow-lg">
             <Check className="w-4 h-4 text-white" />
           </div>
         )}

@@ -95,7 +95,7 @@ export default function SponsoredParticipations() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'captured':
-        return <Badge className="bg-emerald-500/20 text-emerald-600 border-emerald-500/30">Aktív</Badge>;
+        return <Badge className="bg-blue-500/20 text-blue-600 border-blue-500/30">Aktív</Badge>;
       case 'reserved':
         return <Badge className="bg-amber-500/20 text-amber-600 border-amber-500/30">Foglalt</Badge>;
       case 'released':
@@ -149,7 +149,7 @@ export default function SponsoredParticipations() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Gift className="w-5 h-5 text-emerald-600" />
+          <Gift className="w-5 h-5 text-blue-600" />
           {t('member.sponsored_access')}
           <Badge variant="secondary" className="ml-auto">{allocations.length}</Badge>
         </CardTitle>
@@ -167,7 +167,7 @@ export default function SponsoredParticipations() {
                 to={`/programs/${allocation.content_id}`}
                 className="block"
               >
-                <div className="flex items-start gap-3 p-3 rounded-lg border border-border hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all">
+                <div className="flex items-start gap-3 p-3 rounded-lg border border-border hover:border-blue-500/50 hover:bg-blue-500/5 transition-all">
                   {program?.thumbnail_url && (
                     <img
                       src={program.thumbnail_url}
@@ -183,7 +183,7 @@ export default function SponsoredParticipations() {
                       {getStatusBadge(allocation.status)}
                     </div>
                     <div className="mt-1 space-y-1">
-                      <p className="text-xs text-emerald-600 flex items-center gap-1">
+                      <p className="text-xs text-blue-600 flex items-center gap-1">
                         <Gift className="w-3 h-3" />
                         {t('member.sponsored_by')}: {sponsorName}
                       </p>

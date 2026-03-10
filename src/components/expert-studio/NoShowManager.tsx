@@ -120,10 +120,10 @@ const NoShowManager = () => {
 
           {/* Settlement Result */}
           {settlementResult && settlementResult.success && (
-            <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 space-y-3">
+            <div className="p-4 rounded-xl bg-blue-50 border border-blue-200 space-y-3">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                <span className="font-semibold text-emerald-800">
+                <CheckCircle2 className="w-5 h-5 text-blue-600" />
+                <span className="font-semibold text-blue-800">
                   {language === 'hu' ? 'Sikeresen feldolgozva!' : 'Successfully processed!'}
                 </span>
               </div>
@@ -133,7 +133,7 @@ const NoShowManager = () => {
                   <p className="text-xs text-black/50">
                     {language === 'hu' ? 'Az Ön kifizetése' : 'Your payout'}
                   </p>
-                  <p className="text-xl font-bold text-emerald-600">
+                  <p className="text-xl font-bold text-blue-600">
                     {(settlementResult.expert_payout || 0).toLocaleString()} Ft
                   </p>
                 </div>
@@ -149,7 +149,7 @@ const NoShowManager = () => {
                 </div>
               </div>
 
-              <div className="text-xs text-emerald-700 font-medium">
+              <div className="text-xs text-blue-700 font-medium">
                 {settlementResult.status}
               </div>
             </div>
@@ -162,7 +162,7 @@ const NoShowManager = () => {
             </p>
             <ul className="text-xs text-black/60 space-y-1">
               <li className="flex items-start gap-2">
-                <Banknote className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                <Banknote className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                 <span>
                   {language === 'hu' 
                     ? 'Szakértő: 100% kifizetés (80% az eredeti árból)'

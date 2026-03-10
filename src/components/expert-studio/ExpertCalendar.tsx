@@ -307,7 +307,7 @@ const ExpertCalendar = ({ userId }: ExpertCalendarProps) => {
                                     ? "bg-white"
                                     : e.type === "event"
                                     ? "bg-indigo-500"
-                                    : "bg-emerald-500"
+                                    : "bg-blue-500"
                                 }`}
                               />
                             ))}
@@ -329,7 +329,7 @@ const ExpertCalendar = ({ userId }: ExpertCalendarProps) => {
                     {t("calendar.event") || "Esemény"}
                   </div>
                   <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                    <div className="w-2 h-2 rounded-full bg-blue-500" />
                     {t("calendar.program") || "Program"}
                   </div>
                 </div>
