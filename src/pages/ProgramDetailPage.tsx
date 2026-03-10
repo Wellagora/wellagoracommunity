@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -54,6 +54,7 @@ const ProgramDetailPage = () => {
   const { t, language } = useLanguage();
   const { claimVoucher, hasVoucherForContent, getVoucherByContentId } = useVouchers();
   const { isFavorite, toggleFavorite } = useFavorites();
+  const queryClient = useQueryClient();
 
   // Check if user already has voucher for this program
   const existingVoucher = id ? getVoucherByContentId(id) : undefined;
@@ -354,9 +355,23 @@ const ProgramDetailPage = () => {
           <Button
             size="lg"
             className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg w-full"
-            onClick={() => {
+            onClick={async () => {
               if (isFreeAccess) {
+                // Grant access by creating content_access record
+                if (user && id) {
+                  try {
+                    await supabase.from('content_access').upsert({
+                      content_id: id,
+                      user_id: user.id,
+                      amount_paid: 0,
+                      access_type: 'purchase',
+                    }, { onConflict: 'content_id,user_id' });
+                  } catch (e) {
+                    // Non-blocking
+                  }
+                }
                 toast.success(t('program.joined_success') || 'Sikeresen csatlakoztál a programhoz!');
+                queryClient.invalidateQueries({ queryKey: ['contentAccess', id] });
               } else {
                 // Stripe integration coming — show friendly message for now
                 toast.info(t('program.payment_coming_soon') || 'A fizetési rendszer hamarosan elérhető!', {
@@ -398,32 +413,52 @@ const ProgramDetailPage = () => {
       case 'purchase_required':
         // Determine button text and icon based on pricing
         const isFree = !program.price_huf || program.price_huf === 0;
-        const isSponsored = (program as any).is_sponsored && ((program as any).fixed_sponsor_amount || sponsorship?.sponsor_contribution_huf);
+        const isSponsoredPurchase = (program as any).is_sponsored && ((program as any).fixed_sponsor_amount || sponsorship?.sponsor_contribution_huf);
         const sponsorAmount = (program as any).fixed_sponsor_amount || sponsorship?.sponsor_contribution_huf || 0;
         const discountedPrice = Math.max(0, (program.price_huf || 0) - sponsorAmount);
-        
+
         let buttonText = '';
         let ButtonIcon = ShoppingCart;
-        
+
         if (isFree) {
-          buttonText = 'Csatlakozás';
+          buttonText = t('program.join') || 'Csatlakozás';
           ButtonIcon = CheckCircle2;
-        } else if (isSponsored) {
+        } else if (isSponsoredPurchase) {
           buttonText = `Csatlakozom — ${discountedPrice.toLocaleString()} Ft`;
           ButtonIcon = Heart;
         } else {
           buttonText = `Megvásárlom — ${(program.price_huf || 0).toLocaleString()} Ft`;
           ButtonIcon = ShoppingCart;
         }
-        
+
         return (
-          <Button 
+          <Button
             size="lg"
             className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg w-full"
-            onClick={() => {
-              toast.info('Hamarosan elérhető!', {
-                description: 'A fizetési rendszer integrációja folyamatban van.'
-              });
+            onClick={async () => {
+              if (isFree) {
+                // Free program — grant access directly by creating content_access record
+                if (user && id) {
+                  try {
+                    await supabase.from('content_access').upsert({
+                      content_id: id,
+                      user_id: user.id,
+                      amount_paid: 0,
+                      access_type: 'purchase',
+                    }, { onConflict: 'content_id,user_id' });
+                  } catch (e) {
+                    // Non-blocking — access may already exist
+                  }
+                }
+                toast.success(t('program.joined_success') || 'Sikeresen csatlakoztál a programhoz!');
+                // Refresh access status so the page updates
+                queryClient.invalidateQueries({ queryKey: ['contentAccess', id] });
+              } else {
+                // Paid program — Stripe not yet integrated
+                toast.info(t('program.payment_coming_soon') || 'A fizetési rendszer hamarosan elérhető!', {
+                  description: t('program.stripe_coming') || 'Stripe integráció előkészítés alatt.'
+                });
+              }
             }}
           >
             <ButtonIcon className="w-5 h-5 mr-2" />

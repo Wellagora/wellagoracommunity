@@ -112,11 +112,28 @@ const Step4Preview = ({ formData, onPublish, onSaveDraft, isPublishing, hasPayou
           {formData.mediaUrl && (
             <div className="aspect-video relative">
               {formData.mediaType === "video" ? (
-                <video
-                  src={formData.mediaUrl}
-                  className="w-full h-full object-cover"
-                  muted
-                />
+                formData.thumbnailUrl ? (
+                  // Show thumbnail image with play icon overlay (like marketplace cards)
+                  <div className="relative w-full h-full">
+                    <img
+                      src={formData.thumbnailUrl}
+                      alt="Video thumbnail"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                      <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
+                        <div className="w-0 h-0 border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent border-l-[18px] border-l-primary ml-1" />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <video
+                    src={formData.mediaUrl}
+                    className="w-full h-full object-cover"
+                    muted
+                    preload="metadata"
+                  />
+                )
               ) : (
                 <img
                   src={formData.mediaUrl}

@@ -15,6 +15,60 @@ interface Step1MediaProps {
 const MAX_VIDEO_SIZE = 250 * 1024 * 1024; // 250MB
 const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
 
+/**
+ * Generate a thumbnail from a video file by capturing the first frame.
+ * Returns a Blob of the thumbnail image (JPEG).
+ */
+const generateVideoThumbnail = (videoFile: File): Promise<Blob | null> => {
+  return new Promise((resolve) => {
+    const video = document.createElement('video');
+    video.preload = 'metadata';
+    video.muted = true;
+    video.playsInline = true;
+
+    const objectUrl = URL.createObjectURL(videoFile);
+    video.src = objectUrl;
+
+    video.onloadeddata = () => {
+      // Seek to 1 second (or 0 if very short)
+      video.currentTime = Math.min(1, video.duration * 0.1);
+    };
+
+    video.onseeked = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob((blob) => {
+            URL.revokeObjectURL(objectUrl);
+            resolve(blob);
+          }, 'image/jpeg', 0.85);
+        } else {
+          URL.revokeObjectURL(objectUrl);
+          resolve(null);
+        }
+      } catch (e) {
+        URL.revokeObjectURL(objectUrl);
+        resolve(null);
+      }
+    };
+
+    video.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(null);
+    };
+
+    // Timeout fallback after 10 seconds
+    setTimeout(() => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(null);
+    }, 10000);
+  });
+};
+
 const Step1Media = ({ formData, setFormData }: Step1MediaProps) => {
   const { t } = useLanguage();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -22,7 +76,7 @@ const Step1Media = ({ formData, setFormData }: Step1MediaProps) => {
   const photoInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleFileSelect = useCallback((file: File) => {
+  const handleFileSelect = useCallback(async (file: File) => {
     const isVideo = file.type.startsWith("video/");
     const isImage = file.type.startsWith("image/");
     const maxSize = isVideo ? MAX_VIDEO_SIZE : MAX_IMAGE_SIZE;
@@ -45,7 +99,23 @@ const Step1Media = ({ formData, setFormData }: Step1MediaProps) => {
       mediaFile: file,
       mediaUrl: previewUrl,
       mediaType: isVideo ? "video" : "image",
+      thumbnailFile: null,
+      thumbnailUrl: "",
     }));
+
+    // Generate thumbnail for videos (runs async in background)
+    if (isVideo) {
+      toast.info(t("program_creator.generating_thumbnail") || "Borítókép generálása...", { duration: 3000 });
+      const thumbnail = await generateVideoThumbnail(file);
+      if (thumbnail) {
+        setFormData(prev => ({
+          ...prev,
+          thumbnailFile: thumbnail,
+          thumbnailUrl: URL.createObjectURL(thumbnail),
+        }));
+        toast.success(t("program_creator.thumbnail_generated") || "Borítókép létrehozva!");
+      }
+    }
 
     toast.success(isVideo ? t("program_creator.video_added") : t("program_creator.photo_added"));
   }, [setFormData, t]);
@@ -70,10 +140,10 @@ const Step1Media = ({ formData, setFormData }: Step1MediaProps) => {
     setIsDragging(false);
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      handleFileSelect(file);
+      await handleFileSelect(file);
     }
   };
 
@@ -164,6 +234,23 @@ const Step1Media = ({ formData, setFormData }: Step1MediaProps) => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Show auto-generated thumbnail for video uploads */}
+          {formData.mediaType === "video" && formData.thumbnailUrl && (
+            <div className="mt-4 p-4 bg-muted/50 rounded-lg">
+              <p className="text-sm font-medium text-foreground mb-2">
+                {t("program_creator.cover_image") || "Borítókép (automatikus)"}
+              </p>
+              <img
+                src={formData.thumbnailUrl}
+                alt="Video thumbnail"
+                className="w-48 aspect-video object-cover rounded-lg border border-border"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                {t("program_creator.cover_image_hint") || "Ez a kép jelenik meg a piactéren."}
+              </p>
+            </div>
+          )}
 
           <p className="text-sm text-muted-foreground text-center mt-4">
             {t("program_creator.change_media_hint")}

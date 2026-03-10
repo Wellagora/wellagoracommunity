@@ -20,6 +20,8 @@ export interface ProgramFormData {
   mediaFile: File | null;
   mediaUrl: string;
   mediaType: "video" | "image" | null;
+  thumbnailFile: Blob | null; // Auto-generated thumbnail for video uploads
+  thumbnailUrl: string; // URL of uploaded thumbnail
   mediaLibraryId?: string | null; // Track if from media library
 
   // Details
@@ -58,6 +60,8 @@ const initialFormData: ProgramFormData = {
   mediaFile: null,
   mediaUrl: "",
   mediaType: null,
+  thumbnailFile: null,
+  thumbnailUrl: "",
   mediaLibraryId: null,
   title_hu: "",
   category: "",
@@ -166,7 +170,9 @@ const ProgramCreatorWizard = () => {
       setFormData({
         mediaFile: null,
         mediaUrl: data.image_url || data.thumbnail_url || "",
-        mediaType: data.image_url?.includes("video") ? "video" : "image",
+        mediaType: data.content_type === "recorded" || data.image_url?.includes("video") ? "video" : "image",
+        thumbnailFile: null,
+        thumbnailUrl: data.thumbnail_url || "",
         title_hu: data.title || "",
         category: data.category || "",
         categories: data.category ? data.category.split(',').map((c: string) => c.trim()).filter(Boolean) : [],
@@ -258,6 +264,7 @@ const ProgramCreatorWizard = () => {
 
     try {
       let imageUrl = formData.mediaUrl;
+      let thumbnailUrl = formData.thumbnailUrl;
 
       // Upload media file ONLY if a new file is selected (not yet uploaded)
       if (formData.mediaFile) {
@@ -267,7 +274,8 @@ const ProgramCreatorWizard = () => {
         }
 
         const fileExt = formData.mediaFile.name.split(".").pop();
-        const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+        const ts = Date.now();
+        const fileName = `${user.id}/${ts}.${fileExt}`;
 
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from("expert-content")
@@ -283,9 +291,34 @@ const ProgramCreatorWizard = () => {
             .from("expert-content")
             .getPublicUrl(uploadData.path);
           imageUrl = urlData.publicUrl;
-          // Clear file immediately so it won't re-upload on next step change
-          setFormData(prev => ({ ...prev, mediaUrl: imageUrl, mediaFile: null }));
         }
+
+        // Upload video thumbnail separately (for cover image on cards)
+        if (formData.thumbnailFile) {
+          const thumbFileName = `${user.id}/${ts}_thumb.jpg`;
+          const { data: thumbData, error: thumbError } = await supabase.storage
+            .from("expert-content")
+            .upload(thumbFileName, formData.thumbnailFile, {
+              upsert: true,
+              contentType: 'image/jpeg',
+            });
+
+          if (!thumbError && thumbData) {
+            const { data: thumbUrlData } = supabase.storage
+              .from("expert-content")
+              .getPublicUrl(thumbData.path);
+            thumbnailUrl = thumbUrlData.publicUrl;
+          }
+        }
+
+        // Clear file immediately so it won't re-upload on next step change
+        setFormData(prev => ({
+          ...prev,
+          mediaUrl: imageUrl,
+          mediaFile: null,
+          thumbnailUrl: thumbnailUrl,
+          thumbnailFile: null,
+        }));
 
         if (isLargeFile) {
           toast.dismiss('upload-progress');
@@ -315,8 +348,10 @@ const ProgramCreatorWizard = () => {
           : formData.category || null,
         content_type: formData.contentType,
         content_url: contentUrl || null,
-        image_url: imageUrl || null,
-        thumbnail_url: imageUrl || null,
+        // For videos: image_url = thumbnail (for marketplace cards), thumbnail_url = thumbnail
+        // For images: image_url = the image itself
+        image_url: (formData.mediaType === 'video' && thumbnailUrl) ? thumbnailUrl : (imageUrl || null),
+        thumbnail_url: thumbnailUrl || imageUrl || null,
         price_huf: formData.pricingMode === "purchasable" ? formData.price_huf : 0,
         access_type: formData.pricingMode === "purchasable" ? "paid" : "sponsored",
         // access_level controls the RPC get_content_access_status — MUST be set correctly

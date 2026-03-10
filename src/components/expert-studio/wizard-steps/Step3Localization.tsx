@@ -6,7 +6,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, AlertTriangle, Bot, Loader2 } from "lucide-react";
+import { Sparkles, AlertTriangle, Bot, Loader2, Globe } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { ProgramFormData } from "../ProgramCreatorWizard";
@@ -212,6 +219,41 @@ const Step3Localization = ({ formData, setFormData }: Step3LocalizationProps) =>
           {t("program_creator.localization_subtitle")}
         </p>
       </div>
+
+      {/* Master Locale Selector */}
+      <Card className="border-blue-200 bg-gradient-to-br from-blue-50/30 to-blue-50/10">
+        <CardContent className="p-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <Globe className="w-5 h-5 text-blue-600" />
+              <div>
+                <p className="font-medium text-foreground">
+                  {t("program_creator.master_locale") || "Fő nyelv"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {t("program_creator.master_locale_hint") || "A tartalom elsődleges nyelve"}
+                </p>
+              </div>
+            </div>
+            <Select
+              value={formData.masterLocale}
+              onValueChange={(value: 'hu' | 'en' | 'de') => {
+                setFormData(prev => ({ ...prev, masterLocale: value }));
+                setActiveTab(value);
+              }}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="hu">🇭🇺 Magyar</SelectItem>
+                <SelectItem value="en">🇬🇧 English</SelectItem>
+                <SelectItem value="de">🇩🇪 Deutsch</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Auto-Translate Button */}
       <Card className="border-amber-200 bg-gradient-to-br from-amber-50/50 to-yellow-50/50">
