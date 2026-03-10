@@ -56,6 +56,7 @@ interface Program {
   id: string;
   title: string;
   image_url: string | null;
+  thumbnail_url: string | null;
   is_published: boolean;
   used_licenses: number;
   total_licenses: number;
@@ -71,6 +72,15 @@ interface Program {
   revenue?: number;
   views_count?: number;
 }
+
+// Get valid image URL: filter blob URLs, prefer image_url then thumbnail_url
+const getValidImageUrl = (program: Program): string | null => {
+  const img = program.image_url;
+  const thumb = program.thumbnail_url;
+  if (img && !img.startsWith('blob:')) return img;
+  if (thumb && !thumb.startsWith('blob:')) return thumb;
+  return null;
+};
 
 interface MyProgramsListProps {
   userId: string;
@@ -121,7 +131,7 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
       const { data, error } = await supabase
         .from("expert_contents")
         .select(`
-          id, title, image_url, is_published, used_licenses, total_licenses, 
+          id, title, image_url, thumbnail_url, is_published, used_licenses, total_licenses,
           max_capacity, created_at, price_huf, category, content_type, region_id
         `)
         .eq("creator_id", userId)
@@ -508,11 +518,12 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                     <Card className="overflow-hidden hover:shadow-lg transition-shadow group">
                       {/* Thumbnail */}
                       <div className="aspect-video bg-muted relative">
-                        {program.image_url ? (
+                        {getValidImageUrl(program) ? (
                           <img
-                            src={program.image_url}
+                            src={getValidImageUrl(program)!}
                             alt={program.title}
                             className="w-full h-full object-cover"
+                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-blue-500/10">
@@ -648,11 +659,12 @@ const MyProgramsList = ({ userId }: MyProgramsListProps) => {
                   className="flex items-center gap-4 p-4 bg-muted/30 rounded-xl hover:bg-muted/50 transition-colors"
                 >
                   <div className="w-20 h-14 rounded-lg bg-muted overflow-hidden flex-shrink-0">
-                    {program.image_url ? (
+                    {getValidImageUrl(program) ? (
                       <img
-                        src={program.image_url}
+                        src={getValidImageUrl(program)!}
                         alt={program.title}
                         className="w-full h-full object-cover"
+                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-blue-500/10">

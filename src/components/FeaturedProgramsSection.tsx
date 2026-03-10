@@ -83,8 +83,8 @@ const FeaturedProgramsSection = () => {
         return {
           id: content.id,
           title: localizedTitle || '',
-          image_url: resolveImageUrl(content.image_url),
-          thumbnail_url: resolveImageUrl(content.thumbnail_url),
+          image_url: content.image_url?.startsWith('blob:') ? null : resolveImageUrl(content.image_url),
+          thumbnail_url: content.thumbnail_url?.startsWith('blob:') ? null : resolveImageUrl(content.thumbnail_url),
           access_type: content.access_type,
           price_huf: content.price_huf,
           is_sponsored: content.is_sponsored,
