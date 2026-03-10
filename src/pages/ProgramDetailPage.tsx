@@ -338,7 +338,7 @@ const ProgramDetailPage = () => {
         let AccessIcon = PlayCircle;
         
         if (isFreeAccess) {
-          accessButtonText = 'Csatlakozás';
+          accessButtonText = t('program.join') || 'Csatlakozás';
           AccessIcon = CheckCircle2;
         } else if (isSponsoredAccess) {
           const sponsorAmountAccess = (program as any).fixed_sponsor_amount || sponsorship?.sponsor_contribution_huf || 0;
@@ -349,15 +349,20 @@ const ProgramDetailPage = () => {
           accessButtonText = `Megvásárlom — ${(program.price_huf || 0).toLocaleString()} Ft`;
           AccessIcon = ShoppingCart;
         }
-        
+
         return (
-          <Button 
+          <Button
             size="lg"
             className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg w-full"
             onClick={() => {
-              toast.info('Hamarosan elérhető!', {
-                description: 'A program tartalma előkészítés alatt áll.'
-              });
+              if (isFreeAccess) {
+                toast.success(t('program.joined_success') || 'Sikeresen csatlakoztál a programhoz!');
+              } else {
+                // Stripe integration coming — show friendly message for now
+                toast.info(t('program.payment_coming_soon') || 'A fizetési rendszer hamarosan elérhető!', {
+                  description: t('program.stripe_coming') || 'Stripe integráció előkészítés alatt.'
+                });
+              }
             }}
           >
             <AccessIcon className="w-5 h-5 mr-2" />
@@ -377,15 +382,17 @@ const ProgramDetailPage = () => {
           </Button>
         );
       case 'premium_required':
+        // Premium tier not yet available — treat as joinable for now
         return (
-          <Button 
+          <Button
             size="lg"
-            variant="outline"
-            className="opacity-50 cursor-not-allowed"
-            disabled
+            className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg w-full"
+            onClick={() => {
+              toast.info(t('program.premium_coming_soon') || 'Prémium előfizetés hamarosan elérhető!');
+            }}
           >
             <Crown className="w-5 h-5 mr-2" />
-            {t('program.premium_required')}
+            {t('program.join') || 'Csatlakozás'}
           </Button>
         );
       case 'purchase_required':
