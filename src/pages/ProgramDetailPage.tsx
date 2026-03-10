@@ -601,7 +601,8 @@ const ProgramDetailPage = () => {
                   // Filter out blob: URLs (invalid — only exist in browser memory)
                   const rawUrl = program.thumbnail_url || program.image_url;
                   const mediaUrl = rawUrl?.startsWith('blob:') ? null : rawUrl;
-                  const contentUrl = program.content_url;
+                  const rawContentUrl = program.content_url;
+                  const contentUrl = rawContentUrl?.startsWith('blob:') ? null : rawContentUrl;
 
                   if (!mediaUrl && !contentUrl) {
                     // No media at all — show placeholder with content type icon
@@ -621,11 +622,39 @@ const ProgramDetailPage = () => {
 
                   // If we have a valid video URL (content_url or media URL with video extension)
                   const isVideoUrl = mediaUrl && /\.(mp4|mov|webm|avi|mkv)(\?|$)/i.test(mediaUrl);
-                  if (isVideoUrl || (program.content_type === 'recorded' && contentUrl)) {
-                    const videoSrc = isVideoUrl ? mediaUrl : contentUrl;
+                  const videoSrc = isVideoUrl ? mediaUrl : contentUrl;
+
+                  if (videoSrc && (isVideoUrl || (program.content_type === 'recorded' && contentUrl))) {
+                    // YouTube embed
+                    const ytMatch = videoSrc.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+                    if (ytMatch) {
+                      return (
+                        <iframe
+                          src={`https://www.youtube.com/embed/${ytMatch[1]}`}
+                          className="w-full h-full min-h-[300px] max-h-[400px]"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          title={localizedTitle}
+                        />
+                      );
+                    }
+                    // Vimeo embed
+                    const vimeoMatch = videoSrc.match(/vimeo\.com\/(\d+)/);
+                    if (vimeoMatch) {
+                      return (
+                        <iframe
+                          src={`https://player.vimeo.com/video/${vimeoMatch[1]}`}
+                          className="w-full h-full min-h-[300px] max-h-[400px]"
+                          allow="autoplay; fullscreen; picture-in-picture"
+                          allowFullScreen
+                          title={localizedTitle}
+                        />
+                      );
+                    }
+                    // Direct video file
                     return (
                       <video
-                        src={videoSrc!}
+                        src={videoSrc}
                         className="w-full h-full max-h-[400px] object-cover"
                         controls
                         preload="metadata"
