@@ -41,7 +41,7 @@ const SponsorshipModal = ({ content, open, onOpenChange, onSuccess }: Sponsorshi
   const [isProcessing, setIsProcessing] = useState(false);
 
   const totalCost = content.price_huf * licenseCount;
-  const creatorAmount = Math.floor(totalCost * 0.85);
+  const creatorAmount = Math.floor(totalCost * 0.80);
   const platformAmount = totalCost - creatorAmount;
 
   const handleSponsorship = async () => {

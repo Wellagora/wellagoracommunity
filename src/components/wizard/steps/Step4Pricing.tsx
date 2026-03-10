@@ -104,13 +104,13 @@ export const Step4Pricing = ({ formData, setFormData }: Step4PricingProps) => {
           {/* Revenue calculator */}
           <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl">
             <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">{t("wizard.your_revenue")} (85%):</span>
+              <span className="text-muted-foreground">{t("wizard.your_revenue")} (80%):</span>
               <span className="text-2xl font-bold text-amber-500">
-                {Math.floor(formData.price_huf * 0.85).toLocaleString()} Ft
+                {Math.floor(formData.price_huf * 0.80).toLocaleString()} Ft
               </span>
             </div>
             <p className="text-xs text-muted-foreground mt-2">
-              {t("wizard.platform_fee")} (15%): {Math.floor(formData.price_huf * 0.15).toLocaleString()} Ft
+              {t("wizard.platform_fee")} (20%): {Math.floor(formData.price_huf * 0.20).toLocaleString()} Ft
             </p>
           </div>
         </div>

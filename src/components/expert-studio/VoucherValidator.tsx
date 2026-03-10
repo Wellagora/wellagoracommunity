@@ -43,7 +43,7 @@ const VoucherValidator = ({ userId, onBalanceUpdate, balance }: VoucherValidator
     .map(v => ({
       id: v.id,
       programTitle: v.program_title,
-      amount: Math.round((v.program_price || 5000) * 0.85),
+      amount: Math.round((v.program_price || 5000) * 0.80),
       timeAgo: formatTimeAgo(new Date(v.redeemed_at!)),
       redeemedAt: new Date(v.redeemed_at!)
     }));
@@ -98,7 +98,7 @@ const VoucherValidator = ({ userId, onBalanceUpdate, balance }: VoucherValidator
       const result = await redeemByCode(code);
       
       if (result.success && result.voucher) {
-        const voucherAmount = Math.round((result.voucher.program_price || 5000) * 0.85);
+        const voucherAmount = Math.round((result.voucher.program_price || 5000) * 0.80);
         onBalanceUpdate(balance + voucherAmount);
         triggerSuccessAnimation();
         
