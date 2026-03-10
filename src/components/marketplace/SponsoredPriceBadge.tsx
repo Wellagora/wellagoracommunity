@@ -73,14 +73,14 @@ const SponsoredPriceBadge = ({
         <span className={`text-black/40 line-through ${classes.original}`}>
           {formatPrice(originalPrice)}
         </span>
-        {/* Member Payment - Show "INGYENES / TÁMOGATOTT" instead of "0 Ft" */}
+        {/* Member Payment - Show "TÁMOGATOTT" instead of "0 Ft" */}
         {memberPayment > 0 ? (
           <span className={`font-bold text-blue-600 ${classes.price}`}>
             {formatPrice(memberPayment)}
           </span>
         ) : (
           <span className={`font-bold text-blue-600 ${classes.price} bg-blue-500/10 px-2 py-0.5 rounded-md`}>
-            {language === 'hu' ? 'INGYENES / TÁMOGATOTT' : 'FREE / SPONSORED'}
+            {language === 'hu' ? 'TÁMOGATOTT' : 'SUPPORTED'}
           </span>
         )}
       </div>

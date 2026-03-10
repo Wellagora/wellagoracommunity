@@ -18,7 +18,7 @@ export function PricingDisplay({
   if (pricing.isFree) {
     return (
       <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full font-bold text-sm">
-        INGYENES
+        TÁMOGATOTT
       </span>
     );
   }
@@ -39,7 +39,7 @@ export function PricingDisplay({
         </div>
         <div className={`font-bold text-gray-900 ${variant === 'modal' ? 'text-2xl' : 'text-lg'}`}>
           Fizetendő: {pricing.isFullySponsored ? (
-            <span className="text-blue-600">INGYENES</span>
+            <span className="text-blue-600">TÁMOGATOTT</span>
           ) : (
             formatPrice(pricing.userPays)
           )}

@@ -121,7 +121,7 @@ const MobileStickyPurchaseBar = ({
               <div className="flex items-center gap-2">
                 <span className="text-xl font-bold text-foreground">
                   {finalPrice === 0 ? (
-                    <span className="text-blue-600">INGYENES</span>
+                    <span className="text-blue-600">TÁMOGATOTT</span>
                   ) : (
                     formatPrice(finalPrice)
                   )}

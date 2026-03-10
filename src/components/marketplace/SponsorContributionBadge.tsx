@@ -273,7 +273,7 @@ export const SponsorContributionBadge = ({
             {memberPayment === 0 ? (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/15 border border-blue-500/30 text-blue-600 font-semibold text-sm mt-1">
                 <Sparkles className="w-3.5 h-3.5" />
-                {language === 'hu' ? 'TÁMOGATOTT / INGYENES' : language === 'de' ? 'GEFÖRDERT / KOSTENLOS' : 'SPONSORED / FREE'}
+                {language === 'hu' ? 'TÁMOGATOTT' : language === 'de' ? 'GEFÖRDERT' : 'SUPPORTED'}
               </span>
             ) : (
               <span className={`${classes.price} font-bold text-primary`}>

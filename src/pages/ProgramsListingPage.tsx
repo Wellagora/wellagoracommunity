@@ -797,7 +797,7 @@ const ProgramsListingPage = () => {
                                   animate={{ opacity: 1, scale: 1 }}
                                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary text-primary-foreground text-xs font-semibold tracking-wide uppercase shadow-lg shadow-primary/25"
                                 >
-                                  {language === 'hu' ? 'INGYENES' : language === 'de' ? 'KOSTENLOS' : 'FREE'}
+                                  {language === 'hu' ? 'TÁMOGATOTT' : language === 'de' ? 'GEFÖRDERT' : 'SUPPORTED'}
                                 </motion.span>
                               )}
                             </div>
