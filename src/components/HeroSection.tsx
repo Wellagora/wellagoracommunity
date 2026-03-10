@@ -233,7 +233,7 @@ const HeroSection = () => {
                 size="lg"
                 className="rounded-full bg-[#6c5ce7] hover:bg-[#7c6cf7] text-white font-semibold px-8 min-w-[220px] shadow-[0_0_30px_rgba(108,92,231,0.35)] hover:shadow-[0_0_40px_rgba(108,92,231,0.5)] transition-all duration-300"
               >
-                {language === 'hu' ? 'Csatlakozom ingyen' : language === 'de' ? 'Kostenlos beitreten' : 'Join for Free'}
+                {language === 'hu' ? 'Csatlakozom' : language === 'de' ? 'Jetzt beitreten' : 'Join Now'}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
