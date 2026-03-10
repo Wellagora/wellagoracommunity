@@ -6,6 +6,13 @@ import { Users, Sparkles, ArrowRight, Leaf, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { UserProgressBar } from "@/components/gamification/UserProgressBar";
+
+interface HeroSectionProps {
+  /** If provided, shows personalized logged-in hero */
+  userName?: string;
+  showProgress?: boolean;
+}
 
 /**
  * Orbital ring animation — Circle.so inspired
@@ -42,7 +49,8 @@ const generateParticles = (count: number) =>
     opacity: 0.1 + (i % 5) * 0.06,
   }));
 
-const HeroSection = () => {
+const HeroSection = ({ userName, showProgress }: HeroSectionProps = {}) => {
+  const isLoggedIn = !!userName;
   const { t, language } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
   const particles = useMemo(() => generateParticles(12), []);
@@ -179,123 +187,164 @@ const HeroSection = () => {
           style={{ opacity, scale }}
           className="relative z-10 container mx-auto px-5 pt-24 pb-20 md:pt-36 md:pb-32"
         >
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            style={{ y: badgeY }}
-            className="flex justify-center mb-8"
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/15">
-              <Sparkles className="w-4 h-4 text-blue-300" />
-              <span className="text-sm font-medium text-white/90">
-                {language === 'hu' ? 'Közösségi fenntarthatósági platform' : language === 'de' ? 'Gemeinschaftliche Nachhaltigkeitsplattform' : 'Community Sustainability Platform'}
-              </span>
-            </div>
-          </motion.div>
+          {isLoggedIn ? (
+            /* ===== LOGGED-IN HERO CONTENT ===== */
+            <>
+              <motion.div style={{ y: textY }}>
+                <motion.h1
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: 0.1 }}
+                  className="text-center text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-[1.15] tracking-tight max-w-3xl mx-auto"
+                >
+                  {language === 'hu' ? `Üdv újra, ${userName}!` : language === 'de' ? `Willkommen zurück, ${userName}!` : `Welcome back, ${userName}!`}
+                </motion.h1>
 
-          {/* Headline — white text on dark bg like Circle */}
-          <motion.div style={{ y: textY }}>
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-center text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white leading-[1.15] tracking-tight max-w-4xl mx-auto"
-            >
-              {h.line1}{' '}
-              <span className="text-white">
-                {h.accent}
-              </span>{' '}
-              {h.line2}
-            </motion.h1>
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  className="mt-4 text-base md:text-lg text-white/80 max-w-xl mx-auto text-center"
+                >
+                  {h.subtitle}
+                </motion.p>
+              </motion.div>
 
-            {/* Subtitle */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="mt-5 text-base md:text-xl text-white/90 max-w-2xl mx-auto text-center leading-relaxed px-2"
-            >
-              {h.subtitle}
-            </motion.p>
-          </motion.div>
-
-          {/* CTA Buttons — Circle-style: white primary + purple accent */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0"
-          >
-            <Link to="/auth?role=member">
-              <Button
-                size="lg"
-                className="rounded-full bg-white hover:bg-white/90 text-[#0F0F35] font-semibold px-8 w-full sm:w-auto sm:min-w-[220px] shadow-[0_4px_20px_rgba(255,255,255,0.25)] hover:shadow-[0_4px_30px_rgba(255,255,255,0.35)] transition-all duration-300"
+              {/* Progress bar on hero */}
+              {showProgress && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.5 }}
+                  className="mt-8 max-w-md mx-auto"
+                >
+                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/15 p-5">
+                    <UserProgressBar variant="dark" />
+                  </div>
+                </motion.div>
+              )}
+            </>
+          ) : (
+            /* ===== NON-LOGGED-IN HERO CONTENT ===== */
+            <>
+              {/* Badge */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                style={{ y: badgeY }}
+                className="flex justify-center mb-8"
               >
-                {language === 'hu' ? 'Csatlakozom' : language === 'de' ? 'Jetzt beitreten' : 'Join Now'}
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            </Link>
-            <Link to="/auth?role=expert">
-              <Button
-                size="lg"
-                variant="outline"
-                className="rounded-full border-white/25 text-white hover:bg-white/10 hover:border-white/40 font-semibold px-8 w-full sm:w-auto sm:min-w-[220px] transition-all duration-300"
-              >
-                {language === 'hu' ? 'Szakértő vagyok' : language === 'de' ? 'Ich bin Experte' : "I'm an Expert"}
-              </Button>
-            </Link>
-          </motion.div>
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/15">
+                  <Sparkles className="w-4 h-4 text-blue-300" />
+                  <span className="text-sm font-medium text-white/90">
+                    {language === 'hu' ? 'Közösségi fenntarthatósági platform' : language === 'de' ? 'Gemeinschaftliche Nachhaltigkeitsplattform' : 'Community Sustainability Platform'}
+                  </span>
+                </div>
+              </motion.div>
 
-          {/* Social Proof — real stats on dark bg */}
-          {stats && (stats.members > 0 || stats.experts > 0) && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.7 }}
-              className="mt-14 flex flex-wrap justify-center gap-8 md:gap-12"
-            >
-              {stats.members > 0 && (
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
-                    <Users className="w-4 h-4 text-blue-300" />
-                  </div>
-                  <div>
-                    <span className="text-xl font-bold text-white">{stats.members}</span>
-                    <span className="text-sm text-white/80 ml-1.5">
-                      {language === 'hu' ? 'tag' : language === 'de' ? 'Mitglieder' : 'members'}
-                    </span>
-                  </div>
-                </div>
+              {/* Headline */}
+              <motion.div style={{ y: textY }}>
+                <motion.h1
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: 0.1 }}
+                  className="text-center text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white leading-[1.15] tracking-tight max-w-4xl mx-auto"
+                >
+                  {h.line1}{' '}
+                  <span className="text-white">
+                    {h.accent}
+                  </span>{' '}
+                  {h.line2}
+                </motion.h1>
+
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  className="mt-5 text-base md:text-xl text-white/90 max-w-2xl mx-auto text-center leading-relaxed px-2"
+                >
+                  {h.subtitle}
+                </motion.p>
+              </motion.div>
+
+              {/* CTA Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0"
+              >
+                <Link to="/auth?role=member">
+                  <Button
+                    size="lg"
+                    className="rounded-full bg-white hover:bg-white/90 text-[#0F0F35] font-semibold px-8 w-full sm:w-auto sm:min-w-[220px] shadow-[0_4px_20px_rgba(255,255,255,0.25)] hover:shadow-[0_4px_30px_rgba(255,255,255,0.35)] transition-all duration-300"
+                  >
+                    {language === 'hu' ? 'Csatlakozom' : language === 'de' ? 'Jetzt beitreten' : 'Join Now'}
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
+                <Link to="/auth?role=expert">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="rounded-full border-white/25 text-white hover:bg-white/10 hover:border-white/40 font-semibold px-8 w-full sm:w-auto sm:min-w-[220px] transition-all duration-300"
+                  >
+                    {language === 'hu' ? 'Szakértő vagyok' : language === 'de' ? 'Ich bin Experte' : "I'm an Expert"}
+                  </Button>
+                </Link>
+              </motion.div>
+
+              {/* Social Proof */}
+              {stats && (stats.members > 0 || stats.experts > 0) && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.7 }}
+                  className="mt-14 flex flex-wrap justify-center gap-8 md:gap-12"
+                >
+                  {stats.members > 0 && (
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
+                        <Users className="w-4 h-4 text-blue-300" />
+                      </div>
+                      <div>
+                        <span className="text-xl font-bold text-white">{stats.members}</span>
+                        <span className="text-sm text-white/80 ml-1.5">
+                          {language === 'hu' ? 'tag' : language === 'de' ? 'Mitglieder' : 'members'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  {stats.experts > 0 && (
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
+                        <Award className="w-4 h-4 text-amber-300" />
+                      </div>
+                      <div>
+                        <span className="text-xl font-bold text-white">{stats.experts}</span>
+                        <span className="text-sm text-white/80 ml-1.5">
+                          {language === 'hu' ? 'szakértő' : language === 'de' ? 'Experten' : 'experts'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  {stats.programs > 0 && (
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
+                        <Sparkles className="w-4 h-4 text-blue-300" />
+                      </div>
+                      <div>
+                        <span className="text-xl font-bold text-white">{stats.programs}</span>
+                        <span className="text-sm text-white/80 ml-1.5">
+                          {language === 'hu' ? 'program' : language === 'de' ? 'Programme' : 'programs'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
               )}
-              {stats.experts > 0 && (
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
-                    <Award className="w-4 h-4 text-amber-300" />
-                  </div>
-                  <div>
-                    <span className="text-xl font-bold text-white">{stats.experts}</span>
-                    <span className="text-sm text-white/80 ml-1.5">
-                      {language === 'hu' ? 'szakértő' : language === 'de' ? 'Experten' : 'experts'}
-                    </span>
-                  </div>
-                </div>
-              )}
-              {stats.programs > 0 && (
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
-                    <Sparkles className="w-4 h-4 text-blue-300" />
-                  </div>
-                  <div>
-                    <span className="text-xl font-bold text-white">{stats.programs}</span>
-                    <span className="text-sm text-white/80 ml-1.5">
-                      {language === 'hu' ? 'program' : language === 'de' ? 'Programme' : 'programs'}
-                    </span>
-                  </div>
-                </div>
-              )}
-            </motion.div>
+            </>
           )}
         </motion.div>
 

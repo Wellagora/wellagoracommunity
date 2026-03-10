@@ -142,20 +142,9 @@ const Index = () => {
             )}
           </AnimatePresence>
 
-          <main className="pt-2 md:pt-4 flex-1">
-            {/* 1. CLEAN HERO — Welcome + Progress only */}
-            <section className="bg-background border-b border-border/50">
-              <div className="container mx-auto px-4 py-8 sm:py-12">
-                <div className="max-w-2xl mx-auto text-center">
-                  <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-                    {t("index.welcome_back")}, {profile.first_name}!
-                  </h1>
-                </div>
-                <div className="max-w-md mx-auto mt-5">
-                  <UserProgressBar />
-                </div>
-              </div>
-            </section>
+          <main className="flex-1">
+            {/* 1. UNIFIED HERO — Same dark blue, personalized content */}
+            <HeroSection userName={profile.first_name} showProgress />
 
             {/* 2. SZAKÉRTŐI ARCKÉPCSARNOK - Expert Portrait Gallery */}
             <ExpertGallery />
@@ -163,11 +152,8 @@ const Index = () => {
             {/* 3. KIEMELT ESEMÉNYEK - Fixed 3-column grid */}
             <FeaturedEventsGrid />
 
-            {/* 3. AJÁNLOTT PROGRAMOK - Horizontal slider */}
+            {/* 4. AJÁNLOTT PROGRAMOK - Horizontal slider */}
             <RecommendedProgramsSlider />
-
-            {/* 4. CTA BANNER */}
-            <CTABanner />
 
             {/* 5. COMMUNITY IMPACT - Avatar Stack + Notification Stream */}
             <CommunityImpactCounter />

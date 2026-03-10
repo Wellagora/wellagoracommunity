@@ -15,7 +15,8 @@ const POINTS_PER_LEVEL = 100;
  * Shows WellPoints balance, current streak, and level progress.
  * Uses REAL data from profiles table — no mocks.
  */
-export const UserProgressBar = () => {
+export const UserProgressBar = ({ variant = 'light' }: { variant?: 'light' | 'dark' }) => {
+  const isDark = variant === 'dark';
   const { user, profile } = useAuth();
   const { language } = useLanguage();
   const roleColors = getRoleColors(profile?.user_role);
@@ -74,20 +75,23 @@ export const UserProgressBar = () => {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="bg-white/60 backdrop-blur-xl rounded-2xl border border-white/40 p-4 shadow-[0_4px_24px_rgba(0,0,0,0.04)]"
+      className={isDark
+        ? "rounded-2xl p-4"
+        : "bg-white/60 backdrop-blur-xl rounded-2xl border border-white/40 p-4 shadow-[0_4px_24px_rgba(0,0,0,0.04)]"
+      }
     >
       <div className="flex items-center justify-between gap-4">
         {/* Points + Level */}
         <div className="flex items-center gap-3">
-          <div className={`w-10 h-10 rounded-xl ${roleColors.bgLight} flex items-center justify-center`}>
-            <Sparkles className={`w-5 h-5 ${roleColors.text}`} />
+          <div className={`w-10 h-10 rounded-xl ${isDark ? 'bg-white/15' : roleColors.bgLight} flex items-center justify-center`}>
+            <Sparkles className={`w-5 h-5 ${isDark ? 'text-blue-300' : roleColors.text}`} />
           </div>
           <div>
             <div className="flex items-baseline gap-1.5">
-              <span className="text-xl font-bold text-foreground">{wellpoints}</span>
-              <span className="text-xs text-muted-foreground">{l.points}</span>
+              <span className={`text-xl font-bold ${isDark ? 'text-white' : 'text-foreground'}`}>{wellpoints}</span>
+              <span className={`text-xs ${isDark ? 'text-white/70' : 'text-muted-foreground'}`}>{l.points}</span>
             </div>
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            <div className={`flex items-center gap-1 text-xs ${isDark ? 'text-white/60' : 'text-muted-foreground'}`}>
               <TrendingUp className="w-3 h-3" />
               <span>{l.level} {level}</span>
             </div>
@@ -98,13 +102,13 @@ export const UserProgressBar = () => {
         {currentStreak > 0 && (
           <div className="flex items-center gap-2">
             <div className={`relative ${isStreakHot ? 'flame-animate' : ''}`}>
-              <Flame className={`w-6 h-6 ${isStreakHot ? 'text-orange-500 fill-orange-400' : 'text-gray-400'}`} />
+              <Flame className={`w-6 h-6 ${isStreakHot ? 'text-orange-400 fill-orange-300' : isDark ? 'text-white/40' : 'text-gray-400'}`} />
             </div>
             <div className="text-right">
-              <span className={`text-lg font-bold ${isStreakHot ? 'text-orange-600' : 'text-foreground'}`}>
+              <span className={`text-lg font-bold ${isStreakHot ? (isDark ? 'text-orange-300' : 'text-orange-600') : isDark ? 'text-white' : 'text-foreground'}`}>
                 {currentStreak}
               </span>
-              <span className="text-xs text-muted-foreground block leading-tight">{l.streak}</span>
+              <span className={`text-xs block leading-tight ${isDark ? 'text-white/60' : 'text-muted-foreground'}`}>{l.streak}</span>
             </div>
           </div>
         )}
@@ -112,13 +116,13 @@ export const UserProgressBar = () => {
 
       {/* Progress bar to next level */}
       <div className="mt-3">
-        <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
+        <div className={`flex items-center justify-between text-[10px] mb-1 ${isDark ? 'text-white/60' : 'text-muted-foreground'}`}>
           <span>{l.nextLevel}</span>
           <span>{pointsInLevel}/{POINTS_PER_LEVEL}</span>
         </div>
-        <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+        <div className={`h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-white/15' : 'bg-gray-100'}`}>
           <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-400"
+            className="h-full rounded-full bg-gradient-to-r from-blue-400 to-blue-300"
             initial={{ width: 0 }}
             animate={{ width: `${progressPercent}%` }}
             transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
