@@ -406,7 +406,7 @@ const AdminAnalytics = () => {
                     <XAxis dataKey="category" className="text-xs" />
                     <YAxis className="text-xs" />
                     <Tooltip />
-                    <Bar dataKey="count" fill="#10b981" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="count" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
