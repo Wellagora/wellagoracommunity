@@ -588,19 +588,38 @@ const ProgramDetailPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column: Image + Description */}
             <div className="lg:col-span-2">
-              {/* Hero Image - Max 400px height */}
+              {/* Hero Image/Video - Max 400px height */}
               <div className="relative max-h-[400px] rounded-2xl overflow-hidden mb-6 bg-gradient-to-br from-primary/10 to-accent/10">
-                {program.thumbnail_url || program.image_url ? (
-                  <img 
-                    src={program.thumbnail_url || program.image_url} 
-                    alt={localizedTitle}
-                    className="w-full h-full max-h-[400px] object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-64 flex items-center justify-center">
-                    <div className="text-6xl opacity-30">📚</div>
-                  </div>
-                )}
+                {(() => {
+                  const mediaUrl = program.thumbnail_url || program.image_url;
+                  if (!mediaUrl) {
+                    return (
+                      <div className="w-full h-64 flex items-center justify-center">
+                        <div className="text-6xl opacity-30">📚</div>
+                      </div>
+                    );
+                  }
+                  // Check if URL is a video (not an image)
+                  const isVideoUrl = /\.(mp4|mov|webm|avi|mkv)(\?|$)/i.test(mediaUrl);
+                  if (isVideoUrl || program.content_type === 'recorded') {
+                    return (
+                      <video
+                        src={mediaUrl}
+                        className="w-full h-full max-h-[400px] object-cover"
+                        controls
+                        preload="metadata"
+                        poster={!isVideoUrl ? mediaUrl : undefined}
+                      />
+                    );
+                  }
+                  return (
+                    <img
+                      src={mediaUrl}
+                      alt={localizedTitle}
+                      className="w-full h-full max-h-[400px] object-cover"
+                    />
+                  );
+                })()}
               </div>
 
               {/* Badges Row with Event Format Tag */}

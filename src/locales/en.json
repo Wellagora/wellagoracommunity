@@ -1825,7 +1825,13 @@
     "voucher_claimed": "Voucher igényelve!",
     "claim_voucher": "Voucher igénylése",
     "purchase_button": "Join",
-    "description": "Description"
+    "description": "Description",
+    "join": "Join",
+    "joined_success": "Successfully joined the program!",
+    "payment_coming_soon": "Payment system coming soon!",
+    "stripe_coming": "Stripe integration in preparation.",
+    "premium_coming_soon": "Premium subscription coming soon!",
+    "tools_needed": "Tools needed"
   },
   "purchase": {
     "confirm_title": "Confirm Purchase",

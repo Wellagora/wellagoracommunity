@@ -1307,7 +1307,13 @@
     "voucher_claimed": "Gutschein igényelve!",
     "claim_voucher": "Gutschein igénylése",
     "purchase_button": "Anmelden",
-    "description": "Beschreibung"
+    "description": "Beschreibung",
+    "join": "Beitreten",
+    "joined_success": "Erfolgreich dem Programm beigetreten!",
+    "payment_coming_soon": "Zahlungssystem kommt bald!",
+    "stripe_coming": "Stripe-Integration in Vorbereitung.",
+    "premium_coming_soon": "Premium-Abonnement kommt bald!",
+    "tools_needed": "Benötigte Werkzeuge"
   },
   "purchase": {
     "confirm_title": "Kauf bestätigen",
