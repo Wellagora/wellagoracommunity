@@ -25,7 +25,7 @@ export default function DashboardLayout({
   title,
   subtitle,
   icon: Icon,
-  iconColor = "text-black",
+  iconColor = "text-foreground",
   showBackButton = true,
   backUrl = "/",
 }: DashboardLayoutProps) {
@@ -50,8 +50,8 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -66,7 +66,7 @@ export default function DashboardLayout({
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-black/60 hover:text-black hover:bg-black/5 px-2 sm:px-3"
+                  className="text-muted-foreground hover:text-foreground px-2 sm:px-3"
                 >
                   <ArrowLeft className="w-4 h-4 sm:mr-2" />
                   <span className="hidden sm:inline">{t("common.back")}</span>
@@ -77,7 +77,7 @@ export default function DashboardLayout({
               variant="ghost"
               size="sm"
               onClick={handleSignOut}
-              className="text-black/60 hover:text-black hover:bg-black/5 ml-auto px-2 sm:px-3"
+              className="text-muted-foreground hover:text-foreground ml-auto px-2 sm:px-3"
             >
               <LogOut className="w-4 h-4 sm:mr-2" />
               <span className="hidden sm:inline">{t("common.logout")}</span>
@@ -86,23 +86,23 @@ export default function DashboardLayout({
 
           {/* Title with icon */}
           <div className="flex items-center gap-3 sm:gap-4 mb-2">
-            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 shadow-sm shrink-0">
+            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-card backdrop-blur-xl border border-border/50 shadow-sm shrink-0">
               <Icon className={`w-6 h-6 sm:w-8 sm:h-8 ${iconColor}`} />
             </div>
             <div className="min-w-0">
-              <h1 className="text-xl sm:text-3xl font-semibold text-black tracking-tight truncate">
+              <h1 className="text-xl sm:text-3xl font-semibold text-foreground tracking-tight truncate">
                 {title}
               </h1>
               {subtitle && (
-                <p className="text-black/50 text-sm sm:text-base truncate">{subtitle}</p>
+                <p className="text-muted-foreground text-sm sm:text-base truncate">{subtitle}</p>
               )}
             </div>
           </div>
 
           {/* Welcome message */}
-          <div className="mt-3 sm:mt-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/80 backdrop-blur-xl border-[0.5px] border-black/5 shadow-sm">
-            <p className="text-black font-medium text-sm sm:text-base">
-              {t("dashboard.welcome")}, {getWelcomeName()}! 👋
+          <div className="mt-3 sm:mt-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-card backdrop-blur-xl border border-border/50 shadow-sm">
+            <p className="text-foreground font-medium text-sm sm:text-base">
+              {t("dashboard.welcome")}, {getWelcomeName()}!
             </p>
           </div>
         </motion.div>

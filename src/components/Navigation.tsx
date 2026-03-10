@@ -314,7 +314,7 @@ const Navigation = () => {
 
   // Active nav item classes based on role
   const getActiveNavClasses = (): string => {
-    if (!user || !profile) return "bg-[#111111] text-white";
+    if (!user || !profile) return "bg-foreground text-background";
     if (isSuperAdmin) return "bg-indigo-600 text-white";
     const role = effectiveRole;
     switch (role) {
@@ -367,7 +367,7 @@ const Navigation = () => {
                       className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-full transition-all duration-300 whitespace-nowrap ${
                         active
                           ? getActiveNavClasses()
-                          : "text-[#6E6E73] hover:text-[#111111] hover:bg-[#F5F5F7]"
+                          : "text-muted-foreground hover:text-foreground hover:bg-accent"
                       }`}
                     >
                       {Icon && <Icon className="h-4 w-4" />}
@@ -388,8 +388,8 @@ const Navigation = () => {
                 to="/ai-assistant"
                 className={`flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-full transition-all duration-300 shrink-0 ${
                   isActive('/ai-assistant')
-                    ? "bg-[#111111] text-white"
-                    : "text-[#6E6E73] hover:text-[#111111] hover:bg-[#F5F5F7]"
+                    ? "bg-foreground text-background"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
                 }`}
               >
                 <div style={{ transform: 'scaleX(-1)' }}>
@@ -557,8 +557,8 @@ const Navigation = () => {
               to="/ai-assistant"
               className={`flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-full transition-all duration-300 ${
                 isActive('/ai-assistant')
-                  ? "bg-[#111111] text-white"
-                  : "text-[#6E6E73] hover:text-[#111111] hover:bg-[#F5F5F7]"
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent"
               }`}
             >
               <div style={{ transform: 'scaleX(-1)' }}>
@@ -724,13 +724,13 @@ const Navigation = () => {
                   {isSuperAdmin && (
                     <div className="px-3 py-4">
                       <p className="text-xs font-medium text-slate-500 uppercase mb-3">{t('nav.switch_role')}</p>
-                      <div className="flex bg-[#F5F5F7] rounded-lg p-1">
+                      <div className="flex bg-accent rounded-lg p-1">
                         <button
                           onClick={() => handleViewChange('member')}
                           className={`flex-1 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
                             viewAsRole === 'member'
-                              ? 'bg-white text-[#007AFF] shadow-sm'
-                              : 'text-slate-600'
+                              ? 'bg-background text-primary shadow-sm'
+                              : 'text-muted-foreground'
                           }`}
                         >
                           {t('roles.explorer')}
@@ -739,8 +739,8 @@ const Navigation = () => {
                           onClick={() => handleViewChange('expert')}
                           className={`flex-1 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
                             viewAsRole === 'expert'
-                              ? 'bg-white text-[#007AFF] shadow-sm'
-                              : 'text-slate-600'
+                              ? 'bg-background text-primary shadow-sm'
+                              : 'text-muted-foreground'
                           }`}
                         >
                           {t('roles.expert')}
@@ -749,8 +749,8 @@ const Navigation = () => {
                           onClick={() => handleViewChange('sponsor')}
                           className={`flex-1 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
                             viewAsRole === 'sponsor'
-                              ? 'bg-white text-[#007AFF] shadow-sm'
-                              : 'text-slate-600'
+                              ? 'bg-background text-primary shadow-sm'
+                              : 'text-muted-foreground'
                           }`}
                         >
                           {t('roles.sponsor')}
@@ -764,7 +764,7 @@ const Navigation = () => {
                     <Link
                       to="/admin"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2 rounded-lg text-[#007AFF] hover:bg-blue-50 transition-colors"
+                      className="flex items-center gap-3 px-3 py-2 rounded-lg text-indigo-600 hover:bg-indigo-50 transition-colors"
                     >
                       <ShieldCheck className="h-5 w-5" />
                       <span className="font-medium">Super Admin</span>
