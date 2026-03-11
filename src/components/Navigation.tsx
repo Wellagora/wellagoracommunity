@@ -318,24 +318,24 @@ const Navigation = () => {
   // Role-based accent color for header - Admin gets Indigo
   const roleColors = getRoleColors(profile?.user_role);
   const getRoleAccentColor = (): string => {
-    if (!user || !profile) return "border-slate-200";
+    if (!user || !profile) return "border-[#e8e0d8]";
 
     // Super Admin always gets Indigo regardless of viewAsRole
     if (isSuperAdmin) return "border-blue-600";
 
-    return roleColors.border.replace('border-', 'border-b-') || "border-slate-200";
+    return roleColors.border.replace('border-', 'border-b-') || "border-[#e8e0d8]";
   };
 
   // Active nav item classes based on role
   const getActiveNavClasses = (): string => {
-    if (!user || !profile) return "bg-foreground text-background";
+    if (!user || !profile) return "bg-[#3d3429] text-white";
     if (isSuperAdmin) return "bg-blue-600 text-white";
     const role = effectiveRole;
     switch (role) {
-      case 'expert': return "bg-amber-500 text-white";
-      case 'sponsor': return "bg-blue-500 text-white";
+      case 'expert': return "bg-amber-600 text-white";
+      case 'sponsor': return "bg-emerald-600 text-white";
       case 'member':
-      default: return "bg-blue-600 text-white";
+      default: return "bg-[#3d3429] text-white";
     }
   };
 
@@ -453,12 +453,12 @@ const Navigation = () => {
                       <TooltipTrigger asChild>
                         <Link 
                           to="/expert-studio" 
-                          className="flex items-center gap-2 px-3 py-1 bg-blue-50 hover:bg-blue-100 rounded-full transition-colors"
+                          className="flex items-center gap-2 px-3 py-1 bg-amber-50 hover:bg-amber-100 rounded-full transition-colors"
                         >
-                          <Star className="h-4 w-4 text-blue-500 fill-blue-500" />
-                          <span className="text-sm font-semibold text-blue-700">{roleMetrics.avgRating} ({roleMetrics.reviewCount})</span>
-                          <span className="text-blue-300">|</span>
-                          <span className="text-sm font-semibold text-blue-600">{roleMetrics.monthlyRevenue.toLocaleString('hu-HU')} Ft</span>
+                          <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+                          <span className="text-sm font-semibold text-amber-700">{roleMetrics.avgRating} ({roleMetrics.reviewCount})</span>
+                          <span className="text-amber-300">|</span>
+                          <span className="text-sm font-semibold text-amber-600">{roleMetrics.monthlyRevenue.toLocaleString('hu-HU')} Ft</span>
                         </Link>
                       </TooltipTrigger>
                       <TooltipContent>
@@ -471,10 +471,10 @@ const Navigation = () => {
                       <TooltipTrigger asChild>
                         <Link 
                           to="/sponsor-hub" 
-                          className="flex items-center gap-1.5 px-3 py-1 bg-blue-50 hover:bg-blue-100 rounded-full transition-colors"
+                          className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 hover:bg-emerald-100 rounded-full transition-colors"
                         >
-                          <BarChart3 className="h-4 w-4 text-blue-500" />
-                          <span className="text-sm font-semibold text-blue-700">{roleMetrics.supportedMembers} fő elérve</span>
+                          <BarChart3 className="h-4 w-4 text-emerald-500" />
+                          <span className="text-sm font-semibold text-emerald-700">{roleMetrics.supportedMembers} fő elérve</span>
                         </Link>
                       </TooltipTrigger>
                       <TooltipContent>
@@ -504,7 +504,7 @@ const Navigation = () => {
                       <div className="relative">
                         <Avatar className="h-8 w-8">
                           <AvatarImage src={profile?.avatar_url || undefined} />
-                          <AvatarFallback className="bg-primary text-primary-foreground">
+                          <AvatarFallback className="bg-[#3d3429] text-white">
                             {profile?.first_name?.[0]}
                             {profile?.last_name?.[0]}
                           </AvatarFallback>
@@ -582,10 +582,10 @@ const Navigation = () => {
                   </>
                 ) : (
                   <>
-                    <MagneticButton variant="outline" size="sm" strength={0.2} className="shrink-0" asChild>
+                    <MagneticButton variant="outline" size="sm" strength={0.2} className="shrink-0 border-[#3d3429]/30 text-[#3d3429] hover:bg-[#3d3429]/5" asChild>
                       <Link to="/auth">{t("nav.sign_in")}</Link>
                     </MagneticButton>
-                    <MagneticButton size="sm" strength={0.3} className="shrink-0" asChild>
+                    <MagneticButton size="sm" strength={0.3} className="shrink-0 bg-[#3d3429] hover:bg-[#2e2720] text-white" asChild>
                       <Link to="/auth">{t("nav.join_community")}</Link>
                     </MagneticButton>
                   </>
@@ -632,8 +632,8 @@ const Navigation = () => {
                     to="/expert-studio" 
                     className="flex items-center gap-1"
                   >
-                    <Star className="h-3 w-3 text-blue-500 fill-blue-500" />
-                    <span className="text-xs font-semibold text-blue-700">{roleMetrics.avgRating}</span>
+                    <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+                    <span className="text-xs font-semibold text-amber-700">{roleMetrics.avgRating}</span>
                   </Link>
                 )}
                 {roleMetrics.type === 'sponsor' && (
@@ -641,8 +641,8 @@ const Navigation = () => {
                     to="/sponsor-hub" 
                     className="flex items-center gap-1"
                   >
-                    <BarChart3 className="h-3 w-3 text-blue-500" />
-                    <span className="text-xs font-semibold text-blue-700">{roleMetrics.supportedMembers}</span>
+                    <BarChart3 className="h-3 w-3 text-emerald-500" />
+                    <span className="text-xs font-semibold text-emerald-700">{roleMetrics.supportedMembers}</span>
                   </Link>
                 )}
               </>
@@ -654,9 +654,9 @@ const Navigation = () => {
                 to="/profile"
                 className="flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px]"
               >
-                <Avatar className="h-8 w-8 ring-2 ring-blue-200">
+                <Avatar className="h-8 w-8 ring-2 ring-amber-200">
                   <AvatarImage src={profile.avatar_url || undefined} />
-                  <AvatarFallback className="bg-blue-600 text-white text-xs">
+                  <AvatarFallback className="bg-[#3d3429] text-white text-xs">
                     {profile.first_name?.[0]}{profile.last_name?.[0]}
                   </AvatarFallback>
                 </Avatar>
@@ -689,7 +689,7 @@ const Navigation = () => {
                     >
                       <Avatar className="h-12 w-12">
                         <AvatarImage src={profile.avatar_url || undefined} />
-                        <AvatarFallback className="bg-primary text-primary-foreground">
+                        <AvatarFallback className="bg-[#3d3429] text-white">
                           {profile.first_name?.[0]}
                           {profile.last_name?.[0]}
                         </AvatarFallback>
@@ -725,10 +725,10 @@ const Navigation = () => {
                           className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
                             active
                               ? hasCustomColor
-                                ? "bg-blue-100 text-blue-700"
+                                ? "bg-amber-100 text-amber-800"
                                 : isWellBot
-                                  ? "bg-gradient-to-r from-blue-100 to-sky-100 text-blue-700"
-                                  : "bg-primary text-primary-foreground"
+                                  ? "bg-gradient-to-r from-amber-50 to-emerald-50 text-[#3d3429]"
+                                  : "bg-[#3d3429] text-white"
                               : "hover:bg-accent/50"
                           }`}
                         >
@@ -754,7 +754,7 @@ const Navigation = () => {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
                       isActive('/ai-assistant')
-                        ? "bg-gradient-to-r from-blue-100 to-sky-100 text-blue-700"
+                        ? "bg-gradient-to-r from-amber-50 to-emerald-50 text-[#3d3429]"
                         : "hover:bg-accent/50"
                     }`}
                   >
