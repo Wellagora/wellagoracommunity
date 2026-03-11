@@ -217,10 +217,10 @@ Deep Slate navigation, Soft Slate backgrounds, pure organic feel
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    /* Primary: Blue-600 */
-    --primary: 217 91% 60%;                     /* Blue-600 #2563EB */
+    /* Primary: Orange-500 — warm, youthful brand color */
+    --primary: 25 95% 53%;                      /* Orange-500 #f97316 */
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 217 91% 65%;
+    --primary-glow: 25 95% 58%;
     --primary-dark: 217 91% 50%;
 
     /* Accent: Amber-500 */

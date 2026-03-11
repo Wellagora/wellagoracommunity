@@ -51,6 +51,24 @@ const CATEGORY_FILTERS = [
   ...CATEGORY_LIST.map(cat => ({ id: cat, labelKey: `categories.${cat}` })),
 ];
 
+// Per-category active button colors — matches Piactér palette
+const EVENT_CATEGORY_COLORS: Record<string, string> = {
+  all:           'bg-orange-500 hover:bg-orange-600',
+  lifestyle:     'bg-emerald-500 hover:bg-emerald-600',
+  craft:         'bg-amber-500 hover:bg-amber-600',
+  gastronomy:    'bg-red-400 hover:bg-red-500',
+  wellness:      'bg-rose-400 hover:bg-rose-500',
+  hiking:        'bg-teal-500 hover:bg-teal-600',
+  gardening:     'bg-green-500 hover:bg-green-600',
+  heritage:      'bg-purple-400 hover:bg-purple-500',
+  volunteering:  'bg-pink-400 hover:bg-pink-500',
+  market:        'bg-orange-400 hover:bg-orange-500',
+  community:     'bg-sky-400 hover:bg-sky-500',
+  sport:         'bg-indigo-400 hover:bg-indigo-500',
+  culture:       'bg-fuchsia-400 hover:bg-fuchsia-500',
+  family:        'bg-cyan-400 hover:bg-cyan-500',
+};
+
 const EventsPageNew = () => {
   const { t, language } = useLanguage();
   const { user } = useAuth();
@@ -264,7 +282,7 @@ const EventsPageNew = () => {
                 onClick={() => setSelectedCategory(category.id)}
                 className={
                   selectedCategory === category.id
-                    ? "bg-orange-500 text-white hover:bg-orange-600"
+                    ? `${EVENT_CATEGORY_COLORS[category.id] || 'bg-orange-500 hover:bg-orange-600'} text-white`
                     : ""
                 }
               >
@@ -344,7 +362,7 @@ const EventsPageNew = () => {
                             </Badge>
                           )}
                           {isSponsored && (
-                            <Badge className="bg-blue-600 text-white border-0 flex items-center gap-1">
+                            <Badge className="bg-emerald-600 text-white border-0 flex items-center gap-1">
                               <Gift className="w-3 h-3" />
                               {t("events.sponsored")}
                             </Badge>
@@ -389,7 +407,7 @@ const EventsPageNew = () => {
 
                       {/* Sponsor Info */}
                       {isSponsored && event.event_sponsors[0]?.sponsors && (
-                        <p className="text-xs text-blue-600 mb-3">
+                        <p className="text-xs text-emerald-600 mb-3">
                           {t("events.sponsored_by")} {event.event_sponsors[0].sponsors.name}
                         </p>
                       )}

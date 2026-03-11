@@ -36,7 +36,7 @@ import {
   HandHeart,
   Trophy,
   Palette,
-  Baby,
+  Home,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -61,7 +61,7 @@ const CATEGORY_ICONS: Record<string, any> = {
   community: Users,
   sport: Trophy,
   culture: Palette,
-  family: Baby,
+  family: Home,
 };
 
 // Vibrant color per category — harmonious warm palette

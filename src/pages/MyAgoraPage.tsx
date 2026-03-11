@@ -294,7 +294,7 @@ const MyAgoraPage = () => {
 
   if (authLoading) {
     return (
-      <DashboardLayout title={t("my_agora.title")} icon={Star} iconColor="text-blue-500">
+      <DashboardLayout title={t("my_agora.title")} icon={Star} iconColor="text-amber-500">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <Skeleton className="h-80 w-full" />
           <Skeleton className="h-80 w-full" />
@@ -314,48 +314,48 @@ const MyAgoraPage = () => {
       title={t("my_agora.title")}
       subtitle={t("my_agora.pilot_subtitle")}
       icon={Star}
-      iconColor="text-blue-500"
+      iconColor="text-amber-500"
     >
       <div className="space-y-8">
         {/* SECTION 1: Welcome + Stats Row */}
         <div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* WellPoints Card */}
-            <Card className="relative overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+            <Card className="relative overflow-hidden bg-white/70 border-[#e8e0d8]">
               <CardContent className="p-6 text-center">
                 <div className="text-4xl mb-2">🪙</div>
-                <div className="text-4xl font-bold text-amber-700 mb-1">{wellPointsBalance}</div>
-                <div className="text-sm text-amber-600">{t('gamification.your_points')}</div>
+                <div className="text-4xl font-bold text-[#3d3429] mb-1">{wellPointsBalance}</div>
+                <div className="text-sm text-[#3d3429]/60">{t('gamification.your_points')}</div>
                 {todayPoints > 0 && (
-                  <div className="text-xs text-blue-600 mt-1">+{todayPoints} ma</div>
+                  <div className="text-xs text-amber-600 mt-1">+{todayPoints} ma</div>
                 )}
               </CardContent>
             </Card>
 
             {/* Streak Card */}
-            <Card className="relative overflow-hidden bg-gradient-to-br from-red-50 to-orange-50 border-red-200">
+            <Card className="relative overflow-hidden bg-white/70 border-[#e8e0d8]">
               <CardContent className="p-6 text-center">
                 <div className={`text-4xl mb-2 ${currentStreak === 0 ? 'opacity-40' : ''}`}>🔥</div>
-                <div className="text-4xl font-bold text-red-700 mb-1">{currentStreak}</div>
-                <div className="text-sm text-red-600">
+                <div className="text-4xl font-bold text-[#3d3429] mb-1">{currentStreak}</div>
+                <div className="text-sm text-[#3d3429]/60">
                   {currentStreak === 0 ? 'Kezdj új sorozatot!' : currentStreak === 1 ? '1 napos sorozat' : `${currentStreak} napos sorozat`}
                 </div>
                 {longestStreak > 0 && (
-                  <div className="text-xs text-red-500 mt-1">Rekord: {longestStreak} nap</div>
+                  <div className="text-xs text-[#3d3429]/50 mt-1">Rekord: {longestStreak} nap</div>
                 )}
               </CardContent>
             </Card>
 
             {/* Level Card */}
-            <Card className="relative overflow-hidden bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
+            <Card className="relative overflow-hidden bg-white/70 border-[#e8e0d8]">
               <CardContent className="p-6 text-center">
                 <div className="text-4xl mb-2">{userLevel.icon}</div>
-                <div className="text-xl font-bold text-purple-700 mb-2">
+                <div className="text-xl font-bold text-[#3d3429] mb-2">
                   {t(`gamification.level.${userLevel.name}`)}
                 </div>
                 <Progress value={userLevel.progress} className="h-2 mb-2" />
                 {userLevel.nextLevel && (
-                  <div className="text-xs text-purple-600">
+                  <div className="text-xs text-[#3d3429]/60">
                     {userLevel.nextLevel.min - wellPointsBalance} pont a következő szintig
                   </div>
                 )}
@@ -373,7 +373,7 @@ const MyAgoraPage = () => {
                 <CardContent className="p-4 text-center">
                   <div className="text-3xl mb-2">{method.icon}</div>
                   <div className="text-sm font-medium mb-1">{method.action}</div>
-                  <Badge variant="secondary" className="bg-blue-100 text-blue-700">
+                  <Badge variant="secondary" className="bg-amber-100 text-amber-700">
                     +{method.points} WP
                   </Badge>
                 </CardContent>
@@ -406,7 +406,7 @@ const MyAgoraPage = () => {
         {!eventsLoading && upcomingEvents.length > 0 && (
           <div>
             <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <Calendar className="w-6 h-6 text-indigo-500" />
+              <Calendar className="w-6 h-6 text-orange-500" />
               {t('my_agora.upcoming_events') || 'Közelgő eseményeim'}
             </h2>
             <div className="space-y-3">
@@ -417,12 +417,12 @@ const MyAgoraPage = () => {
                   onClick={() => navigate(`/esemenyek/${event.id}`)}
                 >
                   <CardContent className="p-4 flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-lg bg-indigo-500/10 flex items-center justify-center flex-shrink-0 text-center">
+                    <div className="w-14 h-14 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0 text-center">
                       <div>
-                        <p className="text-xs font-bold text-indigo-600">
+                        <p className="text-xs font-bold text-orange-600">
                           {format(new Date(event.start_date), 'MMM', { locale: dateLocale })}
                         </p>
-                        <p className="text-xl font-bold text-indigo-700 leading-none">
+                        <p className="text-xl font-bold text-orange-700 leading-none">
                           {format(new Date(event.start_date), 'd')}
                         </p>
                       </div>
@@ -458,7 +458,7 @@ const MyAgoraPage = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5 text-blue-600" />
+                <BookOpen className="h-5 w-5 text-orange-500" />
                 {t("gamification.active_programs")}
               </CardTitle>
             </CardHeader>
@@ -485,7 +485,7 @@ const MyAgoraPage = () => {
                     className="flex items-center gap-3 p-2 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer"
                     onClick={() => navigate(`/programs/${program.id}`)}
                   >
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-400 to-blue-500 flex items-center justify-center overflow-hidden flex-shrink-0">
+                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center overflow-hidden flex-shrink-0">
                       {program.image_url ? (
                         <img src={program.image_url} alt={program.title} className="w-full h-full object-cover" />
                       ) : (
