@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { useRef, useState, useEffect, useCallback } from "react";
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Users, Sparkles, ArrowRight, Leaf, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,10 +13,28 @@ interface HeroSectionProps {
   showProgress?: boolean;
 }
 
+/** Warm, community-focused hero images — crossfade slideshow */
+const HERO_IMAGES = [
+  'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&h=800&fit=crop&q=80', // friends laughing together
+  'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1200&h=800&fit=crop&q=80', // workshop/coworking
+  'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1200&h=800&fit=crop&q=80', // hands holding plant
+  'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=1200&h=800&fit=crop&q=80', // group celebration
+  'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1200&h=800&fit=crop&q=80', // outdoor community
+];
+
 const HeroSection = ({ userName, showProgress }: HeroSectionProps = {}) => {
   const isLoggedIn = !!userName;
   const { t, language } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
+  const [currentImg, setCurrentImg] = useState(0);
+
+  // Crossfade every 6 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImg((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -103,52 +121,56 @@ const HeroSection = ({ userName, showProgress }: HeroSectionProps = {}) => {
 
   return (
     <>
-      {/* HERO — Clean, minimal (Storetasker-inspired) */}
+      {/* HERO — Storetasker-inspired: warm photo + text split layout */}
       <section
         ref={sectionRef}
-        className="relative overflow-hidden bg-white"
+        className="relative overflow-hidden bg-[#f5f0eb] min-h-[85vh] flex items-center"
       >
+        {/* Background slideshow — full bleed, warm overlay */}
+        <div className="absolute inset-0">
+          <AnimatePresence mode="sync">
+            <motion.div
+              key={currentImg}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.5, ease: "easeInOut" }}
+              className="absolute inset-0"
+            >
+              <img
+                src={HERO_IMAGES[currentImg]}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            </motion.div>
+          </AnimatePresence>
+          {/* Warm overlay — like Storetasker's earthy tone */}
+          <div className="absolute inset-0 bg-[#6b5b4e]/60" />
+        </div>
 
         <motion.div
           style={{ opacity }}
-          className="relative z-10 container mx-auto px-5 pt-24 pb-16 md:pt-32 md:pb-24"
+          className="relative z-10 container mx-auto px-6 py-24 md:py-32"
         >
           {isLoggedIn ? (
-            /* ===== LOGGED-IN HERO CONTENT ===== */
-            <>
+            /* ===== LOGGED-IN HERO ===== */
+            <div className="max-w-3xl">
               <motion.div style={{ y: textY }}>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="flex justify-center mb-6"
-                >
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-100">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-sm font-medium text-blue-700">
-                      {language === 'hu' ? 'Online' : 'Online'}
-                    </span>
-                  </div>
-                </motion.div>
-
                 <motion.h1
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.1 }}
-                  className="text-center text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1] tracking-tight max-w-3xl mx-auto"
+                  transition={{ duration: 0.7, delay: 0.1 }}
+                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-white leading-[1.08] tracking-tight"
                 >
                   {language === 'hu' ? `Üdv újra, ` : language === 'de' ? `Willkommen zurück, ` : `Welcome back, `}
-                  <span className="bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent">
-                    {userName}
-                  </span>
-                  !
+                  <span className="font-semibold">{userName}</span>
                 </motion.h1>
 
                 <motion.p
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                  className="mt-5 text-base md:text-lg text-muted-foreground max-w-xl mx-auto text-center"
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  className="mt-6 text-lg md:text-xl text-white/80 max-w-xl leading-relaxed"
                 >
                   {h.subtitle}
                 </motion.p>
@@ -160,52 +182,34 @@ const HeroSection = ({ userName, showProgress }: HeroSectionProps = {}) => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.5 }}
-                  className="mt-8 max-w-md mx-auto"
+                  className="mt-8 max-w-md"
                 >
-                  <div className="bg-white rounded-2xl border border-border/60 shadow-[0_4px_24px_rgba(0,0,0,0.06)] p-5">
+                  <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-5 shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
                     <UserProgressBar />
                   </div>
                 </motion.div>
               )}
-            </>
+            </div>
           ) : (
-            /* ===== NON-LOGGED-IN HERO CONTENT ===== */
-            <>
-              {/* Badge */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-                className="flex justify-center mb-8"
-              >
-                <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-black/[0.04]">
-                  <Sparkles className="w-4 h-4 text-amber-500" />
-                  <span className="text-sm font-medium text-foreground/80">
-                    {language === 'hu' ? 'Közösségi fenntarthatósági platform' : language === 'de' ? 'Gemeinschaftliche Nachhaltigkeitsplattform' : 'Community Sustainability Platform'}
-                  </span>
-                </div>
-              </motion.div>
-
-              {/* Headline */}
+            /* ===== NON-LOGGED-IN HERO ===== */
+            <div className="max-w-3xl">
               <motion.div style={{ y: textY }}>
                 <motion.h1
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.1 }}
-                  className="text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-[1.08] tracking-tight max-w-4xl mx-auto"
+                  transition={{ duration: 0.7, delay: 0.1 }}
+                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-white leading-[1.08] tracking-tight"
                 >
                   {h.line1}{' '}
-                  <span className="bg-gradient-to-r from-blue-600 via-teal-500 to-emerald-500 bg-clip-text text-transparent">
-                    {h.accent}
-                  </span>{' '}
+                  <span className="font-semibold">{h.accent}</span>{' '}
                   {h.line2}
                 </motion.h1>
 
                 <motion.p
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                  className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto text-center leading-relaxed"
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  className="mt-6 text-lg md:text-xl text-white/80 max-w-xl leading-relaxed"
                 >
                   {h.subtitle}
                 </motion.p>
@@ -216,12 +220,12 @@ const HeroSection = ({ userName, showProgress }: HeroSectionProps = {}) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.5 }}
-                className="mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0"
+                className="mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4"
               >
                 <Link to="/auth?role=member">
                   <Button
                     size="lg"
-                    className="rounded-full bg-foreground hover:bg-foreground/90 text-background font-semibold px-8 w-full sm:w-auto sm:min-w-[220px] shadow-[0_4px_16px_rgba(0,0,0,0.12)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition-all duration-300 hover:-translate-y-0.5"
+                    className="rounded-md bg-white hover:bg-white/90 text-[#3d3429] font-semibold px-8 w-full sm:w-auto sm:min-w-[200px] shadow-[0_4px_16px_rgba(0,0,0,0.15)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.2)] transition-all duration-300"
                   >
                     {language === 'hu' ? 'Csatlakozom' : language === 'de' ? 'Jetzt beitreten' : 'Join Now'}
                     <ArrowRight className="w-4 h-4 ml-2" />
@@ -231,68 +235,67 @@ const HeroSection = ({ userName, showProgress }: HeroSectionProps = {}) => {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="rounded-full border-foreground/15 text-foreground hover:bg-foreground/5 hover:border-foreground/25 font-semibold px-8 w-full sm:w-auto sm:min-w-[220px] transition-all duration-300"
+                    className="rounded-md border-white/40 text-white hover:bg-white/10 hover:border-white/60 font-semibold px-8 w-full sm:w-auto sm:min-w-[200px] transition-all duration-300"
                   >
                     {language === 'hu' ? 'Szakértő vagyok' : language === 'de' ? 'Ich bin Experte' : "I'm an Expert"}
                   </Button>
                 </Link>
               </motion.div>
 
-              {/* Social Proof — pill-style stats */}
+              {/* Social Proof — simple row */}
               {stats && (stats.members > 0 || stats.experts > 0) && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.7 }}
-                  className="mt-12 flex flex-wrap justify-center gap-3 md:gap-4"
+                  className="mt-12 flex flex-wrap gap-8"
                 >
                   {stats.members > 0 && (
-                    <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-black/[0.04]">
-                      <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
-                        <Users className="w-4 h-4 text-blue-600" />
-                      </div>
-                      <div>
-                        <span className="text-lg font-bold text-foreground">{stats.members}</span>
-                        <span className="text-sm text-muted-foreground ml-1.5">
-                          {language === 'hu' ? 'tag' : language === 'de' ? 'Mitglieder' : 'members'}
-                        </span>
-                      </div>
+                    <div>
+                      <span className="text-2xl font-bold text-white">{stats.members}+</span>
+                      <span className="text-sm text-white/70 ml-2">
+                        {language === 'hu' ? 'tag' : language === 'de' ? 'Mitglieder' : 'members'}
+                      </span>
                     </div>
                   )}
                   {stats.experts > 0 && (
-                    <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-black/[0.04]">
-                      <div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center">
-                        <Award className="w-4 h-4 text-amber-600" />
-                      </div>
-                      <div>
-                        <span className="text-lg font-bold text-foreground">{stats.experts}</span>
-                        <span className="text-sm text-muted-foreground ml-1.5">
-                          {language === 'hu' ? 'szakértő' : language === 'de' ? 'Experten' : 'experts'}
-                        </span>
-                      </div>
+                    <div>
+                      <span className="text-2xl font-bold text-white">{stats.experts}+</span>
+                      <span className="text-sm text-white/70 ml-2">
+                        {language === 'hu' ? 'szakértő' : language === 'de' ? 'Experten' : 'experts'}
+                      </span>
                     </div>
                   )}
                   {stats.programs > 0 && (
-                    <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-black/[0.04]">
-                      <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center">
-                        <Sparkles className="w-4 h-4 text-emerald-600" />
-                      </div>
-                      <div>
-                        <span className="text-lg font-bold text-foreground">{stats.programs}</span>
-                        <span className="text-sm text-muted-foreground ml-1.5">
-                          {language === 'hu' ? 'program' : language === 'de' ? 'Programme' : 'programs'}
-                        </span>
-                      </div>
+                    <div>
+                      <span className="text-2xl font-bold text-white">{stats.programs}+</span>
+                      <span className="text-sm text-white/70 ml-2">
+                        {language === 'hu' ? 'program' : language === 'de' ? 'Programme' : 'programs'}
+                      </span>
                     </div>
                   )}
                 </motion.div>
               )}
-            </>
+            </div>
           )}
         </motion.div>
+
+        {/* Slideshow dots indicator */}
+        <div className="absolute bottom-6 right-6 z-20 flex gap-2">
+          {HERO_IMAGES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentImg(i)}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                i === currentImg ? 'bg-white w-6' : 'bg-white/40 hover:bg-white/60'
+              }`}
+              aria-label={`Image ${i + 1}`}
+            />
+          ))}
+        </div>
       </section>
 
-      {/* VALUE PROPOSITION — Colorful card grid */}
+      {/* VALUE PROPOSITION — Clean white section below hero */}
       <section className="py-16 md:py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
