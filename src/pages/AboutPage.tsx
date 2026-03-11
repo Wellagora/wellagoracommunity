@@ -158,7 +158,7 @@ const AboutPage = () => {
         </section>
 
         {/* Impact Statistics */}
-        <section className="py-8 sm:py-12 lg:py-16 bg-muted/30">
+        <section className="py-8 sm:py-12 lg:py-16 bg-[#f5f0eb]">
           <div className="container mx-auto px-4">
             <div className="text-center mb-8 sm:mb-12">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">{t('about.our_global_impact')}</h2>
@@ -210,7 +210,7 @@ const AboutPage = () => {
         </section>
 
         {/* Timeline */}
-        <section className="py-16 bg-muted/30">
+        <section className="py-16 bg-[#f5f0eb]">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('about.our_journey')}</h2>

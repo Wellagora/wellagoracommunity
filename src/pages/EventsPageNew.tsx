@@ -219,9 +219,9 @@ const EventsPageNew = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[#f5f0eb]">
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-black/[0.02] to-white py-12 border-b border-black/5">
+      <section className="bg-gradient-to-b from-[#f5f0eb] to-white py-12 border-b border-[#e8e0d8]">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -229,10 +229,10 @@ const EventsPageNew = () => {
             transition={{ duration: 0.6 }}
             className="max-w-3xl mx-auto text-center"
           >
-            <h1 className="text-4xl md:text-5xl font-bold text-black mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-[#3d3429] mb-4">
               {t("events.title")}
             </h1>
-            <p className="text-lg text-black/60">
+            <p className="text-lg text-[#3d3429]/60">
               {currentProject?.name ? `${currentProject.name} élő közösségi programjai` : 'Élő közösségi programok'}
             </p>
           </motion.div>
@@ -244,7 +244,7 @@ const EventsPageNew = () => {
         <div className="mb-8 space-y-4">
           {/* Search */}
           <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-black/40" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#3d3429]/40" />
             <Input
               type="text"
               placeholder={t("events.search_placeholder")}
@@ -264,7 +264,7 @@ const EventsPageNew = () => {
                 onClick={() => setSelectedCategory(category.id)}
                 className={
                   selectedCategory === category.id
-                    ? "bg-black text-white hover:bg-black/90"
+                    ? "bg-[#3d3429] text-white hover:bg-[#2e2720]"
                     : ""
                 }
               >
@@ -297,11 +297,11 @@ const EventsPageNew = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center py-16"
           >
-            <Calendar className="w-16 h-16 mx-auto mb-4 text-black/20" />
-            <h3 className="text-xl font-semibold text-black mb-2">
+            <Calendar className="w-16 h-16 mx-auto mb-4 text-[#3d3429]/20" />
+            <h3 className="text-xl font-semibold text-[#3d3429] mb-2">
               {t("events.empty_state")}
             </h3>
-            <p className="text-black/60">{t("events.empty_state_desc")}</p>
+            <p className="text-[#3d3429]/60">{t("events.empty_state_desc")}</p>
           </motion.div>
         )}
 
@@ -323,7 +323,7 @@ const EventsPageNew = () => {
                   <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col cursor-pointer">
                     {/* Event Image */}
                     <Link to={`/esemenyek/${event.id}`} className="block">
-                      <div className="relative aspect-[16/9] bg-black/5 overflow-hidden">
+                      <div className="relative aspect-[16/9] bg-[#3d3429]/5 overflow-hidden">
                         {event.image_url ? (
                           <img
                             src={resolveImageUrl(event.image_url)}
@@ -332,14 +332,14 @@ const EventsPageNew = () => {
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
-                            <Calendar className="w-12 h-12 text-black/20" />
+                            <Calendar className="w-12 h-12 text-[#3d3429]/20" />
                           </div>
                         )}
 
                         {/* Badges */}
                         <div className="absolute top-3 left-3 flex flex-col gap-2">
                           {event.category && (
-                            <Badge className="bg-white/90 text-black border-0 backdrop-blur-sm">
+                            <Badge className="bg-white/90 text-[#3d3429] border-0 backdrop-blur-sm">
                               {t(`categories.${event.category}`)}
                             </Badge>
                           )}
@@ -356,26 +356,26 @@ const EventsPageNew = () => {
                     <Link to={`/esemenyek/${event.id}`} className="block flex-1">
                       <CardContent className="p-5 flex-1 flex flex-col">
                       {/* Date */}
-                      <div className="flex items-center gap-2 text-sm text-black/60 mb-2">
+                      <div className="flex items-center gap-2 text-sm text-[#3d3429]/60 mb-2">
                         <Calendar className="w-4 h-4" />
                         <span>{formatDate(event.start_date)}</span>
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-lg font-semibold text-black mb-3 hover:text-black/70 transition-colors line-clamp-2">
+                      <h3 className="text-lg font-semibold text-[#3d3429] mb-3 hover:text-[#5a4d3e] transition-colors line-clamp-2">
                         {getLocalizedTitle(event)}
                       </h3>
 
                       {/* Location */}
                       {event.location_name && (
-                        <div className="flex items-center gap-2 text-sm text-black/60 mb-3">
+                        <div className="flex items-center gap-2 text-sm text-[#3d3429]/60 mb-3">
                           <MapPin className="w-4 h-4 flex-shrink-0" />
                           <span className="line-clamp-1">{event.location_name}</span>
                         </div>
                       )}
 
                       {/* Participant Count */}
-                      <div className="flex items-center gap-2 text-sm text-black/60 mb-4">
+                      <div className="flex items-center gap-2 text-sm text-[#3d3429]/60 mb-4">
                         <Users className="w-4 h-4" />
                         {event.max_participants ? (
                           <span>
@@ -422,7 +422,7 @@ const EventsPageNew = () => {
                         ) : (
                           <Button
                             size="sm"
-                            className="w-full bg-black hover:bg-black/90 text-white"
+                            className="w-full bg-[#3d3429] hover:bg-[#2e2720] text-white"
                             onClick={() =>
                               rsvpMutation.mutate({ eventId: event.id, action: "create" })
                             }

@@ -14,13 +14,13 @@ interface HeroSectionProps {
 }
 
 /** Warm, community-focused hero images — crossfade slideshow
- *  Mix of Freepik (own) images + Unsplash community photos */
-const HERO_IMAGES = [
-  '/images/hero-cafe.jpg',      // laughing barista in warm café — Freepik
-  'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=1200&h=800&fit=crop&q=80', // community dinner at long outdoor table ✓ (user approved)
-  '/images/hero-garden.jpg',    // smiling gardener in plant nursery — Freepik
-  'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=800&fit=crop&q=80', // people cooking together in kitchen, warm community
-  '/images/hero-sunrise.jpg',   // golden sunrise through tree, misty road — Freepik
+ *  Each image has a custom objectPosition so faces stay visible on mobile crop */
+const HERO_IMAGES: { src: string; pos: string }[] = [
+  { src: '/images/hero-cafe.jpg',    pos: '70% center' },   // barista face is right-of-center
+  { src: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=1200&h=800&fit=crop&q=80', pos: 'center center' }, // community dinner ✓
+  { src: '/images/hero-garden.jpg',  pos: '35% center' },   // gardener face is left-of-center
+  { src: '/images/hero-cooking.jpg', pos: '55% center' },   // couple cooking together — Freepik
+  { src: '/images/hero-sunrise.jpg', pos: 'center center' }, // golden sunrise landscape
 ];
 
 const HeroSection = ({ userName, showProgress }: HeroSectionProps = {}) => {
@@ -32,7 +32,7 @@ const HeroSection = ({ userName, showProgress }: HeroSectionProps = {}) => {
   // Crossfade every 6 seconds
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentImg((prev) => (prev + 1) % HERO_IMAGES.length);
+      setCurrentImg((p) => (p + 1) % HERO_IMAGES.length);
     }, 6000);
     return () => clearInterval(timer);
   }, []);
@@ -139,9 +139,10 @@ const HeroSection = ({ userName, showProgress }: HeroSectionProps = {}) => {
               className="absolute inset-0"
             >
               <img
-                src={HERO_IMAGES[currentImg]}
+                src={HERO_IMAGES[currentImg].src}
                 alt=""
                 className="absolute inset-0 w-full h-full object-cover"
+                style={{ objectPosition: HERO_IMAGES[currentImg].pos }}
               />
             </motion.div>
           </AnimatePresence>
