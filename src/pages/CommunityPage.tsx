@@ -7,7 +7,7 @@ const CommunityPage = () => {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#f5f0eb]">
       <Navigation />
       <div className="pt-16">
         {user ? <CommunityHubNew /> : <CommunityTeaser />}

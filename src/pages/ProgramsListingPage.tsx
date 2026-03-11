@@ -470,10 +470,10 @@ const ProgramsListingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#f5f0eb]">
       <div className="container mx-auto px-4 pt-0 pb-12">
         {/* Sticky Header Section - Title, Search, and Categories */}
-        <div className="sticky top-0 z-30 -mx-4 px-4 pt-6 pb-6 bg-background/95 backdrop-blur-sm border-b border-border/50 shadow-sm">
+        <div className="sticky top-0 z-30 -mx-4 px-4 pt-6 pb-6 bg-[#f5f0eb]/95 backdrop-blur-sm border-b border-[#e8e0d8] shadow-sm">
           {creatorFilter && filteredCreator ? (
             <div className="mb-6">
               <Link to="/piacer">
@@ -502,7 +502,7 @@ const ProgramsListingPage = () => {
           ) : (
             <div className="mb-6">
               <div className="flex items-center gap-4 mb-2">
-                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-[#3d3429] flex items-center justify-center">
                   <Store className="w-5 h-5 text-white" />
                 </div>
                 <h1 className="text-3xl md:text-4xl font-bold text-foreground">{t("marketplace.title")}</h1>
@@ -519,7 +519,7 @@ const ProgramsListingPage = () => {
               placeholder={t("marketplace.search")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-14 pr-14 py-6 text-base bg-card/80 backdrop-blur-xl border-border/50 rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.03)] focus:shadow-[0_8px_32px_rgba(0,0,0,0.06)] focus:border-primary/30 transition-all duration-300"
+              className="pl-14 pr-14 py-6 text-base bg-white/80 backdrop-blur-xl border-[#e8e0d8] rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.03)] focus:shadow-[0_8px_32px_rgba(0,0,0,0.06)] focus:border-[#3d3429]/30 transition-all duration-300"
             />
             {searchQuery && (
               <button
@@ -543,8 +543,8 @@ const ProgramsListingPage = () => {
                     onClick={() => setSelectedCategory(category.id)}
                     className={`flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-full whitespace-nowrap transition-all duration-300 touch-manipulation ${
                       isActive
-                        ? "bg-primary text-primary-foreground shadow-[0_4px_16px_rgba(16,185,129,0.25)]"
-                        : "bg-card/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)]"
+                        ? "bg-[#3d3429] text-white shadow-[0_4px_16px_rgba(61,52,41,0.25)]"
+                        : "bg-white/80 backdrop-blur-sm border border-[#e8e0d8] text-[#3d3429]/60 hover:border-[#3d3429]/30 hover:text-[#3d3429] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)]"
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -795,7 +795,7 @@ const ProgramsListingPage = () => {
                                 <motion.span 
                                   initial={{ opacity: 0, scale: 0.9 }}
                                   animate={{ opacity: 1, scale: 1 }}
-                                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary text-primary-foreground text-xs font-semibold tracking-wide uppercase shadow-lg shadow-primary/25"
+                                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-600 text-white text-xs font-semibold tracking-wide uppercase shadow-lg shadow-emerald-600/25"
                                 >
                                   {language === 'hu' ? 'TÁMOGATOTT' : language === 'de' ? 'GEFÖRDERT' : 'SUPPORTED'}
                                 </motion.span>
@@ -841,7 +841,7 @@ const ProgramsListingPage = () => {
                             </div>
                             
                             {/* Title */}
-                            <h3 className="text-xl font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors duration-300">
+                            <h3 className="text-xl font-semibold text-[#3d3429] leading-snug line-clamp-2 group-hover:text-[#5a4d3e] transition-colors duration-300">
                               {cleanProgramTitle(String(program.title))}
                             </h3>
 

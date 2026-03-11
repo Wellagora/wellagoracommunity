@@ -15,9 +15,9 @@ const CommunityHubNew = () => {
   const [activeTab, setActiveTab] = useState("feed");
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#f5f0eb]">
       {/* Community Header with Stats and Expert Gallery */}
-      <div className="sticky top-0 z-30 bg-gradient-to-b from-card/95 to-background/95 backdrop-blur-sm py-8 border-b border-border/50 shadow-sm">
+      <div className="sticky top-0 z-30 bg-gradient-to-b from-white/95 to-[#f5f0eb]/95 backdrop-blur-sm py-8 border-b border-[#e8e0d8] shadow-sm">
         <div className="container mx-auto px-4">
           <CommunityHeader />
         </div>
