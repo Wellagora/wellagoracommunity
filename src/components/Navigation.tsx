@@ -301,7 +301,7 @@ const Navigation = () => {
     // SPONSOR: Támogatói Központ, Piactér, Események, Közösség
     if (roleToUse === 'sponsor') {
       return [
-        { path: "/sponsor-dashboard", label: t("nav.sponsor_hub"), icon: Building2, iconColor: "text-blue-500" },
+        { path: "/sponsor-dashboard", label: t("nav.sponsor_hub"), icon: Building2, iconColor: "text-emerald-500" },
         { path: "/programs", label: t("nav.marketplace"), icon: Store },
         { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
         { path: "/community", label: t("nav.community"), icon: UsersIcon },
@@ -321,7 +321,7 @@ const Navigation = () => {
     if (!user || !profile) return "border-[#e8e0d8]";
 
     // Super Admin always gets Indigo regardless of viewAsRole
-    if (isSuperAdmin) return "border-blue-600";
+    if (isSuperAdmin) return "border-[#3d3429]";
 
     return roleColors.border.replace('border-', 'border-b-') || "border-[#e8e0d8]";
   };
@@ -329,7 +329,7 @@ const Navigation = () => {
   // Active nav item classes based on role — vibrant, youthful colors
   const getActiveNavClasses = (): string => {
     if (!user || !profile) return "bg-orange-500 text-white";
-    if (isSuperAdmin) return "bg-blue-600 text-white";
+    if (isSuperAdmin) return "bg-[#3d3429] text-white";
     const role = effectiveRole;
     switch (role) {
       case 'expert': return "bg-amber-500 text-white";
@@ -372,7 +372,6 @@ const Navigation = () => {
             {/* Logo - Left */}
             <Link to="/" className="flex items-center gap-2 shrink-0 z-10">
               <img src={wellagoraLogo} alt="WellAgora" className="h-9 sm:h-10 w-auto object-contain" />
-              <span className={`text-sm font-medium hidden sm:inline transition-colors duration-300 ${isTransparentHero ? 'text-white/90' : 'text-gray-700'}`}>WellAgora</span>
             </Link>
 
             {/* Desktop Navigation - Center */}
@@ -511,7 +510,7 @@ const Navigation = () => {
                         </Avatar>
                         {/* Admin Badge - Elegant indicator */}
                         {isSuperAdmin && (
-                          <span className="absolute -bottom-1 -right-1 px-1 py-0.5 text-[8px] font-bold bg-blue-600 text-white rounded-sm leading-none">
+                          <span className="absolute -bottom-1 -right-1 px-1 py-0.5 text-[8px] font-bold bg-[#3d3429] text-white rounded-sm leading-none">
                             ADMIN
                           </span>
                         )}
@@ -675,7 +674,6 @@ const Navigation = () => {
                 <SheetHeader>
                   <SheetTitle className="flex items-center gap-2">
                     <img src={wellagoraLogo} alt="WellAgora" className="h-8 w-auto" />
-                    <span className="text-sm font-medium text-gray-500">WellAgora</span>
                   </SheetTitle>
                 </SheetHeader>
 
@@ -808,7 +806,7 @@ const Navigation = () => {
                     <Link
                       to="/admin"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
+                      className="flex items-center gap-3 px-3 py-2 rounded-lg text-[#3d3429] hover:bg-[#f5f0eb] transition-colors"
                     >
                       <ShieldCheck className="h-5 w-5" />
                       <span className="font-medium">Super Admin</span>
