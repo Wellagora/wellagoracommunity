@@ -13,13 +13,14 @@ interface HeroSectionProps {
   showProgress?: boolean;
 }
 
-/** Warm, community-focused hero images — crossfade slideshow */
+/** Warm, community-focused hero images — crossfade slideshow
+ *  Criteria: közösségi élmény, arcok látszanak, vegyes korosztály, meleg hangulat */
 const HERO_IMAGES = [
-  'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&h=800&fit=crop&q=80', // diverse team workshop, warm light
-  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=800&fit=crop&q=80', // mature man smiling portrait
-  'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=1200&h=800&fit=crop&q=80', // woman at desk, professional
-  'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1200&h=800&fit=crop&q=80', // outdoor community garden
-  'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1200&h=800&fit=crop&q=80', // team collaboration, mixed ages
+  'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&h=800&fit=crop&q=80', // friends laughing together outdoors, mixed ages
+  'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=1200&h=800&fit=crop&q=80', // outdoor community table, people eating together
+  'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=800&fit=crop&q=80', // people cooking together in kitchen, warm
+  'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=1200&h=800&fit=crop&q=80', // group of people together, community spirit
+  'https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=1200&h=800&fit=crop&q=80', // outdoor gathering, people enjoying together
 ];
 
 const HeroSection = ({ userName, showProgress }: HeroSectionProps = {}) => {
