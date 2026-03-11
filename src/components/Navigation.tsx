@@ -326,16 +326,16 @@ const Navigation = () => {
     return roleColors.border.replace('border-', 'border-b-') || "border-[#e8e0d8]";
   };
 
-  // Active nav item classes based on role
+  // Active nav item classes based on role — vibrant, youthful colors
   const getActiveNavClasses = (): string => {
-    if (!user || !profile) return "bg-[#3d3429] text-white";
+    if (!user || !profile) return "bg-orange-500 text-white";
     if (isSuperAdmin) return "bg-blue-600 text-white";
     const role = effectiveRole;
     switch (role) {
-      case 'expert': return "bg-amber-600 text-white";
-      case 'sponsor': return "bg-emerald-600 text-white";
+      case 'expert': return "bg-amber-500 text-white";
+      case 'sponsor': return "bg-emerald-500 text-white";
       case 'member':
-      default: return "bg-[#3d3429] text-white";
+      default: return "bg-orange-500 text-white";
     }
   };
 
@@ -582,10 +582,10 @@ const Navigation = () => {
                   </>
                 ) : (
                   <>
-                    <MagneticButton variant="outline" size="sm" strength={0.2} className="shrink-0 border-[#3d3429]/30 text-[#3d3429] hover:bg-[#3d3429]/5" asChild>
+                    <MagneticButton variant="outline" size="sm" strength={0.2} className="shrink-0 border-orange-300 text-orange-600 hover:bg-orange-50" asChild>
                       <Link to="/auth">{t("nav.sign_in")}</Link>
                     </MagneticButton>
-                    <MagneticButton size="sm" strength={0.3} className="shrink-0 bg-[#3d3429] hover:bg-[#2e2720] text-white" asChild>
+                    <MagneticButton size="sm" strength={0.3} className="shrink-0 bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/25" asChild>
                       <Link to="/auth">{t("nav.join_community")}</Link>
                     </MagneticButton>
                   </>
@@ -727,8 +727,8 @@ const Navigation = () => {
                               ? hasCustomColor
                                 ? "bg-amber-100 text-amber-800"
                                 : isWellBot
-                                  ? "bg-gradient-to-r from-amber-50 to-emerald-50 text-[#3d3429]"
-                                  : "bg-[#3d3429] text-white"
+                                  ? "bg-gradient-to-r from-orange-50 to-amber-50 text-orange-700"
+                                  : "bg-orange-500 text-white"
                               : "hover:bg-accent/50"
                           }`}
                         >
@@ -754,7 +754,7 @@ const Navigation = () => {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
                       isActive('/ai-assistant')
-                        ? "bg-gradient-to-r from-amber-50 to-emerald-50 text-[#3d3429]"
+                        ? "bg-gradient-to-r from-orange-50 to-amber-50 text-orange-700"
                         : "hover:bg-accent/50"
                     }`}
                   >

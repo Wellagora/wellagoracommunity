@@ -264,7 +264,7 @@ const EventsPageNew = () => {
                 onClick={() => setSelectedCategory(category.id)}
                 className={
                   selectedCategory === category.id
-                    ? "bg-[#3d3429] text-white hover:bg-[#2e2720]"
+                    ? "bg-orange-500 text-white hover:bg-orange-600"
                     : ""
                 }
               >
@@ -422,7 +422,7 @@ const EventsPageNew = () => {
                         ) : (
                           <Button
                             size="sm"
-                            className="w-full bg-[#3d3429] hover:bg-[#2e2720] text-white"
+                            className="w-full bg-orange-500 hover:bg-orange-600 text-white"
                             onClick={() =>
                               rsvpMutation.mutate({ eventId: event.id, action: "create" })
                             }

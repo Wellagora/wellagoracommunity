@@ -49,7 +49,7 @@ const CommunityCTA = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
                 size="lg"
-                className="bg-white text-[#3d3429] hover:bg-white/90 gap-2"
+                className="bg-white text-orange-600 hover:bg-white/90 gap-2"
                 onClick={() => navigate('/auth')}
               >
                 {t('community.register')}

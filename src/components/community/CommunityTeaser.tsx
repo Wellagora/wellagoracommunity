@@ -130,7 +130,7 @@ const CommunityTeaser = () => {
             <Button
               size="lg"
               onClick={() => navigate('/auth?tab=register')}
-              className="rounded-full bg-[#3d3429] hover:bg-[#2e2720] text-white font-semibold px-8 shadow-lg shadow-[#3d3429]/25"
+              className="rounded-full bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 shadow-lg shadow-orange-500/25"
             >
               {t('community.teaser.cta_register')}
               <ArrowRight className="h-4 w-4 ml-2" />

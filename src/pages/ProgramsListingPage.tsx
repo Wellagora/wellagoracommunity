@@ -64,6 +64,26 @@ const CATEGORY_ICONS: Record<string, any> = {
   family: Baby,
 };
 
+// Vibrant color per category — harmonious warm palette
+const CATEGORY_COLORS: Record<string, { bg: string; text: string; shadow: string; hoverBorder: string }> = {
+  all:           { bg: 'bg-orange-500',  text: 'text-white', shadow: 'shadow-orange-500/30',  hoverBorder: 'hover:border-orange-300' },
+  lifestyle:     { bg: 'bg-emerald-500', text: 'text-white', shadow: 'shadow-emerald-500/30', hoverBorder: 'hover:border-emerald-300' },
+  craft:         { bg: 'bg-amber-500',   text: 'text-white', shadow: 'shadow-amber-500/30',   hoverBorder: 'hover:border-amber-300' },
+  gastronomy:    { bg: 'bg-red-400',     text: 'text-white', shadow: 'shadow-red-400/30',     hoverBorder: 'hover:border-red-300' },
+  wellness:      { bg: 'bg-rose-400',    text: 'text-white', shadow: 'shadow-rose-400/30',    hoverBorder: 'hover:border-rose-300' },
+  hiking:        { bg: 'bg-teal-500',    text: 'text-white', shadow: 'shadow-teal-500/30',    hoverBorder: 'hover:border-teal-300' },
+  gardening:     { bg: 'bg-green-500',   text: 'text-white', shadow: 'shadow-green-500/30',   hoverBorder: 'hover:border-green-300' },
+  heritage:      { bg: 'bg-purple-400',  text: 'text-white', shadow: 'shadow-purple-400/30',  hoverBorder: 'hover:border-purple-300' },
+  volunteering:  { bg: 'bg-pink-400',    text: 'text-white', shadow: 'shadow-pink-400/30',    hoverBorder: 'hover:border-pink-300' },
+  market:        { bg: 'bg-orange-400',  text: 'text-white', shadow: 'shadow-orange-400/30',  hoverBorder: 'hover:border-orange-300' },
+  community:     { bg: 'bg-sky-400',     text: 'text-white', shadow: 'shadow-sky-400/30',     hoverBorder: 'hover:border-sky-300' },
+  sport:         { bg: 'bg-indigo-400',  text: 'text-white', shadow: 'shadow-indigo-400/30',  hoverBorder: 'hover:border-indigo-300' },
+  culture:       { bg: 'bg-fuchsia-400', text: 'text-white', shadow: 'shadow-fuchsia-400/30', hoverBorder: 'hover:border-fuchsia-300' },
+  family:        { bg: 'bg-cyan-400',    text: 'text-white', shadow: 'shadow-cyan-400/30',    hoverBorder: 'hover:border-cyan-300' },
+};
+
+const getColorForCategory = (id: string) => CATEGORY_COLORS[id] || CATEGORY_COLORS.all;
+
 // Community-focused categories with DB slug mapping
 const CATEGORIES = [
   { id: "all", labelKey: "marketplace.all_categories", dbSlug: null, icon: Grid },
@@ -502,7 +522,7 @@ const ProgramsListingPage = () => {
           ) : (
             <div className="mb-6">
               <div className="flex items-center gap-4 mb-2">
-                <div className="w-10 h-10 rounded-full bg-[#3d3429] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center">
                   <Store className="w-5 h-5 text-white" />
                 </div>
                 <h1 className="text-3xl md:text-4xl font-bold text-foreground">{t("marketplace.title")}</h1>
@@ -537,14 +557,15 @@ const ProgramsListingPage = () => {
               {CATEGORIES.map((category) => {
                 const Icon = category.icon;
                 const isActive = selectedCategory === category.id;
+                const colors = getColorForCategory(category.id);
                 return (
                   <button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
                     className={`flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-full whitespace-nowrap transition-all duration-300 touch-manipulation ${
                       isActive
-                        ? "bg-[#3d3429] text-white shadow-[0_4px_16px_rgba(61,52,41,0.25)]"
-                        : "bg-white/80 backdrop-blur-sm border border-[#e8e0d8] text-[#3d3429]/60 hover:border-[#3d3429]/30 hover:text-[#3d3429] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)]"
+                        ? `${colors.bg} ${colors.text} shadow-lg ${colors.shadow}`
+                        : `bg-white/80 backdrop-blur-sm border border-[#e8e0d8] text-[#3d3429]/70 ${colors.hoverBorder} hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)]`
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -841,7 +862,7 @@ const ProgramsListingPage = () => {
                             </div>
                             
                             {/* Title */}
-                            <h3 className="text-xl font-semibold text-[#3d3429] leading-snug line-clamp-2 group-hover:text-[#5a4d3e] transition-colors duration-300">
+                            <h3 className="text-xl font-semibold text-[#3d3429] leading-snug line-clamp-2 group-hover:text-orange-600 transition-colors duration-300">
                               {cleanProgramTitle(String(program.title))}
                             </h3>
 
