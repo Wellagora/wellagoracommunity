@@ -77,7 +77,7 @@ const ExpertGallery = () => {
   // Loading skeleton
   if (isLoading) {
     return (
-      <section className="py-12 bg-muted/30 relative overflow-hidden">
+      <section className="py-12 bg-[#f5f0eb] relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-[0.5px] bg-foreground/5" />
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
@@ -139,7 +139,7 @@ const ExpertGallery = () => {
   );
 
   return (
-    <section className="py-12 bg-muted/30 relative overflow-hidden">
+    <section className="py-12 bg-[#f5f0eb] relative overflow-hidden">
       {/* Ultra-thin top separator */}
       <div className="absolute top-0 left-0 right-0 h-[0.5px] bg-foreground/5" />
 

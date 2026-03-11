@@ -15,11 +15,11 @@ interface HeroSectionProps {
 
 /** Warm, community-focused hero images — crossfade slideshow */
 const HERO_IMAGES = [
-  'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&h=800&fit=crop&q=80', // friends laughing together
-  'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1200&h=800&fit=crop&q=80', // workshop/coworking
-  'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1200&h=800&fit=crop&q=80', // hands holding plant
-  'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=1200&h=800&fit=crop&q=80', // group celebration
-  'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1200&h=800&fit=crop&q=80', // outdoor community
+  'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&h=800&fit=crop&q=80', // diverse team workshop, warm light
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=800&fit=crop&q=80', // mature man smiling portrait
+  'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=1200&h=800&fit=crop&q=80', // woman at desk, professional
+  'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1200&h=800&fit=crop&q=80', // outdoor community garden
+  'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1200&h=800&fit=crop&q=80', // team collaboration, mixed ages
 ];
 
 const HeroSection = ({ userName, showProgress }: HeroSectionProps = {}) => {

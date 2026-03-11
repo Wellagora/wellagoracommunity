@@ -7,30 +7,30 @@ const Footer = () => {
   const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
 
-  const linkClasses = "text-sm text-white/60 hover:text-blue-400 transition-colors duration-200";
+  const linkClasses = "text-sm text-foreground/50 hover:text-foreground transition-colors duration-200";
 
   return (
-    <footer className="text-white/70 mt-auto" style={{ background: 'linear-gradient(180deg, #0F0F35 0%, #0a0a25 100%)' }}>
+    <footer className="mt-auto bg-[#f5f0eb] border-t border-black/[0.06]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
           {/* About Section */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <Leaf className="w-5 h-5 text-blue-400" />
-              <h3 className="font-semibold text-white">{t('footer.about_title')}</h3>
+              <Leaf className="w-5 h-5 text-emerald-600" />
+              <h3 className="font-semibold text-foreground">{t('footer.about_title')}</h3>
             </div>
-            <p className="text-sm text-white/50 mb-4 leading-relaxed">
+            <p className="text-sm text-foreground/50 mb-4 leading-relaxed">
               {t('footer.about_text')}
             </p>
-            <div className="space-y-2 text-sm text-white/50">
-              <p className="font-medium text-white/80">ProSelf International Zrt</p>
+            <div className="space-y-2 text-sm text-foreground/50">
+              <p className="font-medium text-foreground/70">ProSelf International Zrt</p>
               <div className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0 text-blue-400/60" />
+                <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0 text-foreground/30" />
                 <span>1133 Budapest, Pannónia u. 102</span>
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 flex-shrink-0 text-blue-400/60" />
-                <a href="mailto:info@wellagora.org" className="hover:text-blue-400 transition-colors">
+                <Mail className="w-4 h-4 flex-shrink-0 text-foreground/30" />
+                <a href="mailto:info@wellagora.org" className="hover:text-foreground transition-colors">
                   info@wellagora.org
                 </a>
               </div>
@@ -39,7 +39,7 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold text-white mb-4">{t('footer.quick_links')}</h3>
+            <h3 className="font-semibold text-foreground mb-4">{t('footer.quick_links')}</h3>
             <ul className="space-y-3">
               <li>
                 <Link to="/programs" className={linkClasses}>
@@ -66,10 +66,10 @@ const Footer = () => {
 
           {/* Community */}
           <div>
-            <h3 className="font-semibold text-white mb-4">{t('nav.community')}</h3>
+            <h3 className="font-semibold text-foreground mb-4">{t('nav.community')}</h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/founding-expert" className="text-sm text-white/60 hover:text-amber-400 transition-colors duration-200">
+                <Link to="/founding-expert" className="text-sm text-foreground/50 hover:text-amber-700 transition-colors duration-200">
                   Founding Expert
                 </Link>
               </li>
@@ -93,7 +93,7 @@ const Footer = () => {
 
           {/* Legal */}
           <div>
-            <h3 className="font-semibold text-white mb-4">{t('footer.legal_title')}</h3>
+            <h3 className="font-semibold text-foreground mb-4">{t('footer.legal_title')}</h3>
             <ul className="space-y-3">
               <li>
                 <Link to="/terms" className={linkClasses}>
@@ -123,20 +123,20 @@ const Footer = () => {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-white/10 pt-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/40">
+        <div className="border-t border-black/[0.06] pt-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-foreground/40">
             <div className="flex items-center gap-2">
-              <span className="text-blue-400 font-medium">WellAgora</span>
+              <span className="text-foreground/70 font-medium">WellAgora</span>
               <span className="hidden sm:inline">— Fenntarthatósági közösségi platform</span>
             </div>
             <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
-              <Link to="/terms" className="hover:text-blue-400 transition-colors">
+              <Link to="/terms" className="hover:text-foreground transition-colors">
                 {t('footer.terms_short') || 'ÁSZF'}
               </Link>
-              <Link to="/privacy-policy" className="hover:text-blue-400 transition-colors">
+              <Link to="/privacy-policy" className="hover:text-foreground transition-colors">
                 {t('footer.privacy_short')}
               </Link>
-              <button onClick={resetCookieConsent} className="hover:text-blue-400 transition-colors">
+              <button onClick={resetCookieConsent} className="hover:text-foreground transition-colors">
                 {t('footer.cookie_settings') || 'Cookie beállítások'}
               </button>
               <span>© {currentYear} ProSelf International Zrt</span>

@@ -72,7 +72,7 @@ export const CommunityImpactCounter = () => {
   return (
     <section 
       ref={sectionRef} 
-      className="py-16 bg-gradient-to-b from-gray-50/80 to-white"
+      className="py-16 bg-gradient-to-b from-[#f5f0eb] to-white"
     >
       <div className="container mx-auto px-4 max-w-5xl">
         {/* Header with animated badge */}
