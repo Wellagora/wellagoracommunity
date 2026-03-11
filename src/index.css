@@ -613,126 +613,14 @@ Deep Slate navigation, Soft Slate backgrounds, pure organic feel
   pointer-events: none;
 }
 
-/* ===== ORBITAL RING ANIMATIONS (Circle.so inspired) ===== */
-@keyframes orbitSlow {
-  0% {
-    transform: rotate(0deg) translateX(350px) rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg) translateX(350px) rotate(-360deg);
-  }
+/* ===== SUBTLE SHAPE FLOAT (Hero geometric shapes) ===== */
+@keyframes shapeFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(3deg); }
 }
 
-@keyframes orbitMedium {
-  0% {
-    transform: rotate(120deg) translateX(250px) rotate(-120deg);
-  }
-  100% {
-    transform: rotate(480deg) translateX(250px) rotate(-480deg);
-  }
-}
-
-@keyframes orbitFast {
-  0% {
-    transform: rotate(240deg) translateX(150px) rotate(-240deg);
-  }
-  100% {
-    transform: rotate(600deg) translateX(150px) rotate(-600deg);
-  }
-}
-
-.animate-orbit-slow {
-  animation: orbitSlow 25s linear infinite;
-  top: 50%;
-  left: 50%;
-  margin-top: -5px;
-  margin-left: -5px;
-}
-
-.animate-orbit-medium {
-  animation: orbitMedium 18s linear infinite;
-  top: 50%;
-  left: 50%;
-  margin-top: -4px;
-  margin-left: -4px;
-}
-
-.animate-orbit-fast {
-  animation: orbitFast 12s linear infinite;
-  top: 50%;
-  left: 50%;
-  margin-top: -3px;
-  margin-left: -3px;
-}
-
-@media (min-width: 768px) {
-  @keyframes orbitSlow {
-    0% { transform: rotate(0deg) translateX(450px) rotate(0deg); }
-    100% { transform: rotate(360deg) translateX(450px) rotate(-360deg); }
-  }
-  @keyframes orbitMedium {
-    0% { transform: rotate(120deg) translateX(325px) rotate(-120deg); }
-    100% { transform: rotate(480deg) translateX(325px) rotate(-480deg); }
-  }
-  @keyframes orbitFast {
-    0% { transform: rotate(240deg) translateX(200px) rotate(-240deg); }
-    100% { transform: rotate(600deg) translateX(200px) rotate(-600deg); }
-  }
-}
-
-/* ===== FLOATING LEAF PARTICLES ===== */
-@keyframes floatLeaf {
-  0% {
-    transform: translateY(100vh) rotate(0deg) scale(0.8);
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.6;
-  }
-  90% {
-    opacity: 0.4;
-  }
-  100% {
-    transform: translateY(-10vh) rotate(360deg) scale(1.1);
-    opacity: 0;
-  }
-}
-
-@keyframes floatLeafSway {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(15px); }
-  75% { transform: translateX(-15px); }
-}
-
-.floating-leaf {
-  position: absolute;
-  pointer-events: none;
-  animation: floatLeaf linear infinite;
-  will-change: transform, opacity;
-}
-
-.floating-leaf::before {
-  content: '';
-  display: block;
-  width: 12px;
-  height: 12px;
-  background: radial-gradient(circle, rgba(5, 150, 105, 0.3) 0%, rgba(5, 150, 105, 0.05) 70%);
-  border-radius: 50% 0 50% 0;
-  animation: floatLeafSway 3s ease-in-out infinite;
-}
-
-/* ===== PULSE GLOW for CTA ===== */
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 0 12px rgba(5, 150, 105, 0);
-  }
-}
-
-.pulse-glow {
-  animation: pulseGlow 2.5s ease-in-out infinite;
+.animate-shape-float {
+  animation: shapeFloat 6s ease-in-out infinite;
 }
 
 /* ===== STREAK FLAME ===== */
