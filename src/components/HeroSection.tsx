@@ -16,11 +16,11 @@ interface HeroSectionProps {
 /** Warm, community-focused hero images — crossfade slideshow
  *  Criteria: közösségi élmény, arcok látszanak, vegyes korosztály, meleg hangulat */
 const HERO_IMAGES = [
-  'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&h=800&fit=crop&q=80', // friends laughing together outdoors, mixed ages
-  'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=1200&h=800&fit=crop&q=80', // outdoor community table, people eating together
-  'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=800&fit=crop&q=80', // people cooking together in kitchen, warm
-  'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=1200&h=800&fit=crop&q=80', // group of people together, community spirit
-  'https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=1200&h=800&fit=crop&q=80', // outdoor gathering, people enjoying together
+  'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=1200&h=800&fit=crop&q=80', // diverse friends group outdoor, all faces visible, warm
+  'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=800&fit=crop&q=80', // people cooking together in kitchen, warm community
+  'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=1200&h=800&fit=crop&q=80', // community dinner at long outdoor table, faces visible
+  'https://images.unsplash.com/photo-1758613171240-3951cdccf1cc?w=1200&h=800&fit=crop&q=80', // four friends walking together in a park, faces visible
+  'https://images.unsplash.com/photo-1770364292710-cf01ed8a8829?w=1200&h=800&fit=crop&q=80', // group of people standing together outdoors, community
 ];
 
 const HeroSection = ({ userName, showProgress }: HeroSectionProps = {}) => {
