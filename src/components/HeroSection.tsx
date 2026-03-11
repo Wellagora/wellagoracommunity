@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useRef, useMemo } from "react";
+import { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Users, Sparkles, ArrowRight, Leaf, Award } from "lucide-react";
@@ -12,31 +12,6 @@ interface HeroSectionProps {
   userName?: string;
   showProgress?: boolean;
 }
-
-/**
- * Decorative geometric shapes — PolyWorks-inspired colorful blobs
- */
-const GeometricShapes = () => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
-    {/* Large coral/orange circle — top right */}
-    <div className="absolute -top-20 -right-20 w-[400px] h-[400px] md:w-[500px] md:h-[500px] rounded-full bg-gradient-to-br from-orange-200/40 to-rose-200/30 blur-sm" />
-    {/* Blue-green blob — bottom left */}
-    <div className="absolute -bottom-32 -left-24 w-[350px] h-[350px] md:w-[450px] md:h-[450px] rounded-full bg-gradient-to-tr from-teal-200/30 to-sky-200/25 blur-sm" />
-    {/* Small yellow accent — mid-left */}
-    <div className="absolute top-1/3 left-[8%] w-16 h-16 md:w-24 md:h-24 rounded-2xl bg-amber-300/25 rotate-12" />
-    {/* Small blue square — mid-right */}
-    <div className="absolute top-[20%] right-[12%] w-12 h-12 md:w-20 md:h-20 rounded-xl bg-blue-400/20 -rotate-12" />
-    {/* Tiny green circle */}
-    <div className="absolute bottom-[30%] right-[20%] w-8 h-8 md:w-12 md:h-12 rounded-full bg-emerald-400/20" />
-    {/* Dotted pattern — subtle texture */}
-    <div className="absolute top-[15%] left-[15%] w-32 h-32 opacity-[0.04]"
-      style={{
-        backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)',
-        backgroundSize: '12px 12px',
-      }}
-    />
-  </div>
-);
 
 const HeroSection = ({ userName, showProgress }: HeroSectionProps = {}) => {
   const isLoggedIn = !!userName;
@@ -128,13 +103,11 @@ const HeroSection = ({ userName, showProgress }: HeroSectionProps = {}) => {
 
   return (
     <>
-      {/* HERO — Bright, clean, fresh design */}
+      {/* HERO — Clean, minimal (Storetasker-inspired) */}
       <section
         ref={sectionRef}
-        className="relative overflow-hidden bg-gradient-to-b from-slate-50/80 to-white"
+        className="relative overflow-hidden bg-white"
       >
-        {/* Decorative geometric shapes */}
-        <GeometricShapes />
 
         <motion.div
           style={{ opacity }}
