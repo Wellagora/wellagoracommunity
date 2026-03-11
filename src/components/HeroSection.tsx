@@ -14,13 +14,13 @@ interface HeroSectionProps {
 }
 
 /** Warm, community-focused hero images — crossfade slideshow
- *  Criteria: közösségi élmény, arcok látszanak, vegyes korosztály, meleg hangulat */
+ *  Mix of Freepik (own) images + Unsplash community photos */
 const HERO_IMAGES = [
-  'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=1200&h=800&fit=crop&q=80', // diverse friends group outdoor, all faces visible, warm
+  '/images/hero-cafe.jpg',      // laughing barista in warm café — Freepik
+  'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=1200&h=800&fit=crop&q=80', // community dinner at long outdoor table ✓ (user approved)
+  '/images/hero-garden.jpg',    // smiling gardener in plant nursery — Freepik
   'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=800&fit=crop&q=80', // people cooking together in kitchen, warm community
-  'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=1200&h=800&fit=crop&q=80', // community dinner at long outdoor table, faces visible
-  'https://images.unsplash.com/photo-1758613171240-3951cdccf1cc?w=1200&h=800&fit=crop&q=80', // four friends walking together in a park, faces visible
-  'https://images.unsplash.com/photo-1770364292710-cf01ed8a8829?w=1200&h=800&fit=crop&q=80', // group of people standing together outdoors, community
+  '/images/hero-sunrise.jpg',   // golden sunrise through tree, misty road — Freepik
 ];
 
 const HeroSection = ({ userName, showProgress }: HeroSectionProps = {}) => {
