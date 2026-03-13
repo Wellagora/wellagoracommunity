@@ -19,7 +19,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Loader2, ShoppingCart, CheckCircle2, CreditCard, Gift, Sparkles } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Loader2, ShoppingCart, CheckCircle2, CreditCard, Gift, Sparkles, Shield } from "lucide-react";
 import confetti from "canvas-confetti";
 
 interface PurchaseModalProps {
@@ -35,6 +36,8 @@ interface PurchaseModalProps {
     sponsor_name?: string;
     sponsor_contribution?: number;
     sponsorship_id?: string;
+    /** Creator is a founding expert (0% platform fee) */
+    is_founding_expert?: boolean;
   };
 }
 
@@ -43,6 +46,7 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
   const [isComplete, setIsComplete] = useState(false);
   const [orderReference, setOrderReference] = useState<string | null>(null);
   const [allocationId, setAllocationId] = useState<string | null>(null);
+  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
   const { user, profile } = useAuth();
   const { t, language } = useLanguage();
   const { toast } = useToast();
@@ -58,7 +62,7 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
           user.id,
           'HUF' // TODO: get from content currency
         );
-        
+
         if (error) {
           toast({
             title: t("purchase.allocation_error"),
@@ -69,7 +73,7 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
           setAllocationId(allocation.id);
         }
       };
-      
+
       reserve();
     }
   }, [isOpen, user, content.is_sponsored, content.id, allocationId]);
@@ -83,11 +87,19 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
     };
   }, [allocationId, isComplete]);
 
-  // Calculate pricing using centralized system
+  // Reset withdrawal consent when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setWithdrawalConsent(false);
+    }
+  }, [isOpen]);
+
+  // Calculate pricing using centralized system (with founding expert support)
   const pricing = calculatePricing({
     basePrice: content.price_huf,
     sponsorAmount: content.sponsor_contribution || 0,
-    platformFeePercent: 20
+    platformFeePercent: 20,
+    isFoundingExpert: content.is_founding_expert || false,
   });
 
   const isSponsored = pricing.isSponsored;
@@ -99,6 +111,18 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
 
   const handlePurchase = async () => {
     if (!user || !content) return;
+
+    // Validate withdrawal consent for paid purchases
+    if (memberPays > 0 && !withdrawalConsent) {
+      toast({
+        title: language === 'hu' ? 'Elállási jog' : 'Withdrawal Right',
+        description: language === 'hu'
+          ? 'Kérjük, fogadd el az elállási jogról szóló tájékoztatást a vásárláshoz.'
+          : 'Please accept the withdrawal right information to proceed with the purchase.',
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsPurchasing(true);
 
@@ -134,6 +158,7 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
               contentId: content.id,
               successUrl: `${window.location.origin}/purchase/success?session_id={CHECKOUT_SESSION_ID}`,
               cancelUrl: `${window.location.origin}/piacer`,
+              withdrawal_consent: withdrawalConsent,
             },
           }
         );
@@ -167,7 +192,7 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
         particleCount: 100,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ["#00E5FF", "#0066FF", "#00CCFF", "#FFD700"],
+        colors: ["#f97316", "#f59e0b", "#10b981", "#FFD700"],
       });
 
       // Send purchase confirmation notification & email
@@ -222,20 +247,20 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-white border-gray-200 max-w-md">
+      <DialogContent className="bg-white border-[#e8e0d8] max-w-md">
         {isComplete ? (
           <div className="flex flex-col items-center justify-center py-8">
-            <div className="w-16 h-16 rounded-full bg-blue-500/20 flex items-center justify-center mb-4">
-              <CheckCircle2 className="w-8 h-8 text-blue-400" />
+            <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center mb-4">
+              <CheckCircle2 className="w-8 h-8 text-emerald-500" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">
+            <h3 className="text-xl font-bold text-[#3d3429] mb-2">
               {t("purchase.complete")}
             </h3>
-            <p className="text-gray-600 text-center">
+            <p className="text-[#3d3429]/60 text-center">
               {t("purchase.success_description")}
             </p>
             {orderReference && (
-              <p className="text-xs text-gray-500 text-center mt-3">
+              <p className="text-xs text-[#3d3429]/40 text-center mt-3">
                 {t("purchase.order_reference")}: <span className="font-mono">{orderReference}</span>
               </p>
             )}
@@ -243,80 +268,125 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 text-gray-900">
+              <DialogTitle className="flex items-center gap-2 text-[#3d3429]">
                 {isSponsored ? (
-                  <Gift className="w-5 h-5 text-blue-600" />
+                  <Gift className="w-5 h-5 text-emerald-600" />
                 ) : (
-                  <ShoppingCart className="w-5 h-5 text-blue-600" />
+                  <ShoppingCart className="w-5 h-5 text-orange-500" />
                 )}
                 {t("purchase.confirm_title")}
               </DialogTitle>
-              <DialogDescription className="text-gray-600">
+              <DialogDescription className="text-[#3d3429]/60">
                 {t("purchase.confirm_description")}
               </DialogDescription>
             </DialogHeader>
 
             <div className="py-4">
-              <div className="bg-gray-50 rounded-lg p-4 mb-4 border border-gray-200">
-                <h4 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+              <div className="bg-[#f5f0eb] rounded-lg p-4 mb-4 border border-[#e8e0d8]">
+                <h4 className="font-semibold text-[#3d3429] mb-2 line-clamp-2">
                   {content.title}
                 </h4>
-                
+
                 {isSponsored ? (
                   <div className="space-y-2">
                     {/* Original price strikethrough */}
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-600">{t("purchase.original_price")}</span>
-                      <span className="text-lg text-gray-500 line-through">
+                      <span className="text-[#3d3429]/60">{t("purchase.original_price")}</span>
+                      <span className="text-lg text-[#3d3429]/40 line-through">
                         {formatPriceLocal(originalPrice)}
                       </span>
                     </div>
-                    
+
                     {/* Sponsored contribution */}
-                    <div className="flex items-center justify-between text-blue-600">
+                    <div className="flex items-center justify-between text-emerald-600">
                       <span className="flex items-center gap-1">
                         <Sparkles className="w-4 h-4" />
                         {content.sponsor_name} {language === 'hu' ? 'támogatása' : 'contribution'}
                       </span>
                       <span>-{formatPriceLocal(sponsorContribution)}</span>
                     </div>
-                    
+
                     {/* Member pays (bold) */}
-                    <div className="flex items-center justify-between border-t border-gray-200 pt-2 mt-2">
-                      <span className="text-gray-900 font-medium">{t("purchase.you_pay")}</span>
-                      <span className="text-2xl font-bold text-blue-600">
+                    <div className="flex items-center justify-between border-t border-[#e8e0d8] pt-2 mt-2">
+                      <span className="text-[#3d3429] font-medium">{t("purchase.you_pay")}</span>
+                      <span className="text-2xl font-bold text-orange-500">
                         {formatPriceLocal(memberPays)}
                       </span>
                     </div>
                   </div>
                 ) : (
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">{t("purchase.price")}</span>
-                    <span className="text-2xl font-bold text-blue-600">
+                    <span className="text-[#3d3429]/60">{t("purchase.price")}</span>
+                    <span className="text-2xl font-bold text-orange-500">
                       {formatPriceLocal(content.price_huf)}
                     </span>
                   </div>
                 )}
               </div>
 
-              <div className="bg-blue-50 rounded-lg p-4 mb-4 border border-blue-200">
+              {/* Revenue breakdown */}
+              <div className="bg-amber-50 rounded-lg p-4 mb-4 border border-amber-200">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-700">{t("purchase.price")}</span>
-                  <span className="text-gray-900 font-semibold">{formatPriceLocal(memberPays)}</span>
+                  <span className="text-[#3d3429]/70">{t("purchase.price")}</span>
+                  <span className="text-[#3d3429] font-semibold">{formatPriceLocal(memberPays)}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm mt-2">
-                  <span className="text-gray-700">{t("purchase.creator_receives")}</span>
-                  <span className="text-gray-900 font-semibold">{formatPriceLocal(creatorRevenuePreview)}</span>
+                  <span className="text-[#3d3429]/70">{t("purchase.creator_receives")}</span>
+                  <span className="text-[#3d3429] font-semibold">
+                    {formatPriceLocal(creatorRevenuePreview)}
+                    {pricing.isFoundingExpert && (
+                      <span className="ml-1 text-xs text-amber-600">(Founding Expert)</span>
+                    )}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between text-sm mt-2">
-                  <span className="text-gray-700">{t("purchase.platform_fee")}</span>
-                  <span className="text-gray-900 font-semibold">{formatPriceLocal(platformFeePreview)}</span>
+                  <span className="text-[#3d3429]/70">{t("purchase.platform_fee")}</span>
+                  <span className="text-[#3d3429] font-semibold">
+                    {formatPriceLocal(platformFeePreview)}
+                    {pricing.isFoundingExpert && (
+                      <span className="ml-1 text-xs text-emerald-600">(0%)</span>
+                    )}
+                  </span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <CreditCard className="w-4 h-4" />
-                <span>{t("purchase.simulation_notice")}</span>
+              {/* EU Withdrawal Right Consent (Elállási jog) */}
+              {memberPays > 0 && (
+                <div className="bg-orange-50 rounded-lg p-4 mb-4 border border-orange-200">
+                  <div className="flex items-start gap-3">
+                    <Checkbox
+                      id="withdrawal-consent"
+                      checked={withdrawalConsent}
+                      onCheckedChange={(checked) => setWithdrawalConsent(checked === true)}
+                      className="mt-0.5 border-orange-400 data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500"
+                    />
+                    <label htmlFor="withdrawal-consent" className="text-xs text-[#3d3429]/70 leading-relaxed cursor-pointer">
+                      {language === 'hu' ? (
+                        <>
+                          Tudomásul veszem, hogy a digitális tartalom hozzáférés azonnali biztosításával a 45/2014. (II. 26.) Korm. rendelet 29. § (1) m) pontja alapján{' '}
+                          <strong className="text-[#3d3429]">az elállási/felmondási jogomról lemondok</strong>.
+                          A vásárlástól számított 14 napon belül a Stripe-on keresztül kérhetek visszatérítést.
+                          14 nap után platform kredit formájában lehetséges.
+                        </>
+                      ) : (
+                        <>
+                          I acknowledge that by receiving immediate access to digital content, I waive my right of withdrawal
+                          under EU Directive 2011/83/EU, Article 16(m). I can request a refund via Stripe within 14 days.
+                          After 14 days, refunds are available as platform credit.
+                        </>
+                      )}
+                    </label>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-center gap-2 text-sm text-[#3d3429]/60">
+                <Shield className="w-4 h-4 text-emerald-500" />
+                <span>
+                  {language === 'hu'
+                    ? 'Biztonságos fizetés a Stripe-on keresztül'
+                    : 'Secure payment via Stripe'}
+                </span>
               </div>
             </div>
 
@@ -325,14 +395,14 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
                 variant="outline"
                 onClick={onClose}
                 disabled={isPurchasing}
-                className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                className="border-[#e8e0d8] text-[#3d3429] hover:bg-[#f5f0eb]"
               >
                 {t("common.cancel")}
               </Button>
               <Button
                 onClick={handlePurchase}
-                disabled={isPurchasing}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
+                disabled={isPurchasing || (memberPays > 0 && !withdrawalConsent)}
+                className="bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50"
               >
                 {isPurchasing ? (
                   <>

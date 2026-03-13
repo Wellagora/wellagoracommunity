@@ -52,6 +52,7 @@ serve(async (req) => {
       use_wellpoints = false,
       wellpoints_amount = 0,
       use_platform_credit = false,
+      withdrawal_consent = false, // EU elállási jog lemondás
     } = await req.json();
 
     if (!contentId) {
@@ -85,16 +86,19 @@ serve(async (req) => {
       throw new Error("Already purchased");
     }
 
-    // Get expert's Stripe account
+    // Get expert's Stripe account + founding expert status
     const { data: expertProfile } = await supabase
       .from("profiles")
-      .select("stripe_account_id, stripe_onboarding_complete")
+      .select("stripe_account_id, stripe_onboarding_complete, is_founding_expert, creator_legal_status")
       .eq("id", content.creator_id)
       .single();
 
     if (!expertProfile?.stripe_account_id || !expertProfile?.stripe_onboarding_complete) {
       throw new Error("Expert has not completed Stripe onboarding");
     }
+
+    // Founding Expert: 0% platform fee (max 5 founding experts)
+    const isFoundingExpert = expertProfile?.is_founding_expert === true;
 
     // Get buyer profile
     const { data: buyerProfile } = await supabase
@@ -145,9 +149,11 @@ serve(async (req) => {
     // 5. Final payment amount
     const userPayment = Math.max(0, basePrice - sponsorContribution - wellpointsDiscount - platformCreditUsed);
 
-    // Expert always gets 80% of base price
-    const expertPayout = Math.round(basePrice * 0.80);
-    const applicationFee = Math.max(0, userPayment - expertPayout);
+    // Founding Expert: 0% platform fee → 100% to expert
+    // Regular Expert: 20% platform fee → 80% to expert
+    const platformFeePercent = isFoundingExpert ? 0 : 0.20;
+    const expertPayout = Math.round(basePrice * (1 - platformFeePercent));
+    const applicationFee = isFoundingExpert ? 0 : Math.max(0, userPayment - expertPayout);
 
     const siteUrl = Deno.env.get("SITE_URL") || req.headers.get("origin") || "https://demo.wellagora.org";
 
@@ -219,7 +225,8 @@ serve(async (req) => {
       );
     }
 
-    // 7. Create pending transaction
+    // 7. Create pending transaction with invoice tracking
+    const invoiceIssuedBy = expertProfile?.creator_legal_status === "entrepreneur" ? "creator" : "platform";
     const { data: transaction, error: txError } = await supabase
       .from("transactions")
       .insert({
@@ -232,6 +239,10 @@ serve(async (req) => {
         creator_revenue: expertPayout,
         platform_fee: applicationFee,
         status: "pending",
+        creator_legal_status: expertProfile?.creator_legal_status || "individual",
+        invoice_issued_by: invoiceIssuedBy,
+        invoice_status: "pending",
+        withdrawal_consent: withdrawal_consent,
       })
       .select("id")
       .single();
@@ -277,6 +288,10 @@ serve(async (req) => {
           wellagora_platform_credit_used: platformCreditUsed.toString(),
           wellagora_expert_payout: expertPayout.toString(),
           wellagora_platform_fee: applicationFee.toString(),
+          wellagora_is_founding_expert: isFoundingExpert ? "true" : "false",
+          wellagora_creator_legal_status: expertProfile?.creator_legal_status || "individual",
+          wellagora_withdrawal_consent: withdrawal_consent ? "true" : "false",
+          wellagora_invoice_issued_by: expertProfile?.creator_legal_status === "entrepreneur" ? "creator" : "platform",
         },
       },
       success_url: `${siteUrl}/purchase/success?session_id={CHECKOUT_SESSION_ID}`,

@@ -21,7 +21,7 @@ import { cn } from '@/lib/utils';
 import {
   TrendingUp, AlertTriangle, CheckCircle2, Clock, RefreshCw, Settings,
   Percent, ArrowUpRight, Wallet, PiggyBank, Banknote, Receipt,
-  Download, ChevronDown, ChevronUp, BarChart3, UserX
+  Download, ChevronDown, ChevronUp, BarChart3, UserX, FileText, FileSpreadsheet,
 } from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
 
@@ -77,6 +77,18 @@ interface NoShowSummary {
   expert_noshow_payouts: number;
 }
 
+interface InvoiceTrackingRow {
+  id: string;
+  invoice_number: string | null;
+  invoice_status: string;
+  invoice_issued_by: string;
+  amount_total: number;
+  creator_name: string;
+  buyer_email: string;
+  created_at: string;
+  invoice_pdf_url: string | null;
+}
+
 interface SystemSetting {
   key: string;
   value: Record<string, number | string>;
@@ -107,6 +119,7 @@ const AdminFinancials = () => {
   const [editingSettings, setEditingSettings] = useState<Record<string, Record<string, number | string>>>({});
   const [expandedExperts, setExpandedExperts] = useState<Set<string>>(new Set());
   const [expandedSponsors, setExpandedSponsors] = useState<Set<string>>(new Set());
+  const [invoiceRows, setInvoiceRows] = useState<InvoiceTrackingRow[]>([]);
 
   // ─── Data fetching ───────────────────────────────────────────
   const fetchData = async () => {
@@ -119,6 +132,7 @@ const AdminFinancials = () => {
         fetchSponsorCredits(),
         fetchNoShow(since),
         fetchSettings(),
+        fetchInvoiceTracking(since),
       ]);
     } catch (error) {
       toast.error('Hiba az adatok betöltésekor');
@@ -260,6 +274,63 @@ const AdminFinancials = () => {
     }
   };
 
+  const fetchInvoiceTracking = async (since: string | null) => {
+    let query = supabase
+      .from('transactions')
+      .select('id, invoice_number, invoice_status, invoice_issued_by, amount_total, buyer_email, created_at, invoice_pdf_url, creator_id')
+      .order('created_at', { ascending: false })
+      .limit(50);
+    if (since) query = query.gte('created_at', since);
+    const { data } = await query;
+    if (!data || data.length === 0) { setInvoiceRows([]); return; }
+
+    // Fetch creator names
+    const creatorIds = [...new Set(data.map((r: any) => r.creator_id).filter(Boolean))];
+    let namesMap: Record<string, string> = {};
+    if (creatorIds.length > 0) {
+      const { data: profiles } = await supabase.from('profiles').select('id, first_name, last_name').in('id', creatorIds);
+      profiles?.forEach((p: any) => { namesMap[p.id] = [p.first_name, p.last_name].filter(Boolean).join(' ') || 'Ismeretlen'; });
+    }
+
+    setInvoiceRows(data.map((r: any) => ({
+      id: r.id,
+      invoice_number: r.invoice_number,
+      invoice_status: r.invoice_status || 'pending',
+      invoice_issued_by: r.invoice_issued_by || 'platform',
+      amount_total: Number(r.amount_total) || 0,
+      creator_name: namesMap[r.creator_id] || 'Ismeretlen',
+      buyer_email: r.buyer_email || '-',
+      created_at: r.created_at,
+      invoice_pdf_url: r.invoice_pdf_url,
+    })));
+  };
+
+  const exportDAC7 = async () => {
+    const year = new Date().getFullYear() - 1; // Export previous year
+    try {
+      const { data, error } = await supabase.rpc('get_dac7_report', { report_year: year });
+      if (error) throw error;
+      if (!data || data.length === 0) {
+        toast.info(`Nincs DAC7 adat a(z) ${year}. évre`);
+        return;
+      }
+      const rows = [['Név', 'Email', 'Adóazonosító', 'Lakcím ország', 'Tranzakciók száma', 'Összbevétel (HUF)', 'Platform díj (HUF)', 'Nettó kifizetés (HUF)']];
+      data.forEach((r: any) => rows.push([
+        r.expert_name || '-', r.expert_email || '-', r.tax_id || '-', r.country_of_residence || 'HU',
+        String(r.transaction_count), String(r.total_amount), String(r.platform_fees), String(r.net_payouts),
+      ]));
+      const csv = rows.map(r => r.join(';')).join('\n');
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `wellagora_dac7_${year}.csv`; a.click();
+      URL.revokeObjectURL(url);
+      toast.success(`DAC7 riport letöltve (${year})`);
+    } catch (e: any) {
+      toast.error(e?.message || 'Hiba a DAC7 riport generálásakor');
+    }
+  };
+
   useEffect(() => { fetchData(); }, [period, selectedProjectId]);
 
   // ─── Actions ─────────────────────────────────────────────────
@@ -340,6 +411,7 @@ const AdminFinancials = () => {
           </Tabs>
           <Button variant="outline" size="icon" onClick={fetchData}><RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} /></Button>
           <Button variant="outline" onClick={exportCSV}><Download className="h-4 w-4 mr-1" />CSV</Button>
+          <Button variant="outline" onClick={exportDAC7} title="DAC7 éves jelentés letöltése"><FileSpreadsheet className="h-4 w-4 mr-1" />DAC7</Button>
           <Button variant="outline" onClick={() => setSettingsOpen(true)}><Settings className="h-4 w-4 mr-1" />Beállítások</Button>
         </div>
       </div>
@@ -468,6 +540,64 @@ const AdminFinancials = () => {
                     <TableCell>
                       {e.settlement_status === 'pending' && (
                         <Button size="sm" variant="outline" onClick={() => markPayoutComplete(e.expert_id)}>Fizet</Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* ─── 2c. Invoice Tracking ─── */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5" />Számla Követés</CardTitle>
+          <CardDescription>Tranzakciókhoz tartozó számlák állapota</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {loading ? <Skeleton className="h-48" /> : invoiceRows.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">Nincs tranzakció adat az időszakban</div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Dátum</TableHead>
+                  <TableHead>Számlaszám</TableHead>
+                  <TableHead>Kiállító</TableHead>
+                  <TableHead>Szakértő</TableHead>
+                  <TableHead>Vásárló</TableHead>
+                  <TableHead className="text-right">Összeg</TableHead>
+                  <TableHead>Státusz</TableHead>
+                  <TableHead></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {invoiceRows.map(inv => (
+                  <TableRow key={inv.id}>
+                    <TableCell className="text-sm">{new Date(inv.created_at).toLocaleDateString('hu-HU')}</TableCell>
+                    <TableCell className="font-mono text-sm">{inv.invoice_number || '—'}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={inv.invoice_issued_by === 'creator' ? 'bg-amber-50 text-amber-700' : 'bg-blue-50 text-blue-700'}>
+                        {inv.invoice_issued_by === 'creator' ? 'Szakértő' : 'Platform'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-sm">{inv.creator_name}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{inv.buyer_email}</TableCell>
+                    <TableCell className="text-right font-mono">{formatCurrency(inv.amount_total)}</TableCell>
+                    <TableCell>
+                      {inv.invoice_status === 'issued' && <Badge className="bg-emerald-100 text-emerald-700">Kiállítva</Badge>}
+                      {inv.invoice_status === 'pending' && <Badge className="bg-amber-100 text-amber-700">Függő</Badge>}
+                      {inv.invoice_status === 'failed' && <Badge variant="destructive">Hiba</Badge>}
+                      {inv.invoice_status === 'cancelled' && <Badge variant="secondary">Sztornó</Badge>}
+                      {!['issued', 'pending', 'failed', 'cancelled'].includes(inv.invoice_status) && <Badge variant="outline">{inv.invoice_status}</Badge>}
+                    </TableCell>
+                    <TableCell>
+                      {inv.invoice_pdf_url && (
+                        <Button size="sm" variant="ghost" asChild>
+                          <a href={inv.invoice_pdf_url} target="_blank" rel="noopener noreferrer"><Download className="h-3 w-3" /></a>
+                        </Button>
                       )}
                     </TableCell>
                   </TableRow>

@@ -168,6 +168,29 @@ const SponsorPackageSelector = ({ onPurchaseComplete, onClose }: SponsorPackageS
           action: 'purchase'
         });
 
+      // Generate Billingo invoice (Platform → Szponzor, 27% ÁFA)
+      try {
+        // Find the sponsor_credits record
+        const { data: creditRecord } = await supabase
+          .from('sponsor_credits')
+          .select('id')
+          .eq('sponsor_user_id', user.id)
+          .maybeSingle();
+
+        if (creditRecord) {
+          await supabase.functions.invoke('create-sponsor-invoice', {
+            body: {
+              sponsor_user_id: user.id,
+              package_name: pkg.name,
+              credit_amount: pkg.price,
+              sponsor_credit_id: creditRecord.id,
+            },
+          });
+        }
+      } catch (invoiceErr) {
+        console.warn('Sponsor invoice generation failed (non-blocking):', invoiceErr);
+      }
+
       toast.success(
         `${pkg.name} csomag sikeresen aktiválva! ${pkg.totalCredits.toLocaleString()} kredit jóváírva.`
       );

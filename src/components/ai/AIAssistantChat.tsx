@@ -132,7 +132,7 @@ const AIAssistantChat = ({ embedded = false }: AIAssistantChatProps) => {
       }));
 
       const { data, error } = await supabase.functions.invoke('ai-chat', {
-        body: { 
+        body: {
           messages: conversationHistory,
           language: language,
           conversationId: conversationId,

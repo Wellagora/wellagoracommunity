@@ -69,7 +69,7 @@ const ProgramDetailPage = () => {
         .select(`
           *,
           creator:profiles!expert_contents_creator_id_fkey (
-            id, first_name, last_name, avatar_url, is_verified_expert
+            id, first_name, last_name, avatar_url, is_verified_expert, is_founding_expert, creator_legal_status
           )
         `)
         .eq('id', id)
@@ -973,6 +973,7 @@ const ProgramDetailPage = () => {
                 sponsor_name: (program as any).sponsor_name || undefined,
                 sponsor_contribution: sponsorship?.sponsor_contribution_huf || (program as any).fixed_sponsor_amount || undefined,
                 sponsorship_id: sponsorship?.id || undefined,
+                is_founding_expert: (program as any).creator?.is_founding_expert || false,
               }}
             />
           );

@@ -1,6 +1,12 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.14.0?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import {
+  isBillingoConfigured,
+  createBuyerInvoice,
+  createCommissionInvoice,
+  sendInvoiceEmail,
+} from "../_shared/billingo.ts";
 
 function generateVoucherCode(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -9,6 +15,186 @@ function generateVoucherCode(): string {
     code += chars[Math.floor(Math.random() * chars.length)];
   }
   return code;
+}
+
+/**
+ * Billingo Invoice Generation after successful payment.
+ *
+ * 3 invoice scenarios for program purchase:
+ *
+ * A) Magánszemély szakértő:
+ *    1. Platform → Vásárló (Tag): program purchase invoice (27% ÁFA)
+ *    2. Platform → Szakértő: 20% commission invoice (B2B, 27% ÁFA)
+ *    → Szakértő gets 80% payout minus commission offset
+ *
+ * B) Vállalkozó szakértő:
+ *    1. Szakértő → Vásárló: THEY issue their own invoice (we just record obligation)
+ *    2. Platform → Szakértő: 20% commission invoice (B2B, 27% ÁFA)
+ *
+ * C) Founding Expert (0% fee):
+ *    1. Same as A or B for buyer invoice
+ *    2. NO commission invoice (0% fee)
+ */
+async function generateInvoices(
+  supabase: any,
+  transactionId: string,
+  meta: Record<string, string>,
+  buyerEmail: string,
+  buyerName: string,
+  contentTitle: string,
+  userPayment: number,
+  platformFee: number,
+  grossRevenue: number,
+): Promise<{
+  buyerInvoiceNumber: string | null;
+  commissionInvoiceNumber: string | null;
+  error: string | null;
+}> {
+  const creatorLegalStatus = meta.wellagora_creator_legal_status || "individual";
+  const isFoundingExpert = meta.wellagora_is_founding_expert === "true";
+  const commissionPercent = isFoundingExpert ? 0 : 20;
+
+  // Check if Billingo is configured
+  if (!isBillingoConfigured()) {
+    console.warn("Billingo not configured — invoice generation skipped, marking as pending");
+    await supabase
+      .from("transactions")
+      .update({
+        invoice_status: "pending",
+        invoice_issued_by: creatorLegalStatus === "entrepreneur" ? "creator" : "platform",
+        creator_legal_status: creatorLegalStatus,
+      })
+      .eq("id", transactionId);
+    return { buyerInvoiceNumber: null, commissionInvoiceNumber: null, error: "Billingo not configured" };
+  }
+
+  let buyerInvoiceNumber: string | null = null;
+  let commissionInvoiceNumber: string | null = null;
+
+  try {
+    // ── INVOICE 1: Buyer Invoice ──────────────────────────────
+    if (creatorLegalStatus === "individual") {
+      // Magánszemély: Platform issues invoice to buyer
+      if (userPayment > 0) {
+        const buyerResult = await createBuyerInvoice({
+          buyerName: buyerName || buyerEmail,
+          buyerEmail,
+          contentTitle,
+          grossAmount: userPayment,
+          transactionId,
+          isFoundingExpert,
+        });
+
+        buyerInvoiceNumber = buyerResult.invoice_number;
+
+        // Send invoice email to buyer
+        try { await sendInvoiceEmail(buyerResult.id); } catch (e) {
+          console.warn("Failed to email buyer invoice:", e);
+        }
+
+        console.log(`Buyer invoice created: ${buyerInvoiceNumber} (tx: ${transactionId})`);
+      }
+
+      // Update transaction
+      await supabase
+        .from("transactions")
+        .update({
+          invoice_number: buyerInvoiceNumber,
+          invoice_status: buyerInvoiceNumber ? "issued" : "pending",
+          invoice_issued_by: "platform",
+          creator_legal_status: creatorLegalStatus,
+          invoice_pdf_url: null, // PDF available via Billingo API
+        })
+        .eq("id", transactionId);
+
+    } else {
+      // Vállalkozó: They issue their own invoice — record obligation
+      await supabase
+        .from("transactions")
+        .update({
+          invoice_status: "pending", // entrepreneur must issue manually
+          invoice_issued_by: "creator",
+          creator_legal_status: creatorLegalStatus,
+        })
+        .eq("id", transactionId);
+
+      console.log(`Invoice obligation recorded for entrepreneur (tx: ${transactionId})`);
+
+      // Send notification to expert: "Issue your invoice for this sale"
+      const expertId = meta.wellagora_expert_id || "";
+      if (expertId) {
+        await supabase.from("notifications").insert({
+          user_id: expertId,
+          type: "invoice_reminder",
+          title: "Szamla kiallitasi kotelezettseg",
+          message: `Uj vasarlas tortent a programodra: "${contentTitle}". ` +
+            `Kerunk, allitsd ki a szamlat a vasarlo reszere (${buyerName}, ${buyerEmail}). ` +
+            `Osszeg: ${userPayment} Ft. Tranzakcio: ${transactionId}`,
+          data: {
+            transaction_id: transactionId,
+            buyer_email: buyerEmail,
+            buyer_name: buyerName,
+            amount: userPayment,
+            content_title: contentTitle,
+          },
+          is_read: false,
+        });
+      }
+    }
+
+    // ── INVOICE 2: Commission Invoice (Platform → Expert) ────
+    // Fetch expert profile for Billingo partner data
+    const expertId = meta.wellagora_expert_id || "";
+    if (expertId && platformFee > 0) {
+      const { data: expertProfile } = await supabase
+        .from("profiles")
+        .select("first_name, last_name, email, company_tax_id, tax_id, creator_legal_status")
+        .eq("id", expertId)
+        .single();
+
+      if (expertProfile) {
+        const expertName = [expertProfile.first_name, expertProfile.last_name]
+          .filter(Boolean).join(" ") || expertProfile.email;
+        const expertTaxcode = expertProfile.company_tax_id || expertProfile.tax_id || "";
+
+        const commResult = await createCommissionInvoice({
+          expertName,
+          expertEmail: expertProfile.email,
+          expertTaxcode,
+          contentTitle,
+          grossRevenue,
+          commissionAmount: platformFee,
+          commissionPercent,
+          transactionId,
+        });
+
+        if (commResult) {
+          commissionInvoiceNumber = commResult.invoice_number;
+          // Send commission invoice email to expert
+          try { await sendInvoiceEmail(commResult.id); } catch (e) {
+            console.warn("Failed to email commission invoice:", e);
+          }
+          console.log(`Commission invoice created: ${commissionInvoiceNumber} (tx: ${transactionId})`);
+        }
+      }
+    }
+
+    return { buyerInvoiceNumber, commissionInvoiceNumber, error: null };
+
+  } catch (err: any) {
+    console.error("Invoice generation failed:", err.message);
+    // Mark as failed but don't break the purchase flow
+    await supabase
+      .from("transactions")
+      .update({
+        invoice_status: "failed",
+        invoice_issued_by: creatorLegalStatus === "entrepreneur" ? "creator" : "platform",
+        creator_legal_status: creatorLegalStatus,
+      })
+      .eq("id", transactionId);
+
+    return { buyerInvoiceNumber: null, commissionInvoiceNumber: null, error: err.message };
+  }
 }
 
 serve(async (req) => {
@@ -114,10 +300,10 @@ serve(async (req) => {
           created_at: new Date().toISOString(),
         }).select().single();
 
-        // 3. Get content creator
+        // 3. Get content creator + title
         const { data: content } = await supabase
           .from("expert_contents")
-          .select("creator_id")
+          .select("creator_id, title")
           .eq("id", contentId)
           .single();
 
@@ -130,6 +316,11 @@ serve(async (req) => {
             .eq("id", sponsorCreditId)
             .single();
           sponsorUserId = sc?.sponsor_user_id || null;
+        }
+
+        // Enrich meta with expert_id for commission invoice
+        if (content?.creator_id && !meta.wellagora_expert_id) {
+          meta.wellagora_expert_id = content.creator_id;
         }
 
         await supabase.from("voucher_settlements").insert({
@@ -169,7 +360,6 @@ serve(async (req) => {
 
         // 7. WellPoints deduction
         if (wellpointsUsed > 0) {
-          // Deduct WellPoints from user profile
           const { data: userProfile } = await supabase
             .from("profiles")
             .select("wellpoints")
@@ -183,7 +373,6 @@ serve(async (req) => {
               .eq("id", userId);
           }
 
-          // Record redemption
           await supabase.from("wellpoints_redemptions").insert({
             user_id: userId,
             points_spent: wellpointsUsed,
@@ -194,7 +383,52 @@ serve(async (req) => {
           });
         }
 
-        console.log(`Successfully processed checkout: voucher=${voucherCode}, tx=${transactionId}`);
+        // 8. Generate invoices via Billingo
+        // Fetch buyer name from profile
+        let buyerName = session.customer_email || "";
+        const { data: buyerProfile } = await supabase
+          .from("profiles")
+          .select("first_name, last_name")
+          .eq("id", userId)
+          .single();
+        if (buyerProfile) {
+          buyerName = [buyerProfile.first_name, buyerProfile.last_name].filter(Boolean).join(" ") || buyerName;
+        }
+
+        const contentTitle = content?.title || "WellAgora program";
+
+        const { buyerInvoiceNumber, commissionInvoiceNumber, error: invoiceError } =
+          await generateInvoices(
+            supabase,
+            transactionId || "",
+            meta,
+            session.customer_email || "",
+            buyerName,
+            contentTitle,
+            userPayment,
+            platformFee,
+            basePrice,
+          );
+
+        if (invoiceError) {
+          console.warn(`Invoice generation warning: ${invoiceError} (tx: ${transactionId})`);
+        }
+
+        // 9. Update settlement with invoice info
+        if (buyerInvoiceNumber && voucher?.id) {
+          await supabase
+            .from("voucher_settlements")
+            .update({
+              invoice_number: buyerInvoiceNumber,
+              invoice_issued_by: meta.wellagora_invoice_issued_by || "platform",
+            })
+            .eq("voucher_id", voucher.id);
+        }
+
+        console.log(
+          `Successfully processed checkout: voucher=${voucherCode}, tx=${transactionId}, ` +
+          `buyerInvoice=${buyerInvoiceNumber || "pending"}, commissionInvoice=${commissionInvoiceNumber || "n/a"}`
+        );
         break;
       }
 

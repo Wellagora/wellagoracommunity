@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Shield, Bot, Users, Cookie, Scale, Lock, Database } from "lucide-react";
+import { ArrowLeft, Shield, Bot, Users, Cookie, Scale, Lock, Database, Receipt, FileBarChart } from "lucide-react";
 
 const PrivacyPolicyPage = () => {
   const { t } = useLanguage();
@@ -12,7 +12,7 @@ const PrivacyPolicyPage = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navigation />
-      
+
       <div className="flex-1">
         <div className="container mx-auto px-4 py-12 max-w-4xl">
           <Link to="/">
@@ -28,7 +28,7 @@ const PrivacyPolicyPage = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-foreground">{t("privacy.title")}</h1>
-              <p className="text-muted-foreground">{t("privacy.last_updated")}: 2026-02-10</p>
+              <p className="text-muted-foreground">{t("privacy.last_updated")}</p>
             </div>
           </div>
 
@@ -146,6 +146,32 @@ const PrivacyPolicyPage = () => {
             </CardContent>
           </Card>
 
+          {/* Billing & Invoicing */}
+          <Card className="mb-6 border-blue-500/30">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Receipt className="w-5 h-5 text-blue-500" />
+                {t("privacy.billing_title")}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="prose prose-sm max-w-none dark:prose-invert">
+              <p className="text-muted-foreground whitespace-pre-line">{t("privacy.billing_text")}</p>
+            </CardContent>
+          </Card>
+
+          {/* DAC7 Reporting */}
+          <Card className="mb-6 border-amber-500/30">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileBarChart className="w-5 h-5 text-amber-500" />
+                {t("privacy.dac7_title")}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="prose prose-sm max-w-none dark:prose-invert">
+              <p className="text-muted-foreground whitespace-pre-line">{t("privacy.dac7_text")}</p>
+            </CardContent>
+          </Card>
+
           {/* Cookies */}
           <Card className="mb-6">
             <CardHeader>
@@ -259,13 +285,17 @@ const PrivacyPolicyPage = () => {
             <CardContent className="prose prose-sm max-w-none dark:prose-invert">
               <p className="text-muted-foreground mb-3">{t("privacy.authority_intro")}</p>
               <div className="bg-muted/50 p-4 rounded-lg">
-                <p className="font-semibold text-foreground">Österreichische Datenschutzbehörde</p>
-                <p className="text-muted-foreground">Barichgasse 40-42</p>
-                <p className="text-muted-foreground">1030 Vienna, Austria</p>
+                <p className="font-semibold text-foreground">Nemzeti Adatvédelmi és Információszabadság Hatóság (NAIH)</p>
+                <p className="text-muted-foreground">1055 Budapest, Falk Miksa utca 9-11.</p>
+                <p className="text-muted-foreground">Postacím: 1363 Budapest, Pf. 9.</p>
                 <p className="text-muted-foreground mt-2">
-                  <a href="https://www.dsb.gv.at" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                    www.dsb.gv.at
+                  <a href="https://www.naih.hu" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    www.naih.hu
                   </a>
+                </p>
+                <p className="text-muted-foreground">
+                  <strong>Email:</strong>{" "}
+                  <a href="mailto:ugyfelszolgalat@naih.hu" className="text-primary hover:underline">ugyfelszolgalat@naih.hu</a>
                 </p>
               </div>
             </CardContent>

@@ -14,21 +14,25 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  Calendar, 
-  Award, 
-  CheckCircle2, 
-  XCircle, 
+import {
+  User,
+  Mail,
+  Phone,
+  Calendar,
+  Award,
+  CheckCircle2,
+  XCircle,
   Clock,
   Briefcase,
   TrendingUp,
   DollarSign,
   FileText,
   Shield,
-  Zap
+  Zap,
+  Crown,
+  Scale,
+  CreditCard,
+  FileCheck,
 } from "lucide-react";
 import { format } from "date-fns";
 import { hu } from "date-fns/locale";
@@ -52,6 +56,14 @@ interface ExpertProfile {
   verification_expires_at: string | null;
   organization_name: string | null;
   expertise_areas: string[] | null;
+  // Financial / legal fields
+  is_founding_expert: boolean | null;
+  creator_legal_status: string | null;
+  expert_aszf_accepted_at: string | null;
+  expert_aszf_version: string | null;
+  stripe_onboarding_complete: boolean | null;
+  tax_id: string | null;
+  company_tax_id: string | null;
 }
 
 interface ExpertProgram {
@@ -101,21 +113,22 @@ export function ExpertDetailModal(props: {
     return (f + l).toUpperCase() || profile.email[0].toUpperCase();
   }, [profile]);
 
-  // Calculate earnings
+  // Calculate earnings (founding experts pay 0% fee)
   const earnings = useMemo(() => {
+    const feePercent = profile?.is_founding_expert ? 0 : 0.2;
     const grossRevenue = programs.reduce((sum, p) => {
       const seats = p.used_licenses || 0;
       const price = p.price_huf || 0;
       return sum + (seats * price);
     }, 0);
-    const platformFee = grossRevenue * 0.2;
+    const platformFee = grossRevenue * feePercent;
     const netEarnings = grossRevenue - platformFee;
     const pendingPayout = payouts
       .filter(p => p.status === 'pending')
       .reduce((sum, p) => sum + p.amount_huf, 0);
-    
-    return { grossRevenue, platformFee, netEarnings, pendingPayout };
-  }, [programs, payouts]);
+
+    return { grossRevenue, platformFee, netEarnings, pendingPayout, feePercent };
+  }, [programs, payouts, profile?.is_founding_expert]);
 
   const load = async () => {
     if (!expertId) return;
@@ -124,7 +137,7 @@ export function ExpertDetailModal(props: {
       // Load profile
       const { data: p, error: pErr } = await supabase
         .from("profiles")
-        .select("id,email,first_name,last_name,expert_title,bio,avatar_url,verification_status,is_verified_expert,is_super_admin,user_role,created_at,green_pass,verification_expires_at,organization_name,expertise_areas")
+        .select("id,email,first_name,last_name,expert_title,bio,avatar_url,verification_status,is_verified_expert,is_super_admin,user_role,created_at,green_pass,verification_expires_at,organization_name,expertise_areas,is_founding_expert,creator_legal_status,expert_aszf_accepted_at,expert_aszf_version,stripe_onboarding_complete,tax_id,company_tax_id")
         .eq("id", expertId)
         .maybeSingle();
       if (pErr) throw pErr;
@@ -176,6 +189,7 @@ export function ExpertDetailModal(props: {
           expert_title: profile.expert_title,
           bio: profile.bio,
           green_pass: profile.green_pass,
+          is_founding_expert: profile.is_founding_expert,
         })
         .eq("id", profile.id);
       if (error) throw error;
@@ -185,7 +199,7 @@ export function ExpertDetailModal(props: {
         p_action: 'update',
         p_table_name: 'profiles',
         p_record_id: profile.id,
-        p_new_values: { first_name: profile.first_name, last_name: profile.last_name, expert_title: profile.expert_title, green_pass: profile.green_pass }
+        p_new_values: { first_name: profile.first_name, last_name: profile.last_name, expert_title: profile.expert_title, green_pass: profile.green_pass, is_founding_expert: profile.is_founding_expert }
       });
 
       toast.success("Mentve!");
@@ -193,6 +207,45 @@ export function ExpertDetailModal(props: {
       await load();
     } catch (e: any) {
       toast.error(e?.message || "Mentés sikertelen");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const toggleFoundingExpert = async (enabled: boolean) => {
+    if (!profile) return;
+    setSaving(true);
+    try {
+      if (enabled) {
+        // Check current founding expert count (max 5)
+        const { count, error: countErr } = await supabase
+          .from("profiles")
+          .select("id", { count: "exact", head: true })
+          .eq("is_founding_expert", true);
+        if (countErr) throw countErr;
+        if ((count || 0) >= 5) {
+          toast.error("Maximum 5 Founding Expert engedélyezett! Jelenleg már 5 aktív van.");
+          return;
+        }
+      }
+
+      const { error } = await supabase
+        .from("profiles")
+        .update({ is_founding_expert: enabled })
+        .eq("id", profile.id);
+      if (error) throw error;
+
+      setProfile({ ...profile, is_founding_expert: enabled });
+      toast.success(enabled ? "Founding Expert státusz aktiválva! (0% jutalék)" : "Founding Expert státusz eltávolítva.");
+
+      await supabase.rpc('log_audit', {
+        p_action: 'update',
+        p_table_name: 'profiles',
+        p_record_id: profile.id,
+        p_new_values: { is_founding_expert: enabled }
+      });
+    } catch (e: any) {
+      toast.error(e?.message || "Művelet sikertelen");
     } finally {
       setSaving(false);
     }
@@ -311,6 +364,11 @@ export function ExpertDetailModal(props: {
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="text-xl font-semibold">{fullName}</h3>
                       {getStatusBadge()}
+                      {profile.is_founding_expert && (
+                        <Badge className="bg-amber-500 text-white">
+                          <Crown className="h-3 w-3 mr-1" /> Founding Expert
+                        </Badge>
+                      )}
                       {profile.green_pass && (
                         <Badge className="bg-blue-500 text-white">
                           <Zap className="h-3 w-3 mr-1" /> AUTO-PUBLISH
@@ -362,6 +420,102 @@ export function ExpertDetailModal(props: {
                         onCheckedChange={toggleGreenPass}
                         disabled={saving}
                       />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Founding Expert Toggle */}
+                <Card className={cn(
+                  "border-2",
+                  profile.is_founding_expert ? "border-amber-400 bg-amber-50/50" : "border-dashed border-muted-foreground/20"
+                )}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={cn(
+                          "p-2 rounded-lg",
+                          profile.is_founding_expert ? "bg-amber-100" : "bg-muted"
+                        )}>
+                          <Crown className={cn(
+                            "h-5 w-5",
+                            profile.is_founding_expert ? "text-amber-600" : "text-muted-foreground"
+                          )} />
+                        </div>
+                        <div>
+                          <p className="font-medium">Founding Expert</p>
+                          <p className="text-sm text-muted-foreground">
+                            {profile.is_founding_expert
+                              ? "0% platform jutalék — örökre"
+                              : "Kapcsold be: 0% jutalék (max. 5 fő összesen)"}
+                          </p>
+                        </div>
+                      </div>
+                      <Switch
+                        checked={profile.is_founding_expert || false}
+                        onCheckedChange={toggleFoundingExpert}
+                        disabled={saving}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Legal & Financial Status */}
+                <Card>
+                  <CardContent className="p-4 space-y-3">
+                    <h4 className="font-medium flex items-center gap-2">
+                      <Scale className="h-4 w-4 text-muted-foreground" />
+                      Jogi & Pénzügyi Státusz
+                    </h4>
+                    <div className="grid gap-3 sm:grid-cols-2 text-sm">
+                      <div>
+                        <span className="text-muted-foreground">Jogi státusz:</span>{" "}
+                        <Badge variant="outline" className="ml-1">
+                          {profile.creator_legal_status === "entrepreneur"
+                            ? "Vállalkozó"
+                            : profile.creator_legal_status === "individual"
+                            ? "Magánszemély"
+                            : "Nincs megadva"}
+                        </Badge>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Számlakibocsátó:</span>{" "}
+                        <span className="font-medium">
+                          {profile.creator_legal_status === "entrepreneur" ? "Szakértő" : "Platform"}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="text-muted-foreground">Expert ÁSZF:</span>{" "}
+                        {profile.expert_aszf_accepted_at ? (
+                          <Badge className="bg-emerald-100 text-emerald-700 ml-1">
+                            <FileCheck className="h-3 w-3 mr-1" />
+                            v{profile.expert_aszf_version} — {format(new Date(profile.expert_aszf_accepted_at), 'yyyy.MM.dd')}
+                          </Badge>
+                        ) : (
+                          <Badge variant="destructive" className="ml-1">Nem fogadta el</Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="text-muted-foreground">Stripe Connect:</span>{" "}
+                        {profile.stripe_onboarding_complete ? (
+                          <Badge className="bg-emerald-100 text-emerald-700 ml-1">
+                            <CreditCard className="h-3 w-3 mr-1" /> Aktív
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary" className="ml-1">Nincs beállítva</Badge>
+                        )}
+                      </div>
+                      {profile.creator_legal_status === "individual" && profile.tax_id && (
+                        <div>
+                          <span className="text-muted-foreground">Adóazonosító:</span>{" "}
+                          <span className="font-mono text-xs">{profile.tax_id}</span>
+                        </div>
+                      )}
+                      {profile.creator_legal_status === "entrepreneur" && profile.company_tax_id && (
+                        <div>
+                          <span className="text-muted-foreground">Céges adószám:</span>{" "}
+                          <span className="font-mono text-xs">{profile.company_tax_id}</span>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -470,7 +624,7 @@ export function ExpertDetailModal(props: {
                           <DollarSign className="h-5 w-5 text-red-600" />
                         </div>
                         <div>
-                          <p className="text-sm text-muted-foreground">Platform Díj (20%)</p>
+                          <p className="text-sm text-muted-foreground">Platform Díj ({Math.round(earnings.feePercent * 100)}%)</p>
                           <p className="text-xl font-bold text-red-600">-{formatCurrency(earnings.platformFee)}</p>
                         </div>
                       </div>

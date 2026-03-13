@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, FileText, ShieldCheck, CreditCard, Users, AlertTriangle, Scale } from "lucide-react";
+import { ArrowLeft, FileText, ShieldCheck, CreditCard, Users, AlertTriangle, Scale, Award, Building2, RotateCcw, Receipt, MessageSquareWarning } from "lucide-react";
 
 const TermsOfServicePage = () => {
   const { t } = useLanguage();
@@ -28,7 +28,7 @@ const TermsOfServicePage = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-foreground">{t("terms.title")}</h1>
-              <p className="text-muted-foreground">{t("terms.last_updated")}: 2026-02-10</p>
+              <p className="text-muted-foreground">{t("terms.last_updated")}</p>
             </div>
           </div>
 
@@ -38,7 +38,7 @@ const TermsOfServicePage = () => {
               <CardTitle>1. {t("terms.intro_title")}</CardTitle>
             </CardHeader>
             <CardContent className="prose prose-sm max-w-none dark:prose-invert">
-              <p className="text-muted-foreground">{t("terms.intro_text")}</p>
+              <p className="text-muted-foreground whitespace-pre-line">{t("terms.intro_text")}</p>
             </CardContent>
           </Card>
 
@@ -57,6 +57,7 @@ const TermsOfServicePage = () => {
                 <li>{t("terms.service_events")}</li>
                 <li>{t("terms.service_community")}</li>
                 <li>{t("terms.service_wellpoints")}</li>
+                <li>{t("terms.service_sponsorship")}</li>
               </ul>
             </CardContent>
           </Card>
@@ -82,6 +83,10 @@ const TermsOfServicePage = () => {
                 <h4 className="font-semibold text-foreground mb-2">{t("terms.role_sponsor_title")}</h4>
                 <p className="text-muted-foreground">{t("terms.role_sponsor_text")}</p>
               </div>
+              <div>
+                <h4 className="font-semibold text-foreground mb-2">{t("terms.role_founding_title")}</h4>
+                <p className="text-muted-foreground">{t("terms.role_founding_text")}</p>
+              </div>
             </CardContent>
           </Card>
 
@@ -103,6 +108,10 @@ const TermsOfServicePage = () => {
                 <p className="text-muted-foreground">{t("terms.payments_commission_text")}</p>
               </div>
               <div>
+                <h4 className="font-semibold text-foreground mb-2">{t("terms.payments_invoice_title")}</h4>
+                <p className="text-muted-foreground">{t("terms.payments_invoice_text")}</p>
+              </div>
+              <div>
                 <h4 className="font-semibold text-foreground mb-2">{t("terms.payments_refund_title")}</h4>
                 <p className="text-muted-foreground">{t("terms.payments_refund_text")}</p>
               </div>
@@ -113,10 +122,78 @@ const TermsOfServicePage = () => {
             </CardContent>
           </Card>
 
-          {/* 5. Content & Intellectual Property */}
+          {/* 5. Expert Obligations */}
+          <Card className="mb-6 border-amber-500/30">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Award className="w-5 h-5 text-amber-500" />
+                5. {t("terms.expert_title")}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="prose prose-sm max-w-none dark:prose-invert space-y-4">
+              <div>
+                <h4 className="font-semibold text-foreground mb-2">{t("terms.expert_aszf_title")}</h4>
+                <p className="text-muted-foreground">{t("terms.expert_aszf_text")}</p>
+              </div>
+              <div>
+                <h4 className="font-semibold text-foreground mb-2">{t("terms.expert_legal_title")}</h4>
+                <p className="text-muted-foreground">{t("terms.expert_legal_text")}</p>
+              </div>
+              <div>
+                <h4 className="font-semibold text-foreground mb-2">{t("terms.expert_content_title")}</h4>
+                <p className="text-muted-foreground">{t("terms.expert_content_text")}</p>
+              </div>
+              <div>
+                <h4 className="font-semibold text-foreground mb-2">{t("terms.expert_dac7_title")}</h4>
+                <p className="text-muted-foreground">{t("terms.expert_dac7_text")}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* 6. Sponsor Credits */}
+          <Card className="mb-6 border-blue-500/30">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Building2 className="w-5 h-5 text-blue-500" />
+                6. {t("terms.sponsor_title")}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="prose prose-sm max-w-none dark:prose-invert space-y-4">
+              <div>
+                <h4 className="font-semibold text-foreground mb-2">{t("terms.sponsor_purchase_title")}</h4>
+                <p className="text-muted-foreground">{t("terms.sponsor_purchase_text")}</p>
+              </div>
+              <div>
+                <h4 className="font-semibold text-foreground mb-2">{t("terms.sponsor_usage_title")}</h4>
+                <p className="text-muted-foreground">{t("terms.sponsor_usage_text")}</p>
+              </div>
+              <div>
+                <h4 className="font-semibold text-foreground mb-2">{t("terms.sponsor_expiry_title")}</h4>
+                <p className="text-muted-foreground">{t("terms.sponsor_expiry_text")}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* 7. Withdrawal Rights */}
+          <Card className="mb-6 border-green-500/30">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <RotateCcw className="w-5 h-5 text-green-600" />
+                7. {t("terms.withdrawal_title")}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="prose prose-sm max-w-none dark:prose-invert">
+              <p className="text-muted-foreground whitespace-pre-line">{t("terms.withdrawal_text")}</p>
+            </CardContent>
+          </Card>
+
+          {/* 8. Content & Intellectual Property */}
           <Card className="mb-6">
             <CardHeader>
-              <CardTitle>5. {t("terms.content_title")}</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Receipt className="w-5 h-5 text-purple-500" />
+                8. {t("terms.content_title")}
+              </CardTitle>
             </CardHeader>
             <CardContent className="prose prose-sm max-w-none dark:prose-invert space-y-4">
               <div>
@@ -134,12 +211,12 @@ const TermsOfServicePage = () => {
             </CardContent>
           </Card>
 
-          {/* 6. Liability */}
+          {/* 9. Liability */}
           <Card className="mb-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-amber-500" />
-                6. {t("terms.liability_title")}
+                9. {t("terms.liability_title")}
               </CardTitle>
             </CardHeader>
             <CardContent className="prose prose-sm max-w-none dark:prose-invert">
@@ -148,26 +225,40 @@ const TermsOfServicePage = () => {
                 <li>{t("terms.liability_platform")}</li>
                 <li>{t("terms.liability_expert")}</li>
                 <li>{t("terms.liability_availability")}</li>
+                <li>{t("terms.liability_force_majeure")}</li>
               </ul>
             </CardContent>
           </Card>
 
-          {/* 7. Termination */}
+          {/* 10. Complaints & Dispute Resolution */}
           <Card className="mb-6">
             <CardHeader>
-              <CardTitle>7. {t("terms.termination_title")}</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <MessageSquareWarning className="w-5 h-5 text-orange-500" />
+                10. {t("terms.complaints_title")}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="prose prose-sm max-w-none dark:prose-invert">
+              <p className="text-muted-foreground whitespace-pre-line">{t("terms.complaints_text")}</p>
+            </CardContent>
+          </Card>
+
+          {/* 11. Termination */}
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>11. {t("terms.termination_title")}</CardTitle>
             </CardHeader>
             <CardContent className="prose prose-sm max-w-none dark:prose-invert">
               <p className="text-muted-foreground">{t("terms.termination_text")}</p>
             </CardContent>
           </Card>
 
-          {/* 8. Governing Law */}
+          {/* 12. Governing Law */}
           <Card className="mb-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Scale className="w-5 h-5 text-primary" />
-                8. {t("terms.law_title")}
+                12. {t("terms.law_title")}
               </CardTitle>
             </CardHeader>
             <CardContent className="prose prose-sm max-w-none dark:prose-invert">
@@ -175,20 +266,20 @@ const TermsOfServicePage = () => {
             </CardContent>
           </Card>
 
-          {/* 9. Changes */}
+          {/* 13. Changes */}
           <Card className="mb-6">
             <CardHeader>
-              <CardTitle>9. {t("terms.changes_title")}</CardTitle>
+              <CardTitle>13. {t("terms.changes_title")}</CardTitle>
             </CardHeader>
             <CardContent className="prose prose-sm max-w-none dark:prose-invert">
               <p className="text-muted-foreground">{t("terms.changes_text")}</p>
             </CardContent>
           </Card>
 
-          {/* 10. Contact */}
+          {/* 14. Contact */}
           <Card>
             <CardHeader>
-              <CardTitle>10. {t("terms.contact_title")}</CardTitle>
+              <CardTitle>14. {t("terms.contact_title")}</CardTitle>
             </CardHeader>
             <CardContent className="prose prose-sm max-w-none dark:prose-invert">
               <p className="text-muted-foreground">{t("terms.contact_text")}</p>

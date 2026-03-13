@@ -65,6 +65,7 @@ const TranslationToolPage = lazy(() => import("@/pages/TranslationToolPage"));
 const PrivacyPolicyPage = lazy(() => import("@/pages/PrivacyPolicyPage"));
 const ImpressumPage = lazy(() => import("@/pages/ImpressumPage"));
 const TermsOfServicePage = lazy(() => import("@/pages/TermsOfServicePage"));
+const WithdrawalRightsPage = lazy(() => import("@/pages/WithdrawalRightsPage"));
 const PurchaseSuccessPage = lazy(() => import("@/pages/PurchaseSuccessPage"));
 const AdminLayout = lazy(() => import("@/layouts/AdminLayout"));
 const AdminDashboardNew = lazy(() => import("@/pages/admin/AdminDashboardNew"));
@@ -105,6 +106,7 @@ const PartnerProfilePage = lazy(() => import("@/pages/PartnerProfilePage"));
 const FavoritesPage = lazy(() => import("@/pages/FavoritesPage"));
 const MyAgoraPage = lazy(() => import("@/pages/MyAgoraPage"));
 const PointsHistoryPage = lazy(() => import("@/pages/PointsHistoryPage"));
+const PurchaseHistoryPage = lazy(() => import("@/pages/PurchaseHistoryPage"));
 const BlogPage = lazy(() => import("@/pages/BlogPage"));
 const FAQPage = lazy(() => import("@/pages/FAQPage"));
 const FoundingExpertPage = lazy(() => import("@/pages/FoundingExpertPage"));
@@ -245,6 +247,8 @@ function App() {
                           <Route path="/adatkezeles" element={<Navigate to="/privacy-policy" replace />} />
                           <Route path="/privacy" element={<Navigate to="/privacy-policy" replace />} />
                           <Route path="/datenschutz" element={<Navigate to="/privacy-policy" replace />} />
+                          <Route path="/elallasi-jog" element={<WithdrawalRightsPage />} />
+                          <Route path="/withdrawal" element={<Navigate to="/elallasi-jog" replace />} />
                           <Route path="/purchase/success" element={<PurchaseSuccessPage />} />
                           <Route path="/purchase/cancel" element={<Navigate to="/piacer" replace />} />
                           <Route
@@ -437,7 +441,16 @@ function App() {
                               </ProtectedRoute>
                             }
                           />
-                          
+                          <Route
+                            path="/vasarlasaim"
+                            element={
+                              <ProtectedRoute>
+                                <PurchaseHistoryPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route path="/purchase-history" element={<Navigate to="/vasarlasaim" replace />} />
+
                           {/* Workshop Secret View (Műhelytitok nézet) */}
                           <Route
                             path="/muhelytitok/:id"

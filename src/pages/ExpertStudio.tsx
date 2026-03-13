@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, BarChart3, BookOpen, Wallet, Users, Plus, TrendingUp, Calendar, DollarSign, ArrowRight, Store, CreditCard, ExternalLink, CheckCircle2, AlertCircle } from "lucide-react";
+import { Sparkles, BarChart3, BookOpen, Wallet, Users, Plus, TrendingUp, Calendar, DollarSign, ArrowRight, Store, CreditCard, ExternalLink, CheckCircle2, AlertCircle, FileCheck, Scale } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
 import DashboardLayout from "@/layouts/DashboardLayout";
@@ -24,6 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 import ExpertImpactReport from "@/components/expert-studio/ExpertImpactReport";
 import MyProgramsList from "@/components/expert-studio/MyProgramsList";
 import ExpertCalendar from "@/components/expert-studio/ExpertCalendar";
+import { ExpertAgreementModal, EXPERT_ASZF_VERSION } from "@/components/expert-studio/ExpertAgreementModal";
 
 const ExpertStudio = () => {
   const { user, profile, loading } = useAuth();
@@ -31,6 +32,13 @@ const ExpertStudio = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [stripeLoading, setStripeLoading] = useState(false);
+  const [showAgreement, setShowAgreement] = useState(false);
+
+  // ÁSZF check — expert must accept the agreement before selling content
+  const aszfAccepted = (profile as any)?.expert_aszf_accepted_at != null;
+  const aszfNeedsUpdate = (profile as any)?.expert_aszf_version !== EXPERT_ASZF_VERSION;
+  const needsAszf = !aszfAccepted || aszfNeedsUpdate;
+  const isFoundingExpert = (profile as any)?.is_founding_expert || false;
 
   // Card 1: Program Status (top 3 programs + CTA)
   const programsQuery = useQuery({
@@ -237,10 +245,57 @@ const ExpertStudio = () => {
 
         {/* Üzlet Tab - Business Overview with Revenue + Stats + Transactions + Impact Report */}
         <TabsContent value="business" className="space-y-6">
+          {/* ÁSZF Banner — Expert must accept agreement before selling */}
+          {needsAszf && (
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+              <Card className="border-l-4 border-l-orange-500 bg-orange-50 border-orange-200">
+                <CardContent className="p-4 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <Scale className="w-6 h-6 text-orange-500 flex-shrink-0" />
+                    <div>
+                      <p className="font-semibold text-[#3d3429]">
+                        {language === 'hu'
+                          ? 'Szakértői Szolgáltatási Szerződés szükséges'
+                          : 'Expert Service Agreement Required'}
+                      </p>
+                      <p className="text-sm text-[#3d3429]/60">
+                        {language === 'hu'
+                          ? (aszfNeedsUpdate && aszfAccepted
+                            ? 'A feltételek frissültek — kérjük, fogadd el az új verziót a tartalmaid értékesítéséhez.'
+                            : 'A tartalmaid értékesítéséhez el kell fogadnod a Szakértői Szolgáltatási Szerződést.')
+                          : (aszfNeedsUpdate && aszfAccepted
+                            ? 'The terms have been updated — please accept the new version to continue selling.'
+                            : 'You need to accept the Expert Service Agreement to start selling content.')}
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => setShowAgreement(true)}
+                    className="bg-orange-500 hover:bg-orange-600 text-white flex-shrink-0"
+                  >
+                    <FileCheck className="w-4 h-4 mr-2" />
+                    {language === 'hu' ? 'Szerződés megtekintése' : 'View Agreement'}
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+
+          {/* Founding Expert badge */}
+          {isFoundingExpert && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex items-center gap-3">
+              <Sparkles className="w-5 h-5 text-amber-600 flex-shrink-0" />
+              <p className="text-sm text-amber-700 font-medium">
+                {language === 'hu'
+                  ? 'Founding Expert — 0% platform jutalék minden tranzakción!'
+                  : 'Founding Expert — 0% platform fee on all transactions!'}
+              </p>
+            </div>
+          )}
           {/* Stripe Connect Onboarding Section - hidden when VITE_STRIPE_ENABLED=false */}
           {isStripeEnabled() && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <Card className={`border-l-4 ${(profile as any)?.stripe_onboarding_complete ? 'border-l-blue-500' : 'border-l-amber-500'}`}>
+            <Card className={`border-l-4 ${(profile as any)?.stripe_onboarding_complete ? 'border-l-emerald-500' : 'border-l-amber-500'}`}>
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg flex items-center gap-2">
@@ -253,11 +308,11 @@ const ExpertStudio = () => {
                 {(profile as any)?.stripe_onboarding_complete ? (
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-full bg-blue-500/20">
-                        <CheckCircle2 className="w-5 h-5 text-blue-500" />
+                      <div className="p-2 rounded-full bg-emerald-500/20">
+                        <CheckCircle2 className="w-5 h-5 text-emerald-500" />
                       </div>
                       <div>
-                        <p className="font-medium text-blue-600">
+                        <p className="font-medium text-emerald-600">
                           {t('expert.stripe_active') || 'Stripe fiók aktív'}
                         </p>
                         <p className="text-sm text-muted-foreground">
@@ -342,11 +397,11 @@ const ExpertStudio = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Card 1: Bevétel áttekintés */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-                <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-blue-500">
+                <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-emerald-500">
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-lg">{t('expert_studio.cards.revenue.title') || 'Bevétel áttekintés'}</CardTitle>
-                      <Wallet className="w-5 h-5 text-blue-500" />
+                      <Wallet className="w-5 h-5 text-emerald-500" />
                     </div>
                     <CardDescription>{t('expert_studio.cards.revenue.subtitle') || 'Bevételeid (80%)'}</CardDescription>
                   </CardHeader>
@@ -356,7 +411,7 @@ const ExpertStudio = () => {
                     ) : (
                       <div className="space-y-4">
                         <div className="text-center py-4">
-                          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-blue-500 flex items-center justify-center">
+                          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
                             <Wallet className="w-8 h-8 text-white" />
                           </div>
                           <p className="text-4xl font-bold text-foreground mb-2">
@@ -424,7 +479,7 @@ const ExpertStudio = () => {
               <Card className="bg-white/80 backdrop-blur-md border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <DollarSign className="w-5 h-5 text-blue-600" />
+                    <DollarSign className="w-5 h-5 text-emerald-600" />
                     {t('expert_studio.recent_transactions') || 'Legutóbbi tranzakciók'}
                   </CardTitle>
                   <CardDescription>
@@ -435,11 +490,11 @@ const ExpertStudio = () => {
                   <div className="space-y-3">
                     {transactionsQuery.data.map((transaction: any) => (
                       <div key={transaction.id} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors">
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500/10 to-blue-500/10 flex items-center justify-center flex-shrink-0">
+                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-amber-500/10 to-orange-500/10 flex items-center justify-center flex-shrink-0">
                           {transaction.expert_contents?.image_url ? (
                             <img src={transaction.expert_contents.image_url} alt="" className="w-full h-full object-cover rounded-lg" />
                           ) : (
-                            <BookOpen className="w-5 h-5 text-blue-600" />
+                            <BookOpen className="w-5 h-5 text-emerald-600" />
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -454,7 +509,7 @@ const ExpertStudio = () => {
                           </p>
                         </div>
                         <div className="text-right flex-shrink-0">
-                          <p className="font-semibold text-blue-600">
+                          <p className="font-semibold text-emerald-600">
                             {formatPrice(transaction.creator_revenue, 'HUF')}
                           </p>
                           <p className="text-xs text-muted-foreground">
@@ -483,6 +538,18 @@ const ExpertStudio = () => {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* Expert Agreement Modal */}
+      <ExpertAgreementModal
+        isOpen={showAgreement}
+        onClose={() => setShowAgreement(false)}
+        onAccepted={() => {
+          setShowAgreement(false);
+          // Reload profile to reflect acceptance
+          window.location.reload();
+        }}
+        creatorLegalStatus={(profile as any)?.creator_legal_status || 'individual'}
+      />
     </DashboardLayout>
   );
 };

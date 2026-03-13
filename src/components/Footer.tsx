@@ -106,6 +106,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/elallasi-jog" className={linkClasses}>
+                  {t('footer.link_withdrawal') || 'Elállási jog'}
+                </Link>
+              </li>
+              <li>
                 <Link to="/impressum" className={linkClasses}>
                   {t('footer.link_impressum')}
                 </Link>
