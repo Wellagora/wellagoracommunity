@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Camera, ArrowDown, Leaf, Heart, Home } from "lucide-react";
+import { ArrowDown, Leaf, Heart, Home } from "lucide-react";
 import { motion } from "framer-motion";
 import SEOHead from "@/components/SEOHead";
 
@@ -284,13 +284,12 @@ const FoundingExpertLanding = () => {
               viewport={{ once: true }}
               className="flex flex-col md:flex-row items-center gap-8"
             >
-              {/* Photo placeholder */}
-              <div className="w-40 h-40 md:w-48 md:h-48 rounded-2xl bg-gray-100 flex flex-col items-center justify-center flex-shrink-0">
-                <Camera className="w-10 h-10 text-gray-400 mb-2" />
-                <span className="text-xs text-gray-400">
-                  {t("foundingLanding.founder_photo_soon")}
-                </span>
-              </div>
+              {/* Attila portrait */}
+              <img
+                src="/attila-kelemen.png"
+                alt="Kelemen Attila"
+                className="w-40 h-40 md:w-48 md:h-48 rounded-2xl object-cover object-top flex-shrink-0"
+              />
 
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">
