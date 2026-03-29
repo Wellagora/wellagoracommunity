@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WellAgora — Operációs Folyamatok: Bizonylat, Szerepváltás, Admin</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f0eb; color: #3d3429; padding: 24px; max-width: 1000px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 6px; }
+  .subtitle { color: #3d3429aa; margin-bottom: 32px; font-size: 0.9rem; }
+  h2 { font-size: 1.2rem; margin: 32px 0 16px; padding-left: 12px; border-left: 4px solid #f97316; }
+  .card { background: white; border: 1px solid #e8e0d8; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  .card-title { font-weight: 700; font-size: 1rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .status { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+  .done { background: #d1fae5; color: #065f46; }
+  .partial { background: #fef3c7; color: #92400e; }
+  .missing { background: #fee2e2; color: #991b1b; }
+  .new { background: #dbeafe; color: #1e40af; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.85rem; }
+  th { text-align: left; padding: 8px 12px; background: #f5f0eb; border-bottom: 2px solid #e8e0d8; font-weight: 600; }
+  td { padding: 8px 12px; border-bottom: 1px solid #e8e0d8; vertical-align: top; }
+  .flow-step { display: flex; align-items: flex-start; gap: 12px; margin: 8px 0; }
+  .step-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: white; flex-shrink: 0; }
+  .step-num.orange { background: #f97316; }
+  .step-num.green { background: #10b981; }
+  .step-num.blue { background: #3b82f6; }
+  .step-num.red { background: #ef4444; }
+  .step-num.purple { background: #8b5cf6; }
+  .step-content { flex: 1; }
+  .step-content strong { color: #3d3429; }
+  .step-content p { color: #3d3429aa; font-size: 0.85rem; margin-top: 2px; }
+  .code { font-family: monospace; background: #f5f0eb; padding: 1px 6px; border-radius: 3px; font-size: 0.8rem; }
+  .highlight { background: #fef3c7; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+  .highlight-green { background: #d1fae5; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+  .highlight-red { background: #fee2e2; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+  .separator { border: none; border-top: 2px dashed #e8e0d8; margin: 32px 0; }
+</style>
+</head>
+<body>
+
+<h1>WellAgora — Operációs Folyamatok</h1>
+<p class="subtitle">Bizonylat/Számla, Tag→Szakértő átmenet, Admin felület áttekintése — Jelenlegi állapot + hiányosságok</p>
+
+<!-- ========== SECTION 1: BIZONYLAT / SZÁMLA ========== -->
+<h2>1. Bizonylat és Számlázás — Ki kap számlát, mikor, hogyan?</h2>
+
+<div class="card">
+  <div class="card-title">A bizonylat/számla típusok és jelenlegi állapotuk</div>
+  <table>
+    <tr>
+      <th>Tranzakció</th>
+      <th>Ki számlázza?</th>
+      <th>Kinek?</th>
+      <th>Bizonylat típus</th>
+      <th>Állapot</th>
+    </tr>
+    <tr>
+      <td><strong>Tag vásárol programot</strong><br>(magánszemély szakértő)</td>
+      <td><span class="highlight">Platform</span></td>
+      <td>Tag (vásárló)</td>
+      <td>Számla (Számlázz.hu)<br>27% ÁFA</td>
+      <td><span class="status partial">Backend kész, UI hiányzik</span></td>
+    </tr>
+    <tr>
+      <td><strong>Tag vásárol programot</strong><br>(vállalkozó szakértő)</td>
+      <td><span class="highlight-green">Szakértő</span></td>
+      <td>Tag (vásárló)</td>
+      <td>Szakértő saját számlája</td>
+      <td><span class="status partial">Obligation rögzül, UI hiányzik</span></td>
+    </tr>
+    <tr>
+      <td><strong>Platform jutalék</strong><br>(vállalkozó szakértőnek)</td>
+      <td><span class="highlight">Platform</span></td>
+      <td>Szakértő (vállalkozó)</td>
+      <td>Közvetítői díj számla<br>20% of base price</td>
+      <td><span class="status missing">Nincs implementálva</span></td>
+    </tr>
+    <tr>
+      <td><strong>Szponzor kredit vásárlás</strong></td>
+      <td><span class="highlight">Platform</span></td>
+      <td>Szponzor (cég)</td>
+      <td>Számla + 27% ÁFA</td>
+      <td><span class="status done">Kész (InvoicesManager)</span></td>
+    </tr>
+    <tr>
+      <td><strong>Visszatérítés (14 napon belül)</strong></td>
+      <td colspan="2">Stripe refund → sztornó számla</td>
+      <td>Sztornó számla</td>
+      <td><span class="status missing">Nincs implementálva</span></td>
+    </tr>
+    <tr>
+      <td><strong>Visszatérítés (14 nap után)</strong></td>
+      <td colspan="2">Platform kredit jóváírás</td>
+      <td>Nincs számla (belső jóváírás)</td>
+      <td><span class="status partial">RPC kész, UI hiányzik</span></td>
+    </tr>
+  </table>
+</div>
+
+<div class="card">
+  <div class="card-title">A vásárlás utáni bizonylat-folyamat (jelenlegi + hiányzó lépések)</div>
+
+  <div class="flow-step">
+    <div class="step-num green">1</div>
+    <div class="step-content">
+      <strong>Stripe Checkout → sikeres fizetés</strong>
+      <p>Tag megadja kártyaadatait, Stripe feldolgozza. <span class="status done">Kész</span></p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num green">2</div>
+    <div class="step-content">
+      <strong>Webhook: transaction "completed", voucher generálva</strong>
+      <p>A <code class="code">stripe-webhook</code> frissíti a tranzakciót, voucher kódot generál. <span class="status done">Kész</span></p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num green">3</div>
+    <div class="step-content">
+      <strong>Webhook: Számla generálás (Számlázz.hu / SzámlaBridge)</strong>
+      <p>A <code class="code">generateInvoice()</code> hívása. Magánszemélynél auto, vállalkozónál obligation. <span class="status partial">Backend kész, SzámlaBridge kulcs kell</span></p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num red">4</div>
+    <div class="step-content">
+      <strong>Tag látja a számlát a "Vásárlásaim" oldalon</strong>
+      <p>A Tag-nak látnia kell a számláit, letölthető PDF-fel. <span class="status missing">HIÁNYZIK — Vásárlásaim oldal nincs</span></p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num red">5</div>
+    <div class="step-content">
+      <strong>Szakértő látja a kimenő bizonylatokat</strong>
+      <p>Vállalkozó szakértő: értesítést kap, hogy számláznia kell. Magánszemély: látja a platform által kiállított számlát. <span class="status missing">HIÁNYZIK — Expert bevétel oldal</span></p>
+    </div>
+  </div>
+</div>
+
+<hr class="separator">
+
+<!-- ========== SECTION 2: TAG → SZAKÉRTŐ ========== -->
+<h2>2. Tag → Szakértő átmenet — Hogyan lesz valaki szakértő?</h2>
+
+<div class="card">
+  <div class="card-title">Jelenlegi állapot vs. szükséges fejlesztés</div>
+  <table>
+    <tr>
+      <th>Lépés</th>
+      <th>Ami VAN</th>
+      <th>Ami HIÁNYZIK</th>
+    </tr>
+    <tr>
+      <td>1. Tag jelentkezik</td>
+      <td><span class="status missing">NINCS self-service gomb</span><br>Jelenleg: regisztrációkor "expert" role-t kell választani</td>
+      <td><span class="highlight-red">"Szakértővé válok" gomb</span> a Tag dashboard-on</td>
+    </tr>
+    <tr>
+      <td>2. Admin jóváhagyja</td>
+      <td><span class="status done">Kész</span><br>AdminExperts → ExpertDetailModal → verification_status</td>
+      <td>OK</td>
+    </tr>
+    <tr>
+      <td>3. Szakértői ÁSZF</td>
+      <td><span class="status done">Kész</span><br>ExpertAgreementModal a ExpertStudio-ban</td>
+      <td>OK</td>
+    </tr>
+    <tr>
+      <td>4. Jogi státusz</td>
+      <td><span class="status done">Kész</span><br>CreatorAccountSection: individual/entrepreneur</td>
+      <td>OK</td>
+    </tr>
+    <tr>
+      <td>5. Stripe Connect</td>
+      <td><span class="status done">Kész</span><br>ExpertStudio "Üzlet" tab → Stripe onboarding</td>
+      <td>OK</td>
+    </tr>
+    <tr>
+      <td>6. DAC7 adatok</td>
+      <td><span class="status done">Kész</span><br>CreatorAccountSection: adóazonosító, adószám</td>
+      <td>OK</td>
+    </tr>
+    <tr>
+      <td>7. Tartalom publikálás</td>
+      <td><span class="status done">Kész</span><br>ProgramCreatorWizard</td>
+      <td>OK</td>
+    </tr>
+  </table>
+</div>
+
+<div class="card">
+  <div class="card-title">A teljes Tag → Szakértő journey (ahogy működnie KELL)</div>
+
+  <div class="flow-step">
+    <div class="step-num blue">1</div>
+    <div class="step-content">
+      <strong>Tag megnyomja a "Szakértővé válok" gombot</strong>
+      <p>Elérés: Tag dashboard / profil oldal / navigáció. Ezt kell fejleszteni! <span class="status new">ÚJ</span></p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num orange">2</div>
+    <div class="step-content">
+      <strong>Motivációs kérdőív (opcionális)</strong>
+      <p>Miért szeretne szakértő lenni? Milyen témában? Háttér információ az adminnak.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num orange">3</div>
+    <div class="step-content">
+      <strong>Admin értesítést kap → jóváhagyás/elutasítás</strong>
+      <p><code class="code">verification_status: "pending"</code> → Admin az <code class="code">AdminExperts</code> oldalon jóváhagyja. <span class="status done">Kész</span></p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num green">4</div>
+    <div class="step-content">
+      <strong>Tag megkapja az "expert" jogot → ExpertStudio megjelenik</strong>
+      <p><code class="code">verification_status: "verified"</code> + <code class="code">is_verified_expert: true</code> <span class="status done">Kész</span></p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num green">5</div>
+    <div class="step-content">
+      <strong>Szakértő elfogadja az ÁSZF-et az ExpertStudio-ban</strong>
+      <p>ExpertAgreementModal → <code class="code">expert_aszf_accepted_at</code> + <code class="code">expert_aszf_version</code> <span class="status done">Kész</span></p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num green">6</div>
+    <div class="step-content">
+      <strong>Jogi státusz + Stripe Connect + DAC7 adatok beállítása</strong>
+      <p>CreatorAccountSection az "Üzlet" tab-on <span class="status done">Kész</span></p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num green">7</div>
+    <div class="step-content">
+      <strong>Első tartalom létrehozása és publikálása</strong>
+      <p>ProgramCreatorWizard → admin jóváhagyás (vagy Green Pass auto-publish) <span class="status done">Kész</span></p>
+    </div>
+  </div>
+</div>
+
+<hr class="separator">
+
+<!-- ========== SECTION 3: ADMIN FELÜLET ========== -->
+<h2>3. Admin felület — Mit lát, mit tud csinálni?</h2>
+
+<div class="card">
+  <div class="card-title">Admin felület modulok és állapotuk</div>
+  <table>
+    <tr>
+      <th>Admin modul</th>
+      <th>Útvonal</th>
+      <th>Mit tud?</th>
+      <th>Állapot</th>
+    </tr>
+    <tr>
+      <td><strong>AdminExperts</strong></td>
+      <td><code class="code">/admin/experts</code></td>
+      <td>Szakértők jóváhagyása/elutasítása, profil szerkesztés, Green Pass kezelés, is_founding_expert látható</td>
+      <td><span class="status done">Kész</span></td>
+    </tr>
+    <tr>
+      <td><strong>AdminFinancials</strong></td>
+      <td><code class="code">/admin/financials</code></td>
+      <td>KPI-k (bevétel, jutalék, kifizetések), szakértői lebontás, szponzor kredit állapot, no-show/cancel statisztika, CSV export, beállítások</td>
+      <td><span class="status done">Kész</span></td>
+    </tr>
+    <tr>
+      <td><strong>AdminSponsors</strong></td>
+      <td><code class="code">/admin/sponsors</code></td>
+      <td>Szponzorok kezelése, kredit állapot, kampányok</td>
+      <td><span class="status done">Kész</span></td>
+    </tr>
+    <tr>
+      <td><strong>InvoicesManager</strong></td>
+      <td><code class="code">/admin/invoices</code> (superadmin)</td>
+      <td>Számla létrehozás (draft→pending→paid), szponzori számlák kezelése</td>
+      <td><span class="status done">Kész</span></td>
+    </tr>
+    <tr>
+      <td><strong>Számla tracking</strong><br>(tranzakciókon belül)</td>
+      <td>AdminFinancials bővítés</td>
+      <td>invoice_number, invoice_status (pending/issued/failed), invoice_issued_by (platform/creator)</td>
+      <td><span class="status missing">HIÁNYZIK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Founding Expert kezelés</strong></td>
+      <td>AdminExperts bővítés</td>
+      <td>is_founding_expert flag be/kikapcsolása (max 5)</td>
+      <td><span class="status missing">HIÁNYZIK — csak látható, nem módosítható</span></td>
+    </tr>
+    <tr>
+      <td><strong>DAC7 éves jelentés</strong></td>
+      <td>AdminFinancials bővítés</td>
+      <td><code class="code">get_dac7_report(year)</code> SQL function → CSV/Excel export</td>
+      <td><span class="status missing">HIÁNYZIK — SQL kész, UI nincs</span></td>
+    </tr>
+    <tr>
+      <td><strong>Szakértő-jelentkezés kezelés</strong></td>
+      <td>AdminExperts bővítés</td>
+      <td>"Pending" szakértők listája, motiváció megtekintése, gyors jóváhagyás/elutasítás</td>
+      <td><span class="status partial">Részben kész — pending filter kell</span></td>
+    </tr>
+  </table>
+</div>
+
+<hr class="separator">
+
+<h2>Összefoglaló: Mi a teendő?</h2>
+
+<div class="card" style="border-left: 4px solid #ef4444;">
+  <div class="card-title" style="color: #ef4444;">Fejlesztendő elemek (prioritás szerint)</div>
+  <table>
+    <tr><th>#</th><th>Feladat</th><th>Hol?</th><th>Nehézség</th></tr>
+    <tr>
+      <td><strong>1</strong></td>
+      <td><strong>"Szakértővé válok" self-service flow</strong><br>Gomb a Tag dashboardon → motivációs form → pending state → admin értesítés</td>
+      <td>MemberDashboard + új ExpertApplicationModal</td>
+      <td><span class="status partial">Közepes</span></td>
+    </tr>
+    <tr>
+      <td><strong>2</strong></td>
+      <td><strong>"Vásárlásaim" oldal — Tag számla/bizonylat letöltés</strong><br>Lista a vásárlásokról, voucher, számla szám, PDF letöltés link</td>
+      <td>Új PurchaseHistoryPage vagy MyAgoraPage bővítés</td>
+      <td><span class="status partial">Közepes</span></td>
+    </tr>
+    <tr>
+      <td><strong>3</strong></td>
+      <td><strong>AdminFinancials — számla tracking oszlopok</strong><br>invoice_status, invoice_number, invoice_issued_by megjelenítése a tranzakció táblázatban</td>
+      <td>AdminFinancials.tsx</td>
+      <td><span class="status done">Könnyű</span></td>
+    </tr>
+    <tr>
+      <td><strong>4</strong></td>
+      <td><strong>AdminExperts — Founding Expert toggle</strong><br>Admin be/kikapcsolhatja az is_founding_expert flaget (max 5 ellenőrzéssel)</td>
+      <td>ExpertDetailModal.tsx</td>
+      <td><span class="status done">Könnyű</span></td>
+    </tr>
+    <tr>
+      <td><strong>5</strong></td>
+      <td><strong>DAC7 éves export gomb</strong><br>AdminFinancials → "DAC7 Jelentés" gomb → get_dac7_report() → CSV letöltés</td>
+      <td>AdminFinancials.tsx</td>
+      <td><span class="status done">Könnyű</span></td>
+    </tr>
+  </table>
+</div>
+
+<div style="text-align: center; padding: 32px 0; color: #3d3429aa; font-size: 0.85rem;">
+  WellAgora Operációs Folyamatok — v1.0 — 2026. március 11.
+</div>
+
+</body>
+</html>

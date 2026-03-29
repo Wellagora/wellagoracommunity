@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WellAgora — Szerződéses Kapcsolatok Térképe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f0eb; color: #3d3429; padding: 24px; }
+  h1 { text-align: center; font-size: 1.6rem; margin-bottom: 8px; }
+  .subtitle { text-align: center; color: #3d3429aa; margin-bottom: 32px; font-size: 0.95rem; }
+
+  /* ===== RELATIONSHIP DIAGRAM ===== */
+  .diagram { max-width: 900px; margin: 0 auto 48px; position: relative; }
+  .diagram svg { width: 100%; height: auto; }
+
+  /* ===== CONTRACT CARDS ===== */
+  .contracts { max-width: 900px; margin: 0 auto; }
+  .section-title { font-size: 1.2rem; font-weight: 700; margin: 32px 0 16px; padding-left: 12px; border-left: 4px solid #f97316; }
+  .contract-card {
+    background: white; border: 1px solid #e8e0d8; border-radius: 12px;
+    padding: 20px; margin-bottom: 16px; position: relative; overflow: hidden;
+  }
+  .contract-card::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+  }
+  .contract-card.orange::before { background: #f97316; }
+  .contract-card.green::before { background: #10b981; }
+  .contract-card.blue::before { background: #3b82f6; }
+  .contract-card.purple::before { background: #8b5cf6; }
+  .contract-card.amber::before { background: #f59e0b; }
+
+  .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .card-number {
+    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-weight: 700; font-size: 0.85rem; color: white; flex-shrink: 0;
+  }
+  .card-number.orange { background: #f97316; }
+  .card-number.green { background: #10b981; }
+  .card-number.blue { background: #3b82f6; }
+  .card-number.purple { background: #8b5cf6; }
+  .card-number.amber { background: #f59e0b; }
+
+  .card-title { font-weight: 700; font-size: 1rem; }
+  .card-parties { font-size: 0.85rem; color: #3d3429aa; }
+
+  .card-body { padding-left: 40px; }
+  .card-body p { margin-bottom: 8px; line-height: 1.5; font-size: 0.9rem; }
+  .card-body .label { font-weight: 600; color: #3d3429; }
+  .card-body .highlight { background: #fef3c7; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+  .card-body .highlight-green { background: #d1fae5; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+  .card-body .highlight-blue { background: #dbeafe; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+
+  table.flow {
+    width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.85rem;
+  }
+  table.flow th {
+    text-align: left; padding: 8px 12px; background: #f5f0eb; border-bottom: 2px solid #e8e0d8;
+    font-weight: 600; color: #3d3429;
+  }
+  table.flow td {
+    padding: 8px 12px; border-bottom: 1px solid #e8e0d8; vertical-align: top;
+  }
+  table.flow tr:last-child td { border-bottom: none; }
+
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin: 24px 0; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+
+  .summary-box {
+    background: white; border: 2px solid #f97316; border-radius: 12px;
+    padding: 24px; margin: 32px 0; text-align: center;
+  }
+  .summary-box h3 { color: #f97316; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<h1>WellAgora — Ki kivel van szerződéses kapcsolatban?</h1>
+<p class="subtitle">Teljes szerződéses és pénzügyi térkép — 4 szereplő, 5 jogviszony</p>
+
+<!-- ===== VISUAL DIAGRAM ===== -->
+<div class="diagram">
+<svg viewBox="0 0 900 520" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="900" height="520" fill="#f5f0eb" rx="12"/>
+
+  <!-- PLATFORM (center) -->
+  <rect x="325" y="200" width="250" height="90" rx="16" fill="#f97316" stroke="#ea580c" stroke-width="2"/>
+  <text x="450" y="235" text-anchor="middle" fill="white" font-weight="700" font-size="18">PLATFORM</text>
+  <text x="450" y="258" text-anchor="middle" fill="white" font-size="12" opacity="0.85">ProSelf International Zrt.</text>
+  <text x="450" y="275" text-anchor="middle" fill="white" font-size="11" opacity="0.7">Közvetítő / Marketplace üzemeltető</text>
+
+  <!-- TAG (left) -->
+  <rect x="30" y="210" width="200" height="70" rx="14" fill="#3b82f6" stroke="#2563eb" stroke-width="2"/>
+  <text x="130" y="240" text-anchor="middle" fill="white" font-weight="700" font-size="16">TAG (Vásárló)</text>
+  <text x="130" y="260" text-anchor="middle" fill="white" font-size="11" opacity="0.85">Felhasználó / fogyasztó</text>
+
+  <!-- SZAKÉRTŐ (right) -->
+  <rect x="670" y="150" width="200" height="90" rx="14" fill="#10b981" stroke="#059669" stroke-width="2"/>
+  <text x="770" y="183" text-anchor="middle" fill="white" font-weight="700" font-size="16">SZAKÉRTŐ</text>
+  <text x="770" y="200" text-anchor="middle" fill="white" font-size="11" opacity="0.85">Magánszemély VAGY</text>
+  <text x="770" y="215" text-anchor="middle" fill="white" font-size="11" opacity="0.85">Egyéni vállalkozó / Kft.</text>
+  <text x="770" y="232" text-anchor="middle" fill="white" font-size="10" opacity="0.7">Tartalom-készítő</text>
+
+  <!-- SZPONZOR (bottom) -->
+  <rect x="325" y="400" width="250" height="70" rx="14" fill="#8b5cf6" stroke="#7c3aed" stroke-width="2"/>
+  <text x="450" y="430" text-anchor="middle" fill="white" font-weight="700" font-size="16">SZPONZOR</text>
+  <text x="450" y="450" text-anchor="middle" fill="white" font-size="11" opacity="0.85">Cég / szervezet (ÁFA-köteles)</text>
+
+  <!-- ===== ARROWS / CONNECTIONS ===== -->
+
+  <!-- 1. TAG → PLATFORM (ÁSZF elfogadás) -->
+  <line x1="230" y1="235" x2="325" y2="235" stroke="#3b82f6" stroke-width="2.5" stroke-dasharray="6,3"/>
+  <polygon points="320,230 330,235 320,240" fill="#3b82f6"/>
+  <rect x="240" y="210" width="80" height="22" rx="4" fill="white" stroke="#3b82f6" stroke-width="1"/>
+  <text x="280" y="225" text-anchor="middle" fill="#3b82f6" font-size="10" font-weight="600">1 ÁSZF</text>
+
+  <!-- 2. PLATFORM → SZAKÉRTŐ (Szakértői szerződés) -->
+  <line x1="575" y1="230" x2="670" y2="205" stroke="#10b981" stroke-width="2.5"/>
+  <polygon points="665,200 675,205 667,210" fill="#10b981"/>
+  <rect x="590" y="198" width="75" height="22" rx="4" fill="white" stroke="#10b981" stroke-width="1"/>
+  <text x="628" y="213" text-anchor="middle" fill="#10b981" font-size="10" font-weight="600">2 ÁSZF</text>
+
+  <!-- 3. TAG → PLATFORM (Fizetés — Stripe) -->
+  <path d="M 130 280 Q 130 340 325 320" fill="none" stroke="#f97316" stroke-width="2.5"/>
+  <polygon points="320,315 330,320 320,325" fill="#f97316"/>
+  <rect x="170" y="305" width="120" height="22" rx="4" fill="white" stroke="#f97316" stroke-width="1"/>
+  <text x="230" y="320" text-anchor="middle" fill="#f97316" font-size="10" font-weight="600">3 Fizetés (Stripe)</text>
+
+  <!-- 4. PLATFORM → SZAKÉRTŐ (Kifizetés — Stripe Connect) -->
+  <path d="M 575 260 Q 640 310 770 240" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+  <polygon points="765,240 775,237 770,247" fill="#f59e0b"/>
+  <rect x="620" y="268" width="120" height="22" rx="4" fill="white" stroke="#f59e0b" stroke-width="1"/>
+  <text x="680" y="283" text-anchor="middle" fill="#f59e0b" font-size="10" font-weight="600">4 Kifizetés 80%</text>
+
+  <!-- 5. SZPONZOR → PLATFORM (Kredit vásárlás) -->
+  <line x1="450" y1="400" x2="450" y2="290" stroke="#8b5cf6" stroke-width="2.5"/>
+  <polygon points="445,295 450,285 455,295" fill="#8b5cf6"/>
+  <rect x="460" y="340" width="130" height="22" rx="4" fill="white" stroke="#8b5cf6" stroke-width="1"/>
+  <text x="525" y="355" text-anchor="middle" fill="#8b5cf6" font-size="10" font-weight="600">5 Kredit vásárlás</text>
+
+  <!-- 6. SZÁMLA arrows -->
+  <!-- Platform → Tag (számla) -->
+  <path d="M 325 255 Q 250 280 160 280" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="165,276 155,280 165,284" fill="#ef4444"/>
+  <rect x="200" y="268" width="90" height="18" rx="3" fill="#fef2f2" stroke="#ef4444" stroke-width="1"/>
+  <text x="245" y="281" text-anchor="middle" fill="#ef4444" font-size="9" font-weight="600">Számla (6)</text>
+
+  <!-- STRIPE label -->
+  <rect x="355" y="150" width="80" height="20" rx="4" fill="#635bff"/>
+  <text x="395" y="164" text-anchor="middle" fill="white" font-size="10" font-weight="600">Stripe</text>
+
+  <!-- Bottom note -->
+  <text x="450" y="500" text-anchor="middle" fill="#3d3429" font-size="11" opacity="0.6">
+    Szaggatott vonal = jogi kapcsolat (szerződés) | Folyamatos vonal = pénzforgalom
+  </text>
+</svg>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div> Tag (Vásárló)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f97316"></div> Platform</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div> Szakértő</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div> Szponzor</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div> Pénzforgalom</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div> Számla</div>
+</div>
+
+<!-- ===== DETAILED CONTRACT DESCRIPTIONS ===== -->
+<div class="contracts">
+
+<h2 class="section-title">Szerződéses jogviszonyok (ki kivel áll kapcsolatban)</h2>
+
+<!-- CONTRACT 1: Tag ↔ Platform -->
+<div class="contract-card blue">
+  <div class="card-header">
+    <div class="card-number blue">1</div>
+    <div>
+      <div class="card-title">Tag ↔ Platform — Felhasználói ÁSZF</div>
+      <div class="card-parties">Felek: Tag (felhasználó) és ProSelf International Zrt.</div>
+    </div>
+  </div>
+  <div class="card-body">
+    <p><span class="label">Mikor jön létre?</span> Regisztrációkor — a Tag elfogadja az Általános Szerződési Feltételeket.</p>
+    <p><span class="label">Mit tartalmaz?</span> Platform használati feltételek, adatvédelem (GDPR), elállási jog (14 nap), viselkedési szabályzat, felelősségkorlátozás.</p>
+    <p><span class="label">Technikai megvalósítás:</span> Checkbox a regisztrációs oldalon → <code>profiles.tos_accepted_at</code></p>
+  </div>
+</div>
+
+<!-- CONTRACT 2: Szakértő ↔ Platform -->
+<div class="contract-card green">
+  <div class="card-header">
+    <div class="card-number green">2</div>
+    <div>
+      <div class="card-title">Szakértő ↔ Platform — Szakértői Szolgáltatási Szerződés</div>
+      <div class="card-parties">Felek: Szakértő és ProSelf International Zrt.</div>
+    </div>
+  </div>
+  <div class="card-body">
+    <p><span class="label">Mikor jön létre?</span> Amikor a Tag "szakértővé válik" — elfogadja a Szakértői ÁSZF-et az <code>ExpertAgreementModal</code>-ban.</p>
+    <p><span class="label">Mit tartalmaz?</span></p>
+    <table class="flow">
+      <tr><th>Pont</th><th>Tartalom</th></tr>
+      <tr><td>Jogviszony</td><td>A Platform <span class="highlight">közvetítő</span>, NEM munkáltató. A Szakértő önálló.</td></tr>
+      <tr><td>Bevételmegosztás</td><td><span class="highlight">80% Szakértő / 20% Platform</span> (Founding Expert: 100/0%)</td></tr>
+      <tr><td>Számlázás</td><td>Magánszemély → Platform számlázza. Vállalkozó → Saját maga számlázza.</td></tr>
+      <tr><td>Kifizetés</td><td>Stripe Connect Express → bankszámla (7-14 munkanap)</td></tr>
+      <tr><td>Visszatérítés</td><td>14 nap: Stripe refund. Utána: platform kredit.</td></tr>
+      <tr><td>DAC7</td><td>Platform jelent a NAV-nak (magánszemély esetén).</td></tr>
+    </table>
+    <p><span class="label">Technikai megvalósítás:</span> <code>ExpertAgreementModal.tsx</code> → <code>profiles.expert_aszf_accepted_at</code> + <code>expert_aszf_version</code></p>
+  </div>
+</div>
+
+<!-- CONTRACT 3: Tag ↔ Platform (fizetés) -->
+<div class="contract-card orange">
+  <div class="card-header">
+    <div class="card-number orange">3</div>
+    <div>
+      <div class="card-title">Tag → Platform → Szakértő — Fizetési folyamat</div>
+      <div class="card-parties">Tag fizet a Platformnak, Platform fizet a Szakértőnek</div>
+    </div>
+  </div>
+  <div class="card-body">
+    <p><span class="label">FONTOS:</span> A Tag <span class="highlight">NEM közvetlenül a Szakértőnek fizet</span>. A pénz a Platformon keresztül folyik.</p>
+    <table class="flow">
+      <tr><th>Lépés</th><th>Mi történik</th><th>Ki → Kinek</th></tr>
+      <tr><td>1</td><td>Tag megnyomja a "Megvásárolom" gombot</td><td>—</td></tr>
+      <tr><td>2</td><td>Elállási jog checkbox elfogadása</td><td>Tag → Platform</td></tr>
+      <tr><td>3</td><td>Stripe Checkout Session létrejön</td><td>Platform → Stripe</td></tr>
+      <tr><td>4</td><td>Tag bankkártyával fizet</td><td><span class="highlight">Tag → Stripe</span></td></tr>
+      <tr><td>5</td><td>Stripe webhook: sikeres fizetés</td><td>Stripe → Platform</td></tr>
+      <tr><td>6</td><td>Platform levonja a 20% jutalékot</td><td>Stripe → Platform (20%)</td></tr>
+      <tr><td>7</td><td>Stripe Connect kifizeti a Szakértőt</td><td><span class="highlight-green">Stripe → Szakértő (80%)</span></td></tr>
+      <tr><td>8</td><td>Számla kiállítás (ld. 6. pont)</td><td>Platform/Szakértő → Tag</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- CONTRACT 4: Szponzor ↔ Platform -->
+<div class="contract-card purple">
+  <div class="card-header">
+    <div class="card-number purple">4</div>
+    <div>
+      <div class="card-title">Szponzor ↔ Platform — Szponzori Szerződés</div>
+      <div class="card-parties">Felek: Szponzor cég és ProSelf International Zrt.</div>
+    </div>
+  </div>
+  <div class="card-body">
+    <p><span class="label">Mikor jön létre?</span> Amikor egy cég szponzori krediteket vásárol.</p>
+    <p><span class="label">Mit tartalmaz?</span></p>
+    <table class="flow">
+      <tr><th>Pont</th><th>Tartalom</th></tr>
+      <tr><td>Kredit rendszer</td><td>Szponzor kreditcsomagot vásárol (Starter/Professional/Enterprise)</td></tr>
+      <tr><td>ÁFA</td><td><span class="highlight">27% magyar ÁFA</span> — B2B szolgáltatás</td></tr>
+      <tr><td>Felhasználás</td><td>Kredit → program/kategória/kreátor/event támogatás</td></tr>
+      <tr><td>Lejárat</td><td><span class="highlight">Adott év december 31.</span> — fel nem használt kredit elveszik</td></tr>
+      <tr><td>Számla</td><td>Platform állít ki számlát a Szponzornak (ÁFA-s)</td></tr>
+    </table>
+    <p><span class="label">Technikai megvalósítás:</span> <code>sponsor_credits</code> + <code>sponsor_support_rules</code> + <code>sponsorship_allocations</code> táblák</p>
+  </div>
+</div>
+
+<!-- IMPORTANT: Who does NOT have a direct contract -->
+<div class="summary-box">
+  <h3>Ki NINCS közvetlen szerződésben?</h3>
+  <p style="font-size: 1.05rem; line-height: 1.8;">
+    <strong>Tag ↔ Szakértő:</strong> NINCS közvetlen szerződés. A Platform közvetít.<br>
+    <strong>Szponzor ↔ Szakértő:</strong> NINCS közvetlen szerződés. A szponzori kredit a Platformon keresztül működik.<br>
+    <strong>Szponzor ↔ Tag:</strong> NINCS közvetlen kapcsolat. A Tag nem is tudja ki a szponzor (opcionálisan látható).
+  </p>
+</div>
+
+<h2 class="section-title">Számlázási mátrix — Ki állít ki számlát kinek?</h2>
+
+<!-- CONTRACT 6: Invoicing matrix -->
+<div class="contract-card amber">
+  <div class="card-header">
+    <div class="card-number amber">6</div>
+    <div>
+      <div class="card-title">Számlázási mátrix</div>
+      <div class="card-parties">Ki állítja ki a számlát, kinek, milyen esetben?</div>
+    </div>
+  </div>
+  <div class="card-body">
+    <table class="flow">
+      <tr><th>Tranzakció típus</th><th>Ki számlázza?</th><th>Kinek?</th><th>Hogyan?</th></tr>
+      <tr>
+        <td>Tartalom vásárlás<br><em>(magánszemély szakértő)</em></td>
+        <td><span class="highlight">Platform</span></td>
+        <td>Tag (vásárló)</td>
+        <td>Számlázz.hu / SzámlaBridge API — automatikus</td>
+      </tr>
+      <tr>
+        <td>Tartalom vásárlás<br><em>(vállalkozó szakértő)</em></td>
+        <td><span class="highlight-green">Szakértő</span></td>
+        <td>Tag (vásárló)</td>
+        <td>Szakértő saját maga — platform obligation-t rögzít</td>
+      </tr>
+      <tr>
+        <td>Platform jutalék<br><em>(vállalkozó szakértőnek)</em></td>
+        <td><span class="highlight">Platform</span></td>
+        <td>Szakértő (vállalkozó)</td>
+        <td>Közvetítői díj számla — 20% a base price-ból</td>
+      </tr>
+      <tr>
+        <td>Szponzori kredit vásárlás</td>
+        <td><span class="highlight">Platform</span></td>
+        <td>Szponzor (cég)</td>
+        <td>Számlázz.hu — ÁFA-s (27%)</td>
+      </tr>
+      <tr>
+        <td>Visszatérítés (14 napon belül)</td>
+        <td colspan="3"><span class="highlight">Stripe refund</span> — sztornó számla automatikus</td>
+      </tr>
+      <tr>
+        <td>Visszatérítés (14 nap után)</td>
+        <td colspan="3"><span class="highlight-blue">Platform kredit</span> — nincs pénzmozgás, nincs számla</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<h2 class="section-title">Speciális esetek</h2>
+
+<div class="contract-card orange">
+  <div class="card-header">
+    <div class="card-number orange">F</div>
+    <div>
+      <div class="card-title">Founding Expert — Különleges státusz</div>
+      <div class="card-parties">Max 5 fő, 0% platform jutalék, örökre</div>
+    </div>
+  </div>
+  <div class="card-body">
+    <p>A Founding Expert ugyanazokat a szerződéseket köti, mint bármely szakértő. Az egyetlen különbség: a <span class="highlight">platform_fee = 0%</span>, tehát a teljes bevétel (100%) a Founding Experté.</p>
+    <p><span class="label">Technikai megvalósítás:</span> <code>profiles.is_founding_expert = true</code> → <code>pricing.ts</code> és <code>create-checkout-session</code> 0% fee logika</p>
+  </div>
+</div>
+
+<div class="contract-card green">
+  <div class="card-header">
+    <div class="card-number green">T</div>
+    <div>
+      <div class="card-title">Tag → Szakértő átmenet</div>
+      <div class="card-parties">Amikor egy Tag el akar kezdeni tartalmat értékesíteni</div>
+    </div>
+  </div>
+  <div class="card-body">
+    <table class="flow">
+      <tr><th>Lépés</th><th>Mi történik</th><th>Szerződés</th></tr>
+      <tr><td>1</td><td>Tag regisztrál (felhasználói ÁSZF)</td><td>Tag ↔ Platform ÁSZF</td></tr>
+      <tr><td>2</td><td>Tag expert-ré szeretne válni</td><td>—</td></tr>
+      <tr><td>3</td><td>Jogi státusz kiválasztása (magánszemély / vállalkozó)</td><td>—</td></tr>
+      <tr><td>4</td><td><span class="highlight-green">Szakértői ÁSZF elfogadása</span></td><td>Szakértő ↔ Platform ÁSZF</td></tr>
+      <tr><td>5</td><td>Stripe Connect onboarding (bankszámla)</td><td>Szakértő ↔ Stripe (Platform közvetítésével)</td></tr>
+      <tr><td>6</td><td>DAC7 adatok megadása (adóazonosító, szül. dátum)</td><td>—</td></tr>
+      <tr><td>7</td><td>Tartalom létrehozása és publikálása</td><td>Kész, értékesíthet!</td></tr>
+    </table>
+  </div>
+</div>
+
+<div style="text-align: center; padding: 32px 0; color: #3d3429aa; font-size: 0.85rem;">
+  WellAgora Pénzügyi & Jogi Architektúra — v2.0 — 2026. március 11.
+</div>
+
+</div>
+</body>
+</html>

@@ -17,6 +17,7 @@ import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { DEMO_ACCOUNTS } from "@/data/mockData";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 // Monochrome accent colors
 const ACCENT_BLACK = "#000000";
@@ -45,11 +46,11 @@ const AuthPage = () => {
   });
 
   const signupSchema = z.object({
-    email: z.string().email(t('auth.email_invalid')),
-    password: z.string().min(6, t('auth.password_min')),
-    confirmPassword: z.string(),
-    firstName: z.string().min(1, t('auth.first_name_required')).max(50, t('auth.first_name_max')),
-    lastName: z.string().min(1, t('auth.last_name_required')).max(50, t('auth.last_name_max')),
+    email: z.string().min(1, t('auth.email_required') || 'Az e-mail cím megadása kötelező').email(t('auth.email_invalid')),
+    password: z.string().min(8, t('auth.password_min_8') || 'A jelszónak legalább 8 karakternek kell lennie'),
+    confirmPassword: z.string().min(1, t('auth.confirm_password_required') || 'A jelszó megerősítése kötelező'),
+    firstName: z.string().min(2, t('auth.first_name_min') || 'A keresztnév legalább 2 karakter legyen').max(50, t('auth.first_name_max')),
+    lastName: z.string().min(2, t('auth.last_name_min') || 'A vezetéknév legalább 2 karakter legyen').max(50, t('auth.last_name_max')),
     role: z.enum(["member", "expert", "sponsor"], {
       message: t('auth.role_required')
     }),
@@ -115,6 +116,19 @@ const AuthPage = () => {
 
   // Terms acceptance state
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+
+  // Field-level validation errors
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const { toast } = useToast();
+
+  const clearFieldError = (field: string) => {
+    setFieldErrors(prev => {
+      if (!prev[field]) return prev;
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
+  };
 
   const handleRoleSelect = (roleId: string) => {
     setSelectedRole(roleId);
@@ -216,14 +230,9 @@ const AuthPage = () => {
     setError(null);
     setSuccess(null);
     setInviteCodeError(null);
+    const newFieldErrors: Record<string, string> = {};
 
-    // Validate invite code first
-    const isValidCode = await validateInviteCode(inviteCode);
-    if (!isValidCode) {
-      setIsLoading(false);
-      return;
-    }
-
+    // Client-side form validation
     const formData = {
       ...signupForm,
       role: selectedRole,
@@ -233,10 +242,34 @@ const AuthPage = () => {
       signupSchema.parse(formData);
     } catch (err) {
       if (err instanceof z.ZodError) {
-        setError(err.issues[0].message);
-        setIsLoading(false);
-        return;
+        err.issues.forEach((issue) => {
+          const field = issue.path[0] as string;
+          if (field && !newFieldErrors[field]) {
+            newFieldErrors[field] = issue.message;
+          }
+        });
       }
+    }
+
+    // Validate terms acceptance
+    if (!acceptedTerms) {
+      newFieldErrors.terms = t('auth.terms_required') || 'Az Általános Szerződési Feltételek elfogadása kötelező';
+    }
+
+    // If there are field errors, show them and stop
+    if (Object.keys(newFieldErrors).length > 0) {
+      setFieldErrors(newFieldErrors);
+      setIsLoading(false);
+      return;
+    }
+
+    setFieldErrors({});
+
+    // Validate invite code (async)
+    const isValidCode = await validateInviteCode(inviteCode);
+    if (!isValidCode) {
+      setIsLoading(false);
+      return;
     }
 
     const { error } = await signUp({
@@ -251,15 +284,21 @@ const AuthPage = () => {
     });
 
     if (error) {
+      let errorMessage: string;
       if (error.message.includes("User already registered")) {
-        setError(t('auth.account_exists'));
+        errorMessage = t('auth.account_exists') || 'Ez az email cím már regisztrálva van.';
       } else if (error.message.includes("Password should be at least")) {
-        setError(t('auth.password_short'));
+        errorMessage = t('auth.password_short') || 'A jelszó túl rövid.';
       } else if (error.message.includes("Invalid email")) {
-        setError(t('auth.email_invalid_error'));
+        errorMessage = t('auth.email_invalid_error') || 'Érvénytelen email cím.';
       } else {
-        setError(error.message || t('auth.signup_error'));
+        errorMessage = error.message || t('auth.signup_error') || 'Hiba történt a regisztráció során.';
       }
+      toast({
+        title: t('auth.registration_failed') || 'Sikertelen regisztráció',
+        description: errorMessage,
+        variant: "destructive",
+      });
     } else {
       setSuccess(t('auth.account_created'));
 
@@ -669,6 +708,7 @@ const AuthPage = () => {
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3, ease: 'easeInOut' }}
                         onSubmit={handleSignup}
+                        noValidate
                         className="space-y-5 border-t border-slate-200 pt-8 overflow-hidden"
                       >
                         {/* Name Fields */}
@@ -681,10 +721,12 @@ const AuthPage = () => {
                               id="firstName"
                               placeholder="János"
                               value={signupForm.firstName}
-                              onChange={(e) => setSignupForm({ ...signupForm, firstName: e.target.value })}
-                              className="h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent"
-                              required
+                              onChange={(e) => { setSignupForm({ ...signupForm, firstName: e.target.value }); clearFieldError('firstName'); }}
+                              className={`h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent ${fieldErrors.firstName ? 'border-red-500 ring-1 ring-red-500' : ''}`}
                             />
+                            {fieldErrors.firstName && (
+                              <p className="text-sm text-red-500">{fieldErrors.firstName}</p>
+                            )}
                           </div>
                           <div className="space-y-2">
                             <Label htmlFor="lastName" className="text-black/70 text-sm font-semibold">
@@ -694,10 +736,12 @@ const AuthPage = () => {
                               id="lastName"
                               placeholder="Kovács"
                               value={signupForm.lastName}
-                              onChange={(e) => setSignupForm({ ...signupForm, lastName: e.target.value })}
-                              className="h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent"
-                              required
+                              onChange={(e) => { setSignupForm({ ...signupForm, lastName: e.target.value }); clearFieldError('lastName'); }}
+                              className={`h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent ${fieldErrors.lastName ? 'border-red-500 ring-1 ring-red-500' : ''}`}
                             />
+                            {fieldErrors.lastName && (
+                              <p className="text-sm text-red-500">{fieldErrors.lastName}</p>
+                            )}
                           </div>
                         </div>
 
@@ -711,10 +755,12 @@ const AuthPage = () => {
                             type="email"
                             placeholder={t('auth.email_placeholder') || 'pelda@email.hu'}
                             value={signupForm.email}
-                            onChange={(e) => setSignupForm({ ...signupForm, email: e.target.value })}
-                            className="h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent"
-                            required
+                            onChange={(e) => { setSignupForm({ ...signupForm, email: e.target.value }); clearFieldError('email'); }}
+                            className={`h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent ${fieldErrors.email ? 'border-red-500 ring-1 ring-red-500' : ''}`}
                           />
+                          {fieldErrors.email && (
+                            <p className="text-sm text-red-500">{fieldErrors.email}</p>
+                          )}
                         </div>
 
                         {/* Organization field for sponsors */}
@@ -790,9 +836,8 @@ const AuthPage = () => {
                                 type={showSignupPassword ? "text" : "password"}
                                 placeholder="••••••••"
                                 value={signupForm.password}
-                                onChange={(e) => setSignupForm({ ...signupForm, password: e.target.value })}
-                                className="h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent pr-12"
-                                required
+                                onChange={(e) => { setSignupForm({ ...signupForm, password: e.target.value }); clearFieldError('password'); }}
+                                className={`h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent pr-12 ${fieldErrors.password ? 'border-red-500 ring-1 ring-red-500' : ''}`}
                               />
                               <button
                                 type="button"
@@ -802,6 +847,9 @@ const AuthPage = () => {
                                 {showSignupPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                               </button>
                             </div>
+                            {fieldErrors.password && (
+                              <p className="text-sm text-red-500">{fieldErrors.password}</p>
+                            )}
                           </div>
                           <div className="space-y-2">
                             <Label htmlFor="confirmPassword" className="text-black/70 text-sm font-semibold">
@@ -813,9 +861,8 @@ const AuthPage = () => {
                                 type={showConfirmPassword ? "text" : "password"}
                                 placeholder="••••••••"
                                 value={signupForm.confirmPassword}
-                                onChange={(e) => setSignupForm({ ...signupForm, confirmPassword: e.target.value })}
-                                className="h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent pr-12"
-                                required
+                                onChange={(e) => { setSignupForm({ ...signupForm, confirmPassword: e.target.value }); clearFieldError('confirmPassword'); }}
+                                className={`h-12 bg-black/5 border-black/10 text-black placeholder:text-black/30 rounded-xl focus:ring-2 focus:ring-black/20 focus:border-transparent pr-12 ${fieldErrors.confirmPassword ? 'border-red-500 ring-1 ring-red-500' : ''}`}
                               />
                               <button
                                 type="button"
@@ -825,49 +872,57 @@ const AuthPage = () => {
                                 {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                               </button>
                             </div>
+                            {fieldErrors.confirmPassword && (
+                              <p className="text-sm text-red-500">{fieldErrors.confirmPassword}</p>
+                            )}
                           </div>
                         </div>
 
                         {/* Terms & Privacy Checkbox - GDPR Required */}
-                        <div className="flex items-start gap-3 py-2">
-                          <Checkbox
-                            id="terms-accept-signup"
-                            checked={acceptedTerms}
-                            onCheckedChange={(checked) => setAcceptedTerms(checked === true)}
-                            className="mt-1"
-                          />
-                          <label 
-                            htmlFor="terms-accept-signup" 
-                            className="text-sm text-black/60 leading-relaxed cursor-pointer"
-                          >
-                            {t('auth.accept_terms_prefix') || 'Elfogadom az '}
-                            <Link 
-                              to="/aszf" 
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-primary hover:underline font-medium"
-                              onClick={(e) => e.stopPropagation()}
+                        <div>
+                          <div className="flex items-start gap-3 py-2">
+                            <Checkbox
+                              id="terms-accept-signup"
+                              checked={acceptedTerms}
+                              onCheckedChange={(checked) => { setAcceptedTerms(checked === true); clearFieldError('terms'); }}
+                              className={`mt-1 ${fieldErrors.terms ? 'border-red-500' : ''}`}
+                            />
+                            <label 
+                              htmlFor="terms-accept-signup" 
+                              className="text-sm text-black/60 leading-relaxed cursor-pointer"
                             >
-                              {t('auth.terms_link') || 'Általános Szerződési Feltételeket'}
-                            </Link>
-                            {t('auth.and') || ' és az '}
-                            <Link 
-                              to="/privacy-policy" 
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-primary hover:underline font-medium"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              {t('auth.privacy_link') || 'Adatkezelési tájékoztatót'}
-                            </Link>
-                            {t('auth.accept_terms_suffix') || '.'}
-                          </label>
+                              {t('auth.accept_terms_prefix') || 'Elfogadom az '}
+                              <Link 
+                                to="/aszf" 
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-primary hover:underline font-medium"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {t('auth.terms_link') || 'Általános Szerződési Feltételeket'}
+                              </Link>
+                              {t('auth.and') || ' és az '}
+                              <Link 
+                                to="/privacy-policy" 
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-primary hover:underline font-medium"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {t('auth.privacy_link') || 'Adatkezelési tájékoztatót'}
+                              </Link>
+                              {t('auth.accept_terms_suffix') || '.'}
+                            </label>
+                          </div>
+                          {fieldErrors.terms && (
+                            <p className="text-sm text-red-500 ml-8">{fieldErrors.terms}</p>
+                          )}
                         </div>
 
                         <Button
                           type="submit"
                           className="w-full h-12 bg-black hover:bg-black/90 text-white font-semibold rounded-xl text-base transition-opacity"
-                          disabled={isLoading || !acceptedTerms}
+                          disabled={isLoading}
                         >
                           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                           {t('auth.create_account') || 'Fiók létrehozása'}
