@@ -37,7 +37,8 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          VITE_STRIPE_ENABLED: 'false'
+          VITE_STRIPE_ENABLED: 'true'
+          VITE_STRIPE_PUBLISHABLE_KEY: ${{ secrets.VITE_STRIPE_PUBLISHABLE_KEY }}
           VITE_APP_ENV: 'production'
 
       # SPA routing fix: a Nethely Apache szervere .htaccess-szel kezeli
