@@ -110,6 +110,7 @@ const PurchaseHistoryPage = lazy(() => import("@/pages/PurchaseHistoryPage"));
 const BlogPage = lazy(() => import("@/pages/BlogPage"));
 const FAQPage = lazy(() => import("@/pages/FAQPage"));
 const FoundingExpertPage = lazy(() => import("@/pages/FoundingExpertPage"));
+const FoundingExpertLanding = lazy(() => import("@/pages/FoundingExpertLanding"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -222,7 +223,7 @@ function App() {
                           <Route path="/tudastar" element={<BlogPage />} />
                           <Route path="/gyik" element={<FAQPage />} />
                           <Route path="/faq" element={<FAQPage />} />
-                          <Route path="/founding-expert" element={<FoundingExpertPage />} />
+                          <Route path="/founding-expert" element={<FoundingExpertLanding />} />
                           <Route
                             path="/inbox"
                             element={
