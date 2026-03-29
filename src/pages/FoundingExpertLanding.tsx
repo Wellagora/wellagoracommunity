@@ -414,7 +414,7 @@ const FoundingExpertLanding = () => {
         <footer className="py-8 border-t border-gray-100">
           <div className="container mx-auto px-4 max-w-3xl text-center">
             <p className="text-sm text-gray-400 mb-3">
-              WellAgora © 2026 | wellagora.org | FN 655719v | 1130 Wien
+              ProSelf Int Zrt. | wellagora.org | Budapest/Bécs
             </p>
             <Link
               to="/"
