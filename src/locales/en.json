@@ -839,7 +839,19 @@
     "registration_success_desc": "[TODO: Üdv a Wellagora-ban! Nézd meg az emailedet a megerősítéshez.]",
     "registration_failed": "[TODO: Sikertelen regisztráció]",
     "trusted_by": "[TODO: Több mint]",
-    "sustainability_advocates": "[TODO: fenntarthatósági támogató világszerte]"
+    "sustainability_advocates": "[TODO: fenntarthatósági támogató világszerte]",
+    "invite_code": "Invite Code",
+    "invite_code_placeholder": "Enter your invite code",
+    "invite_code_hint": "You received the invite code via email",
+    "invite_code_required": "An invite code is required to register during the closed beta.",
+    "invite_code_invalid": "This is a closed beta, you can join with an invite code.",
+    "invite_code_exhausted": "This invite code has reached its usage limit.",
+    "email_required": "Email address is required",
+    "password_min_8": "Password must be at least 8 characters",
+    "confirm_password_required": "Please confirm your password",
+    "terms_required": "You must accept the Terms of Service",
+    "first_name_min": "First name must be at least 2 characters",
+    "last_name_min": "Last name must be at least 2 characters"
   },
   "expert": {
     "programs_subtitle": "Manage your programs and content",
