@@ -5137,6 +5137,7 @@
     "form_error_title": "Error",
     "form_error_required": "Please provide your name and email address.",
     "form_error_save": "Could not save. Please try again.",
+    "footer_legal": "ProSelf Int Inc. | wellagora.org | Budapest/Vienna",
     "footer_home": "Back to homepage"
   }
 }

@@ -414,7 +414,7 @@ const FoundingExpertLanding = () => {
         <footer className="py-8 border-t border-gray-100">
           <div className="container mx-auto px-4 max-w-3xl text-center">
             <p className="text-sm text-gray-400 mb-3">
-              ProSelf Int Zrt. | wellagora.org | Budapest/Bécs
+              {t("foundingLanding.footer_legal")}
             </p>
             <Link
               to="/"
