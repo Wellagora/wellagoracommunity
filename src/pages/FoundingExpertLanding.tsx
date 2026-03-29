@@ -66,12 +66,11 @@ const FoundingExpertLanding = () => {
         return;
       }
 
-      // 2. Send email notification via send-general-contact edge function
-      // TODO: For production, create a dedicated edge function that sends to attila.kelemen@proself.org
-      // Currently using send-general-contact which sends to info@wellagora.org
+      // 2. Send email notification to Attila
       try {
         await supabase.functions.invoke("send-general-contact", {
           body: {
+            to: "attila.kelemen@proself.org",
             senderName: formData.name.trim(),
             senderEmail: formData.email.trim(),
             subject: `Új Founding Expert érdeklődés — ${formData.name.trim()}`,

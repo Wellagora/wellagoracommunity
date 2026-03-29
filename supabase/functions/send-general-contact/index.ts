@@ -113,8 +113,12 @@ const handler = async (req: Request): Promise<Response> => {
     
     const { senderName, senderEmail, subject, message } = validation.data!;
 
-    // Admin email
-    const adminEmail = "info@wellagora.org";
+    // Admin email — override allowed for internal callers (e.g. founding expert form)
+    const ALLOWED_RECIPIENTS = ["info@wellagora.org", "attila.kelemen@proself.org"];
+    const requestedTo = requestData.to;
+    const adminEmail = (requestedTo && ALLOWED_RECIPIENTS.includes(requestedTo))
+      ? requestedTo
+      : "info@wellagora.org";
 
     console.log(`Sending general contact email from ${senderName} to admin`);
 
