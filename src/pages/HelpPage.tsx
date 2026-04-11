@@ -72,7 +72,7 @@ const HelpPage = () => {
   const sidebarLinks = [
     { label: language === 'hu' ? 'Expert Studio' : 'Expert Studio', href: '/expert-studio', icon: BookOpen },
     { label: language === 'hu' ? 'Profilom' : 'My Profile', href: '/profile', icon: UserCog },
-    { label: language === 'hu' ? 'Piactér' : 'Marketplace', href: '/piacer', icon: Star },
+    { label: language === 'hu' ? 'Programok' : 'Programs', href: '/programs', icon: Star },
     { label: language === 'hu' ? 'Közösség' : 'Community', href: '/community', icon: Users },
     { label: language === 'hu' ? 'Kapcsolat' : 'Contact', href: '/contact', icon: Mail },
   ];

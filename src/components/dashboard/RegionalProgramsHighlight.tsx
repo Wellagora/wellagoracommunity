@@ -171,7 +171,7 @@ const RegionalProgramsHighlight = () => {
               variant="outline"
               size="sm"
               className="mt-3"
-              onClick={() => navigate('/piacer')}
+              onClick={() => navigate('/programs')}
             >
               {language === 'hu' ? 'Összes program' : 'Browse all'}
               <ArrowRight className="w-4 h-4 ml-1" />
@@ -242,7 +242,7 @@ const RegionalProgramsHighlight = () => {
               variant="ghost"
               size="sm"
               className="w-full mt-2 text-primary hover:text-primary hover:bg-primary/10"
-              onClick={() => navigate('/piacer')}
+              onClick={() => navigate('/programs')}
             >
               {language === 'hu' ? 'Összes program megtekintése' : 'View all programs'}
               <ArrowRight className="w-4 h-4 ml-1" />

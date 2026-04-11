@@ -295,7 +295,7 @@ const ControlPanelPage = () => {
                       {t('control_panel.my_sponsorships_subtitle')}
                     </p>
                   </div>
-                  <Button onClick={() => navigate('/piacer')} className="gap-2">
+                  <Button onClick={() => navigate('/programs')} className="gap-2">
                     <PlusCircle className="h-4 w-4" />
                     {t('control_panel.new_sponsorship')}
                   </Button>
@@ -359,7 +359,7 @@ const ControlPanelPage = () => {
                     <p className="text-muted-foreground mb-4">
                       {t('control_panel.no_sponsorships_hint')}
                     </p>
-                    <Button onClick={() => navigate('/piacer')} className="bg-primary text-primary-foreground">
+                    <Button onClick={() => navigate('/programs')} className="bg-primary text-primary-foreground">
                       {t('control_panel.start_sponsoring')}
                     </Button>
                   </Card>
@@ -378,7 +378,7 @@ const ControlPanelPage = () => {
                       {t('control_panel.my_collection_subtitle')}
                     </p>
                   </div>
-                  <Button variant="outline" onClick={() => navigate('/piacer')}>
+                  <Button variant="outline" onClick={() => navigate('/programs')}>
                     {t('control_panel.browse_more')}
                   </Button>
                 </div>
@@ -430,7 +430,7 @@ const ControlPanelPage = () => {
                     <p className="text-muted-foreground mb-4">
                       {t('control_panel.empty_collection_hint')}
                     </p>
-                    <Button onClick={() => navigate('/piacer')} className="bg-primary text-primary-foreground">
+                    <Button onClick={() => navigate('/programs')} className="bg-primary text-primary-foreground">
                       {t('control_panel.explore_marketplace')}
                     </Button>
                   </Card>
@@ -518,7 +518,7 @@ const ControlPanelPage = () => {
                 
                 <div className="space-y-2 mb-4">
                   <button 
-                    onClick={() => navigate('/piacer')}
+                    onClick={() => navigate('/programs')}
                     className="w-full flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background transition-colors text-left"
                   >
                     <Compass className="h-5 w-5 text-primary" />

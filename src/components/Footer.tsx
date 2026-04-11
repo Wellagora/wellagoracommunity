@@ -47,11 +47,6 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/esemenyek" className={linkClasses}>
-                  {t('nav.events')}
-                </Link>
-              </li>
-              <li>
                 <Link to="/blog" className={linkClasses}>
                   {t('nav.blog')}
                 </Link>

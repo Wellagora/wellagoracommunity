@@ -169,7 +169,7 @@ const SponsorDashboardPage = () => {
           name: row.expert_contents?.title || t('common.program'),
           type: 'program',
           status: isActive ? 'active' : 'ended',
-          href: row.content_id ? `/piacer/${row.content_id}` : undefined,
+          href: row.content_id ? `/programs/${row.content_id}` : undefined,
         };
       });
 

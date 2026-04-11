@@ -184,7 +184,7 @@ const ProgramLearnPage = () => {
             <p className="text-muted-foreground mb-6">
               {t("learning.access_denied_description")}
             </p>
-            <Button onClick={() => navigate(`/piacer/${id}`)}>
+            <Button onClick={() => navigate(`/programs/${id}`)}>
               <ArrowLeft className="w-4 h-4 mr-2" />
               {t("learning.back_to_program")}
             </Button>
@@ -229,7 +229,7 @@ const ProgramLearnPage = () => {
           </h2>
           <div className="space-y-2">
             <Link
-              to={`/piacer/${id}`}
+              to={`/programs/${id}`}
               className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -243,7 +243,7 @@ const ProgramLearnPage = () => {
           {/* Mobile back button */}
           <div className="md:hidden mb-4">
             <Link
-              to={`/piacer/${id}`}
+              to={`/programs/${id}`}
               className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary"
             >
               <ArrowLeft className="w-4 h-4" />

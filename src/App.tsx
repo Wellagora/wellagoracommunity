@@ -165,9 +165,9 @@ function App() {
                           <Route path="/revolutionary" element={<Navigate to="/community" replace />} />
                           <Route path="/community" element={<CommunityPage />} />
                           <Route path="/ai-assistant" element={<AIAssistantPage />} />
-                          <Route path="/events" element={<Navigate to="/esemenyek" replace />} />
-                          <Route path="/elo-alkalmak" element={<Navigate to="/esemenyek" replace />} />
-                          <Route path="/esemenyek" element={<EventsPage />} />
+                          <Route path="/events" element={<Navigate to="/programs" replace />} />
+                          <Route path="/elo-alkalmak" element={<Navigate to="/programs" replace />} />
+                          <Route path="/esemenyek" element={<Navigate to="/programs" replace />} />
                           <Route path="/esemenyek/:id" element={<EventDetailPage />} />
                           
                           {/* Partner routes */}
@@ -207,7 +207,7 @@ function App() {
                           <Route path="/tamogato-panel" element={<Navigate to="/sponsor-dashboard" replace />} />
                           <Route path="/tamogatoi-kozpont" element={<Navigate to="/sponsor-dashboard" replace />} />
                           <Route path="/business-dashboard" element={<Navigate to="/sponsor-dashboard" replace />} />
-                          <Route path="/browse-programs" element={<Navigate to="/piacer" replace />} />
+                          <Route path="/browse-programs" element={<Navigate to="/programs" replace />} />
                           <Route
                             path="/project-admin/:projectId"
                             element={
@@ -251,7 +251,7 @@ function App() {
                           <Route path="/elallasi-jog" element={<WithdrawalRightsPage />} />
                           <Route path="/withdrawal" element={<Navigate to="/elallasi-jog" replace />} />
                           <Route path="/purchase/success" element={<PurchaseSuccessPage />} />
-                          <Route path="/purchase/cancel" element={<Navigate to="/piacer" replace />} />
+                          <Route path="/purchase/cancel" element={<Navigate to="/programs" replace />} />
                           <Route
                             path="/super-admin"
                             element={<Navigate to="/admin" replace />}
@@ -383,8 +383,8 @@ function App() {
                           <Route path="/creator/programs/new" element={<Navigate to="/expert-studio/new" replace />} />
                           <Route path="/creator/programs/:id/edit" element={<RedirectWithParams to="/expert-studio/:id/edit" />} />
                           
-                          {/* Marketplace (Piactér) - new Hungarian routes */}
-                          <Route path="/piacer" element={<ProgramsListingPage />} />
+                          {/* Old Hungarian marketplace routes — redirect to canonical /programs */}
+                          <Route path="/piacer" element={<Navigate to="/programs" replace />} />
                           <Route path="/piacer/:id" element={<ProgramDetailPage />} />
                           
                           {/* Mobile Navigation Routes */}

@@ -17,13 +17,14 @@ import {
   Apple,
   BookOpen,
   Briefcase,
+  Calendar,
   Grid,
   Heart,
   Leaf,
+  MapPin,
   Search,
   ShoppingCart,
   Star,
-  Store,
   Users,
   X,
   TrendingUp,
@@ -57,7 +58,6 @@ const CATEGORY_ICONS: Record<string, any> = {
   gardening: Sprout,
   heritage: Landmark,
   volunteering: HandHeart,
-  market: Store,
   community: Users,
   sport: Trophy,
   culture: Palette,
@@ -75,7 +75,6 @@ const CATEGORY_COLORS: Record<string, { bg: string; text: string; shadow: string
   gardening:     { bg: 'bg-green-500',   text: 'text-white', shadow: 'shadow-green-500/30',   hoverBorder: 'hover:border-green-300' },
   heritage:      { bg: 'bg-purple-400',  text: 'text-white', shadow: 'shadow-purple-400/30',  hoverBorder: 'hover:border-purple-300' },
   volunteering:  { bg: 'bg-pink-400',    text: 'text-white', shadow: 'shadow-pink-400/30',    hoverBorder: 'hover:border-pink-300' },
-  market:        { bg: 'bg-orange-400',  text: 'text-white', shadow: 'shadow-orange-400/30',  hoverBorder: 'hover:border-orange-300' },
   community:     { bg: 'bg-sky-400',     text: 'text-white', shadow: 'shadow-sky-400/30',     hoverBorder: 'hover:border-sky-300' },
   sport:         { bg: 'bg-indigo-400',  text: 'text-white', shadow: 'shadow-indigo-400/30',  hoverBorder: 'hover:border-indigo-300' },
   culture:       { bg: 'bg-fuchsia-400', text: 'text-white', shadow: 'shadow-fuchsia-400/30', hoverBorder: 'hover:border-fuchsia-300' },
@@ -132,6 +131,27 @@ interface CreatorProfile {
   avatar_url: string | null;
   expert_title: string | null;
 }
+
+interface EventItem {
+  id: string;
+  title: string;
+  title_en: string | null;
+  title_de: string | null;
+  description: string | null;
+  location_name: string | null;
+  location_address: string | null;
+  start_date: string;
+  end_date: string | null;
+  max_participants: number | null;
+  current_participants: number;
+  image_url: string | null;
+  category: string | null;
+  is_free: boolean | null;
+  status: string;
+  created_by: string | null;
+}
+
+type ContentTypeFilter = 'all' | 'programs' | 'events';
 
 // Category-based fallback images with high-quality Unsplash URLs
 const FALLBACK_IMAGES: Record<string, string> = {
@@ -197,17 +217,36 @@ const ProgramsListingPage = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [contentTypeFilter, setContentTypeFilter] = useState<ContentTypeFilter>('all');
   const [programs, setPrograms] = useState<Program[]>([]);
+  const [events, setEvents] = useState<EventItem[]>([]);
   const [filteredCreator, setFilteredCreator] = useState<CreatorProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isEventsLoading, setIsEventsLoading] = useState(true);
   const [usingMockData, setUsingMockData] = useState(false);
-  const [sponsorshipData, setSponsorshipData] = useState<Record<string, { maxSeats: number; usedSeats: number; contribution: number }>>({});
+  const [sponsorshipData, setSponsorshipData] = useState<Record<string, { maxSeats: number; usedSeats: number; contribution: number }>>();
 
   const creatorFilter = searchParams.get("creator");
+
+  // Helper to get localized event title
+  const getLocalizedEventTitle = (event: EventItem): string => {
+    if (language === 'en' && event.title_en) return event.title_en;
+    if (language === 'de' && event.title_de) return event.title_de;
+    return event.title;
+  };
+
+  // Format event date
+  const formatEventDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(language === 'hu' ? 'hu-HU' : language === 'de' ? 'de-DE' : 'en-US', {
+      year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+    });
+  };
 
   // CRITICAL: All hooks must be called BEFORE any conditional returns
   // Bulk detect sponsor support for all filtered programs
   const filteredPrograms = useMemo(() => {
+    if (contentTypeFilter === 'events') return [];
     return programs.filter((program) => {
       const matchesSearch =
         !searchQuery ||
@@ -226,7 +265,21 @@ const ProgramsListingPage = () => {
 
       return matchesSearch && matchesCategory;
     });
-  }, [programs, searchQuery, selectedCategory]);
+  }, [programs, searchQuery, selectedCategory, contentTypeFilter]);
+
+  // Filtered events
+  const filteredEvents = useMemo(() => {
+    if (contentTypeFilter === 'programs') return [];
+    return events.filter((event) => {
+      const title = getLocalizedEventTitle(event);
+      const matchesSearch = !searchQuery || title.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [events, searchQuery, selectedCategory, contentTypeFilter, language]);
+
+  const totalResults = filteredPrograms.length + filteredEvents.length;
+  const combinedLoading = isLoading || isEventsLoading;
 
   const programsForSupport = useMemo(() => {
     // Always return an array to ensure stable hook call
@@ -472,6 +525,33 @@ const ProgramsListingPage = () => {
     fetchPrograms();
   }, [creatorFilter, language]);
 
+  // Fetch events from Supabase
+  useEffect(() => {
+    const fetchEvents = async () => {
+      setIsEventsLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('events')
+          .select('id, title, title_en, title_de, description, location_name, location_address, start_date, end_date, max_participants, current_participants, image_url, category, is_free, status, created_by')
+          .eq('status', 'published')
+          .eq('is_public', true)
+          .gte('start_date', new Date().toISOString())
+          .order('start_date', { ascending: true });
+
+        if (error || !data) {
+          setEvents([]);
+        } else {
+          setEvents(data as unknown as EventItem[]);
+        }
+      } catch {
+        setEvents([]);
+      } finally {
+        setIsEventsLoading(false);
+      }
+    };
+    fetchEvents();
+  }, [language]);
+
   const getPricingDisplay = (program: Program) => {
     const pricing = calculatePricing({
       basePrice: program.price_huf || 0,
@@ -496,7 +576,7 @@ const ProgramsListingPage = () => {
         <div className="sticky top-0 z-30 -mx-4 px-4 pt-6 pb-6 bg-[#f5f0eb]/95 backdrop-blur-sm border-b border-[#e8e0d8] shadow-sm">
           {creatorFilter && filteredCreator ? (
             <div className="mb-6">
-              <Link to="/piacer">
+              <Link to="/programs">
                 <Button variant="ghost" size="sm" className="mb-4">
                   {t("program.back")}
                 </Button>
@@ -523,7 +603,7 @@ const ProgramsListingPage = () => {
             <div className="mb-6">
               <div className="flex items-center gap-4 mb-2">
                 <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center">
-                  <Store className="w-5 h-5 text-white" />
+                  <BookOpen className="w-5 h-5 text-white" />
                 </div>
                 <h1 className="text-3xl md:text-4xl font-bold text-foreground">{t("marketplace.title")}</h1>
               </div>
@@ -549,6 +629,31 @@ const ProgramsListingPage = () => {
                 <X className="w-5 h-5" />
               </button>
             )}
+          </div>
+
+          {/* Content Type Tabs */}
+          <div className="flex gap-1 mb-4 bg-white/60 backdrop-blur-sm rounded-lg p-1 border border-[#e8e0d8] w-fit">
+            {[
+              { id: 'all' as ContentTypeFilter, label: language === 'hu' ? 'Összes' : language === 'de' ? 'Alle' : 'All', icon: Grid },
+              { id: 'programs' as ContentTypeFilter, label: language === 'hu' ? 'Programok' : language === 'de' ? 'Programme' : 'Programs', icon: BookOpen },
+              { id: 'events' as ContentTypeFilter, label: language === 'hu' ? 'Események' : language === 'de' ? 'Veranstaltungen' : 'Events', icon: Calendar },
+            ].map((tab) => {
+              const TabIcon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setContentTypeFilter(tab.id)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                    contentTypeFilter === tab.id
+                      ? 'bg-orange-500 text-white shadow-sm'
+                      : 'text-[#3d3429]/70 hover:bg-white hover:text-[#3d3429]'
+                  }`}
+                >
+                  <TabIcon className="w-4 h-4" />
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
 
           {/* Categories - Inside sticky header with horizontal scroll + touch-friendly padding */}
@@ -580,7 +685,7 @@ const ProgramsListingPage = () => {
         </div>
 
         {/* Loading State */}
-        {isLoading ? (
+        {combinedLoading ? (
           <div className="py-8">
             <ProgramGridSkeleton count={6} />
           </div>
@@ -588,11 +693,11 @@ const ProgramsListingPage = () => {
           <>
             {/* Results Count */}
             <div className="mt-8 mb-6 text-sm tracking-wide text-muted-foreground">
-              <span className="font-medium text-foreground">{filteredPrograms.length}</span> {t("marketplace.showing_results")}
+              <span className="font-medium text-foreground">{totalResults}</span> {t("marketplace.showing_results")}
             </div>
 
             {/* Programs Grid - Ultra Minimalist Salesforce AI Style */}
-            {filteredPrograms.length === 0 ? (
+            {totalResults === 0 ? (
               <motion.div 
                 className="text-center py-20"
                 initial={{ opacity: 0, y: 30 }}
@@ -744,6 +849,7 @@ const ProgramsListingPage = () => {
                   onClick={() => {
                     setSearchQuery("");
                     setSelectedCategory("all");
+                    setContentTypeFilter("all");
                   }}
                 >
                   {t("marketplace.clear_filters")}
@@ -751,6 +857,79 @@ const ProgramsListingPage = () => {
               </motion.div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {/* Event cards */}
+                {filteredEvents.map((event, index) => (
+                  <motion.div
+                    key={`event-${event.id}`}
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  >
+                    <Link to={`/esemenyek/${event.id}`} className="block group min-h-[44px] touch-manipulation">
+                      <Card className="overflow-hidden h-full transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:scale-[1.02] active:scale-[0.98]">
+                        <CardContent className="p-0">
+                          {/* Image */}
+                          <div className="aspect-[4/3] bg-muted relative overflow-hidden">
+                            {event.image_url ? (
+                              <img
+                                src={resolveImageUrl(event.image_url)}
+                                alt={getLocalizedEventTitle(event)}
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-50 to-amber-50">
+                                <Calendar className="w-12 h-12 text-orange-300" />
+                              </div>
+                            )}
+                            {/* Event badge */}
+                            <div className="absolute top-4 left-4 flex flex-col gap-2">
+                              <Badge className="bg-blue-600 text-white border-0 flex items-center gap-1">
+                                <Calendar className="w-3 h-3" />
+                                {language === 'hu' ? 'Esemény' : language === 'de' ? 'Veranstaltung' : 'Event'}
+                              </Badge>
+                              {event.category && (
+                                <Badge className="bg-white/90 text-[#3d3429] border-0 backdrop-blur-sm">
+                                  {t(`categories.${event.category}`)}
+                                </Badge>
+                              )}
+                              {event.is_free && (
+                                <Badge className="bg-emerald-600 text-white border-0">
+                                  {language === 'hu' ? 'INGYENES' : language === 'de' ? 'KOSTENLOS' : 'FREE'}
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                          {/* Content */}
+                          <div className="p-6">
+                            <div className="flex items-center gap-2 mb-2 text-sm text-muted-foreground">
+                              <Calendar className="w-4 h-4" />
+                              <span>{formatEventDate(event.start_date)}</span>
+                            </div>
+                            <h3 className="text-xl font-semibold text-[#3d3429] leading-snug line-clamp-2 group-hover:text-orange-600 transition-colors duration-300">
+                              {getLocalizedEventTitle(event)}
+                            </h3>
+                            {event.location_name && (
+                              <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
+                                <MapPin className="w-4 h-4 flex-shrink-0" />
+                                <span className="line-clamp-1">{event.location_name}</span>
+                              </div>
+                            )}
+                            <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
+                              <Users className="w-4 h-4" />
+                              {event.max_participants ? (
+                                <span>{event.current_participants}/{event.max_participants} {t('events.participants')}</span>
+                              ) : (
+                                <span>{t('events.spots_available')}</span>
+                              )}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  </motion.div>
+                ))}
+
+                {/* Program cards */}
                 {filteredPrograms.map((program, index) => (
                   <motion.div
                     key={program.id}
@@ -763,7 +942,7 @@ const ProgramsListingPage = () => {
                     }}
                   >
                     <Link 
-                      to={`/piacer/${program.id}`} 
+                      to={`/programs/${program.id}`} 
                       className="block group min-h-[44px] touch-manipulation"
                     >
                       <Card className="overflow-hidden h-full transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:scale-[1.02] active:scale-[0.98]">

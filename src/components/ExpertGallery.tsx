@@ -224,7 +224,7 @@ const ExpertGallery = () => {
           className="text-center mt-8"
         >
           <Link
-            to="/piacer"
+            to="/programs"
             className="inline-flex items-center gap-3 text-muted-foreground hover:text-foreground text-sm uppercase tracking-[0.2em] font-medium transition-colors group"
           >
             <span>{t('home.view_all')}</span>

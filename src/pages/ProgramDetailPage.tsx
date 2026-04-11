@@ -918,7 +918,7 @@ const ProgramDetailPage = () => {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {relatedPrograms.map((relProgram) => (
-                  <Link key={relProgram.id} to={`/piacer/${relProgram.id}`}>
+                  <Link key={relProgram.id} to={`/programs/${relProgram.id}`}>
                     <Card className="hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                       <CardContent className="p-0">
                         <div className="aspect-video bg-gradient-to-br from-primary/10 to-accent/10 rounded-t-lg overflow-hidden">

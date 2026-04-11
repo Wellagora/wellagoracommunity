@@ -391,7 +391,7 @@ const PartnerProfilePage = () => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
                     >
-                      <Link to={`/piacer/${p.id}`}>
+                      <Link to={`/programs/${p.id}`}>
                         <Card className="bg-white/80 backdrop-blur-md border-[0.5px] border-black/5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.02]">
                           <CardContent className="p-6">
                             <div className="flex items-center justify-between gap-3">

@@ -256,7 +256,7 @@ const MemberDashboard = () => {
                 </TabsTrigger>
               </TabsList>
             </Tabs>
-            <Link to="/piacer">
+            <Link to="/programs">
               <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
                 {t('member_dashboard.new_voucher')} <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
@@ -275,7 +275,7 @@ const MemberDashboard = () => {
               {filteredVouchers.map((voucher) => (
                 <Link 
                   key={voucher.id}
-                  to={`/piacer/${voucher.content_id}`}
+                  to={`/programs/${voucher.content_id}`}
                   className="block"
                 >
                   <div
@@ -327,7 +327,7 @@ const MemberDashboard = () => {
                   ? (t('member_dashboard.no_vouchers'))
                   : (t('member_dashboard.no_vouchers_in_category') || 'Nincs ilyen kuponod')}
               </p>
-              <Link to="/piacer">
+              <Link to="/programs">
                 <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
                   <Sparkles className="w-4 h-4 mr-2" />
                   {t('member_dashboard.explore_marketplace')}
@@ -359,7 +359,7 @@ const MemberDashboard = () => {
                 {sponsoredContent.map((content) => (
                   <Link
                     key={content.id}
-                    to={`/piacer/${content.id}`}
+                    to={`/programs/${content.id}`}
                     className="flex-shrink-0 w-64"
                   >
                     <div className="rounded-xl overflow-hidden border border-border bg-card hover:shadow-lg transition-shadow">

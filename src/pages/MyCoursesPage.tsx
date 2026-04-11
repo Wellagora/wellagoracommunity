@@ -181,7 +181,7 @@ const MyCoursesPage = () => {
             <p className="text-muted-foreground text-sm mb-6">
               {t("my_courses.empty_desc")}
             </p>
-            <Link to="/piacer">
+            <Link to="/programs">
               <Button className="min-h-[44px] bg-black hover:bg-black/90 text-white">
                 <Store className="w-4 h-4 mr-2" />
                 {t("my_courses.browse_marketplace")}
@@ -202,7 +202,7 @@ const MyCoursesPage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                 >
-                  <Link to={`/piacer/${program.content_id}/learn`}>
+                  <Link to={`/programs/${program.content_id}/learn`}>
                     <Card className="overflow-hidden hover:shadow-md transition-all duration-200 touch-manipulation active:scale-[0.98]">
                       <CardContent className="p-0">
                         <div className="flex gap-4">

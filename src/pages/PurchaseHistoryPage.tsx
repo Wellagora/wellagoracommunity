@@ -164,9 +164,9 @@ const PurchaseHistoryPage = () => {
               <p className="text-[#3d3429]/60 text-lg">
                 {isHu ? "Még nincs vásárlásod." : "You have no purchases yet."}
               </p>
-              <Link to="/piacer">
+              <Link to="/programs">
                 <Button className="mt-4 bg-orange-500 hover:bg-orange-600 text-white">
-                  {isHu ? "Piactér böngészése" : "Browse Marketplace"}
+                  {isHu ? "Programok böngészése" : "Browse Programs"}
                 </Button>
               </Link>
             </CardContent>
@@ -271,7 +271,7 @@ const PurchaseHistoryPage = () => {
                           )}
                           {p.content_id && (
                             <Button size="sm" variant="ghost" asChild title={isHu ? "Program megtekintése" : "View program"}>
-                              <Link to={`/piacer/${p.content_id}`}>
+                              <Link to={`/programs/${p.content_id}`}>
                                 <ExternalLink className="h-4 w-4 text-[#3d3429]/60" />
                               </Link>
                             </Button>

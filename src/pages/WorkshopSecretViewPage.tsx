@@ -618,14 +618,14 @@ const AccessDeniedView = ({
         <div className="flex flex-col gap-3">
           {reason === "no_access" && contentId && (
             <Button
-              onClick={() => navigate(`/piacer/${contentId}`)}
+              onClick={() => navigate(`/programs/${contentId}`)}
               className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
               {t("workshop.purchase_access")}
             </Button>
           )}
-          <Button variant="outline" onClick={() => navigate("/piacer")}>
+          <Button variant="outline" onClick={() => navigate("/programs")}>
             {t("workshop.back_to_marketplace")}
           </Button>
         </div>
@@ -729,7 +729,7 @@ const WorkshopSecretViewPage = () => {
     <div className="min-h-screen bg-background">
       <WorkshopHeader
         title={content?.title || ""}
-        onBack={() => navigate("/piacer")}
+        onBack={() => navigate("/programs")}
       />
       <div className="container mx-auto px-4 py-6">
         <div className="flex flex-col lg:flex-row gap-8">

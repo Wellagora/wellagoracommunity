@@ -73,7 +73,7 @@ interface Program {
   views_count?: number;
 }
 
-// Category-based fallback images (matching Piactér/ProgramsListingPage)
+// Category-based fallback images (matching ProgramsListingPage)
 const FALLBACK_IMAGES: Record<string, string> = {
   'sustainability': 'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=800&h=600&fit=crop',
   'gastronomy': 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&h=600&fit=crop',

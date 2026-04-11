@@ -302,7 +302,7 @@ const RelatedProgramCard = ({ programId }: { programId: string }) => {
   // Will fetch from Supabase when social feed is active
   return (
     <div
-      onClick={() => navigate(`/piacer/${programId}`)}
+      onClick={() => navigate(`/programs/${programId}`)}
       className="mt-3 p-3 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-200 cursor-pointer hover:shadow-md transition-all"
     >
       <p className="text-sm text-indigo-600">Kapcsolódó program</p>

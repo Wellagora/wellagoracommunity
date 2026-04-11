@@ -88,7 +88,7 @@ const ExpertProfileModal = ({ expertId, isOpen, onClose }: ExpertProfileModalPro
 
   const handleViewAllContents = () => {
     onClose();
-    navigate(`/piacer?creator=${expertId}`);
+    navigate(`/programs?creator=${expertId}`);
   };
 
   return (

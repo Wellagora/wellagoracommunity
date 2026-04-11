@@ -51,7 +51,7 @@ const CATEGORY_FILTERS = [
   ...CATEGORY_LIST.map(cat => ({ id: cat, labelKey: `categories.${cat}` })),
 ];
 
-// Per-category active button colors — matches Piactér palette
+// Per-category active button colors — matches ProgramsListingPage palette
 const EVENT_CATEGORY_COLORS: Record<string, string> = {
   all:           'bg-orange-500 hover:bg-orange-600',
   lifestyle:     'bg-emerald-500 hover:bg-emerald-600',
@@ -62,7 +62,6 @@ const EVENT_CATEGORY_COLORS: Record<string, string> = {
   gardening:     'bg-green-500 hover:bg-green-600',
   heritage:      'bg-purple-400 hover:bg-purple-500',
   volunteering:  'bg-pink-400 hover:bg-pink-500',
-  market:        'bg-orange-400 hover:bg-orange-500',
   community:     'bg-sky-400 hover:bg-sky-500',
   sport:         'bg-indigo-400 hover:bg-indigo-500',
   culture:       'bg-fuchsia-400 hover:bg-fuchsia-500',

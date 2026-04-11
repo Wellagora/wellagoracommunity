@@ -45,7 +45,7 @@ const CTABanner = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/piacer">
+            <Link to="/programs">
               <Button
                 size="lg"
                 className="rounded-full bg-[#3d3429] hover:bg-[#4d4439] text-white font-semibold px-8 min-w-[220px] shadow-[0_4px_20px_rgba(61,52,41,0.25)] hover:shadow-[0_4px_30px_rgba(61,52,41,0.35)] transition-all duration-300 gap-2"

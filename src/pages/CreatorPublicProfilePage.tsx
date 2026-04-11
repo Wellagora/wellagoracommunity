@@ -391,7 +391,7 @@ const CreatorPublicProfilePage = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 + index * 0.1 }}
                   >
-                    <Link to={`/piacer/${program.id}`}>
+                    <Link to={`/programs/${program.id}`}>
                       <Card className="bg-white/80 backdrop-blur-md border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_60px_rgb(0,0,0,0.1)] hover:-translate-y-2 transition-all duration-300 overflow-hidden group">
                         <CardContent className="p-0">
                           <div className="aspect-video bg-gradient-to-br from-primary/10 to-blue-500/10 relative overflow-hidden">

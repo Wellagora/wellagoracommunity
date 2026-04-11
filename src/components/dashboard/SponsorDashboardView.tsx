@@ -177,7 +177,7 @@ const SponsorDashboardView = () => {
             CSV
           </Button>
           <Button 
-            onClick={() => navigate('/piacer')}
+            onClick={() => navigate('/programs')}
             className="bg-gradient-to-r from-primary to-primary/80"
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -286,7 +286,7 @@ const SponsorDashboardView = () => {
                 <p className="text-muted-foreground mb-4">
                   {t('control_panel.no_sponsorships_hint') || 'Még nincs szponzorációd'}
                 </p>
-                <Button onClick={() => navigate('/piacer')}>
+                <Button onClick={() => navigate('/programs')}>
                   {t('control_panel.start_sponsoring') || 'Támogatás indítása'}
                 </Button>
               </div>
@@ -346,7 +346,7 @@ const SponsorDashboardView = () => {
               <Button 
                 variant="ghost" 
                 className="w-full mt-2"
-                onClick={() => navigate('/piacer')}
+                onClick={() => navigate('/programs')}
               >
                 {t('control_panel.new_sponsorship') || 'Új támogatás indítása'}
                 <ArrowRight className="w-4 h-4 ml-2" />

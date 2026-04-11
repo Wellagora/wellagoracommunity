@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Store, BookOpen, Bell, User, Sparkles, Building2, LayoutDashboard, Heart, Wallet, BarChart3 } from "lucide-react";
+import { BookOpen, Bell, User, Sparkles, Building2, LayoutDashboard, Heart, Wallet, BarChart3 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface NavItem {
   path: string;
-  icon: typeof Store;
+  icon: typeof BookOpen;
   labelKey: string;
   iconColor?: string;
 }
@@ -83,10 +83,10 @@ const MobileBottomNav = () => {
 
   // STRICT Role-specific navigation items - each role sees ONLY their items
   const getNavItems = (): NavItem[] => {
-    // MEMBER: Piactér, Agórám, Értesítések, Profil
+    // MEMBER: Programok, Agórám, Értesítések, Profil
     if (effectiveRole === 'member') {
       return [
-        { path: "/programs", icon: Store, labelKey: "mobile_nav.discover" },
+        { path: "/programs", icon: BookOpen, labelKey: "mobile_nav.discover" },
         { path: "/my-agora", icon: LayoutDashboard, labelKey: "mobile_nav.my_agora" },
         { path: "/ertesitesek", icon: Bell, labelKey: "mobile_nav.notifications" },
         { path: "/profile", icon: User, labelKey: "mobile_nav.profile" },
@@ -97,7 +97,7 @@ const MobileBottomNav = () => {
     if (effectiveRole === 'expert') {
       return [
         { path: "/expert-studio", icon: Sparkles, labelKey: "mobile_nav.my_studio", iconColor: "text-amber-500" },
-        { path: "/expert-studio/programs", icon: Store, labelKey: "mobile_nav.my_programs" },
+        { path: "/expert-studio/programs", icon: BookOpen, labelKey: "mobile_nav.my_programs" },
         { path: "/ertesitesek", icon: Bell, labelKey: "mobile_nav.notifications" },
         { path: "/profile", icon: User, labelKey: "mobile_nav.profile" },
       ];
@@ -115,7 +115,7 @@ const MobileBottomNav = () => {
 
     // Default fallback (logged out - should not show)
     return [
-      { path: "/programs", icon: Store, labelKey: "mobile_nav.discover" },
+      { path: "/programs", icon: BookOpen, labelKey: "mobile_nav.discover" },
       { path: "/profile", icon: User, labelKey: "mobile_nav.profile" },
     ];
   };
@@ -125,7 +125,7 @@ const MobileBottomNav = () => {
   const isActive = (path: string) => {
     // Handle exact match or path prefix for nested routes
     if (path === "/programs") {
-      return location.pathname.startsWith("/programs") || location.pathname.startsWith("/piacer") || location.pathname === "/";
+      return location.pathname.startsWith("/programs") || location.pathname.startsWith("/programs") || location.pathname === "/";
     }
     return location.pathname.startsWith(path);
   };

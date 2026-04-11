@@ -157,7 +157,7 @@ export const PurchaseModal = ({ isOpen, onClose, content, transactionType = "con
             body: {
               contentId: content.id,
               successUrl: `${window.location.origin}/purchase/success?session_id={CHECKOUT_SESSION_ID}`,
-              cancelUrl: `${window.location.origin}/piacer`,
+              cancelUrl: `${window.location.origin}/programs`,
               withdrawal_consent: withdrawalConsent,
             },
           }

@@ -10,9 +10,7 @@ import {
   Inbox,
   ChevronDown,
   ShieldCheck,
-  Calendar,
   LayoutDashboard,
-  Store,
   Sparkles,
   Building2,
   Heart,
@@ -263,47 +261,43 @@ const Navigation = () => {
 
   // STRICT Role-based navigation - each role sees ONLY their items
   const navItems = useMemo(() => {
-    // Logged-out users: Home, Marketplace, Events, Community
+    // Logged-out users: Home, Programs, Community
     if (!user || !profile) {
       return [
         { path: "/", label: t("nav.home"), icon: Home },
-        { path: "/programs", label: t("nav.marketplace"), icon: Store },
-        { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
+        { path: "/programs", label: t("nav.marketplace"), icon: BookOpen },
         { path: "/community", label: t("nav.community"), icon: UsersIcon },
-        { path: "/blog", label: t("nav.blog"), icon: BookOpen },
+        { path: "/blog", label: t("nav.blog"), icon: Sparkles },
       ];
     }
 
     // Role-specific navigation
     const roleToUse = (isSuperAdmin && viewAsRole) ? viewAsRole : effectiveRole;
 
-    // MEMBER: Piactér, Események, Közösség, Tudástár, Agórám
+    // MEMBER: Programok, Közösség, Tudástár, Agórám
     if (roleToUse === 'member') {
       return [
-        { path: "/programs", label: t("nav.marketplace"), icon: Store },
-        { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
+        { path: "/programs", label: t("nav.marketplace"), icon: BookOpen },
         { path: "/community", label: t("nav.community"), icon: UsersIcon },
-        { path: "/blog", label: t("nav.blog"), icon: BookOpen },
+        { path: "/blog", label: t("nav.blog"), icon: Sparkles },
         { path: "/my-agora", label: t("nav.my_agora"), icon: LayoutDashboard },
       ];
     }
 
-    // EXPERT: Szakértői Stúdió, Piactér, Események, Közösség
+    // EXPERT: Szakértői Stúdió, Programok, Közösség
     if (roleToUse === 'expert') {
       return [
         { path: "/expert-studio", label: t("nav.expert_studio"), icon: Sparkles, iconColor: "text-amber-500" },
-        { path: "/programs", label: t("nav.marketplace"), icon: Store },
-        { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
+        { path: "/programs", label: t("nav.marketplace"), icon: BookOpen },
         { path: "/community", label: t("nav.community"), icon: UsersIcon },
       ];
     }
 
-    // SPONSOR: Támogatói Központ, Piactér, Események, Közösség
+    // SPONSOR: Támogatói Központ, Programok, Közösség, Pénzügyek
     if (roleToUse === 'sponsor') {
       return [
         { path: "/sponsor-dashboard", label: t("nav.sponsor_hub"), icon: Building2, iconColor: "text-emerald-500" },
-        { path: "/programs", label: t("nav.marketplace"), icon: Store },
-        { path: "/esemenyek", label: t("nav.events"), icon: Calendar },
+        { path: "/programs", label: t("nav.marketplace"), icon: BookOpen },
         { path: "/community", label: t("nav.community"), icon: UsersIcon },
         { path: "/sponsor-dashboard/finances", label: t("nav.finances"), icon: BarChart3 },
       ];
@@ -311,7 +305,7 @@ const Navigation = () => {
 
     // Default fallback
     return [
-      { path: "/programs", label: t("nav.marketplace"), icon: Store },
+      { path: "/programs", label: t("nav.marketplace"), icon: BookOpen },
     ];
   }, [user, profile, t, isSuperAdmin, viewAsRole, effectiveRole]);
 

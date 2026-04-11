@@ -247,7 +247,7 @@ const MyHubPage = () => {
                   <p className="text-muted-foreground mb-6 max-w-sm mx-auto">{t("my_hub.no_vouchers_hint")}</p>
                   <Button 
                     size="lg"
-                    onClick={() => navigate("/piacer")}
+                    onClick={() => navigate("/programs")}
                     className="bg-primary hover:bg-primary/90 text-white shadow-lg"
                   >
                     <Sparkles className="w-4 h-4 mr-2" />
@@ -333,7 +333,7 @@ const MyHubPage = () => {
                               <Button 
                                 variant="ghost" 
                                 size="sm"
-                                onClick={() => navigate(`/piacer/${voucher.content_id}`)}
+                                onClick={() => navigate(`/programs/${voucher.content_id}`)}
                               >
                                 {t("common.view") || "Megnézem"}
                                 <ChevronRight className="w-3 h-3 ml-1" />

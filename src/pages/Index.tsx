@@ -31,7 +31,7 @@ const getWelcomeTips = (role: string, language: string) => {
       { icon: Sparkles, hu: 'Állítsd be a támogatói profilodat', en: 'Set up your sponsor profile', de: 'Richte dein Sponsorenprofil ein' },
     ],
     member: [
-      { icon: Sparkles, hu: 'Fedezd fel a Piacteret', en: 'Explore the Marketplace', de: 'Entdecke den Marktplatz' },
+      { icon: Sparkles, hu: 'Fedezd fel a programokat', en: 'Explore Programs', de: 'Entdecke die Programme' },
       { icon: Calendar, hu: 'Csatlakozz egy közösségi eseményhez', en: 'Join a community event', de: 'Nimm an einem Community-Event teil' },
       { icon: Users, hu: 'Ismerd meg a helyi szakértőket', en: 'Meet local experts', de: 'Lerne lokale Experten kennen' },
     ],

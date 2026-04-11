@@ -94,7 +94,7 @@ const CommunityOverview = ({ stakeholderCount, onViewChange, onOpenStoryBook }: 
       title: t('unified_hub.programs_title'),
       description: t('unified_hub.programs_desc'),
       stats: programCount > 0 ? `${programCount} ` + t('unified_hub.active') : t('unified_hub.active'),
-      action: () => navigate('/piacer')
+      action: () => navigate('/programs')
     }
   ];
 

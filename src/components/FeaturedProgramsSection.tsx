@@ -183,7 +183,7 @@ const FeaturedProgramsSection = () => {
                 }}
                 viewport={{ once: true }}
               >
-                <Link to={`/piacer/${program.id}`} className="block group">
+                <Link to={`/programs/${program.id}`} className="block group">
                   <Card className="overflow-hidden transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:scale-[1.02]">
                     <CardContent className="p-0">
                       {/* Image */}
@@ -248,7 +248,7 @@ const FeaturedProgramsSection = () => {
                         <div className="mt-4 flex items-center justify-between">
                           {getAccessBadge(program)}
                           <ShareButton
-                            url={`/piacer/${program.id}`}
+                            url={`/programs/${program.id}`}
                             title={typeof program.title === "string" ? program.title : ""}
                             className="opacity-0 group-hover:opacity-100 transition-opacity"
                           />

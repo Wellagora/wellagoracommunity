@@ -252,7 +252,7 @@ export function UserProgramsList() {
                     <Button 
                       variant="outline" 
                       className="w-full justify-start"
-                      onClick={() => navigate('/piacer')}
+                      onClick={() => navigate('/programs')}
                     >
                       <Target className="w-4 h-4 mr-2" />
                       {t('dashboard.browse_project_challenges')}

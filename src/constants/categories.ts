@@ -8,7 +8,6 @@ export const CATEGORIES = [
   'gardening',
   'heritage',
   'volunteering',
-  'market',
   'community',
   'sport',
   'culture',

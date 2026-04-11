@@ -14,7 +14,7 @@ import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ShareButton } from "@/components/ui/ShareButton";
 
-// Category-based fallback images (matching Piactér/ProgramsListingPage)
+// Category-based fallback images (matching ProgramsListingPage)
 const FALLBACK_IMAGES: Record<string, string> = {
   'sustainability': 'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=800&h=600&fit=crop',
   'gastronomy': 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&h=600&fit=crop',
@@ -137,7 +137,7 @@ const RecommendedProgramsSlider = () => {
     }
   };
 
-  // Category-based placeholder with Unsplash fallback (matching Piactér)
+  // Category-based placeholder with Unsplash fallback (matching ProgramsListingPage)
   const ImagePlaceholder = ({ category }: { category?: string | null }) => (
     <div className="w-full h-full relative">
       <img
@@ -207,11 +207,11 @@ const RecommendedProgramsSlider = () => {
                 </Button>
               </Link>
             ) : (
-              <Link to="/piacer">
+              <Link to="/programs">
                 <Button variant="outline" className="gap-2">
-                  {language === 'hu' ? 'Piactér felfedezése' :
-                   language === 'de' ? 'Marktplatz entdecken' :
-                   'Explore Marketplace'}
+                  {language === 'hu' ? 'Programok felfedezése' :
+                   language === 'de' ? 'Programme entdecken' :
+                   'Explore Programs'}
                   <ArrowRight className="w-4 h-4" />
                 </Button>
               </Link>
@@ -256,7 +256,7 @@ const RecommendedProgramsSlider = () => {
               >
                 <ChevronRight className="w-5 h-5" />
               </Button>
-              <Link to="/piacer">
+              <Link to="/programs">
                 <Button variant="outline" size="sm">
                   {t("index.view_all_secrets")}
                 </Button>
@@ -283,7 +283,7 @@ const RecommendedProgramsSlider = () => {
                 }}
                 viewport={{ once: true }}
               >
-                <Link to={`/piacer/${program.id}`} className="block group">
+                <Link to={`/programs/${program.id}`} className="block group">
                   <Card className="h-full overflow-hidden">
                     {/* Image with smooth zoom + category fallback */}
                     <div className="aspect-[4/3] bg-gradient-to-br from-blue-50/50 to-amber-50/30 relative overflow-hidden">
@@ -318,7 +318,7 @@ const RecommendedProgramsSlider = () => {
                           {program.title}
                         </h3>
                         <ShareButton
-                          url={`/piacer/${program.id}`}
+                          url={`/programs/${program.id}`}
                           title={program.title}
                           className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-0.5"
                         />

@@ -93,7 +93,7 @@ const PurchaseSuccessPage = () => {
                 {t("purchase.go_to_courses") || "Programjaim"}
                 <ArrowRight className="w-4 h-4" />
               </Button>
-              <Button variant="outline" onClick={() => navigate("/piacer")}>
+              <Button variant="outline" onClick={() => navigate("/programs")}>
                 {t("purchase.browse_more") || "További programok"}
               </Button>
             </div>
