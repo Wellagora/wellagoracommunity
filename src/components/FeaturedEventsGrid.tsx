@@ -109,26 +109,26 @@ const FeaturedEventsGrid = () => {
               <Calendar className="w-8 h-8 text-amber-500" />
             </div>
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-              {language === 'hu' ? 'Események hamarosan!' :
-               language === 'de' ? 'Veranstaltungen kommen bald!' :
-               'Events coming soon!'}
+              {language === 'hu' ? 'Programok hamarosan!' :
+               language === 'de' ? 'Programme kommen bald!' :
+               'Programs coming soon!'}
             </h2>
             <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
               {isExpert
-                ? (language === 'hu' ? 'Hozd létre az első eseményedet, és építsd a közösségedet!' :
-                   language === 'de' ? 'Erstelle dein erstes Event und baue deine Community auf!' :
-                   'Create your first event and build your community!')
-                : (language === 'hu' ? 'Közösségünk hamarosan életre kel izgalmas eseményekkel. Nézz vissza!' :
-                   language === 'de' ? 'Unsere Community erwacht bald mit spannenden Events zum Leben. Schau wieder vorbei!' :
-                   'Our community will soon come alive with exciting events. Check back!')}
+                ? (language === 'hu' ? 'Hozd létre az első programodat, és építsd a közösségedet!' :
+                   language === 'de' ? 'Erstelle dein erstes Programm und baue deine Community auf!' :
+                   'Create your first program and build your community!')
+                : (language === 'hu' ? 'Közösségünk hamarosan életre kel izgalmas programokkal. Nézz vissza!' :
+                   language === 'de' ? 'Unsere Community erwacht bald mit spannenden Programmen zum Leben. Schau wieder vorbei!' :
+                   'Our community will soon come alive with exciting programs. Check back!')}
             </p>
             {isExpert && (
               <Link to="/szakertoi-studio">
                 <Button className="gap-2">
                   <Plus className="w-4 h-4" />
-                  {language === 'hu' ? 'Esemény létrehozása' :
-                   language === 'de' ? 'Event erstellen' :
-                   'Create Event'}
+                  {language === 'hu' ? 'Program létrehozása' :
+                   language === 'de' ? 'Programm erstellen' :
+                   'Create Program'}
                 </Button>
               </Link>
             )}
