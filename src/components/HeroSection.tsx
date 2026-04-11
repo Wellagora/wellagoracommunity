@@ -19,7 +19,7 @@ const HERO_IMAGES: { src: string; pos: string }[] = [
   { src: '/images/hero-cafe.jpg',    pos: '35% 25%' },      // barista face is upper-left, match to mobile crop
   { src: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=1200&h=800&fit=crop&q=80', pos: 'center center' }, // community dinner ✓
   { src: '/images/hero-garden.jpg',  pos: '35% center' },   // gardener face is left-of-center
-  { src: '/images/hero-cooking.jpg', pos: '55% center' },   // couple cooking together — Freepik
+  { src: '/images/hero-cooking.jpg', pos: '55% 20%' },      // couple cooking — face near top, keep heads visible
   { src: '/images/hero-sunrise.jpg', pos: 'center center' }, // golden sunrise landscape
 ];
 
