@@ -29,7 +29,8 @@ import {
   Wallet,
   History,
   FolderOpen,
-  Ticket
+  Ticket,
+  Sparkles
 } from 'lucide-react';
 
 interface Project {
@@ -151,13 +152,18 @@ const AdminLayout = () => {
       icon: MessageSquare, 
       label: t('admin.nav.feedback') 
     },
-    { 
-      path: `${adminBasePath}/analytics`, 
-      icon: BarChart3, 
-      label: t('admin.nav.analytics') 
+    {
+      path: `${adminBasePath}/analytics`,
+      icon: BarChart3,
+      label: t('admin.nav.analytics')
     },
-    { 
-      path: `${adminBasePath}/audit`, 
+    {
+      path: `${adminBasePath}/insights`,
+      icon: Sparkles,
+      label: t('admin.nav.insights') || 'Közösségi insights'
+    },
+    {
+      path: `${adminBasePath}/audit`,
       icon: History, 
       label: t('admin.nav.audit') || 'Rendszernapló'
     },

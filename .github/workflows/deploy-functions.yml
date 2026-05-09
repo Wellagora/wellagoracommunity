@@ -36,6 +36,14 @@ jobs:
       - name: Deploy ai-chat
         run: supabase functions deploy ai-chat --project-ref $SUPABASE_PROJECT_ID
 
+      - name: Deploy extract-topics
+        # WellBot Insights — téma-extrakciós cron worker (Anthropic Haiku)
+        run: supabase functions deploy extract-topics --project-ref $SUPABASE_PROJECT_ID
+
+      - name: Deploy aggregate-topics-weekly
+        # WellBot Insights — heti aggregátor (SQL only, Anthropic nem kell)
+        run: supabase functions deploy aggregate-topics-weekly --project-ref $SUPABASE_PROJECT_ID
+
       - name: Deploy health-check
         run: supabase functions deploy health-check --project-ref $SUPABASE_PROJECT_ID
 

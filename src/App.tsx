@@ -83,6 +83,7 @@ const AdminFinancials = lazy(() => import("@/pages/admin/AdminFinancials"));
 const AdminAudit = lazy(() => import("@/pages/admin/AdminAudit"));
 const AdminProjectHub = lazy(() => import("@/pages/admin/AdminProjectHub"));
 const AdminInviteCodes = lazy(() => import("@/pages/admin/AdminInviteCodes"));
+const AdminInsights = lazy(() => import("@/pages/admin/AdminInsights"));
 const SponsorLandingPage = lazy(() => import("@/pages/SponsorLandingPage"));
 const SponsorOnboardingPage = lazy(() => import("@/pages/SponsorOnboardingPage"));
 const SponsorPublicProfilePage = lazy(() => import("@/pages/SponsorPublicProfilePage"));
@@ -521,6 +522,7 @@ function App() {
                           <Route path="financials" element={<AdminFinancials />} />
                           <Route path="audit" element={<AdminAudit />} />
                           <Route path="invite-codes" element={<AdminInviteCodes />} />
+                          <Route path="insights" element={<AdminInsights />} />
                           <Route path="settings" element={<AdminSettings />} />
                         </Route>
                       </Routes>

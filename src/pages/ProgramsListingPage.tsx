@@ -631,30 +631,34 @@ const ProgramsListingPage = () => {
             )}
           </div>
 
-          {/* Content Type Tabs */}
-          <div className="flex gap-1 mb-4 bg-white/60 backdrop-blur-sm rounded-lg p-1 border border-[#e8e0d8] w-fit">
-            {[
-              { id: 'all' as ContentTypeFilter, label: language === 'hu' ? 'Összes' : language === 'de' ? 'Alle' : 'All', icon: Grid },
-              { id: 'programs' as ContentTypeFilter, label: language === 'hu' ? 'Programok' : language === 'de' ? 'Programme' : 'Programs', icon: BookOpen },
-              { id: 'events' as ContentTypeFilter, label: language === 'hu' ? 'Események' : language === 'de' ? 'Veranstaltungen' : 'Events', icon: Calendar },
-            ].map((tab) => {
-              const TabIcon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setContentTypeFilter(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                    contentTypeFilter === tab.id
-                      ? 'bg-orange-500 text-white shadow-sm'
-                      : 'text-[#3d3429]/70 hover:bg-white hover:text-[#3d3429]'
-                  }`}
-                >
-                  <TabIcon className="w-4 h-4" />
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
+          {/* Content Type Tabs — only show when both content types have items.
+              Pre-launch / sparse-DB állapotban felesleges szűrő-réteget elrejtjük.
+              Care+DNA tanulság: ne mutassunk filter-szintet ott, ahol nincs mit szűrni. */}
+          {programs.length > 0 && events.length > 0 && (
+            <div className="flex gap-1 mb-4 bg-white/60 backdrop-blur-sm rounded-lg p-1 border border-[#e8e0d8] w-fit">
+              {[
+                { id: 'all' as ContentTypeFilter, label: t('marketplace.tab_all'), icon: Grid },
+                { id: 'programs' as ContentTypeFilter, label: t('marketplace.tab_programs'), icon: BookOpen },
+                { id: 'events' as ContentTypeFilter, label: t('marketplace.tab_events'), icon: Calendar },
+              ].map((tab) => {
+                const TabIcon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setContentTypeFilter(tab.id)}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                      contentTypeFilter === tab.id
+                        ? 'bg-orange-500 text-white shadow-sm'
+                        : 'text-[#3d3429]/70 hover:bg-white hover:text-[#3d3429]'
+                    }`}
+                  >
+                    <TabIcon className="w-4 h-4" />
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
           {/* Categories - Inside sticky header with horizontal scroll + touch-friendly padding */}
           <div className="-mx-4 px-4 overflow-x-auto pb-1 scrollbar-hide">
@@ -691,6 +695,16 @@ const ProgramsListingPage = () => {
           </div>
         ) : (
           <>
+            {/* Early-stage / launch message — when content is sparse and no filter is active.
+                Care+DNA tanulság: ténymegállapítás → opció, nincs "ne add fel". */}
+            {totalResults > 0 && totalResults <= 1 && !searchQuery && selectedCategory === 'all' && (
+              <div className="mt-8 mb-2 p-4 bg-orange-50/60 border border-orange-200/70 rounded-lg max-w-2xl">
+                <p className="text-sm text-orange-900/90 leading-relaxed">
+                  {t("marketplace.early_stage_message")}
+                </p>
+              </div>
+            )}
+
             {/* Results Count */}
             <div className="mt-8 mb-6 text-sm tracking-wide text-muted-foreground">
               <span className="font-medium text-foreground">{totalResults}</span> {t("marketplace.showing_results")}
