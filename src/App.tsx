@@ -14,6 +14,7 @@ import { initSentry } from "@/lib/sentry";
 import { LoadingFallback } from "@/components/LoadingFallback";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { FeatureGate } from "@/components/FeatureGate";
 import AppLayout from "@/components/layout/AppLayout";
 import TermsCheckWrapper from "@/components/wrappers/TermsCheckWrapper";
 import AnalyticsTracker from "@/components/analytics/AnalyticsTracker";
@@ -150,8 +151,8 @@ function App() {
                         <Route element={<TermsCheckWrapper />}>
                           <Route element={<AppLayout />}>
                             <Route path="/" element={<Index />} />
-                          <Route path="/dashboard/handprint" element={<HandprintPage />} />
-                          <Route path="/dashboard/handprint-calculator" element={<HandprintCalculatorPage />} />
+                          <Route path="/dashboard/handprint" element={<FeatureGate feature="carbonHandprint"><HandprintPage /></FeatureGate>} />
+                          <Route path="/dashboard/handprint-calculator" element={<FeatureGate feature="carbonHandprint"><HandprintCalculatorPage /></FeatureGate>} />
                           {/* Member routes - redirect legacy paths to /my-agora */}
                           <Route path="/dashboard" element={<Navigate to="/my-agora" replace />} />
                           <Route path="/member-dashboard" element={<Navigate to="/my-agora" replace />} />
@@ -195,13 +196,15 @@ function App() {
                             element={<Navigate to="/sponsor-dashboard" replace />}
                           />
                           <Route path="/organization/:organizationId" element={<PublicOrganizationPage />} />
-                          {/* Sponsor Dashboard - English canonical path */}
+                          {/* Sponsor Dashboard - English canonical path. Gated behind financial feature flag (MVP v2). */}
                           <Route
                             path="/sponsor-dashboard"
                             element={
-                              <ProtectedRoute allowedRoles={["sponsor"]}>
-                                <SponsorDashboardPage />
-                              </ProtectedRoute>
+                              <FeatureGate feature="financial">
+                                <ProtectedRoute allowedRoles={["sponsor"]}>
+                                  <SponsorDashboardPage />
+                                </ProtectedRoute>
+                              </FeatureGate>
                             }
                           />
                           {/* Sponsor Dashboard - Hungarian legacy routes (redirect to English) */}
@@ -341,35 +344,43 @@ function App() {
                           <Route
                             path="/expert-studio/payouts"
                             element={
-                              <ProtectedRoute allowedRoles={["expert"]}>
-                                <ExpertPayouts />
-                              </ProtectedRoute>
+                              <FeatureGate feature="financial">
+                                <ProtectedRoute allowedRoles={["expert"]}>
+                                  <ExpertPayouts />
+                                </ProtectedRoute>
+                              </FeatureGate>
                             }
                           />
-                          
-                          {/* Sponsor Dashboard sub-pages */}
+
+                          {/* Sponsor Dashboard sub-pages — gated behind financial feature flag (MVP v2) */}
                           <Route
                             path="/sponsor-dashboard/campaigns"
                             element={
-                              <ProtectedRoute allowedRoles={["sponsor"]}>
-                                <SponsorCampaigns />
-                              </ProtectedRoute>
+                              <FeatureGate feature="financial">
+                                <ProtectedRoute allowedRoles={["sponsor"]}>
+                                  <SponsorCampaigns />
+                                </ProtectedRoute>
+                              </FeatureGate>
                             }
                           />
                           <Route
                             path="/sponsor-dashboard/finances"
                             element={
-                              <ProtectedRoute allowedRoles={["sponsor"]}>
-                                <SponsorFinances />
-                              </ProtectedRoute>
+                              <FeatureGate feature="financial">
+                                <ProtectedRoute allowedRoles={["sponsor"]}>
+                                  <SponsorFinances />
+                                </ProtectedRoute>
+                              </FeatureGate>
                             }
                           />
                           <Route
                             path="/sponsor-dashboard/support"
                             element={
-                              <ProtectedRoute allowedRoles={["sponsor"]}>
-                                <SponsorSupport />
-                              </ProtectedRoute>
+                              <FeatureGate feature="financial">
+                                <ProtectedRoute allowedRoles={["sponsor"]}>
+                                  <SponsorSupport />
+                                </ProtectedRoute>
+                              </FeatureGate>
                             }
                           />
                           
