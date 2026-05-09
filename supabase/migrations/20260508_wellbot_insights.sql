@@ -250,7 +250,7 @@ RETURNS TABLE (
   conversation_id UUID,
   content TEXT,
   language TEXT,
-  timestamp TIMESTAMPTZ
+  msg_timestamp TIMESTAMPTZ
 )
 LANGUAGE SQL
 SECURITY DEFINER
