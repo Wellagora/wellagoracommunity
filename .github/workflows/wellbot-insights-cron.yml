@@ -1,0 +1,76 @@
+name: WellBot Insights — Cron Jobs
+
+# Triggers:
+#   - extract-topics: minden óra 5. percében (téma-extrakció új ai_messages-ekből)
+#   - aggregate-topics-weekly: vasárnap 23:30 UTC (heti aggregátum)
+#
+# Előfeltétel: GitHub Secrets-ben kell lennie:
+#   - SUPABASE_SERVICE_ROLE_KEY: a Wellagora Supabase project service_role JWT-je
+#   - SUPABASE_PROJECT_URL (opcionális): default https://vvunxewylcifwphxgqab.supabase.co
+#
+# A service_role kulcsot a Supabase Dashboard → Project Settings → API → service_role oldalról veszed.
+# Add hozzá: github.com/Wellagora/wellagoracommunity/settings/secrets/actions/new
+#
+# Manuális trigger: a Settings → Actions oldalon a "Run workflow" gombbal.
+
+on:
+  schedule:
+    # Téma-extrakció óránként
+    - cron: '5 * * * *'
+    # Heti aggregátum vasárnap 23:30 UTC
+    - cron: '30 23 * * 0'
+  workflow_dispatch:
+    inputs:
+      job:
+        description: 'Melyik job-ot futtassuk manuálisan'
+        required: true
+        default: 'extract-topics'
+        type: choice
+        options:
+          - extract-topics
+          - aggregate-topics-weekly
+          - both
+
+jobs:
+  extract-topics:
+    name: Extract topics from new WellBot messages
+    if: github.event_name == 'schedule' && github.event.schedule == '5 * * * *' || (github.event_name == 'workflow_dispatch' && (github.event.inputs.job == 'extract-topics' || github.event.inputs.job == 'both'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call extract-topics edge function
+        run: |
+          set -e
+          PROJECT_URL="${SUPABASE_PROJECT_URL:-https://vvunxewylcifwphxgqab.supabase.co}"
+          RESPONSE=$(curl -sS -X POST \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{"limit": 50}' \
+            "$PROJECT_URL/functions/v1/extract-topics")
+          echo "Response: $RESPONSE"
+          # Fail if the response contains an error key
+          if echo "$RESPONSE" | grep -q '"error"'; then
+            echo "❌ Edge function returned an error"
+            exit 1
+          fi
+          echo "✅ extract-topics succeeded"
+
+  aggregate-topics-weekly:
+    name: Aggregate weekly topic counts
+    if: github.event_name == 'schedule' && github.event.schedule == '30 23 * * 0' || (github.event_name == 'workflow_dispatch' && (github.event.inputs.job == 'aggregate-topics-weekly' || github.event.inputs.job == 'both'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call aggregate-topics-weekly edge function
+        run: |
+          set -e
+          PROJECT_URL="${SUPABASE_PROJECT_URL:-https://vvunxewylcifwphxgqab.supabase.co}"
+          RESPONSE=$(curl -sS -X POST \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{}' \
+            "$PROJECT_URL/functions/v1/aggregate-topics-weekly")
+          echo "Response: $RESPONSE"
+          if echo "$RESPONSE" | grep -q '"error"'; then
+            echo "❌ Edge function returned an error"
+            exit 1
+          fi
+          echo "✅ aggregate-topics-weekly succeeded"
