@@ -7,6 +7,7 @@ import CommunityFeed from './CommunityFeed';
 import CommunityGallery from './CommunityGallery';
 import CommunityEvents from './CommunityEvents';
 import CommunityCTA from './CommunityCTA';
+import CommunitySignalsWidget from './CommunitySignalsWidget';
 import { CommunityHeader } from './CommunityHeader';
 
 const CommunityHubNew = () => {
@@ -37,7 +38,9 @@ const CommunityHubNew = () => {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="feed" className="mt-0">
+          <TabsContent value="feed" className="mt-0 space-y-6">
+            {/* Sprint 15: "Mi mozog a közösségben" widget — top kérdések / tippek az utóbbi 7 napból */}
+            <CommunitySignalsWidget />
             <CommunityFeed />
           </TabsContent>
 

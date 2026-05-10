@@ -24,6 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 import ExpertImpactReport from "@/components/expert-studio/ExpertImpactReport";
 import MyProgramsList from "@/components/expert-studio/MyProgramsList";
 import ExpertCalendar from "@/components/expert-studio/ExpertCalendar";
+import CreatorQuickStartBanner from "@/components/expert-studio/CreatorQuickStartBanner";
 import { ExpertAgreementModal, EXPERT_ASZF_VERSION } from "@/components/expert-studio/ExpertAgreementModal";
 
 const ExpertStudio = () => {
@@ -235,6 +236,8 @@ const ExpertStudio = () => {
 
         {/* Műhely Tab - Programs Management Only */}
         <TabsContent value="muhely" className="space-y-6">
+          {/* Sprint 15: új creator esetén (0 program) quick-start nudge */}
+          {programsQuery.data && programsQuery.data.length === 0 && <CreatorQuickStartBanner />}
           <MyProgramsList userId={user.id} />
         </TabsContent>
 
