@@ -47,6 +47,7 @@ import { SponsorContributionBadge } from "@/components/marketplace/SponsorContri
 import { ProgramGridSkeleton } from "@/components/ui/loading-skeleton";
 // Mock data imports removed — using only real Supabase data
 import { CATEGORIES as CATEGORY_LIST } from "@/constants/categories";
+import { isFinancialEnabled } from "@/lib/featureFlags";
 
 // Icon mapping for categories
 const CATEGORY_ICONS: Record<string, any> = {
@@ -1004,9 +1005,9 @@ const ProgramsListingPage = () => {
                                 </motion.div>
                               )}
                               
-                              {/* Free badge - ONLY if truly free */}
-                              {(program.access_level === 'free' || program.access_type === 'sponsored' || program.access_type === 'free' || program.price_huf === 0) && (
-                                <motion.span 
+                              {/* TÁMOGATOTT/SUPPORTED badge — only when financial layer is on (MVP v2 hides it). */}
+                              {isFinancialEnabled() && (program.access_level === 'free' || program.access_type === 'sponsored' || program.access_type === 'free' || program.price_huf === 0) && (
+                                <motion.span
                                   initial={{ opacity: 0, scale: 0.9 }}
                                   animate={{ opacity: 1, scale: 1 }}
                                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-600 text-white text-xs font-semibold tracking-wide uppercase shadow-lg shadow-emerald-600/25"

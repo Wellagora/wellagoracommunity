@@ -1,5 +1,6 @@
 import React from 'react';
 import { PricingOutput, formatPrice } from '@/lib/pricing';
+import { isFinancialEnabled } from '@/lib/featureFlags';
 
 interface PricingDisplayProps {
   pricing: PricingOutput;
@@ -8,13 +9,16 @@ interface PricingDisplayProps {
   variant?: 'card' | 'detail' | 'modal';
 }
 
-export function PricingDisplay({ 
-  pricing, 
-  sponsorName, 
+export function PricingDisplay({
+  pricing,
+  sponsorName,
   sponsorLogoUrl,
-  variant = 'card' 
+  variant = 'card'
 }: PricingDisplayProps) {
-  
+
+  // MVP v2 (community-first): financial flag OFF → semmilyen pricing-nézet nem jelenik meg.
+  if (!isFinancialEnabled()) return null;
+
   if (pricing.isFree) {
     return (
       <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full font-bold text-sm">
