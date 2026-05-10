@@ -277,10 +277,10 @@ const AIAssistantChat = ({ embedded = false }: AIAssistantChatProps) => {
             {!embedded && (
               <p className="text-sm text-slate-600 mt-1 line-clamp-2">
                 {language === 'hu'
-                  ? 'Itt vagyok. Segítek programokat és kreátorokat találni a közösségben.'
+                  ? 'Itt vagyok. Segítek programokat és szakértőket találni a közösségben.'
                   : language === 'de'
-                  ? 'Ich bin hier. Ich helfe dir, Programme und Ersteller in der Gemeinschaft zu finden.'
-                  : 'I\'m here. I help you find programs and creators in the community.'}
+                  ? 'Ich bin hier. Ich helfe dir, Programme und Experten in der Gemeinschaft zu finden.'
+                  : 'I\'m here. I help you find programs and experts in the community.'}
               </p>
             )}
           </div>

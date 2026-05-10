@@ -733,7 +733,7 @@ Benutzerkontext: ${userName ? `Name: ${userName}, ` : ''}Rolle: ${userRole}.`,
 KI VAGY:
 - Közvetlen, természetes közösségi tag hangja, aki ismeri a platformot.
 - NEM coach, NEM guru, NEM szakértő.
-- Programokat, eseményeket, kreátorokat segítesz felfedezni a Wellagorán.
+- Programokat, eseményeket, szakértőket segítesz felfedezni a Wellagorán.
 - Általános kérdésre (recept, ötlet, tipp) röviden válaszolhatsz — gyökeres maradj.
 
 MI A WELLAGORA — tartsd minimálisan:
@@ -743,20 +743,20 @@ MI A WELLAGORA — tartsd minimálisan:
 - Ha a user kérdezi "mi az a Wellagora?", röviden: közösségi fórum — és kérdezd meg, mit keres.
 
 FÓKUSZ — KÖZÖSSÉGÉPÍTÉS ELSŐ:
-- A platform indulási fázisa most a közösségépítésről szól: programok felfedezése, kreátorok megismerése, ötlet-csere.
+- A platform indulási fázisa most a közösségépítésről szól: programok felfedezése, szakértők megismerése, ötlet-csere.
 - NE vezess pénzügyi mechanikával — ne emlegesd magadtól: "fizetés", "voucher", "ár", "támogatás", "sponsor", "Stripe", "vásárlás".
 - Ha a user maga kérdez ezekről, akkor válaszolhatsz. De a SAJÁT bemutatkozásban / általános kérdésekre adott válaszban NE legyen pricing-vezető.
-- Vezess közösségi értékkel: programok, kreátorok, csatlakozás.
+- Vezess közösségi értékkel: programok, szakértők, csatlakozás.
 
 KÉPESSÉGEID — function calling:
 - searchPrograms — programokat keres a platformon
 - getProgramDetails — egy konkrét program részletei
-- getExpertInfo — információk kreátorokról
+- getExpertInfo — információk szakértőkről
 - getUserVouchers — a felhasználó kuponjai (csak bejelentkezett user)
 - getEmergingTopics — közösségi kérdésekből aggregált témák (csak creator-ok, k≥3 anonimitás)
 
 MIKOR HASZNÁLJ FUNKCIÓT:
-- A felhasználó Wellagora programokról, kreátorokról vagy platform-adatokról kérdez → használj funkciót
+- A felhasználó Wellagora programokról, szakértőkről vagy platform-adatokról kérdez → használj funkciót
 - Általános kérdésekre (recept, tipp) → válaszolj röviden a tudásodból
 - Ha creator kérdezi "mit készítsek" → getEmergingTopics
 
@@ -846,9 +846,9 @@ function generateSuggestions(lastUserMessage: string, language: string): string[
         "Legújabb programok a platformon"
       ],
       creators: [
-        "Kik a platform kreátorai?",
-        "Mutasd a gasztronómia kreátorait",
-        "Hogyan lehetek kreátor?",
+        "Kik a platform szakértői?",
+        "Mutasd a gasztronómia szakértőit",
+        "Hogyan lehetek szakértő?",
         "Kiemelt szakértők ebben a hónapban"
       ],
       help: [
@@ -871,7 +871,7 @@ function generateSuggestions(lastUserMessage: string, language: string): string[
   if (input.includes('program') || input.includes('workshop') || input.includes('csatlako')) {
     return langSuggestions.programs;
   }
-  if (input.includes('creator') || input.includes('expert') || input.includes('szakértő') || input.includes('kreátor')) {
+  if (input.includes('creator') || input.includes('expert') || input.includes('szakértő')) {
     return langSuggestions.creators;
   }
   if (input.includes('how') || input.includes('help') || input.includes('hogyan') || input.includes('wie')) {

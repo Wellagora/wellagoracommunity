@@ -64,7 +64,7 @@ export const CreatorAccountSection = ({ userId, profile, onUpdate }: CreatorAcco
 
       toast({
         title: t('creator.settings_saved') || 'Beállítások mentve',
-        description: t('creator.settings_saved_desc') || 'A kreátor fiók beállításai sikeresen mentve.',
+        description: t('creator.settings_saved_desc') || 'A szakértői fiók beállításai sikeresen mentve.',
       });
 
       onUpdate?.();
@@ -112,11 +112,11 @@ export const CreatorAccountSection = ({ userId, profile, onUpdate }: CreatorAcco
               </div>
               <div>
                 <CardTitle className="text-lg flex items-center gap-2 text-[#3d3429]">
-                  {t('creator.title') || 'Kreátor Fiók'}
+                  {t('creator.title') || 'Szakértői Fiók'}
                   {stripeConnected && (
                     <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200">
                       <Check className="w-3 h-3 mr-1" />
-                      {t('creator.active_badge') || 'Aktív Kreátor'}
+                      {t('creator.active_badge') || 'Aktív Szakértő'}
                     </Badge>
                   )}
                   {isFoundingExpert && (
@@ -127,7 +127,7 @@ export const CreatorAccountSection = ({ userId, profile, onUpdate }: CreatorAcco
                   )}
                 </CardTitle>
                 <CardDescription className="text-[#3d3429]/60">
-                  {t('creator.description') || 'Állítsd be a kifizetési preferenciáidat és a kreátor fiók beállításait.'}
+                  {t('creator.description') || 'Állítsd be a kifizetési preferenciáidat és a szakértői fiók beállításait.'}
                 </CardDescription>
               </div>
             </div>
@@ -199,7 +199,7 @@ export const CreatorAccountSection = ({ userId, profile, onUpdate }: CreatorAcco
               <div className="flex items-center space-x-3 p-3 rounded-lg bg-[#f5f0eb] border border-[#e8e0d8] hover:border-amber-300 transition-colors">
                 <RadioGroupItem value="individual" id="creator_legal_status_individual" className="border-amber-400" />
                 <Label htmlFor="creator_legal_status_individual" className="cursor-pointer flex-1 text-[#3d3429]">
-                  <span className="font-medium">{t('creator.legal_status_individual') || 'Közösségi kreátor (magánszemély)'}</span>
+                  <span className="font-medium">{t('creator.legal_status_individual') || 'Közösségi szakértő (magánszemély)'}</span>
                   <p className="text-xs text-[#3d3429]/50 mt-0.5">
                     {language === 'hu'
                       ? 'A platform állít ki számlát a vásárlónak'
@@ -210,7 +210,7 @@ export const CreatorAccountSection = ({ userId, profile, onUpdate }: CreatorAcco
               <div className="flex items-center space-x-3 p-3 rounded-lg bg-[#f5f0eb] border border-[#e8e0d8] hover:border-amber-300 transition-colors">
                 <RadioGroupItem value="entrepreneur" id="creator_legal_status_entrepreneur" className="border-amber-400" />
                 <Label htmlFor="creator_legal_status_entrepreneur" className="cursor-pointer flex-1 text-[#3d3429]">
-                  <span className="font-medium">{t('creator.legal_status_entrepreneur') || 'Profi kreátor (vállalkozás / cég)'}</span>
+                  <span className="font-medium">{t('creator.legal_status_entrepreneur') || 'Profi szakértő (vállalkozás / cég)'}</span>
                   <p className="text-xs text-[#3d3429]/50 mt-0.5">
                     {language === 'hu'
                       ? 'Te állítod ki a számlát a vásárlónak'
