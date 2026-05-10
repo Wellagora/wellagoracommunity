@@ -261,7 +261,7 @@ const AIAssistantChat = ({ embedded = false }: AIAssistantChatProps) => {
               {!embedded && (
                 <div className="flex items-center gap-2">
                   <Badge className="text-xs bg-indigo-100 text-indigo-700 border-indigo-200">
-                    {language === 'hu' ? 'Digitális Házigazda' : language === 'de' ? 'Digitaler Gastgeber' : 'Digital Host'}
+                    {language === 'hu' ? 'Közösségi asszisztens' : language === 'de' ? 'Community-Assistent' : 'Community assistant'}
                   </Badge>
                   <div className="flex items-center gap-1.5">
                     <motion.div 
