@@ -3,6 +3,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { motion } from 'framer-motion';
 import { Progress } from '@/components/ui/progress';
 import { Link } from 'react-router-dom';
+import { isFinancialEnabled } from '@/lib/featureFlags';
 
 // Partner logo mapping for clickable sponsor logos
 const PARTNER_LOGOS: Record<string, { logo: string; slug: string }> = {
@@ -64,6 +65,9 @@ export const SponsorContributionBadge = ({
   maxCapacity
 }: SponsorContributionBadgeProps) => {
   const { language } = useLanguage();
+
+  // MVP v2 (community-first): financial flag OFF → ne jelenjen meg semmi sponsor-vizuál.
+  if (!isFinancialEnabled()) return null;
 
   const formatPrice = (price: number): string => {
     if (language === 'hu') {

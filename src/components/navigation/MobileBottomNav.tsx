@@ -1,11 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { BookOpen, Bell, User, Sparkles, Building2, LayoutDashboard, Heart, Wallet, BarChart3 } from "lucide-react";
+import { BookOpen, Bell, User, Sparkles, Building2, LayoutDashboard, Heart, Wallet, BarChart3, Users as UsersIcon } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { isFinancialEnabled } from "@/lib/featureFlags";
 
 interface NavItem {
   path: string;
@@ -104,7 +105,16 @@ const MobileBottomNav = () => {
     }
 
     // SPONSOR: Központ, Kampányok, Értesítések, Profil
+    // MVP v2 (community-first): ha a financial flag OFF, sponsor-szerepet member-nézetre fordítjuk.
     if (effectiveRole === 'sponsor') {
+      if (!isFinancialEnabled()) {
+        return [
+          { path: "/programs", icon: BookOpen, labelKey: "mobile_nav.discover" },
+          { path: "/community", icon: UsersIcon, labelKey: "mobile_nav.my_center" },
+          { path: "/ertesitesek", icon: Bell, labelKey: "mobile_nav.notifications" },
+          { path: "/profile", icon: User, labelKey: "mobile_nav.profile" },
+        ];
+      }
       return [
         { path: "/sponsor-dashboard", icon: Building2, labelKey: "mobile_nav.dashboard", iconColor: "text-blue-500" },
         { path: "/sponsor-dashboard/campaigns", icon: Wallet, labelKey: "mobile_nav.campaigns" },

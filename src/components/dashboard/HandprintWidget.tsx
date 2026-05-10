@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Leaf, TreePine, Target, TrendingUp, Trophy, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { isCarbonHandprintEnabled } from '@/lib/featureFlags';
 
 interface HandprintData {
   transport: number;
@@ -26,6 +27,9 @@ const HandprintWidget = () => {
   const { user, profile } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+
+  // MVP v2 (community-first): Carbon Handprint hidden — módszertan-fejlesztés alatt.
+  if (!isCarbonHandprintEnabled()) return null;
   
   const isOrganization = profile?.user_role && ['business', 'government', 'ngo'].includes(profile.user_role);
   

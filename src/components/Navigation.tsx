@@ -40,6 +40,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { getUserBalance, WELLPOINTS_QUERY_KEY } from "@/lib/wellpoints";
 import { getExpertMetrics, getSponsorMetrics, type RoleMetrics } from "@/lib/roleMetrics";
+import { isFinancialEnabled } from "@/lib/featureFlags";
 import { getRoleColors } from "@/lib/roleColors";
 import wellagoraLogo from "@/assets/wellagora-logo.png";
 import LanguageSelector from "./LanguageSelector";
@@ -294,7 +295,14 @@ const Navigation = () => {
     }
 
     // SPONSOR: Támogatói Központ, Programok, Közösség, Pénzügyek
+    // MVP v2 (community-first): ha a financial flag OFF, sponsor-szerepet member-nézetre fordítjuk.
     if (roleToUse === 'sponsor') {
+      if (!isFinancialEnabled()) {
+        return [
+          { path: "/programs", label: t("nav.marketplace"), icon: BookOpen },
+          { path: "/community", label: t("nav.community"), icon: UsersIcon },
+        ];
+      }
       return [
         { path: "/sponsor-dashboard", label: t("nav.sponsor_hub"), icon: Building2, iconColor: "text-emerald-500" },
         { path: "/programs", label: t("nav.marketplace"), icon: BookOpen },

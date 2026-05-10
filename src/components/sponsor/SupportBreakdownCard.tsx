@@ -2,6 +2,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { SupportBreakdown } from "@/types/sponsorSupport";
+import { isFinancialEnabled } from "@/lib/featureFlags";
 
 interface SupportBreakdownCardProps {
   breakdown: SupportBreakdown;
@@ -62,6 +63,9 @@ interface SponsoredBadgeProps {
 
 export function SponsoredBadge({ className }: SponsoredBadgeProps) {
   const { t } = useLanguage();
+
+  // MVP v2 (community-first): financial flag OFF → ne jelenjen meg semmi sponsored badge.
+  if (!isFinancialEnabled()) return null;
 
   return (
     <Badge variant="secondary" className={`${className} bg-blue-100 text-blue-700 hover:bg-blue-200 font-semibold`}>

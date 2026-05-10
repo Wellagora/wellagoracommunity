@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Heart, Gift, Wallet, CreditCard } from 'lucide-react';
+import { isFinancialEnabled } from '@/lib/featureFlags';
 
 interface SponsoredPriceBadgeProps {
   originalPrice: number;
@@ -32,6 +33,9 @@ const SponsoredPriceBadge = ({
   showBreakdown = false
 }: SponsoredPriceBadgeProps) => {
   const { language } = useLanguage();
+
+  // MVP v2 (community-first): financial flag OFF → ne jelenjen meg semmi pricing/sponsor badge.
+  if (!isFinancialEnabled()) return null;
 
   const sizeClasses = {
     sm: { price: 'text-lg', original: 'text-xs', badge: 'text-xs px-2 py-0.5' },
